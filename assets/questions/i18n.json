@@ -1,0 +1,37 @@
+{
+    "language": "python",
+    "stages": [{
+        "instructions": "Welcome to this programming exercise. Implement the abbreviate function.",
+        "data": [{
+            "input": "internationalization",
+            "output": "i18n"
+        }, {
+            "input": "monkey",
+            "output": "m4y"
+        }, {
+            "input": "friendship",
+            "output": "f8p"
+        }],
+        "functionName": "abbreviate"
+    }, {
+        "instructions": "Make sure your code handles short strings correctly.",
+        "data": [{
+            "input": "cat",
+            "output": "cat",
+            "message": "Your function doesn't seem to work for 3-letter words."
+        }, {
+            "input": "at",
+            "output": "at",
+            "message": "Your function doesn't seem to work for 2-letter words."
+        }, {
+            "input": "a",
+            "output": "a",
+            "message": "Your function doesn't seem to work for 1-letter words."
+        }, {
+            "input": "",
+            "output": "",
+            "message": "Your function doesn't seem to work for the empty string."
+        }],
+        "functionName": "abbreviate"
+    }]
+}

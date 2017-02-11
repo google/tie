@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="tie">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  </head>
+
+  <body>
+    <h3>String manipulation exercise</h3>
+
+    <coding-window></coding-window>
+
+    <script src="third_party/angular-1.6.1/angular.min.js"></script>
+    <script src="third_party/skulpt-0.10.0/skulpt.min.js"></script>
+    <script src="third_party/skulpt-0.10.0/skulpt-stdlib.js"></script>
+
+    <script src="app.js"></script>
+    <script src="client/components/CodingWindowDirective.js"></script>
+    <script src="client/domain/CodeEvalResultObjectFactory.js"></script>
+    <script src="client/domain/EventObjectFactory.js"></script>
+    <script src="client/domain/QuestionObjectFactory.js"></script>
+    <script src="client/services/FeedbackGeneratorService.js"></script>
+    <script src="client/services/QuestionDataService.js"></script>
+    <script src="client/services/SolutionBrokerService.js"></script>
+    <script src="client/services/TranscriptService.js"></script>
+
+    <script src="client/services/code_evaluators/CodeRunnerDispatcherService.js"></script>
+    <script src="client/services/code_evaluators/PythonCodeRunnerService.js"></script>
+  </body>
+</html>
