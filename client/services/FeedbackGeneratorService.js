@@ -21,10 +21,9 @@ tie.factory('FeedbackGeneratorService', [
   function() {
     return {
       getFeedback: function(question, codeEvalResult) {
-        if (codeEvalResult.getError()) {
+        if (codeEvalResult.getErrorMessage()) {
           return (
-            'Your code threw an error: ' +
-            codeEvalResult.getErrorString());
+            'Your code threw an error: ' + codeEvalResult.getErrorMessage());
         } else {
           return 'Your code gave this output: ' + codeEvalResult.getOutput();
         }

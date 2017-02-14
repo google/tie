@@ -7,4 +7,14 @@ principles, and coding patterns that are important in software engineering.
 The project is currently in a very early stage, and this README file will be
 fleshed out more as development continues.
 
-Note: This is not an official Google product.
+## User setup
+
+Open the file `client/app.html` in a browser.
+
+## Developer setup
+
+Run `bash scripts/run_karma_tests.sh` to run the Karma tests.
+
+## Disclaimer
+
+This is not an official Google product.

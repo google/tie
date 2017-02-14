@@ -19,10 +19,10 @@
 
 tie.factory('CodeEvalResultObjectFactory', [
   function() {
-    var CodeEvalResult = function(code, output, error) {
+    var CodeEvalResult = function(code, output, errorMessage) {
       this._code = code;
       this._output = output;
-      this._error = error;
+      this._errorMessage = errorMessage;
     };
 
     // Instance methods.
@@ -34,17 +34,13 @@ tie.factory('CodeEvalResultObjectFactory', [
       return this._output;
     };
 
-    CodeEvalResult.prototype.getError = function() {
-      return this._error;
-    };
-
-    CodeEvalResult.prototype.getErrorString = function() {
-      return this._error.toString();
+    CodeEvalResult.prototype.getErrorMessage = function() {
+      return this._errorMessage;
     };
 
     // Static class methods.
-    CodeEvalResult.create = function(code, output, error) {
-      return new CodeEvalResult(code, output, error);
+    CodeEvalResult.create = function(code, output, errorMessage) {
+      return new CodeEvalResult(code, output, errorMessage);
     };
 
     return CodeEvalResult;
