@@ -1,37 +1,124 @@
 {
-    "language": "python",
-    "stages": [{
-        "instructions": "Welcome to this programming exercise. Implement the abbreviate function.",
-        "data": [{
+  "interview_question": {
+    "title": "Internationalization (i18n)",
+    "prompts": [
+      {
+        "instructions": [
+          "Welcome to this programming exercise.",
+          "You will complete this exercise by editing the code in the sample.py file using your favorite editor. Every time you save the file, I will evaluate your code and let you know about next steps.",
+          "Your first task is to implement the abbreviate function. It takes a string as input and returns an abbreviation of the string of the form <first character><length of the middle of the string><last character>. For example, \"internationalization\" should be abbreviated as \"i18n\"."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.abbreviate",
+        "correctness_test_data": [
+          {
             "input": "internationalization",
             "output": "i18n"
-        }, {
+          },
+          {
             "input": "monkey",
             "output": "m4y"
-        }, {
+          },
+          {
             "input": "friendship",
             "output": "f8p"
-        }],
-        "functionName": "abbreviate"
-    }, {
-        "instructions": "Make sure your code handles short strings correctly.",
-        "data": [{
+          }
+        ],
+        "buggy_outputs": [
+          {
+            "buggy_function": "forgetLastLetter",
+            "messages": [
+              "It looks like your output (%s) doesn't match our expected output (%s).",
+              "You seem to be dropping the last character of the string when you're abbreviating.",
+              "Make sure to add the last character of the string back on when you've abbreviated."
+            ]
+          }
+        ],
+        "performance_test_data": {
+        }
+      },
+      {
+        "instructions": [
+          "You need to make sure that your code handles short strings correctly.",
+          "Strings of length 3 or less should not be abbreviated."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.abbreviate",
+        "correctness_test_data": [
+          {
             "input": "cat",
-            "output": "cat",
-            "message": "Your function doesn't seem to work for 3-letter words."
-        }, {
+            "output": "cat"
+          },
+          {
             "input": "at",
-            "output": "at",
-            "message": "Your function doesn't seem to work for 2-letter words."
-        }, {
+            "output": "at"
+          },
+          {
             "input": "a",
-            "output": "a",
-            "message": "Your function doesn't seem to work for 1-letter words."
-        }, {
+            "output": "a"
+          },
+          {
             "input": "",
-            "output": "",
-            "message": "Your function doesn't seem to work for the empty string."
-        }],
-        "functionName": "abbreviate"
-    }]
+            "output": ""
+          }
+        ],
+        "buggy_outputs": [
+          {
+            "buggy_function": "useFirstAndLastLetterAndLengthToAbbreviate",
+            "messages": [
+              "It looks like your output (%s) doesn't match our expected output (%s).",
+              "It looks like you're using the string's length minus two in the middle, which is usually fine, but can you think of any issues that might present?",
+              "For short strings, you're actually ending up with a negative number in the middle. You don't need to abbreviate strings with length <= 3."
+            ]
+          }
+        ],
+        "performance_test_data": {
+          "input_data_atom": "m",
+          "transformation_function": "system.ExtendString",
+          "expected_performance": "constant",
+          "evaluation_function": "sample.abbreviate"
+        }
+      },
+      {
+        "instructions": [
+          "Implement are_all_unique, a function that takes a list of strings as input and returns a boolean indicating whether all the strings in the input are unique when abbreviated by the above abbreviate function."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.are_all_unique",
+        "correctness_test_data": [
+          {
+            "input": ["cat", "dog", "cart"],
+            "output": true
+          },
+          {
+            "input": ["clot", "dog", "cart"],
+            "output": false
+          }
+        ],
+        "buggy_outputs": [],
+        "performance_test_data": {
+          "input_data_atom": "o",
+          "transformation_function": "createListOfUniqueStrings",
+          "expected_performance": "linear",
+          "evaluation_function": "sample.all_are_unique"
+        }
+      }
+    ],
+    "style_test_cases": [
+      {
+        "style_evaluation_function": "system.AllowOnlyOneFunction",
+        "output": true,
+        "message": "You should only be writing code in an abbreviate function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
+      }
+    ]
+  }
 }
