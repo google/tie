@@ -13,14 +13,21 @@
 // limitations under the License.
 
 /**
- * @fileoverview Basic configuration for the TIE application.
+ * @fileoverview Dispatcher service that preprocesses a user's submitted code
+ * using the appropriate language-specific service.
  */
 
-var tie = angular.module('tie', []);
-
-// Supported languages.
-tie.constant('LANGUAGE_PYTHON', 'python');
-
-// Class name for pre-processing code. Answer submissions are then run using
-// SOLUTION_CLASS_NAME.function_name.
-tie.constant('WRAPPER_CLASS_NAME', 'StudentAnswer');
+tie.factory('CodePreprocessorDispatcherService', [
+  'PythonCodePreprocessorService', 'LANGUAGE_PYTHON',
+  function(PythonCodePreprocessorService, LANGUAGE_PYTHON) {
+    return {
+      preprocessCode: function(code, language) {
+        if (language === LANGUAGE_PYTHON) {
+          return PythonCodePreprocessorService.preprocessCode(code);
+        } else {
+          throw Error('Language not supported: ' + language);
+        }
+      }
+    };
+  }
+]);
