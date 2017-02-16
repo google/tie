@@ -25,7 +25,6 @@ tie.factory('QuestionDataService', [
       "prompts": [{
         "instructions": [
           "Welcome to this programming exercise.",
-          "You will complete this exercise by editing the code in the sample.py file using your favorite editor. Every time you save the file, I will evaluate your code and let you know about next steps.",
           "Your first task is to implement the abbreviate function. It takes a string as input and returns an abbreviation of the string of the form <first character><length of the middle of the string><last character>. For example, \"internationalization\" should be abbreviated as \"i18n\"."
         ],
         "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
