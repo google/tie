@@ -33,7 +33,7 @@ tie.factory('EventObjectFactory', [
       this._timestamp = timestamp;
     };
 
-    // Instance methods
+    // Instance methods.
     Event.prototype.getType = function() {
       return this._type;
     };
