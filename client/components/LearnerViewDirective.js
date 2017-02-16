@@ -56,6 +56,11 @@ tie.directive('learnerView', [function() {
           width: 600px;
         }
 
+        .tie-instructions {
+          font-family: 'noto sans', Arial, Sans-Serif;
+          font-size: 0.85em;
+        }
+
         .tie-coding-window {
           background: #ffffff;
           border: 1px solid #cccccc;
