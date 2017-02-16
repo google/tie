@@ -21,10 +21,19 @@ tie.factory('QuestionDataService', [
   'QuestionObjectFactory', function(QuestionObjectFactory) {
     // TODO(sll): This should read from a JSON file.
     var _DATA_DICT = {
-      "language": "python",
-      "stages": [{
-        "instructions": "Welcome to this programming exercise. Implement the abbreviate function.",
-        "data": [{
+      "title": "Internationalization (i18n)",
+      "prompts": [{
+        "instructions": [
+          "Welcome to this programming exercise.",
+          "You will complete this exercise by editing the code in the sample.py file using your favorite editor. Every time you save the file, I will evaluate your code and let you know about next steps.",
+          "Your first task is to implement the abbreviate function. It takes a string as input and returns an abbreviation of the string of the form <first character><length of the middle of the string><last character>. For example, \"internationalization\" should be abbreviated as \"i18n\"."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.abbreviate",
+        "correctness_tests": [{
           "input": "internationalization",
           "output": "i18n"
         }, {
@@ -34,27 +43,20 @@ tie.factory('QuestionDataService', [
           "input": "friendship",
           "output": "f8p"
         }],
-        "functionName": "abbreviate"
-      }, {
-        "instructions": "Make sure your code handles short strings correctly.",
-        "data": [{
-          "input": "cat",
-          "output": "cat",
-          "message": "Your function doesn't seem to work for 3-letter words."
-        }, {
-          "input": "at",
-          "output": "at",
-          "message": "Your function doesn't seem to work for 2-letter words."
-        }, {
-          "input": "a",
-          "output": "a",
-          "message": "Your function doesn't seem to work for 1-letter words."
-        }, {
-          "input": "",
-          "output": "",
-          "message": "Your function doesn't seem to work for the empty string."
+        "buggy_output_tests": [{
+          "buggy_function": "forgetLastLetter",
+          "messages": [
+            "It looks like your output (%s) doesn't match our expected output (%s).",
+            "You seem to be dropping the last character of the string when you're abbreviating.",
+            "Make sure to add the last character of the string back on when you've abbreviated."
+          ]
         }],
-        "functionName": "abbreviate"
+        "performance_tests": [{}]
+      }],
+      "style_tests": [{
+        "style_evaluation_function": "system.AllowOnlyOneFunction",
+        "output": true,
+        "message": "You should only be writing code in an abbreviate function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
       }]
     };
 

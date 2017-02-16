@@ -25,10 +25,10 @@ tie.factory('SolutionBrokerService', [
       TranscriptService) {
     return {
       // Returns a promise.
-      processSolutionAsync: function(question, code) {
+      processSolutionAsync: function(question, code, language) {
         TranscriptService.recordSolution(code);
         return CodeRunnerDispatcherService.runCodeAsync(
-          question.getLanguage(), code
+          language, code
         ).then(function(codeEvalResult) {
           var feedback = FeedbackGeneratorService.getFeedback(
             question, codeEvalResult);

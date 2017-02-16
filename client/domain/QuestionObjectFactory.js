@@ -18,30 +18,30 @@
  */
 
 tie.factory('QuestionObjectFactory', [
-  function() {
-    var Question = function(language, stages) {
-      this._language = language;
-      // TODO(sll): Component objects in 'stages' may need to be split up more.
-      this._stages = angular.copy(stages);
+  'PromptObjectFactory', 'StyleTestObjectFactory',
+  function(PromptObjectFactory, StyleTestObjectFactory) {
+    var Question = function(questionDict) {
+      this._title = questionDict.title;
+      this._prompts = questionDict.prompts.map(function(promptDict) {
+        return PromptObjectFactory.create(promptDict);
+      });
+      this._styleTests = questionDict.style_tests.map(function(styleTestDict) {
+        return StyleTestObjectFactory.create(styleTestDict);
+      });
     };
 
-    // Instance methods
-    Question.prototype.getLanguage = function() {
-      return this._language;
+    // Instance methods.
+    Question.prototype.getTitle = function() {
+      return this._title;
     };
 
-    Question.prototype.getStages = function() {
-      return this._stages;
-    };
-
-    Question.prototype.getInitialInstructions = function() {
-      return this._stages[0].instructions;
+    Question.prototype.getPrompts = function() {
+      return this._prompts;
     };
 
     // Static class methods.
     Question.create = function(questionDict) {
-      return new Question(
-        questionDict.language, questionDict.stages);
+      return new Question(questionDict);
     };
 
     return Question;
