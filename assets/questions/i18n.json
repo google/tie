@@ -13,21 +13,21 @@
         "input_function": null,
         "output_function": null,
         "main_function": "sample.abbreviate",
-        "correctness_test_data": [
+        "correctness_tests": [
           {
             "input": "internationalization",
-            "output": "i18n"
+            "expected_output": "i18n"
           },
           {
             "input": "monkey",
-            "output": "m4y"
+            "expected_output": "m4y"
           },
           {
             "input": "friendship",
-            "output": "f8p"
+            "expected_output": "f8p"
           }
         ],
-        "buggy_outputs": [
+        "buggy_output_tests": [
           {
             "buggy_function": "forgetLastLetter",
             "messages": [
@@ -37,38 +37,39 @@
             ]
           }
         ],
-        "performance_test_data": {
-        }
+        "performance_tests": [
+          {
+          }
+        ]
       },
       {
         "instructions": [
-          "You need to make sure that your code handles short strings correctly.",
-          "Strings of length 3 or less should not be abbreviated."
+          "It's always important to think about the edge cases for your code. In this case, short strings are not abbreviated by this strategy. Make sure your code doesn't try to abbreviate when it's not necessary."
         ],
         "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
         "main_function": "sample.abbreviate",
-        "correctness_test_data": [
+        "correctness_tests": [
           {
             "input": "cat",
-            "output": "cat"
+            "expected_output": "cat"
           },
           {
             "input": "at",
-            "output": "at"
+            "expected_output": "at"
           },
           {
             "input": "a",
-            "output": "a"
+            "expected_output": "a"
           },
           {
             "input": "",
-            "output": ""
+            "expected_output": ""
           }
         ],
-        "buggy_outputs": [
+        "buggy_output_tests": [
           {
             "buggy_function": "useFirstAndLastLetterAndLengthToAbbreviate",
             "messages": [
@@ -78,12 +79,14 @@
             ]
           }
         ],
-        "performance_test_data": {
-          "input_data_atom": "m",
-          "transformation_function": "system.ExtendString",
-          "expected_performance": "constant",
-          "evaluation_function": "sample.abbreviate"
-        }
+        "performance_tests": [
+          {
+            "input_data_atom": "m",
+            "transformation_function": "system.ExtendString",
+            "expected_performance": "constant",
+            "evaluation_function": "sample.abbreviate"
+          }
+        ]
       },
       {
         "instructions": [
@@ -94,29 +97,31 @@
         "input_function": null,
         "output_function": null,
         "main_function": "sample.are_all_unique",
-        "correctness_test_data": [
+        "correctness_tests": [
           {
             "input": ["cat", "dog", "cart"],
-            "output": true
+            "expected_output": true
           },
           {
             "input": ["clot", "dog", "cart"],
-            "output": false
+            "expected_output": false
           }
         ],
-        "buggy_outputs": [],
-        "performance_test_data": {
-          "input_data_atom": "o",
-          "transformation_function": "createListOfUniqueStrings",
-          "expected_performance": "linear",
-          "evaluation_function": "sample.all_are_unique"
-        }
+        "buggy_output_tests": [],
+        "performance_tests": [
+          {
+            "input_data_atom": "o",
+            "transformation_function": "createListOfUniqueStrings",
+            "expected_performance": "linear",
+            "evaluation_function": "sample.all_are_unique"
+          }
+        ]
       }
     ],
-    "style_test_cases": [
+    "style_tests": [
       {
-        "style_evaluation_function": "system.AllowOnlyOneFunction",
-        "output": true,
+        "evaluation_function": "system.AllowOnlyOneFunction",
+        "expected_output": true,
         "message": "You should only be writing code in an abbreviate function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
       }
     ]
