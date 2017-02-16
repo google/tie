@@ -1,0 +1,134 @@
+{
+  "interview_question": {
+    "title": "Run-Length Encoding",
+    "prompts": [
+      {
+        "instructions": [
+          "Welcome to this programming exercise.",
+          "Your first task is to implement the encode function. It takes a string as input and returns an encoding of the string where long runs of characters are replaced by <# characters>x<character. For example, \"abcccccd\" should be encoded as \"ab5xc\"."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.encode",
+        "correctness_test_data": [
+          {
+            "input": "abcccccd",
+            "expected_output": "ab5xcd"
+          },
+          {
+            "input": "ddddddddddef",
+            "expected_output": "10xdef"
+          },
+          {
+            "input": "budddddddddd",
+            "expected_output": "bu10xd"
+          }
+        ],
+        "buggy_output_tests": [
+          {
+            "buggy_function": "skipEncodingAtEndOfString",
+            "messages": [
+              "It looks like your output (%s) doesn't match our expected output (%s).",
+              "It looks like the issue is with the last few characters of the string.",
+              "It doesn't seem like you're encoding a run if it occurs at the end of an input string."
+            ]
+          }
+        ],
+        "performance_tests": [
+          {
+          }
+        ]
+      },
+      {
+        "instructions": [
+          "You need to make sure that your code handles short strings correctly."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.encode",
+        "correctness_tests": [
+          {
+            "input": "bbb",
+            "expected_output": ["3xb", "bbb"]
+          },
+          {
+            "input": "aa",
+            "expected_output": "aa"
+          },
+          {
+            "input": "a",
+            "expected_output": "a"
+          },
+          {
+            "input": "",
+            "expected_output": ""
+          }
+        ],
+        "buggy_output_tests": [
+          {
+            "buggy_function": "ignoreStringLengthWhenEncoding",
+            "messages": [
+              "It looks like your output (%s) doesn't match our expected output (%s).",
+              "It looks like you're encoding the string, which is fine, but does this seem like an improvement?",
+              "For short strings, you're actually increasing the length of the encoded string. You don't need to encode strings with length <= 3."
+            ]
+          }
+        ],
+        "performance_tests": [
+          {
+          }
+        ]
+      },
+      {
+        "instructions": [
+          "Good work! But we need to make sure that the string can accurately be decoded. Think about whether the output of your function will correctly be decoded back to the original string.",
+          "This should allow us to decode your encoded string and get the same result as the input."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "sample.DecodeEncodedString",
+        "correctness_tests": [
+          {
+            "input": "5xb",
+            "expected_output": "5xb"
+          },
+          {
+            "input": "2aaaaaab7",
+            "expected_output": "2aaaaaab7"
+          }
+        ],
+        "buggy_output_tests": [
+          {
+            "buggy_function": "failToDemarcateBeginningOfEncodedChunk",
+            "messages": [
+              "It looks like your output (%s) doesn't match our expected output (%s).",
+              "So your function takes in something like \"2aaaaaab7\" and returns \"26xab7\". Does that seem like it'll decode properly?",
+              "Even though it'll make the encoded string longer, you might want to separate out numbers if they come before a run, otherwise it'll confuse the decoder."
+            ]
+          }
+        ],
+        "performance_tests": [
+          {
+            "input_data_atom": "o",
+            "transformation_function": "system.ExtendString",
+            "expected_performance": "linear",
+            "evaluation_function": "sample.encode"
+          }
+        ]
+      }
+    ],
+    "style_tests": [
+      {
+        "style_evaluation_function": "system.AllowOnlyOneFunction",
+        "expected_output": true,
+        "message": "You should only be writing code in an encode function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
+      }
+    ]
+  }
+}
