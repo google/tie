@@ -5,7 +5,6 @@
       {
         "instructions": [
           "Welcome to this programming exercise.",
-          "You will complete this exercise by editing the code in the sample.py file using your favorite editor. Every time you save the file, I will evaluate your code and let you know about next steps.",
           "Your first task is to implement the encode function. It takes a string as input and returns an encoding of the string where long runs of characters are replaced by <# characters>x<character. For example, \"abcccccd\" should be encoded as \"ab5xc\"."
         ],
         "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
