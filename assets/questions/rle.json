@@ -97,8 +97,8 @@
         "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
         "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
         "input_function": null,
-        "output_function": null,
-        "main_function": "DecodeEncodedString",
+        "output_function": "DecodeEncodedString",
+        "main_function": "sample.encode",
         "correctness_tests": [
           {
             "input": "5xb",
