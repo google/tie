@@ -1,6 +1,12 @@
 {
   "interview_question": {
     "title": "Run-Length Encoding",
+    "starter_code": {
+      "python": "def encode(word):\n\treturn \"\""
+    },
+    "auxiliary_code": {
+      "python": "def skipEncodingAtEndOfString(word):\tpass\n\n\ndef ignoreStringLengthWhenEncoding(word):\n\tpass\n\n\ndef failToDemarcateBeginningOfEncodedChunk(word):\n\tpass\n\n\ndef DecodeEncodedString(word):\n\tpass"
+    },
     "prompts": [
       {
         "instructions": [
@@ -11,7 +17,7 @@
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.encode",
+        "main_function": "encode",
         "correctness_test_data": [
           {
             "input": "abcccccd",
@@ -49,7 +55,7 @@
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.encode",
+        "main_function": "encode",
         "correctness_tests": [
           {
             "input": "bbb",
@@ -91,8 +97,8 @@
         "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
         "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
         "input_function": null,
-        "output_function": null,
-        "main_function": "sample.DecodeEncodedString",
+        "output_function": "DecodeEncodedString",
+        "main_function": "encode",
         "correctness_tests": [
           {
             "input": "5xb",
@@ -118,7 +124,7 @@
             "input_data_atom": "o",
             "transformation_function": "system.ExtendString",
             "expected_performance": "linear",
-            "evaluation_function": "sample.encode"
+            "evaluation_function": "encode"
           }
         ]
       }
