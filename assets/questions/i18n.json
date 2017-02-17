@@ -2,7 +2,9 @@
   "interview_question": {
     "title": "Internationalization (i18n)",
     "starter_code": "def abbreviate(word):\n\treturn \"\"\n\ndef are_all_unique(words):\n\treturn True",
-    "auxilliary_code": "def forgetLastLetter(word):\n\tresult = \"%s%d\" % (word[0], len(word) - 2) if len(word) > 2 else word\n\treturn result\n\ndef useFirstAndLastLetterAndLengthToAbbreviate(word):\n\tif word:\n\t\treturn \"%s%d%s\" % (word[0], len(word) - 2, word[len(word) - 1])\n\treturn \"\"\n\ndef CreateListOfUniqueStrings(atom, size):\n\tresult = []\n\tfor i in range(size):\n\t\tresult.append(atom * (i + 1))\n\treturn result",
+    "auxiliary_code": {
+      "python": "def skipEncodingAtEndOfString(word):\tpass\n\n\ndef ignoreStringLengthWhenEncoding(word):\n\tpass\n\n\ndef failToDemarcateBeginningOfEncodedChunk(word):\n\tpass\n\n\ndef DecodeEncodedString(word):\n\tpass"
+    },
     "prompts": [
       {
         "instructions": [
