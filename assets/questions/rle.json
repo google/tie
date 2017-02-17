@@ -1,7 +1,9 @@
 {
   "interview_question": {
     "title": "Run-Length Encoding",
-    "starter_code": "def encode(word):\n\t\treturn \"\"",
+    "starter_code": {
+      "python": "def encode(word):\n\treturn \"\""
+    },
     "auxiliary_code": {
       "python": "def skipEncodingAtEndOfString(word):\tpass\n\n\ndef ignoreStringLengthWhenEncoding(word):\n\tpass\n\n\ndef failToDemarcateBeginningOfEncodedChunk(word):\n\tpass\n\n\ndef DecodeEncodedString(word):\n\tpass"
     },
