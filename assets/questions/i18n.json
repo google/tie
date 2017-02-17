@@ -1,7 +1,9 @@
 {
   "interview_question": {
     "title": "Internationalization (i18n)",
-    "starter_code": "def abbreviate(word):\n\treturn \"\"\n\ndef are_all_unique(words):\n\treturn True",
+    "starter_code": {
+      "python": "def abbreviate(word):\n\t\treturn \"\"\n\ndef are_all_unique(words):\n\t\treturn True"
+    },
     "auxiliary_code": {
       "python": "def forgetLastLetter(word):\n\tresult = \"%s%d\" % (word[0], len(word) - 2) if len(word) > 2 else word\n\treturn result\n\ndef useFirstAndLastLetterAndLengthToAbbreviate(word):\n\tif word:\n\t\treturn \"%s%d%s\" % (word[0], len(word) - 2, word[len(word) - 1])\n\treturn \"\"\n\ndef CreateListOfUniqueStrings(atom, size):\n\tresult = []\n\tfor i in range(size):\n\t\tresult.append(atom * (i + 1))\n\treturn result"
     },
