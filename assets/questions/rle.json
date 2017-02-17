@@ -1,6 +1,8 @@
 {
   "interview_question": {
     "title": "Run-Length Encoding",
+    "starter_code": "def encode(word):\n\t\treturn \"\"",
+    "extra_code": "def skipEncodingAtEndOfString(word):\tpass\n\n\ndef ignoreStringLengthWhenEncoding(word):\n\tpass\n\n\ndef failToDemarcateBeginningOfEncodedChunk(word):\n\tpass\n\n\ndef DecodeEncodedString(word):\n\tpass"
     "prompts": [
       {
         "instructions": [
@@ -92,7 +94,7 @@
         "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.DecodeEncodedString",
+        "main_function": "DecodeEncodedString",
         "correctness_tests": [
           {
             "input": "5xb",
