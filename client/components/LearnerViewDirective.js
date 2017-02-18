@@ -65,6 +65,7 @@ tie.directive('learnerView', [function() {
           background: #ffffff;
           border: 1px solid #cccccc;
           color: #222222;
+          font-family: monospace;
           height: 400px;
           tab-size: 4;
           width: 100%;
