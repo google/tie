@@ -22,6 +22,12 @@ tie.factory('QuestionDataService', [
     // TODO(sll): This should read from a JSON file.
     var _DATA_DICT = {
       "title": "Internationalization (i18n)",
+      "starter_code": {
+        "python": "def abbreviate(word):\n\treturn \"\"\n\ndef are_all_unique(words):\n\treturn True"
+      },
+      "auxiliary_code": {
+        "python": "def forgetLastLetter(word):\n\tresult = \"%s%d\" % (word[0], len(word) - 2) if len(word) > 2 else word\n\treturn result\n\ndef useFirstAndLastLetterAndLengthToAbbreviate(word):\n\tif word:\n\t\treturn \"%s%d%s\" % (word[0], len(word) - 2, word[len(word) - 1])\n\treturn \"\"\n\ndef CreateListOfUniqueStrings(atom, size):\n\tresult = []\n\tfor i in range(size):\n\t\tresult.append(atom * (i + 1))\n\treturn result"
+      },
       "prompts": [{
         "instructions": [
           "Welcome to this programming exercise.",
@@ -31,16 +37,16 @@ tie.factory('QuestionDataService', [
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.abbreviate",
+        "main_function": "abbreviate",
         "correctness_tests": [{
           "input": "internationalization",
-          "output": "i18n"
+          "expected_output": "i18n"
         }, {
           "input": "monkey",
-          "output": "m4y"
+          "expected_output": "m4y"
         }, {
           "input": "friendship",
-          "output": "f8p"
+          "expected_output": "f8p"
         }],
         "buggy_output_tests": [{
           "buggy_function": "forgetLastLetter",
@@ -50,11 +56,11 @@ tie.factory('QuestionDataService', [
             "Make sure to add the last character of the string back on when you've abbreviated."
           ]
         }],
-        "performance_tests": [{}]
+        "performance_tests": [{}],
       }],
       "style_tests": [{
-        "style_evaluation_function": "system.AllowOnlyOneFunction",
-        "output": true,
+        "evaluation_function": "system.AllowOnlyOneFunction",
+        "expected_output": true,
         "message": "You should only be writing code in an abbreviate function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
       }]
     };

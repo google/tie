@@ -24,3 +24,6 @@ tie.constant('LANGUAGE_PYTHON', 'python');
 // Class name for pre-processing code. Answer submissions are then run using
 // SOLUTION_CLASS_NAME.function_name.
 tie.constant('WRAPPER_CLASS_NAME', 'StudentAnswer');
+
+// Name of the list in which correctness test results are stored.
+tie.constant('VARNAME_TEST_RESULTS', 'test_results');

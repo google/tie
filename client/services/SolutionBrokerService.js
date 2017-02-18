@@ -18,20 +18,38 @@
  */
 
 tie.factory('SolutionBrokerService', [
-  'CodeRunnerDispatcherService', 'FeedbackGeneratorService',
-  'TranscriptService',
+  '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
+  'FeedbackGeneratorService', 'TranscriptService',
   function(
-      CodeRunnerDispatcherService, FeedbackGeneratorService,
-      TranscriptService) {
+      $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
+      FeedbackGeneratorService, TranscriptService) {
     return {
-      // Returns a promise.
-      processSolutionAsync: function(question, code, language) {
+      // Returns a promise with the feedback to show to the student.
+      processSolutionAsync: function(prompt, code, language) {
         TranscriptService.recordSolution(code);
+        // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, code
-        ).then(function(codeEvalResult) {
-          var feedback = FeedbackGeneratorService.getFeedback(
-            question, codeEvalResult);
+        ).then(function(rawCodeEvalResult) {
+          var potentialSyntaxErrorMessage = rawCodeEvalResult.getErrorMessage();
+          if (potentialSyntaxErrorMessage) {
+            return $q.resolve(potentialSyntaxErrorMessage);
+          }
+
+          // Otherwise, the code doesn't have any obvious syntax errors.
+          // Preprocess the student's code into a class, append the test code,
+          // and run the whole thing.
+          var preprocessedCode =
+            CodePreprocessorDispatcherService.preprocessCode(
+              language, code, prompt.getMainFunctionName(),
+              prompt.getCorrectnessTests());
+
+          return CodeRunnerDispatcherService.runCodeAsync(
+            language, preprocessedCode
+          ).then(function(codeEvalResult) {
+            return FeedbackGeneratorService.getFeedback(prompt, codeEvalResult);
+          });
+        }).then(function(feedback) {
           TranscriptService.recordFeedback(feedback);
           return feedback;
         });

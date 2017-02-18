@@ -55,7 +55,7 @@ tie.factory('PromptObjectFactory', [
       return this._instructions;
     };
 
-    Prompt.prototype.getMainFunction = function() {
+    Prompt.prototype.getMainFunctionName = function() {
       return this._mainFunction;
     };
 
