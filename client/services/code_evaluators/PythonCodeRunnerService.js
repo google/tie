@@ -17,7 +17,8 @@
  */
 
 tie.factory('PythonCodeRunnerService', [
-  'CodeEvalResultObjectFactory', function(CodeEvalResultObjectFactory) {
+  'CodeEvalResultObjectFactory', 'VARNAME_TEST_RESULTS',
+  function(CodeEvalResultObjectFactory, VARNAME_TEST_RESULTS) {
     var outputLines = [];
 
     var clearOutput = function() {
@@ -38,12 +39,21 @@ tie.factory('PythonCodeRunnerService', [
         return Sk.misceval.asyncToPromise(function() {
           return Sk.importMainWithBody('<stdin>', false, code, true);
         }).then(function() {
+          var resultList = [];
+          if (Sk.globals.hasOwnProperty(VARNAME_TEST_RESULTS)) {
+            // This retrieves the value of the Skulpt's representation of the
+            // global Python 'test results' variable (which Skulpt stores in
+            // Sk.globals), and maps it to a JS value so that it can be
+            // compared against the "correct output" specification.
+            resultList = Sk.ffi.remapToJs(Sk.globals[VARNAME_TEST_RESULTS]);
+          }
+
           // The run was successful.
           return CodeEvalResultObjectFactory.create(
-            code, outputLines.join('\n'), null);
+            code, outputLines.join('\n'), resultList, null);
         }, function(error) {
           return CodeEvalResultObjectFactory.create(
-            code, '', error);
+            code, '', [], error);
         });
       }
     };

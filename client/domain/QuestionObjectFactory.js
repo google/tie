@@ -22,6 +22,8 @@ tie.factory('QuestionObjectFactory', [
   function(PromptObjectFactory, StyleTestObjectFactory) {
     var Question = function(questionDict) {
       this._title = questionDict.title;
+      this._starterCode = questionDict.starter_code;
+      this._auxiliaryCode = questionDict.auxiliary_code;
       this._prompts = questionDict.prompts.map(function(promptDict) {
         return PromptObjectFactory.create(promptDict);
       });
@@ -33,6 +35,20 @@ tie.factory('QuestionObjectFactory', [
     // Instance methods.
     Question.prototype.getTitle = function() {
       return this._title;
+    };
+
+    Question.prototype.getStarterCode = function(language) {
+      if (!this._starterCode.hasOwnProperty(language)) {
+        throw Error('No starter code exists for language: ' + language);
+      }
+      return this._starterCode[language];
+    };
+
+    Question.prototype.getAuxiliaryCode = function(language) {
+      if (!this._auxiliaryCode.hasOwnProperty(language)) {
+        throw Error('No auxiliary code exists for language: ' + language);
+      }
+      return this._auxiliaryCode[language];
     };
 
     Question.prototype.getPrompts = function() {

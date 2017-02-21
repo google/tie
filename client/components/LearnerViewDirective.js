@@ -32,7 +32,7 @@ tie.directive('learnerView', [function() {
       </div>
 
       <div class="tie-learner-view-right-column">
-        <textarea class="tie-coding-window" ng-model="code"></textarea>
+        <textarea class="tie-coding-textarea" ng-model="code"></textarea>
 
         <button type="button" class="tie-button-submit-code" ng-click="submitCode(code)">
           Run
@@ -61,11 +61,13 @@ tie.directive('learnerView', [function() {
           font-size: 0.85em;
         }
 
-        .tie-coding-window {
+        .tie-coding-textarea {
           background: #ffffff;
           border: 1px solid #cccccc;
           color: #222222;
+          font-family: monospace;
           height: 400px;
+          tab-size: 4;
           width: 100%;
         }
 
@@ -95,16 +97,18 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', 'SolutionBrokerService', 'QuestionDataService',
+      '$scope', 'SolutionHandlerService', 'QuestionDataService',
       'LANGUAGE_PYTHON',
       function(
-          $scope, SolutionBrokerService, QuestionDataService,
+          $scope, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON) {
+        var language = LANGUAGE_PYTHON;
         var question = QuestionDataService.getData();
         var prompts = question.getPrompts();
 
         var currentPrompt = prompts[0];
         $scope.title = question.getTitle();
+        $scope.code = question.getStarterCode(language);
         $scope.instructions = currentPrompt.getInstructions();
         $scope.feedback = '';
 
@@ -116,8 +120,8 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          SolutionBrokerService
-            .processSolutionAsync(question, code, LANGUAGE_PYTHON)
+          SolutionHandlerService
+            .processSolutionAsync(currentPrompt, code, language)
             .then(setFeedback);
         };
       }
