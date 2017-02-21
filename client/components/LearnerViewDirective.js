@@ -97,10 +97,10 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', 'SolutionBrokerService', 'QuestionDataService',
+      '$scope', 'SolutionHandlerService', 'QuestionDataService',
       'LANGUAGE_PYTHON',
       function(
-          $scope, SolutionBrokerService, QuestionDataService,
+          $scope, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON) {
         var language = LANGUAGE_PYTHON;
         var question = QuestionDataService.getData();
@@ -120,7 +120,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          SolutionBrokerService
+          SolutionHandlerService
             .processSolutionAsync(currentPrompt, code, language)
             .then(setFeedback);
         };

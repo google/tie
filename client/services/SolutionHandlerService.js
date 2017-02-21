@@ -17,7 +17,7 @@
  * submission.
  */
 
-tie.factory('SolutionBrokerService', [
+tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'TranscriptService',
   function(
