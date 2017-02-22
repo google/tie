@@ -45,7 +45,9 @@ tie.directive('learnerView', [function() {
       </div>
 
       <div class="tie-learner-view-right-column">
-        <textarea class="tie-coding-textarea" ng-model="code"></textarea>
+        <div class="tie-coding-window">
+          <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code"></ui-codemirror>
+        </div>
 
         <button type="button" class="tie-action-button"
                 ng-class="{'active': !nextButtonIsShown}"
@@ -81,13 +83,9 @@ tie.directive('learnerView', [function() {
           opacity: 0.5;
         }
 
-        .tie-coding-textarea {
-          background: #ffffff;
-          border: 1px solid #cccccc;
-          color: #222222;
-          font-family: monospace;
-          height: 400px;
-          tab-size: 4;
+        .tie-coding-window {
+          border: 1px solid #888;
+          height: 300px;
           width: 100%;
         }
 
@@ -135,8 +133,6 @@ tie.directive('learnerView', [function() {
         var prompts = question.getPrompts();
         var currentPromptIndex = 0;
 
-        $scope.questionIsCompleted = false;
-
         var clearFeedback = function() {
           $scope.feedbackMessages = [];
         };
@@ -149,6 +145,14 @@ tie.directive('learnerView', [function() {
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
+        };
+
+        $scope.codeMirrorOptions = {
+          autofocus: true,
+          lineNumbers: true,
+          mode: LANGUAGE_PYTHON,
+          smartIndent: false,
+          tabSize: 4
         };
 
         $scope.showNextPrompt = function() {

@@ -16,7 +16,7 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-var tie = angular.module('tie', []);
+var tie = angular.module('tie', ['ui.codemirror']);
 
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
