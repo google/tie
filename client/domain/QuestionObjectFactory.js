@@ -22,12 +22,12 @@ tie.factory('QuestionObjectFactory', [
   function(PromptObjectFactory, StyleTestObjectFactory) {
     var Question = function(questionDict) {
       this._title = questionDict.title;
-      this._starterCode = questionDict.starter_code;
-      this._auxiliaryCode = questionDict.auxiliary_code;
+      this._starterCode = questionDict.starterCode;
+      this._auxiliaryCode = questionDict.auxiliaryCode;
       this._prompts = questionDict.prompts.map(function(promptDict) {
         return PromptObjectFactory.create(promptDict);
       });
-      this._styleTests = questionDict.style_tests.map(function(styleTestDict) {
+      this._styleTests = questionDict.styleTests.map(function(styleTestDict) {
         return StyleTestObjectFactory.create(styleTestDict);
       });
     };
