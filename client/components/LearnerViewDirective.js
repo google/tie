@@ -24,9 +24,9 @@ tie.directive('learnerView', [function() {
       <h3>Exercise: {{title}}</h3>
 
       <div class="tie-learner-view-left-column">
-        <div class="tie-old-instructions">
-          <div ng-repeat="oldInstruction in oldInstructions track by $index">
-            <p ng-repeat="paragraph in oldInstruction track by $index">
+        <div class="tie-previous-instructions">
+          <div ng-repeat="previousInstruction in previousInstructions track by $index">
+            <p ng-repeat="paragraph in previousInstruction track by $index">
               {{paragraph}}
             </p>
             <hr>
@@ -73,11 +73,11 @@ tie.directive('learnerView', [function() {
           width: 600px;
         }
 
-        .tie-instructions, .tie-old-instructions {
+        .tie-instructions, .tie-previous-instructions {
           font-family: 'noto sans', Arial, Sans-Serif;
           font-size: 0.85em;
         }
-        .tie-old-instructions {
+        .tie-previous-instructions {
           opacity: 0.5;
         }
 
@@ -157,7 +157,7 @@ tie.directive('learnerView', [function() {
             alert('PLACEHOLDER: This should load the next question.');
           } else {
             currentPromptIndex++;
-            $scope.oldInstructions.push($scope.instructions);
+            $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = prompts[currentPromptIndex].getInstructions();
             $scope.nextButtonIsShown = false;
             clearFeedback();
@@ -174,7 +174,7 @@ tie.directive('learnerView', [function() {
         $scope.title = question.getTitle();
         $scope.code = question.getStarterCode(language);
         $scope.instructions = prompts[currentPromptIndex].getInstructions();
-        $scope.oldInstructions = [];
+        $scope.previousInstructions = [];
         $scope.nextButtonIsShown = false;
       }
     ]
