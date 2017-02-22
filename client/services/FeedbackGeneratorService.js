@@ -19,7 +19,7 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  function() {
+  'FeedbackObjectFactory', function(FeedbackObjectFactory) {
     // TODO(sll): Add escaping?
     var jsToHumanReadable = function(jsVariable) {
       if (typeof jsVariable === 'string') {
@@ -30,8 +30,9 @@ tie.factory('FeedbackGeneratorService', [
     return {
       getFeedback: function(prompt, codeEvalResult) {
         if (codeEvalResult.getErrorMessage()) {
-          return (
-            'Your code threw an error: ' + codeEvalResult.getErrorMessage());
+          return FeedbackObjectFactory.create([
+            'Your code threw an error: ' + codeEvalResult.getErrorMessage()
+          ], false);
         } else {
           var correctnessTests = prompt.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getTestResults();
@@ -40,7 +41,7 @@ tie.factory('FeedbackGeneratorService', [
             var observedOutput = observedOutputs[i];
 
             if (expectedOutput !== observedOutput) {
-              return [
+              return FeedbackObjectFactory.create([
                 'Your code gave the output ',
                 jsToHumanReadable(observedOutput),
                 ' for the input ',
@@ -48,14 +49,17 @@ tie.factory('FeedbackGeneratorService', [
                 ' ... but this does not match the expected output ',
                 jsToHumanReadable(expectedOutput),
                 '.'
-              ].join('');
+              ].join(''), false);
             }
           }
-          return [
-            'Congratulations -- your code looks correct! ',
-            'It passes all our test cases.'
-          ].join('');
+          return FeedbackObjectFactory.create([
+            'Congratulations, you\'ve finished this question! Click the ',
+            '"Next" button to move on to the next question.',
+          ].join(''), true);
         }
+      },
+      getSyntaxErrorFeedback: function(errorMessage) {
+        return FeedbackObjectFactory.create(errorMessage, false);
       }
     };
   }

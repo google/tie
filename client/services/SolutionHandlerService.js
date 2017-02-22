@@ -24,7 +24,7 @@ tie.factory('SolutionHandlerService', [
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, TranscriptService) {
     return {
-      // Returns a promise with the feedback to show to the student.
+      // Returns a promise with a Feedback object.
       processSolutionAsync: function(prompt, code, language) {
         TranscriptService.recordSolution(code);
         // Do an initial run of the code to check for syntax errors.
@@ -33,7 +33,9 @@ tie.factory('SolutionHandlerService', [
         ).then(function(rawCodeEvalResult) {
           var potentialSyntaxErrorMessage = rawCodeEvalResult.getErrorMessage();
           if (potentialSyntaxErrorMessage) {
-            return $q.resolve(potentialSyntaxErrorMessage);
+            var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+              potentialSyntaxErrorMessage);
+            return $q.resolve(feedback);
           }
 
           // Otherwise, the code doesn't have any obvious syntax errors.
