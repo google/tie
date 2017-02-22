@@ -51,6 +51,10 @@ tie.factory('QuestionObjectFactory', [
       return this._auxiliaryCode[language];
     };
 
+    Question.prototype.isLastPrompt = function(promptIndex) {
+      return promptIndex === this._prompts.length - 1;
+    };
+
     Question.prototype.getPrompts = function() {
       return this._prompts;
     };

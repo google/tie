@@ -24,24 +24,41 @@ tie.directive('learnerView', [function() {
       <h3>Exercise: {{title}}</h3>
 
       <div class="tie-learner-view-left-column">
+        <div class="tie-old-instructions">
+          <div ng-repeat="oldInstruction in oldInstructions track by $index">
+            <p ng-repeat="paragraph in oldInstruction track by $index">
+              {{paragraph}}
+            </p>
+            <hr>
+          </div>
+        </div>
         <div class="tie-instructions">
-          <p ng-repeat="instruction in instructions">
-            {{instruction}}
+          <p ng-repeat="paragraph in instructions">
+            {{paragraph}}
           </p>
         </div>
+
+        <button ng-if="nextButtonIsShown" class="tie-action-button active"
+                ng-click="showNextPrompt()">
+          Next
+        </button>
       </div>
 
       <div class="tie-learner-view-right-column">
         <textarea class="tie-coding-textarea" ng-model="code"></textarea>
 
-        <button type="button" class="tie-button-submit-code" ng-click="submitCode(code)">
+        <button type="button" class="tie-action-button"
+                ng-class="{'active': !nextButtonIsShown}"
+                ng-click="submitCode(code)"
+                ng-disabled="nextButtonIsShown">
           Run
         </button>
 
-        <div class="tie-output">
-          <div class="tie-output-text">
-            {{feedback}}
-          </div>
+        <div class="tie-feedback">
+          <p ng-repeat="paragraph in feedbackMessages track by $index"
+             class="tie-feedback-paragraph">
+            {{paragraph}}
+          </p>
         </div>
       </div>
 
@@ -56,9 +73,12 @@ tie.directive('learnerView', [function() {
           width: 600px;
         }
 
-        .tie-instructions {
+        .tie-instructions, .tie-old-instructions {
           font-family: 'noto sans', Arial, Sans-Serif;
           font-size: 0.85em;
+        }
+        .tie-old-instructions {
+          opacity: 0.5;
         }
 
         .tie-coding-textarea {
@@ -71,8 +91,8 @@ tie.directive('learnerView', [function() {
           width: 100%;
         }
 
-        .tie-button-submit-code {
-          background: #4285f4;
+        .tie-action-button {
+          background: #888;
           border: 0;
           color: #ffffff;
           cursor: pointer;
@@ -81,18 +101,26 @@ tie.directive('learnerView', [function() {
           padding: 10px 24px;
           text-transform: uppercase;
         }
+        .tie-action-button.active {
+          background: #4285f4;
+          color: #ffffff;
+        }
 
-        .tie-output {
-          background: #000000;
-          color: #00ff4e;
+        .tie-feedback {
+          background: #ddd;
+          border: 1px solid black;
+          color: #000;
           display: inline-block;
-          font: 0.8em Consolas, 'Courier New';
+          font-family: 'noto sans', Arial, Sans-Serif;
+          font-size: 0.85em;
           height: 200px;
+          overflow: auto;
           width: 100%;
         }
 
-        .tie-output-text {
-          padding: 5px;
+        .tie-feedback-paragraph {
+          margin-top: 5px;
+          padding: 0 5px;
         }
       </style>
     `,
@@ -105,25 +133,49 @@ tie.directive('learnerView', [function() {
         var language = LANGUAGE_PYTHON;
         var question = QuestionDataService.getData();
         var prompts = question.getPrompts();
+        var currentPromptIndex = 0;
 
-        var currentPrompt = prompts[0];
-        $scope.title = question.getTitle();
-        $scope.code = question.getStarterCode(language);
-        $scope.instructions = currentPrompt.getInstructions();
-        $scope.feedback = '';
+        $scope.questionIsCompleted = false;
 
-        var setFeedback = function(feedback) {
-          $scope.feedback = feedback;
+        var clearFeedback = function() {
+          $scope.feedbackMessages = [];
+        };
+
+        var appendFeedback = function(feedback) {
+          $scope.feedbackMessages.push(feedback.getMessage());
+          if (feedback.isAnswerCorrect()) {
+            $scope.nextButtonIsShown = true;
+          }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
         };
 
+        $scope.showNextPrompt = function() {
+          if (question.isLastPrompt(currentPromptIndex)) {
+            // TODO(sll): This is a placeholder; fix it.
+            alert('PLACEHOLDER: This should load the next question.');
+          } else {
+            currentPromptIndex++;
+            $scope.oldInstructions.push($scope.instructions);
+            $scope.instructions = prompts[currentPromptIndex].getInstructions();
+            $scope.nextButtonIsShown = false;
+            clearFeedback();
+          }
+        };
+
         $scope.submitCode = function(code) {
           SolutionHandlerService
-            .processSolutionAsync(currentPrompt, code, language)
-            .then(setFeedback);
+            .processSolutionAsync(prompts[currentPromptIndex], code, language)
+            .then(appendFeedback);
         };
+
+        clearFeedback();
+        $scope.title = question.getTitle();
+        $scope.code = question.getStarterCode(language);
+        $scope.instructions = prompts[currentPromptIndex].getInstructions();
+        $scope.oldInstructions = [];
+        $scope.nextButtonIsShown = false;
       }
     ]
   };

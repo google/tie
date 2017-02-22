@@ -57,6 +57,45 @@ tie.factory('QuestionDataService', [
           ]
         }],
         "performance_tests": [{}],
+      }, {
+        "instructions": [
+          "Now, modify your code so that it does not abbreviate short strings when it's not necessary."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "abbreviate",
+        "correctness_tests": [{
+          "input": "internationalization",
+          "expected_output": "i18n"
+        }, {
+          "input": "cat",
+          "expected_output": "cat"
+        }, {
+          "input": "at",
+          "expected_output": "at"
+        }, {
+          "input": "a",
+          "expected_output": "a"
+        }, {
+          "input": "",
+          "expected_output": ""
+        }],
+        "buggy_output_tests": [{
+          "buggy_function": "useFirstAndLastLetterAndLengthToAbbreviate",
+          "messages": [
+            "It looks like your output (%s) doesn't match our expected output (%s).",
+            "It looks like you're using the string's length minus two in the middle, which is usually fine, but can you think of any issues that might present?",
+            "For short strings, you're actually ending up with a negative number in the middle. You don't need to abbreviate strings with length <= 3."
+          ]
+        }],
+        "performance_tests": [{
+          "input_data_atom": "m",
+          "transformation_function": "system.ExtendString",
+          "expected_performance": "constant",
+          "evaluation_function": "abbreviate"
+        }]
       }],
       "style_tests": [{
         "evaluation_function": "system.AllowOnlyOneFunction",

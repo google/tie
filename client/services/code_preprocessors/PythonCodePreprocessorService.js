@@ -71,8 +71,8 @@ tie.factory('PythonCodePreprocessorService', [
         WRAPPER_CLASS_NAME + '().' + mainFunctionName);
 
       var testCode = [
-        'def runTest(input):',
-        '    return ' + qualifiedMainFunctionName + '(input)',
+        'def run_test(test_input):',
+        '    return ' + qualifiedMainFunctionName + '(test_input)',
         '',
         VARNAME_TEST_RESULTS + ' = []'
       ].join('\n');
@@ -80,7 +80,7 @@ tie.factory('PythonCodePreprocessorService', [
       correctnessTests.forEach(function(test, index) {
         testCode += '\n' + [
           VARNAME_TEST_RESULTS + '.append(',
-          '    runTest(' + jsonVariableToPython(test.getInput()) + '))'
+          '    run_test(' + jsonVariableToPython(test.getInput()) + '))'
         ].join('\n');
       });
 
