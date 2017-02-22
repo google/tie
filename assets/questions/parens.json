@@ -2,7 +2,7 @@
   "interview_question": {
     "title": "Balanced Parentheses",
     "starter_code": {
-      "python": "def isBalanced(s):\n\treturn False
+      "python": "def isBalanced(s):\n\treturn False"
     },
     "auxiliary_code": {
       "python": "def CreateBalancedParenthesesString(atom, input_size):\n\treturn \"%s%s\" % (atom[0] * input_size, atom[1] * input_size) def countNumberOfParentheses(s):\n\tnumleft = 0\n\tnumright = 0\n\tfor char in s:\n\t\tif char == '(':\n\t\t\tnumleft += 1\n\t\telif char == ')':\n\t\t\tnumright += 1\n\t\treturn numleft == numright"
@@ -21,20 +21,20 @@
         "correctness_test_data": [
             {
               "input": "((()))",
-              "expected_output": True
+              "expected_output": true
             },
             {
               "input": "()()()()()()(()",
-              "expected_output": False
+              "expected_output": false
             },
             {
               "input": "))))))((((((",
-              "expected_output": False
+              "expected_output": false
             },
             {
               "input": "()()()()()()()())(",
-              "expected_output": False
-            },
+              "expected_output": false
+            }
         ],
         "buggy_output_tests": [
           {
@@ -64,16 +64,16 @@
         "correctness_tests": [
             {
               "input": "",
-              "expected_output": True
+              "expected_output": true
             },
             {
               "input": "xx",
-              "expected_output": False
+              "expected_output": false
             },
             {
               "input": "3",
-              "expected_output": False
-            },
+              "expected_output": false
+            }
         ],
         "buggy_output_tests": [
         ],
@@ -96,36 +96,36 @@
         "correctness_tests": [
           {
             "input": "[(){}]",
-            "expected_output": True
+            "expected_output": true
           },
           {
             "input": "(){}[]",
-            "expected_output": True
+            "expected_output": true
           },
           {
             "input": "{{[[(())]]}}",
-            "expected_output": True
+            "expected_output": true
           },
           {
             "input": "{}[{([{([{()}])}])}][]",
-            "expected_output": True
+            "expected_output": true
           },
           {
             "input": "([)]",
-            "expected_output": False
+            "expected_output": false
           },
           {
             "input": "{{[[([})]]}}",
-            "expected_output": False
+            "expected_output": false
           },
           {
             "input": "]{()}[",
-            "expected_output": False
+            "expected_output": false
           },
           {
             "input": "[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}",
-            "expected_output": False
-          },
+            "expected_output": false
+          }
         ],
         "buggy_output_tests": [
         ],
@@ -148,5 +148,3 @@
     ]
   }
 }
-
-
