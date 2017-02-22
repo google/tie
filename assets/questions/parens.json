@@ -1,0 +1,150 @@
+{
+  "interview_question": {
+    "title": "Balanced Parentheses",
+    "starter_code": {
+      "python": "def isBalanced(s):\n\treturn False"
+    },
+    "auxiliary_code": {
+      "python": "def CreateBalancedParenthesesString(atom, input_size):\n\treturn \"%s%s\" % (atom[0] * input_size, atom[1] * input_size) def countNumberOfParentheses(s):\n\tnumleft = 0\n\tnumright = 0\n\tfor char in s:\n\t\tif char == '(':\n\t\t\tnumleft += 1\n\t\telif char == ')':\n\t\t\tnumright += 1\n\t\treturn numleft == numright"
+    },
+    "prompts": [
+      {
+        "instructions": [
+          "Welcome to this programming exercise.",
+          "Your task is to implement the isBalanced function. It takes a string of parentheses as input and returns True if for every open parentheses there is a matching closing parentheses, and False otherwise. For example, (()) is balanced."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "isBalanced",
+        "correctness_test_data": [
+            {
+              "input": "((()))",
+              "expected_output": true
+            },
+            {
+              "input": "()()()()()()(()",
+              "expected_output": false
+            },
+            {
+              "input": "))))))((((((",
+              "expected_output": false
+            },
+            {
+              "input": "()()()()()()()())(",
+              "expected_output": false
+            }
+        ],
+        "buggy_output_tests": [
+          {
+            "buggy_function": "countNumberOfParentheses",
+            "messages": [
+              "It looks like you're returning True when you shouldn't.",
+              "Are you making sure the parentheses are properly balanced? () is balanced, but )( is not.",
+              "It looks like you're counting the number of parentheses, and if they're equal, returning true. That's not quite correct."
+            ]
+          }
+        ],
+        "performance_tests": [
+          {
+          }
+        ]
+      },
+      {
+        "instructions": [
+          "Now, make sure your code handles unexpected cases, such as the empty string.",
+          "We will guarantee that you will always be passed a string, so don't worry about that."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "isBalanced",
+        "correctness_tests": [
+            {
+              "input": "",
+              "expected_output": true
+            },
+            {
+              "input": "xx",
+              "expected_output": false
+            },
+            {
+              "input": "3",
+              "expected_output": false
+            }
+        ],
+        "buggy_output_tests": [
+        ],
+        "performance_tests": [
+          {
+          }
+        ]
+      },
+      {
+        "instructions": [
+          "Let's make this more challenging.",
+          "Now, you can have any types of braces, but they must be balanced against each other.",
+          "For instance, [(){}] is balanced, but ([)] is not."
+        ],
+        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+        "acquired_skills": ["String Manipulation"],
+        "input_function": null,
+        "output_function": null,
+        "main_function": "isBalanced",
+        "correctness_tests": [
+          {
+            "input": "[(){}]",
+            "expected_output": true
+          },
+          {
+            "input": "(){}[]",
+            "expected_output": true
+          },
+          {
+            "input": "{{[[(())]]}}",
+            "expected_output": true
+          },
+          {
+            "input": "{}[{([{([{()}])}])}][]",
+            "expected_output": true
+          },
+          {
+            "input": "([)]",
+            "expected_output": false
+          },
+          {
+            "input": "{{[[([})]]}}",
+            "expected_output": false
+          },
+          {
+            "input": "]{()}[",
+            "expected_output": false
+          },
+          {
+            "input": "[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}",
+            "expected_output": false
+          }
+        ],
+        "buggy_output_tests": [
+        ],
+        "performance_tests": [
+          {
+            "input_data_atom": "()",
+            "transformation_function": "CreateBalancedParenthesesString",
+            "expected_performance": "linear",
+            "evaluation_function": "isBalanced"
+          }
+        ]
+      }
+    ],
+    "style_tests": [
+      {
+        "style_evaluation_function": "system.AllowOnlyOneFunction",
+        "expected_output": true,
+        "message": "You should only be writing code in an isBalanced function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
+      }
+    ]
+  }
+}
