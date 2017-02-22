@@ -163,7 +163,7 @@ def createListOfUniqueStrings(atom, size):
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'system.AllowOnlyOneFunction',
+    evaluationFunction: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       "You should only be writing code in an abbreviate function. While ",
