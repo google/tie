@@ -17,7 +17,7 @@
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.isBalanced",
+        "main_function": "isBalanced",
         "correctness_test_data": [
             {
               "input": "((()))",
@@ -60,7 +60,7 @@
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.isBalanced",
+        "main_function": "isBalanced",
         "correctness_tests": [
             {
               "input": "",
@@ -92,7 +92,7 @@
         "acquired_skills": ["String Manipulation"],
         "input_function": null,
         "output_function": null,
-        "main_function": "sample.isBalanced",
+        "main_function": "isBalanced",
         "correctness_tests": [
           {
             "input": "[(){}]",
@@ -134,7 +134,7 @@
             "input_data_atom": "()",
             "transformation_function": "CreateBalancedParenthesesString",
             "expected_performance": "linear",
-            "evaluation_function": "sample.isBalanced"
+            "evaluation_function": "isBalanced"
           }
         ]
       }
@@ -143,7 +143,7 @@
       {
         "style_evaluation_function": "system.AllowOnlyOneFunction",
         "expected_output": true,
-        "message": "You should only be writing code in an encode function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
+        "message": "You should only be writing code in an isBalanced function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
       }
     ]
   }
