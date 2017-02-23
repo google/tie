@@ -84,7 +84,7 @@ def createListOfUniqueStrings(atom, size):
         ].join('')
       ]
     }],
-    performanceTests: [{}]
+    performanceTests: []
   }, {
     instructions: [
       [
