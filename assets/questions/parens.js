@@ -153,7 +153,7 @@ def countNumberOfParentheses(s):
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: '()',
-      transformationFunction: 'createBalancedParenthesesString',
+      transformationFunction: 'extendString',
       expectedPerformance: 'linear',
       evaluationFunction: 'isBalanced'
     }]
