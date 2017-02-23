@@ -64,7 +64,7 @@ if [ ! -d "$NODE_DIR" ]; then
     mkdir tools
   fi
 
-  curl -o node-download.tgz http://nodejs.org/dist/v6.9.1/$NODE_FILE_NAME.tar.gz
+  curl -o node-download.tgz https://nodejs.org/dist/v6.9.1/$NODE_FILE_NAME.tar.gz
   tar xzf node-download.tgz --directory $TOOLS_DIR
   mv $TOOLS_DIR/$NODE_FILE_NAME $NODE_DIR
   rm node-download.tgz
@@ -74,10 +74,10 @@ fi
 NPM_INSTALLED_MODULES="$(npm list)"
 
 # Install the following node modules if they aren't already installed.
+install_node_module jasmine-core 2.5.2
 install_node_module karma 1.4.1
 install_node_module karma-jasmine 1.1.0
 install_node_module karma-chrome-launcher 2.0.0
-install_node_module jasmine-core 2.5.2
 
 # Run Karma.
 ./node_modules/karma/bin/karma start
