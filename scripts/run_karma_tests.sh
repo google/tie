@@ -68,10 +68,6 @@ if [ ! -d "$NODE_DIR" ]; then
   tar xzf node-download.tgz --directory $TOOLS_DIR
   mv $TOOLS_DIR/$NODE_FILE_NAME $NODE_DIR
   rm node-download.tgz
-
-  # Change ownership of $NODE_MODULE_DIR.
-  # chown -R $ME $NODE_MODULE_DIR
-  # chmod -R 744 $NODE_MODULE_DIR
 fi
 
 # Generate a list of already-installed modules.
