@@ -21,10 +21,10 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div id="exercise-ui-outer">
-        <div id="exercise-ui-inner">
-          <div id="question-ui">
-            <div id="question-window">
+      <div id="tie-exercise-ui-outer" class="tie-exercise-ui-outer">
+        <div id="tie-exercise-ui-inner" class="tie-exercise-ui-inner">
+          <div id="tie-question-ui" class="tie-question-ui">
+            <div id="tie-question-window" class="tie-question-window">
               <h3>{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -41,11 +41,11 @@ tie.directive('learnerView', [function() {
               </div>
             </div>
             <button ng-click="showNextPrompt()" ng-if="nextButtonIsShown"
-                id="next-button">Next</button>
+                id="tie-next-button" class="tie-next-button">Next</button>
             </button>
           </div>
-          <div id="coding-ui">
-            <div id="feedback-window">
+          <div id="tie-coding-ui" class="tie-coding-ui">
+            <div id="tie-feedback-window" class="tie-feedback-window">
               <div id="tie-feedback" class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackMessages track by $index"
                     class="tie-feedback-paragraph">
@@ -53,20 +53,18 @@ tie.directive('learnerView', [function() {
                 </p>
               </div>
             </div>
-            <div id="coding-window">
-              <div id="lang-terminal">
-                <!--textarea name="textarea" id="coding-terminal"
-                    class="terminal">
-                </textarea-->
-                <div id="coding-terminal" class="terminal">
-                  <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code" class="codemirror-container"></ui-codemirror>
+            <div id="tie-coding-window" class="tie-coding-window">
+              <div id="tie-lang-terminal" class="tie-lang-terminal">
+                <div id="tie-coding-terminal" class="tie-coding-terminal">
+                  <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code" class="tie-codemirror-container"></ui-codemirror>
                 </div>
-                <select id="lang-select-menu" name="lang-select-menu">
+                <select id="tie-lang-select-menu" class="tie-lang-select-menu"
+                    name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                   <option value="JavaScript">JavaScript</option>
                 </select>
-                <button id="run-button" class="run-button"
-                    ng-class="{'active': !nextButtonIsShown}"
+                <button id="tie-run-button" class="tie-run-button"
+                    ng-class="tie-{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
                     ng-disabled="nextButtonIsShown">
                   Run
@@ -82,90 +80,54 @@ tie.directive('learnerView', [function() {
           font-size: 15px;
           background-color: rgb(242, 242, 242);
         }
-        #exercise-ui-outer {
-          margin-left: auto;
-          margin-right: auto;
-          margin-top: 32px;
-          display: table;
+        .tie-coding-terminal .CodeMirror {
+          /* Overwriting codemirror defaults */
+          height: 100%;
         }
-        #exercise-ui-inner {
-          padding-left: 32px;
-          padding-right: 32px;
+        .tie-codemirror-container {
+          width: 100%;
         }
-        #lang-terminal {
-          display: inline;
+        .tie-coding-terminal {
+          display: flex;
+          font-size: 13px;
+          height: 368px;
+          margin-top: 10px;
+          width: 662px;
         }
-        #question-ui, #coding-ui {
+        .tie-coding-window {
+          display: inherit;
+        }
+        .tie-coding-terminal, .tie-question-window {
+          background-color: rgb(255, 255, 255);
+          border-color: rgb(222, 222, 222);
+          border-radius: 3px;
+          border-style: solid;
+          border-width: 1px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-coding-terminal:focus, .tie-lang-select-menu:focus, .tie-run-button:focus {
+          outline: 0;
+        }
+        .tie-coding-ui, .tie-question-ui {
           display: inline-block;
           margin: 8px;
         }
-        #question-ui {
-          vertical-align: top;
+        .tie-exercise-ui-inner {
+          padding-left: 32px;
+          padding-right: 32px;
         }
-        #lang-select-menu {
-          float: left;
-          margin-top: 10px;
+        .tie-exercise-ui-outer {
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 32px;
         }
-        #question-window, #coding-terminal {
-          background-color: rgb(255, 255, 255);
-          border-style: solid;
-          border-width: 1px;
-          border-radius: 3px;
-          border-color: rgb(222, 222, 222);
-          -webkit-font-smoothing: antialiased;
-        }
-        #question-window {
-          font-size: 14px;
-          height: 508px;
-          overflow: auto;
-          padding: 10px;
-          resize: both;
-          width: 548px;
-        }
-        #coding-window {
-          display: inherit;
-        }
-        #coding-terminal {
-          display: flex;
-          width: 662px;
-          height: 368px;
-          font-size: 13px;
-          margin-top: 10px;
-        }
-        #run-button {
-          position: relative;
-          margin-top: 10px;
-          width: 100px;
-          float: right;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 12px;
-          cursor: pointer;
-          height: 24px;
-          border-radius: 4px;
-          border-style: none;
-          background-color: rgb(66, 133, 244);
-          color: white;
-        }
-        #next-button {
-          position: relative;
-          margin-top: 10px;
-          width: 100px;
-          float: right;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 12px;
-          cursor: pointer;
-          height: 24px;
-          border-radius: 4px;
-          border-style: none;
-          background-color: rgb(32, 142, 64);
-          color: white;
-        }
-        #feedback-window {
+        .tie-feedback-window {
           background-color: rgb(255, 255, 242);
+          border-color: rgb(222, 222, 222);
+          border-radius: 3px;
           border-style: solid;
           border-width: 1px;
-          border-radius: 3px;
-          border-color: rgb(222, 222, 222);
           font-size: 14px;
           height: 128px;
           overflow: auto;
@@ -174,19 +136,59 @@ tie.directive('learnerView', [function() {
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
-        #lang-select-menu:focus, #coding-terminal:focus, .run-button:focus {
-          outline: 0;
+        .tie-lang-select-menu {
+          float: left;
+          margin-top: 10px;
         }
-        .run-button:active {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-          background-color: rgb(56, 123, 244);
-          border: 1px solid rgb(42, 112, 232);
+        .tie-lang-terminal {
+          display: inline;
         }
-        .codemirror-container {
-          width: 100%;
+        .tie-next-button {
+          background-color: rgb(32, 142, 64);
+          border-radius: 4px;
+          border-style: none;
+          color: white;
+          cursor: pointer;
+          float: right;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          margin-top: 10px;
+          position: relative;
+          width: 100px;
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-question-ui {
+          vertical-align: top;
+        }
+        .tie-question-window {
+          font-size: 14px;
+          height: 508px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 548px;
+        }
+        .tie-run-button {
+          background-color: rgb(66, 133, 244);
+          border-radius: 4px;
+          border-style: none;
+          color: white;
+          cursor: pointer;
+          float: right;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          margin-top: 10px;
+          position: relative;
+          width: 100px;
+        }
+        .tie-run-button:active {
+          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
+          background-color: rgb(56, 123, 244);
+          border: 1px solid rgb(42, 112, 232);
         }
       </style>
     `,
@@ -200,8 +202,8 @@ tie.directive('learnerView', [function() {
         var question = QuestionDataService.getData();
         var prompts = question.getPrompts();
         var currentPromptIndex = 0;
-        var feedback_div = document.getElementById('tie-feedback');
-        var tie_instructions_div = document.getElementById('tie-instructions');
+        var feedbackDiv = document.getElementById('tie-feedback');
+        var tieInstructionsDiv = document.getElementById('tie-instructions');
 
         var clearFeedback = function() {
           $scope.feedbackMessages = [];
@@ -215,7 +217,7 @@ tie.directive('learnerView', [function() {
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
-          feedback_div.lastElementChild.scrollIntoView();
+          feedbackDiv.lastElementChild.scrollIntoView();
         };
 
         $scope.codeMirrorOptions = {
@@ -239,7 +241,7 @@ tie.directive('learnerView', [function() {
             // than using a timeout?
             window.setTimeout(
                 function() {
-                  tie_instructions_div.lastElementChild.scrollIntoView();
+                  tieInstructionsDiv.lastElementChild.scrollIntoView();
                 }, 0);
             clearFeedback();
           }
