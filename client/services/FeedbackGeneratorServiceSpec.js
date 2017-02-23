@@ -33,8 +33,9 @@ describe('FeedbackGeneratorService', function() {
         'some code', 'some output', [], 'ERROR MESSAGE');
 
       expect(
-        FeedbackGeneratorService.getFeedback(questionMock, codeEvalResult)
-      ).toBe('Your code threw an error: ERROR MESSAGE');
+        FeedbackGeneratorService.getFeedback(
+          questionMock, codeEvalResult).getMessage()
+      ).toEqual(['Your code threw an error: ERROR MESSAGE']);
     });
   })
 });
