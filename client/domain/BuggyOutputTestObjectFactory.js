@@ -20,7 +20,7 @@
 tie.factory('BuggyOutputTestObjectFactory', [
   function() {
     var BuggyOutputTest = function(buggyOutputTestDict) {
-      this._buggyFunction = buggyOutputTestDict.buggy_function;
+      this._buggyFunction = buggyOutputTestDict.buggyFunction;
       this._messages = buggyOutputTestDict.messages;
     };
 
