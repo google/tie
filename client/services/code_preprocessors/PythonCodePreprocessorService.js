@@ -22,32 +22,6 @@ tie.factory('PythonCodePreprocessorService', [
   function(WRAPPER_CLASS_NAME, VARNAME_TEST_RESULTS) {
     var START_INDENT = '    ';
 
-    // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
-    // given code snippet.
-    var wrapCodeIntoClass = function(code) {
-      var codeLines = code.trim().split('\n');
-
-      var firstLine = 'class ' + WRAPPER_CLASS_NAME + '(object):';
-      var subsequentLines = codeLines.map(function(line) {
-        if (line.indexOf('def') === 0) {
-          var leftParenIndex = line.indexOf('(');
-          if (leftParenIndex === -1) {
-            throw Error('Incomplete line: missing "(" in def statement.');
-          }
-          return (
-            START_INDENT +
-            line.slice(0, leftParenIndex + 1) +
-            'self, ' +
-            line.slice(leftParenIndex + 1));
-        } else {
-          return START_INDENT + line;
-        }
-      });
-
-      var newCodeLines = [firstLine].concat(subsequentLines);
-      return newCodeLines.join('\n');
-    };
-
     var jsonVariableToPython = function(jsonVariable) {
       // Converts a JSON variable to a Python variable.
       if (typeof jsonVariable === 'string') {
@@ -88,9 +62,34 @@ tie.factory('PythonCodePreprocessorService', [
     }
 
     return {
+      // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
+      // given code snippet.
+      _wrapCodeIntoClass: function(code) {
+        var codeLines = code.trim().split('\n');
+
+        var firstLine = 'class ' + WRAPPER_CLASS_NAME + '(object):';
+        var subsequentLines = codeLines.map(function(line) {
+          if (line.indexOf('def') === 0) {
+            var leftParenIndex = line.indexOf('(');
+            if (leftParenIndex === -1) {
+              throw Error('Incomplete line: missing "(" in def statement.');
+            }
+            return (
+              START_INDENT +
+              line.slice(0, leftParenIndex + 1) +
+              'self, ' +
+              line.slice(leftParenIndex + 1));
+          } else {
+            return START_INDENT + line;
+          }
+        });
+
+        var newCodeLines = [firstLine].concat(subsequentLines);
+        return newCodeLines.join('\n');
+      },
       preprocessCode: function(code, mainFunctionName, correctnessTests) {
         return (
-          wrapCodeIntoClass(code) + '\n' +
+          this._wrapCodeIntoClass(code) + '\n' +
           generateTestCode(mainFunctionName, correctnessTests));
       }
     };
