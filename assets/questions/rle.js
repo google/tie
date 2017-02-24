@@ -41,12 +41,11 @@ def DecodeEncodedString(word):
   },
   prompts: [{
     instructions: [
-      'Welcome to this programming exercise.',
       [
-        'Your first task is to implement the encode function. It takes a ',
-        'string as input and returns an encoding of the string where long ',
-        'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" should be encoded as "ab5xc".'
+        'Implement the encode function. It takes a string as input and ',
+        'returns an encoding of the string where long runs of characters are ',
+        'replaced by <# characters>x<character>. For example, "abcccccd" ',
+        'should be encoded as "ab5xc".'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],

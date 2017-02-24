@@ -42,12 +42,11 @@ def countNumberOfParentheses(s):
   },
   prompts: [{
     instructions: [
-      'Welcome to this programming exercise.',
       [
-        'Your task is to implement the isBalanced function. It takes a ',
-        'string of parentheses as input and returns True if for every open ',
-        'parentheses there is a matching closing parentheses, and False ',
-        'otherwise. For example, (()) is balanced.'
+        'Implement the isBalanced function. It takes a string of parentheses ',
+        'as input and returns True if for every open parentheses there is a ',
+        'matching closing parentheses, and False otherwise. For example, (()) ',
+        'is balanced.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
