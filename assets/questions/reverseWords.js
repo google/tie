@@ -41,12 +41,11 @@ globalQuestionData['reverseWords'] = {
   },
   prompts: [{
     instructions: [
-      'Welcome to this programming exercise.',
       [
-        'Your task is to implement the reverseWords function. This function ',
-        'takes a string of words separated by whitespace and reverses the ',
-        'non-whitespace characters in the words, but not their ordering, ',
-        'preserving the whitespace between them.'
+        'Implement the reverseWords function. This function takes a string of ',
+        'words separated by whitespace and reverses the non-whitespace ',
+        'characters in the words, but not their ordering, preserving the ',
+        'whitespace between them.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],

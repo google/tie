@@ -23,31 +23,10 @@ tie.directive('learnerView', [function() {
     template: `
       <div class="tie-exercise-ui-outer">
         <div class="tie-exercise-ui-inner">
-          <div class="tie-question-ui">
-            <div class="tie-question-window">
-              <h3>{{title}}</h3>
-              <div class="tie-previous-instructions">
-                <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                  <p ng-repeat="paragraph in previousInstruction track by $index">
-                    {{paragraph}}
-                  </p>
-                  <hr>
-                </div>
-              </div>
-              <div id="tie-instructions" class="tie-instructions">
-                <p ng-repeat="paragraph in instructions">
-                  {{paragraph}}
-                </p>
-              </div>
-            </div>
-            <button ng-click="showNextPrompt()" ng-if="nextButtonIsShown"
-                class="tie-next-button">Next</button>
-            </button>
-          </div>
           <div class="tie-coding-ui">
             <div class="tie-feedback-window">
               <div id="tie-feedback" class="tie-feedback">
-                <p ng-repeat="paragraph in feedbackMessages track by $index"
+                <p ng-repeat="paragraph in feedbackParagraphs track by $index"
                     class="tie-feedback-paragraph">
                   {{paragraph}}
                 </p>
@@ -70,6 +49,27 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
+          </div>
+          <div class="tie-question-ui">
+            <div class="tie-question-window">
+              <h3>Exercise {{exerciseNumber}}: {{title}}</h3>
+              <div class="tie-previous-instructions">
+                <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                  <p ng-repeat="paragraph in previousInstruction track by $index">
+                    {{paragraph}}
+                  </p>
+                  <hr>
+                </div>
+              </div>
+              <div id="tie-instructions" class="tie-instructions">
+                <p ng-repeat="paragraph in instructions">
+                  {{paragraph}}
+                </p>
+              </div>
+            </div>
+            <button ng-click="showNextPrompt()" ng-if="nextButtonIsShown"
+                class="tie-next-button">Next</button>
+            </button>
           </div>
         </div>
       </div>
@@ -205,11 +205,11 @@ tie.directive('learnerView', [function() {
         var instructionsDiv = document.getElementById('tie-instructions');
 
         var clearFeedback = function() {
-          $scope.feedbackMessages = [];
+          $scope.feedbackParagraphs = [];
         };
 
-        var appendFeedback = function(feedback) {
-          $scope.feedbackMessages.push(feedback.getMessage());
+        var setFeedback = function(feedback) {
+          $scope.feedbackParagraphs = [feedback.getMessage()];
           if (feedback.isAnswerCorrect()) {
             $scope.nextButtonIsShown = true;
           }
@@ -249,10 +249,22 @@ tie.directive('learnerView', [function() {
         $scope.submitCode = function(code) {
           SolutionHandlerService
             .processSolutionAsync(prompts[currentPromptIndex], code, language)
-            .then(appendFeedback);
+            .then(setFeedback);
         };
 
-        clearFeedback();
+        // TODO(sll): Find a way to declare this declaratively, from a data
+        // file.
+        $scope.feedbackParagraphs = [
+          'Greetings!',
+          'This set of exercises focuses on string manipulation.',
+          [
+            "Let's get started! You'll see the first question to your right. ",
+            "Code a solution in the coding window below and hit \"Run\", and ",
+            "I will provide you with feedback."
+          ].join('')
+        ];
+        // TODO(sll): Update this dynamically, once we have a stepper.
+        $scope.exerciseNumber = 1;
         $scope.title = question.getTitle();
         $scope.code = question.getStarterCode(language);
         $scope.instructions = prompts[currentPromptIndex].getInstructions();

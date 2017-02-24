@@ -47,10 +47,9 @@ def createListOfUniqueStrings(atom, size):
   },
   prompts: [{
     instructions: [
-      'Welcome to this programming exercise.',
       [
-        'Your first task is to implement the abbreviate function. It takes a ',
-        'string as input and returns an abbreviation of the string of the form ',
+        'Implement the abbreviate function. It takes a string as input and ',
+        'returns an abbreviation of the string of the form ',
         '<first character><length of the middle of the string><last character>. ',
         'For example, "internationalization" should be abbreviated as "i18n".'
       ].join('')
