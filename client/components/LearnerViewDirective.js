@@ -202,7 +202,7 @@ tie.directive('learnerView', [function() {
         var prompts = question.getPrompts();
         var currentPromptIndex = 0;
         var feedbackDiv = document.getElementById('tie-feedback');
-        var tieInstructionsDiv = document.getElementById('tie-instructions');
+        var instructionsDiv = document.getElementById('tie-instructions');
 
         var clearFeedback = function() {
           $scope.feedbackMessages = [];
@@ -240,7 +240,7 @@ tie.directive('learnerView', [function() {
             // than using a timeout?
             window.setTimeout(
                 function() {
-                  tieInstructionsDiv.lastElementChild.scrollIntoView();
+                  instructionsDiv.lastElementChild.scrollIntoView();
                 }, 0);
             clearFeedback();
           }
