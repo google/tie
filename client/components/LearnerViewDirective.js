@@ -63,7 +63,7 @@ tie.directive('learnerView', [function() {
                   <option value="Python" selected>Python</option>
                 </select>
                 <button class="tie-run-button"
-                    ng-class="tie-{'active': !nextButtonIsShown}"
+                    ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
                     ng-disabled="nextButtonIsShown">
                   Run
