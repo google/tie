@@ -18,5 +18,5 @@ cache:
 dist: trusty
 install: true
 script:
-- bash scripts/run_karma_tests.sh
+- bash scripts/run_karma_tests.sh --single-run
 sudo: required
