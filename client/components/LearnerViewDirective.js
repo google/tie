@@ -61,7 +61,6 @@ tie.directive('learnerView', [function() {
                 <select class="tie-lang-select-menu"
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
-                  <option value="JavaScript">JavaScript</option>
                 </select>
                 <button class="tie-run-button"
                     ng-class="tie-{'active': !nextButtonIsShown}"
