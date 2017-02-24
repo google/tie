@@ -252,6 +252,8 @@ tie.directive('learnerView', [function() {
             .then(setFeedback);
         };
 
+        // TODO(sll): Find a way to declare this declaratively, from a data
+        // file.
         $scope.feedbackParagraphs = [
           'Greetings!',
           'This set of exercises focuses on string manipulation.',
