@@ -1,0 +1,22 @@
+addons:
+  apt:
+    packages:
+      - google-chrome-stable
+      - google-chrome-beta
+    sources:
+      - google-chrome
+before_install:
+- export CHROME_BIN=/usr/bin/google-chrome-stable
+branches:
+  only:
+  - master
+cache:
+  directories:
+    - ./node_modules/
+    - ./third_party/
+    - ./tools/
+dist: trusty
+install: true
+script:
+- bash scripts/run_karma_tests.sh
+sudo: required
