@@ -21,10 +21,10 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div id="tie-exercise-ui-outer" class="tie-exercise-ui-outer">
-        <div id="tie-exercise-ui-inner" class="tie-exercise-ui-inner">
-          <div id="tie-question-ui" class="tie-question-ui">
-            <div id="tie-question-window" class="tie-question-window">
+      <div class="tie-exercise-ui-outer">
+        <div class="tie-exercise-ui-inner">
+          <div class="tie-question-ui">
+            <div class="tie-question-window">
               <h3>{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -41,11 +41,11 @@ tie.directive('learnerView', [function() {
               </div>
             </div>
             <button ng-click="showNextPrompt()" ng-if="nextButtonIsShown"
-                id="tie-next-button" class="tie-next-button">Next</button>
+                class="tie-next-button">Next</button>
             </button>
           </div>
-          <div id="tie-coding-ui" class="tie-coding-ui">
-            <div id="tie-feedback-window" class="tie-feedback-window">
+          <div class="tie-coding-ui">
+            <div class="tie-feedback-window">
               <div id="tie-feedback" class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackMessages track by $index"
                     class="tie-feedback-paragraph">
@@ -53,17 +53,17 @@ tie.directive('learnerView', [function() {
                 </p>
               </div>
             </div>
-            <div id="tie-coding-window" class="tie-coding-window">
-              <div id="tie-lang-terminal" class="tie-lang-terminal">
-                <div id="tie-coding-terminal" class="tie-coding-terminal">
+            <div class="tie-coding-window">
+              <div class="tie-lang-terminal">
+                <div class="tie-coding-terminal">
                   <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code" class="tie-codemirror-container"></ui-codemirror>
                 </div>
-                <select id="tie-lang-select-menu" class="tie-lang-select-menu"
+                <select class="tie-lang-select-menu"
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                   <option value="JavaScript">JavaScript</option>
                 </select>
-                <button id="tie-run-button" class="tie-run-button"
+                <button class="tie-run-button"
                     ng-class="tie-{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
                     ng-disabled="nextButtonIsShown">
@@ -76,9 +76,9 @@ tie.directive('learnerView', [function() {
       </div>
       <style>
         body {
+          background-color: rgb(242, 242, 242);
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
-          background-color: rgb(242, 242, 242);
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
