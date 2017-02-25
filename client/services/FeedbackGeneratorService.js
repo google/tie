@@ -20,10 +20,15 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', function(FeedbackObjectFactory) {
-    // TODO(sll): Add escaping?
     var jsToHumanReadable = function(jsVariable) {
       if (typeof jsVariable === 'string') {
         return '"' + jsVariable + '"';
+      } else if (typeof jsVariable === 'number') {
+        return String(jsVariable);
+      } else if (typeof jsVariable === 'boolean') {
+        return jsVariable ? 'True' : 'False';
+      } else {
+        throw Error('Cannot parse JS variable: ' + jsVariable);
       }
     };
 

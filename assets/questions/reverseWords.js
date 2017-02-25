@@ -16,7 +16,7 @@
  * @fileoverview Question data for Reverse Words.
  */
 
-globalQuestionData['reverseWords'] = {
+globalData.questions['reverseWords'] = {
   title: 'Reverse Words',
   starterCode: {
     python:

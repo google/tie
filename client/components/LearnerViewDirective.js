@@ -23,6 +23,14 @@ tie.directive('learnerView', [function() {
     template: `
       <div class="tie-exercise-ui-outer">
         <div class="tie-exercise-ui-inner">
+          <div>
+            Stepper:
+            <div ng-repeat="questionId in questionIds track by $index">
+              <span ng-class="{'tie-active-question-index': currentQuestionIndex === $index}">
+                {{$index + 1}}
+              </span>
+            </div>
+          </div>
           <div class="tie-coding-ui">
             <div class="tie-feedback-window">
               <div id="tie-feedback" class="tie-feedback">
@@ -52,7 +60,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Exercise {{exerciseNumber}}: {{title}}</h3>
+              <h3>Exercise {{currentQuestionIndex + 1}}: {{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">
@@ -78,6 +86,11 @@ tie.directive('learnerView', [function() {
           background-color: rgb(242, 242, 242);
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
+        }
+        /* TODO(sll): This is temporary styling. */
+        .tie-active-question-index {
+          font-weight: bold;
+          color: green;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -192,26 +205,52 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', 'SolutionHandlerService', 'QuestionDataService',
+      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
       'LANGUAGE_PYTHON',
       function(
-          $scope, SolutionHandlerService, QuestionDataService,
+          $scope, $timeout, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON) {
         var language = LANGUAGE_PYTHON;
-        var question = QuestionDataService.getData();
-        var prompts = question.getPrompts();
-        var currentPromptIndex = 0;
+        var questionSetId = 'strings';
+        var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
+        var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
+          "Fantastic! You're done with this exercise. Shall we try the next one?",
+          "Click the \"Next\" button below to move on to the next exercise."
+        ];
+
+        QuestionDataService.initCurrentQuestionSet(questionSetId);
+        var questionSet = QuestionDataService.getCurrentQuestionSet(
+          questionSetId);
+        $scope.currentQuestionIndex = 0;
+
+        var question = null;
+        var prompts = null;
+        var currentPromptIndex = null;
         var feedbackDiv = document.getElementById('tie-feedback');
         var instructionsDiv = document.getElementById('tie-instructions');
+
+        var loadQuestion = function(questionId, introParagraphs) {
+          question = QuestionDataService.getQuestion(questionId);
+          prompts = question.getPrompts();
+          currentPromptIndex = 0;
+          $scope.title = question.getTitle();
+          $scope.code = question.getStarterCode(language);
+          $scope.instructions = prompts[currentPromptIndex].getInstructions();
+          $scope.previousInstructions = [];
+          $scope.nextButtonIsShown = false;
+          $scope.feedbackParagraphs = introParagraphs;
+        };
 
         var clearFeedback = function() {
           $scope.feedbackParagraphs = [];
         };
 
         var setFeedback = function(feedback) {
-          $scope.feedbackParagraphs = [feedback.getMessage()];
           if (feedback.isAnswerCorrect()) {
             $scope.nextButtonIsShown = true;
+            $scope.feedbackParagraphs = CONGRATULATORY_FEEDBACK_PARAGRAPHS;
+          } else {
+            $scope.feedbackParagraphs = [feedback.getMessage()];
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
@@ -229,8 +268,14 @@ tie.directive('learnerView', [function() {
 
         $scope.showNextPrompt = function() {
           if (question.isLastPrompt(currentPromptIndex)) {
-            // TODO(sll): This is a placeholder; fix it.
-            alert('PLACEHOLDER: This should load the next question.');
+            $scope.currentQuestionIndex++;
+            if ($scope.currentQuestionIndex >= $scope.questionIds.length) {
+              // TODO(sll): This needs to be fleshed out.
+              alert('Congratulations, you have finished!');
+              return;
+            }
+            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+            loadQuestion(questionId);
           } else {
             currentPromptIndex++;
             $scope.previousInstructions.push($scope.instructions);
@@ -238,10 +283,9 @@ tie.directive('learnerView', [function() {
             $scope.nextButtonIsShown = false;
             // TODO (johnmunoz): DOM not yet updated; is there a better way
             // than using a timeout?
-            window.setTimeout(
-                function() {
-                  instructionsDiv.lastElementChild.scrollIntoView();
-                }, 0);
+            $timeout(function() {
+              instructionsDiv.lastElementChild.scrollIntoView();
+            }, 0);
             clearFeedback();
           }
         };
@@ -252,24 +296,10 @@ tie.directive('learnerView', [function() {
             .then(setFeedback);
         };
 
-        // TODO(sll): Find a way to declare this declaratively, from a data
-        // file.
-        $scope.feedbackParagraphs = [
-          'Greetings!',
-          'This set of exercises focuses on string manipulation.',
-          [
-            "Let's get started! You'll see the first question to your right. ",
-            "Code a solution in the coding window below and hit \"Run\", and ",
-            "I will provide you with feedback."
-          ].join('')
-        ];
-        // TODO(sll): Update this dynamically, once we have a stepper.
-        $scope.exerciseNumber = 1;
-        $scope.title = question.getTitle();
-        $scope.code = question.getStarterCode(language);
-        $scope.instructions = prompts[currentPromptIndex].getInstructions();
-        $scope.previousInstructions = [];
-        $scope.nextButtonIsShown = false;
+        $scope.questionIds = questionSet.getQuestionIds();
+        loadQuestion(
+          questionSet.getFirstQuestionId(),
+          questionSet.getIntroductionParagraphs());
       }
     ]
   };

@@ -16,7 +16,7 @@
  * @fileoverview Question data for Balanced Parentheses.
  */
 
-globalQuestionData['parens'] = {
+globalData.questions['parens'] = {
   title: 'Balanced Parentheses',
   starterCode: {
     python:
