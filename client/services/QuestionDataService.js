@@ -19,7 +19,6 @@
 
 tie.factory('QuestionDataService', [
   'QuestionObjectFactory', function(QuestionObjectFactory) {
-    // TODO(sll): This should read from a JSON file.
     var _DATA_DICT = {
   "title": "Reverse Words",
   "starter_code": {
@@ -139,6 +138,8 @@ tie.factory('QuestionDataService', [
   ]
 };
 
+    // TODO(sll): Enable "get by question ID".
+    var _DATA_DICT = globalQuestionData.i18n;
     var question = QuestionObjectFactory.create(_DATA_DICT);
 
     return {

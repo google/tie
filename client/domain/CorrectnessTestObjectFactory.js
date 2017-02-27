@@ -21,7 +21,7 @@ tie.factory('CorrectnessTestObjectFactory', [
   function() {
     var CorrectnessTest = function(correctnessTestDict) {
       this._input = correctnessTestDict.input;
-      this._expectedOutput = correctnessTestDict.expected_output;
+      this._expectedOutput = correctnessTestDict.expectedOutput;
       this._message = correctnessTestDict.message;
     };
 

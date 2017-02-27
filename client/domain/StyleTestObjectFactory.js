@@ -20,8 +20,8 @@
 tie.factory('StyleTestObjectFactory', [
   function() {
     var StyleTest = function(styleTestDict) {
-      this._evaluationFunction = styleTestDict.evaluation_function;
-      this._expectedOutput = styleTestDict.expected_output;
+      this._evaluationFunction = styleTestDict.evaluationFunction;
+      this._expectedOutput = styleTestDict.expectedOutput;
       this._message = styleTestDict.message;
     };
 

@@ -20,11 +20,10 @@
 tie.factory('PerformanceTestObjectFactory', [
   function() {
     var PerformanceTest = function(performanceTestDict) {
-      this._inputDataAtom = performanceTestDict.input_data_atom;
-      this._transformationFunction =
-        performanceTestDict.transformation_function;
-      this._expectedPerformance = performanceTestDict.expected_performance;
-      this._evaluationFunction = performanceTestDict.evaluation_function;
+      this._inputDataAtom = performanceTestDict.inputDataAtom;
+      this._transformationFunction = performanceTestDict.transformationFunction;
+      this._expectedPerformance = performanceTestDict.expectedPerformance;
+      this._evaluationFunction = performanceTestDict.evaluationFunction;
     };
 
     // Instance methods.

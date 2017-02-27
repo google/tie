@@ -27,22 +27,22 @@ tie.factory('PromptObjectFactory', [
       // A list of strings (where each string corresponds to a paragraph in the
       // UI).
       this._instructions = promptDict.instructions;
-      this._prerequisiteSkills = promptDict.prerequisite_skills;
-      this._acquiredSkills = promptDict.acquired_skills;
-      this._inputFunction = promptDict.input_function;
-      this._outputFunction = promptDict.output_function;
-      this._mainFunction = promptDict.main_function;
-      this._correctnessTests = promptDict.correctness_tests.map(
+      this._prerequisiteSkills = promptDict.prerequisiteSkills;
+      this._acquiredSkills = promptDict.acquiredSkills;
+      this._inputFunction = promptDict.inputFunction;
+      this._outputFunction = promptDict.outputFunction;
+      this._mainFunction = promptDict.mainFunction;
+      this._correctnessTests = promptDict.correctnessTests.map(
         function(correctnessTestDict) {
           return CorrectnessTestObjectFactory.create(correctnessTestDict);
         }
       );
-      this._buggyOutputTests = promptDict.buggy_output_tests.map(
+      this._buggyOutputTests = promptDict.buggyOutputTests.map(
         function(buggyOutputTestDict) {
           return BuggyOutputTestObjectFactory.create(buggyOutputTestDict);
         }
       );
-      this._performanceTests = promptDict.performance_tests.map(
+      this._performanceTests = promptDict.performanceTests.map(
         function(performanceTestDict) {
           return PerformanceTestObjectFactory.create(
             performanceTestDict);
