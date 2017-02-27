@@ -34,7 +34,13 @@ tie.factory('PythonCodeRunnerService', [
       runCodeAsync: function(code) {
         clearOutput();
         Sk.configure({
-          output: addOutputLine
+         output: addOutputLine,
+         read: function(name) {
+           if (!Sk.builtinFiles.files.hasOwnProperty(name)) {
+             throw 'Could not find module ' + name;
+           }
+           return Sk.builtinFiles.files[name];
+         }
         });
         return Sk.misceval.asyncToPromise(function() {
           return Sk.importMainWithBody('<stdin>', false, code, true);

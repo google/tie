@@ -32,6 +32,18 @@ tie.factory('PerformanceTestObjectFactory', [
       return this._transformationFunction;
     };
 
+    PerformanceTest.prototype.getInputDataAtom = function() {
+      return this._inputDataAtom;
+    };
+
+    PerformanceTest.prototype.getExpectedPerformance = function() {
+      return this._expectedPerformance;
+    };
+
+    PerformanceTest.prototype.getEvaluationFunction = function() {
+      return this._evaluationFunction;
+    };
+
     // Static class methods.
     PerformanceTest.create = function(performanceTestDict) {
       return new PerformanceTest(performanceTestDict);

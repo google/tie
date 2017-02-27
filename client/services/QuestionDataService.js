@@ -21,88 +21,123 @@ tie.factory('QuestionDataService', [
   'QuestionObjectFactory', function(QuestionObjectFactory) {
     // TODO(sll): This should read from a JSON file.
     var _DATA_DICT = {
-      "title": "Internationalization (i18n)",
-      "starter_code": {
-        "python": "def abbreviate(word):\n\treturn \"\"\n\ndef are_all_unique(words):\n\treturn True"
-      },
-      "auxiliary_code": {
-        "python": "def forgetLastLetter(word):\n\tresult = \"%s%d\" % (word[0], len(word) - 2) if len(word) > 2 else word\n\treturn result\n\ndef useFirstAndLastLetterAndLengthToAbbreviate(word):\n\tif word:\n\t\treturn \"%s%d%s\" % (word[0], len(word) - 2, word[len(word) - 1])\n\treturn \"\"\n\ndef CreateListOfUniqueStrings(atom, size):\n\tresult = []\n\tfor i in range(size):\n\t\tresult.append(atom * (i + 1))\n\treturn result"
-      },
-      "prompts": [{
-        "instructions": [
-          "Welcome to this programming exercise.",
-          "Your first task is to implement the abbreviate function. It takes a string as input and returns an abbreviation of the string of the form <first character><length of the middle of the string><last character>. For example, \"internationalization\" should be abbreviated as \"i18n\"."
-        ],
-        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
-        "acquired_skills": ["String Manipulation"],
-        "input_function": null,
-        "output_function": null,
-        "main_function": "abbreviate",
-        "correctness_tests": [{
-          "input": "internationalization",
-          "expected_output": "i18n"
-        }, {
-          "input": "monkey",
-          "expected_output": "m4y"
-        }, {
-          "input": "friendship",
-          "expected_output": "f8p"
-        }],
-        "buggy_output_tests": [{
-          "buggy_function": "forgetLastLetter",
+  "title": "Reverse Words",
+  "starter_code": {
+    "python": "def reverseWords(word):\n\treturn \"\""
+  },
+  "auxiliary_code": {
+    "python": "def forgetLastWord(s):\n\tresult = \"\"\\n\treversed_word = []\n\tfor c in s:\n\t\tif c.isspace():\n\t\t\tresult += \"\".join(reversed(reversed_word))\n\t\t\tresult += c\n\t\t\treversed_word = []\n\t\telse:\n\t\t\treversed_word.append(c)\n\treturn result"
+   },
+  "prompts": [
+    {
+      "instructions": [
+        "Welcome to this programming exercise.",
+        "Your task is to implement the reverseWords function. This function takes a string of words separated by whitespace and reverses the non-whitespace characters in the words, but not their ordering, preserving the whitespace between them.",
+        "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
+      ],
+      "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+      "acquired_skills": ["String Manipulation"],
+      "input_function": null,
+      "output_function": null,
+      "main_function": "reverseWords",
+      "correctness_tests": [
+          {
+            "input": "moo cow bark dog",
+            "expected_output": "oom woc krab god"
+          },
+          {
+            "input": "racecar civic kayak mom noon level",
+            "expected_output": "racecar civic kayak mom noon level"
+          }
+      ],
+      "buggy_output_tests": [
+        {
+          "buggy_function": "forgetLastWord",
           "messages": [
             "It looks like your output (%s) doesn't match our expected output (%s).",
-            "You seem to be dropping the last character of the string when you're abbreviating.",
-            "Make sure to add the last character of the string back on when you've abbreviated."
+            "Are you sure that you're reversing all the words?",
+            "It looks like you're exiting the function without adding on the last reversed word."
           ]
-        }],
-        "performance_tests": [{}],
-      }, {
-        "instructions": [
-          "Now, modify your code so that it does not abbreviate short strings when it's not necessary."
-        ],
-        "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
-        "acquired_skills": ["String Manipulation"],
-        "input_function": null,
-        "output_function": null,
-        "main_function": "abbreviate",
-        "correctness_tests": [{
-          "input": "internationalization",
-          "expected_output": "i18n"
-        }, {
-          "input": "cat",
-          "expected_output": "cat"
-        }, {
-          "input": "at",
-          "expected_output": "at"
-        }, {
-          "input": "a",
-          "expected_output": "a"
-        }, {
-          "input": "",
-          "expected_output": ""
-        }],
-        "buggy_output_tests": [{
-          "buggy_function": "useFirstAndLastLetterAndLengthToAbbreviate",
-          "messages": [
-            "It looks like your output (%s) doesn't match our expected output (%s).",
-            "It looks like you're using the string's length minus two in the middle, which is usually fine, but can you think of any issues that might present?",
-            "For short strings, you're actually ending up with a negative number in the middle. You don't need to abbreviate strings with length <= 3."
-          ]
-        }],
-        "performance_tests": [{
-          "input_data_atom": "m",
-          "transformation_function": "system.ExtendString",
-          "expected_performance": "constant",
-          "evaluation_function": "abbreviate"
-        }]
-      }],
-      "style_tests": [{
-        "evaluation_function": "system.AllowOnlyOneFunction",
-        "expected_output": true,
-        "message": "You should only be writing code in an abbreviate function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
-      }]
-    };
+        }
+      ],
+      "performance_tests": []
+    },
+    {
+      "instructions": [
+        "You need to make sure that your code handles short strings correctly, too."
+      ],
+      "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+      "acquired_skills": ["String Manipulation"],
+      "input_function": null,
+      "output_function": null,
+      "main_function": "reverseWords",
+      "correctness_tests": [
+          {
+            "input": "I",
+            "expected_output": "I"
+          },
+          {
+            "input": "",
+            "expected_output": ""
+          },
+          {
+            "input": "A ",
+            "expected_output": "A "
+          },
+          {
+            "input": "ab",
+            "expected_output": "ba"
+          }
+      ],
+      "buggy_output_tests": [],
+      "performance_tests": []
+    },
+    {
+      "instructions": [
+        "Good work! Now, make sure that your code accurately preserves whitespace and handles more than just letters."
+      ],
+      "prerequisite_skills": ["Arrays", "Strings", "String Manipulation"],
+      "acquired_skills": ["String Manipulation", "Sets", "Arrays", "Maps"],
+      "input_function": null,
+      "output_function": null,
+      "main_function": "reverseWords",
+      "correctness_tests": [
+          {
+            "input": "   this  is \t a    whitespace  test",
+            "expected_output": "   siht  si \t a    ecapsetihw  tset"
+          },
+          {
+            "input": "\t  ",
+            "expected_output": "\t  "
+          },
+          {
+            "input": "123 456 789",
+            "expected_output": "321 654 987"
+          },
+          {
+            "input": "test for dashes-and others",
+            "expected_output": "tset rof dna-sehsad srehto"
+          }
+      ],
+      "buggy_output_tests": [],
+      "performance_tests": [
+        {
+          "input_data_atom": "meow ",
+          "transformation_function": "extendString",
+          "expected_performance": "linear",
+          "evaluation_function": "reverseWords"
+        }
+      ]
+    }
+  ],
+  "style_tests": [
+    {
+      "evaluation_function": "system.AllowOnlyOneFunction",
+      "expected_output": true,
+      "message": "You should only be writing code in a reverseWords function. While decomposition is generally a good idea, you shouldn't need more than just this function for this exercise."
+    }
+  ]
+};
 
     var question = QuestionObjectFactory.create(_DATA_DICT);
 

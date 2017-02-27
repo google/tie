@@ -52,6 +52,21 @@ tie.factory('FeedbackGeneratorService', [
               ].join(''), false);
             }
           }
+          // TODO(eyurko): Make this fancier. Add in more data points.
+          var performanceTests = prompt.getPerformanceTests();
+          for (var i = 0; i < performanceTests.length; i++) {
+            testIndex = i + correctnessTests.length;
+            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+            var observedOutput = observedOutputs[testIndex];
+
+            if (expectedPerformance !== observedOutput) {
+              return FeedbackObjectFactory.create([
+                'Your code is running pretty slowly. Are you sure that it\'s ',
+                expectedPerformance,
+                '?'
+              ].join(''), false);
+            }
+          }
           return FeedbackObjectFactory.create([
             'Congratulations, you\'ve finished this question! Click the ',
             '"Next" button to move on to the next question.',

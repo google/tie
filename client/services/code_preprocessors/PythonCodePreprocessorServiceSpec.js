@@ -190,5 +190,25 @@ describe('PythonCodePreprocessorService', function() {
         }).toThrow(new Error('Incomplete line: missing "(" in def statement.'));
       }
     );
-  })
+
+    it('should add correct performance test information to skeleton code',
+      function() {
+        var performanceTests = [
+          {
+            "input_data_atom": "na ",
+            "transformation_function": "extendString",
+            "expected_performance": "linear",
+            "evaluation_function": "katamariDamashi"
+          }
+        ];
+
+        outputCode = PythonCodePreprocessorService.generatePerformanceTestCode(
+                performanceTests);
+
+        expect(outputCode).toContain('katamariDamashi');
+        expect(outputCode).toContain('na ');
+        expect(outputCode).toContain('extendString');
+      }
+    );
+  });
 });

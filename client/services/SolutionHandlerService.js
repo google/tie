@@ -44,7 +44,10 @@ tie.factory('SolutionHandlerService', [
           var preprocessedCode =
             CodePreprocessorDispatcherService.preprocessCode(
               language, code, prompt.getMainFunctionName(),
-              prompt.getCorrectnessTests());
+              prompt.getCorrectnessTests(), prompt.getPerformanceTests());
+          console.log(prompt);
+          console.log(prompt.getPerformanceTests());
+          console.log(preprocessedCode);
 
           return CodeRunnerDispatcherService.runCodeAsync(
             language, preprocessedCode
