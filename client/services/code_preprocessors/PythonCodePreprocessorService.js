@@ -26,7 +26,6 @@ tie.factory('PythonCodePreprocessorService', [
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
     var jsonVariableToPython = function(jsonVariable) {
-      console.log('var = ' + jsonVariable);
       // Converts a JSON variable to a Python variable.
       if (typeof jsonVariable === 'string') {
         var pythonStringContent = '';
@@ -81,7 +80,8 @@ tie.factory('PythonCodePreprocessorService', [
         var qualifiedTransformationFunctionName = (
           WRAPPER_CLASS_NAME + '().' + test.getTransformationFunction());
         // TODO(eyurko): Make this work for non-linear runtimes, such as quadratic, log(n), and sqrt(n).
-        // TODO(eyurko): 30 is a hardcoded constant value. It might be better to use linear regression to determine if the data points "look" linear, quadratic, etc, and then provide feedback accordingly.
+        // TODO(eyurko): Use linear regression to determine if the data points
+        // "look" linear, quadratic, etc, and then provide feedback accordingly.
         testCode += [
           '',
           'def get_test_input(atom, input_size):',
@@ -100,7 +100,6 @@ tie.factory('PythonCodePreprocessorService', [
           '    return "linear"',
           ''
         ].join('\n');
-        console.log(test);
         testCode += '\n' + [
           VARNAME_TEST_RESULTS + '.append(',
           '    run_performance_test(' + jsonVariableToPython(test.getInputDataAtom()) + '))'
@@ -140,13 +139,15 @@ tie.factory('PythonCodePreprocessorService', [
         return newCodeLines.join('\n');
       },
 
-      preprocessCode: function(
-      code, mainFunctionName, correctnessTests, performanceTests) {
+      preprocessCode: function(code, mainFunctionName, correctnessTests,
+                               performanceTests) {
         return (
           this._wrapCodeIntoClass(code) + '\n' +
           generateTestCode(
               mainFunctionName, correctnessTests, performanceTests));
-      }
+      },
+
+      _generatePerformanceTestCode: _generatePerformanceTestCode
     };
   }
 ]);

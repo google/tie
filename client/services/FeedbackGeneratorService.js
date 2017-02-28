@@ -53,7 +53,6 @@ tie.factory('FeedbackGeneratorService', [
               ].join(''), false);
             }
           }
-          // TODO(eyurko): Potentially use regression to check runtime complexity, rather than just guessing.
           var performanceTests = prompt.getPerformanceTests();
           for (var i = 0; i < performanceTests.length; i++) {
             testIndex = i + correctnessTests.length;
