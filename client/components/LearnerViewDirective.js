@@ -21,130 +21,243 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <h3>Exercise: {{title}}</h3>
-
-      <div class="tie-learner-view-left-column">
-        <div class="tie-previous-instructions">
-          <div ng-repeat="previousInstruction in previousInstructions track by $index">
-            <p ng-repeat="paragraph in previousInstruction track by $index">
-              {{paragraph}}
-            </p>
-            <hr>
+      <div class="tie-exercise-ui-outer">
+        <div class="tie-exercise-ui-inner">
+          <div>
+            Stepper:
+            <div ng-repeat="questionId in questionIds track by $index">
+              <span ng-class="{'tie-active-question-index': currentQuestionIndex === $index}">
+                {{$index + 1}}
+              </span>
+            </div>
+          </div>
+          <div class="tie-coding-ui">
+            <div class="tie-feedback-window">
+              <div id="tie-feedback" class="tie-feedback">
+                <p ng-repeat="paragraph in feedbackParagraphs track by $index"
+                    class="tie-feedback-paragraph">
+                  {{paragraph}}
+                </p>
+              </div>
+            </div>
+            <div class="tie-coding-window">
+              <div class="tie-lang-terminal">
+                <div class="tie-coding-terminal">
+                  <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code" class="tie-codemirror-container"></ui-codemirror>
+                </div>
+                <select class="tie-lang-select-menu"
+                    name="lang-select-menu">
+                  <option value="Python" selected>Python</option>
+                </select>
+                <button class="tie-run-button"
+                    ng-class="{'active': !nextButtonIsShown}"
+                    ng-click="submitCode(code)"
+                    ng-disabled="nextButtonIsShown">
+                  Run
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="tie-question-ui">
+            <div class="tie-question-window">
+              <h3>Exercise {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <div class="tie-previous-instructions">
+                <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                  <p ng-repeat="paragraph in previousInstruction track by $index">
+                    {{paragraph}}
+                  </p>
+                  <hr>
+                </div>
+              </div>
+              <div id="tie-instructions" class="tie-instructions">
+                <p ng-repeat="paragraph in instructions">
+                  {{paragraph}}
+                </p>
+              </div>
+            </div>
+            <button ng-click="showNextPrompt()" ng-if="nextButtonIsShown"
+                class="tie-next-button">Next</button>
+            </button>
           </div>
         </div>
-        <div class="tie-instructions">
-          <p ng-repeat="paragraph in instructions">
-            {{paragraph}}
-          </p>
-        </div>
-
-        <button ng-if="nextButtonIsShown" class="tie-action-button active"
-                ng-click="showNextPrompt()">
-          Next
-        </button>
       </div>
-
-      <div class="tie-learner-view-right-column">
-        <div class="tie-coding-window">
-          <ui-codemirror ui-codemirror="codeMirrorOptions" ng-model="code"></ui-codemirror>
-        </div>
-
-        <button type="button" class="tie-action-button"
-                ng-class="{'active': !nextButtonIsShown}"
-                ng-click="submitCode(code)"
-                ng-disabled="nextButtonIsShown">
-          Run
-        </button>
-
-        <div class="tie-feedback">
-          <p ng-repeat="paragraph in feedbackMessages track by $index"
-             class="tie-feedback-paragraph">
-            {{paragraph}}
-          </p>
-        </div>
-      </div>
-
       <style>
-        .tie-learner-view-left-column {
+        body {
+          background-color: rgb(242, 242, 242);
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 15px;
+        }
+        /* TODO(sll): This is temporary styling. */
+        .tie-active-question-index {
+          font-weight: bold;
+          color: green;
+        }
+        .tie-coding-terminal .CodeMirror {
+          /* Overwriting codemirror defaults */
+          height: 100%;
+        }
+        .tie-codemirror-container {
+          width: 100%;
+        }
+        .tie-coding-terminal {
+          display: flex;
+          font-size: 13px;
+          height: 368px;
+          margin-top: 10px;
+          width: 662px;
+        }
+        .tie-coding-window {
+          display: inherit;
+        }
+        .tie-coding-terminal, .tie-question-window {
+          background-color: rgb(255, 255, 255);
+          border-color: rgb(222, 222, 222);
+          border-radius: 3px;
+          border-style: solid;
+          border-width: 1px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-coding-terminal:focus, .tie-lang-select-menu:focus, .tie-run-button:focus {
+          outline: 0;
+        }
+        .tie-coding-ui, .tie-question-ui {
+          display: inline-block;
+          margin: 8px;
+        }
+        .tie-exercise-ui-inner {
+          padding-left: 32px;
+          padding-right: 32px;
+        }
+        .tie-exercise-ui-outer {
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 32px;
+        }
+        .tie-feedback-window {
+          background-color: rgb(255, 255, 242);
+          border-color: rgb(222, 222, 222);
+          border-radius: 3px;
+          border-style: solid;
+          border-width: 1px;
+          font-size: 14px;
+          height: 128px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 642px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-lang-select-menu {
           float: left;
-          width: 400px;
+          margin-top: 10px;
         }
-
-        .tie-learner-view-right-column {
-          margin-left: 420px;
-          width: 600px;
+        .tie-lang-terminal {
+          display: inline;
         }
-
-        .tie-instructions, .tie-previous-instructions {
-          font-family: 'noto sans', Arial, Sans-Serif;
-          font-size: 0.85em;
+        .tie-next-button {
+          background-color: rgb(32, 142, 64);
+          border-radius: 4px;
+          border-style: none;
+          color: white;
+          cursor: pointer;
+          float: right;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          margin-top: 10px;
+          position: relative;
+          width: 100px;
         }
         .tie-previous-instructions {
           opacity: 0.5;
         }
-
-        .tie-coding-window {
-          border: 1px solid #888;
-          height: 300px;
-          width: 100%;
+        .tie-question-ui {
+          vertical-align: top;
         }
-
-        .tie-action-button {
-          background: #888;
-          border: 0;
-          color: #ffffff;
+        .tie-question-window {
+          font-size: 14px;
+          height: 508px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 548px;
+        }
+        .tie-run-button {
+          background-color: rgb(66, 133, 244);
+          border-radius: 4px;
+          border-style: none;
+          color: white;
           cursor: pointer;
           float: right;
-          margin: 10px 0;
-          padding: 10px 24px;
-          text-transform: uppercase;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          margin-top: 10px;
+          position: relative;
+          width: 100px;
         }
-        .tie-action-button.active {
-          background: #4285f4;
-          color: #ffffff;
-        }
-
-        .tie-feedback {
-          background: #ddd;
-          border: 1px solid black;
-          color: #000;
-          display: inline-block;
-          font-family: 'noto sans', Arial, Sans-Serif;
-          font-size: 0.85em;
-          height: 200px;
-          overflow: auto;
-          width: 100%;
-        }
-
-        .tie-feedback-paragraph {
-          margin-top: 5px;
-          padding: 0 5px;
+        .tie-run-button:active {
+          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
+          background-color: rgb(56, 123, 244);
+          border: 1px solid rgb(42, 112, 232);
         }
       </style>
     `,
     controller: [
-      '$scope', 'SolutionHandlerService', 'QuestionDataService',
+      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
       'LANGUAGE_PYTHON',
       function(
-          $scope, SolutionHandlerService, QuestionDataService,
+          $scope, $timeout, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON) {
         var language = LANGUAGE_PYTHON;
-        var question = QuestionDataService.getData();
-        var prompts = question.getPrompts();
-        var currentPromptIndex = 0;
+        // TODO(sll): Generalize this to dynamically select a question set
+        // based on user input.
+        var questionSetId = 'strings';
+        var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
+        var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
+          "Fantastic! You're done with this exercise. Shall we try the next one?",
+          "Click the \"Next\" button below to move on to the next exercise."
+        ];
 
-        var clearFeedback = function() {
-          $scope.feedbackMessages = [];
+        QuestionDataService.initCurrentQuestionSet(questionSetId);
+        var questionSet = QuestionDataService.getCurrentQuestionSet(
+          questionSetId);
+        $scope.currentQuestionIndex = 0;
+
+        var question = null;
+        var prompts = null;
+        var currentPromptIndex = null;
+        var feedbackDiv = document.getElementById('tie-feedback');
+        var instructionsDiv = document.getElementById('tie-instructions');
+
+        var loadQuestion = function(questionId, introParagraphs) {
+          question = QuestionDataService.getQuestion(questionId);
+          prompts = question.getPrompts();
+          currentPromptIndex = 0;
+          $scope.title = question.getTitle();
+          $scope.code = question.getStarterCode(language);
+          $scope.instructions = prompts[currentPromptIndex].getInstructions();
+          $scope.previousInstructions = [];
+          $scope.nextButtonIsShown = false;
+          $scope.feedbackParagraphs = introParagraphs;
         };
 
-        var appendFeedback = function(feedback) {
-          $scope.feedbackMessages.push(feedback.getMessage());
+        var clearFeedback = function() {
+          $scope.feedbackParagraphs = [];
+        };
+
+        var setFeedback = function(feedback) {
           if (feedback.isAnswerCorrect()) {
             $scope.nextButtonIsShown = true;
+            $scope.feedbackParagraphs = CONGRATULATORY_FEEDBACK_PARAGRAPHS;
+          } else {
+            $scope.feedbackParagraphs = [feedback.getMessage()];
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
+          feedbackDiv.lastElementChild.scrollIntoView();
         };
 
         $scope.codeMirrorOptions = {
@@ -157,13 +270,24 @@ tie.directive('learnerView', [function() {
 
         $scope.showNextPrompt = function() {
           if (question.isLastPrompt(currentPromptIndex)) {
-            // TODO(sll): This is a placeholder; fix it.
-            alert('PLACEHOLDER: This should load the next question.');
+            $scope.currentQuestionIndex++;
+            if ($scope.currentQuestionIndex >= $scope.questionIds.length) {
+              // TODO(sll): This needs to be fleshed out.
+              alert('Congratulations, you have finished!');
+              return;
+            }
+            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+            loadQuestion(questionId);
           } else {
             currentPromptIndex++;
             $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = prompts[currentPromptIndex].getInstructions();
             $scope.nextButtonIsShown = false;
+            // TODO (johnmunoz): DOM not yet updated; is there a better way
+            // than using a timeout?
+            $timeout(function() {
+              instructionsDiv.lastElementChild.scrollIntoView();
+            }, 0);
             clearFeedback();
           }
         };
@@ -171,15 +295,13 @@ tie.directive('learnerView', [function() {
         $scope.submitCode = function(code) {
           SolutionHandlerService
             .processSolutionAsync(prompts[currentPromptIndex], code, language)
-            .then(appendFeedback);
+            .then(setFeedback);
         };
 
-        clearFeedback();
-        $scope.title = question.getTitle();
-        $scope.code = question.getStarterCode(language);
-        $scope.instructions = prompts[currentPromptIndex].getInstructions();
-        $scope.previousInstructions = [];
-        $scope.nextButtonIsShown = false;
+        $scope.questionIds = questionSet.getQuestionIds();
+        loadQuestion(
+          questionSet.getFirstQuestionId(),
+          questionSet.getIntroductionParagraphs());
       }
     ]
   };

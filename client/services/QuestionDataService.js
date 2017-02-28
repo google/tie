@@ -18,14 +18,31 @@
  */
 
 tie.factory('QuestionDataService', [
-  'QuestionObjectFactory', function(QuestionObjectFactory) {
-    // TODO(sll): Enable "get by question ID".
-    var _DATA_DICT = globalQuestionData.i18n;
-    var question = QuestionObjectFactory.create(_DATA_DICT);
+  'QuestionObjectFactory', 'QuestionSetObjectFactory',
+  function(QuestionObjectFactory, QuestionSetObjectFactory) {
+    var currentQuestionSet = null;
 
     return {
-      getData: function() {
-        return question;
+      initCurrentQuestionSet: function(questionSetId) {
+        if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
+          throw Error('Could not find question set with ID: ' + questionSetId);
+        }
+        currentQuestionSet = QuestionSetObjectFactory.create(
+          globalData.questionSets[questionSetId]);
+      },
+      getCurrentQuestionSet: function() {
+        if (!currentQuestionSet) {
+          throw Error('No question set has been initialized.');
+        }
+        return currentQuestionSet;
+      },
+      getQuestion: function(questionId) {
+        if (!currentQuestionSet.hasQuestionId(questionId)) {
+          throw Error(
+            'The current question set does not contain a question with ID: ' +
+            questionId);
+        }
+        return QuestionObjectFactory.create(globalData.questions[questionId]);
       }
     };
   }
