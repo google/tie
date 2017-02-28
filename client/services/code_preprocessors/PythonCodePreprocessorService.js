@@ -21,9 +21,9 @@ tie.factory('PythonCodePreprocessorService', [
   'WRAPPER_CLASS_NAME', 'VARNAME_TEST_RESULTS',
   function(WRAPPER_CLASS_NAME, VARNAME_TEST_RESULTS) {
     var START_INDENT = '    ';
-    var SMALL_INPUT_SIZE = 10
-    var LARGE_INPUT_SIZE = 100
-    var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3
+    var SMALL_INPUT_SIZE = 10;
+    var LARGE_INPUT_SIZE = 100;
+    var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
     // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
     // given code snippet.
