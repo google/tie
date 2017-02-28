@@ -218,7 +218,7 @@ describe('PythonCodePreprocessorService', function() {
     it('should add correct performance test information to skeleton code',
       function() {
         var performanceTests = [
-          PerformanceTestObjectFactory.Create(
+          PerformanceTestObjectFactory.create(
             {
               "input_data_atom": "na ",
               "transformation_function": "extendString",
