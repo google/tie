@@ -21,6 +21,9 @@ tie.factory('PythonCodePreprocessorService', [
   'WRAPPER_CLASS_NAME', 'VARNAME_TEST_RESULTS',
   function(WRAPPER_CLASS_NAME, VARNAME_TEST_RESULTS) {
     var START_INDENT = '    ';
+    var SMALL_INPUT_SIZE = 10
+    var LARGE_INPUT_SIZE = 100
+    var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3
 
     // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
     // given code snippet.
@@ -106,8 +109,8 @@ tie.factory('PythonCodePreprocessorService', [
           WRAPPER_CLASS_NAME + '().' + test.getEvaluationFunction());
         var qualifiedTransformationFunctionName = (
           WRAPPER_CLASS_NAME + '().' + test.getTransformationFunction());
-        // TODO(eyurko): Make this work for other runtimes.
-        // TODO(eyurko): 30 seems very scientific. Maybe stop hardcoding?
+        // TODO(eyurko): Make this work for non-linear runtimes, such as quadratic, log(n), and sqrt(n).
+        // TODO(eyurko): 30 is a hardcoded constant value. It might be better to use linear regression to determine if the data points "look" linear, quadratic, etc, and then provide feedback accordingly.
         testCode += [
           '',
           'def get_test_input(atom, input_size):',
@@ -115,13 +118,13 @@ tie.factory('PythonCodePreprocessorService', [
           '',
           'def run_performance_test(test_input):',
           '    time_array = []',
-          '    for input_size in [10, 100]:',
+          '    for input_size in [' + SMALL_INPUT_SIZE + ', ' + LARGE_INPUT_SIZE + ']:',
           '        start = time.time()',
           '        output = ' + qualifiedEvaluationFunctionName + '(get_test_input(test_input, input_size))',
           '        finish = time.time() - start',
           '        time_array.append(finish)',
           '    return time_array',
-          '    if time_array[1] > 30 * time_array[0]:',
+          '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + ' * time_array[0]:',
           '        return "not linear"',
           '    return "linear"',
           ''
