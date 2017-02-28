@@ -139,7 +139,7 @@ tie.factory('PythonCodePreprocessorService', [
         newCodeLines = newCodeLines.concat(subsequentLines);
         return newCodeLines.join('\n');
       },
-      
+
       preprocessCode: function(
       code, mainFunctionName, correctnessTests, performanceTests) {
         return (

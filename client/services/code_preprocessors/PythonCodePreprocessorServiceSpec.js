@@ -37,6 +37,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ):',
         '        a = 3'
       ].join('\n');
@@ -58,6 +60,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ):',
         '        a = 3',
         '        def inner_func():',
@@ -79,6 +83,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def       myFunc(self, ):',
         '        a = 3'
       ].join('\n');
@@ -97,6 +103,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, c, b, x):',
         '        a = 3',
       ].join('\n');
@@ -116,6 +124,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ',
         '        c, b, x):',
         '        a = 3',
@@ -138,6 +148,8 @@ describe('PythonCodePreprocessorService', function() {
       var expectedWrappedCode = [
         'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def funcOne(self, a, b):',
         '        x = 3',
         '    ',
@@ -170,6 +182,8 @@ describe('PythonCodePreprocessorService', function() {
         var expectedWrappedCode = [
           'import time\n\n',
           'class StudentAnswer(object):',
+          '    def extendString(self, s, length):',
+          '        return s * length',
           '    def funcOne(self, a, b):',
           '        x = 3',
           '    ',
