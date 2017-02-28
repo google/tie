@@ -211,6 +211,8 @@ tie.directive('learnerView', [function() {
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON) {
         var language = LANGUAGE_PYTHON;
+        // TODO(sll): Generalize this to dynamically select a question set
+        // based on user input.
         var questionSetId = 'strings';
         var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
         var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
