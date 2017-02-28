@@ -5,19 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="stylesheet" href="../third_party/codemirror-5.19.0/lib/codemirror.css">
     <script>
-      // Question data will be stored here, keyed by question ID.
-      var globalQuestionData = {};
+      var globalData = {
+        // Question data will be stored here, keyed by question ID.
+        questions: {},
+        // Question set data will be stored here, keyed by question set ID.
+        questionSets: {}
+      };
     </script>
     <script src="../third_party/angular-1.6.1/angular.min.js"></script>
     <script src="../third_party/codemirror-5.19.0/lib/codemirror.js"></script>
     <script src="../third_party/codemirror-5.19.0/mode/python/python.js"></script>
-    <script src="../third_party/skulpt-0.10.0/skulpt.min.js"></script>
-    <script src="../third_party/skulpt-0.10.0/skulpt-stdlib.js"></script>
+    <script src="../third_party/skulpt-c14015/skulpt.min.js"></script>
+    <script src="../third_party/skulpt-c14015/skulpt-stdlib.js"></script>
     <script src="../third_party/ui-codemirror-0.3.0/ui-codemirror.min.js"></script>
     <script src="../assets/questions/i18n.js"></script>
     <script src="../assets/questions/parens.js"></script>
     <script src="../assets/questions/reverseWords.js"></script>
     <script src="../assets/questions/rle.js"></script>
+    <script src="../assets/question_sets/strings.js"></script>
     <script src="app.js"></script>
     <script src="components/LearnerViewDirective.js"></script>
     <script src="domain/BuggyOutputTestObjectFactory.js"></script>
@@ -27,6 +32,7 @@
     <script src="domain/StyleTestObjectFactory.js"></script>
     <script src="domain/PromptObjectFactory.js"></script>
     <script src="domain/QuestionObjectFactory.js"></script>
+    <script src="domain/QuestionSetObjectFactory.js"></script>
     <script src="domain/CodeEvalResultObjectFactory.js"></script>
     <script src="domain/EventObjectFactory.js"></script>
     <script src="services/FeedbackGeneratorService.js"></script>
