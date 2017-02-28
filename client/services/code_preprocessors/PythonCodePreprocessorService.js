@@ -79,30 +79,35 @@ tie.factory('PythonCodePreprocessorService', [
           WRAPPER_CLASS_NAME + '().' + test.getEvaluationFunction());
         var qualifiedTransformationFunctionName = (
           WRAPPER_CLASS_NAME + '().' + test.getTransformationFunction());
-        // TODO(eyurko): Make this work for non-linear runtimes, such as quadratic, log(n), and sqrt(n).
+        // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
         // TODO(eyurko): Use linear regression to determine if the data points
         // "look" linear, quadratic, etc, and then provide feedback accordingly.
         testCode = [
           '',
           'def get_test_input(atom, input_size):',
-          '    return ' + qualifiedTransformationFunctionName + '(atom, input_size)',
+          '    return ' + qualifiedTransformationFunctionName + (
+            '(atom, input_size)'),
           '',
           'def run_performance_test(test_input):',
           '    time_array = []',
-          '    for input_size in [' + SMALL_INPUT_SIZE + ', ' + LARGE_INPUT_SIZE + ']:',
+          '    for input_size in [' + SMALL_INPUT_SIZE + (
+            ', ' + LARGE_INPUT_SIZE + ']:'),
           '        start = time.time()',
-          '        output = ' + qualifiedEvaluationFunctionName + '(get_test_input(test_input, input_size))',
+          '        output = ' + qualifiedEvaluationFunctionName + (
+            '(get_test_input(test_input, input_size))'),
           '        finish = time.time() - start',
           '        time_array.append(finish)',
           '    return time_array',
-          '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + ' * time_array[0]:',
+          '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
+            ' * time_array[0]:'),
           '        return "not linear"',
           '    return "linear"',
           ''
         ].join('\n');
         testCode += '\n' + [
           VARNAME_TEST_RESULTS + '.append(',
-          '    run_performance_test(' + jsonVariableToPython(test.getInputDataAtom()) + '))'
+          '    run_performance_test(' + (
+            jsonVariableToPython(test.getInputDataAtom()) + '))')
         ].join('\n');
       });
 
