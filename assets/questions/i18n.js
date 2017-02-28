@@ -16,7 +16,7 @@
  * @fileoverview Question data for i18n.
  */
 
-globalQuestionData['i18n'] = {
+globalData.questions['i18n'] = {
   title: 'Internationalization (i18n)',
   starterCode: {
     python:

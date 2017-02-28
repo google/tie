@@ -16,7 +16,7 @@
  * @fileoverview Question data for Run-Length Encoding.
  */
 
-globalQuestionData['rle'] = {
+globalData.questions['rle'] = {
   title: 'Run-Length Encoding',
   starterCode: {
     python:
