@@ -2,7 +2,6 @@ addons:
   apt:
     packages:
       - google-chrome-stable
-      - google-chrome-beta
     sources:
       - google-chrome
 before_install:
