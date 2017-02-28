@@ -25,35 +25,6 @@ tie.factory('PythonCodePreprocessorService', [
     var LARGE_INPUT_SIZE = 100;
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
-    // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
-    // given code snippet.
-    var wrapCodeIntoClass = function(code) {
-      var codeLines = code.trim().split('\n');
-      var firstLine = 'import time\n\n\nclass ' + WRAPPER_CLASS_NAME + '(object):';
-      var systemFunctions = [
-        START_INDENT + 'def extendString(self, s, length):',
-        START_INDENT + '    return s * length'
-      ];
-      var subsequentLines = codeLines.map(function(line) {
-        if (line.indexOf('def') === 0) {
-          var leftParenIndex = line.indexOf('(');
-          if (leftParenIndex === -1) {
-            throw Error('Incomplete line: missing "(" in def statement.');
-          }
-          return (
-            START_INDENT +
-            line.slice(0, leftParenIndex + 1) +
-            'self, ' +
-            line.slice(leftParenIndex + 1));
-        } else {
-          return START_INDENT + line;
-        }
-      });
-      var newCodeLines = [firstLine].concat(systemFunctions);
-      newCodeLines = newCodeLines.concat(subsequentLines);
-      return newCodeLines.join('\n');
-    };
-
     var jsonVariableToPython = function(jsonVariable) {
       console.log('var = ' + jsonVariable);
       // Converts a JSON variable to a Python variable.
@@ -140,10 +111,39 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
+      // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
+      // given code snippet.
+      _wrapCodeIntoClass: function(code) {
+        var codeLines = code.trim().split('\n');
+        var firstLine = 'import time\n\n\nclass ' + WRAPPER_CLASS_NAME + '(object):';
+        var systemFunctions = [
+          START_INDENT + 'def extendString(self, s, length):',
+          START_INDENT + '    return s * length'
+        ];
+        var subsequentLines = codeLines.map(function(line) {
+          if (line.indexOf('def') === 0) {
+            var leftParenIndex = line.indexOf('(');
+            if (leftParenIndex === -1) {
+              throw Error('Incomplete line: missing "(" in def statement.');
+            }
+            return (
+              START_INDENT +
+              line.slice(0, leftParenIndex + 1) +
+              'self, ' +
+              line.slice(leftParenIndex + 1));
+          } else {
+            return START_INDENT + line;
+          }
+        });
+        var newCodeLines = [firstLine].concat(systemFunctions);
+        newCodeLines = newCodeLines.concat(subsequentLines);
+        return newCodeLines.join('\n');
+      },
+      
       preprocessCode: function(
       code, mainFunctionName, correctnessTests, performanceTests) {
         return (
-          wrapCodeIntoClass(code) + '\n' +
+          this._wrapCodeIntoClass(code) + '\n' +
           generateTestCode(
               mainFunctionName, correctnessTests, performanceTests));
       }
