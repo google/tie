@@ -82,7 +82,7 @@ tie.factory('PythonCodePreprocessorService', [
         // TODO(eyurko): Make this work for non-linear runtimes, such as quadratic, log(n), and sqrt(n).
         // TODO(eyurko): Use linear regression to determine if the data points
         // "look" linear, quadratic, etc, and then provide feedback accordingly.
-        testCode += [
+        testCode = [
           '',
           'def get_test_input(atom, input_size):',
           '    return ' + qualifiedTransformationFunctionName + '(atom, input_size)',

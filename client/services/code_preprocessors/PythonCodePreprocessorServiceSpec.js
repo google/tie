@@ -217,16 +217,15 @@ describe('PythonCodePreprocessorService', function() {
 
     it('should add correct performance test information to skeleton code',
       function() {
-        var performanceTests = [
-          PerformanceTestObjectFactory.create(
+        var performanceTest = PerformanceTestObjectFactory.create(
             {
-              "input_data_atom": "na ",
-              "transformation_function": "extendString",
-              "expected_performance": "linear",
-              "evaluation_function": "katamariDamashi"
+              "inputDataAtom": "na ",
+              "transformationFunction": "extendString",
+              "expectedPerformance": "linear",
+              "evaluationFunction": "katamariDamashi"
             }
-          )
-        ];
+          );
+        var performanceTests = [performanceTest];
         var expectedGeneratedCode = [
           '',
           'def get_test_input(atom, input_size):',
@@ -247,7 +246,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
         expectedGeneratedCode += '\n' + [
           'test_results.append(',
-          '    run_performance_test("na ")'
+          '    run_performance_test(\'na \'))'
         ].join('\n');
 
         expect(
