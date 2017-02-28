@@ -18,11 +18,14 @@
 
 describe('PythonCodePreprocessorService', function() {
   var PythonCodePreprocessorService;
+  var PerformanceTestObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
+    PerformanceTestObjectFactory = $injector.get(
+      'PerformanceTestObjectFactory');
   }));
 
   describe('_wrapCodeIntoClass', function() {
@@ -215,12 +218,14 @@ describe('PythonCodePreprocessorService', function() {
     it('should add correct performance test information to skeleton code',
       function() {
         var performanceTests = [
-          {
-            "input_data_atom": "na ",
-            "transformation_function": "extendString",
-            "expected_performance": "linear",
-            "evaluation_function": "katamariDamashi"
-          }
+          PerformanceTestObjectFactory.Create(
+            {
+              "input_data_atom": "na ",
+              "transformation_function": "extendString",
+              "expected_performance": "linear",
+              "evaluation_function": "katamariDamashi"
+            }
+          )
         ];
         var expectedGeneratedCode = [
           '',
