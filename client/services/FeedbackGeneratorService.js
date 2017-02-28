@@ -40,6 +40,7 @@ tie.factory('FeedbackGeneratorService', [
             var expectedOutput = correctnessTests[i].getExpectedOutput();
             var observedOutput = observedOutputs[i];
 
+            //TODO(eyurko): Add varied statements for when code is incorrect.
             if (expectedOutput !== observedOutput) {
               return FeedbackObjectFactory.create([
                 'Your code gave the output ',
@@ -52,18 +53,19 @@ tie.factory('FeedbackGeneratorService', [
               ].join(''), false);
             }
           }
-          // TODO(eyurko): Make this fancier. Add in more data points.
+          // TODO(eyurko): Potentially use regression to check runtime complexity, rather than just guessing.
           var performanceTests = prompt.getPerformanceTests();
           for (var i = 0; i < performanceTests.length; i++) {
             testIndex = i + correctnessTests.length;
             var expectedPerformance = performanceTests[i].getExpectedPerformance();
-            var observedOutput = observedOutputs[testIndex];
+            var observedPerformance = observedOutputs[testIndex];
 
-            if (expectedPerformance !== observedOutput) {
+            if (expectedPerformance !== observedPerformance) {
               return FeedbackObjectFactory.create([
-                'Your code is running pretty slowly. Are you sure that it\'s ',
+                'Your code is running pretty slowly. Can you reconfigure it ',
+                'such that it runs in ',
                 expectedPerformance,
-                '?'
+                ' time?'
               ].join(''), false);
             }
           }

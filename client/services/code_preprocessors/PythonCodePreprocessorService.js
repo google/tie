@@ -72,13 +72,13 @@ tie.factory('PythonCodePreprocessorService', [
 
     var generateTestCode = function(
         mainFunctionName, correctnessTests, performanceTests) {
-      testCode = generateCorrectnessTestCode(correctnessTests);
-      testCode += generatePerformanceTestCode(performanceTests);
+      testCode = _generateCorrectnessTestCode(correctnessTests);
+      testCode += _generatePerformanceTestCode(performanceTests);
 
       return testCode;
     };
 
-    var generateCorrectnessTestCode = function(
+    var _generateCorrectnessTestCode = function(
         mainFunctionName, correctnessTests) {
       var qualifiedMainFunctionName = (
         WRAPPER_CLASS_NAME + '().' + mainFunctionName);
@@ -100,7 +100,7 @@ tie.factory('PythonCodePreprocessorService', [
       return testCode;
     };
 
-    var generatePerformanceTestCode = function(performanceTests) {
+    var _generatePerformanceTestCode = function(performanceTests) {
       performanceTests.forEach(function(test, index) {
         var qualifiedEvaluationFunctionName = (
           WRAPPER_CLASS_NAME + '().' + test.getEvaluationFunction());
@@ -143,16 +143,6 @@ tie.factory('PythonCodePreprocessorService', [
           wrapCodeIntoClass(code) + '\n' +
           generateTestCode(
               mainFunctionName, correctnessTests, performanceTests));
-      },
-      preprocessCorrectnessCode: function(code, mainFunctionName, correctnessTests) {
-        return (
-          wrapCodeIntoClass(code) + '\n' +
-          generateCorrectnessTestCode(mainFunctionName, correctnessTests));
-      },
-      preprocessPerformanceCode: function(code, performanceTests) {
-        return (
-          wrapCodeIntoClass(code) + '\n' +
-          generatePerformanceTestCode(performanceTests));
       }
     };
   }

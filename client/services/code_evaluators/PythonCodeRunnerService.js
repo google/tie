@@ -36,6 +36,7 @@ tie.factory('PythonCodeRunnerService', [
         Sk.configure({
          output: addOutputLine,
          read: function(name) {
+           // This bit is necessary to import Python stdlib modules, like time.
            if (!Sk.builtinFiles.files.hasOwnProperty(name)) {
              throw 'Could not find module ' + name;
            }

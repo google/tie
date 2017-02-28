@@ -201,13 +201,33 @@ describe('PythonCodePreprocessorService', function() {
             "evaluation_function": "katamariDamashi"
           }
         ];
+        var expectedGeneratedCode = [
+          '',
+          'def get_test_input(atom, input_size):',
+          '    return StudentAnswer().extendString(atom, input_size)',
+          '',
+          'def run_performance_test(test_input):',
+          '    time_array = []',
+          '    for input_size in [10, 100]:',
+          '        start = time.time()',
+          '        output = StudentAnswer().katamariDamashi(get_test_input(test_input, input_size))',
+          '        finish = time.time() - start',
+          '        time_array.append(finish)',
+          '    return time_array',
+          '    if time_array[1] > 30 * time_array[0]:',
+          '        return "not linear"',
+          '    return "linear"',
+          ''
+        ].join('\n');
+        expectedGeneratedCode += '\n' + [
+          'test_results.append(',
+          '    run_performance_test("na ")'
+        ].join('\n');
 
-        outputCode = PythonCodePreprocessorService.generatePerformanceTestCode(
-                performanceTests);
-
-        expect(outputCode).toContain('katamariDamashi');
-        expect(outputCode).toContain('na ');
-        expect(outputCode).toContain('extendString');
+        expect(
+          PythonCodePreprocessorService._generatePerformanceTestCode(
+              performanceTests)
+        ).toEqual(expectedGeneratedCode);
       }
     );
   });
