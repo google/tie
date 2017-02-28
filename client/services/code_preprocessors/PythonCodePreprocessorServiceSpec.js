@@ -35,6 +35,7 @@ describe('PythonCodePreprocessorService', function() {
       // The Python interpreter ignores the trailing comma and space in the
       // function arguments.
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def myFunc(self, ):',
         '        a = 3'
@@ -55,6 +56,7 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def myFunc(self, ):',
         '        a = 3',
@@ -75,6 +77,7 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def       myFunc(self, ):',
         '        a = 3'
@@ -92,6 +95,7 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def myFunc(self, c, b, x):',
         '        a = 3',
@@ -110,6 +114,7 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def myFunc(self, ',
         '        c, b, x):',
@@ -131,6 +136,7 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
         '    def funcOne(self, a, b):',
         '        x = 3',
@@ -162,6 +168,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         var expectedWrappedCode = [
+          'import time\n\n',
           'class StudentAnswer(object):',
           '    def funcOne(self, a, b):',
           '        x = 3',
