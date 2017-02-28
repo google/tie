@@ -45,6 +45,7 @@ tie.factory('FeedbackGeneratorService', [
             var expectedOutput = correctnessTests[i].getExpectedOutput();
             var observedOutput = observedOutputs[i];
 
+            //TODO(eyurko): Add varied statements for when code is incorrect.
             if (expectedOutput !== observedOutput) {
               return FeedbackObjectFactory.create([
                 'Your code gave the output ',
@@ -54,6 +55,21 @@ tie.factory('FeedbackGeneratorService', [
                 ' ... but this does not match the expected output ',
                 jsToHumanReadable(expectedOutput),
                 '.'
+              ].join(''), false);
+            }
+          }
+          var performanceTests = prompt.getPerformanceTests();
+          for (var i = 0; i < performanceTests.length; i++) {
+            testIndex = i + correctnessTests.length;
+            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+            var observedPerformance = observedOutputs[testIndex];
+
+            if (expectedPerformance !== observedPerformance) {
+              return FeedbackObjectFactory.create([
+                'Your code is running pretty slowly. Can you reconfigure it ',
+                'such that it runs in ',
+                expectedPerformance,
+                ' time?'
               ].join(''), false);
             }
           }

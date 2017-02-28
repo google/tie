@@ -18,11 +18,14 @@
 
 describe('PythonCodePreprocessorService', function() {
   var PythonCodePreprocessorService;
+  var PerformanceTestObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
+    PerformanceTestObjectFactory = $injector.get(
+      'PerformanceTestObjectFactory');
   }));
 
   describe('_wrapCodeIntoClass', function() {
@@ -35,7 +38,10 @@ describe('PythonCodePreprocessorService', function() {
       // The Python interpreter ignores the trailing comma and space in the
       // function arguments.
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ):',
         '        a = 3'
       ].join('\n');
@@ -55,7 +61,10 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ):',
         '        a = 3',
         '        def inner_func():',
@@ -75,7 +84,10 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def       myFunc(self, ):',
         '        a = 3'
       ].join('\n');
@@ -92,7 +104,10 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, c, b, x):',
         '        a = 3',
       ].join('\n');
@@ -110,7 +125,10 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def myFunc(self, ',
         '        c, b, x):',
         '        a = 3',
@@ -131,7 +149,10 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       var expectedWrappedCode = [
+        'import time\n\n',
         'class StudentAnswer(object):',
+        '    def extendString(self, s, length):',
+        '        return s * length',
         '    def funcOne(self, a, b):',
         '        x = 3',
         '    ',
@@ -162,7 +183,10 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         var expectedWrappedCode = [
+          'import time\n\n',
           'class StudentAnswer(object):',
+          '    def extendString(self, s, length):',
+          '        return s * length',
           '    def funcOne(self, a, b):',
           '        x = 3',
           '    ',
@@ -190,5 +214,46 @@ describe('PythonCodePreprocessorService', function() {
         }).toThrow(new Error('Incomplete line: missing "(" in def statement.'));
       }
     );
-  })
+
+    it('should add correct performance test information to skeleton code',
+      function() {
+        var performanceTest = PerformanceTestObjectFactory.create(
+            {
+              "inputDataAtom": "na ",
+              "transformationFunction": "extendString",
+              "expectedPerformance": "linear",
+              "evaluationFunction": "katamariDamashi"
+            }
+          );
+        var performanceTests = [performanceTest];
+        var expectedGeneratedCode = [
+          '',
+          'def get_test_input(atom, input_size):',
+          '    return StudentAnswer().extendString(atom, input_size)',
+          '',
+          'def run_performance_test(test_input):',
+          '    time_array = []',
+          '    for input_size in [10, 100]:',
+          '        start = time.time()',
+          '        output = StudentAnswer().katamariDamashi(get_test_input(test_input, input_size))',
+          '        finish = time.time() - start',
+          '        time_array.append(finish)',
+          '    return time_array',
+          '    if time_array[1] > 30 * time_array[0]:',
+          '        return "not linear"',
+          '    return "linear"',
+          ''
+        ].join('\n');
+        expectedGeneratedCode += '\n' + [
+          'test_results.append(',
+          '    run_performance_test(\'na \'))'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generatePerformanceTestCode(
+              performanceTests)
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+  });
 });

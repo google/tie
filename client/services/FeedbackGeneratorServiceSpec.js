@@ -37,5 +37,5 @@ describe('FeedbackGeneratorService', function() {
           questionMock, codeEvalResult).getMessage()
       ).toEqual(['Your code threw an error: ERROR MESSAGE']);
     });
-  })
+  });
 });

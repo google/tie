@@ -63,6 +63,10 @@ tie.factory('PromptObjectFactory', [
       return this._correctnessTests;
     };
 
+    Prompt.prototype.getPerformanceTests = function() {
+      return this._performanceTests;
+    };
+
     Prompt.prototype.getBuggyOutputTests = function() {
       return this._buggyOutputTests;
     };
