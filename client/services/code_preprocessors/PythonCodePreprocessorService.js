@@ -22,7 +22,6 @@ tie.factory('PythonCodePreprocessorService', [
   function(WRAPPER_CLASS_NAME, VARNAME_TEST_RESULTS) {
     var START_INDENT = '    ';
 
-<<<<<<< HEAD
     // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
     // given code snippet.
     var wrapCodeIntoClass = function(code) {
@@ -52,8 +51,6 @@ tie.factory('PythonCodePreprocessorService', [
       return newCodeLines.join('\n');
     };
 
-=======
->>>>>>> 3155700f148f979ec7522e2a07ec07c685378951
     var jsonVariableToPython = function(jsonVariable) {
       console.log('var = ' + jsonVariable);
       // Converts a JSON variable to a Python variable.
@@ -140,7 +137,6 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
-<<<<<<< HEAD
       preprocessCode: function(
       code, mainFunctionName, correctnessTests, performanceTests) {
         return (
@@ -157,37 +153,6 @@ tie.factory('PythonCodePreprocessorService', [
         return (
           wrapCodeIntoClass(code) + '\n' +
           generatePerformanceTestCode(performanceTests));
-=======
-      // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
-      // given code snippet.
-      _wrapCodeIntoClass: function(code) {
-        var codeLines = code.trim().split('\n');
-
-        var firstLine = 'class ' + WRAPPER_CLASS_NAME + '(object):';
-        var subsequentLines = codeLines.map(function(line) {
-          if (line.indexOf('def') === 0) {
-            var leftParenIndex = line.indexOf('(');
-            if (leftParenIndex === -1) {
-              throw Error('Incomplete line: missing "(" in def statement.');
-            }
-            return (
-              START_INDENT +
-              line.slice(0, leftParenIndex + 1) +
-              'self, ' +
-              line.slice(leftParenIndex + 1));
-          } else {
-            return START_INDENT + line;
-          }
-        });
-
-        var newCodeLines = [firstLine].concat(subsequentLines);
-        return newCodeLines.join('\n');
-      },
-      preprocessCode: function(code, mainFunctionName, correctnessTests) {
-        return (
-          this._wrapCodeIntoClass(code) + '\n' +
-          generateTestCode(mainFunctionName, correctnessTests));
->>>>>>> 3155700f148f979ec7522e2a07ec07c685378951
       }
     };
   }
