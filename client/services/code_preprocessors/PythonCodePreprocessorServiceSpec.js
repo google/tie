@@ -31,7 +31,7 @@ describe('PythonCodePreprocessorService', function() {
   describe('_wrapCodeIntoClass', function() {
     it('should correctly wrap a function', function() {
       var rawCode = [
-        'def myFunc(): TEST FAILURE ALERT',
+        'def myFunc():',
         '    a = 3'
       ].join('\n');
 
