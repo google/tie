@@ -63,15 +63,15 @@ tie.factory('PromptObjectFactory', [
       return this._correctnessTests;
     };
 
-    Prompt.prototype.getPerformanceTests = function() {
-      return this._performanceTests;
-    };
-
     Prompt.prototype.getBuggyOutputTests = function() {
       return this._buggyOutputTests;
     };
 
-    // Static class methods.
+    Prompt.prototype.getPerformanceTests = function() {
+      return this._performanceTests;
+    };
+
+   // Static class methods.
     Prompt.create = function(promptDict) {
       return new Prompt(promptDict);
     };

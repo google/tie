@@ -154,7 +154,7 @@ def DecodeEncodedString(word):
     }],
     performanceTests: [{
       inputDataAtom: 'o',
-      transformationFunction: 'extendString',
+      transformationFunction: 'System.extendString',
       expectedPerformance: 'linear',
       evaluationFunction: 'encode'
     }]

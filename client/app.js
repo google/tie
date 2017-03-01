@@ -21,9 +21,16 @@ var tie = angular.module('tie', ['ui.codemirror']);
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
 
-// Class name for pre-processing code. Answer submissions are then run using
-// SOLUTION_CLASS_NAME.function_name.
-tie.constant('WRAPPER_CLASS_NAME', 'StudentAnswer');
+// Class name for wrapping student code. Answer submissions are then run
+// using CLASS_NAME_STUDENT_CODE.function_name().
+tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
+// Class name for wrapping auxiliary code. Answer submissions are then run
+// using CLASS_NAME_STUDENT_CODE.function_name().
+tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
 
 // Name of the list in which correctness test results are stored.
-tie.constant('VARNAME_TEST_RESULTS', 'test_results');
+tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
+// Name of the list in which buggy output test results are stored.
+tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
+// Name of the list in which performance test results are stored.
+tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');

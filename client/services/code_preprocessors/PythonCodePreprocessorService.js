@@ -18,9 +18,28 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'WRAPPER_CLASS_NAME', 'VARNAME_TEST_RESULTS',
-  function(WRAPPER_CLASS_NAME, VARNAME_TEST_RESULTS) {
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE',
+  'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
+  'VARNAME_PERFORMANCE_TEST_RESULTS',
+  function(
+      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
+      VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
+      VARNAME_PERFORMANCE_TEST_RESULTS) {
+    var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
+    var SYSTEM_CODE = [
+      'import time',
+      '',
+      'class System(object):',
+      '    @classmethod',
+      '    def runTest(cls, func, input):',
+      '        return func(input)',
+      '',
+      '    @classmethod',
+      '    def extendString(cls, s, length):',
+      '        return s * length'
+    ].join('\n');
+
     var SMALL_INPUT_SIZE = 10;
     var LARGE_INPUT_SIZE = 100;
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
@@ -43,42 +62,94 @@ tie.factory('PythonCodePreprocessorService', [
       }
     };
 
-    var generateTestCode = function(
-        mainFunctionName, correctnessTests, performanceTests) {
-      testCode = _generateCorrectnessTestCode(correctnessTests);
-      testCode += _generatePerformanceTestCode(performanceTests);
-
-      return testCode;
+    // Wraps a wrapperClassName class around the series of functions in a
+    // given code snippet. We keep these as instance methods (instead of
+    // classmethods) because that makes line number tracking less complicated,
+    // since classmethods will need an extra '@classmethod' line.
+    var _wrapCodeIntoClass = function(code, wrapperClassName) {
+      var codeLines = code.trim().split('\n');
+      var firstLine = 'class ' + wrapperClassName + '(object):';
+      var subsequentLines = codeLines.map(function(line) {
+        if (line.indexOf('def') === 0) {
+          var leftParenIndex = line.indexOf('(');
+          if (leftParenIndex === -1) {
+            throw Error('Incomplete line: missing "(" in def statement.');
+          }
+          return (
+            START_INDENT +
+            line.slice(0, leftParenIndex + 1) +
+            'self, ' +
+            line.slice(leftParenIndex + 1));
+        } else {
+          return START_INDENT + line;
+        }
+      });
+      return firstLine + '\n' + subsequentLines.join('\n');
     };
 
     var _generateCorrectnessTestCode = function(
         mainFunctionName, correctnessTests) {
       var qualifiedMainFunctionName = (
-        WRAPPER_CLASS_NAME + '().' + mainFunctionName);
+        CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
+
+      var pythonInputs = correctnessTests.map(function(test) {
+        return jsonVariableToPython(test.getInput());
+      });
 
       var testCode = [
-        'def run_correctness_test(test_input):',
-        '    return ' + qualifiedMainFunctionName + '(test_input)',
+        VARNAME_TEST_INPUTS + ' = [' + pythonInputs.join(', ') + ']',
         '',
-        VARNAME_TEST_RESULTS + ' = []'
+        VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
       ].join('\n');
-
-      correctnessTests.forEach(function(test, index) {
-        testCode += '\n' + [
-          VARNAME_TEST_RESULTS + '.append(',
-          '    run_correctness_test(' + jsonVariableToPython(test.getInput()) + '))'
-        ].join('\n');
-      });
+      for (var i = 0; i < correctnessTests.length; i++) {
+        testCode += (
+          '\n' +
+          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(System.runTest(' +
+          qualifiedMainFunctionName + ', ' + VARNAME_TEST_INPUTS +
+          '[' + i + ']))');
+      };
 
       return testCode;
     };
 
+    var _generateBuggyOutputTestCode = function(
+        correctnessTests, buggyOutputTests) {
+      // NOTE: This must be run after the correctness tests, since it assumes
+      // that the test inputs and correctness test results already exist.
+      // TODO(sll): Cache the results of running the buggy code, so that they
+      // don't have to be recomputed for every run.
+      var fullTestCode = [
+        'def matches_buggy_function(func):',
+        '    buggy_results = []',
+        '    for test_input in test_inputs:',
+        '        buggy_results.append(System.runTest(func, test_input))',
+        '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
+        '',
+        VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
+        ''
+      ].join('\n');
+      buggyOutputTests.forEach(function(buggyOutputTest) {
+        var qualifiedBuggyFunctionName = (
+          CLASS_NAME_AUXILIARY_CODE + '().' +
+          buggyOutputTest.getBuggyFunction());
+
+        fullTestCode += (
+          VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
+          '.append(matches_buggy_function(' +
+          qualifiedBuggyFunctionName + '))');
+      });
+
+      return fullTestCode;
+    };
+
     var _generatePerformanceTestCode = function(performanceTests) {
+      var testCode = '';
+
       performanceTests.forEach(function(test, index) {
         var qualifiedEvaluationFunctionName = (
-          WRAPPER_CLASS_NAME + '().' + test.getEvaluationFunction());
+          CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunction());
         var qualifiedTransformationFunctionName = (
-          WRAPPER_CLASS_NAME + '().' + test.getTransformationFunction());
+          test.getTransformationFunction());
         // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
         // TODO(eyurko): Use linear regression to determine if the data points
         // "look" linear, quadratic, etc, and then provide feedback accordingly.
@@ -102,10 +173,11 @@ tie.factory('PythonCodePreprocessorService', [
             ' * time_array[0]:'),
           '        return "not linear"',
           '    return "linear"',
-          ''
+          '',
+          VARNAME_PERFORMANCE_TEST_RESULTS + ' = []'
         ].join('\n');
         testCode += '\n' + [
-          VARNAME_TEST_RESULTS + '.append(',
+          VARNAME_PERFORMANCE_TEST_RESULTS + '.append(',
           '    run_performance_test(' + (
             jsonVariableToPython(test.getInputDataAtom()) + '))')
         ].join('\n');
@@ -115,44 +187,26 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
-      // Wraps a WRAPPER_CLASS_NAME class around the series of functions in a
-      // given code snippet.
-      _wrapCodeIntoClass: function(code) {
-        var codeLines = code.trim().split('\n');
-        var firstLine = 'import time\n\n\nclass ' + WRAPPER_CLASS_NAME + '(object):';
-        var systemFunctions = [
-          START_INDENT + 'def extendString(self, s, length):',
-          START_INDENT + '    return s * length'
-        ];
-        var subsequentLines = codeLines.map(function(line) {
-          if (line.indexOf('def') === 0) {
-            var leftParenIndex = line.indexOf('(');
-            if (leftParenIndex === -1) {
-              throw Error('Incomplete line: missing "(" in def statement.');
-            }
-            return (
-              START_INDENT +
-              line.slice(0, leftParenIndex + 1) +
-              'self, ' +
-              line.slice(leftParenIndex + 1));
-          } else {
-            return START_INDENT + line;
-          }
-        });
-        var newCodeLines = [firstLine].concat(systemFunctions);
-        newCodeLines = newCodeLines.concat(subsequentLines);
-        return newCodeLines.join('\n');
+      preprocessCode: function(
+          studentCode, auxiliaryCode, mainFunctionName, correctnessTests,
+          buggyOutputTests, performanceTests) {
+        return [
+          SYSTEM_CODE,
+          this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE),
+          this._wrapCodeIntoClass(auxiliaryCode, CLASS_NAME_AUXILIARY_CODE),
+          this._generateCorrectnessTestCode(mainFunctionName, correctnessTests),
+          this._generateBuggyOutputTestCode(correctnessTests, buggyOutputTests),
+          this._generatePerformanceTestCode(performanceTests)
+        ].join('\n\n');
       },
 
-      preprocessCode: function(code, mainFunctionName, correctnessTests,
-                               performanceTests) {
-        return (
-          this._wrapCodeIntoClass(code) + '\n' +
-          generateTestCode(
-              mainFunctionName, correctnessTests, performanceTests));
-      },
-
-      _generatePerformanceTestCode: _generatePerformanceTestCode
+      // These are seams to allow for Karma testing of the private functions.
+      // They should not be invoked directly by non-test clients outside this
+      // service.
+      _generateCorrectnessTestCode: _generateCorrectnessTestCode,
+      _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
+      _generatePerformanceTestCode: _generatePerformanceTestCode,
+      _wrapCodeIntoClass: _wrapCodeIntoClass
     };
   }
 ]);

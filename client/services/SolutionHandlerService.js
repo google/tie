@@ -25,11 +25,12 @@ tie.factory('SolutionHandlerService', [
       FeedbackGeneratorService, TranscriptService) {
     return {
       // Returns a promise with a Feedback object.
-      processSolutionAsync: function(prompt, code, language) {
-        TranscriptService.recordSolution(code);
+      processSolutionAsync: function(
+          prompt, studentCode, auxiliaryCode, language) {
+        TranscriptService.recordSolution(studentCode);
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
-          language, code
+          language, studentCode
         ).then(function(rawCodeEvalResult) {
           var potentialSyntaxErrorMessage = rawCodeEvalResult.getErrorMessage();
           if (potentialSyntaxErrorMessage) {
@@ -43,8 +44,9 @@ tie.factory('SolutionHandlerService', [
           // and run the whole thing.
           var preprocessedCode =
             CodePreprocessorDispatcherService.preprocessCode(
-              language, code, prompt.getMainFunctionName(),
-              prompt.getCorrectnessTests(), prompt.getPerformanceTests());
+              language, studentCode, auxiliaryCode,
+              prompt.getMainFunctionName(), prompt.getCorrectnessTests(),
+              prompt.getBuggyOutputTests(), prompt.getPerformanceTests());
 
           return CodeRunnerDispatcherService.runCodeAsync(
             language, preprocessedCode

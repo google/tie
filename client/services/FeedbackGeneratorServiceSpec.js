@@ -30,7 +30,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], 'ERROR MESSAGE');
+        'some code', 'some output', [], [], [], 'ERROR MESSAGE');
 
       expect(
         FeedbackGeneratorService.getFeedback(

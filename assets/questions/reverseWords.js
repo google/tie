@@ -125,7 +125,7 @@ globalData.questions['reverseWords'] = {
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'meow ',
-      transformationFunction: 'extendString',
+      transformationFunction: 'System.extendString',
       expectedPerformance: 'linear',
       evaluationFunction: 'reverseWords'
     }]

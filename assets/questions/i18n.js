@@ -128,7 +128,7 @@ def createListOfUniqueStrings(atom, size):
     }],
     performanceTests: [{
       inputDataAtom: 'm',
-      transformationFunction: 'extendString',
+      transformationFunction: 'System.extendString',
       expectedPerformance: 'constant',
       evaluationFunction: 'abbreviate'
     }]

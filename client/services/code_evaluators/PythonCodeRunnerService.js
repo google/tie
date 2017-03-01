@@ -17,8 +17,11 @@
  */
 
 tie.factory('PythonCodeRunnerService', [
-  'CodeEvalResultObjectFactory', 'VARNAME_TEST_RESULTS',
-  function(CodeEvalResultObjectFactory, VARNAME_TEST_RESULTS) {
+  'CodeEvalResultObjectFactory', 'VARNAME_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
+  function(
+      CodeEvalResultObjectFactory, VARNAME_CORRECTNESS_TEST_RESULTS,
+      VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS) {
     var outputLines = [];
 
     var clearOutput = function() {
@@ -46,21 +49,33 @@ tie.factory('PythonCodeRunnerService', [
         return Sk.misceval.asyncToPromise(function() {
           return Sk.importMainWithBody('<stdin>', false, code, true);
         }).then(function() {
-          var resultList = [];
-          if (Sk.globals.hasOwnProperty(VARNAME_TEST_RESULTS)) {
-            // This retrieves the value of the Skulpt's representation of the
-            // global Python 'test results' variable (which Skulpt stores in
-            // Sk.globals), and maps it to a JS value so that it can be
-            // compared against the "correct output" specification.
-            resultList = Sk.ffi.remapToJs(Sk.globals[VARNAME_TEST_RESULTS]);
+          var correctnessTestResults = [];
+          var buggyOutputTestResults = [];
+          var performanceTestResults = [];
+          // These checks retrieves the value of the Skulpt's representation of
+          // the global Python 'test results' variable (which Skulpt stores in
+          // Sk.globals), and maps it to a JS value so that it can be compared
+          // against the "correct output" specification.
+          if (Sk.globals.hasOwnProperty(VARNAME_CORRECTNESS_TEST_RESULTS)) {
+            correctnessTestResults = Sk.ffi.remapToJs(
+              Sk.globals[VARNAME_CORRECTNESS_TEST_RESULTS]);
+          }
+          if (Sk.globals.hasOwnProperty(VARNAME_BUGGY_OUTPUT_TEST_RESULTS)) {
+            buggyOutputTestResults = Sk.ffi.remapToJs(
+              Sk.globals[VARNAME_BUGGY_OUTPUT_TEST_RESULTS]);
+          }
+          if (Sk.globals.hasOwnProperty(VARNAME_PERFORMANCE_TEST_RESULTS)) {
+            performanceTestResults = Sk.ffi.remapToJs(
+              Sk.globals[VARNAME_PERFORMANCE_TEST_RESULTS]);
           }
 
           // The run was successful.
           return CodeEvalResultObjectFactory.create(
-            code, outputLines.join('\n'), resultList, null);
+            code, outputLines.join('\n'), correctnessTestResults,
+            buggyOutputTestResults, performanceTestResults, null);
         }, function(error) {
           return CodeEvalResultObjectFactory.create(
-            code, '', [], error);
+            code, '', [], [], [], error);
         });
       }
     };
