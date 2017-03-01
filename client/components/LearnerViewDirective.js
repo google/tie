@@ -293,9 +293,10 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          SolutionHandlerService
-            .processSolutionAsync(prompts[currentPromptIndex], code, language)
-            .then(setFeedback);
+          SolutionHandlerService.processSolutionAsync(
+            prompts[currentPromptIndex], code,
+            question.getAuxiliaryCode(language), language
+          ).then(setFeedback);
         };
 
         $scope.questionIds = questionSet.getQuestionIds();

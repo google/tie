@@ -22,11 +22,12 @@ tie.factory('CodePreprocessorDispatcherService', [
   function(PythonCodePreprocessorService, LANGUAGE_PYTHON) {
     return {
       preprocessCode: function(
-          language, code, mainFunctionName, correctnessTests,
-           performanceTests) {
+          language, studentCode, auxiliaryCode, mainFunctionName,
+          correctnessTests, buggyOutputTests, performanceTests) {
         if (language === LANGUAGE_PYTHON) {
           return PythonCodePreprocessorService.preprocessCode(
-            code, mainFunctionName, correctnessTests, performanceTests);
+            studentCode, auxiliaryCode, mainFunctionName, correctnessTests,
+            buggyOutputTests, performanceTests);
         } else {
           throw Error('Language not supported: ' + language);
         }

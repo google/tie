@@ -39,13 +39,27 @@ tie.factory('FeedbackGeneratorService', [
             'Your code threw an error: ' + codeEvalResult.getErrorMessage()
           ], false);
         } else {
+          var buggyOutputTests = prompt.getBuggyOutputTests();
+          var buggyOutputTestResults =
+              codeEvalResult.getBuggyOutputTestResults();
+          for (var i = 0; i < buggyOutputTests.length; i++) {
+            if (buggyOutputTestResults[i]) {
+              // TODO(sll): Interpolate the %s characters in these messages,
+              // where needed.
+              // TODO(sll): Use subsequent messages as well if multiple
+              // messages are specified.
+              return FeedbackObjectFactory.create(
+                buggyOutputTests[i].getMessages()[0], false);
+            }
+          }
+
           var correctnessTests = prompt.getCorrectnessTests();
-          var observedOutputs = codeEvalResult.getTestResults();
+          var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (var i = 0; i < correctnessTests.length; i++) {
             var expectedOutput = correctnessTests[i].getExpectedOutput();
             var observedOutput = observedOutputs[i];
 
-            //TODO(eyurko): Add varied statements for when code is incorrect.
+            // TODO(eyurko): Add varied statements for when code is incorrect.
             if (expectedOutput !== observedOutput) {
               return FeedbackObjectFactory.create([
                 'Your code gave the output ',
@@ -58,11 +72,13 @@ tie.factory('FeedbackGeneratorService', [
               ].join(''), false);
             }
           }
+
           var performanceTests = prompt.getPerformanceTests();
+          var performanceTestResults =
+              codeEvalResult.getPerformanceTestResults();
           for (var i = 0; i < performanceTests.length; i++) {
-            testIndex = i + correctnessTests.length;
             var expectedPerformance = performanceTests[i].getExpectedPerformance();
-            var observedPerformance = observedOutputs[testIndex];
+            var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
               return FeedbackObjectFactory.create([
@@ -73,6 +89,7 @@ tie.factory('FeedbackGeneratorService', [
               ].join(''), false);
             }
           }
+
           return FeedbackObjectFactory.create([
             'Congratulations, you\'ve finished this question! Click the ',
             '"Next" button to move on to the next question.',
