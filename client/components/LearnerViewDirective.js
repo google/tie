@@ -33,7 +33,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-coding-ui">
             <div class="tie-feedback-window">
-              <div id="tie-feedback" class="tie-feedback">
+              <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
                     class="tie-feedback-paragraph">
                   {{paragraph}}
@@ -69,7 +69,7 @@ tie.directive('learnerView', [function() {
                   <hr>
                 </div>
               </div>
-              <div id="tie-instructions" class="tie-instructions">
+              <div class="tie-instructions">
                 <p ng-repeat="paragraph in instructions">
                   {{paragraph}}
                 </p>
@@ -228,8 +228,6 @@ tie.directive('learnerView', [function() {
         var question = null;
         var prompts = null;
         var currentPromptIndex = null;
-        var feedbackDiv = document.getElementById('tie-feedback');
-        var instructionsDiv = document.getElementById('tie-instructions');
 
         var loadQuestion = function(questionId, introParagraphs) {
           question = QuestionDataService.getQuestion(questionId);
@@ -257,7 +255,6 @@ tie.directive('learnerView', [function() {
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
-          feedbackDiv.lastElementChild.scrollIntoView();
         };
 
         $scope.codeMirrorOptions = {
@@ -283,11 +280,6 @@ tie.directive('learnerView', [function() {
             $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = prompts[currentPromptIndex].getInstructions();
             $scope.nextButtonIsShown = false;
-            // TODO (johnmunoz): DOM not yet updated; is there a better way
-            // than using a timeout?
-            $timeout(function() {
-              instructionsDiv.lastElementChild.scrollIntoView();
-            }, 0);
             clearFeedback();
           }
         };
