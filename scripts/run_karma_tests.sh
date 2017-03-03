@@ -36,6 +36,7 @@ export MACHINE_TYPE=`uname -m`
 export TOOLS_DIR=./tools
 export NODE_DIR=$TOOLS_DIR/node-6.9.1
 export NPM_CMD=$NODE_DIR/bin/npm
+export NODE_MODULES_DIR=./node_modules
 # Adjust PATH to include a reference to node.
 export PATH=$NODE_DIR/bin:$PATH
 
@@ -46,6 +47,14 @@ install_node_module() {
     NPM_INSTALLED_MODULES="$(npm list)"
   fi
 }
+
+# Ensure that there is a node_modules folder in the root, otherwise node may
+# put libraries in the wrong place. See
+#
+#     https://docs.npmjs.com/files/folders#more-information
+if [ ! -d "$NODE_MODULES_DIR" ]; then
+  mkdir $NODE_MODULES_DIR
+fi
 
 # Download and install node.js, if necessary.
 echo Checking if node.js is installed in $NODE_DIR
