@@ -25,16 +25,13 @@ tie.directive('learnerView', [function() {
         <div class="tie-exercise-ui-inner">
           <div class="tie-step-container-outer">
             <div class="tie-step-container-inner">
-              <div class="tie-step-item" ng-repeat="questionId in questionIds\
-                  track by $index"
+              <div class="tie-step-item"
+                  ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
-                <div class="tie-step-circle" ng-class="{'tie-step-active':\
-                    currentQuestionIndex === $index, 'tie-step-unlocked':\
-                    unlockedQuestions[$index]}">
+                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': unlockedQuestions[$index]}">
                   <span class="tie-step-text">{{$index + 1}}</span>
                 </div>
-                <div ng-class="{'tie-step-line':\
-                    $index < (questionIds.length - 1)}"></div>
+                <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
             </div>
           </div>
@@ -52,10 +49,10 @@ tie.directive('learnerView', [function() {
                 <div class="tie-coding-terminal">
                   <ui-codemirror ui-codemirror="codeMirrorOptions"
                       ng-model="code"
-                      class="tie-codemirror-container"></ui-codemirror>
+                      class="tie-codemirror-container">
+                  </ui-codemirror>
                 </div>
-                <select class="tie-lang-select-menu"
-                    name="lang-select-menu">
+                <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
                 <button class="tie-run-button"
@@ -78,19 +75,13 @@ tie.directive('learnerView', [function() {
             <div class="tie-question-window">
               <h3>Exercise {{currentQuestionIndex + 1}}: {{title}}</h3>
               <div class="tie-previous-instructions">
-                <div ng-repeat="previousInstruction in previousInstructions\
-                    track by $index">
-                  <p ng-repeat="paragraph in previousInstruction track by\
-                      $index">
-                    {{paragraph}}
-                  </p>
+                <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                  <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
                   <hr>
                 </div>
               </div>
               <div class="tie-instructions">
-                <p ng-repeat="paragraph in instructions">
-                  {{paragraph}}
-                </p>
+                <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
               </div>
             </div>
           </div>
@@ -302,7 +293,14 @@ tie.directive('learnerView', [function() {
         var questionSet = QuestionDataService.getCurrentQuestionSet(
           questionSetId);
         $scope.currentQuestionIndex = 0;
+
+
+        $scope.questionIds = questionSet.getQuestionIds();
         $scope.unlockedQuestions = [];
+        for (var i = 0; i < $scope.questionIds.length; i++) {
+          $scope.unlockedQuestions.push(false);
+        }
+
 
         var question = null;
         var prompts = null;
@@ -374,7 +372,7 @@ tie.directive('learnerView', [function() {
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
             loadQuestion(questionId, questionSet.getIntroductionParagraphs());
           }
-        }
+        };
 
         $scope.submitCode = function(code) {
           SolutionHandlerService.processSolutionAsync(
@@ -383,7 +381,6 @@ tie.directive('learnerView', [function() {
           ).then(setFeedback);
         };
 
-        $scope.questionIds = questionSet.getQuestionIds();
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());

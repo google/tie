@@ -123,12 +123,7 @@ globalData.questions['reverseWords'] = {
       expectedOutput: 'tset rof dna-sehsad srehto'
     }],
     buggyOutputTests: [],
-    performanceTests: [{
-      inputDataAtom: 'meow ',
-      transformationFunction: 'System.extendString',
-      expectedPerformance: 'linear',
-      evaluationFunction: 'reverseWords'
-    }]
+    performanceTests: []
   }],
   styleTests: [{
     evaluationFunction: 'allowOnlyOneFunction',
