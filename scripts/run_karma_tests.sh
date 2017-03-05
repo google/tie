@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NOTE TO DEVELOPERS: Arguments passed into this script will also be passed to
+# `karma start`. See CLI options here:
+#
+#     http://karma-runner.github.io/1.0/config/configuration-file.html
+
 #############################################################
 # Installs a node module at a particular version.
 # Usage: install_node_module [module_name] [module_version]
@@ -25,7 +30,7 @@
 # Returns:
 #   None
 #############################################################
-# Install node.
+set -e
 export OS=`uname`
 export MACHINE_TYPE=`uname -m`
 export TOOLS_DIR=./tools
@@ -42,7 +47,7 @@ install_node_module() {
   fi
 }
 
-# Download and install node.js.
+# Download and install node.js, if necessary.
 echo Checking if node.js is installed in $NODE_DIR
 if [ ! -d "$NODE_DIR" ]; then
   echo Installing Node.js
@@ -79,5 +84,5 @@ install_node_module karma 1.4.1
 install_node_module karma-jasmine 1.1.0
 install_node_module karma-chrome-launcher 2.0.0
 
-# Run Karma.
-./node_modules/karma/bin/karma start
+# Run Karma, passing in any arguments passed to this script.
+./node_modules/karma/bin/karma start "$@"
