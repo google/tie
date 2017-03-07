@@ -45,7 +45,7 @@ globalData.questions['reverseWords'] = {
         'Implement the reverseWords function. This function takes a string of ',
         'words separated by whitespace and reverses the non-whitespace ',
         'characters in the words, but not their ordering, preserving the ',
-        'whitespace between them.'
+        'original whitespace.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],
@@ -60,29 +60,7 @@ globalData.questions['reverseWords'] = {
     }, {
       input: 'racecar civic kayak mom noon level',
       expectedOutput: 'racecar civic kayak mom noon level'
-    }],
-    buggyOutputTests: [{
-      buggyFunction: 'forgetLastWord',
-      messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
-        "Are you sure that you're reversing all the words?",
-        [
-          "It looks like you're exiting the function without adding on the ",
-          "last reversed word."
-        ].join('')
-      ]
-    }],
-    performanceTests: []
-  }, {
-    instructions: [
-      "You need to make sure that your code handles short strings correctly, too."
-    ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
-    correctnessTests: [{
+    }, {
       input: 'I',
       expectedOutput: 'I'
     }, {
@@ -95,7 +73,17 @@ globalData.questions['reverseWords'] = {
       input: 'ab',
       expectedOutput: 'ba'
     }],
-    buggyOutputTests: [],
+    buggyOutputTests: [{
+      buggyFunction: 'forgetLastWord',
+      messages: [
+        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "Are you sure that you're reversing all the words?",
+        [
+          "It looks like you're exiting the function without adding on the ",
+          "last reversed word."
+        ].join('')
+      ]
+    }],
     performanceTests: []
   }, {
     instructions: [
