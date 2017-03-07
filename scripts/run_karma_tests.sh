@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NOTE TO DEVELOPERS: Arguments passed into this script will also be passed to
+# `karma start`. See CLI options here:
+#
+#     http://karma-runner.github.io/1.0/config/configuration-file.html
+
 #############################################################
 # Installs a node module at a particular version.
 # Usage: install_node_module [module_name] [module_version]
@@ -25,12 +30,13 @@
 # Returns:
 #   None
 #############################################################
-# Install node.
+set -e
 export OS=`uname`
 export MACHINE_TYPE=`uname -m`
 export TOOLS_DIR=./tools
 export NODE_DIR=$TOOLS_DIR/node-6.9.1
 export NPM_CMD=$NODE_DIR/bin/npm
+export NODE_MODULES_DIR=./node_modules
 # Adjust PATH to include a reference to node.
 export PATH=$NODE_DIR/bin:$PATH
 
@@ -42,7 +48,15 @@ install_node_module() {
   fi
 }
 
-# Download and install node.js.
+# Ensure that there is a node_modules folder in the root, otherwise node may
+# put libraries in the wrong place. See
+#
+#     https://docs.npmjs.com/files/folders#more-information
+if [ ! -d "$NODE_MODULES_DIR" ]; then
+  mkdir $NODE_MODULES_DIR
+fi
+
+# Download and install node.js, if necessary.
 echo Checking if node.js is installed in $NODE_DIR
 if [ ! -d "$NODE_DIR" ]; then
   echo Installing Node.js
@@ -79,5 +93,5 @@ install_node_module karma 1.4.1
 install_node_module karma-jasmine 1.1.0
 install_node_module karma-chrome-launcher 2.0.0
 
-# Run Karma.
-./node_modules/karma/bin/karma start
+# Run Karma, passing in any arguments passed to this script.
+./node_modules/karma/bin/karma start "$@"
