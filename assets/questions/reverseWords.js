@@ -45,7 +45,7 @@ globalData.questions['reverseWords'] = {
         'Implement the reverseWords function. This function takes a string of ',
         'words separated by whitespace and reverses the non-whitespace ',
         'characters in the words, but not their ordering, preserving the ',
-        'whitespace between them.'
+        'original whitespace.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],
@@ -60,6 +60,15 @@ globalData.questions['reverseWords'] = {
     }, {
       input: 'racecar civic kayak mom noon level',
       expectedOutput: 'racecar civic kayak mom noon level'
+    }, {
+      input: 'I',
+      expectedOutput: 'I'
+    }, {
+      input: '',
+      expectedOutput: ''
+    }, {
+      input: 'ab',
+      expectedOutput: 'ba'
     }],
     buggyOutputTests: [{
       buggyFunction: 'forgetLastWord',
@@ -72,30 +81,6 @@ globalData.questions['reverseWords'] = {
         ].join('')
       ]
     }],
-    performanceTests: []
-  }, {
-    instructions: [
-      "You need to make sure that your code handles short strings correctly, too."
-    ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
-    correctnessTests: [{
-      input: 'I',
-      expectedOutput: 'I'
-    }, {
-      input: '',
-      expectedOutput: ''
-    }, {
-      input: 'A ',
-      expectedOutput: 'A '
-    }, {
-      input: 'ab',
-      expectedOutput: 'ba'
-    }],
-    buggyOutputTests: [],
     performanceTests: []
   }, {
     instructions: [
@@ -116,8 +101,8 @@ globalData.questions['reverseWords'] = {
       input: '\t  ',
       expectedOutput: '\t  '
     }, {
-      input: '123 456 789',
-      expectedOutput: '321 654 987'
+      input: '123 456 789 ',
+      expectedOutput: '321 654 987 '
     }, {
       input: 'test for dashes-and others',
       expectedOutput: 'tset rof dna-sehsad srehto'
