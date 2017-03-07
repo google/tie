@@ -261,7 +261,6 @@ describe('PythonCodePreprocessorService', function() {
           '        output = StudentCode().katamariDamashi(get_test_input(test_input, input_size))',
           '        finish = time.time() - start',
           '        time_array.append(finish)',
-          '    return time_array',
           '    if time_array[1] > 30 * time_array[0]:',
           '        return "not linear"',
           '    return "linear"',
