@@ -67,9 +67,6 @@ globalData.questions['reverseWords'] = {
       input: '',
       expectedOutput: ''
     }, {
-      input: 'A ',
-      expectedOutput: 'A '
-    }, {
       input: 'ab',
       expectedOutput: 'ba'
     }],
@@ -104,8 +101,8 @@ globalData.questions['reverseWords'] = {
       input: '\t  ',
       expectedOutput: '\t  '
     }, {
-      input: '123 456 789',
-      expectedOutput: '321 654 987'
+      input: '123 456 789 ',
+      expectedOutput: '321 654 987 '
     }, {
       input: 'test for dashes-and others',
       expectedOutput: 'tset rof dna-sehsad srehto'
