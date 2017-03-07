@@ -168,7 +168,6 @@ tie.factory('PythonCodePreprocessorService', [
             '(get_test_input(test_input, input_size))'),
           '        finish = time.time() - start',
           '        time_array.append(finish)',
-          '    return time_array',
           '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
             ' * time_array[0]:'),
           '        return "not linear"',
