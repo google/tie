@@ -28,7 +28,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-step-item"
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
-                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': completedQuestions[$index]}">
+                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
                   <span class="tie-step-text">{{$index + 1}}</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
@@ -296,9 +296,9 @@ tie.directive('learnerView', [function() {
 
 
         $scope.questionIds = questionSet.getQuestionIds();
-        $scope.completedQuestions = [];
+        $scope.questionsCompletionStatus = [];
         for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.completedQuestions.push(false);
+          $scope.questionsCompletionStatus.push(false);
         }
 
 
@@ -329,7 +329,7 @@ tie.directive('learnerView', [function() {
           if (feedback.isAnswerCorrect()) {
             if (question.isLastPrompt(currentPromptIndex)) {
               $scope.nextButtonIsShown = true;
-              $scope.completedQuestions[$scope.currentQuestionIndex] = true;
+              $scope.questionsCompletionStatus[$scope.currentQuestionIndex] = true;
             } else {
               $scope.showNextPrompt();
             }
