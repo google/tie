@@ -28,7 +28,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-step-item"
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
-                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': unlockedQuestions[$index]}">
+                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
                   <span class="tie-step-text">{{$index + 1}}</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
@@ -40,6 +40,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
                     class="tie-feedback-paragraph">
+                  <span ng-if="$first">{{feedbackTimestamp}}</span>
                   {{paragraph}}
                 </p>
               </div>
@@ -244,6 +245,7 @@ tie.directive('learnerView', [function() {
           border-style: solid;
           border-width: 1px;
           color: rgb(255, 255, 255);
+          cursor: pointer;
           height: 20px;
           width: 20px;
         }
@@ -252,7 +254,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-item > .tie-step-active {
           background-color: rgb(42, 128, 255);
-          cursor: pointer;
         }
         .tie-step-line {
           background-color: rgb(200, 200, 200);
@@ -269,7 +270,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
-          cursor: pointer;
         }
       </style>
     `,
@@ -296,9 +296,9 @@ tie.directive('learnerView', [function() {
 
 
         $scope.questionIds = questionSet.getQuestionIds();
-        $scope.unlockedQuestions = [];
+        $scope.questionsCompletionStatus = [];
         for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.unlockedQuestions.push(false);
+          $scope.questionsCompletionStatus.push(false);
         }
 
 
@@ -316,17 +316,20 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           $scope.feedbackParagraphs = introParagraphs;
-          $scope.unlockedQuestions[$scope.currentQuestionIndex] = true;
         };
 
         var clearFeedback = function() {
+          $scope.feedbackTimestamp = null;
           $scope.feedbackParagraphs = [];
         };
 
         var setFeedback = function(feedback) {
+          $scope.feedbackTimestamp = (
+            '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
             if (question.isLastPrompt(currentPromptIndex)) {
               $scope.nextButtonIsShown = true;
+              $scope.questionsCompletionStatus[$scope.currentQuestionIndex] = true;
             } else {
               $scope.showNextPrompt();
             }
@@ -367,11 +370,9 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          if ($scope.unlockedQuestions[index]) {
-            $scope.currentQuestionIndex = index;
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId, questionSet.getIntroductionParagraphs());
-          }
+          $scope.currentQuestionIndex = index;
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {
