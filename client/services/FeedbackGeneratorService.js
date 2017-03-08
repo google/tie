@@ -20,13 +20,15 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', function(FeedbackObjectFactory) {
-    var jsToHumanReadable = function(jsVariable) {
+    var _jsToHumanReadable = function(jsVariable) {
       if (typeof jsVariable === 'string') {
         return '"' + jsVariable + '"';
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
         return jsVariable ? 'True' : 'False';
+      } else if (Array.isArray(jsVariable)) {
+        return '[' + jsVariable + ']';
       } else {
         throw Error('Cannot parse JS variable: ' + jsVariable);
       }
@@ -63,11 +65,11 @@ tie.factory('FeedbackGeneratorService', [
             if (expectedOutput !== observedOutput) {
               return FeedbackObjectFactory.create([
                 'Your code gave the output ',
-                jsToHumanReadable(observedOutput),
+                _jsToHumanReadable(observedOutput),
                 ' for the input ',
-                jsToHumanReadable(correctnessTests[i].getInput()),
+                _jsToHumanReadable(correctnessTests[i].getInput()),
                 ' ... but this does not match the expected output ',
-                jsToHumanReadable(expectedOutput),
+                _jsToHumanReadable(expectedOutput),
                 '.'
               ].join(''), false);
             }
@@ -82,8 +84,8 @@ tie.factory('FeedbackGeneratorService', [
 
             if (expectedPerformance !== observedPerformance) {
               return FeedbackObjectFactory.create([
-                'Your code is running pretty slowly. Can you reconfigure it ',
-                'such that it runs in ',
+                'Your code is running more slowly than expected. Can you ',
+                'reconfigure it such that it runs in ',
                 expectedPerformance,
                 ' time?'
               ].join(''), false);
@@ -91,14 +93,15 @@ tie.factory('FeedbackGeneratorService', [
           }
 
           return FeedbackObjectFactory.create([
-            'Congratulations, you\'ve finished this question! Click the ',
+            'You\'ve completed all the tasks for this question! Click the ',
             '"Next" button to move on to the next question.',
           ].join(''), true);
         }
       },
       getSyntaxErrorFeedback: function(errorMessage) {
         return FeedbackObjectFactory.create(errorMessage, false);
-      }
+      },
+      _jsToHumanReadable: _jsToHumanReadable
     };
   }
 ]);

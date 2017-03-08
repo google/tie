@@ -34,6 +34,28 @@ describe('PythonCodePreprocessorService', function() {
       'PerformanceTestObjectFactory');
   }));
 
+  describe('jsonVariableToPython', function() {
+    it('should correctly convert a json String to a Python string', function() {
+      expect(
+        PythonCodePreprocessorService.jsonVariableToPython('stringify')
+      ).toEqual("'stringify'");
+    });
+
+    it('should correctly convert a json Array to a Python array (or a string version)'
+      , function() {
+      expect(
+        PythonCodePreprocessorService.jsonVariableToPython(["cat", "2", "3"])
+      ).toEqual("['cat', '2', '3']");
+    });
+
+    it('should correctly convert a nested json Array to a similar Python array)'
+      , function() {
+      expect(
+        PythonCodePreprocessorService.jsonVariableToPython([["1", "2"], ["3", "4"], ["5", "6"]])
+      ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
+    });
+  });
+
   describe('_wrapCodeIntoClass', function() {
     it('should correctly wrap a function', function() {
       var rawCode = [
@@ -228,7 +250,7 @@ describe('PythonCodePreprocessorService', function() {
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'buggy_output_test_results.append(matches_buggy_function(AuxiliaryCode().buggyFunc))'
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
         ].join('\n');
 
         expect(

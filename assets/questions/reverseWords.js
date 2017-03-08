@@ -26,7 +26,9 @@ globalData.questions['reverseWords'] = {
   },
   auxiliaryCode: {
     python:
-`def forgetLastWord(s):
+`class AuxiliaryCode(object):
+  @classmethod
+  def forgetLastWord(cls, s):
     result = ""
     reversed_word = []
     for c in s:
@@ -42,10 +44,10 @@ globalData.questions['reverseWords'] = {
   prompts: [{
     instructions: [
       [
-        'Implement the reverseWords function. This function takes a string of ',
-        'words separated by whitespace and reverses the non-whitespace ',
-        'characters in the words, but not their ordering, preserving the ',
-        'original whitespace.'
+        'For this question, you\'ll implement the reverseWords function. ',
+        'This function takes a string of words separated by whitespace and ',
+        'reverses the non-whitespace characters in the words, but not their ',
+        'ordering, preserving the original whitespace.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],
@@ -71,9 +73,9 @@ globalData.questions['reverseWords'] = {
       expectedOutput: 'ba'
     }],
     buggyOutputTests: [{
-      buggyFunction: 'forgetLastWord',
+      buggyFunction: 'AuxiliaryCode.forgetLastWord',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "It looks like your output doesn't match our expected output.",
         "Are you sure that you're reversing all the words?",
         [
           "It looks like you're exiting the function without adding on the ",
@@ -85,8 +87,8 @@ globalData.questions['reverseWords'] = {
   }, {
     instructions: [
       [
-        'Good work! Now, make sure that your code accurately preserves ',
-        'whitespace and handles more than just letters.'
+        'Next, double-check your code to make sure that it preserves ',
+        'the original whitespace and handles more than just letters.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -121,7 +123,7 @@ globalData.questions['reverseWords'] = {
     message: [
       'You should only be writing code in a reverseWords function. While ',
       "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this exercise.'
+      'just this function for this question.'
     ].join('')
   }]
 };

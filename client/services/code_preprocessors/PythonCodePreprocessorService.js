@@ -57,6 +57,18 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return "'" + pythonStringContent + "'";
+      } else if (Array.isArray(jsonVariable)) {
+        // We have to recursively convert the array's elements to Python variables.
+        var pythonArrayContent = ''
+        if (jsonVariable.length > 0) {
+          pythonArrayContent += jsonVariableToPython(jsonVariable[0]);
+        }
+        for (var i = 1; i < jsonVariable.length; i++) {
+          pythonArrayContent += ', '
+          pythonArrayContent += jsonVariableToPython(jsonVariable[i]);
+        }
+
+        return "[" + pythonArrayContent + "]";
       } else {
         throw Error('Non-string inputs are not yet supported.');
       }
@@ -130,7 +142,6 @@ tie.factory('PythonCodePreprocessorService', [
       ].join('\n');
       buggyOutputTests.forEach(function(buggyOutputTest) {
         var qualifiedBuggyFunctionName = (
-          CLASS_NAME_AUXILIARY_CODE + '().' +
           buggyOutputTest.getBuggyFunction());
 
         fullTestCode += (
@@ -192,7 +203,7 @@ tie.factory('PythonCodePreprocessorService', [
         return [
           SYSTEM_CODE,
           this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE),
-          this._wrapCodeIntoClass(auxiliaryCode, CLASS_NAME_AUXILIARY_CODE),
+          auxiliaryCode,
           this._generateCorrectnessTestCode(mainFunctionName, correctnessTests),
           this._generateBuggyOutputTestCode(correctnessTests, buggyOutputTests),
           this._generatePerformanceTestCode(performanceTests)
@@ -205,7 +216,8 @@ tie.factory('PythonCodePreprocessorService', [
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
-      _wrapCodeIntoClass: _wrapCodeIntoClass
+      _wrapCodeIntoClass: _wrapCodeIntoClass,
+      jsonVariableToPython: jsonVariableToPython
     };
   }
 ]);

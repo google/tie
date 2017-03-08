@@ -26,26 +26,33 @@ globalData.questions['rle'] = {
   },
   auxiliaryCode: {
     python:
-`def skipEncodingAtEndOfString(word):
-    pass
+`class AuxiliaryCode(object):
+    @classmethod
+    def skipEncodingAtEndOfString(cls, word):
+        pass
 
-def ignoreStringLengthWhenEncoding(word):
-    pass
+    @classmethod
+    def ignoreStringLengthWhenEncoding(cls, word):
+        pass
 
-def failToDemarcateBeginningOfEncodedChunk(word):
-    pass
 
-def DecodeEncodedString(word):
-    pass
+    @classmethod
+    def failToDemarcateBeginningOfEncodedChunk(cls, word):
+        pass
+
+
+    @classmethod
+    def DecodeEncodedString(cls, word):
+        pass
 `
   },
   prompts: [{
     instructions: [
       [
-        'Implement the encode function. It takes a string as input and ',
-        'returns an encoding of the string where long runs of characters are ',
-        'replaced by <# characters>x<character>. For example, "abcccccd" ',
-        'should be encoded as "ab5xc".'
+        'In this question, you\'ll implement the encode function. It takes a ',
+        'string as input and returns an encoding of the string where long ',
+        'runs of characters are replaced by <# characters>x<character>. For ',
+        'example, "abcccccd" should be encoded as "ab5xc".'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -65,9 +72,9 @@ def DecodeEncodedString(word):
       expectedOutput: 'bu10xd'
     }],
     buggyOutputTests: [{
-      buggyFunction: 'skipEncodingAtEndOfString',
+      buggyFunction: 'AuxiliaryCode.skipEncodingAtEndOfString',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "It looks like your output doesn't match our expected output.",
         "It looks like the issue is with the last few characters of the string.",
         [
           "It doesn't seem like you're encoding a run if it occurs at the end ",
@@ -78,7 +85,10 @@ def DecodeEncodedString(word):
     performanceTests: []
   }, {
     instructions: [
-      'You need to make sure that your code handles short strings correctly.'
+      [
+        'Next, double-check your code to make sure it handles short strings. ',
+        'Ideally, these strings should also be as small as possible.',
+      ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -99,9 +109,9 @@ def DecodeEncodedString(word):
       expectedOutput: ''
     }],
     buggyOutputTests: [{
-      buggyFunction: 'ignoreStringLengthWhenEncoding',
+      buggyFunction: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "It looks like your output doesn't match our expected output.",
         [
           "It looks like you're encoding the string, which is fine, but does ",
           "this seem like an improvement?"
@@ -116,9 +126,9 @@ def DecodeEncodedString(word):
   }, {
     instructions: [
       [
-        'Good work! But we need to make sure that the string can accurately ',
-        'be decoded. Think about whether the output of your function will ',
-        'correctly be decoded back to the original string.'
+        'Next, make sure that your method\'s output can accurately be decoded. ',
+        'For each <#x> pair, the decode method will repeat the following character ',
+        '# times.'
       ].join(''),
       [
         'This should allow us to decode your encoded string and get the same ',
@@ -128,7 +138,7 @@ def DecodeEncodedString(word):
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunction: null,
-    outputFunction: 'DecodeEncodedString',
+    outputFunction: 'AuxiliaryCode.DecodeEncodedString',
     mainFunction: 'encode',
     correctnessTests: [{
       input: '5xb',
@@ -138,12 +148,12 @@ def DecodeEncodedString(word):
       expectedOutput: '2aaaaaab7'
     }],
     buggyOutputTests: [{
-      buggyFunction: 'failToDemarcateBeginningOfEncodedChunk',
+      buggyFunction: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "It looks like your output doesn't match our expected output.",
         [
           'So your function takes in something like "2aaaaaab7" and returns ',
-          "\"26xab7\". Does that seem like it'll decode properly?"
+          "\"26xab7\". What will happen when that string is run through decode()?"
         ].join(''),
         [
           "Even though it'll make the encoded string longer, you might want ",
@@ -165,7 +175,7 @@ def DecodeEncodedString(word):
     message: [
       'You should only be writing code in an encode function. While ',
       "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this exercise.'
+      'just this function for this question.'
     ].join('')
   }]
 };
