@@ -51,7 +51,8 @@ describe('PythonCodePreprocessorService', function() {
     it('should correctly convert a nested json Array to a similar Python array)'
       , function() {
       expect(
-        PythonCodePreprocessorService._jsonVariableToPython([["1", "2"], ["3", "4"], ["5", "6"]])
+        PythonCodePreprocessorService._jsonVariableToPython(
+          [["1", "2"], ["3", "4"], ["5", "6"]])
       ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
     });
   });
