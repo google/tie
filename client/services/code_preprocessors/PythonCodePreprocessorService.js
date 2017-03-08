@@ -216,8 +216,8 @@ tie.factory('PythonCodePreprocessorService', [
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
-      _jsonVariableToPython: _jsonVariableToPython
-      _wrapCodeIntoClass: _wrapCodeIntoClass,
+      _jsonVariableToPython: _jsonVariableToPython,
+      _wrapCodeIntoClass: _wrapCodeIntoClass
     };
   }
 ]);
