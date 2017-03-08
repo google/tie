@@ -125,7 +125,7 @@ def createListOfUniqueStrings(atom, size):
           "length <= 3."
         ].join('')
       ]
-    }],
+    }], 
     performanceTests: []
   }, {
     instructions: [
