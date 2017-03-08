@@ -44,7 +44,7 @@ tie.factory('PythonCodePreprocessorService', [
     var LARGE_INPUT_SIZE = 100;
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
-    var jsonVariableToPython = function(jsonVariable) {
+    var _jsonVariableToPython = function(jsonVariable) {
       // Converts a JSON variable to a Python variable.
       if (typeof jsonVariable === 'string') {
         var pythonStringContent = '';
@@ -61,11 +61,11 @@ tie.factory('PythonCodePreprocessorService', [
         // We have to recursively convert the array's elements to Python variables.
         var pythonArrayContent = ''
         if (jsonVariable.length > 0) {
-          pythonArrayContent += jsonVariableToPython(jsonVariable[0]);
+          pythonArrayContent += _jsonVariableToPython(jsonVariable[0]);
         }
         for (var i = 1; i < jsonVariable.length; i++) {
           pythonArrayContent += ', '
-          pythonArrayContent += jsonVariableToPython(jsonVariable[i]);
+          pythonArrayContent += _jsonVariableToPython(jsonVariable[i]);
         }
 
         return "[" + pythonArrayContent + "]";
@@ -105,7 +105,7 @@ tie.factory('PythonCodePreprocessorService', [
         CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
 
       var pythonInputs = correctnessTests.map(function(test) {
-        return jsonVariableToPython(test.getInput());
+        return _jsonVariableToPython(test.getInput());
       });
 
       var testCode = [
@@ -189,7 +189,7 @@ tie.factory('PythonCodePreprocessorService', [
         testCode += '\n' + [
           VARNAME_PERFORMANCE_TEST_RESULTS + '.append(',
           '    run_performance_test(' + (
-            jsonVariableToPython(test.getInputDataAtom()) + '))')
+            _jsonVariableToPython(test.getInputDataAtom()) + '))')
         ].join('\n');
       });
 
@@ -216,8 +216,8 @@ tie.factory('PythonCodePreprocessorService', [
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
+      _jsonVariableToPython: _jsonVariableToPython
       _wrapCodeIntoClass: _wrapCodeIntoClass,
-      jsonVariableToPython: jsonVariableToPython
     };
   }
 ]);

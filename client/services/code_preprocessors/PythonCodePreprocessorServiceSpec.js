@@ -34,24 +34,24 @@ describe('PythonCodePreprocessorService', function() {
       'PerformanceTestObjectFactory');
   }));
 
-  describe('jsonVariableToPython', function() {
+  describe('_jsonVariableToPython', function() {
     it('should correctly convert a json String to a Python string', function() {
       expect(
-        PythonCodePreprocessorService.jsonVariableToPython('stringify')
+        PythonCodePreprocessorService._jsonVariableToPython('stringify')
       ).toEqual("'stringify'");
     });
 
     it('should correctly convert a json Array to a Python array (or a string version)'
       , function() {
       expect(
-        PythonCodePreprocessorService.jsonVariableToPython(["cat", "2", "3"])
+        PythonCodePreprocessorService._jsonVariableToPython(["cat", "2", "3"])
       ).toEqual("['cat', '2', '3']");
     });
 
     it('should correctly convert a nested json Array to a similar Python array)'
       , function() {
       expect(
-        PythonCodePreprocessorService.jsonVariableToPython([["1", "2"], ["3", "4"], ["5", "6"]])
+        PythonCodePreprocessorService._jsonVariableToPython([["1", "2"], ["3", "4"], ["5", "6"]])
       ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
     });
   });
