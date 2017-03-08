@@ -22,6 +22,7 @@ globalData.questions['i18n'] = {
     python:
 `def abbreviate(word):
     return ""
+
 def are_all_unique(words):
     return True
 `
@@ -31,10 +32,12 @@ def are_all_unique(words):
 `def forgetLastLetter(word):
     result = "%s%d" % (word[0], len(word) - 2) if len(word) > 2 else word
     return result
+
 def useFirstAndLastLetterAndLengthToAbbreviate(word):
     if word:
         return "%s%d%s" % (word[0], len(word) - 2, word[len(word) - 1])
     return ""
+
 def createListOfUniqueStrings(atom, size):
     result = []
     for i in range(size):
