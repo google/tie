@@ -93,7 +93,7 @@ def are_all_unique(words):
     instructions: [
       [
         "Next, consider possible edge cases for your code. One potential ",
-        'edge case is usually short strings. Does your code handle them properly?',
+        'edge case is usually short strings. Does your code handle them properly? ',
         "Make sure your code doesn't try to abbreviate when it's not necessary."
       ].join('')
     ],
