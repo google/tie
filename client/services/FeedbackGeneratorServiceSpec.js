@@ -26,6 +26,27 @@ describe('FeedbackGeneratorService', function() {
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
   }));
 
+  describe('_jsToHumanReadable', function() {
+    it('should return "stringified" (readable) versions of input variables', 
+      function() {
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable('cat')
+      ).toEqual('"cat"');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(1)
+      ).toEqual('1');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(true)
+      ).toEqual('True');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(false)
+      ).toEqual('False');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable([1, 3, 5])
+      ).toEqual('[1, 3, 5]');
+    });
+  });
+
   describe('getFeedback', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
