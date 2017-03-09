@@ -19,7 +19,7 @@
 globalData.questionSets['strings'] = {
   introductionParagraphs: [
     'Greetings!',
-    'This set of exercises focuses on string manipulation.',
+    'This set of questions focuses on string manipulation.',
     [
       "Let's get started! You'll see the first question to your right. ",
       "Code a solution in the coding window below and hit \"Run\", and ",

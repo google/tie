@@ -21,8 +21,8 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-exercise-ui-outer">
-        <div class="tie-exercise-ui-inner">
+      <div class="tie-question-ui-outer">
+        <div class="tie-question-ui-inner">
           <div class="tie-step-container-outer">
             <div class="tie-step-container-inner">
               <div class="tie-step-item"
@@ -74,7 +74,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Exercise {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <h3>Question {{currentQuestionIndex + 1}}: {{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
@@ -130,11 +130,11 @@ tie.directive('learnerView', [function() {
           display: inline-block;
           margin: 8px;
         }
-        .tie-exercise-ui-inner {
+        .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
         }
-        .tie-exercise-ui-outer {
+        .tie-question-ui-outer {
           display: table;
           margin-left: auto;
           margin-right: auto;
@@ -285,8 +285,8 @@ tie.directive('learnerView', [function() {
         var questionSetId = 'strings';
         var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
         var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
-          "Fantastic! You're done with this exercise. Shall we try the next one?",
-          "Click the \"Next\" button below to move on to the next exercise."
+          "Good work! You've completed this question.",
+          "Click the \"Next\" button below to move on to the next one."
         ];
 
         QuestionDataService.initCurrentQuestionSet(questionSetId);
