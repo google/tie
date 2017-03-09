@@ -127,7 +127,7 @@ globalData.questions['rle'] = {
     instructions: [
       [
         'Next, make sure that your method\'s output can accurately be decoded. ',
-        'For each <#x> pair, the decode method will repeat the following character ',
+        'For each <#x{c}> pair, the decode method will repeat the character c',
         '# times.'
       ].join(''),
       [
