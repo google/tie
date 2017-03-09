@@ -43,7 +43,7 @@ describe('FeedbackGeneratorService', function() {
       ).toEqual('False');
       expect(
         FeedbackGeneratorService._jsToHumanReadable([1, 3, 5])
-      ).toEqual('[1,3,5]');
+      ).toEqual('[1, 3, 5]');
     });
   });
 

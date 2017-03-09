@@ -51,10 +51,9 @@ def are_all_unique(words):
   },
   prompts: [{
     instructions: [
-      [
-        'This question will have you implement two functions. First, ',
-        'implement the abbreviate function. It takes a string as input and ',
-        'returns an abbreviation of the string of the form ',
+      'In this question, you will implement two functions.',
+      [ 'First, implement the abbreviate function. It takes a string as input ',
+        'and returns an abbreviation of the string of the form ',
         '<first character><length of the middle of the string><last character>. ',
         'For example, "internationalization" should be abbreviated as "i18n".'
       ].join('')
@@ -77,7 +76,7 @@ def are_all_unique(words):
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.forgetLastLetter',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        "Try running your code on 'word'. What's the result?.",
         [
           "You seem to be dropping the last character of the string when ",
           "you\'re abbreviating."
@@ -94,7 +93,8 @@ def are_all_unique(words):
       [
         "Next, consider possible edge cases for your code. One potential ",
         'edge case is usually short strings. Does your code handle them properly? ',
-        "Make sure your code doesn't try to abbreviate when it's not necessary."
+        "Make sure your code doesn't try to abbreviate when it's not necessary -- ",
+        "for instance, 'and' should remain 'and', but 'boat' should become 'b2t'."
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -118,7 +118,7 @@ def are_all_unique(words):
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        "Try running your code on 'at'. What does it produce?",
         [
           "It looks like you're using the string's length minus two in the ",
           "middle, which is usually fine, but can you think of any issues ",

@@ -73,7 +73,7 @@ globalData.questions['parens'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
       messages: [
-        "This doesn't seem quite right. Check your code and try again.",
+        "Try running your code on '))(('. Is the result what you'd expect?.",
         [
           'Are you making sure the parentheses are properly balanced? () ',
           'is balanced, but )( is not.'
@@ -81,7 +81,7 @@ globalData.questions['parens'] = {
         [
           "It looks like you're counting the number of parentheses, and if ",
           "you have the same number of each kind, returning true. That's not ",
-          "quite correct."
+          "quite correct. See if you can figure out why."
         ].join('')
       ]
     }],
@@ -90,7 +90,8 @@ globalData.questions['parens'] = {
     instructions: [
       [
         'Now, double-check your code to make sure it handles unexpected cases, ',
-        'such as the empty string.'
+        'such as the empty string. Once you think that it does, submit it to ',
+        'check if you\'re correct.'
       ].join(''),
       [
         "We will guarantee that you will always be passed a string, so ",
@@ -117,8 +118,8 @@ globalData.questions['parens'] = {
   }, {
     instructions: [
       [
-        'Next, modify your code to support the various types of braces ',
-        '([], (), {}) provided they are balanced against each other.'
+        'Next, modify your code to support all types of braces ',
+        '([], (), {}) and check that they are balanced against each other.'
       ].join(''),
       'For instance, [(){}] is balanced, but ([)] is not.'
     ],

@@ -57,20 +57,17 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return "'" + pythonStringContent + "'";
+      } else if (typeof jsonVariable == 'boolean') {
+        return jsonVariable ? 'True' : 'False';
       } else if (Array.isArray(jsonVariable)) {
         // We have to recursively convert the array's elements to Python variables.
-        var pythonArrayContent = ''
-        if (jsonVariable.length > 0) {
-          pythonArrayContent += _jsonVariableToPython(jsonVariable[0]);
+        var variable_array = []
+        for (var i = 0; i < jsonVariable.length; i++) {
+          variable_array.push(_jsonVariableToPython(jsonVariable[i]));
         }
-        for (var i = 1; i < jsonVariable.length; i++) {
-          pythonArrayContent += ', '
-          pythonArrayContent += _jsonVariableToPython(jsonVariable[i]);
-        }
-
-        return "[" + pythonArrayContent + "]";
+        return '[' + variable_array.join(', ') + ']';
       } else {
-        throw Error('Non-string inputs are not yet supported.');
+        throw Error('Only string, array, and boolean inputs are supported.');
       }
     };
 

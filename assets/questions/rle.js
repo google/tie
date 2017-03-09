@@ -111,7 +111,7 @@ globalData.questions['rle'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        "Try running your encode method on 'aa'. Is your result what you expect?",
         [
           "It looks like you're encoding the string, which is fine, but does ",
           "this seem like an improvement?"
@@ -150,7 +150,10 @@ globalData.questions['rle'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        [
+          "Try running your code on '5aaaa'. What will happen when you try to ",
+          "decode that string?"
+        ].join(''),
         [
           'So your function takes in something like "2aaaaaab7" and returns ',
           "\"26xab7\". What will happen when that string is run through decode()?"

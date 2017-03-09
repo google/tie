@@ -27,18 +27,18 @@ globalData.questions['reverseWords'] = {
   auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
-  @classmethod
-  def forgetLastWord(cls, s):
-    result = ""
-    reversed_word = []
-    for c in s:
-        if c.isspace():
-            result += "".join(reversed(reversed_word))
-            result += c
-            reversed_word = []
-        else:
-            reversed_word.append(c)
-    return result
+    @classmethod
+    def forgetLastWord(cls, s):
+        result = ""
+        reversed_word = []
+        for c in s:
+            if c.isspace():
+                result += "".join(reversed(reversed_word))
+                result += c
+                reversed_word = []
+            else:
+                reversed_word.append(c)
+        return result
 `
   },
   prompts: [{
@@ -46,8 +46,8 @@ globalData.questions['reverseWords'] = {
       [
         'For this question, you\'ll implement the reverseWords function. ',
         'This function takes a string of words separated by whitespace and ',
-        'reverses the non-whitespace characters in the words, but not their ',
-        'ordering, preserving the original whitespace.'
+        'reverses the non-whitespace characters in the words, but not the ',
+        'words\' ordering. It should also preserve the original whitespace.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],

@@ -41,19 +41,33 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("'stringify'");
     });
 
-    it('should correctly convert a json Array to a Python array (or a string version)'
-      , function() {
+    it(
+      [
+        'should correctly convert a json Array to a string version ',
+        'of a Python array'
+      ].join('') , function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(["cat", "2", "3"])
       ).toEqual("['cat', '2', '3']");
     });
 
-    it('should correctly convert a nested json Array to a similar Python array)'
+    it('should correctly convert a nested json Array to a similar Python array'
       , function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(
           [["1", "2"], ["3", "4"], ["5", "6"]])
       ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
+    });
+
+    it(
+      [
+        'should correctly convert a json boolean Array to a string version ',
+        'of a Python boolean array'
+      ].join('') , function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython(
+          [[true, true], [false, false], [true, false]])
+      ).toEqual("[[True, True], [False, False], [True, False]]");
     });
   });
 

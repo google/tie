@@ -26,9 +26,14 @@ tie.factory('FeedbackGeneratorService', [
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
+        // TODO(sll): Change human-readable representation based on language.
         return jsVariable ? 'True' : 'False';
       } else if (Array.isArray(jsVariable)) {
-        return '[' + jsVariable + ']';
+        var variable_array = [];
+        for (var i = 0; i < jsVariable.length; i++) {
+          variable_array.push(_jsToHumanReadable(jsVariable[i]));
+        }
+        return '[' + variable_array.join(', ') + ']';
       } else {
         throw Error('Cannot parse JS variable: ' + jsVariable);
       }
