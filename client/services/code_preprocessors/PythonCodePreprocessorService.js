@@ -61,11 +61,10 @@ tie.factory('PythonCodePreprocessorService', [
         return jsonVariable ? 'True' : 'False';
       } else if (Array.isArray(jsonVariable)) {
         // We have to recursively convert the array's elements to Python variables.
-        var variable_array = []
-        for (var i = 0; i < jsonVariable.length; i++) {
-          variable_array.push(_jsonVariableToPython(jsonVariable[i]));
-        }
-        return '[' + variable_array.join(', ') + ']';
+        var pythonElements = jsonVariable.map(function(arrayElement) {
+          return _jsonVariableToPython(arrayElement);
+        });
+        return '[' + pythonElements.join(', ') + ']';
       } else {
         throw Error('Only string, array, and boolean inputs are supported.');
       }

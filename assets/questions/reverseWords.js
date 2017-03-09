@@ -75,7 +75,7 @@ globalData.questions['reverseWords'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.forgetLastWord',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        "Try running your code on 'new code' on paper. What's the result?",
         "Are you sure that you're reversing all the words?",
         [
           "It looks like you're exiting the function without adding on the ",

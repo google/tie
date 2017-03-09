@@ -74,7 +74,7 @@ globalData.questions['rle'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.skipEncodingAtEndOfString',
       messages: [
-        "It looks like your output doesn't match our expected output.",
+        "Run your code on 'adddd' in your head. What's the result?",
         "It looks like the issue is with the last few characters of the string.",
         [
           "It doesn't seem like you're encoding a run if it occurs at the end ",
@@ -87,7 +87,7 @@ globalData.questions['rle'] = {
     instructions: [
       [
         'Next, double-check your code to make sure it handles short strings. ',
-        'Ideally, these strings should also be as small as possible.',
+        'Ideally, these strings should be as small as possible after encoding.',
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -111,7 +111,10 @@ globalData.questions['rle'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
       messages: [
-        "Try running your encode method on 'aa'. Is your result what you expect?",
+        [
+          "Try running your encode method on 'aa' on paper. ",
+          "Is your result what you expect?"
+        ].join(''),
         [
           "It looks like you're encoding the string, which is fine, but does ",
           "this seem like an improvement?"
@@ -127,7 +130,7 @@ globalData.questions['rle'] = {
     instructions: [
       [
         'Next, make sure that your method\'s output can accurately be decoded. ',
-        'For each <#x{c}> pair, the decode method will repeat the character c',
+        'For each <#x{c}> pair, the decode method will repeat the character c ',
         '# times.'
       ].join(''),
       [
@@ -151,8 +154,8 @@ globalData.questions['rle'] = {
       buggyFunction: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
       messages: [
         [
-          "Try running your code on '5aaaa'. What will happen when you try to ",
-          "decode that string?"
+          "Try running your code on '5aaaa' in your head. ",
+          "What will happen when you try to decode that string?"
         ].join(''),
         [
           'So your function takes in something like "2aaaaaab7" and returns ',

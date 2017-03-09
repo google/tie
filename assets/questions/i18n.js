@@ -76,7 +76,7 @@ def are_all_unique(words):
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.forgetLastLetter',
       messages: [
-        "Try running your code on 'word'. What's the result?.",
+        "Try running your code on 'word' in your head. What's the result?.",
         [
           "You seem to be dropping the last character of the string when ",
           "you\'re abbreviating."
@@ -118,7 +118,7 @@ def are_all_unique(words):
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
-        "Try running your code on 'at'. What does it produce?",
+        "Try running your code on 'at' on a piece of paper. What does it produce?",
         [
           "It looks like you're using the string's length minus two in the ",
           "middle, which is usually fine, but can you think of any issues ",

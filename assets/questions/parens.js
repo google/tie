@@ -73,7 +73,7 @@ globalData.questions['parens'] = {
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
       messages: [
-        "Try running your code on '))(('. Is the result what you'd expect?.",
+        "Try running your code on '))((' on paper. Did you expect that result?",
         [
           'Are you making sure the parentheses are properly balanced? () ',
           'is balanced, but )( is not.'
