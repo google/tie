@@ -44,7 +44,7 @@ tie.factory('PythonCodePreprocessorService', [
     var LARGE_INPUT_SIZE = 100;
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
-    var jsonVariableToPython = function(jsonVariable) {
+    var _jsonVariableToPython = function(jsonVariable) {
       // Converts a JSON variable to a Python variable.
       if (typeof jsonVariable === 'string') {
         var pythonStringContent = '';
@@ -57,8 +57,16 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return "'" + pythonStringContent + "'";
+      } else if (typeof jsonVariable == 'boolean') {
+        return jsonVariable ? 'True' : 'False';
+      } else if (Array.isArray(jsonVariable)) {
+        // We have to recursively convert the array's elements to Python variables.
+        var pythonElements = jsonVariable.map(function(arrayElement) {
+          return _jsonVariableToPython(arrayElement);
+        });
+        return '[' + pythonElements.join(', ') + ']';
       } else {
-        throw Error('Non-string inputs are not yet supported.');
+        throw Error('Only string, array, and boolean inputs are supported.');
       }
     };
 
@@ -93,7 +101,7 @@ tie.factory('PythonCodePreprocessorService', [
         CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
 
       var pythonInputs = correctnessTests.map(function(test) {
-        return jsonVariableToPython(test.getInput());
+        return _jsonVariableToPython(test.getInput());
       });
 
       var testCode = [
@@ -130,7 +138,6 @@ tie.factory('PythonCodePreprocessorService', [
       ].join('\n');
       buggyOutputTests.forEach(function(buggyOutputTest) {
         var qualifiedBuggyFunctionName = (
-          CLASS_NAME_AUXILIARY_CODE + '().' +
           buggyOutputTest.getBuggyFunction());
 
         fullTestCode += (
@@ -168,7 +175,6 @@ tie.factory('PythonCodePreprocessorService', [
             '(get_test_input(test_input, input_size))'),
           '        finish = time.time() - start',
           '        time_array.append(finish)',
-          '    return time_array',
           '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
             ' * time_array[0]:'),
           '        return "not linear"',
@@ -179,7 +185,7 @@ tie.factory('PythonCodePreprocessorService', [
         testCode += '\n' + [
           VARNAME_PERFORMANCE_TEST_RESULTS + '.append(',
           '    run_performance_test(' + (
-            jsonVariableToPython(test.getInputDataAtom()) + '))')
+            _jsonVariableToPython(test.getInputDataAtom()) + '))')
         ].join('\n');
       });
 
@@ -193,7 +199,7 @@ tie.factory('PythonCodePreprocessorService', [
         return [
           SYSTEM_CODE,
           this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE),
-          this._wrapCodeIntoClass(auxiliaryCode, CLASS_NAME_AUXILIARY_CODE),
+          auxiliaryCode,
           this._generateCorrectnessTestCode(mainFunctionName, correctnessTests),
           this._generateBuggyOutputTestCode(correctnessTests, buggyOutputTests),
           this._generatePerformanceTestCode(performanceTests)
@@ -206,6 +212,7 @@ tie.factory('PythonCodePreprocessorService', [
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
+      _jsonVariableToPython: _jsonVariableToPython,
       _wrapCodeIntoClass: _wrapCodeIntoClass
     };
   }

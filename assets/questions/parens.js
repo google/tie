@@ -26,27 +26,30 @@ globalData.questions['parens'] = {
   },
   auxiliaryCode: {
     python:
-`def createBalancedParenthesesString(atom, input_size):
-    return "%s%s" % (atom[0] * input_size, atom[1] * input_size)
+`class AuxiliaryCode(object):
+    @classmethod
+    def createBalancedParenthesesString(cls, atom, input_size):
+        return "%s%s" % (atom[0] * input_size, atom[1] * input_size)
 
-def countNumberOfParentheses(s):
-    numleft = 0
-    numright = 0
-    for char in s:
-        if char == '(':
-            numleft += 1
-        elif char == ')':
-            numright += 1
-        return numleft == numright
+    @classmethod
+    def countNumberOfParentheses(cls, s):
+        numleft = 0
+        numright = 0
+        for char in s:
+            if char == '(':
+                numleft += 1
+            elif char == ')':
+                numright += 1
+            return numleft == numright
 `
   },
   prompts: [{
     instructions: [
       [
-        'Implement the isBalanced function. It takes a string of parentheses ',
-        'as input and returns True if for every open parentheses there is a ',
-        'matching closing parentheses, and False otherwise. For example, (()) ',
-        'is balanced.'
+        'For this question, you will implement the isBalanced function. ',
+        'It takes a string of parentheses as input and returns True if ',
+        'for every open parentheses there is a matching closing ',
+        'parentheses, and False otherwise. For example, (()) is balanced.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -68,16 +71,17 @@ def countNumberOfParentheses(s):
       expectedOutput: false
     }],
     buggyOutputTests: [{
-      buggyFunction: 'countNumberOfParentheses',
+      buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
       messages: [
-        "It looks like you're returning True when you shouldn't.",
+        "Try running your code on '))((' on paper. Did you expect that result?",
         [
           'Are you making sure the parentheses are properly balanced? () ',
           'is balanced, but )( is not.'
         ].join(''),
         [
           "It looks like you're counting the number of parentheses, and if ",
-          "they're equal, returning true. That's not quite correct."
+          "you have the same number of each kind, returning true. That's not ",
+          "quite correct. See if you can figure out why."
         ].join('')
       ]
     }],
@@ -85,8 +89,9 @@ def countNumberOfParentheses(s):
   }, {
     instructions: [
       [
-        'Now, make sure your code handles unexpected cases, such as the ',
-        'empty string.'
+        'Now, double-check your code to make sure it handles unexpected cases, ',
+        'such as the empty string. Once you think that it does, submit it to ',
+        'check if you\'re correct.'
       ].join(''),
       [
         "We will guarantee that you will always be passed a string, so ",
@@ -112,10 +117,9 @@ def countNumberOfParentheses(s):
     performanceTests: []
   }, {
     instructions: [
-      "Let's make this more challenging.",
       [
-        'Now, you can have any types of braces, but they must be balanced ',
-        'against each other.'
+        'Next, modify your code to support all types of braces ',
+        '([], (), {}) and check that they are balanced against each other.'
       ].join(''),
       'For instance, [(){}] is balanced, but ([)] is not.'
     ],
@@ -152,7 +156,7 @@ def countNumberOfParentheses(s):
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: '()',
-      transformationFunction: 'System.extendString',
+      transformationFunction: 'AuxiliaryCode.createBalancedParenthesesString',
       expectedPerformance: 'linear',
       evaluationFunction: 'isBalanced'
     }]
@@ -163,7 +167,7 @@ def countNumberOfParentheses(s):
     message: [
       "You should only be writing code in an isBalanced function. While ",
       "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this exercise."
+      "just this function for this question."
     ].join('')
   }]
 };

@@ -29,27 +29,31 @@ def are_all_unique(words):
   },
   auxiliaryCode: {
     python:
-`def forgetLastLetter(word):
-    result = "%s%d" % (word[0], len(word) - 2) if len(word) > 2 else word
-    return result
+`class AuxiliaryCode(object):
+    @classmethod
+    def forgetLastLetter(cls, word):
+        result = "%s%d" % (word[0], len(word) - 2) if len(word) > 2 else word
+        return result
 
-def useFirstAndLastLetterAndLengthToAbbreviate(word):
-    if word:
-        return "%s%d%s" % (word[0], len(word) - 2, word[len(word) - 1])
-    return ""
+    @classmethod
+    def useFirstAndLastLetterAndLengthToAbbreviate(cls, word):
+        if word:
+            return "%s%d%s" % (word[0], len(word) - 2, word[len(word) - 1])
+        return ""
 
-def createListOfUniqueStrings(atom, size):
-    result = []
-    for i in range(size):
-        result.append(atom * (i + 1))
-    return result
+    @classmethod
+    def createListOfUniqueStrings(cls, atom, size):
+        result = []
+        for i in range(size):
+            result.append(atom * (i + 1))
+        return result
 `
   },
   prompts: [{
     instructions: [
-      [
-        'Implement the abbreviate function. It takes a string as input and ',
-        'returns an abbreviation of the string of the form ',
+      'In this question, you will implement two functions.',
+      [ 'First, implement the abbreviate function. It takes a string as input ',
+        'and returns an abbreviation of the string of the form ',
         '<first character><length of the middle of the string><last character>. ',
         'For example, "internationalization" should be abbreviated as "i18n".'
       ].join('')
@@ -70,9 +74,9 @@ def createListOfUniqueStrings(atom, size):
       expectedOutput: 'f8p'
     }],
     buggyOutputTests: [{
-      buggyFunction: 'forgetLastLetter',
+      buggyFunction: 'AuxiliaryCode.forgetLastLetter',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "Try running your code on 'word' in your head. What's the result?.",
         [
           "You seem to be dropping the last character of the string when ",
           "you\'re abbreviating."
@@ -87,9 +91,10 @@ def createListOfUniqueStrings(atom, size):
   }, {
     instructions: [
       [
-        "It's always important to think about the edge cases for your code. ",
-        'In this case, short strings are not abbreviated by this strategy. ',
-        "Make sure your code doesn't try to abbreviate when it's not necessary."
+        "Next, consider possible edge cases for your code. One potential ",
+        'edge case is usually short strings. Does your code handle them properly? ',
+        "Make sure your code doesn't try to abbreviate when it's not necessary -- ",
+        "for instance, 'and' should remain 'and', but 'boat' should become 'b2t'."
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -111,9 +116,9 @@ def createListOfUniqueStrings(atom, size):
       expectedOutput: ''
     }],
     buggyOutputTests: [{
-      buggyFunction: 'useFirstAndLastLetterAndLengthToAbbreviate',
+      buggyFunction: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "Try running your code on 'at' on a piece of paper. What does it produce?",
         [
           "It looks like you're using the string's length minus two in the ",
           "middle, which is usually fine, but can you think of any issues ",
@@ -126,12 +131,7 @@ def createListOfUniqueStrings(atom, size):
         ].join('')
       ]
     }],
-    performanceTests: [{
-      inputDataAtom: 'm',
-      transformationFunction: 'System.extendString',
-      expectedPerformance: 'constant',
-      evaluationFunction: 'abbreviate'
-    }]
+    performanceTests: []
   }, {
     instructions: [
       [
@@ -156,7 +156,7 @@ def createListOfUniqueStrings(atom, size):
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'o',
-      transformationFunction: 'createListOfUniqueStrings',
+      transformationFunction: 'AuxiliaryCode.createListOfUniqueStrings',
       expectedPerformance: 'linear',
       evaluationFunction: 'are_all_unique'
     }]
@@ -167,7 +167,7 @@ def createListOfUniqueStrings(atom, size):
     message: [
       "You should only be writing code in an abbreviate function. While ",
       "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this exercise."
+      "just this function for this question."
     ].join('')
   }]
 };
