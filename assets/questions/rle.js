@@ -140,7 +140,7 @@ globalData.questions['rle'] = {
         'In this question, you\'ll implement the encode function. It takes a ',
         'string as input and returns an encoding of the string where long ',
         'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" should be encoded as "ab5xc".'
+        'example, "abcccccd" could be encoded as "ab5xc".'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -219,17 +219,17 @@ globalData.questions['rle'] = {
       [
         'Next, make sure that your method\'s output can accurately be decoded. ',
         'For each <#x{c}> pair, the decode method will repeat the character c ',
-        '# times.'
+        '# times. Note that the input strings may also contain digits.'
       ].join(''),
       [
-        'This should allow us to decode your encoded string and get the same ',
-        'result as the input.'
+        'We should be able to run "decode" on your encoded string and get the ',
+        'original string back as a result.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunction: null,
-    outputFunction: 'AuxiliaryCode.DecodeEncodedString',
+    outputFunction: 'AuxiliaryCode.decodeEncodedString',
     mainFunction: 'encode',
     correctnessTests: [{
       input: '5xb',
