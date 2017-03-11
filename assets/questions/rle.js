@@ -110,25 +110,26 @@ globalData.questions['rle'] = {
 
 
     @classmethod
-    def decodeEncodedString(cls, word):
+    def decodeEncodedString(cls, encoded_string):
         number_block = False
         start_block = 0
         end_block = 0
         result = ''
         i = 0
-        while i < len(string):
-            if string[i].isdigit() and not number_block:
+        while i < len(encoded_string):
+            if encoded_string[i].isdigit() and not number_block:
                 number_block = True
                 start_block = i
-            elif not self.isdecimal(string[i]) and number_block:
+            elif not encoded_string[i].isdigit() and number_block:
                 number_block = False
                 end_block = i - 1
-                num = int(string[start_block:(end_block + 1)])
-                if string[i] == 'x' and i < len(string) - 1:
-                    result += (string[i + 1] * num)
+                num_string = encoded_string[start_block:(end_block + 1)]
+                num = int(num_string)
+                if encoded_string[i] == 'x' and i < len(encoded_string) - 1:
+                    result += (encoded_string[i + 1] * num)
                     i += 1
-            else:
-                result += string[i]
+            elif not number_block:
+                result += encoded_string[i]
             i += 1
         return result
 `
