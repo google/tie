@@ -48,6 +48,7 @@ tie.factory('FeedbackGeneratorService', [
           var buggyOutputTests = prompt.getBuggyOutputTests();
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
+          console.log(buggyOutputTestResults);
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
               // TODO(sll): Interpolate the %s characters in these messages,

@@ -246,6 +246,163 @@ describe('PythonCodePreprocessorService', function() {
     );
   });
 
+  describe('_addClassWrappingToStudentHelperFunctions', function() {
+    it('should correctly add our classname to their helper functions', 
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '',
+          'def inner_func():',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '',
+          'def inner_func():',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+            rawCode)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should add classname regardless of leading or trailing spaces', 
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '',
+          'def     inner_func          ():',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '',
+          'def     inner_func          ():',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+            rawCode)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should correctly add our classname to multiple functions', 
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '    outer_func()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '    StudentCode().outer_func()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    StudentCode().inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+            rawCode)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should correctly add our classname to multiple functions regardless ' +
+      'of their position within the file', 
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    _inner_func()',
+          '    outer_func()',
+          '    myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    _inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode()._inner_func()',
+          '    StudentCode().outer_func()',
+          '    StudentCode().myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    StudentCode()._inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+            rawCode)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should ignore code with no functions defined', 
+      function() {
+        var rawCode = [
+          'a = 3',
+          'b = 54',
+          'a = math.sqrt(9)',
+          'katamari = "damashi"'
+        ].join('\n');
+
+        var expectedCode = [
+          'a = 3',
+          'b = 54',
+          'a = math.sqrt(9)',
+          'katamari = "damashi"'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+            rawCode)
+        ).toEqual(expectedCode);
+      }
+    );
+  });
+
+
   describe('_generateBuggyOutputTestCode', function() {
     it('should add correct buggy output test code to skeleton code',
       function() {
