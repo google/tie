@@ -96,7 +96,7 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateCorrectnessTestCode = function(
-        mainFunctionName, correctnessTests) {
+        correctnessTests, mainFunctionName, outputFunctionName) {
       var qualifiedMainFunctionName = (
         CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
 
@@ -110,27 +110,37 @@ tie.factory('PythonCodePreprocessorService', [
         VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
       ].join('\n');
       for (var i = 0; i < correctnessTests.length; i++) {
+        var testRunCode = (
+          'System.runTest(' + qualifiedMainFunctionName + ', ' +
+          VARNAME_TEST_INPUTS + '[' + i + '])');
+        var testOutputCode = (
+          outputFunctionName ?
+          outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+
         testCode += (
           '\n' +
-          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(System.runTest(' +
-          qualifiedMainFunctionName + ', ' + VARNAME_TEST_INPUTS +
-          '[' + i + ']))');
+          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(' + testOutputCode + ')');
       };
 
       return testCode;
     };
 
     var _generateBuggyOutputTestCode = function(
-        correctnessTests, buggyOutputTests) {
+        correctnessTests, buggyOutputTests, outputFunctionName) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
+      var testRunCode = 'System.runTest(func, test_input)';
+      var testOutputCode = (
+        outputFunctionName ?
+        outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+
       var fullTestCode = [
         'def matches_buggy_function(func):',
         '    buggy_results = []',
         '    for test_input in test_inputs:',
-        '        buggy_results.append(System.runTest(func, test_input))',
+        '        buggy_results.append(' + testOutputCode + ')',
         '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
         '',
         VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
@@ -194,14 +204,16 @@ tie.factory('PythonCodePreprocessorService', [
 
     return {
       preprocessCode: function(
-          studentCode, auxiliaryCode, mainFunctionName, correctnessTests,
-          buggyOutputTests, performanceTests) {
+          studentCode, auxiliaryCode, mainFunctionName, outputFunctionName,
+          correctnessTests, buggyOutputTests, performanceTests) {
         return [
           SYSTEM_CODE,
           this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE),
           auxiliaryCode,
-          this._generateCorrectnessTestCode(mainFunctionName, correctnessTests),
-          this._generateBuggyOutputTestCode(correctnessTests, buggyOutputTests),
+          this._generateCorrectnessTestCode(
+            correctnessTests, mainFunctionName, outputFunctionName),
+          this._generateBuggyOutputTestCode(
+            correctnessTests, buggyOutputTests, outputFunctionName),
           this._generatePerformanceTestCode(performanceTests)
         ].join('\n\n');
       },
