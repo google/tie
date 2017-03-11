@@ -27,8 +27,14 @@ describe('FeedbackGeneratorService', function() {
   }));
 
   describe('_jsToHumanReadable', function() {
-    it('should return "stringified" (readable) versions of input variables', 
+    it('should return "stringified" (readable) versions of input variables',
       function() {
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(null)
+      ).toEqual('None');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(undefined)
+      ).toEqual('None');
       expect(
         FeedbackGeneratorService._jsToHumanReadable('cat')
       ).toEqual('"cat"');
@@ -44,6 +50,9 @@ describe('FeedbackGeneratorService', function() {
       expect(
         FeedbackGeneratorService._jsToHumanReadable([1, 3, 5])
       ).toEqual('[1, 3, 5]');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable({a: 3, b: 5, c: 'j'})
+      ).toEqual('{"a": 3, "b": 5, "c": "j"}');
     });
   });
 
