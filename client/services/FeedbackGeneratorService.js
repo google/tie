@@ -46,6 +46,8 @@ tie.factory('FeedbackGeneratorService', [
         }
         return '{' + humanReadableKeyValuePairs.join(', ') + '}';
       } else {
+        console.error(
+          'Could not make the following object human-readable: ', jsVariable);
         return '[UNKNOWN OBJECT]';
       }
     };
