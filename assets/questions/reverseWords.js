@@ -58,19 +58,19 @@ globalData.questions['reverseWords'] = {
     mainFunction: 'reverseWords',
     correctnessTests: [{
       input: 'moo cow bark dog',
-      expectedOutput: 'oom woc krab god'
+      allowedOutputs: ['oom woc krab god']
     }, {
       input: 'racecar civic kayak mom noon level',
-      expectedOutput: 'racecar civic kayak mom noon level'
+      allowedOutputs: ['racecar civic kayak mom noon level']
     }, {
       input: 'I',
-      expectedOutput: 'I'
+      allowedOutputs: ['I']
     }, {
       input: '',
-      expectedOutput: ''
+      allowedOutputs: ['']
     }, {
       input: 'ab',
-      expectedOutput: 'ba'
+      allowedOutputs: ['ba']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.forgetLastWord',
@@ -98,16 +98,16 @@ globalData.questions['reverseWords'] = {
     mainFunction: 'reverseWords',
     correctnessTests: [{
       input: '   this  is \t a    whitespace  test',
-      expectedOutput: '   siht  si \t a    ecapsetihw  tset'
+      allowedOutputs: ['   siht  si \t a    ecapsetihw  tset']
     }, {
       input: '\t  ',
-      expectedOutput: '\t  '
+      allowedOutputs: ['\t  ']
     }, {
       input: '123 456 789 ',
-      expectedOutput: '321 654 987 '
+      allowedOutputs: ['321 654 987 ']
     }, {
       input: 'test for dashes-and others',
-      expectedOutput: 'tset rof dna-sehsad srehto'
+      allowedOutputs: ['tset rof dna-sehsad srehto']
     }],
     buggyOutputTests: [],
     performanceTests: [{

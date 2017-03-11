@@ -255,7 +255,7 @@ describe('PythonCodePreprocessorService', function() {
         })];
         var correctnessTests = [CorrectnessTestObjectFactory.create({
           input: 'cat',
-          expectedOutput: 'at'
+          allowedOutputs: ['at']
         })];
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',

@@ -62,18 +62,19 @@ tie.factory('FeedbackGeneratorService', [
           var correctnessTests = prompt.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (var i = 0; i < correctnessTests.length; i++) {
-            var expectedOutput = correctnessTests[i].getExpectedOutput();
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
-            if (expectedOutput !== observedOutput) {
+            if (!correctnessTests[i].matchesOutput(observedOutput)) {
+              var allowedOutputExample = (
+                correctnessTests[i].getAnyAllowedOutput());
               return FeedbackObjectFactory.create([
                 'Your code gave the output ',
                 _jsToHumanReadable(observedOutput),
                 ' for the input ',
                 _jsToHumanReadable(correctnessTests[i].getInput()),
                 ' ... but this does not match the expected output ',
-                _jsToHumanReadable(expectedOutput),
+                _jsToHumanReadable(allowedOutputExample),
                 '.'
               ].join(''), false);
             }
