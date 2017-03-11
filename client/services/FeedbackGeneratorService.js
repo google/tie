@@ -20,21 +20,33 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', function(FeedbackObjectFactory) {
+    // TODO(sll): Update this function to take the programming language into
+    // account when generating the human-readable representations. Currently,
+    // it assumes that Python is being used.
     var _jsToHumanReadable = function(jsVariable) {
-      if (typeof jsVariable === 'string') {
+      if (jsVariable === null || jsVariable === undefined) {
+        return 'None';
+      } else if (typeof jsVariable === 'string') {
         return '"' + jsVariable + '"';
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
-        // TODO(sll): Change human-readable representation based on language.
         return jsVariable ? 'True' : 'False';
       } else if (Array.isArray(jsVariable)) {
         var humanReadableElements = jsVariable.map(function(arrayElement) {
           return _jsToHumanReadable(arrayElement);
         });
         return '[' + humanReadableElements.join(', ') + ']';
+      } else if (typeof jsVariable === 'object') {
+        var humanReadableKeyValuePairs = [];
+        for (var key in jsVariable) {
+          humanReadableKeyValuePairs.push(
+            _jsToHumanReadable(key) + ': ' +
+            _jsToHumanReadable(jsVariable[key]));
+        }
+        return '{' + humanReadableKeyValuePairs.join(', ') + '}';
       } else {
-        throw Error('Cannot parse JS variable: ' + jsVariable);
+        return '[UNKNOWN OBJECT]';
       }
     };
 
