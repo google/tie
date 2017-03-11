@@ -344,6 +344,16 @@ tie.directive('learnerView', [function() {
 
         $scope.codeMirrorOptions = {
           autofocus: true,
+          extraKeys: {
+            Tab: function(cm) {
+              var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+              cm.replaceSelection(spaces);
+              // Move the cursor to the end of the selection.
+              var endSelectionPos = cm.getDoc().getCursor('head');
+              cm.getDoc().setCursor(endSelectionPos);
+            }
+          },
+          indentUnit: 4,
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: false,
