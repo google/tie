@@ -29,29 +29,29 @@ globalData.questions['rle'] = {
 `class AuxiliaryCode(object):
     @classmethod
     def skipEncodingAtEndOfString(cls, word):
-      if len(word) < 3:
-          return word
-      repeating = False
-      num_repeats = 0
-      start_repeating = 0
-      result = ''
-      for i in range(len(word)):
-          if word[i].isdigit():
-              result += '%sx%s' % (1, word[i])
-              continue
-          if i < (len(word) - 1) and word[i] == word[i + 1]:
-              if not repeating:
-                  repeating = True
-                  num_repeats = 2
-                  start_repeating = i
-              else:
-                  num_repeats += 1
-          elif repeating and i < (len(word) - 1):
-              repeating = False
-              result += '%sx%s' % (num_repeats, word[start_repeating])
-          else:
-              result += word[i]
-      return result
+        if len(word) < 3:
+            return word
+        repeating = False
+        num_repeats = 0
+        start_repeating = 0
+        result = ''
+        for i in range(len(word)):
+            if word[i].isdigit():
+                result += '%sx%s' % (1, word[i])
+                continue
+            if i < (len(word) - 1) and word[i] == word[i + 1]:
+                if not repeating:
+                    repeating = True
+                    num_repeats = 2
+                    start_repeating = i
+                else:
+                    num_repeats += 1
+            elif repeating and i < (len(word) - 1):
+                repeating = False
+                result += '%sx%s' % (num_repeats, word[start_repeating])
+            else:
+                result += word[i]
+        return result
 
 
     @classmethod
