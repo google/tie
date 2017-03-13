@@ -79,7 +79,8 @@ tie.factory('PythonCodePreprocessorService', [
     var _wrapCodeIntoClass = function(
         code, wrapperClassName, shouldProcessInternalFunctionReferences) {
       if (shouldProcessInternalFunctionReferences) {
-        code = _addClassWrappingToStudentHelperFunctions(code);
+        code = _addClassWrappingToStudentHelperFunctions(
+          code, CLASS_NAME_STUDENT_CODE, true);
       }
       var codeLines = code.trim().split('\n');
       var firstLine = 'class ' + wrapperClassName + '(object):';
@@ -102,11 +103,16 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     // Adds support for helper functions in student code by
-    // dynamically inserting the StudentCode class name into their code
+    // dynamically inserting the specified class name into their code
     // during the preprocessing phase, allowing it to run normally without
     // any indication on the student side that this is happening.
-    var _addClassWrappingToStudentHelperFunctions = function(code) {
-      var functionPrefix = CLASS_NAME_STUDENT_CODE + '().';
+    var _addClassWrappingToStudentHelperFunctions = function(
+        code, wrapperClassName, addInstanceWrapping) {
+      var functionPrefix = wrapperClassName;
+      if (addInstanceWrapping) {
+        functionPrefix += '()';
+      }
+      functionPrefix += '.';
       while (true) {
         // Returns ['matching string', 'capture group']
         var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
@@ -120,7 +126,7 @@ tie.factory('PythonCodePreprocessorService', [
         var functionNameStart = (code.indexOf(matchingString) + 
           matchingString.indexOf(functionName));
         var lastFunctionNameLocation = 0;
-        while (true){
+        while (true) {
           var codeToAdd = '';
           lastFunctionNameLocation = code.indexOf(
             functionName, lastFunctionNameLocation);
