@@ -53,7 +53,6 @@ globalData.questions['rle'] = {
                 result += word[i]
         return result
 
-
     @classmethod
     def ignoreStringLengthWhenEncoding(cls, word):
         repeating = False
