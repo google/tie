@@ -59,6 +59,10 @@ tie.factory('PromptObjectFactory', [
       return this._mainFunction;
     };
 
+    Prompt.prototype.getOutputFunctionName = function() {
+      return this._outputFunction;
+    };
+
     Prompt.prototype.getCorrectnessTests = function() {
       return this._correctnessTests;
     };
