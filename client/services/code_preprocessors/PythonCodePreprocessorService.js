@@ -76,7 +76,11 @@ tie.factory('PythonCodePreprocessorService', [
     // given code snippet. We keep these as instance methods (instead of
     // classmethods) because that makes line number tracking less complicated,
     // since classmethods will need an extra '@classmethod' line.
-    var _wrapCodeIntoClass = function(code, wrapperClassName) {
+    var _wrapCodeIntoClass = function(
+        code, wrapperClassName, shouldProcessInternalFunctionReferences) {
+      if (shouldProcessInternalFunctionReferences) {
+        code = _addClassWrappingToStudentHelperFunctions(code);
+      }
       var codeLines = code.trim().split('\n');
       var firstLine = 'class ' + wrapperClassName + '(object):';
       var subsequentLines = codeLines.map(function(line) {
@@ -101,28 +105,30 @@ tie.factory('PythonCodePreprocessorService', [
     // dynamically inserting the StudentCode class name into their code
     // during the preprocessing phase, allowing it to run normally without
     // any indication on the student side that this is happening.
-    var _addClassWrappingToStudentHelperFunctions = function(code){
-      while (true){
+    var _addClassWrappingToStudentHelperFunctions = function(code) {
+      var functionPrefix = CLASS_NAME_STUDENT_CODE + '().';
+      while (true) {
         // Returns ['matching string', 'capture group']
         var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
         if (!regexResult) {
           return code;
         }
+        var matchingString = regexResult[0];
+        var functionName = regexResult[1];
         // We should make sure that we don't append our class name to
         // the student's function definition.
-        var functionNameStart = (code.indexOf(regexResult[0]) + 
-          regexResult[0].indexOf(regexResult[1]));
-        var functionName = regexResult[1];
-        lastFunctionNameLocation = 0;
+        var functionNameStart = (code.indexOf(matchingString) + 
+          matchingString.indexOf(functionName));
+        var lastFunctionNameLocation = 0;
         while (true){
           var codeToAdd = '';
           lastFunctionNameLocation = code.indexOf(
             functionName, lastFunctionNameLocation);
-          if (lastFunctionNameLocation == -1) {
+          if (lastFunctionNameLocation === -1) {
             break;
           }
-          if (lastFunctionNameLocation != functionNameStart) {
-            codeToAdd = CLASS_NAME_STUDENT_CODE + '().'
+          if (lastFunctionNameLocation !== functionNameStart) {
+            codeToAdd = functionPrefix;
             code = (code.slice(0, lastFunctionNameLocation) + codeToAdd + 
               code.slice(lastFunctionNameLocation, code.length));
             // Since we're inserting text, we may need to 
@@ -141,7 +147,7 @@ tie.factory('PythonCodePreprocessorService', [
         }
       }
       return code;
-    }
+    };
 
     var _generateCorrectnessTestCode = function(
         mainFunctionName, correctnessTests) {
@@ -246,9 +252,7 @@ tie.factory('PythonCodePreprocessorService', [
           buggyOutputTests, performanceTests) {
         return [
           SYSTEM_CODE,
-          this._wrapCodeIntoClass(
-            _addClassWrappingToStudentHelperFunctions(
-              studentCode), CLASS_NAME_STUDENT_CODE),
+          this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE, true),
           auxiliaryCode,
           this._generateCorrectnessTestCode(mainFunctionName, correctnessTests),
           this._generateBuggyOutputTestCode(correctnessTests, buggyOutputTests),
