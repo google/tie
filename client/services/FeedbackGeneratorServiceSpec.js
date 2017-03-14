@@ -60,13 +60,17 @@ describe('FeedbackGeneratorService', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], 'ERROR MESSAGE');
+        'some code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
 
       var paragraphs = FeedbackGeneratorService.getFeedback(
         questionMock, codeEvalResult).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'Looks like your code had a runtime error when evaluating the input ' +
+        '"testInput". Here\'s the trace:'
+      ].join(''));
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe('ERROR MESSAGE');
     });

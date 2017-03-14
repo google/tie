@@ -54,10 +54,15 @@ tie.factory('FeedbackGeneratorService', [
 
     return {
       getFeedback: function(prompt, codeEvalResult) {
-        if (codeEvalResult.getErrorMessage()) {
+        var errorMessage = codeEvalResult.getErrorMessage();
+        if (errorMessage) {
+          var errorInput = codeEvalResult.getErrorInput();
+          var inputClause = (
+            ' when evaluating the input ' + _jsToHumanReadable(errorInput));
           var feedback = FeedbackObjectFactory.create(false);
           feedback.appendTextParagraph(
-            "Looks like your code had a runtime error. Here's the trace: ");
+            "Looks like your code had a runtime error" + inputClause +
+            ". Here's the trace:")
           feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
           return feedback;
         } else {

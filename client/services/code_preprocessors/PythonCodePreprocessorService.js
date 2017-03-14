@@ -20,22 +20,30 @@
 tie.factory('PythonCodePreprocessorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_PERFORMANCE_TEST_RESULTS) {
+      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
     var SYSTEM_CODE = [
+      'import copy',
       'import time',
+      '',
+      '# A copy of the most-recently processed input item. This is useful for',
+      '# debugging exceptions.',
+      VARNAME_MOST_RECENT_INPUT + ' = None',
       '',
       'class System(object):',
       '    @classmethod',
       '    def runTest(cls, func, input):',
-      '        return func(input)',
+      '        global ' + VARNAME_MOST_RECENT_INPUT,
+      '        ' + VARNAME_MOST_RECENT_INPUT + ' = copy.deepcopy(input)',
+      '        output = func(input)',
+      '        return output',
       '',
       '    @classmethod',
       '    def extendString(cls, s, length):',
@@ -123,7 +131,7 @@ tie.factory('PythonCodePreprocessorService', [
         var functionName = regexResult[1];
         // We should make sure that we don't append our class name to
         // the student's function definition.
-        var functionNameStart = (code.indexOf(matchingString) + 
+        var functionNameStart = (code.indexOf(matchingString) +
           matchingString.indexOf(functionName));
         var lastFunctionNameLocation = 0;
         while (true) {
@@ -135,19 +143,19 @@ tie.factory('PythonCodePreprocessorService', [
           }
           if (lastFunctionNameLocation !== functionNameStart) {
             codeToAdd = functionPrefix;
-            code = (code.slice(0, lastFunctionNameLocation) + codeToAdd + 
+            code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
               code.slice(lastFunctionNameLocation, code.length));
-            // Since we're inserting text, we may need to 
+            // Since we're inserting text, we may need to
             // "move" up starting locations by the same amount.
             if (lastFunctionNameLocation < functionNameStart){
               functionNameStart += codeToAdd.length;
             }
-            if (lastFunctionNameLocation < 
+            if (lastFunctionNameLocation <
               PYTHON_FUNCTION_DEF_REGEX.lastIndex) {
               PYTHON_FUNCTION_DEF_REGEX.lastIndex += codeToAdd.length;
             }
           }
-          // This one needs to get moved forward at least an extra character 
+          // This one needs to get moved forward at least an extra character
           // to find the next available string.
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
