@@ -20,20 +20,28 @@
 tie.factory('PythonCodePreprocessorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_PERFORMANCE_TEST_RESULTS) {
+      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
     var SYSTEM_CODE = [
+      'import copy',
       'import time',
+      '',
+      '# A copy of the most-recently processed input item. This is useful for',
+      '# debugging exceptions.',
+      VARNAME_MOST_RECENT_INPUT + ' = None',
       '',
       'class System(object):',
       '    @classmethod',
       '    def runTest(cls, func, input):',
-      '        return func(input)',
+      '        global ' + VARNAME_MOST_RECENT_INPUT,
+      '        ' + VARNAME_MOST_RECENT_INPUT + ' = copy.deepcopy(input)',
+      '        output = func(input)',
+      '        return output',
       '',
       '    @classmethod',
       '    def extendString(cls, s, length):',

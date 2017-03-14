@@ -60,12 +60,14 @@ describe('FeedbackGeneratorService', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], 'ERROR MESSAGE');
+        'some code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
 
       expect(
         FeedbackGeneratorService.getFeedback(
           questionMock, codeEvalResult).getMessage()
-      ).toEqual(['Your code threw an error: ERROR MESSAGE']);
+      ).toEqual([
+        'Your code threw a runtime error when evaluating the input ' +
+        '"testInput": ERROR MESSAGE']);
     });
   });
 });

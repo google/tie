@@ -335,7 +335,7 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackParagraphs = CONGRATULATORY_FEEDBACK_PARAGRAPHS;
           } else {
-            $scope.feedbackParagraphs = [feedback.getMessage()];
+            $scope.feedbackParagraphs = feedback.getMessage();
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
