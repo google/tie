@@ -246,7 +246,7 @@ describe('PythonCodePreprocessorService', function() {
     );
   });
 
-  describe('_addClassWrappingToStudentHelperFunctions', function() {
+  describe('_addClassWrappingToHelperFunctions', function() {
     it('should correctly add our classname to their helper functions', 
       function() {
         var rawCode = [
@@ -268,7 +268,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentCode', true)
         ).toEqual(expectedCode);
       }
@@ -295,7 +295,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentCode', true)
         ).toEqual(expectedCode);
       }
@@ -332,7 +332,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentCode', true)
         ).toEqual(expectedCode);
       }
@@ -372,7 +372,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentCode', true)
         ).toEqual(expectedCode);
       }
@@ -411,7 +411,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentCode', false)
         ).toEqual(expectedCode);
       }
@@ -434,7 +434,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._addClassWrappingToStudentHelperFunctions(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
             rawCode, 'StudentAnswer', true)
         ).toEqual(expectedCode);
       }

@@ -26,7 +26,7 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
-      'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g')
+      'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
     var SYSTEM_CODE = [
@@ -79,7 +79,7 @@ tie.factory('PythonCodePreprocessorService', [
     var _wrapCodeIntoClass = function(
         code, wrapperClassName, shouldProcessInternalFunctionReferences) {
       if (shouldProcessInternalFunctionReferences) {
-        code = _addClassWrappingToStudentHelperFunctions(
+        code = _addClassWrappingToHelperFunctions(
           code, CLASS_NAME_STUDENT_CODE, true);
       }
       var codeLines = code.trim().split('\n');
@@ -106,7 +106,7 @@ tie.factory('PythonCodePreprocessorService', [
     // dynamically inserting the specified class name into their code
     // during the preprocessing phase, allowing it to run normally without
     // any indication on the student side that this is happening.
-    var _addClassWrappingToStudentHelperFunctions = function(
+    var _addClassWrappingToHelperFunctions = function(
         code, wrapperClassName, addInstanceWrapping) {
       var functionPrefix = wrapperClassName;
       if (addInstanceWrapping) {
@@ -269,8 +269,8 @@ tie.factory('PythonCodePreprocessorService', [
       // These are seams to allow for Karma testing of the private functions.
       // They should not be invoked directly by non-test clients outside this
       // service.
-      _addClassWrappingToStudentHelperFunctions: (
-        _addClassWrappingToStudentHelperFunctions),
+      _addClassWrappingToHelperFunctions: (
+        _addClassWrappingToHelperFunctions),
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
