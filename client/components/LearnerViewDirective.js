@@ -39,9 +39,10 @@ tie.directive('learnerView', [function() {
             <div class="tie-feedback-window">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
-                    class="tie-feedback-paragraph">
+                   class="tie-feedback-paragraph"
+                   ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="$first">{{feedbackTimestamp}}</span>
-                  {{paragraph}}
+                  {{paragraph.getContent()}}
                 </p>
               </div>
             </div>
@@ -153,6 +154,16 @@ tie.directive('learnerView', [function() {
           resize: both;
           width: 642px;
           -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-paragraph {
+          width: 100%;
+        }
+        .tie-feedback-paragraph-code {
+          background: #333;
+          color: #eee;
+          font-family: monospace;
+          padding: 10px;
+          width: 95%;
         }
         .tie-lang-select-menu {
           float: left;
@@ -275,19 +286,20 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory) {
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-        var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
-        var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
-          "Good work! You've completed this question.",
-          "Click the \"Next\" button below to move on to the next one."
-        ];
+
+        var congratulatoryFeedback = FeedbackObjectFactory.create();
+        congratulatoryFeedback.appendTextParagraph(
+          "Good work! You've completed this task.");
+        congratulatoryFeedback.appendTextParagraph(
+          "Now, take a look at the instructions for the next task.");
 
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -315,7 +327,13 @@ tie.directive('learnerView', [function() {
           $scope.instructions = prompts[currentPromptIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
-          $scope.feedbackParagraphs = introParagraphs;
+
+          var feedback = FeedbackObjectFactory.create();
+          introParagraphs.forEach(function(paragraph) {
+            feedback.appendTextParagraph(paragraph);
+          });
+
+          $scope.feedbackParagraphs = feedback.getParagraphs();
         };
 
         var clearFeedback = function() {
@@ -333,9 +351,9 @@ tie.directive('learnerView', [function() {
             } else {
               $scope.showNextPrompt();
             }
-            $scope.feedbackParagraphs = CONGRATULATORY_FEEDBACK_PARAGRAPHS;
+            $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
-            $scope.feedbackParagraphs = feedback.getMessage();
+            $scope.feedbackParagraphs = feedback.getParagraphs();
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
