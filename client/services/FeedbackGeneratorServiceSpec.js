@@ -27,8 +27,14 @@ describe('FeedbackGeneratorService', function() {
   }));
 
   describe('_jsToHumanReadable', function() {
-    it('should return "stringified" (readable) versions of input variables', 
+    it('should return "stringified" (readable) versions of input variables',
       function() {
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(null)
+      ).toEqual('None');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable(undefined)
+      ).toEqual('None');
       expect(
         FeedbackGeneratorService._jsToHumanReadable('cat')
       ).toEqual('"cat"');
@@ -44,6 +50,9 @@ describe('FeedbackGeneratorService', function() {
       expect(
         FeedbackGeneratorService._jsToHumanReadable([1, 3, 5])
       ).toEqual('[1, 3, 5]');
+      expect(
+        FeedbackGeneratorService._jsToHumanReadable({a: 3, b: 5, c: 'j'})
+      ).toEqual('{"a": 3, "b": 5, "c": "j"}');
     });
   });
 
@@ -51,12 +60,19 @@ describe('FeedbackGeneratorService', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], 'ERROR MESSAGE');
+        'some code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
 
-      expect(
-        FeedbackGeneratorService.getFeedback(
-          questionMock, codeEvalResult).getMessage()
-      ).toEqual(['Your code threw an error: ERROR MESSAGE']);
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult).getParagraphs();
+
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'Looks like your code had a runtime error when evaluating the input ' +
+        '"testInput". Here\'s the trace:'
+      ].join(''));
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe('ERROR MESSAGE');
     });
   });
 });

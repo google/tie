@@ -20,42 +20,63 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', function(FeedbackObjectFactory) {
+    // TODO(sll): Update this function to take the programming language into
+    // account when generating the human-readable representations. Currently,
+    // it assumes that Python is being used.
     var _jsToHumanReadable = function(jsVariable) {
-      if (typeof jsVariable === 'string') {
+      if (jsVariable === null || jsVariable === undefined) {
+        return 'None';
+      } else if (typeof jsVariable === 'string') {
         return '"' + jsVariable + '"';
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
-        // TODO(sll): Change human-readable representation based on language.
         return jsVariable ? 'True' : 'False';
       } else if (Array.isArray(jsVariable)) {
         var humanReadableElements = jsVariable.map(function(arrayElement) {
           return _jsToHumanReadable(arrayElement);
         });
         return '[' + humanReadableElements.join(', ') + ']';
+      } else if (typeof jsVariable === 'object') {
+        var humanReadableKeyValuePairs = [];
+        for (var key in jsVariable) {
+          humanReadableKeyValuePairs.push(
+            _jsToHumanReadable(key) + ': ' +
+            _jsToHumanReadable(jsVariable[key]));
+        }
+        return '{' + humanReadableKeyValuePairs.join(', ') + '}';
       } else {
-        throw Error('Cannot parse JS variable: ' + jsVariable);
+        console.error(
+          'Could not make the following object human-readable: ', jsVariable);
+        return '[UNKNOWN OBJECT]';
       }
     };
 
     return {
       getFeedback: function(prompt, codeEvalResult) {
-        if (codeEvalResult.getErrorMessage()) {
-          return FeedbackObjectFactory.create([
-            'Your code threw an error: ' + codeEvalResult.getErrorMessage()
-          ], false);
+        var errorMessage = codeEvalResult.getErrorMessage();
+        if (errorMessage) {
+          var errorInput = codeEvalResult.getErrorInput();
+          var inputClause = (
+            ' when evaluating the input ' + _jsToHumanReadable(errorInput));
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            "Looks like your code had a runtime error" + inputClause +
+            ". Here's the trace:")
+          feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
+          return feedback;
         } else {
           var buggyOutputTests = prompt.getBuggyOutputTests();
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
-              // TODO(sll): Interpolate the %s characters in these messages,
-              // where needed.
               // TODO(sll): Use subsequent messages as well if multiple
               // messages are specified.
-              return FeedbackObjectFactory.create(
-                buggyOutputTests[i].getMessages()[0], false);
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph(
+                buggyOutputTests[i].getMessages()[0]);
+              return feedback;
             }
           }
 
@@ -68,7 +89,8 @@ tie.factory('FeedbackGeneratorService', [
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
               var allowedOutputExample = (
                 correctnessTests[i].getAnyAllowedOutput());
-              return FeedbackObjectFactory.create([
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
                 'Your code gave the output ',
                 _jsToHumanReadable(observedOutput),
                 ' for the input ',
@@ -76,7 +98,8 @@ tie.factory('FeedbackGeneratorService', [
                 ' ... but this does not match the expected output ',
                 _jsToHumanReadable(allowedOutputExample),
                 '.'
-              ].join(''), false);
+              ].join(''));
+              return feedback;
             }
           }
 
@@ -88,23 +111,31 @@ tie.factory('FeedbackGeneratorService', [
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
-              return FeedbackObjectFactory.create([
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
                 'Your code is running more slowly than expected. Can you ',
                 'reconfigure it such that it runs in ',
                 expectedPerformance,
                 ' time?'
-              ].join(''), false);
+              ].join(''));
+              return feedback;
             }
           }
 
-          return FeedbackObjectFactory.create([
+          var feedback = FeedbackObjectFactory.create(true);
+          feedback.appendTextParagraph([
             'You\'ve completed all the tasks for this question! Click the ',
             '"Next" button to move on to the next question.',
-          ].join(''), true);
+          ].join(''));
+          return feedback;
         }
       },
       getSyntaxErrorFeedback: function(errorMessage) {
-        return FeedbackObjectFactory.create(errorMessage, false);
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph(
+          "Looks like your code did not compile. Here's the error trace: ");
+        feedback.appendCodeParagraph(errorMessage);
+        return feedback;
       },
       _jsToHumanReadable: _jsToHumanReadable
     };

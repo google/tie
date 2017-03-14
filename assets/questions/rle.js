@@ -29,21 +29,108 @@ globalData.questions['rle'] = {
 `class AuxiliaryCode(object):
     @classmethod
     def skipEncodingAtEndOfString(cls, word):
-        pass
+        if len(word) < 3:
+            return word
+        repeating = False
+        num_repeats = 0
+        start_repeating = 0
+        result = ''
+        for i in range(len(word)):
+            if word[i].isdigit():
+                result += '%sx%s' % (1, word[i])
+                continue
+            if i < (len(word) - 1) and word[i] == word[i + 1]:
+                if not repeating:
+                    repeating = True
+                    num_repeats = 2
+                    start_repeating = i
+                else:
+                    num_repeats += 1
+            elif repeating and i < (len(word) - 1):
+                repeating = False
+                result += '%sx%s' % (num_repeats, word[start_repeating])
+            else:
+                result += word[i]
+        return result
 
     @classmethod
     def ignoreStringLengthWhenEncoding(cls, word):
-        pass
+        repeating = False
+        num_repeats = 0
+        start_repeating = 0
+        result = ''
+        for i in range(len(word)):
+            if word[i].isdigit():
+                result += '%sx%s' % (1, word[i])
+                continue
+            if i < (len(word) - 1) and word[i] == word[i + 1]:
+                if not repeating:
+                    repeating = True
+                    num_repeats = 2
+                    start_repeating = i
+                else:
+                    num_repeats += 1
+            elif repeating:
+                repeating = False
+                result += '%sx%s' % (num_repeats, word[start_repeating])
+            else:
+                result += word[i]
+        if repeating:
+            repeating = False
+            result += '%sx%s' % (num_repeats, word[start_repeating])
+        return result
 
 
     @classmethod
     def failToDemarcateBeginningOfEncodedChunk(cls, word):
-        pass
+        if len(word) < 3:
+            return word
+        repeating = False
+        num_repeats = 0
+        start_repeating = 0
+        result = ''
+        for i in range(len(word)):
+            if i < (len(word) - 1) and word[i] == word[i + 1]:
+                if not repeating:
+                    repeating = True
+                    num_repeats = 2
+                    start_repeating = i
+                else:
+                    num_repeats += 1
+            elif repeating:
+                repeating = False
+                result += '%sx%s' % (num_repeats, word[start_repeating])
+            else:
+                result += word[i]
+        if repeating:
+            repeating = False
+            result += '%sx%s' % (num_repeats, word[start_repeating])
+        return result
 
 
     @classmethod
-    def DecodeEncodedString(cls, word):
-        pass
+    def decodeEncodedString(cls, encoded_string):
+        number_block = False
+        start_block = 0
+        end_block = 0
+        result = ''
+        i = 0
+        while i < len(encoded_string):
+            if encoded_string[i].isdigit() and not number_block:
+                number_block = True
+                start_block = i
+            elif not encoded_string[i].isdigit() and number_block:
+                number_block = False
+                end_block = i - 1
+                num_string = encoded_string[start_block:(end_block + 1)]
+                num = int(num_string)
+                if encoded_string[i] == 'x' and i < len(encoded_string) - 1:
+                    result += (encoded_string[i + 1] * num)
+                    i += 1
+            elif not number_block:
+                result += encoded_string[i]
+            i += 1
+        return result
 `
   },
   prompts: [{
@@ -52,7 +139,7 @@ globalData.questions['rle'] = {
         'In this question, you\'ll implement the encode function. It takes a ',
         'string as input and returns an encoding of the string where long ',
         'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" should be encoded as "ab5xc".'
+        'example, "abcccccd" could be encoded as "ab5xc".'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -131,17 +218,17 @@ globalData.questions['rle'] = {
       [
         'Next, make sure that your method\'s output can accurately be decoded. ',
         'For each <#x{c}> pair, the decode method will repeat the character c ',
-        '# times.'
+        '# times. Note that the input strings may also contain digits.'
       ].join(''),
       [
-        'This should allow us to decode your encoded string and get the same ',
-        'result as the input.'
+        'We should be able to run "decode" on your encoded string and get the ',
+        'original string back as a result.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunction: null,
-    outputFunction: 'AuxiliaryCode.DecodeEncodedString',
+    outputFunction: 'AuxiliaryCode.decodeEncodedString',
     mainFunction: 'encode',
     correctnessTests: [{
       input: '5xb',
