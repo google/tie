@@ -25,6 +25,8 @@ tie.factory('PythonCodePreprocessorService', [
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
+    var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
+      'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
     var SYSTEM_CODE = [
@@ -82,7 +84,12 @@ tie.factory('PythonCodePreprocessorService', [
     // given code snippet. We keep these as instance methods (instead of
     // classmethods) because that makes line number tracking less complicated,
     // since classmethods will need an extra '@classmethod' line.
-    var _wrapCodeIntoClass = function(code, wrapperClassName) {
+    var _wrapCodeIntoClass = function(
+        code, wrapperClassName, shouldProcessInternalFunctionReferences) {
+      if (shouldProcessInternalFunctionReferences) {
+        code = _addClassWrappingToHelperFunctions(
+          code, CLASS_NAME_STUDENT_CODE, true);
+      }
       var codeLines = code.trim().split('\n');
       var firstLine = 'class ' + wrapperClassName + '(object):';
       var subsequentLines = codeLines.map(function(line) {
@@ -101,6 +108,59 @@ tie.factory('PythonCodePreprocessorService', [
         }
       });
       return firstLine + '\n' + subsequentLines.join('\n');
+    };
+
+    // Adds support for helper functions in student code by
+    // dynamically inserting the specified class name into their code
+    // during the preprocessing phase, allowing it to run normally without
+    // any indication on the student side that this is happening.
+    var _addClassWrappingToHelperFunctions = function(
+        code, wrapperClassName, addInstanceWrapping) {
+      var functionPrefix = wrapperClassName;
+      if (addInstanceWrapping) {
+        functionPrefix += '()';
+      }
+      functionPrefix += '.';
+      while (true) {
+        // Returns ['matching string', 'capture group']
+        var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
+        if (!regexResult) {
+          return code;
+        }
+        var matchingString = regexResult[0];
+        var functionName = regexResult[1];
+        // We should make sure that we don't append our class name to
+        // the student's function definition.
+        var functionNameStart = (code.indexOf(matchingString) +
+          matchingString.indexOf(functionName));
+        var lastFunctionNameLocation = 0;
+        while (true) {
+          var codeToAdd = '';
+          lastFunctionNameLocation = code.indexOf(
+            functionName, lastFunctionNameLocation);
+          if (lastFunctionNameLocation === -1) {
+            break;
+          }
+          if (lastFunctionNameLocation !== functionNameStart) {
+            codeToAdd = functionPrefix;
+            code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
+              code.slice(lastFunctionNameLocation, code.length));
+            // Since we're inserting text, we may need to
+            // "move" up starting locations by the same amount.
+            if (lastFunctionNameLocation < functionNameStart){
+              functionNameStart += codeToAdd.length;
+            }
+            if (lastFunctionNameLocation <
+              PYTHON_FUNCTION_DEF_REGEX.lastIndex) {
+              PYTHON_FUNCTION_DEF_REGEX.lastIndex += codeToAdd.length;
+            }
+          }
+          // This one needs to get moved forward at least an extra character
+          // to find the next available string.
+          lastFunctionNameLocation += codeToAdd.length + 1;
+        }
+      }
+      return code;
     };
 
     var _generateCorrectnessTestCode = function(
@@ -216,7 +276,7 @@ tie.factory('PythonCodePreprocessorService', [
           correctnessTests, buggyOutputTests, performanceTests) {
         return [
           SYSTEM_CODE,
-          this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE),
+          this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE, true),
           auxiliaryCode,
           this._generateCorrectnessTestCode(
             correctnessTests, mainFunctionName, outputFunctionName),
@@ -229,6 +289,8 @@ tie.factory('PythonCodePreprocessorService', [
       // These are seams to allow for Karma testing of the private functions.
       // They should not be invoked directly by non-test clients outside this
       // service.
+      _addClassWrappingToHelperFunctions: (
+        _addClassWrappingToHelperFunctions),
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
