@@ -62,10 +62,13 @@ describe('FeedbackGeneratorService', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], 'ERROR MESSAGE');
 
-      expect(
-        FeedbackGeneratorService.getFeedback(
-          questionMock, codeEvalResult).getMessage()
-      ).toEqual(['Your code threw an error: ERROR MESSAGE']);
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult).getParagraphs();
+
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe('ERROR MESSAGE');
     });
   });
 });
