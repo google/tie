@@ -484,7 +484,31 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests)
+            buggyOutputTests, null)
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+
+    it('should add correct buggy output test code with an output function name',
+      function() {
+        var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
+          buggyFunction: 'buggyFunc',
+          messages: ['a', 'b', 'c']
+        })];
+        var expectedGeneratedCode = [
+          'def matches_buggy_function(func):',
+          '    buggy_results = []',
+          '    for test_input in test_inputs:',
+          '        buggy_results.append(outputFunctionName(System.runTest(func, test_input)))',
+          '    return buggy_results == correctness_test_results',
+          '',
+          'buggy_output_test_results = []',
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateBuggyOutputTestCode(
+            buggyOutputTests, 'outputFunctionName')
         ).toEqual(expectedGeneratedCode);
       }
     );
