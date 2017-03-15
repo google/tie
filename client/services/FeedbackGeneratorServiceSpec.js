@@ -78,7 +78,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return a specific error for TimeLimitErrors', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], "TimeLimitError", 
+        'some code', 'some output', [], [], [], 'TimeLimitError', 
         'testInput');
 
       var paragraphs = FeedbackGeneratorService.getFeedback(

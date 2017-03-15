@@ -19,7 +19,7 @@
 var tie = angular.module('tie', ['ui.codemirror']);
 
 // The maximum amount of time (in seconds) that the code can take to run.
-tie.constant('CODE_EXECUTION_TIMEOUT', 3);
+tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');

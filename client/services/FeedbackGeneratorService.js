@@ -19,8 +19,8 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT', function(
-    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT) {
+  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
+    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -62,7 +62,7 @@ tie.factory('FeedbackGeneratorService', [
           var feedback = FeedbackObjectFactory.create(false);
           feedback.appendTextParagraph(
             ["Your program's exceeded the time limit (",
-            CODE_EXECUTION_TIMEOUT,
+            CODE_EXECUTION_TIMEOUT_SECONDS,
             " seconds) we've set. Can you try to make it run ",
             "more efficiently?"].join(''));
           return feedback;
