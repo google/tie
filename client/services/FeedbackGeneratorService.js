@@ -58,7 +58,7 @@ tie.factory('FeedbackGeneratorService', [
         var errorMessage = codeEvalResult.getErrorMessage();
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
-        if (("" + errorMessage).startsWith('TimeLimitError')) {
+        if (errorMessage.toString().startsWith('TimeLimitError')) {
           var feedback = FeedbackObjectFactory.create(false);
           feedback.appendTextParagraph(
             ["Your program's exceeded the time limit (",
