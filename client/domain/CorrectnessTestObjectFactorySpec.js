@@ -25,7 +25,7 @@ describe('CorrectnessTestObjectFactory', function() {
       'CorrectnessTestObjectFactory');
   }));
 
-  describe('getAnyAllowedOutput', function() {
+  describe('matchesOutput', function() {
     it('should correctly match outputs', function() {
       var correctnessTest = CorrectnessTestObjectFactory.create({
         input: 'cat',
