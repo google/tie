@@ -19,7 +19,8 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', function(FeedbackObjectFactory) {
+  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
+    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -55,6 +56,17 @@ tie.factory('FeedbackGeneratorService', [
     return {
       getFeedback: function(prompt, codeEvalResult) {
         var errorMessage = codeEvalResult.getErrorMessage();
+        // We want to catch and handle a timeout error uniquely, rather than
+        // integrate it into the existing feedback pipeline.
+        if (errorMessage.toString().startsWith('TimeLimitError')) {
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            ["Your program's exceeded the time limit (",
+            CODE_EXECUTION_TIMEOUT_SECONDS,
+            " seconds) we've set. Can you try to make it run ",
+            "more efficiently?"].join(''));
+          return feedback;
+        }
         if (errorMessage) {
           var errorInput = codeEvalResult.getErrorInput();
           var inputClause = (
