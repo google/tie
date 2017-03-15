@@ -149,14 +149,14 @@ globalData.questions['rle'] = {
     mainFunction: 'encode',
     correctnessTests: [{
       input: 'abcccccd',
-      expectedOutput: 'ab5xcd'
+      allowedOutputs: ['ab5xcd']
     }, {
       input: 'ddddddddddef',
-      expectedOutput: '10xdef'
+      allowedOutputs: ['10xdef']
     },
     {
       input: 'budddddddddd',
-      expectedOutput: 'bu10xd'
+      allowedOutputs: ['bu10xd']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.skipEncodingAtEndOfString',
@@ -184,16 +184,16 @@ globalData.questions['rle'] = {
     mainFunction: 'encode',
     correctnessTests: [{
       input: 'bbb',
-      expectedOutput: ['3xb', 'bbb']
+      allowedOutputs: ['3xb', 'bbb']
     }, {
       input: 'aa',
-      expectedOutput: 'aa'
+      allowedOutputs: ['aa']
     }, {
       input: 'a',
-      expectedOutput: 'a'
+      allowedOutputs: ['a']
     }, {
       input: '',
-      expectedOutput: ''
+      allowedOutputs: ['']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
@@ -232,10 +232,10 @@ globalData.questions['rle'] = {
     mainFunction: 'encode',
     correctnessTests: [{
       input: '5xb',
-      expectedOutput: '5xb'
+      allowedOutputs: ['5xb']
     }, {
       input: '2aaaaaab7',
-      expectedOutput: '2aaaaaab7'
+      allowedOutputs: ['2aaaaaab7']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',

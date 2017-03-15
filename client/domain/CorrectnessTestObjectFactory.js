@@ -21,7 +21,7 @@ tie.factory('CorrectnessTestObjectFactory', [
   function() {
     var CorrectnessTest = function(correctnessTestDict) {
       this._input = correctnessTestDict.input;
-      this._expectedOutput = correctnessTestDict.expectedOutput;
+      this._allowedOutputs = correctnessTestDict.allowedOutputs;
       this._message = correctnessTestDict.message;
     };
 
@@ -30,8 +30,12 @@ tie.factory('CorrectnessTestObjectFactory', [
       return this._input;
     };
 
-    CorrectnessTest.prototype.getExpectedOutput = function() {
-      return this._expectedOutput;
+    CorrectnessTest.prototype.matchesOutput = function(output) {
+      return this._allowedOutputs.indexOf(output) !== -1;
+    };
+
+    CorrectnessTest.prototype.getAnyAllowedOutput = function() {
+      return this._allowedOutputs[0];
     };
 
     CorrectnessTest.prototype.getMessage = function() {

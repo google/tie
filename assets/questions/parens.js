@@ -59,16 +59,16 @@ globalData.questions['parens'] = {
     mainFunction: 'isBalanced',
     correctnessTests: [{
       input: '((()))',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: '()()()()()()(()',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: '))))))((((((',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: '()()()()()()()())(',
-      expectedOutput: false
+      allowedOutputs: [false]
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
@@ -105,13 +105,13 @@ globalData.questions['parens'] = {
     mainFunction: 'isBalanced',
     correctnessTests: [{
       input: '',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: 'xx',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: '3',
-      expectedOutput: false
+      allowedOutputs: [false]
     }],
     buggyOutputTests: [],
     performanceTests: []
@@ -130,28 +130,28 @@ globalData.questions['parens'] = {
     mainFunction: 'isBalanced',
     correctnessTests: [{
       input: '[(){}]',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: '(){}[]',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: '{{[[(())]]}}',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: '{}[{([{([{()}])}])}][]',
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: '([)]',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: '{{[[([})]]}}',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: ']{()}[',
-      expectedOutput: false
+      allowedOutputs: [false]
     }, {
       input: '[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}',
-      expectedOutput: false
+      allowedOutputs: [false]
     }],
     buggyOutputTests: [],
     performanceTests: [{
