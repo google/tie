@@ -247,7 +247,7 @@ describe('PythonCodePreprocessorService', function() {
   });
 
   describe('_addClassWrappingToHelperFunctions', function() {
-    it('should correctly add our classname to their helper functions', 
+    it('should correctly add our classname to their helper functions',
       function() {
         var rawCode = [
           'def myFunc(self, ):',
@@ -274,7 +274,7 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should add classname regardless of leading or trailing spaces', 
+    it('should add classname regardless of leading or trailing spaces',
       function() {
         var rawCode = [
           'def myFunc(self, ):',
@@ -301,7 +301,7 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should correctly add our classname to multiple functions', 
+    it('should correctly add our classname to multiple functions',
       function() {
         var rawCode = [
           'def myFunc(self, ):',
@@ -339,7 +339,7 @@ describe('PythonCodePreprocessorService', function() {
     );
 
     it('should correctly add our classname to multiple functions regardless ' +
-      'of their position within the file', 
+      'of their position within the file',
       function() {
         var rawCode = [
           'def myFunc(self, ):',
@@ -378,7 +378,7 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should not append () if passed false for the addInstanceWrapping arg', 
+    it('should not append () if passed false for the addInstanceWrapping arg',
       function() {
         var rawCode = [
           'def myFunc(self, ):',
@@ -417,7 +417,7 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should ignore code with no functions defined', 
+    it('should ignore code with no functions defined',
       function() {
         var rawCode = [
           'a = 3',
@@ -441,6 +441,28 @@ describe('PythonCodePreprocessorService', function() {
     );
   });
 
+  describe('_generateCorrectnessTestCode', function() {
+    it('should add correctness test code to skeleton code',
+      function() {
+        var correctnessTests = [CorrectnessTestObjectFactory.create({
+          input: 'cat',
+          allowedOutputs: ['at', 'bc']
+        })];
+        var expectedGeneratedCode = [
+          'test_inputs = [\'cat\']',
+          '',
+          'correctness_test_results = []',
+          'correctness_test_results.append(outputFnName(' +
+            'System.runTest(StudentCode().mainFnName, test_inputs[0])))'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateCorrectnessTestCode(
+            correctnessTests, 'mainFnName', 'outputFnName')
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+  });
 
   describe('_generateBuggyOutputTestCode', function() {
     it('should add correct buggy output test code to skeleton code',
@@ -448,10 +470,6 @@ describe('PythonCodePreprocessorService', function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
           buggyFunction: 'buggyFunc',
           messages: ['a', 'b', 'c']
-        })];
-        var correctnessTests = [CorrectnessTestObjectFactory.create({
-          input: 'cat',
-          allowedOutputs: ['at']
         })];
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
@@ -466,7 +484,7 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            correctnessTests, buggyOutputTests)
+            buggyOutputTests)
         ).toEqual(expectedGeneratedCode);
       }
     );
