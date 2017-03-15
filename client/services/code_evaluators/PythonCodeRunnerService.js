@@ -19,11 +19,12 @@
 tie.factory('PythonCodeRunnerService', [
   'CodeEvalResultObjectFactory', 'VARNAME_CORRECTNESS_TEST_RESULTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
-  'VARNAME_MOST_RECENT_INPUT',
+  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT',
   function(
       CodeEvalResultObjectFactory, VARNAME_CORRECTNESS_TEST_RESULTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
-      VARNAME_MOST_RECENT_INPUT) {
+      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT) {
+    var SECONDS_TO_MILLISECONDS = 1000;
     var outputLines = [];
 
     var clearOutput = function() {
@@ -40,6 +41,7 @@ tie.factory('PythonCodeRunnerService', [
         clearOutput();
         Sk.configure({
          output: addOutputLine,
+         execLimit: CODE_EXECUTION_TIMEOUT * SECONDS_TO_MILLISECONDS,
          read: function(name) {
            // This bit is necessary to import Python stdlib modules, like time.
            if (!Sk.builtinFiles.files.hasOwnProperty(name)) {

@@ -74,5 +74,22 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe('ERROR MESSAGE');
     });
+
+    it('should return a specific error for TimeLimitErrors', function() {
+      var questionMock = {};
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], [], "TimeLimitError", 
+        'testInput');
+
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult).getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        ["Your program's exceeded the time limit (",
+        "3 seconds) we've set. Can you try to make it run ",
+        "more efficiently?"].join(''));
+    });
   });
 });
