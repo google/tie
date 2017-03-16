@@ -56,13 +56,13 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('getFeedback', function() {
+  describe('_prepareFeedback', function() {
     it('should return an error if one exists', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
 
-      var paragraphs = FeedbackGeneratorService.getFeedback(
+      var paragraphs = FeedbackGeneratorService._prepareFeedback(
         questionMock, codeEvalResult).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
@@ -81,7 +81,7 @@ describe('FeedbackGeneratorService', function() {
         'some code', 'some output', [], [], [], 'TimeLimitError', 
         'testInput');
 
-      var paragraphs = FeedbackGeneratorService.getFeedback(
+      var paragraphs = FeedbackGeneratorService._prepareFeedback(
         questionMock, codeEvalResult).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);

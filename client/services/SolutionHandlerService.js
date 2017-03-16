@@ -19,10 +19,10 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'TranscriptService',
+  'FeedbackGeneratorService', 'SnapshotObjectFactory', 'TranscriptService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, TranscriptService) {
+      FeedbackGeneratorService, SnapshotObjectFactory, TranscriptService) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
@@ -36,6 +36,8 @@ tie.factory('SolutionHandlerService', [
           if (potentialSyntaxErrorMessage) {
             var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
               potentialSyntaxErrorMessage);
+            TranscriptService.recordSnapshot(
+              SnapshotObjectFactory.create(rawCodeEvalResult, feedback))
             return $q.resolve(feedback);
           }
 

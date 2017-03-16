@@ -18,15 +18,18 @@
  */
 
 tie.factory('TranscriptService', [
-  'EventObjectFactory', function(EventObjectFactory) {
-    var transcript = [];
+  'EventObjectFactory', 'TranscriptObjectFactory', function(EventObjectFactory, TranscriptObjectFactory) {
+    var transcript = TranscriptObjectFactory.create();
 
     return {
+      recordSnapshot: function(snapshot) {
+        transcript.recordSnapshot(snapshot);
+      },
       recordSolution: function(code) {
-        transcript.push(EventObjectFactory.createCodeSubmittedEvent(code));
+        transcript.recordEvent(EventObjectFactory.createCodeSubmittedEvent(code));
       },
       recordFeedback: function(feedback) {
-        transcript.push(EventObjectFactory.createFeedbackGivenEvent(feedback));
+        transcript.recordEvent(EventObjectFactory.createFeedbackGivenEvent(feedback));
       }
     };
   }
