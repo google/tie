@@ -19,10 +19,8 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'SnapshotObjectFactory',
-  'TranscriptService', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
-    FeedbackObjectFactory, SnapshotObjectFactory, TranscriptService, 
-    CODE_EXECUTION_TIMEOUT_SECONDS) {
+  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
+    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -55,102 +53,94 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
-    var _prepareFeedback = function(prompt, codeEvalResult) {
-      var errorMessage = codeEvalResult.getErrorMessage();
-      // We want to catch and handle a timeout error uniquely, rather than
-      // integrate it into the existing feedback pipeline.
-      if (errorMessage !== null && 
-          errorMessage.toString().startsWith('TimeLimitError')) {
-        var feedback = FeedbackObjectFactory.create(false);
-        feedback.appendTextParagraph(
-          ["Your program's exceeded the time limit (",
-          CODE_EXECUTION_TIMEOUT_SECONDS,
-          " seconds) we've set. Can you try to make it run ",
-          "more efficiently?"].join(''));
-        return feedback;
-      } else if (errorMessage) {
-        var errorInput = codeEvalResult.getErrorInput();
-        var inputClause = (
-          ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-        var feedback = FeedbackObjectFactory.create(false);
-        feedback.appendTextParagraph(
-          "Looks like your code had a runtime error" + inputClause +
-          ". Here's the trace:")
-        feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
-        return feedback;
-      } else {
-        var buggyOutputTests = prompt.getBuggyOutputTests();
-        var buggyOutputTestResults =
-            codeEvalResult.getBuggyOutputTestResults();
-        for (var i = 0; i < buggyOutputTests.length; i++) {
-          if (buggyOutputTestResults[i]) {
-            // TODO(sll): Use subsequent messages as well if multiple
-            // messages are specified.
-            var feedback = FeedbackObjectFactory.create(false);
-            feedback.appendTextParagraph(
-              buggyOutputTests[i].getMessages()[0]);
-            return feedback;
-          }
-        }
-
-        var correctnessTests = prompt.getCorrectnessTests();
-        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-        for (var i = 0; i < correctnessTests.length; i++) {
-          var observedOutput = observedOutputs[i];
-
-          // TODO(eyurko): Add varied statements for when code is incorrect.
-          if (!correctnessTests[i].matchesOutput(observedOutput)) {
-            var allowedOutputExample = (
-              correctnessTests[i].getAnyAllowedOutput());
-            var feedback = FeedbackObjectFactory.create(false);
-            feedback.appendTextParagraph([
-              'Your code gave the output ',
-              _jsToHumanReadable(observedOutput),
-              ' for the input ',
-              _jsToHumanReadable(correctnessTests[i].getInput()),
-              ' ... but this does not match the expected output ',
-              _jsToHumanReadable(allowedOutputExample),
-              '.'
-            ].join(''));
-            return feedback;
-          }
-        }
-
-        var performanceTests = prompt.getPerformanceTests();
-        var performanceTestResults =
-            codeEvalResult.getPerformanceTestResults();
-        for (var i = 0; i < performanceTests.length; i++) {
-          var expectedPerformance = performanceTests[i].getExpectedPerformance();
-          var observedPerformance = performanceTestResults[i];
-
-          if (expectedPerformance !== observedPerformance) {
-            var feedback = FeedbackObjectFactory.create(false);
-            feedback.appendTextParagraph([
-              'Your code is running more slowly than expected. Can you ',
-              'reconfigure it such that it runs in ',
-              expectedPerformance,
-              ' time?'
-            ].join(''));
-            return feedback;
-          }
-        }
-
-        var feedback = FeedbackObjectFactory.create(true);
-        feedback.appendTextParagraph([
-          'You\'ve completed all the tasks for this question! Click the ',
-          '"Next" button to move on to the next question.',
-        ].join(''));
-        return feedback;
-      }
-    };
-
     return {
-      _prepareFeedback: _prepareFeedback,
       getFeedback: function(prompt, codeEvalResult) {
-        feedback = _prepareFeedback(prompt, codeEvalResult);
-        snapshot = SnapshotObjectFactory.create(codeEvalResult, feedback);
-        TranscriptService.recordSnapshot(snapshot);
-        return feedback;
+        var errorMessage = codeEvalResult.getErrorMessage();
+        // We want to catch and handle a timeout error uniquely, rather than
+        // integrate it into the existing feedback pipeline.
+        if (errorMessage !== null && 
+            errorMessage.toString().startsWith('TimeLimitError')) {
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            ["Your program's exceeded the time limit (",
+            CODE_EXECUTION_TIMEOUT_SECONDS,
+            " seconds) we've set. Can you try to make it run ",
+            "more efficiently?"].join(''));
+          return feedback;
+        } else if (errorMessage) {
+          var errorInput = codeEvalResult.getErrorInput();
+          var inputClause = (
+            ' when evaluating the input ' + _jsToHumanReadable(errorInput));
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            "Looks like your code had a runtime error" + inputClause +
+            ". Here's the trace:")
+          feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
+          return feedback;
+        } else {
+          var buggyOutputTests = prompt.getBuggyOutputTests();
+          var buggyOutputTestResults =
+              codeEvalResult.getBuggyOutputTestResults();
+          for (var i = 0; i < buggyOutputTests.length; i++) {
+            if (buggyOutputTestResults[i]) {
+              // TODO(sll): Use subsequent messages as well if multiple
+              // messages are specified.
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph(
+                buggyOutputTests[i].getMessages()[0]);
+              return feedback;
+            }
+          }
+
+          var correctnessTests = prompt.getCorrectnessTests();
+          var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+          for (var i = 0; i < correctnessTests.length; i++) {
+            var observedOutput = observedOutputs[i];
+
+            // TODO(eyurko): Add varied statements for when code is incorrect.
+            if (!correctnessTests[i].matchesOutput(observedOutput)) {
+              var allowedOutputExample = (
+                correctnessTests[i].getAnyAllowedOutput());
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
+                'Your code gave the output ',
+                _jsToHumanReadable(observedOutput),
+                ' for the input ',
+                _jsToHumanReadable(correctnessTests[i].getInput()),
+                ' ... but this does not match the expected output ',
+                _jsToHumanReadable(allowedOutputExample),
+                '.'
+              ].join(''));
+              return feedback;
+            }
+          }
+
+          var performanceTests = prompt.getPerformanceTests();
+          var performanceTestResults =
+              codeEvalResult.getPerformanceTestResults();
+          for (var i = 0; i < performanceTests.length; i++) {
+            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+            var observedPerformance = performanceTestResults[i];
+
+            if (expectedPerformance !== observedPerformance) {
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
+                'Your code is running more slowly than expected. Can you ',
+                'reconfigure it such that it runs in ',
+                expectedPerformance,
+                ' time?'
+              ].join(''));
+              return feedback;
+            }
+          }
+
+          var feedback = FeedbackObjectFactory.create(true);
+          feedback.appendTextParagraph([
+            'You\'ve completed all the tasks for this question! Click the ',
+            '"Next" button to move on to the next question.',
+          ].join(''));
+          return feedback;
+        }
       },
       getSyntaxErrorFeedback: function(errorMessage) {
         var feedback = FeedbackObjectFactory.create(false);

@@ -286,16 +286,15 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'TranscriptObjectFactory',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory, TranscriptObjectFactory) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory) {
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
 
-        var transcript = TranscriptObjectFactory.create();
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         congratulatoryFeedback.appendTextParagraph(
           "Good work! You've completed this task.");
