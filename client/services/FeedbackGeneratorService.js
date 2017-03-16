@@ -67,8 +67,7 @@ tie.factory('FeedbackGeneratorService', [
             " seconds) we've set. Can you try to make it run ",
             "more efficiently?"].join(''));
           return feedback;
-        }
-        else if (errorMessage) {
+        } else if (errorMessage) {
           var errorInput = codeEvalResult.getErrorInput();
           var inputClause = (
             ' when evaluating the input ' + _jsToHumanReadable(errorInput));
