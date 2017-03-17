@@ -65,13 +65,13 @@ def are_all_unique(words):
     mainFunction: 'abbreviate',
     correctnessTests: [{
       input: 'internationalization',
-      expectedOutput: 'i18n'
+      allowedOutputs: ['i18n']
     }, {
       input: 'monkey',
-      expectedOutput: 'm4y'
+      allowedOutputs: ['m4y']
     }, {
       input: 'friendship',
-      expectedOutput: 'f8p'
+      allowedOutputs: ['f8p']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.forgetLastLetter',
@@ -104,16 +104,16 @@ def are_all_unique(words):
     mainFunction: 'abbreviate',
     correctnessTests: [{
       input: 'cat',
-      expectedOutput: 'cat'
+      allowedOutputs: ['cat']
     }, {
       input: 'at',
-      expectedOutput: 'at'
+      allowedOutputs: ['at']
     }, {
       input: 'a',
-      expectedOutput: 'a'
+      allowedOutputs: ['a']
     }, {
       input: '',
-      expectedOutput: ''
+      allowedOutputs: ['']
     }],
     buggyOutputTests: [{
       buggyFunction: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
@@ -148,10 +148,10 @@ def are_all_unique(words):
     mainFunction: 'are_all_unique',
     correctnessTests: [{
       input: ['cat', 'dog', 'cart'],
-      expectedOutput: true
+      allowedOutputs: [true]
     }, {
       input: ['clot', 'dog', 'cart'],
-      expectedOutput: false
+      allowedOutputs: [false]
     }],
     buggyOutputTests: [],
     performanceTests: [{

@@ -19,7 +19,8 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', function(FeedbackObjectFactory) {
+  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
+    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -54,42 +55,63 @@ tie.factory('FeedbackGeneratorService', [
 
     return {
       getFeedback: function(prompt, codeEvalResult) {
-        if (codeEvalResult.getErrorMessage()) {
-          return FeedbackObjectFactory.create([
-            'Your code threw an error: ' + codeEvalResult.getErrorMessage()
-          ], false);
+        var errorMessage = codeEvalResult.getErrorMessage();
+        // We want to catch and handle a timeout error uniquely, rather than
+        // integrate it into the existing feedback pipeline.
+        if (errorMessage !== null && 
+            errorMessage.toString().startsWith('TimeLimitError')) {
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            ["Your program's exceeded the time limit (",
+            CODE_EXECUTION_TIMEOUT_SECONDS,
+            " seconds) we've set. Can you try to make it run ",
+            "more efficiently?"].join(''));
+          return feedback;
+        } else if (errorMessage) {
+          var errorInput = codeEvalResult.getErrorInput();
+          var inputClause = (
+            ' when evaluating the input ' + _jsToHumanReadable(errorInput));
+          var feedback = FeedbackObjectFactory.create(false);
+          feedback.appendTextParagraph(
+            "Looks like your code had a runtime error" + inputClause +
+            ". Here's the trace:")
+          feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
+          return feedback;
         } else {
           var buggyOutputTests = prompt.getBuggyOutputTests();
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
-              // TODO(sll): Interpolate the %s characters in these messages,
-              // where needed.
               // TODO(sll): Use subsequent messages as well if multiple
               // messages are specified.
-              return FeedbackObjectFactory.create(
-                buggyOutputTests[i].getMessages()[0], false);
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph(
+                buggyOutputTests[i].getMessages()[0]);
+              return feedback;
             }
           }
 
           var correctnessTests = prompt.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (var i = 0; i < correctnessTests.length; i++) {
-            var expectedOutput = correctnessTests[i].getExpectedOutput();
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
-            if (expectedOutput !== observedOutput) {
-              return FeedbackObjectFactory.create([
+            if (!correctnessTests[i].matchesOutput(observedOutput)) {
+              var allowedOutputExample = (
+                correctnessTests[i].getAnyAllowedOutput());
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
                 'Your code gave the output ',
                 _jsToHumanReadable(observedOutput),
                 ' for the input ',
                 _jsToHumanReadable(correctnessTests[i].getInput()),
                 ' ... but this does not match the expected output ',
-                _jsToHumanReadable(expectedOutput),
+                _jsToHumanReadable(allowedOutputExample),
                 '.'
-              ].join(''), false);
+              ].join(''));
+              return feedback;
             }
           }
 
@@ -101,23 +123,31 @@ tie.factory('FeedbackGeneratorService', [
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
-              return FeedbackObjectFactory.create([
+              var feedback = FeedbackObjectFactory.create(false);
+              feedback.appendTextParagraph([
                 'Your code is running more slowly than expected. Can you ',
                 'reconfigure it such that it runs in ',
                 expectedPerformance,
                 ' time?'
-              ].join(''), false);
+              ].join(''));
+              return feedback;
             }
           }
 
-          return FeedbackObjectFactory.create([
+          var feedback = FeedbackObjectFactory.create(true);
+          feedback.appendTextParagraph([
             'You\'ve completed all the tasks for this question! Click the ',
             '"Next" button to move on to the next question.',
-          ].join(''), true);
+          ].join(''));
+          return feedback;
         }
       },
       getSyntaxErrorFeedback: function(errorMessage) {
-        return FeedbackObjectFactory.create(errorMessage, false);
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph(
+          "Looks like your code did not compile. Here's the error trace: ");
+        feedback.appendCodeParagraph(errorMessage);
+        return feedback;
       },
       _jsToHumanReadable: _jsToHumanReadable
     };
