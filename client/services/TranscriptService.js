@@ -24,12 +24,6 @@ tie.factory('TranscriptService', [
     return {
       recordSnapshot: function(snapshot) {
         transcript.recordSnapshot(snapshot);
-      },
-      recordSolution: function(code) {
-        transcript.recordEvent(EventObjectFactory.createCodeSubmittedEvent(code));
-      },
-      recordFeedback: function(feedback) {
-        transcript.recordEvent(EventObjectFactory.createFeedbackGivenEvent(feedback));
       }
     };
   }

@@ -21,23 +21,19 @@ tie.factory('TranscriptObjectFactory', [
   function() {
     var Transcript = function() {
       this._snapshots = [];
-      this._events = [];
     };
 
     // Instance methods.
     Transcript.prototype.getPreviousSnapshot = function() {
+      if (this._snapshots.length === 0) {
+        return null;
+      }
       return this._snapshots[this._snapshots.length - 1];
     };
 
     Transcript.prototype.recordSnapshot = function(snapshot) {
       this._snapshots.push(snapshot);
       return this._snapshots.length;
-    };
-
-    // TODO(eyurko): Probably not needed. Remove in a subsequent PR.
-    Transcript.prototype.recordEvent = function(event) {
-      this._events.push(event);
-      return this._events.length;
     };
 
     // Static class methods.

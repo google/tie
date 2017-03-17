@@ -27,7 +27,6 @@ tie.factory('SolutionHandlerService', [
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
           prompt, studentCode, auxiliaryCode, language) {
-        TranscriptService.recordSolution(studentCode);
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -60,7 +59,6 @@ tie.factory('SolutionHandlerService', [
             return feedback;
           });
         }).then(function(feedback) {
-          TranscriptService.recordFeedback(feedback);
           return feedback;
         });
       }

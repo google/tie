@@ -19,7 +19,6 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    // Add support for a TieFeedback object.
     var Snapshot = function(codeEvalResult, feedbackObject) {
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedbackObject;
