@@ -19,9 +19,9 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    var Snapshot = function(codeEvalResult, feedbackObject) {
+    var Snapshot = function(codeEvalResult, feedback) {
       this._codeEvalResult = codeEvalResult;
-      this._feedback = feedbackObject;
+      this._feedback = feedback;
       this._timestamp = '';
     };
 
@@ -38,13 +38,13 @@ tie.factory('SnapshotObjectFactory', [
       return this._feedback;
     };
 
-    Snapshot.prototype.setFeedback = function(feedbackObject) {
+    Snapshot.prototype.setFeedback = function(feedback) {
       this._feedback = feedback;
     };
 
     // Static class methods.
-    Snapshot.create = function(codeEvalResult, feedbackObject) {
-      return new Snapshot(codeEvalResult, feedbackObject);
+    Snapshot.create = function(codeEvalResult, feedback) {
+      return new Snapshot(codeEvalResult, feedback);
     };
 
     return Snapshot;
