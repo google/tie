@@ -17,13 +17,20 @@
  */
 
 describe('FeedbackGeneratorService', function() {
+  var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
   var FeedbackGeneratorService;
+  var SnapshotObjectFactory;
+  var TranscriptService;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    BuggyOutputTestObjectFactory = $injector.get(
+      'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
+    SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
+    TranscriptService = $injector.get('TranscriptService');
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -90,6 +97,160 @@ describe('FeedbackGeneratorService', function() {
         ["Your program's exceeded the time limit (",
         "3 seconds) we've set. Can you try to make it run ",
         "more efficiently?"].join(''));
+    });
+
+    it(['should return the next hint in sequence for buggy outputs, ',
+        'provided the code has been changed'].join(''), function() {
+      var buggyOutputTestDict = {
+        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+        messages: [
+          ["Try running your code on '))((' on paper. ",
+           'Did you expect that result?'].join(''),
+          [
+            'Are you making sure the parentheses are properly balanced? () ',
+            'is balanced, but )( is not.'
+          ].join(''),
+          [
+            "It looks like you're counting the number of parentheses, and if ",
+            "you have the same # of each kind, returning true. That's not ",
+            "quite correct. See if you can figure out why."
+          ].join('')
+        ]
+      };
+      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+        buggyOutputTestDict);
+      var questionMock = {};
+      questionMock.getBuggyOutputTests = function() {
+        return [buggyOutputTest];
+      };
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'same output', [], [true], [], false, 
+        'testInput');
+      var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
+        'new code', 'same output', [], [true], [], false, 
+        'testInput');
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult)
+      var paragraphs = feedback.getParagraphs();
+      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
+        codeEvalResult, feedback));
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResultWithSameBug).getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
+    });
+
+    it(['should return the same hint multiple times for buggy outputs, ',
+        'provided the code has NOT been changed'].join(''), function() {
+      var buggyOutputTestDict = {
+        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+        messages: [
+          ["Try running your code on '))((' on paper. ",
+           'Did you expect that result?'].join(''),
+          [
+            'Are you making sure the parentheses are properly balanced? () ',
+            'is balanced, but )( is not.'
+          ].join(''),
+          [
+            "It looks like you're counting the number of parentheses, and if ",
+            "you have the same # of each kind, returning true. That's not ",
+            "quite correct. See if you can figure out why."
+          ].join('')
+        ]
+      };
+      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+        buggyOutputTestDict);
+      var questionMock = {};
+      questionMock.getBuggyOutputTests = function() {
+        return [buggyOutputTest];
+      };
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'same output', [], [true], [], false, 
+        'testInput');
+      var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
+        'some code', 'same output', [], [true], [], false, 
+        'testInput');
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult)
+      var paragraphs = feedback.getParagraphs();
+      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
+        codeEvalResult, feedback));
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResultWithSameBug).getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+    });
+
+    it(['should return the same hint multiple times for buggy outputs, ',
+        'provided a new error happened in between'].join(''), function() {
+      var buggyOutputTestDict = {
+        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+        messages: [
+          ["Try running your code on '))((' on paper. ",
+           'Did you expect that result?'].join(''),
+          [
+            'Are you making sure the parentheses are properly balanced? () ',
+            'is balanced, but )( is not.'
+          ].join(''),
+          [
+            "It looks like you're counting the number of parentheses, and if ",
+            "you have the same # of each kind, returning true. That's not ",
+            "quite correct. See if you can figure out why."
+          ].join('')
+        ]
+      };
+      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+        buggyOutputTestDict);
+      var questionMock = {};
+      questionMock.getBuggyOutputTests = function() {
+        return [buggyOutputTest];
+      };
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'same output', [], [true], [], false, 
+        'testInput');
+      var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
+        'other code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
+      var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
+        'new code', 'same output', [], [true], [], false, 
+        'testInput');
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResult)
+      var paragraphs = feedback.getParagraphs();
+      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
+        codeEvalResult, feedback));
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+      var unusedRuntimeErrorFeedback = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResultWithNewError);
+      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
+        codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
+
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        questionMock, codeEvalResultWithSameBug).getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
     });
   });
 });
