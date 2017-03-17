@@ -19,15 +19,14 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'TranscriptService',
+  'FeedbackGeneratorService', 'SnapshotObjectFactory', 'TranscriptService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, TranscriptService) {
+      FeedbackGeneratorService, SnapshotObjectFactory, TranscriptService) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
           prompt, studentCode, auxiliaryCode, language) {
-        TranscriptService.recordSolution(studentCode);
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -36,6 +35,8 @@ tie.factory('SolutionHandlerService', [
           if (potentialSyntaxErrorMessage) {
             var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
               potentialSyntaxErrorMessage);
+            TranscriptService.recordSnapshot(
+              SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return $q.resolve(feedback);
           }
 
@@ -52,10 +53,12 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.runCodeAsync(
             language, preprocessedCode
           ).then(function(codeEvalResult) {
-            return FeedbackGeneratorService.getFeedback(prompt, codeEvalResult);
+            var feedback = FeedbackGeneratorService.getFeedback(prompt, codeEvalResult);
+            TranscriptService.recordSnapshot(
+              SnapshotObjectFactory.create(codeEvalResult, feedback));
+            return feedback;
           });
         }).then(function(feedback) {
-          TranscriptService.recordFeedback(feedback);
           return feedback;
         });
       }

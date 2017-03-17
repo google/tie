@@ -83,8 +83,8 @@ tie.factory('FeedbackGeneratorService', [
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
-              // TODO(sll): Use subsequent messages as well if multiple
-              // messages are specified.
+              // TODO(eyurko): Use subsequent messages as well if the
+              // code has been changed (check the previous snapshot).
               var feedback = FeedbackObjectFactory.create(false);
               feedback.appendTextParagraph(
                 buggyOutputTests[i].getMessages()[0]);
