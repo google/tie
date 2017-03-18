@@ -87,7 +87,7 @@ tie.factory('FeedbackGeneratorService', [
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
-              var buggyMessages = buggyOutputTests[i].getMessages()
+              var buggyMessages = buggyOutputTests[i].getMessages();
               var feedback = FeedbackObjectFactory.create(false);
               var lastSnapshot = (
                 TranscriptService.getTranscript().getPreviousSnapshot());
@@ -98,7 +98,7 @@ tie.factory('FeedbackGeneratorService', [
                 var previousFeedback = lastSnapshot.getFeedback();
                 var previousHintIndex = previousFeedback.getHintIndex();
                 if (previousHintIndex !== -1 && 
-                  previousHintIndex < buggyMessages.length){
+                  previousHintIndex < buggyMessages.length) {
                   var previousMessages = previousFeedback.getParagraphs();
                   // This could cause a problem if two different buggy outputs
                   // have the exact same hint, but that shouldn't be allowed.
