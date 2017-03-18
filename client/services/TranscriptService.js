@@ -22,9 +22,9 @@ tie.factory('TranscriptService', [
     var transcript = TranscriptObjectFactory.create();
 
     return {
-   	  getTranscript: function(){
-   	  	return transcript;
-   	  },
+      getTranscript: function(){
+        return transcript;
+      },
       recordSnapshot: function(snapshot) {
         transcript.recordSnapshot(snapshot);
       }
