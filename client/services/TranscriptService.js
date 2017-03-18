@@ -18,7 +18,7 @@
  */
 
 tie.factory('TranscriptService', [
-  'EventObjectFactory', 'TranscriptObjectFactory', function(EventObjectFactory, TranscriptObjectFactory) {
+  'TranscriptObjectFactory', function(TranscriptObjectFactory) {
     var transcript = TranscriptObjectFactory.create();
 
     return {

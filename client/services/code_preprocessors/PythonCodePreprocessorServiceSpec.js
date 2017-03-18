@@ -71,7 +71,7 @@ describe('PythonCodePreprocessorService', function() {
     });
   });
 
-  describe('_wrapCodeIntoClass', function() {
+  describe('_transformCodeToInstanceMethods', function() {
     it('should correctly wrap a function', function() {
       var rawCode = [
         'def myFunc():',
@@ -80,16 +80,15 @@ describe('PythonCodePreprocessorService', function() {
 
       // The Python interpreter ignores the trailing comma and space in the
       // function arguments.
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ):',
         '        a = 3'
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap inner functions', function() {
@@ -101,8 +100,7 @@ describe('PythonCodePreprocessorService', function() {
         '    inner_func()'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ):',
         '        a = 3',
         '        def inner_func():',
@@ -111,9 +109,9 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should preserve inner whitespace', function() {
@@ -122,16 +120,15 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def       myFunc(self, ):',
         '        a = 3'
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should wrap functions with arguments', function() {
@@ -140,16 +137,15 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3',
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, c, b, x):',
         '        a = 3',
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap multi-line functions', function() {
@@ -159,17 +155,16 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3',
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ',
         '        c, b, x):',
         '        a = 3',
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap multiple functions', function() {
@@ -181,8 +176,7 @@ describe('PythonCodePreprocessorService', function() {
         '    d = 4'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def funcOne(self, a, b):',
         '        x = 3',
         '    ',
@@ -191,9 +185,9 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should trim whitespace at the ends, but preserve it between functions',
@@ -213,8 +207,7 @@ describe('PythonCodePreprocessorService', function() {
           ''
         ].join('\n');
 
-        var expectedWrappedCode = [
-          'class StudentAnswer(object):',
+        var expectedTransformedCode = [
           '    def funcOne(self, a, b):',
           '        x = 3',
           '    ',
@@ -225,9 +218,9 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._wrapCodeIntoClass(
+          PythonCodePreprocessorService._transformCodeToInstanceMethods(
             rawCode, 'StudentAnswer')
-        ).toEqual(expectedWrappedCode);
+        ).toEqual(expectedTransformedCode);
       }
     );
 
@@ -239,7 +232,7 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(function() {
-          PythonCodePreprocessorService._wrapCodeIntoClass(
+          PythonCodePreprocessorService._transformCodeToInstanceMethods(
             rawCode, 'StudentAnswer')
         }).toThrow(new Error('Incomplete line: missing "(" in def statement.'));
       }

@@ -54,11 +54,12 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
-      getFeedback: function(prompt, codeEvalResult) {
+      getFeedback: function(
+          prompt, codeEvalResult, rawCodeLineIndexes) {
         var errorMessage = codeEvalResult.getErrorMessage();
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
-        if (errorMessage !== null && 
+        if (errorMessage !== null &&
             errorMessage.toString().startsWith('TimeLimitError')) {
           var feedback = FeedbackObjectFactory.create(false);
           feedback.appendTextParagraph(
@@ -75,7 +76,28 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             "Looks like your code had a runtime error" + inputClause +
             ". Here's the trace:")
-          feedback.appendCodeParagraph(codeEvalResult.getErrorMessage());
+
+          var stringifiedErrorMessage = String(
+            codeEvalResult.getErrorMessage());
+          var fixedErrorMessage = stringifiedErrorMessage.replace(
+            new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
+              var preprocessedCodeLineIndex = (
+                Number(humanReadableLineNumber) - 1);
+              if (preprocessedCodeLineIndex < 0 ||
+                  preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+                throw Error(
+                  'Line number index out of range: ' + preprocessedCodeLineIndex);
+              }
+
+              if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+                return 'a line in the test code';
+              } else {
+                return 'line ' + (
+                  rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
+              }
+            }
+          );
+          feedback.appendCodeParagraph(fixedErrorMessage);
           return feedback;
         } else {
           var buggyOutputTests = prompt.getBuggyOutputTests();

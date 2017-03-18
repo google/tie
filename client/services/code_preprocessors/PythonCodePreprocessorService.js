@@ -47,7 +47,8 @@ tie.factory('PythonCodePreprocessorService', [
       '',
       '    @classmethod',
       '    def extendString(cls, s, length):',
-      '        return s * length'
+      '        return s * length',
+      ''
     ].join('\n');
 
     var SMALL_INPUT_SIZE = 10;
@@ -80,18 +81,15 @@ tie.factory('PythonCodePreprocessorService', [
       }
     };
 
-    // Wraps a wrapperClassName class around the series of functions in a
-    // given code snippet. We keep these as instance methods (instead of
-    // classmethods) because that makes line number tracking less complicated,
-    // since classmethods will need an extra '@classmethod' line.
-    var _wrapCodeIntoClass = function(
-        code, wrapperClassName, shouldProcessInternalFunctionReferences) {
-      if (shouldProcessInternalFunctionReferences) {
-        code = _addClassWrappingToHelperFunctions(
-          code, CLASS_NAME_STUDENT_CODE, true);
-      }
+    // Transforms a bunch of functions into a bunch of instance methods, and
+    // indents them. This results in code that looks like a class, except that
+    // it does not have the class name header.
+    //
+    // NOTE TO DEVELOPERS: This function must preserve the number of lines in
+    // the code.
+    var _transformCodeToInstanceMethods = function(code, wrapperClassName) {
+      code = _addClassWrappingToHelperFunctions(code, wrapperClassName, true);
       var codeLines = code.trim().split('\n');
-      var firstLine = 'class ' + wrapperClassName + '(object):';
       var subsequentLines = codeLines.map(function(line) {
         if (line.indexOf('def') === 0) {
           var leftParenIndex = line.indexOf('(');
@@ -107,13 +105,16 @@ tie.factory('PythonCodePreprocessorService', [
           return START_INDENT + line;
         }
       });
-      return firstLine + '\n' + subsequentLines.join('\n');
+      return subsequentLines.join('\n');
     };
 
     // Adds support for helper functions in student code by
     // dynamically inserting the specified class name into their code
     // during the preprocessing phase, allowing it to run normally without
     // any indication on the student side that this is happening.
+    //
+    // NOTE TO DEVELOPERS: This function must preserve the number of lines in
+    // the code.
     var _addClassWrappingToHelperFunctions = function(
         code, wrapperClassName, addInstanceWrapping) {
       var functionPrefix = wrapperClassName;
@@ -129,6 +130,13 @@ tie.factory('PythonCodePreprocessorService', [
         }
         var matchingString = regexResult[0];
         var functionName = regexResult[1];
+
+        // Do not modify inner functions.
+        var matchIndex = code.indexOf(matchingString);
+        if (matchIndex > 0 && code[matchIndex - 1] !== '\n') {
+          continue;
+        }
+
         // We should make sure that we don't append our class name to
         // the student's function definition.
         var functionNameStart = (code.indexOf(matchingString) +
@@ -271,19 +279,32 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
-      preprocessCode: function(
-          studentCode, auxiliaryCode, mainFunctionName, outputFunctionName,
+      preprocess: function(
+          codeSubmission, auxiliaryCode, mainFunctionName, outputFunctionName,
           correctnessTests, buggyOutputTests, performanceTests) {
-        return [
-          SYSTEM_CODE,
-          this._wrapCodeIntoClass(studentCode, CLASS_NAME_STUDENT_CODE, true),
+        // Transform the student code (without changing the number of lines) to
+        // put it within a class.
+        var transformedStudentCode = this._transformCodeToInstanceMethods(
+          codeSubmission.getRawCode(), CLASS_NAME_STUDENT_CODE);
+        codeSubmission.replace(transformedStudentCode);
+
+        // Prepend the class header and the system code.
+        var studentCodeFirstLine = (
+          'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
+        codeSubmission.prepend(studentCodeFirstLine);
+        codeSubmission.prepend(SYSTEM_CODE);
+        // This newline separates the student code from the auxiliary code.
+        codeSubmission.append('');
+
+        // Append everything else.
+        codeSubmission.append([
           auxiliaryCode,
           this._generateCorrectnessTestCode(
             correctnessTests, mainFunctionName, outputFunctionName),
           this._generateBuggyOutputTestCode(
             buggyOutputTests, outputFunctionName),
           this._generatePerformanceTestCode(performanceTests)
-        ].join('\n\n');
+        ].join('\n\n'));
       },
 
       // These are seams to allow for Karma testing of the private functions.
@@ -295,7 +316,7 @@ tie.factory('PythonCodePreprocessorService', [
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
       _jsonVariableToPython: _jsonVariableToPython,
-      _wrapCodeIntoClass: _wrapCodeIntoClass
+      _transformCodeToInstanceMethods: _transformCodeToInstanceMethods
     };
   }
 ]);
