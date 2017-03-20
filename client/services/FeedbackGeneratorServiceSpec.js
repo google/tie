@@ -98,7 +98,9 @@ describe('FeedbackGeneratorService', function() {
         "3 seconds) we've set. Can you try to make it run ",
         "more efficiently?"].join(''));
     });
+  });
 
+  describe('_getBuggyOutputTestFeedback', function() {
     it(['should return the next hint in sequence for buggy outputs, ',
         'provided the code has been changed'].join(''), function() {
       var buggyOutputTestDict = {
@@ -119,10 +121,6 @@ describe('FeedbackGeneratorService', function() {
       };
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
-      var questionMock = {};
-      questionMock.getBuggyOutputTests = function() {
-        return [buggyOutputTest];
-      };
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'same output', [], [true], [], false, 
         'testInput');
@@ -130,8 +128,8 @@ describe('FeedbackGeneratorService', function() {
         'new code', 'same output', [], [true], [], false, 
         'testInput');
 
-      var feedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResult)
+      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResult)
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -140,8 +138,8 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var paragraphs = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResultWithSameBug).getParagraphs();
+      var paragraphs = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -168,10 +166,6 @@ describe('FeedbackGeneratorService', function() {
       };
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
-      var questionMock = {};
-      questionMock.getBuggyOutputTests = function() {
-        return [buggyOutputTest];
-      };
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'same output', [], [true], [], false, 
         'testInput');
@@ -179,8 +173,8 @@ describe('FeedbackGeneratorService', function() {
         'some code', 'same output', [], [true], [], false, 
         'testInput');
 
-      var feedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResult)
+      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResult)
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -189,8 +183,8 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var paragraphs = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResultWithSameBug).getParagraphs();
+      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -217,10 +211,6 @@ describe('FeedbackGeneratorService', function() {
       };
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
-      var questionMock = {};
-      questionMock.getBuggyOutputTests = function() {
-        return [buggyOutputTest];
-      };
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'same output', [], [true], [], false, 
         'testInput');
@@ -230,8 +220,8 @@ describe('FeedbackGeneratorService', function() {
         'new code', 'same output', [], [true], [], false, 
         'testInput');
 
-      var feedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResult)
+      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResult)
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -240,13 +230,14 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var unusedRuntimeErrorFeedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResultWithNewError);
+      var unusedRuntimeErrorFeedback = (
+        FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, codeEvalResultWithNewError));
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
 
-      var paragraphs = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResultWithSameBug).getParagraphs();
+      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
