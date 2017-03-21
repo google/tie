@@ -36,6 +36,8 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-coding-ui">
+<!-- LEFT OFF -->
+<p>hideDotDiv = {{ hideDotDiv }} </p>
             <div class="tie-feedback-window">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
@@ -44,6 +46,12 @@ tie.directive('learnerView', [function() {
                   <span ng-if="$first">{{feedbackTimestamp}}</span>
                   {{paragraph.getContent()}}
                 </p>
+              </div>
+              <div class="tie-dot-container"
+                   ng-class="{'tie-dot-hidden': hideDotDiv}">
+                <div class="tie-dot tie-dot-1"></div>
+                <div class="tie-dot tie-dot-2"></div>
+                <div class="tie-dot tie-dot-3"></div>
               </div>
             </div>
             <div class="tie-coding-window">
@@ -66,6 +74,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-next-curtain-container"
                     ng-if="nextButtonIsShown">
                   <div class="tie-next-curtain"></div>
+                  <div class="tie-arrow-highlighter"></div>
                   <div ng-click="showNextPrompt()" class="tie-next-arrow">
                     <span class="tie-next-button-text">Next</span>
                   </div>
@@ -97,6 +106,16 @@ tie.directive('learnerView', [function() {
         }
         .CodeMirror-scroll > .CodeMirror-gutters {
           z-index: 1;
+        }
+        .tie-arrow-highlighter {
+          background-color: white;
+          border-radius: 100px;
+          box-shadow: 0px 0px 42px 67px white;
+          height: 50px;
+          left: calc(50% - 25px);
+          position: absolute;
+          top: calc(50% - 25px);
+          width: 50px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -130,6 +149,34 @@ tie.directive('learnerView', [function() {
         .tie-coding-ui, .tie-question-ui {
           display: inline-block;
           margin: 8px;
+        }
+        @-webkit-keyframes tie-dot {
+          from { -webkit-transform: translate(0px, 0px); }
+          10%  { -webkit-transform: translate(0px, -10px); }
+          20%  { -webkit-transform: translate(0px, 0px); }
+          to   { -webkit-transform: translate(0px, 0px); }
+        }
+        .tie-dot {
+          -webkit-animation-name: tie-dot;
+          -webkit-animation-duration: 1.5s;
+          -webkit-animation-iteration-count: infinite;
+          background-color: black;
+          border-radius: 2px;
+          float: left;
+          height: 4px;
+          margin-bottom: 10px;
+          margin-right: 7px;
+          margin-top: 3px;
+          width: 4px;
+        }
+        .tie-dot-2 {
+          -webkit-animation-delay: 0.1s;
+        }
+        .tie-dot-3 {
+          -webkit-animation-delay: 0.2s;
+        }
+        .tie-dot-hidden {
+          display: none;
         }
         .tie-question-ui-inner {
           padding-left: 32px;
@@ -173,21 +220,27 @@ tie.directive('learnerView', [function() {
           display: inline;
         }
         .tie-next-arrow {
-          border-bottom: 42px solid transparent;
-          border-left: 52px solid rgb(32, 142, 64);
-          border-top: 42px solid transparent;
+          border-bottom: 50px solid transparent;
+          border-left: 75px solid rgb(0, 165, 0);
+          border-top: 50px solid transparent;
           cursor: pointer;
           height: 0;
           left: calc(50% - 20px);
           position: absolute;
-          top: calc(50% - 44px);
+          top: calc(50% - 50px);
           width: 0;
+        }
+        .tie-next-arrow:hover {
+          border-left: 75px solid rgb(32, 142, 64);
+        }
+        .tie-next-arrow:active {
+          border-left: 75px solid rgb(16, 128, 32);
         }
         .tie-next-button-text {
           color: white;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 16px;
-          left: calc(50% - 50px);
+          right: -36px;
           padding-left: 2px;
           position: absolute;
           top: calc(50% - 12px);
@@ -195,7 +248,7 @@ tie.directive('learnerView', [function() {
           width: 100px;
         }
         .tie-next-curtain {
-          background-color: rgb(100, 100, 100);
+          background-color: rgb(200, 200, 200);
           height: 100%;
           opacity: 0.5;
           width: 100%;
@@ -234,10 +287,15 @@ tie.directive('learnerView', [function() {
           position: relative;
           width: 100px;
         }
+        .tie-run-button:hover {
+          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
+          background-color: rgb(50, 120, 240);
+          border: 1px solid rgb(42, 112, 232);
+        }
         .tie-run-button:active {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-          background-color: rgb(56, 123, 244);
-          border: 1px solid rgb(42, 112, 232);
+          background-color: rgb(42, 112, 232);
+          border: 1px solid rgb(32, 100, 200);
         }
         .tie-step-container-inner {
           display: flex;
@@ -303,24 +361,16 @@ tie.directive('learnerView', [function() {
         ];
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
-        congratulatoryFeedback.appendTextParagraph(
-          "Good work! You've completed this task.");
-        congratulatoryFeedback.appendTextParagraph(
-          "Now, take a look at the instructions for the next task.");
-
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
           questionSetId);
         $scope.currentQuestionIndex = 0;
-
-
         $scope.questionIds = questionSet.getQuestionIds();
         $scope.questionsCompletionStatus = [];
+        $scope.hideDotDiv = true;
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
-
-
         var question = null;
         var prompts = null;
         var currentPromptIndex = null;
@@ -334,12 +384,10 @@ tie.directive('learnerView', [function() {
           $scope.instructions = prompts[currentPromptIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
-
           var feedback = FeedbackObjectFactory.create();
           introParagraphs.forEach(function(paragraph) {
             feedback.appendTextParagraph(paragraph);
           });
-
           $scope.feedbackParagraphs = feedback.getParagraphs();
         };
 
@@ -349,13 +397,24 @@ tie.directive('learnerView', [function() {
         };
 
         var setFeedback = function(feedback) {
+          $scope.hideDotDiv = true;
           $scope.feedbackTimestamp = (
             '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
             if (question.isLastPrompt(currentPromptIndex)) {
+              congratulatoryFeedback.clear();
+              congratulatoryFeedback.appendTextParagraph(
+                  "Good work! You've completed this question.");
+              congratulatoryFeedback.appendTextParagraph(
+                  "Click the \"Next\" button below to proceed to the next question.");
               $scope.nextButtonIsShown = true;
               $scope.questionsCompletionStatus[$scope.currentQuestionIndex] = true;
             } else {
+              congratulatoryFeedback.clear();
+              congratulatoryFeedback.appendTextParagraph(
+                  "Good work! You've completed this task.");
+              congratulatoryFeedback.appendTextParagraph(
+                  "Now, take a look at the instructions for the next task.");
               $scope.showNextPrompt();
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
@@ -411,6 +470,8 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
+// LEFT OFF
+$scope.hideDotDiv = false;
           SolutionHandlerService.processSolutionAsync(
             prompts[currentPromptIndex], code,
             question.getAuxiliaryCode(language), language
