@@ -66,8 +66,7 @@ tie.factory('FeedbackGeneratorService', [
         // that they've submitted new code with the same error.
         var previousFeedback = lastSnapshot.getFeedback();
         var previousHintIndex = previousFeedback.getHintIndex();
-        if (previousHintIndex !== null && 
-          previousHintIndex < buggyMessages.length) {
+        if (previousHintIndex !== null) {
           var previousMessages = previousFeedback.getParagraphs();
           // This could cause a problem if two different buggy outputs
           // have the exact same hint, but that shouldn't be allowed.
@@ -79,7 +78,7 @@ tie.factory('FeedbackGeneratorService', [
                 previousHintIndex == buggyMessages.length - 1) {
               hintIndex = previousHintIndex;
             } else {
-              hintIndex = previousHintIndex + 1 % buggyMessages.length;
+              hintIndex = previousHintIndex + 1;
             }
           }
         }
