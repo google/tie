@@ -54,9 +54,9 @@ globalData.questions['parens'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'isBalanced',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '((()))',
       allowedOutputs: [true]
@@ -71,7 +71,7 @@ globalData.questions['parens'] = {
       allowedOutputs: [false]
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+      buggyFunctionName: 'AuxiliaryCode.countNumberOfParentheses',
       messages: [
         "Try running your code on '))((' on paper. Did you expect that result?",
         [
@@ -100,9 +100,9 @@ globalData.questions['parens'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'isBalanced',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '',
       allowedOutputs: [true]
@@ -125,9 +125,9 @@ globalData.questions['parens'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'isBalanced',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '[(){}]',
       allowedOutputs: [true]
@@ -156,13 +156,13 @@ globalData.questions['parens'] = {
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: '()',
-      transformationFunction: 'AuxiliaryCode.createBalancedParenthesesString',
+      transformationFunctionName: 'AuxiliaryCode.createBalancedParenthesesString',
       expectedPerformance: 'linear',
-      evaluationFunction: 'isBalanced'
+      evaluationFunctionName: 'isBalanced'
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'allowOnlyOneFunction',
+    evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       "You should only be writing code in an isBalanced function. While ",

@@ -144,9 +144,9 @@ globalData.questions['rle'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'encode',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'encode',
     correctnessTests: [{
       input: 'abcccccd',
       allowedOutputs: ['ab5xcd']
@@ -159,7 +159,7 @@ globalData.questions['rle'] = {
       allowedOutputs: ['bu10xd']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.skipEncodingAtEndOfString',
+      buggyFunctionName: 'AuxiliaryCode.skipEncodingAtEndOfString',
       messages: [
         "Run your code on 'adddd' in your head. What's the result?",
         "It looks like the issue is with the last few characters of the string.",
@@ -179,9 +179,9 @@ globalData.questions['rle'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'encode',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'encode',
     correctnessTests: [{
       input: 'bbb',
       allowedOutputs: ['3xb', 'bbb']
@@ -196,7 +196,7 @@ globalData.questions['rle'] = {
       allowedOutputs: ['']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
+      buggyFunctionName: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
       messages: [
         [
           "Try running your encode method on 'aa' on paper. ",
@@ -227,9 +227,9 @@ globalData.questions['rle'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
-    inputFunction: null,
-    outputFunction: 'AuxiliaryCode.decodeEncodedString',
-    mainFunction: 'encode',
+    inputFunctionName: null,
+    outputFunctionName: 'AuxiliaryCode.decodeEncodedString',
+    mainFunctionName: 'encode',
     correctnessTests: [{
       input: '5xb',
       allowedOutputs: ['5xb']
@@ -238,7 +238,7 @@ globalData.questions['rle'] = {
       allowedOutputs: ['2aaaaaab7']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
+      buggyFunctionName: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
       messages: [
         [
           "Try running your code on '5aaaa' in your head. ",
@@ -257,13 +257,13 @@ globalData.questions['rle'] = {
     }],
     performanceTests: [{
       inputDataAtom: 'o',
-      transformationFunction: 'System.extendString',
+      transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
-      evaluationFunction: 'encode'
+      evaluationFunctionName: 'encode'
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'allowOnlyOneFunction',
+    evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       'You should only be writing code in an encode function. While ',
