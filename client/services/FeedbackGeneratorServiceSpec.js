@@ -122,11 +122,11 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], false, 
-        'testInput');
+        'some code', 'same output', [], [true], [], null, 
+        null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], false, 
-        'testInput');
+        'new code', 'same output', [], [true], [], null, 
+        null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult)
@@ -167,11 +167,11 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], false, 
-        'testInput');
+        'some code', 'same output', [], [true], [], null, 
+        null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], false, 
-        'testInput');
+        'some code', 'same output', [], [true], [], null, 
+        null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult)
@@ -212,13 +212,13 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], false, 
-        'testInput');
+        'some code', 'same output', [], [true], [], null, 
+        null);
       var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
         'other code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], false, 
-        'testInput');
+        'new code', 'same output', [], [true], [], null, 
+        null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult)

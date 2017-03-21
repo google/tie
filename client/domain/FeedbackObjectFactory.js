@@ -24,8 +24,8 @@ tie.factory('FeedbackObjectFactory', [
       this._answerIsCorrect = answerIsCorrect;
       // This records what message was displayed with this feedback.
       // If no message (or no message with additional potential messages)
-      // was displayed, this will remain at -1.
-      this._hintIndex = -1;
+      // was displayed, this will remain null.
+      this._hintIndex = null;
     };
 
     // Instance methods.

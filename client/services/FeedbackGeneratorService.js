@@ -56,6 +56,7 @@ tie.factory('FeedbackGeneratorService', [
 
     var _getBuggyOutputTestFeedback = function (
       failingTest, codeEvalResult) {
+      var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var feedback = FeedbackObjectFactory.create(false);
       var lastSnapshot = (
@@ -66,7 +67,7 @@ tie.factory('FeedbackGeneratorService', [
         // that they've submitted new code with the same error.
         var previousFeedback = lastSnapshot.getFeedback();
         var previousHintIndex = previousFeedback.getHintIndex();
-        if (previousHintIndex !== -1 && 
+        if (previousHintIndex !== null && 
           previousHintIndex < buggyMessages.length) {
           var previousMessages = previousFeedback.getParagraphs();
           // This could cause a problem if two different buggy outputs
@@ -76,21 +77,14 @@ tie.factory('FeedbackGeneratorService', [
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
             if (previousCode === codeEvalResult.getCode()) {
-              feedback.appendTextParagraph(
-                buggyMessages[previousHintIndex]);
-              feedback.setHintIndex(previousHintIndex);
-              return feedback;
+              hintIndex = previousHintIndex;
             }
-            var hintIndex = (
-              previousHintIndex + 1) % buggyMessages.length;
-            feedback.appendTextParagraph(buggyMessages[hintIndex]);
-            feedback.setHintIndex(hintIndex);
-            return feedback;
+            hintIndex = previousHintIndex + 1 % buggyMessages.length;
           }
         }
       }
-      feedback.appendTextParagraph(buggyMessages[0]);
-      feedback.setHintIndex(0);
+      feedback.appendTextParagraph(buggyMessages[hintIndex]);
+      feedback.setHintIndex(hintIndex);
       return feedback;
     };
 
