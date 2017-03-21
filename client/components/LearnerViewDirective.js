@@ -295,6 +295,13 @@ tie.directive('learnerView', [function() {
         // based on user input.
         var questionSetId = 'strings';
 
+        var NEXT_QUESTION_INTRO_FEEDBACK = [
+          [
+            'Take a look at the next question to the right, and code your ',
+            'answer below.'
+          ].join('\n')
+        ];
+
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         congratulatoryFeedback.appendTextParagraph(
           "Good work! You've completed this task.");
@@ -387,7 +394,7 @@ tie.directive('learnerView', [function() {
               return;
             }
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId);
+            loadQuestion(questionId, NEXT_QUESTION_INTRO_FEEDBACK);
           } else {
             currentPromptIndex++;
             $scope.previousInstructions.push($scope.instructions);
