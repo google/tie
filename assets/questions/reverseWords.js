@@ -53,9 +53,9 @@ globalData.questions['reverseWords'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: 'moo cow bark dog',
       allowedOutputs: ['oom woc krab god']
@@ -73,7 +73,7 @@ globalData.questions['reverseWords'] = {
       allowedOutputs: ['ba']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.forgetLastWord',
+      buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
       messages: [
         "Try running your code on 'new code' on paper. What's the result?",
         "Are you sure that you're reversing all the words?",
@@ -93,9 +93,9 @@ globalData.questions['reverseWords'] = {
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: '   this  is \t a    whitespace  test',
       allowedOutputs: ['   siht  si \t a    ecapsetihw  tset']
@@ -112,13 +112,13 @@ globalData.questions['reverseWords'] = {
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'meow ',
-      transformationFunction: 'System.extendString',
+      transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
-      evaluationFunction: 'reverseWords'
+      evaluationFunctionName: 'reverseWords'
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'allowOnlyOneFunction',
+    evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       'You should only be writing code in a reverseWords function. While ',
@@ -127,4 +127,3 @@ globalData.questions['reverseWords'] = {
     ].join('')
   }]
 };
-

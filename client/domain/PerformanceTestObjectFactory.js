@@ -21,14 +21,15 @@ tie.factory('PerformanceTestObjectFactory', [
   function() {
     var PerformanceTest = function(performanceTestDict) {
       this._inputDataAtom = performanceTestDict.inputDataAtom;
-      this._transformationFunction = performanceTestDict.transformationFunction;
+      this._transformationFunctionName =
+        performanceTestDict.transformationFunctionName;
       this._expectedPerformance = performanceTestDict.expectedPerformance;
-      this._evaluationFunction = performanceTestDict.evaluationFunction;
+      this._evaluationFunctionName = performanceTestDict.evaluationFunctionName;
     };
 
     // Instance methods.
-    PerformanceTest.prototype.getTransformationFunction = function() {
-      return this._transformationFunction;
+    PerformanceTest.prototype.getTransformationFunctionName = function() {
+      return this._transformationFunctionName;
     };
 
     PerformanceTest.prototype.getInputDataAtom = function() {
@@ -39,8 +40,8 @@ tie.factory('PerformanceTestObjectFactory', [
       return this._expectedPerformance;
     };
 
-    PerformanceTest.prototype.getEvaluationFunction = function() {
-      return this._evaluationFunction;
+    PerformanceTest.prototype.getEvaluationFunctionName = function() {
+      return this._evaluationFunctionName;
     };
 
     // Static class methods.

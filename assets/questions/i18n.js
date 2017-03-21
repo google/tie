@@ -60,9 +60,9 @@ def are_all_unique(words):
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'abbreviate',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'abbreviate',
     correctnessTests: [{
       input: 'internationalization',
       allowedOutputs: ['i18n']
@@ -74,7 +74,7 @@ def are_all_unique(words):
       allowedOutputs: ['f8p']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.forgetLastLetter',
+      buggyFunctionName: 'AuxiliaryCode.forgetLastLetter',
       messages: [
         "Try running your code on 'word' in your head. What's the result?.",
         [
@@ -99,9 +99,9 @@ def are_all_unique(words):
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'abbreviate',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'abbreviate',
     correctnessTests: [{
       input: 'cat',
       allowedOutputs: ['cat']
@@ -116,7 +116,7 @@ def are_all_unique(words):
       allowedOutputs: ['']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
+      buggyFunctionName: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
         "Try running your code on 'at' on a piece of paper. What does it produce?",
         [
@@ -143,9 +143,9 @@ def are_all_unique(words):
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'are_all_unique',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'are_all_unique',
     correctnessTests: [{
       input: ['cat', 'dog', 'cart'],
       allowedOutputs: [true]
@@ -156,13 +156,13 @@ def are_all_unique(words):
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'o',
-      transformationFunction: 'AuxiliaryCode.createListOfUniqueStrings',
+      transformationFunctionName: 'AuxiliaryCode.createListOfUniqueStrings',
       expectedPerformance: 'linear',
-      evaluationFunction: 'are_all_unique'
+      evaluationFunctionName: 'are_all_unique'
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'allowOnlyOneFunction',
+    evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       "You should only be writing code in an abbreviate function. While ",
