@@ -29,9 +29,9 @@ tie.factory('PromptObjectFactory', [
       this._instructions = promptDict.instructions;
       this._prerequisiteSkills = promptDict.prerequisiteSkills;
       this._acquiredSkills = promptDict.acquiredSkills;
-      this._inputFunction = promptDict.inputFunction;
-      this._outputFunction = promptDict.outputFunction;
-      this._mainFunction = promptDict.mainFunction;
+      this._inputFunctionName = promptDict.inputFunctionName;
+      this._outputFunctionName = promptDict.outputFunctionName;
+      this._mainFunctionName = promptDict.mainFunctionName;
       this._correctnessTests = promptDict.correctnessTests.map(
         function(correctnessTestDict) {
           return CorrectnessTestObjectFactory.create(correctnessTestDict);
@@ -56,11 +56,11 @@ tie.factory('PromptObjectFactory', [
     };
 
     Prompt.prototype.getMainFunctionName = function() {
-      return this._mainFunction;
+      return this._mainFunctionName;
     };
 
     Prompt.prototype.getOutputFunctionName = function() {
-      return this._outputFunction;
+      return this._outputFunctionName;
     };
 
     Prompt.prototype.getCorrectnessTests = function() {

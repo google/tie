@@ -20,13 +20,13 @@
 tie.factory('BuggyOutputTestObjectFactory', [
   function() {
     var BuggyOutputTest = function(buggyOutputTestDict) {
-      this._buggyFunction = buggyOutputTestDict.buggyFunction;
+      this._buggyFunctionName = buggyOutputTestDict.buggyFunctionName;
       this._messages = buggyOutputTestDict.messages;
     };
 
     // Instance methods.
-    BuggyOutputTest.prototype.getBuggyFunction = function() {
-      return this._buggyFunction;
+    BuggyOutputTest.prototype.getBuggyFunctionName = function() {
+      return this._buggyFunctionName;
     };
 
     BuggyOutputTest.prototype.getMessages = function() {

@@ -468,7 +468,7 @@ describe('PythonCodePreprocessorService', function() {
     it('should add correct buggy output test code to skeleton code',
       function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
-          buggyFunction: 'buggyFunc',
+          buggyFunctionName: 'buggyFunc',
           messages: ['a', 'b', 'c']
         })];
         var expectedGeneratedCode = [
@@ -492,7 +492,7 @@ describe('PythonCodePreprocessorService', function() {
     it('should add correct buggy output test code with an output function name',
       function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
-          buggyFunction: 'buggyFunc',
+          buggyFunctionName: 'buggyFunc',
           messages: ['a', 'b', 'c']
         })];
         var expectedGeneratedCode = [
@@ -519,9 +519,9 @@ describe('PythonCodePreprocessorService', function() {
       function() {
         var performanceTest = PerformanceTestObjectFactory.create({
           inputDataAtom: 'na ',
-          transformationFunction: 'System.extendString',
+          transformationFunctionName: 'System.extendString',
           expectedPerformance: 'linear',
-          evaluationFunction: 'katamariDamashi'
+          evaluationFunctionName: 'katamariDamashi'
         });
         var performanceTests = [performanceTest];
         var expectedGeneratedCode = [

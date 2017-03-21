@@ -216,7 +216,7 @@ tie.factory('PythonCodePreprocessorService', [
       ].join('\n');
       buggyOutputTests.forEach(function(buggyOutputTest) {
         var qualifiedBuggyFunctionName = (
-          buggyOutputTest.getBuggyFunction());
+          buggyOutputTest.getBuggyFunctionName());
 
         fullTestCode += (
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
@@ -232,9 +232,9 @@ tie.factory('PythonCodePreprocessorService', [
 
       performanceTests.forEach(function(test, index) {
         var qualifiedEvaluationFunctionName = (
-          CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunction());
+          CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
         var qualifiedTransformationFunctionName = (
-          test.getTransformationFunction());
+          test.getTransformationFunctionName());
         // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
         // TODO(eyurko): Use linear regression to determine if the data points
         // "look" linear, quadratic, etc, and then provide feedback accordingly.
