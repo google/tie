@@ -23,8 +23,7 @@ tie.factory('FeedbackObjectFactory', [
       this._paragraphs = [];
       this._answerIsCorrect = answerIsCorrect;
       // This records what message was displayed with this feedback.
-      // If no message (or no message with additional potential messages)
-      // was displayed, this will remain null.
+      // If no message was displayed, this will remain null.
       this._hintIndex = null;
     };
 
