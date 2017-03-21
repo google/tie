@@ -22,6 +22,9 @@ tie.factory('FeedbackObjectFactory', [
     var Feedback = function(answerIsCorrect) {
       this._paragraphs = [];
       this._answerIsCorrect = answerIsCorrect;
+      // This records what message was displayed with this feedback.
+      // If no message was displayed, this will remain null.
+      this._hintIndex = null;
     };
 
     // Instance methods.
@@ -48,6 +51,14 @@ tie.factory('FeedbackObjectFactory', [
 
     Feedback.prototype.clear = function(code) {
       this._paragraphs.length = 0;
+    };
+
+    Feedback.prototype.getHintIndex = function() {
+      return this._hintIndex;
+    };
+
+    Feedback.prototype.setHintIndex = function(index) {
+      this._hintIndex = index;
     };
 
     // Static class methods.

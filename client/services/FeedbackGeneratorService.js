@@ -19,8 +19,9 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'CODE_EXECUTION_TIMEOUT_SECONDS', function(
-    FeedbackObjectFactory, CODE_EXECUTION_TIMEOUT_SECONDS) {
+  'FeedbackObjectFactory', 'TranscriptService', 
+  'CODE_EXECUTION_TIMEOUT_SECONDS', function(
+    FeedbackObjectFactory, TranscriptService, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -53,9 +54,48 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
+    var _getBuggyOutputTestFeedback = function (
+      failingTest, codeEvalResult) {
+      var hintIndex = 0;
+      var buggyMessages = failingTest.getMessages();
+      var lastSnapshot = (
+        TranscriptService.getTranscript().getPreviousSnapshot());
+      if (lastSnapshot !== null) {
+        // This section makes sure to provide a new hint
+        // if the student gets stuck on the same bug by checking
+        // that they've submitted new code with the same error.
+        var previousFeedback = lastSnapshot.getFeedback();
+        var previousHintIndex = previousFeedback.getHintIndex();
+        if (previousHintIndex !== null) {
+          var previousMessages = previousFeedback.getParagraphs();
+          // This could cause a problem if two different buggy outputs
+          // have the exact same hint, but that shouldn't be allowed.
+          if (previousMessages[0].getContent() == 
+            buggyMessages[previousHintIndex]) {
+            var previousCode = (
+              lastSnapshot.getCodeEvalResult().getCode());
+            if (previousCode === codeEvalResult.getCode() ||
+                previousHintIndex == buggyMessages.length - 1) {
+              hintIndex = previousHintIndex;
+            } else {
+              hintIndex = previousHintIndex + 1;
+            }
+          }
+        }
+      }
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph(buggyMessages[hintIndex]);
+      feedback.setHintIndex(hintIndex);
+      return feedback;
+    };
+
     return {
+      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       getFeedback: function(
           prompt, codeEvalResult, rawCodeLineIndexes) {
+        // TODO(eyurko): This is getting long enough that we should
+        // break it out into separate functions. 
+        // Will also make it easier to test.
         var errorMessage = codeEvalResult.getErrorMessage();
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
@@ -105,12 +145,8 @@ tie.factory('FeedbackGeneratorService', [
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
-              // TODO(eyurko): Use subsequent messages as well if the
-              // code has been changed (check the previous snapshot).
-              var feedback = FeedbackObjectFactory.create(false);
-              feedback.appendTextParagraph(
-                buggyOutputTests[i].getMessages()[0]);
-              return feedback;
+              return _getBuggyOutputTestFeedback(
+                buggyOutputTests[i], codeEvalResult);
             }
           }
 
