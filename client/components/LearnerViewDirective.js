@@ -21,14 +21,14 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-exercise-ui-outer">
-        <div class="tie-exercise-ui-inner">
+      <div class="tie-question-ui-outer">
+        <div class="tie-question-ui-inner">
           <div class="tie-step-container-outer">
             <div class="tie-step-container-inner">
               <div class="tie-step-item"
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
-                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': unlockedQuestions[$index]}">
+                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
                   <span class="tie-step-text">{{$index + 1}}</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
@@ -39,8 +39,10 @@ tie.directive('learnerView', [function() {
             <div class="tie-feedback-window">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
-                    class="tie-feedback-paragraph">
-                  {{paragraph}}
+                   class="tie-feedback-paragraph"
+                   ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                  <span ng-if="$first">{{feedbackTimestamp}}</span>
+                  {{paragraph.getContent()}}
                 </p>
               </div>
             </div>
@@ -73,7 +75,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Exercise {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <h3>Question {{currentQuestionIndex + 1}}: {{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
@@ -129,11 +131,11 @@ tie.directive('learnerView', [function() {
           display: inline-block;
           margin: 8px;
         }
-        .tie-exercise-ui-inner {
+        .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
         }
-        .tie-exercise-ui-outer {
+        .tie-question-ui-outer {
           display: table;
           margin-left: auto;
           margin-right: auto;
@@ -152,6 +154,16 @@ tie.directive('learnerView', [function() {
           resize: both;
           width: 642px;
           -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-paragraph {
+          width: 100%;
+        }
+        .tie-feedback-paragraph-code {
+          background: #333;
+          color: #eee;
+          font-family: monospace;
+          padding: 10px;
+          width: 95%;
         }
         .tie-lang-select-menu {
           float: left;
@@ -244,6 +256,7 @@ tie.directive('learnerView', [function() {
           border-style: solid;
           border-width: 1px;
           color: rgb(255, 255, 255);
+          cursor: pointer;
           height: 20px;
           width: 20px;
         }
@@ -252,7 +265,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-item > .tie-step-active {
           background-color: rgb(42, 128, 255);
-          cursor: pointer;
         }
         .tie-step-line {
           background-color: rgb(200, 200, 200);
@@ -269,25 +281,32 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
-          cursor: pointer;
         }
       </style>
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory) {
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-        var NEXT_QUESTION_INTRO_PARAGRAPHS = ["Now, let's try a new question."];
-        var CONGRATULATORY_FEEDBACK_PARAGRAPHS = [
-          "Fantastic! You're done with this exercise. Shall we try the next one?",
-          "Click the \"Next\" button below to move on to the next exercise."
+
+        var NEXT_QUESTION_INTRO_FEEDBACK = [
+          [
+            'Take a look at the next question to the right, and code your ',
+            'answer below.'
+          ].join('\n')
         ];
+
+        var congratulatoryFeedback = FeedbackObjectFactory.create();
+        congratulatoryFeedback.appendTextParagraph(
+          "Good work! You've completed this task.");
+        congratulatoryFeedback.appendTextParagraph(
+          "Now, take a look at the instructions for the next task.");
 
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -296,9 +315,9 @@ tie.directive('learnerView', [function() {
 
 
         $scope.questionIds = questionSet.getQuestionIds();
-        $scope.unlockedQuestions = [];
+        $scope.questionsCompletionStatus = [];
         for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.unlockedQuestions.push(false);
+          $scope.questionsCompletionStatus.push(false);
         }
 
 
@@ -315,24 +334,33 @@ tie.directive('learnerView', [function() {
           $scope.instructions = prompts[currentPromptIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
-          $scope.feedbackParagraphs = introParagraphs;
-          $scope.unlockedQuestions[$scope.currentQuestionIndex] = true;
+
+          var feedback = FeedbackObjectFactory.create();
+          introParagraphs.forEach(function(paragraph) {
+            feedback.appendTextParagraph(paragraph);
+          });
+
+          $scope.feedbackParagraphs = feedback.getParagraphs();
         };
 
         var clearFeedback = function() {
+          $scope.feedbackTimestamp = null;
           $scope.feedbackParagraphs = [];
         };
 
         var setFeedback = function(feedback) {
+          $scope.feedbackTimestamp = (
+            '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
             if (question.isLastPrompt(currentPromptIndex)) {
               $scope.nextButtonIsShown = true;
+              $scope.questionsCompletionStatus[$scope.currentQuestionIndex] = true;
             } else {
               $scope.showNextPrompt();
             }
-            $scope.feedbackParagraphs = CONGRATULATORY_FEEDBACK_PARAGRAPHS;
+            $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
-            $scope.feedbackParagraphs = [feedback.getMessage()];
+            $scope.feedbackParagraphs = feedback.getParagraphs();
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
@@ -341,6 +369,16 @@ tie.directive('learnerView', [function() {
 
         $scope.codeMirrorOptions = {
           autofocus: true,
+          extraKeys: {
+            Tab: function(cm) {
+              var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+              cm.replaceSelection(spaces);
+              // Move the cursor to the end of the selection.
+              var endSelectionPos = cm.getDoc().getCursor('head');
+              cm.getDoc().setCursor(endSelectionPos);
+            }
+          },
+          indentUnit: 4,
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: false,
@@ -356,7 +394,7 @@ tie.directive('learnerView', [function() {
               return;
             }
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId);
+            loadQuestion(questionId, NEXT_QUESTION_INTRO_FEEDBACK);
           } else {
             currentPromptIndex++;
             $scope.previousInstructions.push($scope.instructions);
@@ -367,11 +405,9 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          if ($scope.unlockedQuestions[index]) {
-            $scope.currentQuestionIndex = index;
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId, questionSet.getIntroductionParagraphs());
-          }
+          $scope.currentQuestionIndex = index;
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {

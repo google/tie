@@ -13,31 +13,34 @@
 // limitations under the License.
 
 /**
- * @fileoverview Factory for creating new frontend instances of BuggyOutputTest
- * domain objects.
+ * @fileoverview Factory for creating a transcript of a student's TIE 
+ * session.
  */
 
-tie.factory('BuggyOutputTestObjectFactory', [
+tie.factory('TranscriptObjectFactory', [
   function() {
-    var BuggyOutputTest = function(buggyOutputTestDict) {
-      this._buggyFunctionName = buggyOutputTestDict.buggyFunctionName;
-      this._messages = buggyOutputTestDict.messages;
+    var Transcript = function() {
+      this._snapshots = [];
     };
 
     // Instance methods.
-    BuggyOutputTest.prototype.getBuggyFunctionName = function() {
-      return this._buggyFunctionName;
+    Transcript.prototype.getPreviousSnapshot = function() {
+      if (this._snapshots.length === 0) {
+        return null;
+      }
+      return this._snapshots[this._snapshots.length - 1];
     };
 
-    BuggyOutputTest.prototype.getMessages = function() {
-      return this._messages;
+    Transcript.prototype.recordSnapshot = function(snapshot) {
+      this._snapshots.push(snapshot);
+      return this._snapshots.length;
     };
 
     // Static class methods.
-    BuggyOutputTest.create = function(buggyOutputTestDict) {
-      return new BuggyOutputTest(buggyOutputTestDict);
+    Transcript.create = function() {
+      return new Transcript();
     };
 
-    return BuggyOutputTest;
+    return Transcript;
   }
 ]);

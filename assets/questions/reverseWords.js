@@ -26,54 +26,56 @@ globalData.questions['reverseWords'] = {
   },
   auxiliaryCode: {
     python:
-`def forgetLastWord(s):
-    result = ""
-    reversed_word = []
-    for c in s:
-        if c.isspace():
-            result += "".join(reversed(reversed_word))
-            result += c
-            reversed_word = []
-        else:
-            reversed_word.append(c)
-    return result
+`class AuxiliaryCode(object):
+    @classmethod
+    def forgetLastWord(cls, s):
+        result = ""
+        reversed_word = []
+        for c in s:
+            if c.isspace():
+                result += "".join(reversed(reversed_word))
+                result += c
+                reversed_word = []
+            else:
+                reversed_word.append(c)
+        return result
 `
   },
   prompts: [{
     instructions: [
       [
-        'Implement the reverseWords function. This function takes a string of ',
-        'words separated by whitespace and reverses the non-whitespace ',
-        'characters in the words, but not their ordering, preserving the ',
-        'original whitespace.'
+        'For this question, you\'ll implement the reverseWords function. ',
+        'This function takes a string of words separated by whitespace and ',
+        'reverses the non-whitespace characters in the words, but not the ',
+        'words\' ordering. It should also preserve the original whitespace.'
       ].join(''),
       "For instance, 'moo cow bark dog' would become 'oom woc krab god'."
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: 'moo cow bark dog',
-      expectedOutput: 'oom woc krab god'
+      allowedOutputs: ['oom woc krab god']
     }, {
       input: 'racecar civic kayak mom noon level',
-      expectedOutput: 'racecar civic kayak mom noon level'
+      allowedOutputs: ['racecar civic kayak mom noon level']
     }, {
       input: 'I',
-      expectedOutput: 'I'
+      allowedOutputs: ['I']
     }, {
       input: '',
-      expectedOutput: ''
+      allowedOutputs: ['']
     }, {
       input: 'ab',
-      expectedOutput: 'ba'
+      allowedOutputs: ['ba']
     }],
     buggyOutputTests: [{
-      buggyFunction: 'forgetLastWord',
+      buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
       messages: [
-        "It looks like your output (%s) doesn't match our expected output (%s).",
+        "Try running your code on 'new code' on paper. What's the result?",
         "Are you sure that you're reversing all the words?",
         [
           "It looks like you're exiting the function without adding on the ",
@@ -85,44 +87,43 @@ globalData.questions['reverseWords'] = {
   }, {
     instructions: [
       [
-        'Good work! Now, make sure that your code accurately preserves ',
-        'whitespace and handles more than just letters.'
+        'Next, double-check your code to make sure that it preserves ',
+        'the original whitespace and handles more than just letters.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
-    inputFunction: null,
-    outputFunction: null,
-    mainFunction: 'reverseWords',
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: '   this  is \t a    whitespace  test',
-      expectedOutput: '   siht  si \t a    ecapsetihw  tset'
+      allowedOutputs: ['   siht  si \t a    ecapsetihw  tset']
     }, {
       input: '\t  ',
-      expectedOutput: '\t  '
+      allowedOutputs: ['\t  ']
     }, {
       input: '123 456 789 ',
-      expectedOutput: '321 654 987 '
+      allowedOutputs: ['321 654 987 ']
     }, {
       input: 'test for dashes-and others',
-      expectedOutput: 'tset rof dna-sehsad srehto'
+      allowedOutputs: ['tset rof dna-sehsad srehto']
     }],
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'meow ',
-      transformationFunction: 'System.extendString',
+      transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
-      evaluationFunction: 'reverseWords'
+      evaluationFunctionName: 'reverseWords'
     }]
   }],
   styleTests: [{
-    evaluationFunction: 'allowOnlyOneFunction',
+    evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
       'You should only be writing code in a reverseWords function. While ',
       "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this exercise.'
+      'just this function for this question.'
     ].join('')
   }]
 };
-

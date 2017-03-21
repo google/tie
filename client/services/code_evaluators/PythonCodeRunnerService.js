@@ -19,9 +19,12 @@
 tie.factory('PythonCodeRunnerService', [
   'CodeEvalResultObjectFactory', 'VARNAME_CORRECTNESS_TEST_RESULTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       CodeEvalResultObjectFactory, VARNAME_CORRECTNESS_TEST_RESULTS,
-      VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS) {
+      VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
+      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
+    var SECONDS_TO_MILLISECONDS = 1000;
     var outputLines = [];
 
     var clearOutput = function() {
@@ -38,6 +41,7 @@ tie.factory('PythonCodeRunnerService', [
         clearOutput();
         Sk.configure({
          output: addOutputLine,
+         execLimit: CODE_EXECUTION_TIMEOUT_SECONDS * SECONDS_TO_MILLISECONDS,
          read: function(name) {
            // This bit is necessary to import Python stdlib modules, like time.
            if (!Sk.builtinFiles.files.hasOwnProperty(name)) {
@@ -52,10 +56,10 @@ tie.factory('PythonCodeRunnerService', [
           var correctnessTestResults = [];
           var buggyOutputTestResults = [];
           var performanceTestResults = [];
-          // These checks retrieves the value of the Skulpt's representation of
-          // the global Python 'test results' variable (which Skulpt stores in
-          // Sk.globals), and maps it to a JS value so that it can be compared
-          // against the "correct output" specification.
+          // These checks retrieve the values of Skulpt's representation of
+          // the global Python 'test results' variables (which Skulpt stores in
+          // Sk.globals), and maps each of them to a JS value for later
+          // comparison against the "correct output" specification.
           if (Sk.globals.hasOwnProperty(VARNAME_CORRECTNESS_TEST_RESULTS)) {
             correctnessTestResults = Sk.ffi.remapToJs(
               Sk.globals[VARNAME_CORRECTNESS_TEST_RESULTS]);
@@ -72,10 +76,16 @@ tie.factory('PythonCodeRunnerService', [
           // The run was successful.
           return CodeEvalResultObjectFactory.create(
             code, outputLines.join('\n'), correctnessTestResults,
-            buggyOutputTestResults, performanceTestResults, null);
-        }, function(error) {
+            buggyOutputTestResults, performanceTestResults, null, null);
+        }, function(errorMessage) {
+          var errorInput = null;
+          if (Sk.globals.hasOwnProperty(VARNAME_MOST_RECENT_INPUT)) {
+            errorInput = Sk.ffi.remapToJs(
+              Sk.globals[VARNAME_MOST_RECENT_INPUT]);
+          }
+
           return CodeEvalResultObjectFactory.create(
-            code, '', [], [], [], error);
+            code, '', [], [], [], errorMessage, errorInput);
         });
       }
     };

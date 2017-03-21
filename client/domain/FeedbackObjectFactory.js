@@ -18,24 +18,52 @@
  */
 
 tie.factory('FeedbackObjectFactory', [
-  function() {
-    var Feedback = function(message, answerIsCorrect) {
-      this._message = message;
+  'FeedbackParagraphObjectFactory', function(FeedbackParagraphObjectFactory) {
+    var Feedback = function(answerIsCorrect) {
+      this._paragraphs = [];
       this._answerIsCorrect = answerIsCorrect;
+      // This records what message was displayed with this feedback.
+      // If no message was displayed, this will remain null.
+      this._hintIndex = null;
     };
 
     // Instance methods.
-    Feedback.prototype.getMessage = function() {
-      return this._message;
+    Feedback.prototype.getParagraphs = function() {
+      return this._paragraphs;
     };
 
     Feedback.prototype.isAnswerCorrect = function() {
       return this._answerIsCorrect;
     };
 
+    Feedback.prototype.appendTextParagraph = function(text) {
+      this._paragraphs.push(
+        FeedbackParagraphObjectFactory.createTextParagraph(text));
+    };
+
+    Feedback.prototype.appendCodeParagraph = function(code) {
+      if (this._paragraphs.length === 0) {
+        throw Error('The first feedback paragraph should be a text paragraph.');
+      }
+      this._paragraphs.push(
+        FeedbackParagraphObjectFactory.createCodeParagraph(code));
+    };
+
+    Feedback.prototype.clear = function(code) {
+      this._paragraphs.length = 0;
+    };
+
+    Feedback.prototype.getHintIndex = function() {
+      return this._hintIndex;
+    };
+
+    Feedback.prototype.setHintIndex = function(index) {
+      this._hintIndex = index;
+    };
+
     // Static class methods.
-    Feedback.create = function(message, answerIsCorrect) {
-      return new Feedback(message, answerIsCorrect);
+    Feedback.create = function(answerIsCorrect) {
+      return new Feedback(answerIsCorrect);
     };
 
     return Feedback;

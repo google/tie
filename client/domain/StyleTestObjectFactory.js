@@ -20,14 +20,14 @@
 tie.factory('StyleTestObjectFactory', [
   function() {
     var StyleTest = function(styleTestDict) {
-      this._evaluationFunction = styleTestDict.evaluationFunction;
+      this._evaluationFunctionName = styleTestDict.evaluationFunctionName;
       this._expectedOutput = styleTestDict.expectedOutput;
       this._message = styleTestDict.message;
     };
 
     // Instance methods.
-    StyleTest.prototype.getEvaluationFunction = function() {
-      return this._evaluationFunction;
+    StyleTest.prototype.getEvaluationFunctionName = function() {
+      return this._evaluationFunctionName;
     };
 
     // Static class methods.

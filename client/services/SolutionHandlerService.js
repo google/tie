@@ -19,15 +19,16 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'TranscriptService',
+  'FeedbackGeneratorService', 'SnapshotObjectFactory', 'TranscriptService',
+  'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, TranscriptService) {
+      FeedbackGeneratorService, SnapshotObjectFactory, TranscriptService,
+      CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
           prompt, studentCode, auxiliaryCode, language) {
-        TranscriptService.recordSolution(studentCode);
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -36,25 +37,33 @@ tie.factory('SolutionHandlerService', [
           if (potentialSyntaxErrorMessage) {
             var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
               potentialSyntaxErrorMessage);
+            TranscriptService.recordSnapshot(
+              SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return $q.resolve(feedback);
           }
 
           // Otherwise, the code doesn't have any obvious syntax errors.
-          // Preprocess the student's code into a class, append the test code,
-          // and run the whole thing.
-          var preprocessedCode =
-            CodePreprocessorDispatcherService.preprocessCode(
-              language, studentCode, auxiliaryCode,
-              prompt.getMainFunctionName(), prompt.getCorrectnessTests(),
-              prompt.getBuggyOutputTests(), prompt.getPerformanceTests());
+          // Generate a CodeSubmission object that wraps the student's code
+          // into a class and appends some test code, then run the whole thing.
+          var codeSubmission = CodeSubmissionObjectFactory.create(
+            studentCode.trim());
+          CodePreprocessorDispatcherService.preprocess(
+            language, codeSubmission, auxiliaryCode,
+            prompt.getMainFunctionName(), prompt.getOutputFunctionName(),
+            prompt.getCorrectnessTests(), prompt.getBuggyOutputTests(),
+            prompt.getPerformanceTests());
 
           return CodeRunnerDispatcherService.runCodeAsync(
-            language, preprocessedCode
+            language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {
-            return FeedbackGeneratorService.getFeedback(prompt, codeEvalResult);
+            var feedback = FeedbackGeneratorService.getFeedback(
+              prompt, codeEvalResult,
+              codeSubmission.getRawCodeLineIndexes());
+            TranscriptService.recordSnapshot(
+              SnapshotObjectFactory.create(codeEvalResult, feedback));
+            return feedback;
           });
         }).then(function(feedback) {
-          TranscriptService.recordFeedback(feedback);
           return feedback;
         });
       }

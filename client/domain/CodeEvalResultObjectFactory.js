@@ -21,7 +21,7 @@ tie.factory('CodeEvalResultObjectFactory', [
   function() {
     var CodeEvalResult = function(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage) {
+        performanceTestResults, errorMessage, errorInput) {
       this._code = code;
       this._output = output;
       // Several lists of test results.
@@ -29,6 +29,8 @@ tie.factory('CodeEvalResultObjectFactory', [
       this._buggyOutputTestResults = buggyOutputTestResults;
       this._performanceTestResults = performanceTestResults;
       this._errorMessage = errorMessage;
+      // The input that caused the error message.
+      this._errorInput = errorInput;
     };
 
     // Instance methods.
@@ -56,13 +58,17 @@ tie.factory('CodeEvalResultObjectFactory', [
       return this._errorMessage;
     };
 
+    CodeEvalResult.prototype.getErrorInput = function() {
+      return this._errorInput;
+    };
+
     // Static class methods.
     CodeEvalResult.create = function(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage) {
+        performanceTestResults, errorMessage, errorInput) {
       return new CodeEvalResult(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage);
+        performanceTestResults, errorMessage, errorInput);
     };
 
     return CodeEvalResult;

@@ -34,7 +34,44 @@ describe('PythonCodePreprocessorService', function() {
       'PerformanceTestObjectFactory');
   }));
 
-  describe('_wrapCodeIntoClass', function() {
+  describe('_jsonVariableToPython', function() {
+    it('should correctly convert a json String to a Python string', function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython('stringify')
+      ).toEqual("'stringify'");
+    });
+
+    it(
+      [
+        'should correctly convert a json Array to a string version ',
+        'of a Python array'
+      ].join('') , function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython(["cat", "2", "3"])
+      ).toEqual("['cat', '2', '3']");
+    });
+
+    it('should correctly convert a nested json Array to a similar Python array'
+      , function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython(
+          [["1", "2"], ["3", "4"], ["5", "6"]])
+      ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
+    });
+
+    it(
+      [
+        'should correctly convert a json boolean Array to a string version ',
+        'of a Python boolean array'
+      ].join('') , function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython(
+          [[true, true], [false, false], [true, false]])
+      ).toEqual("[[True, True], [False, False], [True, False]]");
+    });
+  });
+
+  describe('_transformCodeToInstanceMethods', function() {
     it('should correctly wrap a function', function() {
       var rawCode = [
         'def myFunc():',
@@ -43,16 +80,15 @@ describe('PythonCodePreprocessorService', function() {
 
       // The Python interpreter ignores the trailing comma and space in the
       // function arguments.
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ):',
         '        a = 3'
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap inner functions', function() {
@@ -64,8 +100,7 @@ describe('PythonCodePreprocessorService', function() {
         '    inner_func()'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ):',
         '        a = 3',
         '        def inner_func():',
@@ -74,9 +109,9 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should preserve inner whitespace', function() {
@@ -85,16 +120,15 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def       myFunc(self, ):',
         '        a = 3'
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should wrap functions with arguments', function() {
@@ -103,16 +137,15 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3',
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, c, b, x):',
         '        a = 3',
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap multi-line functions', function() {
@@ -122,17 +155,16 @@ describe('PythonCodePreprocessorService', function() {
         '    a = 3',
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def myFunc(self, ',
         '        c, b, x):',
         '        a = 3',
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should correctly wrap multiple functions', function() {
@@ -144,8 +176,7 @@ describe('PythonCodePreprocessorService', function() {
         '    d = 4'
       ].join('\n');
 
-      var expectedWrappedCode = [
-        'class StudentAnswer(object):',
+      var expectedTransformedCode = [
         '    def funcOne(self, a, b):',
         '        x = 3',
         '    ',
@@ -154,9 +185,9 @@ describe('PythonCodePreprocessorService', function() {
       ].join('\n');
 
       expect(
-        PythonCodePreprocessorService._wrapCodeIntoClass(
+        PythonCodePreprocessorService._transformCodeToInstanceMethods(
           rawCode, 'StudentAnswer')
-      ).toEqual(expectedWrappedCode);
+      ).toEqual(expectedTransformedCode);
     });
 
     it('should trim whitespace at the ends, but preserve it between functions',
@@ -176,8 +207,7 @@ describe('PythonCodePreprocessorService', function() {
           ''
         ].join('\n');
 
-        var expectedWrappedCode = [
-          'class StudentAnswer(object):',
+        var expectedTransformedCode = [
           '    def funcOne(self, a, b):',
           '        x = 3',
           '    ',
@@ -188,9 +218,9 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(
-          PythonCodePreprocessorService._wrapCodeIntoClass(
+          PythonCodePreprocessorService._transformCodeToInstanceMethods(
             rawCode, 'StudentAnswer')
-        ).toEqual(expectedWrappedCode);
+        ).toEqual(expectedTransformedCode);
       }
     );
 
@@ -202,9 +232,227 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         expect(function() {
-          PythonCodePreprocessorService._wrapCodeIntoClass(
+          PythonCodePreprocessorService._transformCodeToInstanceMethods(
             rawCode, 'StudentAnswer')
         }).toThrow(new Error('Incomplete line: missing "(" in def statement.'));
+      }
+    );
+  });
+
+  describe('_addClassWrappingToHelperFunctions', function() {
+    it('should correctly add our classname to their helper functions',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '',
+          'def inner_func():',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '',
+          'def inner_func():',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', true)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should add classname regardless of leading or trailing spaces',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '',
+          'def     inner_func          ():',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '',
+          'def     inner_func          ():',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', true)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should correctly add our classname to multiple functions',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '    outer_func()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '    StudentCode().outer_func()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    StudentCode().inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', true)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should correctly add our classname to multiple functions regardless ' +
+      'of their position within the file',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    _inner_func()',
+          '    outer_func()',
+          '    myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    _inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode()._inner_func()',
+          '    StudentCode().outer_func()',
+          '    StudentCode().myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    StudentCode()._inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', true)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should not append () if passed false for the addInstanceWrapping arg',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    _inner_func()',
+          '    outer_func()',
+          '    myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    _inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode._inner_func()',
+          '    StudentCode.outer_func()',
+          '    StudentCode.myFunc()',
+          '',
+          'def _inner_func():',
+          '    b = 6',
+          '',
+          'def outer_func():',
+          '    StudentCode._inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', false)
+        ).toEqual(expectedCode);
+      }
+    );
+
+    it('should ignore code with no functions defined',
+      function() {
+        var rawCode = [
+          'a = 3',
+          'b = 54',
+          'a = math.sqrt(9)',
+          'katamari = "damashi"'
+        ].join('\n');
+
+        var expectedCode = [
+          'a = 3',
+          'b = 54',
+          'a = math.sqrt(9)',
+          'katamari = "damashi"'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentAnswer', true)
+        ).toEqual(expectedCode);
+      }
+    );
+  });
+
+  describe('_generateCorrectnessTestCode', function() {
+    it('should add correctness test code to skeleton code',
+      function() {
+        var correctnessTests = [CorrectnessTestObjectFactory.create({
+          input: 'cat',
+          allowedOutputs: ['at', 'bc']
+        })];
+        var expectedGeneratedCode = [
+          'test_inputs = [\'cat\']',
+          '',
+          'correctness_test_results = []',
+          'correctness_test_results.append(outputFnName(' +
+            'System.runTest(StudentCode().mainFnName, test_inputs[0])))'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateCorrectnessTestCode(
+            correctnessTests, 'mainFnName', 'outputFnName')
+        ).toEqual(expectedGeneratedCode);
       }
     );
   });
@@ -213,12 +461,8 @@ describe('PythonCodePreprocessorService', function() {
     it('should add correct buggy output test code to skeleton code',
       function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
-          buggyFunction: 'buggyFunc',
+          buggyFunctionName: 'buggyFunc',
           messages: ['a', 'b', 'c']
-        })];
-        var correctnessTests = [CorrectnessTestObjectFactory.create({
-          input: 'cat',
-          expectedOutput: 'at'
         })];
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
@@ -228,12 +472,36 @@ describe('PythonCodePreprocessorService', function() {
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'buggy_output_test_results.append(matches_buggy_function(AuxiliaryCode().buggyFunc))'
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
         ].join('\n');
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            correctnessTests, buggyOutputTests)
+            buggyOutputTests, null)
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+
+    it('should add correct buggy output test code with an output function name',
+      function() {
+        var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc',
+          messages: ['a', 'b', 'c']
+        })];
+        var expectedGeneratedCode = [
+          'def matches_buggy_function(func):',
+          '    buggy_results = []',
+          '    for test_input in test_inputs:',
+          '        buggy_results.append(outputFunctionName(System.runTest(func, test_input)))',
+          '    return buggy_results == correctness_test_results',
+          '',
+          'buggy_output_test_results = []',
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateBuggyOutputTestCode(
+            buggyOutputTests, 'outputFunctionName')
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -244,9 +512,9 @@ describe('PythonCodePreprocessorService', function() {
       function() {
         var performanceTest = PerformanceTestObjectFactory.create({
           inputDataAtom: 'na ',
-          transformationFunction: 'System.extendString',
+          transformationFunctionName: 'System.extendString',
           expectedPerformance: 'linear',
-          evaluationFunction: 'katamariDamashi'
+          evaluationFunctionName: 'katamariDamashi'
         });
         var performanceTests = [performanceTest];
         var expectedGeneratedCode = [
