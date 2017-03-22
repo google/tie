@@ -291,9 +291,9 @@ tie.directive('learnerView', [function() {
           border: 1px solid rgb(42, 112, 232);
         }
         .tie-run-button:active {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
           background-color: rgb(42, 112, 232);
           border: 1px solid rgb(32, 100, 200);
+          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-step-container-inner {
           display: flex;
