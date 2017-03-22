@@ -45,8 +45,7 @@ tie.directive('learnerView', [function() {
                   {{paragraph.getContent()}}
                 </p>
               </div>
-              <div class="tie-dot-container"
-                   ng-class="{'tie-dot-hidden': hideDotDiv}">
+              <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                 <div class="tie-dot tie-dot-1"></div>
                 <div class="tie-dot tie-dot-2"></div>
                 <div class="tie-dot tie-dot-3"></div>
@@ -172,9 +171,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
-        }
-        .tie-dot-hidden {
-          display: none;
         }
         .tie-question-ui-inner {
           padding-left: 32px;
@@ -365,7 +361,7 @@ tie.directive('learnerView', [function() {
         $scope.currentQuestionIndex = 0;
         $scope.questionIds = questionSet.getQuestionIds();
         $scope.questionsCompletionStatus = [];
-        $scope.hideDotDiv = true;
+        $scope.loadingIndicatorIsShown = false;
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
@@ -397,7 +393,7 @@ tie.directive('learnerView', [function() {
         };
 
         var setFeedback = function(feedback) {
-          $scope.hideDotDiv = true;
+          $scope.loadingIndicatorIsShown = false;
           $scope.feedbackTimestamp = (
             '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
@@ -469,21 +465,17 @@ tie.directive('learnerView', [function() {
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
-        var callSolutionHandlerService = function() {
-          var code = this.code;
-          SolutionHandlerService.processSolutionAsync(
-              prompts[currentPromptIndex], code,
-              question.getAuxiliaryCode(language), language
-              ).then(setFeedback);
-        };
-
         $scope.submitCode = function(code) {
-          $scope.hideDotDiv = false;
-          $timeout(
-              function(){feedbackDiv.scrollTop = feedbackDiv.scrollHeight + 17},
-              0);
-          var serviceCall = callSolutionHandlerService.bind({'code': code});
-          $timeout(serviceCall, 1000);
+          $scope.loadingIndicatorIsShown = true;
+          var additionalHeightForLoadingIndicator = 17;
+          $timeout(function(){
+              feedbackDiv.scrollTop = feedbackDiv.scrollHeight +
+              additionalHeightForLoadingIndicator;
+              $timeout(function() {SolutionHandlerService.processSolutionAsync(
+                  prompts[currentPromptIndex], code,
+                  question.getAuxiliaryCode(language), language
+                  ).then(setFeedback);}, 20);
+              }, 0);
         };
 
         loadQuestion(
