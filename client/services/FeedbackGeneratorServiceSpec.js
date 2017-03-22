@@ -83,7 +83,7 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getTimeoutErrorTestFeedback', function() {
+  describe('_getTimeoutErrorFeedback', function() {
     it('should return a specific error for TimeLimitErrors', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
