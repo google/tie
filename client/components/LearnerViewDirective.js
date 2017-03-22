@@ -66,6 +66,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-next-curtain-container"
                     ng-if="nextButtonIsShown">
                   <div class="tie-next-curtain"></div>
+                  <div class="tie-arrow-highlighter"></div>
                   <div ng-click="showNextPrompt()" class="tie-next-arrow">
                     <span class="tie-next-button-text">Next</span>
                   </div>
@@ -97,6 +98,16 @@ tie.directive('learnerView', [function() {
         }
         .CodeMirror-scroll > .CodeMirror-gutters {
           z-index: 1;
+        }
+        .tie-arrow-highlighter {
+          background-color: white;
+          border-radius: 100px;
+          box-shadow: 0px 0px 42px 67px white;
+          height: 50px;
+          left: calc(50% - 25px);
+          position: absolute;
+          top: calc(50% - 25px);
+          width: 50px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -173,21 +184,27 @@ tie.directive('learnerView', [function() {
           display: inline;
         }
         .tie-next-arrow {
-          border-bottom: 42px solid transparent;
-          border-left: 52px solid rgb(32, 142, 64);
-          border-top: 42px solid transparent;
+          border-bottom: 50px solid transparent;
+          border-left: 75px solid rgb(0, 165, 0);
+          border-top: 50px solid transparent;
           cursor: pointer;
           height: 0;
           left: calc(50% - 20px);
           position: absolute;
-          top: calc(50% - 44px);
+          top: calc(50% - 50px);
           width: 0;
+        }
+        .tie-next-arrow:hover {
+          border-left: 75px solid rgb(32, 142, 64);
+        }
+        .tie-next-arrow:active {
+          border-left: 75px solid rgb(16, 128, 32);
         }
         .tie-next-button-text {
           color: white;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 16px;
-          left: calc(50% - 50px);
+          right: -36px;
           padding-left: 2px;
           position: absolute;
           top: calc(50% - 12px);
@@ -236,8 +253,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button:active {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-          background-color: rgb(56, 123, 244);
-          border: 1px solid rgb(42, 112, 232);
+          background-color: rgb(42, 112, 232);
+          border: 1px solid rgb(32, 100, 200);
         }
         .tie-step-container-inner {
           display: flex;
@@ -313,13 +330,11 @@ tie.directive('learnerView', [function() {
           questionSetId);
         $scope.currentQuestionIndex = 0;
 
-
         $scope.questionIds = questionSet.getQuestionIds();
         $scope.questionsCompletionStatus = [];
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
-
 
         var question = null;
         var prompts = null;
