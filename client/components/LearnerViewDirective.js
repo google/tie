@@ -468,14 +468,16 @@ tie.directive('learnerView', [function() {
         $scope.submitCode = function(code) {
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
-          $timeout(function(){
-              feedbackDiv.scrollTop = feedbackDiv.scrollHeight +
-              additionalHeightForLoadingIndicator;
-              $timeout(function() {SolutionHandlerService.processSolutionAsync(
-                  prompts[currentPromptIndex], code,
-                  question.getAuxiliaryCode(language), language
-                  ).then(setFeedback);}, 20);
-              }, 0);
+          $timeout(function() {
+            feedbackDiv.scrollTop = feedbackDiv.scrollHeight +
+            additionalHeightForLoadingIndicator;
+            $timeout(function() {
+              SolutionHandlerService.processSolutionAsync(
+                prompts[currentPromptIndex], code,
+                question.getAuxiliaryCode(language), language
+                ).then(setFeedback);
+            }, 20);
+          }, 0);
         };
 
         loadQuestion(
