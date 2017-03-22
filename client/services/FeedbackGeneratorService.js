@@ -89,56 +89,91 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    var _getCorrectnessTestFeedback = function(
+      correctnessTest, observedOutput) {
+      var allowedOutputExample = (
+        correctnessTest.getAnyAllowedOutput());
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph([
+        'Your code gave the output ',
+        _jsToHumanReadable(observedOutput),
+        ' for the input ',
+        _jsToHumanReadable(correctnessTest.getInput()),
+        ' ... but this does not match the expected output ',
+        _jsToHumanReadable(allowedOutputExample),
+        '.'
+      ].join(''));
+      return feedback;
+    };
+
+    var _getPerformanceTestFeedback = function(expectedPerformance) {
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph([
+        'Your code is running more slowly than expected. Can you ',
+        'reconfigure it such that it runs in ',
+        expectedPerformance,
+        ' time?'
+      ].join(''));
+      return feedback;
+    };
+
+    var _getRuntimeErrorFeedback = function(
+      codeEvalResult, rawCodeLineIndexes) {
+      var errorInput = codeEvalResult.getErrorInput();
+      var inputClause = (
+        ' when evaluating the input ' + _jsToHumanReadable(errorInput));
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph(
+        "Looks like your code had a runtime error" + inputClause +
+        ". Here's the trace:")
+
+      var stringifiedErrorMessage = String(
+        codeEvalResult.getErrorMessage());
+      var fixedErrorMessage = stringifiedErrorMessage.replace(
+        new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
+          var preprocessedCodeLineIndex = (
+            Number(humanReadableLineNumber) - 1);
+          if (preprocessedCodeLineIndex < 0 ||
+              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+            throw Error(
+              'Line number index out of range: ' + preprocessedCodeLineIndex);
+          }
+
+          if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+            return 'a line in the test code';
+          } else {
+            return 'line ' + (
+              rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
+          }
+        }
+      );
+      feedback.appendCodeParagraph(fixedErrorMessage);
+      return feedback;
+    };
+
+    var _getTimeoutErrorFeedback = function() {
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph(
+        ["Your program's exceeded the time limit (",
+        CODE_EXECUTION_TIMEOUT_SECONDS,
+        " seconds) we've set. Can you try to make it run ",
+        "more efficiently?"].join(''));
+      return feedback;
+    };
+
     return {
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
+      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       getFeedback: function(
           prompt, codeEvalResult, rawCodeLineIndexes) {
-        // TODO(eyurko): This is getting long enough that we should
-        // break it out into separate functions. 
-        // Will also make it easier to test.
         var errorMessage = codeEvalResult.getErrorMessage();
-        // We want to catch and handle a timeout error uniquely, rather than
-        // integrate it into the existing feedback pipeline.
         if (errorMessage !== null &&
             errorMessage.toString().startsWith('TimeLimitError')) {
-          var feedback = FeedbackObjectFactory.create(false);
-          feedback.appendTextParagraph(
-            ["Your program's exceeded the time limit (",
-            CODE_EXECUTION_TIMEOUT_SECONDS,
-            " seconds) we've set. Can you try to make it run ",
-            "more efficiently?"].join(''));
-          return feedback;
+          // We want to catch and handle a timeout error uniquely, rather than
+          // integrate it into the existing feedback pipeline.
+          return _getTimeoutErrorFeedback();
         } else if (errorMessage) {
-          var errorInput = codeEvalResult.getErrorInput();
-          var inputClause = (
-            ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-          var feedback = FeedbackObjectFactory.create(false);
-          feedback.appendTextParagraph(
-            "Looks like your code had a runtime error" + inputClause +
-            ". Here's the trace:")
-
-          var stringifiedErrorMessage = String(
-            codeEvalResult.getErrorMessage());
-          var fixedErrorMessage = stringifiedErrorMessage.replace(
-            new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
-              var preprocessedCodeLineIndex = (
-                Number(humanReadableLineNumber) - 1);
-              if (preprocessedCodeLineIndex < 0 ||
-                  preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
-                throw Error(
-                  'Line number index out of range: ' + preprocessedCodeLineIndex);
-              }
-
-              if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
-                return 'a line in the test code';
-              } else {
-                return 'line ' + (
-                  rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
-              }
-            }
-          );
-          feedback.appendCodeParagraph(fixedErrorMessage);
-          return feedback;
+          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         } else {
           var buggyOutputTests = prompt.getBuggyOutputTests();
           var buggyOutputTestResults =
@@ -157,19 +192,8 @@ tie.factory('FeedbackGeneratorService', [
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
-              var allowedOutputExample = (
-                correctnessTests[i].getAnyAllowedOutput());
-              var feedback = FeedbackObjectFactory.create(false);
-              feedback.appendTextParagraph([
-                'Your code gave the output ',
-                _jsToHumanReadable(observedOutput),
-                ' for the input ',
-                _jsToHumanReadable(correctnessTests[i].getInput()),
-                ' ... but this does not match the expected output ',
-                _jsToHumanReadable(allowedOutputExample),
-                '.'
-              ].join(''));
-              return feedback;
+              return _getCorrectnessTestFeedback(
+                correctnessTests[i], observedOutput);
             }
           }
 
@@ -181,14 +205,7 @@ tie.factory('FeedbackGeneratorService', [
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
-              var feedback = FeedbackObjectFactory.create(false);
-              feedback.appendTextParagraph([
-                'Your code is running more slowly than expected. Can you ',
-                'reconfigure it such that it runs in ',
-                expectedPerformance,
-                ' time?'
-              ].join(''));
-              return feedback;
+              return _getPerformanceTestFeedback(expectedPerformance);
             }
           }
 
@@ -200,6 +217,9 @@ tie.factory('FeedbackGeneratorService', [
           return feedback;
         }
       },
+      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
+      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
+      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       getSyntaxErrorFeedback: function(errorMessage) {
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
