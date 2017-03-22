@@ -36,8 +36,6 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-coding-ui">
-<!-- LEFT OFF -->
-<p>hideDotDiv = {{ hideDotDiv }} </p>
             <div class="tie-feedback-window">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
@@ -374,6 +372,8 @@ tie.directive('learnerView', [function() {
         var question = null;
         var prompts = null;
         var currentPromptIndex = null;
+        var feedbackDiv =
+            document.getElementsByClassName('tie-feedback-window')[0];
 
         var loadQuestion = function(questionId, introParagraphs) {
           question = QuestionDataService.getQuestion(questionId);
@@ -469,13 +469,21 @@ tie.directive('learnerView', [function() {
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
-        $scope.submitCode = function(code) {
-// LEFT OFF
-$scope.hideDotDiv = false;
+        var callSolutionHandlerService = function() {
+          var code = this.code;
           SolutionHandlerService.processSolutionAsync(
-            prompts[currentPromptIndex], code,
-            question.getAuxiliaryCode(language), language
-          ).then(setFeedback);
+              prompts[currentPromptIndex], code,
+              question.getAuxiliaryCode(language), language
+              ).then(setFeedback);
+        };
+
+        $scope.submitCode = function(code) {
+          $scope.hideDotDiv = false;
+          $timeout(
+              function(){feedbackDiv.scrollTop = feedbackDiv.scrollHeight + 17},
+              0);
+          var serviceCall = callSolutionHandlerService.bind({'code': code});
+          $timeout(serviceCall, 1000);
         };
 
         loadQuestion(
