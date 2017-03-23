@@ -19,7 +19,7 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'TranscriptService', 
+  'FeedbackObjectFactory', 'TranscriptService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', function(
     FeedbackObjectFactory, TranscriptService, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
@@ -54,8 +54,7 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
-    var _getBuggyOutputTestFeedback = function (
-      failingTest, codeEvalResult) {
+    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
@@ -70,8 +69,8 @@ tie.factory('FeedbackGeneratorService', [
           var previousMessages = previousFeedback.getParagraphs();
           // This could cause a problem if two different buggy outputs
           // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() == 
-            buggyMessages[previousHintIndex]) {
+          if (previousMessages[0].getContent() ===
+              buggyMessages[previousHintIndex]) {
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
             if (previousCode === codeEvalResult.getCode() ||
@@ -118,7 +117,7 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     var _getRuntimeErrorFeedback = function(
-      codeEvalResult, rawCodeLineIndexes) {
+        codeEvalResult, rawCodeLineIndexes) {
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
@@ -162,8 +161,6 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
-      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
-      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       getFeedback: function(
           prompt, codeEvalResult, rawCodeLineIndexes) {
         var errorMessage = codeEvalResult.getErrorMessage();
@@ -217,9 +214,6 @@ tie.factory('FeedbackGeneratorService', [
           return feedback;
         }
       },
-      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
-      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
-      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       getSyntaxErrorFeedback: function(errorMessage) {
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
@@ -227,6 +221,11 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendCodeParagraph(errorMessage);
         return feedback;
       },
+      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
+      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
+      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
+      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
+      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable
     };
   }
