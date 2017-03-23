@@ -133,7 +133,7 @@ globalData.questions['rle'] = {
         return result
 `
   },
-  prompts: [{
+  tasks: [{
     instructions: [
       [
         'In this question, you\'ll implement the encode function. It takes a ',

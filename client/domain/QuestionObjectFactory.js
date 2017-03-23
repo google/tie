@@ -18,14 +18,14 @@
  */
 
 tie.factory('QuestionObjectFactory', [
-  'PromptObjectFactory', 'StyleTestObjectFactory',
-  function(PromptObjectFactory, StyleTestObjectFactory) {
+  'TaskObjectFactory', 'StyleTestObjectFactory',
+  function(TaskObjectFactory, StyleTestObjectFactory) {
     var Question = function(questionDict) {
       this._title = questionDict.title;
       this._starterCode = questionDict.starterCode;
       this._auxiliaryCode = questionDict.auxiliaryCode;
-      this._prompts = questionDict.prompts.map(function(promptDict) {
-        return PromptObjectFactory.create(promptDict);
+      this._tasks = questionDict.tasks.map(function(taskDict) {
+        return TaskObjectFactory.create(taskDict);
       });
       this._styleTests = questionDict.styleTests.map(function(styleTestDict) {
         return StyleTestObjectFactory.create(styleTestDict);
@@ -51,12 +51,12 @@ tie.factory('QuestionObjectFactory', [
       return this._auxiliaryCode[language];
     };
 
-    Question.prototype.isLastPrompt = function(promptIndex) {
-      return promptIndex === this._prompts.length - 1;
+    Question.prototype.isLastTask = function(taskIndex) {
+      return taskIndex === this._tasks.length - 1;
     };
 
-    Question.prototype.getPrompts = function() {
-      return this._prompts;
+    Question.prototype.getTasks = function() {
+      return this._tasks;
     };
 
     // Static class methods.

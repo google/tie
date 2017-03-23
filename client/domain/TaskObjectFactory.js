@@ -13,36 +13,36 @@
 // limitations under the License.
 
 /**
- * @fileoverview Factory for creating new frontend instances of Prompt domain
- * objects.
+ * @fileoverview Factory for creating new frontend instances of Task domain
+ * objects. A task is a specific coding challenge that forms part of a Question.
  */
 
-tie.factory('PromptObjectFactory', [
+tie.factory('TaskObjectFactory', [
   'CorrectnessTestObjectFactory', 'BuggyOutputTestObjectFactory',
   'PerformanceTestObjectFactory',
   function(
       CorrectnessTestObjectFactory, BuggyOutputTestObjectFactory,
       PerformanceTestObjectFactory) {
-    var Prompt = function(promptDict) {
+    var Task = function(taskDict) {
       // A list of strings (where each string corresponds to a paragraph in the
       // UI).
-      this._instructions = promptDict.instructions;
-      this._prerequisiteSkills = promptDict.prerequisiteSkills;
-      this._acquiredSkills = promptDict.acquiredSkills;
-      this._inputFunctionName = promptDict.inputFunctionName;
-      this._outputFunctionName = promptDict.outputFunctionName;
-      this._mainFunctionName = promptDict.mainFunctionName;
-      this._correctnessTests = promptDict.correctnessTests.map(
+      this._instructions = taskDict.instructions;
+      this._prerequisiteSkills = taskDict.prerequisiteSkills;
+      this._acquiredSkills = taskDict.acquiredSkills;
+      this._inputFunctionName = taskDict.inputFunctionName;
+      this._outputFunctionName = taskDict.outputFunctionName;
+      this._mainFunctionName = taskDict.mainFunctionName;
+      this._correctnessTests = taskDict.correctnessTests.map(
         function(correctnessTestDict) {
           return CorrectnessTestObjectFactory.create(correctnessTestDict);
         }
       );
-      this._buggyOutputTests = promptDict.buggyOutputTests.map(
+      this._buggyOutputTests = taskDict.buggyOutputTests.map(
         function(buggyOutputTestDict) {
           return BuggyOutputTestObjectFactory.create(buggyOutputTestDict);
         }
       );
-      this._performanceTests = promptDict.performanceTests.map(
+      this._performanceTests = taskDict.performanceTests.map(
         function(performanceTestDict) {
           return PerformanceTestObjectFactory.create(
             performanceTestDict);
@@ -51,35 +51,35 @@ tie.factory('PromptObjectFactory', [
     };
 
     // Instance methods.
-    Prompt.prototype.getInstructions = function() {
+    Task.prototype.getInstructions = function() {
       return this._instructions;
     };
 
-    Prompt.prototype.getMainFunctionName = function() {
+    Task.prototype.getMainFunctionName = function() {
       return this._mainFunctionName;
     };
 
-    Prompt.prototype.getOutputFunctionName = function() {
+    Task.prototype.getOutputFunctionName = function() {
       return this._outputFunctionName;
     };
 
-    Prompt.prototype.getCorrectnessTests = function() {
+    Task.prototype.getCorrectnessTests = function() {
       return this._correctnessTests;
     };
 
-    Prompt.prototype.getBuggyOutputTests = function() {
+    Task.prototype.getBuggyOutputTests = function() {
       return this._buggyOutputTests;
     };
 
-    Prompt.prototype.getPerformanceTests = function() {
+    Task.prototype.getPerformanceTests = function() {
       return this._performanceTests;
     };
 
    // Static class methods.
-    Prompt.create = function(promptDict) {
-      return new Prompt(promptDict);
+    Task.create = function(taskDict) {
+      return new Task(taskDict);
     };
 
-    return Prompt;
+    return Task;
   }
 ]);

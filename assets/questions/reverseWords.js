@@ -41,7 +41,7 @@ globalData.questions['reverseWords'] = {
         return result
 `
   },
-  prompts: [{
+  tasks: [{
     instructions: [
       [
         'For this question, you\'ll implement the reverseWords function. ',
