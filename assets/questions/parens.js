@@ -43,7 +43,7 @@ globalData.questions['parens'] = {
             return numleft == numright
 `
   },
-  prompts: [{
+  tasks: [{
     instructions: [
       [
         'For this question, you will implement the isBalanced function. ',

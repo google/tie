@@ -72,7 +72,7 @@ tie.directive('learnerView', [function() {
                     ng-if="nextButtonIsShown">
                   <div class="tie-next-curtain"></div>
                   <div class="tie-arrow-highlighter"></div>
-                  <div ng-click="showNextPrompt()" class="tie-next-arrow">
+                  <div ng-click="showNextTask()" class="tie-next-arrow">
                     <span class="tie-next-button-text">Next</span>
                   </div>
                 </div>
@@ -366,18 +366,18 @@ tie.directive('learnerView', [function() {
           $scope.questionsCompletionStatus.push(false);
         }
         var question = null;
-        var prompts = null;
-        var currentPromptIndex = null;
+        var tasks = null;
+        var currentTaskIndex = null;
         var feedbackDiv =
             document.getElementsByClassName('tie-feedback-window')[0];
 
         var loadQuestion = function(questionId, introParagraphs) {
           question = QuestionDataService.getQuestion(questionId);
-          prompts = question.getPrompts();
-          currentPromptIndex = 0;
+          tasks = question.getTasks();
+          currentTaskIndex = 0;
           $scope.title = question.getTitle();
           $scope.code = question.getStarterCode(language);
-          $scope.instructions = prompts[currentPromptIndex].getInstructions();
+          $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
@@ -397,7 +397,7 @@ tie.directive('learnerView', [function() {
           $scope.feedbackTimestamp = (
             '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
-            if (question.isLastPrompt(currentPromptIndex)) {
+            if (question.isLastTask(currentTaskIndex)) {
               congratulatoryFeedback.clear();
               congratulatoryFeedback.appendTextParagraph(
                   "Good work! You've completed this question.");
@@ -411,7 +411,7 @@ tie.directive('learnerView', [function() {
                   "Good work! You've completed this task.");
               congratulatoryFeedback.appendTextParagraph(
                   "Now, take a look at the instructions for the next task.");
-              $scope.showNextPrompt();
+              $scope.showNextTask();
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
@@ -440,8 +440,8 @@ tie.directive('learnerView', [function() {
           tabSize: 4
         };
 
-        $scope.showNextPrompt = function() {
-          if (question.isLastPrompt(currentPromptIndex)) {
+        $scope.showNextTask = function() {
+          if (question.isLastTask(currentTaskIndex)) {
             $scope.currentQuestionIndex++;
             if ($scope.currentQuestionIndex >= $scope.questionIds.length) {
               // TODO(sll): This needs to be fleshed out.
@@ -451,9 +451,9 @@ tie.directive('learnerView', [function() {
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
             loadQuestion(questionId, NEXT_QUESTION_INTRO_FEEDBACK);
           } else {
-            currentPromptIndex++;
+            currentTaskIndex++;
             $scope.previousInstructions.push($scope.instructions);
-            $scope.instructions = prompts[currentPromptIndex].getInstructions();
+            $scope.instructions = tasks[currentTaskIndex].getInstructions();
             $scope.nextButtonIsShown = false;
             clearFeedback();
           }
@@ -473,7 +473,7 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               SolutionHandlerService.processSolutionAsync(
-                prompts[currentPromptIndex], code,
+                tasks[currentTaskIndex], code,
                 question.getAuxiliaryCode(language), language
                 ).then(setFeedback);
             }, 20);

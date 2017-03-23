@@ -28,7 +28,7 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          prompt, studentCode, auxiliaryCode, language) {
+          task, studentCode, auxiliaryCode, language) {
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -49,16 +49,15 @@ tie.factory('SolutionHandlerService', [
             studentCode.trim());
           CodePreprocessorDispatcherService.preprocess(
             language, codeSubmission, auxiliaryCode,
-            prompt.getMainFunctionName(), prompt.getOutputFunctionName(),
-            prompt.getCorrectnessTests(), prompt.getBuggyOutputTests(),
-            prompt.getPerformanceTests());
+            task.getMainFunctionName(), task.getOutputFunctionName(),
+            task.getCorrectnessTests(), task.getBuggyOutputTests(),
+            task.getPerformanceTests());
 
           return CodeRunnerDispatcherService.runCodeAsync(
             language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {
             var feedback = FeedbackGeneratorService.getFeedback(
-              prompt, codeEvalResult,
-              codeSubmission.getRawCodeLineIndexes());
+              task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, feedback));
             return feedback;

@@ -19,7 +19,7 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'TranscriptService', 
+  'FeedbackObjectFactory', 'TranscriptService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', function(
     FeedbackObjectFactory, TranscriptService, CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
@@ -70,7 +70,7 @@ tie.factory('FeedbackGeneratorService', [
           var previousMessages = previousFeedback.getParagraphs();
           // This could cause a problem if two different buggy outputs
           // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() == 
+          if (previousMessages[0].getContent() ==
             buggyMessages[previousHintIndex]) {
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
@@ -164,8 +164,7 @@ tie.factory('FeedbackGeneratorService', [
     return {
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
-      getFeedback: function(
-          prompt, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
         var errorMessage = codeEvalResult.getErrorMessage();
         if (errorMessage !== null &&
             errorMessage.toString().startsWith('TimeLimitError')) {
@@ -175,7 +174,7 @@ tie.factory('FeedbackGeneratorService', [
         } else if (errorMessage) {
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         } else {
-          var buggyOutputTests = prompt.getBuggyOutputTests();
+          var buggyOutputTests = task.getBuggyOutputTests();
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
@@ -185,7 +184,7 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var correctnessTests = prompt.getCorrectnessTests();
+          var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (var i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
@@ -197,7 +196,7 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var performanceTests = prompt.getPerformanceTests();
+          var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
           for (var i = 0; i < performanceTests.length; i++) {
