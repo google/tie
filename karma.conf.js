@@ -16,7 +16,8 @@ module.exports = function(config) {
       'third_party/skulpt-0.10.0/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
       'client/app.js',
-      'client/**/*.js'
+      'client/**/*.js',
+      'assets/**/*.js'
     ],
     // List of files to exclude.
     exclude: [],

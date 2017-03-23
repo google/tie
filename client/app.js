@@ -39,3 +39,11 @@ tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
 tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
 // Name of the variable in which a copy of the most recent input is stored.
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
+
+
+var globalData = {
+// Question data will be stored here, keyed by question ID.
+questions: {},
+// Question set data will be stored here, keyed by question set ID.
+questionSets: {}
+};
