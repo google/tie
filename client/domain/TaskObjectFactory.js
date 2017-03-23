@@ -75,6 +75,14 @@ tie.factory('TaskObjectFactory', [
       return this._performanceTests;
     };
 
+    Task.prototype.getAcquiredSkills = function() {
+      return this._acquiredSkills;
+    };
+
+    Task.prototype.getPrerequisiteSkills = function() {
+      return this._prerequisiteSkills;
+    };
+
    // Static class methods.
     Task.create = function(taskDict) {
       return new Task(taskDict);
