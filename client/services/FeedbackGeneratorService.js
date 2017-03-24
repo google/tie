@@ -161,8 +161,7 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
-      getFeedback: function(
-          prompt, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
         var errorMessage = codeEvalResult.getErrorMessage();
         if (errorMessage !== null &&
             errorMessage.toString().startsWith('TimeLimitError')) {
@@ -172,7 +171,7 @@ tie.factory('FeedbackGeneratorService', [
         } else if (errorMessage) {
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         } else {
-          var buggyOutputTests = prompt.getBuggyOutputTests();
+          var buggyOutputTests = task.getBuggyOutputTests();
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
@@ -182,7 +181,7 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var correctnessTests = prompt.getCorrectnessTests();
+          var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (var i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
@@ -194,7 +193,7 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var performanceTests = prompt.getPerformanceTests();
+          var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
           for (var i = 0; i < performanceTests.length; i++) {

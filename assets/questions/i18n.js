@@ -49,7 +49,7 @@ def are_all_unique(words):
         return result
 `
   },
-  prompts: [{
+  tasks: [{
     instructions: [
       'In this question, you will implement two functions.',
       [ 'First, implement the abbreviate function. It takes a string as input ',
