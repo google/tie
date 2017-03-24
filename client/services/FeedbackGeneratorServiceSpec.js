@@ -46,6 +46,9 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._jsToHumanReadable('cat')
       ).toEqual('"cat"');
       expect(
+        FeedbackGeneratorService._jsToHumanReadable('cat  \t   \t\n')
+      ).toEqual('"cat  \\t   \\t\\n"');
+      expect(
         FeedbackGeneratorService._jsToHumanReadable(1)
       ).toEqual('1');
       expect(
@@ -87,7 +90,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return a specific error for TimeLimitErrors', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], 'TimeLimitError', 
+        'some code', 'some output', [], [], [], 'TimeLimitError',
         'testInput');
 
       var paragraphs = FeedbackGeneratorService.getFeedback(
@@ -127,10 +130,10 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, 
+        'some code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], null, 
+        'new code', 'same output', [], [true], [], null,
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
@@ -157,10 +160,10 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, 
+        'some code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, 
+        'some code', 'same output', [], [true], [], null,
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
@@ -187,16 +190,16 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, 
+        'some code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], null, 
+        'new code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
-        'newer code', 'same output', [], [true], [], null, 
+        'newer code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithFourthSameBug = CodeEvalResultObjectFactory.create(
-        'newest code', 'same output', [], [true], [], null, 
+        'newest code', 'same output', [], [true], [], null,
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
@@ -243,12 +246,12 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, 
+        'some code', 'same output', [], [true], [], null,
         null);
       var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
         'other code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], null, 
+        'new code', 'same output', [], [true], [], null,
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
