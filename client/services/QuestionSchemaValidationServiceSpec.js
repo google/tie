@@ -22,6 +22,10 @@ describe('QuestionSchemaValidationService', function() {
   var QuestionSchemaValidationService;
   var questions = [];
   var questionData;
+  // Should contain all question IDs.
+  // TODO(eyurko): Figure out a way to dynamically check to make sure
+  // that all question IDs are specified.
+  var questionIds = ['reverseWords', 'parens', 'i18n', 'rle'];
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -49,9 +53,9 @@ describe('QuestionSchemaValidationService', function() {
       styleTests: [{}]
     };
     QuestionDataService = $injector.get(
-      'QuestionDataService'); 
+      'QuestionDataService');
     QuestionObjectFactory = $injector.get(
-      'QuestionObjectFactory'); 
+      'QuestionObjectFactory');
     QuestionSchemaValidationService = $injector.get(
       'QuestionSchemaValidationService');
     QuestionDataService.initCurrentQuestionSet('all');

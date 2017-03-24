@@ -17,8 +17,8 @@
  * before that schema is committed.
  */
 
-tie.factory('QuestionSchemaValidationService', [function() {
-
+tie.factory('QuestionSchemaValidationService', [
+  function() {
     return {
       verifyNoDuplicateSkillsInPrompts: function(question) {
         tasks = question.getTasks();
