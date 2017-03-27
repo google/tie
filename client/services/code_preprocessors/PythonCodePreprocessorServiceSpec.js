@@ -463,6 +463,9 @@ describe('PythonCodePreprocessorService', function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
           buggyFunctionName: 'buggyFunc',
           messages: ['a', 'b', 'c']
+        }), BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc2',
+          messages: ['d', 'e', 'f']
         })];
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
@@ -472,7 +475,9 @@ describe('PythonCodePreprocessorService', function() {
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc2))',
+          ''
         ].join('\n');
 
         expect(
@@ -496,7 +501,8 @@ describe('PythonCodePreprocessorService', function() {
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))'
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          ''
         ].join('\n');
 
         expect(

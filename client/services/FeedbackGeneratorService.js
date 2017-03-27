@@ -125,6 +125,7 @@ tie.factory('FeedbackGeneratorService', [
       feedback.appendTextParagraph(
         "Looks like your code had a runtime error" + inputClause +
         ". Here's the trace:")
+      debugger;
 
       var stringifiedErrorMessage = String(
         codeEvalResult.getErrorMessage());
