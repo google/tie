@@ -46,6 +46,9 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._jsToHumanReadable('cat')
       ).toEqual('"cat"');
       expect(
+        FeedbackGeneratorService._jsToHumanReadable('cat  \t   \t\n')
+      ).toEqual('"cat  \\t   \\t\\n"');
+      expect(
         FeedbackGeneratorService._jsToHumanReadable(1)
       ).toEqual('1');
       expect(

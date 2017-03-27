@@ -42,7 +42,12 @@ tie.directive('learnerView', [function() {
                    class="tie-feedback-paragraph"
                    ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="$first">{{feedbackTimestamp}}</span>
-                  {{paragraph.getContent()}}
+                  <span ng-if="paragraph.isTextParagraph()">
+                    {{paragraph.getContent()}}
+                  </span>
+                  <span ng-if="paragraph.isCodeParagraph()">
+                    <code-snippet content="paragraph.getContent()"></code-snippet>
+                  </span>
                 </p>
               </div>
               <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">

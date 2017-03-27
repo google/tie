@@ -29,7 +29,10 @@ tie.factory('FeedbackGeneratorService', [
       if (jsVariable === null || jsVariable === undefined) {
         return 'None';
       } else if (typeof jsVariable === 'string') {
-        return '"' + jsVariable + '"';
+        // Replace tab and newline characters with a literal backslash followed
+        // by the character 't' or 'n', respectively.
+        return (
+          '"' + jsVariable.replace(/\t/g, '\\t').replace(/\n/g, '\\n') + '"');
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
@@ -90,18 +93,16 @@ tie.factory('FeedbackGeneratorService', [
 
     var _getCorrectnessTestFeedback = function(
       correctnessTest, observedOutput) {
-      var allowedOutputExample = (
-        correctnessTest.getAnyAllowedOutput());
+      var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph([
-        'Your code gave the output ',
-        _jsToHumanReadable(observedOutput),
-        ' for the input ',
-        _jsToHumanReadable(correctnessTest.getInput()),
-        ' ... but this does not match the expected output ',
-        _jsToHumanReadable(allowedOutputExample),
-        '.'
-      ].join(''));
+      feedback.appendTextParagraph('Your code produced the following result:');
+      feedback.appendCodeParagraph(
+        'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+        'Output: ' + _jsToHumanReadable(observedOutput));
+      feedback.appendTextParagraph('However, the expected output is:');
+      feedback.appendCodeParagraph(
+        _jsToHumanReadable(allowedOutputExample));
+      feedback.appendTextParagraph('Could you fix this?');
       return feedback;
     };
 
