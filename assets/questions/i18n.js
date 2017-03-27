@@ -38,7 +38,7 @@ def are_all_unique(words):
     @classmethod
     def useFirstAndLastLetterAndLengthToAbbreviate(cls, word):
         if word:
-            return "%s%d%s" % (word[0], len(word) - 2, word[len(word) - 1])
+            return "%s%d%s" % (word[0], len(word) - 2, word[-1])
         return ""
 
     @classmethod
@@ -72,6 +72,15 @@ def are_all_unique(words):
     }, {
       input: 'friendship',
       allowedOutputs: ['f8p']
+    }, {
+      input: 'bat',
+      allowedOutputs: ['bat']
+    }, {
+      input: 'at',
+      allowedOutputs: ['at']
+    }, {
+      input: 't',
+      allowedOutputs: ['t']
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastLetter',
@@ -86,39 +95,13 @@ def are_all_unique(words):
           "you\'ve abbreviated."
         ].join('')
       ]
-    }],
-    performanceTests: []
-  }, {
-    instructions: [
-      [
-        "Next, consider possible edge cases for your code. One potential ",
-        'edge case is usually short strings. Does your code handle them properly? ',
-        "Make sure your code doesn't try to abbreviate when it's not necessary -- ",
-        "for instance, 'and' should remain 'and', but 'boat' should become 'b2t'."
-      ].join('')
-    ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunctionName: null,
-    outputFunctionName: null,
-    mainFunctionName: 'abbreviate',
-    correctnessTests: [{
-      input: 'cat',
-      allowedOutputs: ['cat']
-    }, {
-      input: 'at',
-      allowedOutputs: ['at']
-    }, {
-      input: 'a',
-      allowedOutputs: ['a']
-    }, {
-      input: '',
-      allowedOutputs: ['']
-    }],
-    buggyOutputTests: [{
+    },
+    {
       buggyFunctionName: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
-        "Try running your code on 'at' on a piece of paper. What does it produce?",
+        ["Think about how your code handles short inputs. ",
+         "'c1t' is not an abbreviation for 'cat'.",
+        ].join(''),
         [
           "It looks like you're using the string's length minus two in the ",
           "middle, which is usually fine, but can you think of any issues ",
@@ -132,7 +115,8 @@ def are_all_unique(words):
       ]
     }],
     performanceTests: []
-  }, {
+  },
+  {
     instructions: [
       [
         "Implement are_all_unique, a function that takes a list of strings as ",
