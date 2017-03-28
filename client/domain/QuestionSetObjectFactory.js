@@ -46,7 +46,7 @@ tie.factory('QuestionSetObjectFactory', [
       return this._questionIds.indexOf(questionId) !== -1;
     };
 
-    QuestionSet.prototype.getNumberOfQuestions = function(questionId) {
+    QuestionSet.prototype.getNumberOfQuestions = function() {
       return this._questionIds.length;
     };
 

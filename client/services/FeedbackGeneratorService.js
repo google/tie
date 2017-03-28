@@ -77,7 +77,7 @@ tie.factory('FeedbackGeneratorService', [
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
             if (previousCode === codeEvalResult.getCode() ||
-                previousHintIndex == buggyMessages.length - 1) {
+                previousHintIndex === buggyMessages.length - 1) {
               hintIndex = previousHintIndex;
             } else {
               hintIndex = previousHintIndex + 1;
@@ -184,7 +184,7 @@ tie.factory('FeedbackGeneratorService', [
 
           var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          for (var i = 0; i < correctnessTests.length; i++) {
+          for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
@@ -197,7 +197,7 @@ tie.factory('FeedbackGeneratorService', [
           var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
-          for (var i = 0; i < performanceTests.length; i++) {
+          for (i = 0; i < performanceTests.length; i++) {
             var expectedPerformance = performanceTests[i].getExpectedPerformance();
             var observedPerformance = performanceTestResults[i];
 

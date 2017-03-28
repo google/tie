@@ -16,7 +16,7 @@
  * @fileoverview Question data for Run-Length Encoding.
  */
 
-globalData.questions['rle'] = {
+globalData.questions['rle'] = {  // eslint-disable-line dot-notation
   title: 'Run-Length Encoding',
   starterCode: {
     python:

@@ -1,12 +1,34 @@
 {
+    "env": {
+        "browser": true,
+        "jasmine": true
+    },
     "parserOptions": {
         "ecmaVersion": 6,
-        "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true
-        }
+        },
+        "sourceType": "module"
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "globalData": false,
+        "inject": false,
+        "module": false,
+        "tie": false
     },
     "rules": {
-        "semi": 2
+        "consistent-return": "error",
+        "curly": "error",
+        "default-case": "error",
+        "dot-location": ["error", "property"],
+        "dot-notation": "error",
+        "eqeqeq": ["error", "always"],
+        "no-caller": "error",
+        "no-console": ["error", {
+            "allow": ["error"]
+        }],
+        "no-div-regex": "error",
+        "semi": "error"
     }
 }

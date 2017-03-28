@@ -16,7 +16,7 @@
  * @fileoverview Question data for Reverse Words.
  */
 
-globalData.questions['reverseWords'] = {
+globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
   title: 'Reverse Words',
   starterCode: {
     python:

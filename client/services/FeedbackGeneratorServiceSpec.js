@@ -68,7 +68,6 @@ describe('FeedbackGeneratorService', function() {
 
   describe('_getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
-      var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [],
         'ZeroDivisionError: integer division or modulo by zero on line 5',
@@ -89,7 +88,6 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should adjust the line numbers correctly', function() {
-      var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [],
         'ZeroDivisionError: integer division or modulo by zero on line 5',
@@ -112,7 +110,6 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should correctly handle errors due to the test code', function() {
-      var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [],
         'ZeroDivisionError: integer division or modulo by zero on line 2',
@@ -195,7 +192,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var paragraphs = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      paragraphs = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
@@ -225,7 +222,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
@@ -261,9 +258,9 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug);
-      var paragraphs = feedback.getParagraphs();
+      paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithSameBug, feedback));
 
@@ -271,9 +268,9 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
 
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithStillSameBug);
-      var paragraphs = feedback.getParagraphs();
+      paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithStillSameBug, feedback));
 
@@ -281,7 +278,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
 
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithFourthSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
@@ -319,7 +316,7 @@ describe('FeedbackGeneratorService', function() {
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
 
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
