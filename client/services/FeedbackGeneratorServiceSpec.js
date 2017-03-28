@@ -324,7 +324,7 @@ describe('FeedbackGeneratorService', function() {
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0])
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
     });
   });
 });
