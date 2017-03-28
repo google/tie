@@ -186,7 +186,7 @@ describe('FeedbackGeneratorService', function() {
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResult)
+        buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -216,7 +216,7 @@ describe('FeedbackGeneratorService', function() {
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResult)
+        buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -252,7 +252,7 @@ describe('FeedbackGeneratorService', function() {
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResult)
+        buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));
@@ -262,7 +262,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResultWithSameBug)
+        buggyOutputTest, codeEvalResultWithSameBug);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithSameBug, feedback));
@@ -272,7 +272,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResultWithStillSameBug)
+        buggyOutputTest, codeEvalResultWithStillSameBug);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResultWithStillSameBug, feedback));
@@ -304,7 +304,7 @@ describe('FeedbackGeneratorService', function() {
         null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResult)
+        buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
         codeEvalResult, feedback));

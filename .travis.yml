@@ -20,4 +20,5 @@ dist: trusty
 install: true
 script:
 - bash scripts/run_karma_tests.sh --single-run
+- bash scripts/run_linter.sh
 sudo: required
