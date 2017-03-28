@@ -127,9 +127,7 @@ tie.factory('FeedbackGeneratorService', [
         "Looks like your code had a runtime error" + inputClause +
         ". Here's the trace:");
 
-      var stringifiedErrorMessage = String(
-        codeEvalResult.getErrorMessage());
-      var fixedErrorMessage = stringifiedErrorMessage.replace(
+      var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
           var preprocessedCodeLineIndex = (
             Number(humanReadableLineNumber) - 1);
@@ -147,7 +145,7 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
       );
-      feedback.appendCodeParagraph(fixedErrorMessage);
+      feedback.appendCodeParagraph(fixedErrorString);
       return feedback;
     };
 
@@ -163,14 +161,14 @@ tie.factory('FeedbackGeneratorService', [
 
     return {
       getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
-        var errorMessage = codeEvalResult.getErrorMessage();
-        if (errorMessage !== null &&
-            errorMessage.toString().startsWith('TimeLimitError')) {
+        var errorString = codeEvalResult.getErrorString();
+        if (errorString) {
           // We want to catch and handle a timeout error uniquely, rather than
           // integrate it into the existing feedback pipeline.
-          return _getTimeoutErrorFeedback();
-        } else if (errorMessage) {
-          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+          return (
+            errorString.startsWith('TimeLimitError') ?
+            _getTimeoutErrorFeedback() :
+            _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
         } else {
           var buggyOutputTests = task.getBuggyOutputTests();
           var buggyOutputTestResults =
@@ -214,11 +212,11 @@ tie.factory('FeedbackGeneratorService', [
           return feedback;
         }
       },
-      getSyntaxErrorFeedback: function(errorMessage) {
+      getSyntaxErrorFeedback: function(errorString) {
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
           "Looks like your code did not compile. Here's the error trace: ");
-        feedback.appendCodeParagraph(errorMessage);
+        feedback.appendCodeParagraph(errorString);
         return feedback;
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,

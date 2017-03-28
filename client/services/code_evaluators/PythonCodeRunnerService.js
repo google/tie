@@ -17,13 +17,15 @@
  */
 
 tie.factory('PythonCodeRunnerService', [
-  'CodeEvalResultObjectFactory', 'VARNAME_CORRECTNESS_TEST_RESULTS',
-  'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
-  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
+  'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
+  'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
+  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
+  'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
-      CodeEvalResultObjectFactory, VARNAME_CORRECTNESS_TEST_RESULTS,
-      VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
-      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
+      CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
+      VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
+      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT,
+      CODE_EXECUTION_TIMEOUT_SECONDS) {
     var SECONDS_TO_MILLISECONDS = 1000;
     var outputLines = [];
 
@@ -77,15 +79,17 @@ tie.factory('PythonCodeRunnerService', [
           return CodeEvalResultObjectFactory.create(
             code, outputLines.join('\n'), correctnessTestResults,
             buggyOutputTestResults, performanceTestResults, null, null);
-        }, function(errorMessage) {
+        }, function(skulptError) {
           var errorInput = null;
           if (Sk.globals.hasOwnProperty(VARNAME_MOST_RECENT_INPUT)) {
             errorInput = Sk.ffi.remapToJs(
               Sk.globals[VARNAME_MOST_RECENT_INPUT]);
           }
 
+          var errorTraceback = ErrorTracebackObjectFactory.fromSkulptError(
+            skulptError);
           return CodeEvalResultObjectFactory.create(
-            code, '', [], [], [], errorMessage, errorInput);
+            code, '', [], [], [], errorTraceback, errorInput);
         });
       }
     };
