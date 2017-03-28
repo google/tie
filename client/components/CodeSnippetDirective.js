@@ -15,7 +15,7 @@
 /**
  * @fileoverview Directive for showing code snippets.
  */
-testlintererror
+
 tie.directive('codeSnippet', [function() {
   return {
     restrict: 'E',
