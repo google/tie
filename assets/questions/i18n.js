@@ -16,7 +16,7 @@
  * @fileoverview Question data for i18n.
  */
 
-globalData.questions['i18n'] = {
+globalData.questions['i18n'] = {  // eslint-disable-line dot-notation
   title: 'Internationalization (i18n)',
   starterCode: {
     python:
@@ -52,7 +52,8 @@ def are_all_unique(words):
   tasks: [{
     instructions: [
       'In this question, you will implement two functions.',
-      [ 'First, implement the abbreviate function. It takes a string as input ',
+      [
+        'First, implement the abbreviate function. It takes a string as input ',
         'and returns an abbreviation of the string of the form ',
         '<first character><length of the middle of the string><last character>. ',
         'For example, "internationalization" should be abbreviated as "i18n".'
@@ -88,19 +89,20 @@ def are_all_unique(words):
         "Try running your code on 'word' in your head. What's the result?.",
         [
           "You seem to be dropping the last character of the string when ",
-          "you\'re abbreviating."
+          "you're abbreviating."
         ].join(''),
         [
           "Make sure to add the last character of the string back on when ",
-          "you\'ve abbreviated."
+          "you've abbreviated."
         ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
       messages: [
-        ["Think about how your code handles short inputs. ",
-         "'c1t' is not an abbreviation for 'cat'.",
+        [
+          "Think about how your code handles short inputs. ",
+          "'c1t' is not an abbreviation for 'cat'."
         ].join(''),
         [
           "It looks like you're using the string's length minus two in the ",

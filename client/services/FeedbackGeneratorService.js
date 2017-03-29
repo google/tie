@@ -77,7 +77,7 @@ tie.factory('FeedbackGeneratorService', [
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
             if (previousCode === codeEvalResult.getCode() ||
-                previousHintIndex == buggyMessages.length - 1) {
+                previousHintIndex === buggyMessages.length - 1) {
               hintIndex = previousHintIndex;
             } else {
               hintIndex = previousHintIndex + 1;
@@ -153,11 +153,12 @@ tie.factory('FeedbackGeneratorService', [
 
     var _getTimeoutErrorFeedback = function() {
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(
-        ["Your program's exceeded the time limit (",
+      feedback.appendTextParagraph([
+        "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
         " seconds) we've set. Can you try to make it run ",
-        "more efficiently?"].join(''));
+        "more efficiently?"
+      ].join(''));
       return feedback;
     };
 
@@ -184,7 +185,7 @@ tie.factory('FeedbackGeneratorService', [
 
           var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          for (var i = 0; i < correctnessTests.length; i++) {
+          for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
@@ -197,8 +198,9 @@ tie.factory('FeedbackGeneratorService', [
           var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
-          for (var i = 0; i < performanceTests.length; i++) {
-            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+          for (i = 0; i < performanceTests.length; i++) {
+            var expectedPerformance = (
+              performanceTests[i].getExpectedPerformance());
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
@@ -209,7 +211,7 @@ tie.factory('FeedbackGeneratorService', [
           var feedback = FeedbackObjectFactory.create(true);
           feedback.appendTextParagraph([
             'You\'ve completed all the tasks for this question! Click the ',
-            '"Next" button to move on to the next question.',
+            '"Next" button to move on to the next question.'
           ].join(''));
           return feedback;
         }

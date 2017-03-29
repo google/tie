@@ -16,7 +16,7 @@
  * @fileoverview Data for the "strings" question set.
  */
 
-globalData.questionSets['strings'] = {
+globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
   introductionParagraphs: [
     'Greetings!',
     'This set of questions focuses on string manipulation.',
