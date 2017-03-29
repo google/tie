@@ -59,6 +59,10 @@ tie.factory('TaskObjectFactory', [
       return this._mainFunctionName;
     };
 
+    Task.prototype.getInputFunctionName = function() {
+      return this._outputFunctionName;
+    };
+
     Task.prototype.getOutputFunctionName = function() {
       return this._outputFunctionName;
     };
