@@ -135,7 +135,9 @@
         "object-property-newline": "error",
         "one-var": ["error", "never"],
         "one-var-declaration-per-line": "error",
-        "operator-linebreak": "error",
+        "operator-linebreak": ["error", "after", {
+            "overrides": {}
+        }],
         "quote-props": ["error", "as-needed"],
         "radix": "error",
         "require-await": "error",

@@ -19,6 +19,7 @@
 describe('FeedbackGeneratorService', function() {
   var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
+  var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
   var SnapshotObjectFactory;
   var TracebackCoordinatesObjectFactory;
