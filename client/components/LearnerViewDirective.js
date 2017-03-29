@@ -42,7 +42,12 @@ tie.directive('learnerView', [function() {
                    class="tie-feedback-paragraph"
                    ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="$first">{{feedbackTimestamp}}</span>
-                  {{paragraph.getContent()}}
+                  <span ng-if="paragraph.isTextParagraph()">
+                    {{paragraph.getContent()}}
+                  </span>
+                  <span ng-if="paragraph.isCodeParagraph()">
+                    <code-snippet content="paragraph.getContent()"></code-snippet>
+                  </span>
                 </p>
               </div>
               <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
@@ -342,6 +347,7 @@ tie.directive('learnerView', [function() {
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON, FeedbackObjectFactory) {
+        var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
@@ -404,7 +410,8 @@ tie.directive('learnerView', [function() {
               congratulatoryFeedback.appendTextParagraph(
                   "Click the \"Next\" button below to proceed to the next question.");
               $scope.nextButtonIsShown = true;
-              $scope.questionsCompletionStatus[$scope.currentQuestionIndex] = true;
+              $scope.questionsCompletionStatus[
+                $scope.currentQuestionIndex] = true;
             } else {
               congratulatoryFeedback.clear();
               congratulatoryFeedback.appendTextParagraph(
@@ -476,7 +483,7 @@ tie.directive('learnerView', [function() {
                 tasks[currentTaskIndex], code,
                 question.getAuxiliaryCode(language), language
                 ).then(setFeedback);
-            }, 20);
+            }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
         };
 

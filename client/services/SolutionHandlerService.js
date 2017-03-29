@@ -33,10 +33,10 @@ tie.factory('SolutionHandlerService', [
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
         ).then(function(rawCodeEvalResult) {
-          var potentialSyntaxErrorMessage = rawCodeEvalResult.getErrorMessage();
-          if (potentialSyntaxErrorMessage) {
+          var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
+          if (potentialSyntaxErrorString) {
             var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-              potentialSyntaxErrorMessage);
+              potentialSyntaxErrorString);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return $q.resolve(feedback);
@@ -56,11 +56,11 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.runCodeAsync(
             language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {
-            var feedback = FeedbackGeneratorService.getFeedback(
+            var runtimeFeedback = FeedbackGeneratorService.getFeedback(
               task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(codeEvalResult, feedback));
-            return feedback;
+              SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
+            return runtimeFeedback;
           });
         }).then(function(feedback) {
           return feedback;

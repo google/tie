@@ -49,7 +49,7 @@ tie.factory('FeedbackObjectFactory', [
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
-    Feedback.prototype.clear = function(code) {
+    Feedback.prototype.clear = function() {
       this._paragraphs.length = 0;
     };
 

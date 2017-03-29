@@ -16,7 +16,7 @@
  * @fileoverview Question data for Run-Length Encoding.
  */
 
-globalData.questions['rle'] = {
+globalData.questions['rle'] = {  // eslint-disable-line dot-notation
   title: 'Run-Length Encoding',
   starterCode: {
     python:
@@ -174,7 +174,7 @@ globalData.questions['rle'] = {
     instructions: [
       [
         'Next, double-check your code to make sure it handles short strings. ',
-        'Ideally, these strings should be as small as possible after encoding.',
+        'Ideally, these strings should be as small as possible after encoding.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],

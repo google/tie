@@ -29,7 +29,10 @@ tie.factory('FeedbackGeneratorService', [
       if (jsVariable === null || jsVariable === undefined) {
         return 'None';
       } else if (typeof jsVariable === 'string') {
-        return '"' + jsVariable + '"';
+        // Replace tab and newline characters with a literal backslash followed
+        // by the character 't' or 'n', respectively.
+        return (
+          '"' + jsVariable.replace(/\t/g, '\\t').replace(/\n/g, '\\n') + '"');
       } else if (typeof jsVariable === 'number') {
         return String(jsVariable);
       } else if (typeof jsVariable === 'boolean') {
@@ -54,8 +57,7 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
-    var _getBuggyOutputTestFeedback = function (
-      failingTest, codeEvalResult) {
+    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
@@ -70,12 +72,12 @@ tie.factory('FeedbackGeneratorService', [
           var previousMessages = previousFeedback.getParagraphs();
           // This could cause a problem if two different buggy outputs
           // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() ==
-            buggyMessages[previousHintIndex]) {
+          if (previousMessages[0].getContent() ===
+              buggyMessages[previousHintIndex]) {
             var previousCode = (
               lastSnapshot.getCodeEvalResult().getCode());
             if (previousCode === codeEvalResult.getCode() ||
-                previousHintIndex == buggyMessages.length - 1) {
+                previousHintIndex === buggyMessages.length - 1) {
               hintIndex = previousHintIndex;
             } else {
               hintIndex = previousHintIndex + 1;
@@ -91,18 +93,16 @@ tie.factory('FeedbackGeneratorService', [
 
     var _getCorrectnessTestFeedback = function(
       correctnessTest, observedOutput) {
-      var allowedOutputExample = (
-        correctnessTest.getAnyAllowedOutput());
+      var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph([
-        'Your code gave the output ',
-        _jsToHumanReadable(observedOutput),
-        ' for the input ',
-        _jsToHumanReadable(correctnessTest.getInput()),
-        ' ... but this does not match the expected output ',
-        _jsToHumanReadable(allowedOutputExample),
-        '.'
-      ].join(''));
+      feedback.appendTextParagraph('Your code produced the following result:');
+      feedback.appendCodeParagraph(
+        'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+        'Output: ' + _jsToHumanReadable(observedOutput));
+      feedback.appendTextParagraph('However, the expected output is:');
+      feedback.appendCodeParagraph(
+        _jsToHumanReadable(allowedOutputExample));
+      feedback.appendTextParagraph('Could you fix this?');
       return feedback;
     };
 
@@ -118,18 +118,16 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     var _getRuntimeErrorFeedback = function(
-      codeEvalResult, rawCodeLineIndexes) {
+        codeEvalResult, rawCodeLineIndexes) {
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(
         "Looks like your code had a runtime error" + inputClause +
-        ". Here's the trace:")
+        ". Here's the trace:");
 
-      var stringifiedErrorMessage = String(
-        codeEvalResult.getErrorMessage());
-      var fixedErrorMessage = stringifiedErrorMessage.replace(
+      var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
           var preprocessedCodeLineIndex = (
             Number(humanReadableLineNumber) - 1);
@@ -147,32 +145,31 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
       );
-      feedback.appendCodeParagraph(fixedErrorMessage);
+      feedback.appendCodeParagraph(fixedErrorString);
       return feedback;
     };
 
     var _getTimeoutErrorFeedback = function() {
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(
-        ["Your program's exceeded the time limit (",
+      feedback.appendTextParagraph([
+        "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
         " seconds) we've set. Can you try to make it run ",
-        "more efficiently?"].join(''));
+        "more efficiently?"
+      ].join(''));
       return feedback;
     };
 
     return {
-      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
-      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
-        var errorMessage = codeEvalResult.getErrorMessage();
-        if (errorMessage !== null &&
-            errorMessage.toString().startsWith('TimeLimitError')) {
+        var errorString = codeEvalResult.getErrorString();
+        if (errorString) {
           // We want to catch and handle a timeout error uniquely, rather than
           // integrate it into the existing feedback pipeline.
-          return _getTimeoutErrorFeedback();
-        } else if (errorMessage) {
-          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+          return (
+            errorString.startsWith('TimeLimitError') ?
+            _getTimeoutErrorFeedback() :
+            _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
         } else {
           var buggyOutputTests = task.getBuggyOutputTests();
           var buggyOutputTestResults =
@@ -186,7 +183,7 @@ tie.factory('FeedbackGeneratorService', [
 
           var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          for (var i = 0; i < correctnessTests.length; i++) {
+          for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
@@ -199,8 +196,9 @@ tie.factory('FeedbackGeneratorService', [
           var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
-          for (var i = 0; i < performanceTests.length; i++) {
-            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+          for (i = 0; i < performanceTests.length; i++) {
+            var expectedPerformance = (
+              performanceTests[i].getExpectedPerformance());
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
@@ -211,21 +209,23 @@ tie.factory('FeedbackGeneratorService', [
           var feedback = FeedbackObjectFactory.create(true);
           feedback.appendTextParagraph([
             'You\'ve completed all the tasks for this question! Click the ',
-            '"Next" button to move on to the next question.',
+            '"Next" button to move on to the next question.'
           ].join(''));
           return feedback;
         }
       },
-      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
-      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
-      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
-      getSyntaxErrorFeedback: function(errorMessage) {
+      getSyntaxErrorFeedback: function(errorString) {
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
           "Looks like your code did not compile. Here's the error trace: ");
-        feedback.appendCodeParagraph(errorMessage);
+        feedback.appendCodeParagraph(errorString);
         return feedback;
       },
+      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
+      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
+      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
+      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
+      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable
     };
   }

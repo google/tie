@@ -14,20 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NOTE TO DEVELOPERS: Arguments passed into this script will also be passed to
-# `karma start`. See CLI options here:
+# Usage:
 #
-#     http://karma-runner.github.io/1.0/config/configuration-file.html
-
+#     bash scripts/run_linter.sh
 set -e
 
 source $(dirname $0)/setup.sh || exit 1
 
 # Install the following node modules if they aren't already installed.
-install_node_module jasmine-core 2.5.2
-install_node_module karma 1.4.1
-install_node_module karma-jasmine 1.1.0
-install_node_module karma-chrome-launcher 2.0.0
+install_node_module eslint 3.18.0
 
-# Run Karma, passing in any arguments passed to this script.
-./node_modules/karma/bin/karma start "$@"
+# Run eslint, passing in any arguments passed to this script.
+./node_modules/eslint/bin/eslint.js -c ./.eslintrc.json assets/**/*.js client/**/*.js

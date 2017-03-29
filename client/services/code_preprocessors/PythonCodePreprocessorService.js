@@ -229,7 +229,7 @@ tie.factory('PythonCodePreprocessorService', [
         fullTestCode += (
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
           '.append(matches_buggy_function(' +
-          qualifiedBuggyFunctionName + '))');
+          qualifiedBuggyFunctionName + '))\n');
       });
 
       return fullTestCode;

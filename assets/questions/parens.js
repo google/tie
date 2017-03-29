@@ -16,7 +16,7 @@
  * @fileoverview Question data for Balanced Parentheses.
  */
 
-globalData.questions['parens'] = {
+globalData.questions['parens'] = {  // eslint-disable-line dot-notation
   title: 'Balanced Parentheses',
   starterCode: {
     python:
