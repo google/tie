@@ -2,6 +2,7 @@
     "__NOTE_TO_DEVELOPERS__": "Please see http://eslint.org/docs/rules/ for the list of rules.",
     "env": {
         "browser": true,
+        "es6": true,
         "jasmine": true
     },
     "parserOptions": {
