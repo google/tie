@@ -17,7 +17,7 @@
  * before that schema is committed.
  */
 
-//TODO(eyurko): Add functions to validate question schema.
+// TODO(eyurko): Add functions to validate question schema.
 tie.factory('QuestionSchemaValidationService', [
   function() {
     return {};
