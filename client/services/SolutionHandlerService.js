@@ -33,10 +33,10 @@ tie.factory('SolutionHandlerService', [
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
         ).then(function(rawCodeEvalResult) {
-          var potentialSyntaxErrorMessage = rawCodeEvalResult.getErrorMessage();
-          if (potentialSyntaxErrorMessage) {
+          var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
+          if (potentialSyntaxErrorString) {
             var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-              potentialSyntaxErrorMessage);
+              potentialSyntaxErrorString);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return $q.resolve(feedback);

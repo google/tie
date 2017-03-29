@@ -21,14 +21,14 @@ tie.factory('CodeEvalResultObjectFactory', [
   function() {
     var CodeEvalResult = function(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage, errorInput) {
+        performanceTestResults, errorTraceback, errorInput) {
       this._code = code;
       this._output = output;
       // Several lists of test results.
       this._correctnessTestResults = correctnessTestResults;
       this._buggyOutputTestResults = buggyOutputTestResults;
       this._performanceTestResults = performanceTestResults;
-      this._errorMessage = errorMessage;
+      this._errorTraceback = errorTraceback;
       // The input that caused the error message.
       this._errorInput = errorInput;
     };
@@ -54,8 +54,11 @@ tie.factory('CodeEvalResultObjectFactory', [
       return this._performanceTestResults;
     };
 
-    CodeEvalResult.prototype.getErrorMessage = function() {
-      return this._errorMessage;
+    CodeEvalResult.prototype.getErrorString = function() {
+      if (!this._errorTraceback) {
+        return null;
+      }
+      return this._errorTraceback.getErrorString();
     };
 
     CodeEvalResult.prototype.getErrorInput = function() {
@@ -65,10 +68,10 @@ tie.factory('CodeEvalResultObjectFactory', [
     // Static class methods.
     CodeEvalResult.create = function(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage, errorInput) {
+        performanceTestResults, errorTraceback, errorInput) {
       return new CodeEvalResult(
         code, output, correctnessTestResults, buggyOutputTestResults,
-        performanceTestResults, errorMessage, errorInput);
+        performanceTestResults, errorTraceback, errorInput);
     };
 
     return CodeEvalResult;

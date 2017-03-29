@@ -21,16 +21,29 @@ describe('FeedbackGeneratorService', function() {
   var CodeEvalResultObjectFactory;
   var FeedbackGeneratorService;
   var SnapshotObjectFactory;
+  var TracebackCoordinatesObjectFactory;
   var TranscriptService;
+  var sampleErrorTraceback;
+  var timeLimitErrorTraceback;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
+    ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
+    TracebackCoordinatesObjectFactory = $injector.get(
+      'TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
+
+    sampleErrorTraceback = ErrorTracebackObjectFactory.create(
+      'ZeroDivisionError: integer division or modulo by zero',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+    timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
+      'TimeLimitError: Program exceeded run time limit.',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -74,8 +87,7 @@ describe('FeedbackGeneratorService', function() {
   describe('_getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [],
-        'ZeroDivisionError: integer division or modulo by zero on line 5',
+        'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
 
       var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
@@ -94,8 +106,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should adjust the line numbers correctly', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [],
-        'ZeroDivisionError: integer division or modulo by zero on line 5',
+        'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
 
       // This maps line 4 (0-indexed) of the preprocessed code to line 1
@@ -116,14 +127,13 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly handle errors due to the test code', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [],
-        'ZeroDivisionError: integer division or modulo by zero on line 2',
+        'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
 
-      // This maps line 2 (1-indexed) to null, which means that there is no
+      // This maps line 5 (1-indexed) to null, which means that there is no
       // corresponding line in the raw code.
       var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
-        codeEvalResult, [0, null]).getParagraphs();
+        codeEvalResult, [0, null, null, null, null]).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -142,7 +152,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return a specific error for TimeLimitErrors', function() {
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], 'TimeLimitError',
+        'some code', 'some output', [], [], [], timeLimitErrorTraceback,
         'testInput');
 
       var paragraphs = FeedbackGeneratorService.getFeedback(
