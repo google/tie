@@ -29,11 +29,13 @@ tie.factory('TaskSchemaValidationService', [
         if (!Array.isArray(instructions)) {
           return false;
         }
-        instructions.forEach(function(item, index) {
-          if (!(typeof item === 'string' || item instanceof String)) {
+        for (var i = 0; i < instructions.length; i++) {
+          var instruction = instructions[i];
+          if (!(typeof instruction === 'string' ||
+            instruction instanceof String)) {
             return false;
           }
-        });
+        }
         return true;
       },
       verifyMainFunctionNameIsString: function(task) {
@@ -43,6 +45,12 @@ tie.factory('TaskSchemaValidationService', [
           return false;
         }
         return mainFunctionName.length > 0;
+      },
+      verifyMainFunctionNameAppearsInStarterCode: function(
+        task, starterCode) {
+        var mainFunctionName = task.getMainFunctionName();
+        var functionDefinition = 'def ' + mainFunctionName;
+        return starterCode.indexOf(functionDefinition) !== -1;
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
@@ -120,25 +128,26 @@ tie.factory('TaskSchemaValidationService', [
       },
       verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        correctnessTests.forEach(function(item, index) {
-          if (!Array.isArray(item.getAllAllowedOutputs())) {
+        for (var i = 0; i < correctnessTests.length; i++) {
+          var test = correctnessTests[i];
+          if (!Array.isArray(test.getAllAllowedOutputs())) {
             return false;
-          } else if (item.getAllAllowedOutputs().length === 0) {
+          } else if (test.getAllAllowedOutputs().length === 0) {
             return false;
           }
-        });
+        }
         return true;
       },
       verifyCorrectnessTestsHaveNoUndefinedOutputs: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        correctnessTests.forEach(function(item, index) {
-          var outputs = item.getAllAllowedOutputs();
-          outputs.forEach(function(item, index) {
-            if (item === undefined) {
+        for (var i = 0; i < correctnessTests.length; i++) {
+          var outputs = correctnessTests[i].getAllAllowedOutputs();
+          for (var j = 0; j < outputs.length; j++) {
+            if (outputs[j] === undefined) {
               return false;
             }
-          });
-        });
+          }
+        }
         return true;
       },
       verifyBuggyOutputTestsAreArray: function(task) {
@@ -147,48 +156,52 @@ tie.factory('TaskSchemaValidationService', [
       },
       verifyBuggyOutputTestsHaveArrayOfStringMessages: function(task) {
         var buggyOutputTests = task.getBuggyOutputTests();
-        buggyOutputTests.forEach(function(item, index) {
-          if (!('messages' in item)) {
+        for (var i = 0; i < buggyOutputTests.length; i++) {
+          var messages = buggyOutputTests[i].getMessages();
+          if (!messages) {
             return false;
           }
-          if (!Array.isArray(item['messages'])) {
+          if (!Array.isArray(messages)) {
             return false;
           }
-          item['messages'].forEach(function(item, index) {
-            if (!(typeof item === 'string' || item instanceof String)) {
+          for (var j = 0; j < messages.length; j++) {
+            var message = messages[j];
+            if (!(typeof message === 'string' || message instanceof String)) {
               return false;
             }
-          });
-        });
+          }
+        }
         return true;
       },
       verifyPerformanceTestsAreArray: function(task) {
         var performanceTests = task.getPerformanceTests();
         return Array.isArray(performanceTests);
       },
-      verifyPerformanceTestsHaveInputDataAtomStringIfPresent: function(
+      verifyPerformanceTestsHaveInputDataAtomString: function(
         task) {
         var performanceTests = task.getPerformanceTests();
-        performanceTests.forEach(function(item, index) {
-          if (!('inputDataAtom' in item)) {
+        for (var i = 0; i < performanceTests.length; i++) {
+          var test = performanceTests[i];
+          var inputDataAtom = test.getInputDataAtom();
+          if (!inputDataAtom) {
             return false;
           }
-          var inputDataAtom = item['inputDataAtom'];
           if (!(typeof inputDataAtom === 'string' ||
             inputDataAtom instanceof String)) {
             return false;
           }
-        });
+        }
         return true;
       },
-      verifyPerformanceTestsHaveNonEmptyTransformationFunctionNameIfPresent: function(
-        task) {
+      verifyPerformanceTestsHaveNonEmptyTransformationFunctionName: function(
+        task, auxiliaryCode) {
         var performanceTests = task.getPerformanceTests();
-        performanceTests.forEach(function(item, index) {
-          if (!('transformationFunctionName' in item)) {
+        for (var i = 0; i < performanceTests.length; i++) {
+          var test = performanceTests[i];
+          var transformationFunctionName = test.getTransformationFunctionName();
+          if (!transformationFunctionName) {
             return false;
           }
-          var transformationFunctionName = item['transformationFunctionName'];
           if (!(typeof transformationFunctionName === 'string' ||
             transformationFunctionName instanceof String)) {
             return false;
@@ -199,36 +212,33 @@ tie.factory('TaskSchemaValidationService', [
               auxiliaryCodeClassName.length);
             return auxiliaryCode.indexOf(functionName) !== -1;
           }
-          return false;
           var systemCodeClassName = 'System.';
           if (transformationFunctionName.startsWith(systemCodeClassName)) {
-            // TODO(eyurko): Define system code in constant so we can access it here.
+            // TODO(eyurko): Make system code accessible by testing framework.
             return true;
           }
           return false;
-        });
+        }
         return true;
       },
-      verifyPerformanceTestsHaveLinearExpectedPerformanceIfPresent: function(
+      verifyPerformanceTestsHaveLinearExpectedPerformance: function(
         task) {
         var performanceTests = task.getPerformanceTests();
-        performanceTests.forEach(function(item, index) {
-          if (!('transformationFunctionName' in item)) {
+        for (var i = 0; i < performanceTests.length; i++) {
+          var test = performanceTests[i];
+          // TODO(eyurko): Update this once we support nonlinear runtimes.
+          if (test.getExpectedPerformance() !== 'linear') {
             return false;
           }
-          var transformationFunctionName = item['transformationFunctionName'];
-          if (!(typeof transformationFunctionName === 'string' ||
-            transformationFunctionName instanceof String)) {
-            return false;
-          }
-        });
+        }
         return true;
       },
-      verifyPerformanceTestsHaveEvaluationFunctionNameIfPresent: function(
+      verifyPerformanceTestsHaveEvaluationFunctionName: function(
         task, auxiliaryCode, starterCode) {
         var performanceTests = task.getPerformanceTests();
-        performanceTests.forEach(function(item, index) {
-          var evaluationFunctionName = item.getEvaluationFunctionName();
+        for (var i = 0; i < performanceTests.length; i++) {
+          var test = performanceTests[i];
+          var evaluationFunctionName = test.getEvaluationFunctionName();
           if (evaluationFunctionName === null) {
             return false;
           }
@@ -243,8 +253,8 @@ tie.factory('TaskSchemaValidationService', [
             return auxiliaryCode.indexOf(functionName) !== -1;
           }
           var functionDefinition = 'def ' + evaluationFunctionName;
-          return starterCode.indexOf(functionDefinition) !== -1
-        });
+          return starterCode.indexOf(functionDefinition) !== -1;
+        }
         return true;
       }
     };

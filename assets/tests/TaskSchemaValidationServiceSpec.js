@@ -18,41 +18,38 @@
 
 describe('TaskSchemaValidationService', function() {
   var QuestionDataService;
-  var QuestionObjectFactory;
   var TaskSchemaValidationService;
   var questions = [];
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
   var questionIds = ['reverseWords', 'parens', 'i18n', 'rle'];
-  globalData.questionSets['all'] = {
-    'questionIds': questionIds,
-    'introductionParagraphs': []
-  };
+  globalData.questionSets.all = {};
+  globalData.questionSets.all.questionIds = questionIds;
+  globalData.questionSets.all.introductionParagraphs = [];
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get(
       'QuestionDataService');
-    QuestionObjectFactory = $injector.get(
-      'QuestionObjectFactory');
     TaskSchemaValidationService = $injector.get(
       'TaskSchemaValidationService');
     QuestionDataService.initCurrentQuestionSet('all');
-    questionIds.forEach(function(item, index) {
+    questions = [];
+    questionIds.forEach(function(item) {
       questions.push(QuestionDataService.getQuestion(item));
     });
   }));
 
   var assertTrueOnAllTasks = function(func, message) {
-    questions.forEach(function(item, index) {
+    questions.forEach(function(item) {
       var tasks = item.getTasks();
       for (var i = 0; i < tasks.length; i++) {
         assertTrue(func(tasks[i]), [item.getTitle(), message, i].join(''));
       }
     });
-  }
+  };
 
   describe('verifyInstructionsAreNotEmpty', function() {
     it('should verify that a task has nonempty instructions',
@@ -68,16 +65,34 @@ describe('TaskSchemaValidationService', function() {
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyInstructionsIsArrayOfStrings,
-          ' does not have an array of string instructions for the task at index ');
+          ' does not have a string instructions array for the task at index ');
       });
   });
 
   describe('verifyMainFunctionNameIsString', function() {
-    it('should verify that a task has a mainFunctionName that is null or a string',
+    it('should verify that a task has a string mainFunctionName',
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyMainFunctionNameIsString,
           ' does not have a string mainFunctionName for the task at index ');
+      });
+  });
+
+  describe('verifyMainFunctionNameAppearsInStarterCode', function() {
+    it('should verify that the mainFunctionName appears in the starter code',
+      function() {
+        var message = [' does not have mainFunctionName in its starterCode ',
+          'for the task at index '].join('');
+        questions.forEach(function(item) {
+          // TODO(eyurko): Update this also when we add additional languages.
+          var starterCode = item.getStarterCode('python');
+          var tasks = item.getTasks();
+          for (var i = 0; i < tasks.length; i++) {
+            // Can't use assertTrueForAllTasks here; need starterCode.
+            assertTrue(TaskSchemaValidationService.verifyMainFunctionNameAppearsInStarterCode(
+              tasks[i], starterCode), [item.getTitle(), message, i].join(''));
+          }
+        });
       });
   });
 
@@ -87,62 +102,66 @@ describe('TaskSchemaValidationService', function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyInputFunctionNameIsNullOrString,
           [' does not have null or a string for ',
-           'inputFunctionName for the task at index '].join(''));
+            'inputFunctionName for the task at index '].join(''));
       });
   });
 
-  describe('verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull', function() {
-    it('should verify that a task\'s inputFunctionName appears in auxiliaryCode',
-      function() {
-      var message = [' does not have inputFunctionName in its auxiliaryCode ',
-       'for the task at index '].join('')
-      questions.forEach(function(item, index) {
-        // TODO(eyurko): Update this when we add additional languages.
-        var auxiliaryCode = item.getAuxiliaryCode('python');
-        var tasks = item.getTasks();
-        for (var i = 0; i < tasks.length; i++) {
-          // Can't use assertTrueForAllTasks here because we need to pass in AuxiliaryCode.
-          assertTrue(TaskSchemaValidationService.verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull(
-            tasks[i], auxiliaryCode), [item.getTitle(), message, i].join(''));
-        }
-      });
+  describe('verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull',
+    function() {
+      it('should verify that a task\'s inputFunctionName is in auxiliaryCode',
+        function() {
+          var message = [' does not have inputFunctionName in its ',
+            'auxiliaryCode for the task at index '].join('');
+          questions.forEach(function(item) {
+            // TODO(eyurko): Update this when we add additional languages.
+            var auxiliaryCode = item.getAuxiliaryCode('python');
+            var tasks = item.getTasks();
+            for (var i = 0; i < tasks.length; i++) {
+              // Can't use assertTrueForAllTasks here; need to pass AuxiliaryCode.
+              assertTrue(TaskSchemaValidationService.verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull(
+                tasks[i], auxiliaryCode), [
+                  item.getTitle(), message, i].join(''));
+            }
+          });
+        });
     });
-  });
 
   describe('verifyOutputFunctionNameIsNullOrString', function() {
-    it('should verify that a task has an outputFunctionName that is null or a string',
+    it('should verify that a task has a null or string outputFunctionName',
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyOutputFunctionNameIsNullOrString,
           [' does not have null or a string for ',
-           'outputFunctionName for the task at index '].join(''));
+            'outputFunctionName for the task at index '].join(''));
       });
   });
 
-  describe('verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull', function() {
-    it('should verify that a task\'s outputFunctionName appears in auxiliaryCode',
-      function() {
-      var message = [' does not have outputFunctionName in its auxiliaryCode ',
-       'for the task at index '].join('')
-      questions.forEach(function(item, index) {
-        // TODO(eyurko): Update this also when we add additional languages.
-        var auxiliaryCode = item.getAuxiliaryCode('python');
-        var tasks = item.getTasks();
-        for (var i = 0; i < tasks.length; i++) {
-          // Can't use assertTrueForAllTasks here either because we need to pass in AuxiliaryCode.
-          assertTrue(TaskSchemaValidationService.verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull(
-            tasks[i], auxiliaryCode), [item.getTitle(), message, i].join(''));
-        }
-      });
+  describe('verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull',
+    function() {
+      it('should verify that a task\'s outputFunctionName is in auxiliaryCode',
+        function() {
+          var message = [' does not have outputFunctionName in auxiliaryCode ',
+            'for the task at index '].join('');
+          questions.forEach(function(item) {
+            // TODO(eyurko): Update this also when we add additional languages.
+            var auxiliaryCode = item.getAuxiliaryCode('python');
+            var tasks = item.getTasks();
+            for (var i = 0; i < tasks.length; i++) {
+              // Can't use assertTrueForAllTasks here either; auxiliaryCode.
+              assertTrue(TaskSchemaValidationService.verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull(
+                tasks[i], auxiliaryCode), [
+                  item.getTitle(), message, i].join(''));
+            }
+          });
+        });
     });
-  });
 
   describe('verifyPrerequisiteSkillsAreArray', function() {
     it('should verify that prerequisiteSkills are in an array',
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyPrerequisiteSkillsAreArray,
-          ' does not have an array of prerequisiteSkills for the task at index ');
+          ' does not have a prerequisiteSkills array for the task at index ');
       });
   });
 
@@ -151,7 +170,7 @@ describe('TaskSchemaValidationService', function() {
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyAcquiredSkillsAreArray,
-          ' does not have an array of acquiredSkills for the task at index ');
+          ' does not have an acquiredSkills array for the task at index ');
       });
   });
 
@@ -192,7 +211,7 @@ describe('TaskSchemaValidationService', function() {
   });
 
   describe('verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays', function() {
-    it('should verify that each correctness test has a nonempty allowed output array.',
+    it('should verify that each correctness test has a nonempty allowedOutput.',
       function() {
         assertTrueOnAllTasks(
           TaskSchemaValidationService.verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays,
@@ -227,43 +246,45 @@ describe('TaskSchemaValidationService', function() {
       });
   });
 
-  describe('verifyPerformanceTestsHaveInputDataAtomStringIfPresent', function() {
-    it('should verify that, if present, performance tests have an inputDataAtom string',
+  describe('verifyPerformanceTestsHaveInputDataAtomString', function() {
+    it('should verify that, performance tests have an inputDataAtom string',
       function() {
         assertTrueOnAllTasks(
-          TaskSchemaValidationService.verifyPerformanceTestsHaveInputDataAtomStringIfPresent,
-          [' does not have an inputDataAtom string for the defined performance test ',
-           'in the task at index '].join(''));
+          TaskSchemaValidationService.verifyPerformanceTestsHaveInputDataAtomString,
+          [' does not have an inputDataAtom string for the defined performance ',
+            'test in the task at index '].join(''));
       });
   });
 
-  describe('verifyPerformanceTestsHaveLinearExpectedPerformanceIfPresent', function() {
-    // TODO(eyurko): Expand this to tolerate more than linear runtimes once that's supported.
-    it('should verify that, if present, performance tests have a linear runtime',
+  describe('verifyPerformanceTestsHaveLinearExpectedPerformance', function() {
+    // TODO(eyurko): Expand this to tolerate more than linear runtimes.
+    it('should verify that existing performance tests have a linear runtime',
       function() {
         assertTrueOnAllTasks(
-          TaskSchemaValidationService.verifyPerformanceTestsHaveLinearExpectedPerformanceIfPresent,
-          [' does not have a linear expected performance for the defined performance test ',
-           'in the task at index '].join(''));
+          TaskSchemaValidationService.verifyPerformanceTestsHaveLinearExpectedPerformance,
+          [' does not have a linear expected performance for the defined ',
+            'performance test in the task at index '].join(''));
       });
   });
 
-  describe('verifyPerformanceTestsHaveEvaluationFunctionNameIfPresent', function() {
-    it('should verify that, if present, performance tests have an evaluation function name', 
+  describe('verifyPerformanceTestsHaveEvaluationFunctionName', function() {
+    it('should verify that performance tests have an evaluation function name',
       function() {
-      var message = [' does not have evaluationFunctionName defined or ',
-       'in its auxiliaryCode or starterCode for the task at index '].join('')
-      questions.forEach(function(item, index) {
-        // TODO(eyurko): Update this also when we add additional languages.
-        var auxiliaryCode = item.getAuxiliaryCode('python');
-        var starterCode = item.getStarterCode('python');
-        var tasks = item.getTasks();
-        for (var i = 0; i < tasks.length; i++) {
-          // Can't use assertTrueForAllTasks here either because we need to pass in code.
-          assertTrue(TaskSchemaValidationService.verifyPerformanceTestsHaveEvaluationFunctionNameIfPresent(
-            tasks[i], auxiliaryCode, starterCode), [item.getTitle(), message, i].join(''));
-        }
+        var message = [' does not have evaluationFunctionName defined or ',
+          'in its auxiliaryCode or starterCode for ',
+          'the task at index '].join('');
+        questions.forEach(function(item) {
+          // TODO(eyurko): Update this also when we add additional languages.
+          var auxiliaryCode = item.getAuxiliaryCode('python');
+          var starterCode = item.getStarterCode('python');
+          var tasks = item.getTasks();
+          for (var i = 0; i < tasks.length; i++) {
+            // No assertTrueForAllTasks here either; we need to pass in code.
+            assertTrue(TaskSchemaValidationService.verifyPerformanceTestsHaveEvaluationFunctionName(
+              tasks[i], auxiliaryCode, starterCode), [
+                item.getTitle(), message, i].join(''));
+          }
+        });
       });
-    });
   });
 });
