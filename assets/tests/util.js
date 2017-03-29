@@ -13,16 +13,30 @@
 // limitations under the License.
 
 /**
- * @fileoverview Data for the set of all questions.
- *
- * If you create a new question, please add it to this list so that the
- * schema verification tests will run on it before you try to get it
- * reviewed.
+ * @fileoverview Utility functions for use in various tests across our
+ * testing backend.
  */
 
-globalData.questionSets['all'] = {
-  introductionParagraphs: [
-    'This is a complete set of all current questions, designed for testing.'
-  ],
-  questionIds: ['reverseWords', 'parens', 'i18n', 'rle']
+var assertFalse = function(val, message) {
+  if (message) {
+    expect(val).toBe(false, message);
+  } else {
+    expect(val).toBe(false);
+  }
+};
+
+var assertTrue = function(val, message) {
+  if (message) {
+    expect(val).toBe(true, message);
+  } else {
+    expect(val).toBe(true);
+  }
+};
+
+var assertEqual = function(val1, val2, message) {
+  if (message) {
+    expect(val1).toEqual(val2, message);
+  } else {
+    expect(val1).toEqual(val2);
+  }
 };

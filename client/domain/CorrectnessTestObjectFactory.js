@@ -38,6 +38,10 @@ tie.factory('CorrectnessTestObjectFactory', [
       return this._allowedOutputs[0];
     };
 
+    CorrectnessTest.prototype.getAllAllowedOutputs = function() {
+      return this._allowedOutputs;
+    };
+
     CorrectnessTest.prototype.getMessage = function() {
       return this._message;
     };
