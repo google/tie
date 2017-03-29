@@ -56,11 +56,11 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.runCodeAsync(
             language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {
-            var feedback = FeedbackGeneratorService.getFeedback(
+            var runtimeFeedback = FeedbackGeneratorService.getFeedback(
               task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(codeEvalResult, feedback));
-            return feedback;
+              SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
+            return runtimeFeedback;
           });
         }).then(function(feedback) {
           return feedback;

@@ -21,8 +21,7 @@ describe('TranscriptObjectFactory', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    TranscriptObjectFactory = $injector.get(
-      'TranscriptObjectFactory');
+    TranscriptObjectFactory = $injector.get('TranscriptObjectFactory');
   }));
 
   describe('getPreviousSnapshot', function() {
@@ -42,12 +41,13 @@ describe('TranscriptObjectFactory', function() {
   });
 
   describe('recordSnapshot', function() {
-    it('should return the number of snapshots taken when recording', 
+    it('should return the number of snapshots taken when recording',
       function() {
-      var transcript = TranscriptObjectFactory.create();
+        var transcript = TranscriptObjectFactory.create();
 
-      expect(transcript.recordSnapshot(1)).toBe(1);
-      expect(transcript.recordSnapshot(1)).toBe(2);
-    });
+        expect(transcript.recordSnapshot(1)).toBe(1);
+        expect(transcript.recordSnapshot(1)).toBe(2);
+      }
+    );
   });
 });

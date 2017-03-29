@@ -153,11 +153,12 @@ tie.factory('FeedbackGeneratorService', [
 
     var _getTimeoutErrorFeedback = function() {
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(
-        ["Your program's exceeded the time limit (",
+      feedback.appendTextParagraph([
+        "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
         " seconds) we've set. Can you try to make it run ",
-        "more efficiently?"].join(''));
+        "more efficiently?"
+      ].join(''));
       return feedback;
     };
 
@@ -198,7 +199,8 @@ tie.factory('FeedbackGeneratorService', [
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
           for (i = 0; i < performanceTests.length; i++) {
-            var expectedPerformance = performanceTests[i].getExpectedPerformance();
+            var expectedPerformance = (
+              performanceTests[i].getExpectedPerformance());
             var observedPerformance = performanceTestResults[i];
 
             if (expectedPerformance !== observedPerformance) {
@@ -209,7 +211,7 @@ tie.factory('FeedbackGeneratorService', [
           var feedback = FeedbackObjectFactory.create(true);
           feedback.appendTextParagraph([
             'You\'ve completed all the tasks for this question! Click the ',
-            '"Next" button to move on to the next question.',
+            '"Next" button to move on to the next question.'
           ].join(''));
           return feedback;
         }
