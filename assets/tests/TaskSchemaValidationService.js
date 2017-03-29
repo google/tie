@@ -24,28 +24,96 @@ tie.factory('TaskSchemaValidationService', [
         var instructions = task.getInstructions();
         return instructions.length > 0;
       },
-      verifyHasMainFunctionName: function(task) {
+      verifyInstructionsIsListOfStrings: function(task) {
+        var instructions = task.getInstructions();
+        if (!Array.isArray(instructions)) {
+          return false;
+        }
+        instructions.forEach(function(item, index){
+          if (!(typeof item === 'string' || item instanceof String)) {
+            return false;
+          }
+        });
+        return true;
+      },
+      verifyHasStringMainFunctionName: function(task) {
         var mainFunctionName = task.getMainFunctionName();
+        if (!(typeof mainFunctionName === 'string' ||
+          mainFunctionName instanceof String)) {
+          return false;
+        }
         return mainFunctionName.length > 0;
+      },
+      verifyHasInputFunctionNameOrNull: function(task, auxiliaryCode) {
+        var inputFunctionName = task.getInputFunctionName();
+        if (inputFunctionName === null) {
+          return true;
+        }
+        if (!(typeof inputFunctionName === 'string' ||
+          inputFunctionName instanceof String)) {
+          return false;
+        }
+        var auxiliaryCodeClassName = "AuxiliaryCode.";
+        if (inputFunctionName.startsWith(auxiliaryCodeClassName)){
+          var functionName = inputFunctionName.substring(
+            auxiliaryCodeClassName.length);
+          return auxiliaryCode.indexOf(functionName) !== -1;
+        }
+        return false;
+      },
+      verifyHasOutputFunctionNameOrNull: function(task) {
+        var outputFunctionName = task.getOutputFunctionName();
+        if (outputFunctionName === null) {
+          return true;
+        }
+        if (!(typeof outputFunctionName === 'string' ||
+          outputFunctionName instanceof String)) {
+          return false;
+        }
+        var auxiliaryCodeClassName = "AuxiliaryCode.";
+        if (outputFunctionName.startsWith(auxiliaryCodeClassName)){
+          var functionName = outputFunctionName.substring(
+            auxiliaryCodeClassName.length);
+          return auxiliaryCode.indexOf(functionName) !== -1;
+        }
+        return false;
+      },
+      verifyPrerequisiteSkillsAreArray: function(task) {
+        var prerequisiteSkills = task.getPrerequisiteSkills();
+        return Array.isArray(prerequisiteSkills);
+      },
+      verifyAcquiredSkillsAreArray: function(task) {
+        var acquiredSkills = task.getAcquiredSkills();
+        return Array.isArray(acquiredSkills);
       },
       verifyNoDuplicateSkillsInPrompts: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
         var skillSet = new Set(prerequisiteSkills);
-        if (skillSet.size != prerequisiteSkills.length) {
+        if (skillSet.size !== prerequisiteSkills.length) {
           return false;
         }
-        var acquiredSkills = tasks.getAcquiredSkills();
+        var acquiredSkills = task.getAcquiredSkills();
         skillSet = new Set(acquiredSkills);
-        return skillSet.size != acquiredSkills.length;
+        return skillSet.size === acquiredSkills.length;
+      },
+      verifyAtLeastOneAcquiredSkill: function(task) {
+        var acquiredSkills = task.getAcquiredSkills();
+        return acquiredSkills.length > 0;
+      },
+      verifyCorrectnessTestsAreArray: function(task) {
+        var correctnessTests = task.getCorrectnessTests();
+        return Array.isArray(correctnessTests);
       },
       verifyAtLeastOneCorrectnessTest: function(task) {
         var correctnessTests = task.getCorrectnessTests();
         return correctnessTests.length > 0;
       },
-      verifyCorrectnessTestsHaveAllowedOutputArrays: function(task) {
+      verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays: function(task) {
         var correctnessTests = task.getCorrectnessTests();
         correctnessTests.forEach(function(item, index){
-          if (!Array.isArray(correctnessTests.getAllAllowedOutputs())) {
+          if (!Array.isArray(item.getAllAllowedOutputs())) {
+            return false;
+          } else if (item.getAllAllowedOutputs().length === 0) {
             return false;
           }
         });
@@ -53,11 +121,103 @@ tie.factory('TaskSchemaValidationService', [
       },
       verifyCorrectnessTestsHaveNoUndefinedOutputs: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        return correctnessTests.length > 0;
+        correctnessTests.forEach(function(item, index){
+          var outputs = item.getAllAllowedOutputs();
+          outputs.forEach(function(item, index) {
+            if (item === undefined) {
+              return false;
+            }
+          });
+        });
+        return true;
       },
-      verifyAtLeastOneAcquiredSkillPerTask: function(task) {
-        var acquiredSkills = tasks.getAcquiredSkills();
-        return acquiredSkills.length > 0;
+      verifyBuggyOutputTestsAreArray: function(task) {
+        var buggyOutputTests = task.getBuggyOutputTests();
+        return Array.isArray(buggyOutputTests);
+      },
+      verifyBuggyOutputTestsHaveArrayOfStringMessages: function(task) {
+        var buggyOutputTests = task.getBuggyOutputTests();
+        buggyOutputTests.forEach(function(item, index) {
+          if (!('messages' in item)) {
+            return false;
+          }
+          if (!Array.isArray(item['messages'])) {
+            return false;
+          }
+          item['messages'].forEach(function(item, index) {
+            if (!(typeof item === 'string' || item instanceof String)) {
+              return false;
+            }
+          });
+        });
+        return true;
+      },
+      verifyPerformanceTestsAreArray: function(task) {
+        var performanceTests = task.getPerformanceTests();
+        return Array.isArray(correctnessTests);
+      },
+      verifyPerformanceTestsHaveInputAtomStringIfPresent: function(
+        task) {
+        var performanceTests = task.getPerformanceTests();
+        performanceTests.forEach(function(item, index){
+          if (!('inputDataAtom' in item)) {
+            return false;
+          }
+          var inputDataAtom = item['inputDataAtom'];
+          if (!(typeof inputDataAtom === 'string' ||
+            inputDataAtom instanceof String)) {
+            return false;
+          }
+        });
+        return true;
+      },
+      verifyPerformanceTestsHaveNonEmptyTransformationFunctionNameIfPresent: function(
+        task) {
+        var performanceTests = task.getPerformanceTests();
+        performanceTests.forEach(function(item, index){
+          if (!('transformationFunctionName' in item)) {
+            return false;
+          }
+          var transformationFunctionName = item['transformationFunctionName'];
+          if (!(typeof transformationFunctionName === 'string' ||
+            transformationFunctionName instanceof String)) {
+            return false;
+          }
+        });
+        return true;
+      },
+      verifyPerformanceTestsHaveLinearExpectedPerformanceIfPresent: function(
+        task) {
+        var performanceTests = task.getPerformanceTests();
+        performanceTests.forEach(function(item, index){
+          if (!('transformationFunctionName' in item)) {
+            return false;
+          }
+          var transformationFunctionName = item['transformationFunctionName'];
+          if (!(typeof transformationFunctionName === 'string' ||
+            transformationFunctionName instanceof String)) {
+            return false;
+          }
+        });
+        return true;
+      },
+      verifyPerformanceTestsHaveEvaluationFunctionNameIfPresent: function(
+        task) {
+        var outputFunctionName = task.getOutputFunctionName();
+        if (outputFunctionName === null) {
+          return true;
+        }
+        if (!(typeof outputFunctionName === 'string' ||
+          outputFunctionName instanceof String)) {
+          return false;
+        }
+        var auxiliaryCodeClassName = "AuxiliaryCode.";
+        if (outputFunctionName.startsWith(auxiliaryCodeClassName)){
+          var functionName = outputFunctionName.substring(
+            auxiliaryCodeClassName.length);
+          return auxiliaryCode.indexOf(functionName) !== -1;
+        }
+        return false;
       }
     };
   }
