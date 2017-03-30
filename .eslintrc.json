@@ -5,19 +5,20 @@
         "es6": true,
         "jasmine": true
     },
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "sourceType": "module"
-    },
     "extends": "eslint:recommended",
     "globals": {
+        "angular": true,
         "globalData": false,
         "inject": false,
         "module": false,
         "tie": false
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "jsx": false
+        },
+        "sourceType": "script"
     },
     "rules": {
         "array-bracket-spacing": ["error", "never"],

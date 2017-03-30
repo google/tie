@@ -16,7 +16,7 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-var tie = angular.module('tie', ['ui.codemirror']);
+window.tie = angular.module('tie', ['ui.codemirror']);
 
 // The maximum amount of time (in seconds) that the code can take to run.
 tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
