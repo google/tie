@@ -26,7 +26,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
     var _checkIfFunctionExistsInCode = function(functionName, code) {
       var functionDefinition = 'def ' + functionName;
       return code.indexOf(functionDefinition) !== -1;
-    }
+    };
     var _checkIfFunctionExistsInClass = function(functionName, 
       className, code) {
       if (functionName.startsWith(className)) {
@@ -36,14 +36,32 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           strippedFunctionName, code);
       }
       return false;
-    }
-    return {
+    };
+    var taskSchemaValidator = {
+      _starterCode: '',
+      _auxiliaryCode: '',
+      getAllFunctions: function() {
+        var functions = [];
+        for (var l in this) {
+          if (this.hasOwnProperty(l) && 
+              this[l] instanceof Function &&
+              !(/functions/i).test(l) &&
+              l.toString().startsWith('verify')) {
+            functions.push(this[l]);
+          }
+        }
+        return functions;
+      },
+      init: function(starterCode, auxiliaryCode) {
+        this._starterCode = starterCode;
+        this._auxiliaryCode = auxiliaryCode;
+      },
       verifyInstructionsAreNotEmpty: function(task) {
         var instructions = task.getInstructions();
         return instructions.length > 0;
       },
       verifyInstructionsIsArrayOfStrings: function(task) {
-        var instructions = task.getInstructions()
+        var instructions = task.getInstructions();
         return (angular.isArray(instructions) &&
           instructions.every(function(instruction) {
             return angular.isString(instruction);
@@ -55,9 +73,10 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
             mainFunctionName.length > 0);
       },
       verifyMainFunctionNameAppearsInStarterCode: function(
-        task, starterCode) {
+        task) {
         var mainFunctionName = task.getMainFunctionName();
-        return _checkIfFunctionExistsInCode(mainFunctionName, starterCode);
+        return _checkIfFunctionExistsInCode(mainFunctionName, 
+          taskSchemaValidator._starterCode);
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
@@ -65,12 +84,12 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           angular.isString(inputFunctionName));
       },
       verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
-        task, auxiliaryCode) {
+        task) {
         var inputFunctionName = task.getInputFunctionName();
         return (inputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               inputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode));
+              taskSchemaValidator._auxiliaryCode));
       },
       verifyOutputFunctionNameIsNullOrString: function(task) {
         var outputFunctionName = task.getOutputFunctionName();
@@ -78,12 +97,12 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           angular.isString(outputFunctionName));
       },
       verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
-        task, auxiliaryCode) {
+        task) {
         var outputFunctionName = task.getOutputFunctionName();
         return (outputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               outputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode));
+              taskSchemaValidator._auxiliaryCode));
       },
       verifyPrerequisiteSkillsAreArray: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -143,7 +162,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
             messages.every(function(message) {
               return angular.isString(message);
             }));
-        })
+        });
       },
       verifyPerformanceTestsAreArray: function(task) {
         var performanceTests = task.getPerformanceTests();
@@ -157,7 +176,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         });
       },
       verifyPerformanceTestsHaveTransformationFunctionName: function(
-        task, auxiliaryCode) {
+        task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var transformationFunctionName = test.getTransformationFunctionName();
@@ -167,12 +186,12 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               transformationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode)){
+              taskSchemaValidator._auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInClass(
               transformationFunctionName, SYSTEM_CODE_CLASS_NAME,
-              SYSTEM_CODE['python']);
+              SYSTEM_CODE.python);
         });
       },
       verifyPerformanceTestsHaveLinearExpectedPerformance: function(
@@ -183,7 +202,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         });
       },
       verifyPerformanceTestsHaveEvaluationFunctionName: function(
-        task, auxiliaryCode, starterCode) {
+        task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var evaluationFunctionName = test.getEvaluationFunctionName();
@@ -193,13 +212,14 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               evaluationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode)) {
+              taskSchemaValidator._auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInCode(
-            evaluationFunctionName, starterCode);
+            evaluationFunctionName, taskSchemaValidator._starterCode);
         });
       }
     };
+    return taskSchemaValidator;
   }
 ]);
