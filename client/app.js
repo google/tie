@@ -17,10 +17,10 @@
  */
 
 var globalData = {
-	// Question data will be stored here, keyed by question ID.
-	questions: {},
-	// Question set data will be stored here, keyed by question set ID.
-	questionSets: {}
+  // Question data will be stored here, keyed by question ID.
+  questions: {},
+  // Question set data will be stored here, keyed by question set ID.
+  questionSets: {}
 };
 
 var tie = angular.module('tie', ['ui.codemirror']);
