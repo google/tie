@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for the QuestionSchemaValidatorService.
+ * @fileoverview Unit tests for the TaskSchemaValidationService.
  */
 
 describe('TaskSchemaValidationService', function() {
   var QuestionDataService;
-  // TaskSchemaValidationService needs a shorter name.
+  // Alias for TaskSchemaValidationService.
   var Tsvs;
   var questions = [];
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
-  var questionIds = ['reverseWords', 'parens', 'i18n', 'rle'];
+  var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle'];
   globalData.questionSets.all = {};
-  globalData.questionSets.all.questionIds = questionIds;
+  globalData.questionSets.all.questionIds = QUESTION_IDS;
   globalData.questionSets.all.introductionParagraphs = [];
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -36,7 +36,7 @@ describe('TaskSchemaValidationService', function() {
     Tsvs = $injector.get('TaskSchemaValidationService');
     QuestionDataService.initCurrentQuestionSet('all');
     questions = [];
-    questionIds.forEach(function(item) {
+    QUESTION_IDS.forEach(function(item) {
       questions.push(QuestionDataService.getQuestion(item));
     });
   }));

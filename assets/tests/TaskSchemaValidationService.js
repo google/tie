@@ -14,95 +14,77 @@
 
 /**
  * @fileoverview Service for validating data put into a task schema
- * within a question, before that schema is committed.
+ * within a question.
  */
 
 tie.factory('TaskSchemaValidationService', [
   function() {
+    var _checkIfFunctionExistsInCode = function(functionName, code) {
+      var functionDefinition = 'def ' + functionName;
+      return code.indexOf(functionDefinition) !== -1;
+    }
+    var _checkIfFunctionExistsInAuxiliaryCode = function(functionName, code) {
+      var auxiliaryCodeClassName = 'AuxiliaryCode.';
+      if (functionName.startsWith(auxiliaryCodeClassName)) {
+        var strippedFunctionName = functionName.substring(
+          auxiliaryCodeClassName.length);
+        return _checkIfFunctionExistsInCode(
+          strippedFunctionName, code);
+      }
+    }
     return {
       verifyInstructionsAreNotEmpty: function(task) {
         var instructions = task.getInstructions();
         return instructions.length > 0;
       },
       verifyInstructionsIsArrayOfStrings: function(task) {
-        var instructions = task.getInstructions();
-        if (!Array.isArray(instructions)) {
-          return false;
-        }
-        for (var i = 0; i < instructions.length; i++) {
-          var instruction = instructions[i];
-          if (!(typeof instruction === 'string' ||
-            instruction instanceof String)) {
-            return false;
-          }
-        }
-        return true;
+        var instructions = task.getInstructions()
+        return (angular.isArray(instructions) &&
+          instructions.every(function(instruction) {
+            return angular.isString(instruction);
+          }));
       },
       verifyMainFunctionNameIsString: function(task) {
         var mainFunctionName = task.getMainFunctionName();
-        if (!(typeof mainFunctionName === 'string' ||
-          mainFunctionName instanceof String)) {
-          return false;
-        }
-        return mainFunctionName.length > 0;
+        return (angular.isString(mainFunctionName) &&
+            mainFunctionName.length > 0);
       },
       verifyMainFunctionNameAppearsInStarterCode: function(
         task, starterCode) {
         var mainFunctionName = task.getMainFunctionName();
-        var functionDefinition = 'def ' + mainFunctionName;
-        return starterCode.indexOf(functionDefinition) !== -1;
+        return _checkIfFunctionExistsInCode(mainFunctionName, starterCode);
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
-        if (inputFunctionName === null) {
-          return true;
-        }
-        return (typeof inputFunctionName === 'string' ||
-          inputFunctionName instanceof String);
+        return (inputFunctionName === null ||
+          angular.isString(inputFunctionName));
       },
       verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task, auxiliaryCode) {
         var inputFunctionName = task.getInputFunctionName();
-        if (inputFunctionName === null) {
-          return true;
-        }
-        var auxiliaryCodeClassName = 'AuxiliaryCode.';
-        if (inputFunctionName.startsWith(auxiliaryCodeClassName)) {
-          var functionName = inputFunctionName.substring(
-            auxiliaryCodeClassName.length);
-          return auxiliaryCode.indexOf(functionName) !== -1;
-        }
-        return false;
+        return (inputFunctionName === null ||
+          _checkIfFunctionExistsInAuxiliaryCode(
+            inputFunctionName, auxiliaryCode));
       },
       verifyOutputFunctionNameIsNullOrString: function(task) {
         var outputFunctionName = task.getOutputFunctionName();
-        if (outputFunctionName === null) {
-          return true;
-        }
-        return (typeof outputFunctionName === 'string' ||
-          outputFunctionName instanceof String);
+        return (outputFunctionName === null ||
+          angular.isString(outputFunctionName));
       },
       verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task, auxiliaryCode) {
         var outputFunctionName = task.getOutputFunctionName();
-        if (outputFunctionName === null) {
-          return true;
-        }
-        var auxiliaryCodeClassName = 'AuxiliaryCode.';
-        if (outputFunctionName.startsWith(auxiliaryCodeClassName)) {
-          var functionName = outputFunctionName.substring(
-            auxiliaryCodeClassName.length);
-          return auxiliaryCode.indexOf(functionName) !== -1;
-        }
-        return false;
+        return (outputFunctionName === null ||
+          _checkIfFunctionExistsInAuxiliaryCode(
+            outputFunctionName, auxiliaryCode));
       },
       verifyPrerequisiteSkillsAreArray: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
-        return Array.isArray(prerequisiteSkills);
+        return angular.isArray(prerequisiteSkills);
       },
       verifyAcquiredSkillsAreArray: function(task) {
         var acquiredSkills = task.getAcquiredSkills();
-        return Array.isArray(acquiredSkills);
+        return angular.isArray(acquiredSkills);
       },
       verifyNoDuplicateSkillsInPrompts: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -120,7 +102,7 @@ tie.factory('TaskSchemaValidationService', [
       },
       verifyCorrectnessTestsAreArray: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        return Array.isArray(correctnessTests);
+        return angular.isArray(correctnessTests);
       },
       verifyAtLeastOneCorrectnessTest: function(task) {
         var correctnessTests = task.getCorrectnessTests();
@@ -128,69 +110,46 @@ tie.factory('TaskSchemaValidationService', [
       },
       verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        for (var i = 0; i < correctnessTests.length; i++) {
-          var test = correctnessTests[i];
-          if (!Array.isArray(test.getAllAllowedOutputs())) {
-            return false;
-          } else if (test.getAllAllowedOutputs().length === 0) {
-            return false;
-          }
-        }
-        return true;
+        return correctnessTests.every(function(test) {
+          return (
+            angular.isArray(test.getAllAllowedOutputs()) &&
+            test.getAllAllowedOutputs().length > 0);
+        });
+        return false;
       },
       verifyCorrectnessTestsHaveNoUndefinedOutputs: function(task) {
         var correctnessTests = task.getCorrectnessTests();
-        for (var i = 0; i < correctnessTests.length; i++) {
-          var outputs = correctnessTests[i].getAllAllowedOutputs();
-          for (var j = 0; j < outputs.length; j++) {
-            if (outputs[j] === undefined) {
-              return false;
-            }
-          }
-        }
-        return true;
+        return correctnessTests.every(function(test) {
+          return test.getAllAllowedOutputs().every(function(output) {
+            return output !== undefined;
+          });
+        });
+        return false;
       },
       verifyBuggyOutputTestsAreArray: function(task) {
         var buggyOutputTests = task.getBuggyOutputTests();
-        return Array.isArray(buggyOutputTests);
+        return angular.isArray(buggyOutputTests);
       },
       verifyBuggyOutputTestsHaveArrayOfStringMessages: function(task) {
         var buggyOutputTests = task.getBuggyOutputTests();
-        for (var i = 0; i < buggyOutputTests.length; i++) {
-          var messages = buggyOutputTests[i].getMessages();
-          if (!messages) {
-            return false;
-          }
-          if (!Array.isArray(messages)) {
-            return false;
-          }
-          for (var j = 0; j < messages.length; j++) {
-            var message = messages[j];
-            if (!(typeof message === 'string' || message instanceof String)) {
-              return false;
-            }
-          }
-        }
-        return true;
+        buggyOutputTests.every(function(test) {
+          var messages = test.getMessages();
+          return (angular.isArray(messages) &&
+            messages.every(function(message) {
+              return angular.isString(message);
+            }));
+        })
       },
       verifyPerformanceTestsAreArray: function(task) {
         var performanceTests = task.getPerformanceTests();
-        return Array.isArray(performanceTests);
+        return angular.isArray(performanceTests);
       },
-      verifyPerformanceTestsHaveInputDataAtomString: function(
-        task) {
+      verifyPerformanceTestsHaveInputDataAtomString: function(task) {
         var performanceTests = task.getPerformanceTests();
-        for (var i = 0; i < performanceTests.length; i++) {
-          var test = performanceTests[i];
+        performanceTests.every(function(test) {
           var inputDataAtom = test.getInputDataAtom();
-          if (!inputDataAtom) {
-            return false;
-          }
-          if (!(typeof inputDataAtom === 'string' ||
-            inputDataAtom instanceof String)) {
-            return false;
-          }
-        }
+          return angular.isString(inputDataAtom);
+        });
         return true;
       },
       verifyPerformanceTestsHaveNonEmptyTransformationFunctionName: function(
@@ -206,17 +165,14 @@ tie.factory('TaskSchemaValidationService', [
             transformationFunctionName instanceof String)) {
             return false;
           }
-          var auxiliaryCodeClassName = 'AuxiliaryCode.';
-          if (transformationFunctionName.startsWith(auxiliaryCodeClassName)) {
-            var functionName = transformationFunctionName.substring(
-              auxiliaryCodeClassName.length);
-            return auxiliaryCode.indexOf(functionName) !== -1;
-          }
-          var systemCodeClassName = 'System.';
-          if (transformationFunctionName.startsWith(systemCodeClassName)) {
-            // TODO(eyurko): Make system code accessible by testing framework.
-            return true;
-          }
+          if (!_checkIfFunctionExistsInAuxiliaryCode(
+            transformationFunctionName, auxiliaryCode)){
+              var systemCodeClassName = 'System.';
+              if (transformationFunctionName.startsWith(systemCodeClassName)) {
+                // TODO(eyurko): Make system code accessible for testing.
+                return true;
+              }
+            }
           return false;
         }
         return true;
@@ -250,7 +206,7 @@ tie.factory('TaskSchemaValidationService', [
           if (evaluationFunctionName.startsWith(auxiliaryCodeClassName)) {
             var functionName = evaluationFunctionName.substring(
               auxiliaryCodeClassName.length);
-            return auxiliaryCode.indexOf(functionName) !== -1;
+            return auxiliaryCode.indexOf('def ' + functionName) !== -1;
           }
           var functionDefinition = 'def ' + evaluationFunctionName;
           return starterCode.indexOf(functionDefinition) !== -1;
