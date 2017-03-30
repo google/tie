@@ -1,4 +1,4 @@
-# TIE
+# TIE [![Build Status](https://api.travis-ci.org/google/tie.svg?branch=master)](https://travis-ci.org/google/tie) [![Code Coverage](https://codecov.io/github/google/tie/coverage.svg?branch=master)](https://codecov.io/github/google/tie/?branch=master)
 
 TIE (short for "technical interview exercises") is a lightweight open-source
 tool aimed at helping students quickly get ramped up on key concepts,

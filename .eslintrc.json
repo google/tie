@@ -2,21 +2,23 @@
     "__NOTE_TO_DEVELOPERS__": "Please see http://eslint.org/docs/rules/ for the list of rules.",
     "env": {
         "browser": true,
+        "es6": true,
         "jasmine": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "sourceType": "module"
     },
     "extends": "eslint:recommended",
     "globals": {
+        "angular": true,
         "globalData": false,
         "inject": false,
         "module": false,
         "tie": false
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "jsx": false
+        },
+        "sourceType": "script"
     },
     "rules": {
         "array-bracket-spacing": ["error", "never"],
