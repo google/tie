@@ -4,6 +4,8 @@ addons:
       - google-chrome-stable
     sources:
       - google-chrome
+after_success:
+- codecov --file ./karma_coverage_reports/coverage-final.json; fi
 before_install:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0

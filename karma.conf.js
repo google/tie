@@ -21,10 +21,22 @@ module.exports = function(config) {
     // List of files to exclude.
     exclude: [],
     // Pre-process matching files before serving them to the browser.
-    preprocessors: {},
+    preprocessors: {
+      'client/*.js': ['coverage'],
+      'client/**/*.js': ['coverage']
+    },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
     // Available reporters: https://npmjs.org/browse/keyword/karma-reporter.
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      reporters: [{
+        type: 'html'
+      }, {
+        type: 'json'
+      }],
+      subdir: '.',
+      dir: './karma_coverage_reports'
+    },
     // Web server port.
     port: 9876,
     // Enable / disable colors in the output (reporters and logs).
