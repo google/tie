@@ -21,23 +21,24 @@ describe('TaskSchemaValidationService', function() {
   // Alias for TaskSchemaValidationService.
   var Tsvs;
   var questions = [];
+  // Hardcoded value. Update if you add new task schema tests.
+  var NUM_FUNCTIONS = 23;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
   var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle'];
-  globalData.questionSets.all = {};
-  globalData.questionSets.all.questionIds = QUESTION_IDS;
-  globalData.questionSets.all.introductionParagraphs = [];
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    globalData.questionSets.all = {};
+    globalData.questionSets.all.questionIds = QUESTION_IDS;
+    globalData.questionSets.all.introductionParagraphs = [];
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
     Tsvs = $injector.get('TaskSchemaValidationService');
     QuestionDataService.initCurrentQuestionSet('all');
-    questions = [];
-    QUESTION_IDS.forEach(function(item) {
-      questions.push(QuestionDataService.getQuestion(item));
+    questions = QUESTION_IDS.map(function(questionId) {
+      return QuestionDataService.getQuestion(questionId);
     });
   }));
 
@@ -46,7 +47,8 @@ describe('TaskSchemaValidationService', function() {
       questions.forEach(function(question) {
         Tsvs.init(question.getStarterCode('python'), 
             question.getAuxiliaryCode('python'));
-        var functions = Tsvs.getAllFunctions();
+        var functions = Tsvs.getAllVerificationFunctions();
+        expect(functions.length).toEqual(NUM_FUNCTIONS);
         question.getTasks().forEach(function(task) {
           functions.forEach(function(verifierFunc) {
             expect(verifierFunc(task)).toBe(true,

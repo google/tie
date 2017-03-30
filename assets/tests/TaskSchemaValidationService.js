@@ -21,12 +21,18 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
   function(SYSTEM_CODE) {
     var AUXILIARY_CODE_CLASS_NAME = 'AuxiliaryCode.';
     var SYSTEM_CODE_CLASS_NAME = 'System.';
+    var VALID_PREFIXES = [
+      AUXILIARY_CODE_CLASS_NAME, SYSTEM_CODE_CLASS_NAME];
+    var starterCode;
+    var auxiliaryCode;
     // TODO(eyurko): Update this once we support nonlinear runtimes.
     var ALLOWED_RUNTIMES = ['linear'];
+    // TODO(eyurko): Add check that definition occurs at line start.
     var _checkIfFunctionExistsInCode = function(functionName, code) {
       var functionDefinition = 'def ' + functionName;
       return code.indexOf(functionDefinition) !== -1;
     };
+    // TODO(eyurko): Add check that function exists in specified class.
     var _checkIfFunctionExistsInClass = function(functionName, 
       className, code) {
       if (functionName.startsWith(className)) {
@@ -37,24 +43,22 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
       }
       return false;
     };
-    var taskSchemaValidator = {
-      _starterCode: '',
-      _auxiliaryCode: '',
-      getAllFunctions: function() {
+    return {
+      getAllVerificationFunctions: function() {
         var functions = [];
-        for (var l in this) {
-          if (this.hasOwnProperty(l) && 
-              this[l] instanceof Function &&
-              !(/functions/i).test(l) &&
-              l.toString().startsWith('verify')) {
-            functions.push(this[l]);
+        for (var func in this) {
+          if (this.hasOwnProperty(func) && 
+              angular.isFunction(this[func]) &&
+              !(/functions/i).test(func) &&
+              func.toString().startsWith('verify')) {
+            functions.push(this[func]);
           }
         }
         return functions;
       },
-      init: function(starterCode, auxiliaryCode) {
-        this._starterCode = starterCode;
-        this._auxiliaryCode = auxiliaryCode;
+      init: function(sCode, aCode) {
+        starterCode = sCode;
+        auxiliaryCode = aCode;
       },
       verifyInstructionsAreNotEmpty: function(task) {
         var instructions = task.getInstructions();
@@ -72,16 +76,18 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         return (angular.isString(mainFunctionName) &&
             mainFunctionName.length > 0);
       },
-      verifyMainFunctionNameAppearsInStarterCode: function(
-        task) {
+      verifyMainFunctionNameAppearsInStarterCode: function(task) {
         var mainFunctionName = task.getMainFunctionName();
         return _checkIfFunctionExistsInCode(mainFunctionName, 
-          taskSchemaValidator._starterCode);
+          starterCode);
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
         return (inputFunctionName === null ||
-          angular.isString(inputFunctionName));
+          (VALID_PREFIXES.some(function(prefix) {
+            return inputFunctionName.startsWith(prefix);
+          }) && angular.isString(inputFunctionName) && 
+              inputFunctionName.length > 0));
       },
       verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task) {
@@ -89,12 +95,15 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         return (inputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               inputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              taskSchemaValidator._auxiliaryCode));
+              auxiliaryCode));
       },
       verifyOutputFunctionNameIsNullOrString: function(task) {
         var outputFunctionName = task.getOutputFunctionName();
         return (outputFunctionName === null ||
-          angular.isString(outputFunctionName));
+          (VALID_PREFIXES.some(function(prefix) {
+            return outputFunctionName.startsWith(prefix);
+          }) && angular.isString(outputFunctionName) && 
+              outputFunctionName.length > 0));
       },
       verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task) {
@@ -102,15 +111,25 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         return (outputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               outputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              taskSchemaValidator._auxiliaryCode));
+              auxiliaryCode));
       },
-      verifyPrerequisiteSkillsAreArray: function(task) {
+      verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
-        return angular.isArray(prerequisiteSkills);
+        if (angular.isArray(prerequisiteSkills)) {
+          return prerequisiteSkills.every(function(skill) {
+            return angular.isString(skill);
+          });
+        }
+        return false;
       },
-      verifyAcquiredSkillsAreArray: function(task) {
+      verifyAcquiredSkillsAreArrayOfStrings: function(task) {
         var acquiredSkills = task.getAcquiredSkills();
-        return angular.isArray(acquiredSkills);
+        if (angular.isArray(acquiredSkills)) {
+          return acquiredSkills.every(function(skill) {
+            return angular.isString(skill);
+          });
+        }
+        return false;
       },
       verifyNoDuplicateSkillsInPrompts: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -175,8 +194,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           return angular.isString(inputDataAtom);
         });
       },
-      verifyPerformanceTestsHaveTransformationFunctionName: function(
-        task) {
+      verifyPerformanceTestsHaveTransformationFunctionName: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var transformationFunctionName = test.getTransformationFunctionName();
@@ -186,7 +204,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               transformationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              taskSchemaValidator._auxiliaryCode)) {
+              auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInClass(
@@ -194,15 +212,13 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
               SYSTEM_CODE.python);
         });
       },
-      verifyPerformanceTestsHaveLinearExpectedPerformance: function(
-        task) {
+      verifyPerformanceTestsHaveLinearExpectedPerformance: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           return ALLOWED_RUNTIMES.includes(test.getExpectedPerformance());
         });
       },
-      verifyPerformanceTestsHaveEvaluationFunctionName: function(
-        task) {
+      verifyPerformanceTestsHaveEvaluationFunctionName: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var evaluationFunctionName = test.getEvaluationFunctionName();
@@ -212,14 +228,13 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               evaluationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              taskSchemaValidator._auxiliaryCode)) {
+              auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInCode(
-            evaluationFunctionName, taskSchemaValidator._starterCode);
+            evaluationFunctionName, starterCode);
         });
       }
     };
-    return taskSchemaValidator;
   }
 ]);
