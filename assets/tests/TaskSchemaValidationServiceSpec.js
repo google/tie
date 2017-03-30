@@ -42,12 +42,12 @@ describe('TaskSchemaValidationService', function() {
   }));
 
   var assertTrueOnAllTasks = function(func, message) {
-    questions.forEach(function(item) {
-      var tasks = item.getTasks();
+    questions.forEach(function(question) {
+      var tasks = question.getTasks();
       for (var i = 0; i < tasks.length; i++) {
         if (message) {
           expect(func(tasks[i])).toBe(true,
-            [item.getTitle(), message, i].join(''));
+            [question.getTitle(), message, i].join(''));
         } else {
           expect(func(tasks[i])).toBe(true);
         }
@@ -264,6 +264,28 @@ describe('TaskSchemaValidationService', function() {
           Tsvs.verifyPerformanceTestsHaveInputDataAtomString,
           [' does not have an inputDataAtom string for the defined ',
             'performance test in the task at index '].join(''));
+      });
+  });
+
+  describe('verifyPerformanceTestsHaveTransformationFunctionName', 
+    function() {
+    it(['should verify that performance tests have a transformation ',
+      'function name'].join(''),
+      function() {
+        var message = [' does not have transformationFunctionName defined ',
+          'or in its auxiliaryCode or system code for ',
+          'the task at index '].join('');
+        questions.forEach(function(item) {
+          // TODO(eyurko): Update this also when we add additional languages.
+          var auxiliaryCode = item.getAuxiliaryCode('python');
+          var tasks = item.getTasks();
+          for (var i = 0; i < tasks.length; i++) {
+            // No assertTrueForAllTasks here either; we need to pass in code.
+            expect(Tsvs.verifyPerformanceTestsHaveTransformationFunctionName(
+              tasks[i], auxiliaryCode)).toBe(true,
+                [item.getTitle(), message, i].join(''));
+          }
+        });
       });
   });
 
