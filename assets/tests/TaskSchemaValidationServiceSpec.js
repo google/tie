@@ -49,7 +49,10 @@ describe('TaskSchemaValidationService', function() {
         var functions = Tsvs.getAllFunctions();
         question.getTasks().forEach(function(task) {
           functions.forEach(function(verifierFunc) {
-            expect(verifierFunc(task)).toBe(true);
+            expect(verifierFunc(task)).toBe(true,
+            [verifierFunc.name, 
+              ' returned false, but it should ',
+              'return true.'].join(''));
           });
         });
       });
