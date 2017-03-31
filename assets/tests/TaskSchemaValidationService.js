@@ -23,8 +23,8 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
     var SYSTEM_CODE_CLASS_NAME = 'System.';
     var VALID_PREFIXES = [
       AUXILIARY_CODE_CLASS_NAME, SYSTEM_CODE_CLASS_NAME];
-    var starterCode;
-    var auxiliaryCode;
+    var _starterCode;
+    var _auxiliaryCode;
     // TODO(eyurko): Update this once we support nonlinear runtimes.
     var ALLOWED_RUNTIMES = ['linear'];
     // TODO(eyurko): Add check that definition occurs at line start.
@@ -44,21 +44,9 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
       return false;
     };
     return {
-      getAllVerificationFunctions: function() {
-        var functions = [];
-        for (var func in this) {
-          if (this.hasOwnProperty(func) && 
-              angular.isFunction(this[func]) &&
-              !(/functions/i).test(func) &&
-              func.toString().startsWith('verify')) {
-            functions.push(this[func]);
-          }
-        }
-        return functions;
-      },
-      init: function(sCode, aCode) {
-        starterCode = sCode;
-        auxiliaryCode = aCode;
+      init: function(starterCode, auxiliaryCode) {
+        _starterCode = starterCode;
+        _auxiliaryCode = auxiliaryCode;
       },
       verifyInstructionsAreNotEmpty: function(task) {
         var instructions = task.getInstructions();
@@ -79,7 +67,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
       verifyMainFunctionNameAppearsInStarterCode: function(task) {
         var mainFunctionName = task.getMainFunctionName();
         return _checkIfFunctionExistsInCode(mainFunctionName, 
-          starterCode);
+          _starterCode);
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
@@ -95,7 +83,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         return (inputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               inputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode));
+              _auxiliaryCode));
       },
       verifyOutputFunctionNameIsNullOrString: function(task) {
         var outputFunctionName = task.getOutputFunctionName();
@@ -111,7 +99,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         return (outputFunctionName === null ||
           _checkIfFunctionExistsInClass(
               outputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode));
+              _auxiliaryCode));
       },
       verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -204,7 +192,7 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               transformationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode)) {
+              _auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInClass(
@@ -228,11 +216,11 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
           }
           if (_checkIfFunctionExistsInClass(
               evaluationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              auxiliaryCode)) {
+              _auxiliaryCode)) {
             return true;
           }
           return _checkIfFunctionExistsInCode(
-            evaluationFunctionName, starterCode);
+            evaluationFunctionName, _starterCode);
         });
       }
     };

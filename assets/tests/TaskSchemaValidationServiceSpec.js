@@ -21,8 +21,9 @@ describe('TaskSchemaValidationService', function() {
   // Alias for TaskSchemaValidationService.
   var Tsvs;
   var questions = [];
-  // Hardcoded value. Update if you add new task schema tests.
-  var NUM_FUNCTIONS = 23;
+  // Hardcoded number of functions in TaskSchemaValidationService. 
+  // Update if you add new task schema tests.
+  var NUM_FUNCTIONS = 24;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
@@ -44,17 +45,19 @@ describe('TaskSchemaValidationService', function() {
 
   describe('validateAllTasks', function() {
     it('should validate the structure of all sample tasks', function() {
+      var functions = Object.keys(Tsvs);
+      expect(functions.length).toEqual(NUM_FUNCTIONS);
       questions.forEach(function(question) {
         Tsvs.init(question.getStarterCode('python'), 
             question.getAuxiliaryCode('python'));
-        var functions = Tsvs.getAllVerificationFunctions();
-        expect(functions.length).toEqual(NUM_FUNCTIONS);
         question.getTasks().forEach(function(task) {
           functions.forEach(function(verifierFunc) {
-            expect(verifierFunc(task)).toBe(true,
-            [verifierFunc.name, 
-              ' returned false, but it should ',
-              'return true.'].join(''));
+            if (verifierFunc.indexOf('verify') === 0) {
+              expect(Tsvs[verifierFunc](task)).toBe(true,
+              [verifierFunc, 
+                ' returned false, but it should ',
+                'return true.'].join(''));
+            }
           });
         });
       });
