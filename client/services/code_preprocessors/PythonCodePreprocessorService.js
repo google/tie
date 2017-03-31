@@ -18,38 +18,17 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
   function(
-      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
+      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
-    var SYSTEM_CODE = [
-      'import copy',
-      'import time',
-      '',
-      '# A copy of the most-recently processed input item. This is useful for',
-      '# debugging exceptions.',
-      VARNAME_MOST_RECENT_INPUT + ' = None',
-      '',
-      'class System(object):',
-      '    @classmethod',
-      '    def runTest(cls, func, input):',
-      '        global ' + VARNAME_MOST_RECENT_INPUT,
-      '        ' + VARNAME_MOST_RECENT_INPUT + ' = copy.deepcopy(input)',
-      '        output = func(input)',
-      '        return output',
-      '',
-      '    @classmethod',
-      '    def extendString(cls, s, length):',
-      '        return s * length',
-      ''
-    ].join('\n');
 
     var SMALL_INPUT_SIZE = 10;
     var LARGE_INPUT_SIZE = 100;
@@ -292,7 +271,7 @@ tie.factory('PythonCodePreprocessorService', [
         var studentCodeFirstLine = (
           'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
         codeSubmission.prepend(studentCodeFirstLine);
-        codeSubmission.prepend(SYSTEM_CODE);
+        codeSubmission.prepend(SYSTEM_CODE['python']);
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');
 

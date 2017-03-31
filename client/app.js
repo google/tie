@@ -16,6 +16,13 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
+window.globalData = {
+  // Question data will be stored here, keyed by question ID.
+  questions: {},
+  // Question set data will be stored here, keyed by question set ID.
+  questionSets: {}
+};
+
 window.tie = angular.module('tie', ['ui.codemirror']);
 
 // The maximum amount of time (in seconds) that the code can take to run.
@@ -30,6 +37,31 @@ tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
 // Class name for wrapping auxiliary code. Answer submissions are then run
 // using CLASS_NAME_STUDENT_CODE.function_name().
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+
+// Imports and system-level functions that should be appended to all code.
+tie.constant('SYSTEM_CODE', {
+  python: [
+    'import copy',
+    'import time',
+    '',
+    '# A copy of the most-recently processed input item. This is useful',
+    '# for debugging exceptions.',
+    'most_recent_input = None',
+    '',
+    'class System(object):',
+    '    @classmethod',
+    '    def runTest(cls, func, input):',
+    '        global most_recent_input',
+    '        most_recent_input = copy.deepcopy(input)',
+    '        output = func(input)',
+    '        return output',
+    '',
+    '    @classmethod',
+    '    def extendString(cls, s, length):',
+    '        return s * length',
+    ''
+  ].join('\n')
+});
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');

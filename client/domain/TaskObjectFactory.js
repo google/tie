@@ -59,6 +59,10 @@ tie.factory('TaskObjectFactory', [
       return this._mainFunctionName;
     };
 
+    Task.prototype.getInputFunctionName = function() {
+      return this._inputFunctionName;
+    };
+
     Task.prototype.getOutputFunctionName = function() {
       return this._outputFunctionName;
     };
@@ -73,6 +77,14 @@ tie.factory('TaskObjectFactory', [
 
     Task.prototype.getPerformanceTests = function() {
       return this._performanceTests;
+    };
+
+    Task.prototype.getAcquiredSkills = function() {
+      return this._acquiredSkills;
+    };
+
+    Task.prototype.getPrerequisiteSkills = function() {
+      return this._prerequisiteSkills;
     };
 
    // Static class methods.
