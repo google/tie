@@ -17,32 +17,18 @@
  * within a question.
  */
 
-tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
-  function(SYSTEM_CODE) {
-    var AUXILIARY_CODE_CLASS_NAME = 'AuxiliaryCode.';
-    var SYSTEM_CODE_CLASS_NAME = 'System.';
+tie.factory('TaskSchemaValidationService', [
+  'SYSTEM_CODE', 'CLASS_NAME_AUXILIARY_CODE', 'CodeCheckerService',
+  function(SYSTEM_CODE, CLASS_NAME_AUXILIARY_CODE, CodeCheckerService) {
+    var CLASS_NAME_SYSTEM_CODE = 'System';
     var VALID_PREFIXES = [
-      AUXILIARY_CODE_CLASS_NAME, SYSTEM_CODE_CLASS_NAME];
-    var _starterCode;
-    var _auxiliaryCode;
+      CLASS_NAME_AUXILIARY_CODE + '.', CLASS_NAME_SYSTEM_CODE + '.'];
     // TODO(eyurko): Update this once we support nonlinear runtimes.
     var ALLOWED_RUNTIMES = ['linear'];
-    // TODO(eyurko): Add check that definition occurs at line start.
-    var _checkIfFunctionExistsInCode = function(functionName, code) {
-      var functionDefinition = 'def ' + functionName;
-      return code.indexOf(functionDefinition) !== -1;
-    };
-    // TODO(eyurko): Add check that function exists in specified class.
-    var _checkIfFunctionExistsInClass = function(functionName, 
-      className, code) {
-      if (functionName.startsWith(className)) {
-        var strippedFunctionName = functionName.substring(
-          className.length);
-        return _checkIfFunctionExistsInCode(
-          strippedFunctionName, code);
-      }
-      return false;
-    };
+
+    var _starterCode;
+    var _auxiliaryCode;
+
     return {
       init: function(starterCode, auxiliaryCode) {
         _starterCode = starterCode;
@@ -66,40 +52,42 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
       },
       verifyMainFunctionNameAppearsInStarterCode: function(task) {
         var mainFunctionName = task.getMainFunctionName();
-        return _checkIfFunctionExistsInCode(mainFunctionName, 
-          _starterCode);
+        return CodeCheckerService.checkIfFunctionExistsInCode(
+          mainFunctionName, _starterCode);
       },
       verifyInputFunctionNameIsNullOrString: function(task) {
         var inputFunctionName = task.getInputFunctionName();
         return (inputFunctionName === null ||
           (VALID_PREFIXES.some(function(prefix) {
             return inputFunctionName.startsWith(prefix);
-          }) && angular.isString(inputFunctionName) && 
+          }) && angular.isString(inputFunctionName) &&
               inputFunctionName.length > 0));
       },
       verifyInputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task) {
         var inputFunctionName = task.getInputFunctionName();
-        return (inputFunctionName === null ||
-          _checkIfFunctionExistsInClass(
-              inputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              _auxiliaryCode));
+        return (
+          inputFunctionName === null ||
+          CodeCheckerService.checkIfFunctionExistsInClass(
+            inputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
+        );
       },
       verifyOutputFunctionNameIsNullOrString: function(task) {
         var outputFunctionName = task.getOutputFunctionName();
         return (outputFunctionName === null ||
           (VALID_PREFIXES.some(function(prefix) {
             return outputFunctionName.startsWith(prefix);
-          }) && angular.isString(outputFunctionName) && 
+          }) && angular.isString(outputFunctionName) &&
               outputFunctionName.length > 0));
       },
       verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task) {
         var outputFunctionName = task.getOutputFunctionName();
-        return (outputFunctionName === null ||
-          _checkIfFunctionExistsInClass(
-              outputFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              _auxiliaryCode));
+        return (
+          outputFunctionName === null ||
+          CodeCheckerService.checkIfFunctionExistsInClass(
+            outputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
+        );
       },
       verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -186,18 +174,19 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var transformationFunctionName = test.getTransformationFunctionName();
-          if (!(transformationFunctionName && 
+          if (!(transformationFunctionName &&
             angular.isString(transformationFunctionName))) {
             return false;
           }
-          if (_checkIfFunctionExistsInClass(
-              transformationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              _auxiliaryCode)) {
-            return true;
-          }
-          return _checkIfFunctionExistsInClass(
-              transformationFunctionName, SYSTEM_CODE_CLASS_NAME,
-              SYSTEM_CODE.python);
+
+          return (
+            CodeCheckerService.checkIfFunctionExistsInClass(
+              transformationFunctionName, CLASS_NAME_AUXILIARY_CODE,
+              _auxiliaryCode) ||
+            CodeCheckerService.checkIfFunctionExistsInClass(
+              transformationFunctionName, CLASS_NAME_SYSTEM_CODE,
+              SYSTEM_CODE.python)
+          );
         });
       },
       verifyPerformanceTestsHaveLinearExpectedPerformance: function(task) {
@@ -210,17 +199,17 @@ tie.factory('TaskSchemaValidationService', ['SYSTEM_CODE',
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
           var evaluationFunctionName = test.getEvaluationFunctionName();
-          if (evaluationFunctionName === null || 
+          if (evaluationFunctionName === null ||
             !angular.isString(evaluationFunctionName)) {
             return false;
           }
-          if (_checkIfFunctionExistsInClass(
-              evaluationFunctionName, AUXILIARY_CODE_CLASS_NAME, 
-              _auxiliaryCode)) {
-            return true;
-          }
-          return _checkIfFunctionExistsInCode(
-            evaluationFunctionName, _starterCode);
+          return (
+            CodeCheckerService.checkIfFunctionExistsInClass(
+              evaluationFunctionName, CLASS_NAME_AUXILIARY_CODE,
+              _auxiliaryCode) ||
+            CodeCheckerService.checkIfFunctionExistsInCode(
+              evaluationFunctionName, _starterCode)
+          );
         });
       }
     };
