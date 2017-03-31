@@ -13,17 +13,17 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for the TaskSchemaValidationService.
+ * @fileoverview Unit tests for the QuestionSchemaValidationService.
  */
 
-describe('TaskSchemaValidationService', function() {
+describe('QuestionSchemaValidationService', function() {
   var QuestionDataService;
-  var TaskSchemaValidationService;
+  var QuestionSchemaValidationService;
 
   var questions = [];
-  // Hardcoded number of functions in TaskSchemaValidationService.
-  // Update if you add new task schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 23;
+  // Hardcoded number of functions in QuestionSchemaValidationService.
+  // Update if you add new question schema tests.
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 7;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
@@ -38,7 +38,8 @@ describe('TaskSchemaValidationService', function() {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
-    TaskSchemaValidationService = $injector.get('TaskSchemaValidationService');
+    QuestionSchemaValidationService = $injector.get(
+      'QuestionSchemaValidationService');
 
     QuestionDataService.initCurrentQuestionSet('all');
     questions = QUESTION_IDS.map(function(questionId) {
@@ -46,35 +47,26 @@ describe('TaskSchemaValidationService', function() {
     });
   }));
 
-  describe('validateAllTasks', function() {
-    it('should validate the structure of all sample tasks', function() {
-      var functions = Object.keys(TaskSchemaValidationService);
+  describe('validateAllQuestions', function() {
+    it('should validate the structure of all sample questions', function() {
+      var functions = Object.keys(QuestionSchemaValidationService);
       questions.forEach(function(question) {
-        TaskSchemaValidationService.init(
-          question.getStarterCode('python'),
-          question.getAuxiliaryCode('python'));
+        var functionCount = 0;
 
-        question.getTasks().forEach(function(task, index) {
-          var functionCount = 0;
-
-          functions.forEach(function(verifierFunctionName) {
-            if (verifierFunctionName.indexOf('verify') === 0) {
-              functionCount++;
-              var verifierFunction = TaskSchemaValidationService[
-                verifierFunctionName];
-              expect(verifierFunction(task)).toBe(true, [
-                verifierFunctionName,
-                ' returned false, but it should ',
-                'return true.'
-              ].join(''));
-            }
-          });
-
-          expect(functionCount).toEqual(EXPECTED_VERIFIER_FUNCTION_COUNT, [
-            'Only ' + functionCount + ' functions were called for ',
-            question.getTitle() + '\'s task at index ' + index
+        functions.forEach(function(verifierFunctionName) {
+          functionCount++;
+          var verifierFunction = QuestionSchemaValidationService[
+            verifierFunctionName];
+          expect(verifierFunction(question)).toBe(true, [
+            verifierFunctionName,
+            ' returned false, but it should return true.'
           ].join(''));
         });
+
+        expect(functionCount).toEqual(EXPECTED_VERIFIER_FUNCTION_COUNT, [
+          'Only ' + functionCount + ' functions were called for ',
+          question.getTitle()
+        ].join(''));
       });
     });
   });
