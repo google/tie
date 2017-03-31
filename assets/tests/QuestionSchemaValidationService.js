@@ -17,11 +17,15 @@
  */
 
 tie.factory('QuestionSchemaValidationService', [
-  'ALL_SUPPORTED_LANGUAGES', 'CLASS_NAME_AUXILIARY_CODE',
-  'CodeCheckerService',
-  function(
-      ALL_SUPPORTED_LANGUAGES, CLASS_NAME_AUXILIARY_CODE,
-      CodeCheckerService) {
+  'ALL_SUPPORTED_LANGUAGES', function(ALL_SUPPORTED_LANGUAGES) {
+    // TODO(sll): Verify that the BuggyOutputTest messages are unique across
+    // all tasks.
+    // TODO(sll): Verify that AuxiliaryCode contains the AuxiliaryCode class
+    // definition.
+    // TODO(sll): Verify that starter code contains Python function definitions
+    // TODO(sll): Verify that the starter code matches a language pattern for
+    // the language specified.
+
     return {
       verifyTitleIsString: function(question) {
         return angular.isString(question.getTitle());

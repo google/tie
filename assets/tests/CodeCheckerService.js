@@ -30,7 +30,7 @@ tie.factory('CodeCheckerService', [
         return _checkIfFunctionExistsInCode(functionName, code);
       },
       // TODO(eyurko): Add check that function exists in specified class.
-      checkIfFunctionExistsInClass: function(functionName,  className, code) {
+      checkIfFunctionExistsInClass: function(functionName, className, code) {
         var fullClassNamePrefix = className + '.';
         if (functionName.startsWith(fullClassNamePrefix)) {
           var strippedFunctionName = functionName.substring(

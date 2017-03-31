@@ -65,8 +65,7 @@ describe('QuestionSchemaValidationService', function() {
         });
 
         expect(functionCount).toEqual(EXPECTED_VERIFIER_FUNCTION_COUNT, [
-          'Only ' + functionCount + ' functions were called for ',
-          question.getTitle()
+          'Only ' + functionCount + ' functions were called for ' + title
         ].join(''));
       });
     });
