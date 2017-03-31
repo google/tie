@@ -59,6 +59,10 @@ tie.factory('QuestionObjectFactory', [
       return this._tasks;
     };
 
+    Question.prototype.getStyleTests = function() {
+      return this._styleTests;
+    };
+
     // Static class methods.
     Question.create = function(questionDict) {
       return new Question(questionDict);

@@ -23,7 +23,7 @@ describe('QuestionSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in QuestionSchemaValidationService.
   // Update if you add new question schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 7;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 11;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
@@ -52,6 +52,7 @@ describe('QuestionSchemaValidationService', function() {
       var functions = Object.keys(QuestionSchemaValidationService);
       questions.forEach(function(question) {
         var functionCount = 0;
+        var title = question.getTitle();
 
         functions.forEach(function(verifierFunctionName) {
           functionCount++;
@@ -59,7 +60,7 @@ describe('QuestionSchemaValidationService', function() {
             verifierFunctionName];
           expect(verifierFunction(question)).toBe(true, [
             verifierFunctionName,
-            ' returned false, but it should return true.'
+            ' failed for the question: "' + title + '"'
           ].join(''));
         });
 

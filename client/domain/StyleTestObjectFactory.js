@@ -30,6 +30,14 @@ tie.factory('StyleTestObjectFactory', [
       return this._evaluationFunctionName;
     };
 
+    StyleTest.prototype.getExpectedOutput = function() {
+      return this._expectedOutput;
+    };
+
+    StyleTest.prototype.getMessage = function() {
+      return this._message;
+    };
+
     // Static class methods.
     StyleTest.create = function(styleTestDict) {
       return new StyleTest(styleTestDict);

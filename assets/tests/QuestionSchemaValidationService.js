@@ -17,8 +17,11 @@
  */
 
 tie.factory('QuestionSchemaValidationService', [
-  'ALL_SUPPORTED_LANGUAGES',
-  function(ALL_SUPPORTED_LANGUAGES) {
+  'ALL_SUPPORTED_LANGUAGES', 'CLASS_NAME_AUXILIARY_CODE',
+  'CodeCheckerService',
+  function(
+      ALL_SUPPORTED_LANGUAGES, CLASS_NAME_AUXILIARY_CODE,
+      CodeCheckerService) {
     return {
       verifyTitleIsString: function(question) {
         return angular.isString(question.getTitle());
@@ -52,6 +55,30 @@ tie.factory('QuestionSchemaValidationService', [
         return (
           angular.isArray(question.getTasks()) &&
           question.getTasks().length > 0);
+      },
+      verifyStyleTestsAreArray: function(question) {
+        return angular.isArray(question.getStyleTests());
+      },
+      // TODO(sll): Implement verifyEvaluationFunctionNameAppearsInAuxiliaryCode
+      // for style tests.
+      verifyStyleTestsEvaluationFunctionNameIsString: function(question) {
+        return question.getStyleTests().every(function(test) {
+          return (
+            angular.isString(test.getEvaluationFunctionName()) &&
+            test.getEvaluationFunctionName().length > 0);
+        });
+      },
+      verifyExpectedOutputIsNotUndefined: function(question) {
+        return question.getStyleTests().every(function(test) {
+          return (test.getExpectedOutput() !== undefined);
+        });
+      },
+      verifyStyleTestMessageIsNonemptyString: function(question) {
+        return question.getStyleTests().every(function(test) {
+          return (
+            angular.isString(test.getMessage()) &&
+            test.getMessage().length > 0);
+        });
       }
     };
   }
