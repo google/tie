@@ -35,10 +35,16 @@ tie.directive('codeSnippet', [function() {
     `,
     controller: [
       '$scope', function($scope) {
-        // Replace spaces by non-breaking spaces so that multiple spaces do not
-        // get collapsed into a single one.
-        var htmlFormattedContent = $scope.getContent().replace(/ /g, '\u00A0');
-        $scope.snippetLines = htmlFormattedContent.split('\n');
+        $scope.snippetLines = [];
+
+        // This is needed in order to change the code snippet shown when the
+        // feedback changes.
+        $scope.$watch($scope.getContent, function(newValue) {
+          // Replace spaces by non-breaking spaces so that multiple spaces do
+          // not get collapsed into a single one.
+          var htmlFormattedContent = newValue.replace(/ /g, '\u00A0');
+          $scope.snippetLines = htmlFormattedContent.split('\n');
+        });
       }
     ]
   };
