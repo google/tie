@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Balanced Parentheses.
+ * @fileoverview Question data for Most Common Characters.
  */
 
 globalData.questions['common'] = {  // eslint-disable-line dot-notation
@@ -24,19 +24,11 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
     return ""
 `
   },
-  auxiliaryCode: {
-    python:
-`class AuxiliaryCode(object):
-    @classmethod
-    def applyArray(cls, string):
-        return True
-`
-  },
   tasks: [{
     instructions: [
       [
 	"Find the most common character of a string, as described in title. ",
-	"Assume that the string is ASCII. ",
+	"Assume that the string is ASCII, and there's only one most common character. ",
 	"Consider that the answer is unique for now."
       ].join(''),
       [
@@ -80,15 +72,10 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
       input: 'baa',
       allowedOutputs: ['a']
     }, {
-      input: 'abab',
-      allowedOutputs: ['\'a\',\'b\'']
+      input: 'ababa',
+      allowedOutputs: ['a']
     }],
-    buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.applyArray',
-      messages: [
-	"Since there are few possible characters, is there a data structure better than array?"
-      ]
-    }],
+    buggyOutputTests: [],
     performanceTests: []
   }, {
     instructions: [
