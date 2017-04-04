@@ -25,6 +25,30 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
     return ""
 `
   },
+  auxiliaryCode: {
+  	python:
+`class AuxiliaryCode(object):
+	class TreeNode(object):
+		def __init__(self, x):
+			self.val = x
+			self.left = None
+			self.right = None
+
+	@classmethod
+	def deserialize(cls, data):
+		def constructTree():
+			val = next(vals)
+			if val == '#':
+				return None
+			node = TreeNode(int(val))
+			node.left = constructTree()
+			node.right = constructTree()
+			return node
+		vals = iter(data.split())
+		return constructTree()
+ 
+`
+  },
   tasks: [{
     instructions: []}]
 
