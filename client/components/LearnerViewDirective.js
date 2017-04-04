@@ -445,7 +445,8 @@ tie.directive('learnerView', [function() {
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: true,
-          tabSize: 4
+          tabSize: 4,
+          fixedGutter: false
         };
 
         $scope.showNextTask = function() {
