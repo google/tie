@@ -139,7 +139,7 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
         'In this question, you\'ll implement the encode function. It takes a ',
         'string as input and returns an encoding of the string where long ',
         'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" could be encoded as "ab5xcd".'
+        'example, "abcccccd" could be encoded as "ab5xcd". '
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
