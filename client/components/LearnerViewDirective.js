@@ -444,7 +444,7 @@ tie.directive('learnerView', [function() {
           indentUnit: 4,
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
-          smartIndent: false,
+          smartIndent: true,
           tabSize: 4
         };
 
