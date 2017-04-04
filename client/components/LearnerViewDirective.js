@@ -401,6 +401,7 @@ tie.directive('learnerView', [function() {
 
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
+          feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
             '[' + (new Date()).toLocaleTimeString() + ']');
           if (feedback.isAnswerCorrect()) {
