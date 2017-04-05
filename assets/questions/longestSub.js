@@ -56,7 +56,7 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
 	},
   {
     input:'rspbbvueyturpzmxltbnccqqhudcbtumwbflpdrqbsxiolccbeizrbvrjmwunblhtegmpgoawywmpmmvqlkuameudwpaolblwfkk',
-    allowedOutputs: ['ccqq']
+    allowedOutputs: ['ccqq','mpmm']
   }
 	,
 	],
