@@ -24,6 +24,14 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
     return ""
 `
   },
+auxiliaryCode: {
+    python:
+`class AuxiliaryCode(object):
+    @classmethod
+    def foo(cls, word):
+        return None
+`
+  },
   tasks: [{
     instructions: [
       [
