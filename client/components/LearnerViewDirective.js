@@ -343,15 +343,17 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStoreService', 
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStoreService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
+        // CodeStoreService.autoSaveCodeWithDefaultInterval2S(questionSetId,'lalala');
+        
 
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
@@ -381,8 +383,9 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
+          var savedCode = CodeStoreService.loadSavedCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = question.getStarterCode(language);
+          $scope.code = savedCode == null ? question.getStarterCode(language) : savedCode;
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -467,8 +470,16 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before the questionId is changed, save it for later use.
+          var currentQuestionId = $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          // Before the current code is changed to starter code for next question, save it
+          var currentQuestionCode = $scope.code;
+          // Store code, the order matters, need to save code before loading so when the user clicks
+          // on the same question, it can be saved and reloaded
+          CodeStoreService.saveCode(currentQuestionId, currentQuestionCode, language);
+
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
@@ -485,6 +496,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
+          CodeStoreService.saveCode($scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
         loadQuestion(
