@@ -106,9 +106,6 @@ tie.directive('learnerView', [function() {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
         }
-        .CodeMirror-scroll > .CodeMirror-gutters {
-          z-index: 1;
-        }
         .tie-arrow-highlighter {
           background-color: white;
           border-radius: 100px;
@@ -444,7 +441,7 @@ tie.directive('learnerView', [function() {
           indentUnit: 4,
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
-          smartIndent: false,
+          smartIndent: true,
           tabSize: 4
         };
 
