@@ -23,7 +23,7 @@ describe('QuestionSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in QuestionSchemaValidationService.
   // Update if you add new question schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 11;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 13;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
@@ -46,6 +46,18 @@ describe('QuestionSchemaValidationService', function() {
       return QuestionDataService.getQuestion(questionId);
     });
   }));
+
+  describe('validateTitlesAreUnique', function() {
+    it('should verify that all questions have a unique title', function() {
+      var titles = new Set();
+      expect(questions.every(function(question) {
+        var title = question.getTitle();
+        var isUnique = !(title in titles);
+        titles.add(title);
+        return isUnique;
+      })).toBe(true);
+    });
+  });
 
   describe('validateAllQuestions', function() {
     it('should validate the structure of all sample questions', function() {

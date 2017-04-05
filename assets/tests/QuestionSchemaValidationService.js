@@ -60,6 +60,23 @@ tie.factory('QuestionSchemaValidationService', [
           angular.isArray(question.getTasks()) &&
           question.getTasks().length > 0);
       },
+      verifyAtLeastOneBuggyOutputTestExists: function(question) {
+        return question.getTasks().some(function(task) {
+          return task.getBuggyOutputTests().length > 0;
+        });
+      },
+      verifyAllBuggyOutputTestMessagesAreUnique: function(question) {
+        var messages = new Set();
+        return question.getTasks().every(function(task) {
+          return task.getBuggyOutputTests().every(function(test) {
+            return test.getMessages().every(function(message) {
+              var isUnique = !(message in messages);
+              messages.add(message);
+              return isUnique;
+            });
+          });
+        });
+      },
       verifyStyleTestsAreArray: function(question) {
         return angular.isArray(question.getStyleTests());
       },
