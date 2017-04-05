@@ -20,46 +20,51 @@ globalData.questions['findChar'] = {
   // eslint-disable-line dot-notation
   title: 'Find the first character in a string that doesn\'t repeat',
   starterCode: {
-    python: `def reverseWords(str):
+    python: `def find1stNonRepeatedChar(word):
     return ""
 `
   },
   auxiliaryCode: {
     python: `class AuxiliaryCode(object):
+    @classmethod
+    def sortChar(cls, word):
+        sortedStr = ''.join(sorted(word))        
+        c = [a for a in sortedStr if sortedStr.count(a) == 1]
+        if not c:
+            return None
+        else:
+            return c[0]
 `
   },
   tasks: [
     {
       instructions: [
         [
-          'For this question, you\'ll implement the reverseWords function. ',
-          'This function takes a string of words separated by whitespace and ',
-          'reverses the non-whitespace characters in the words, but not the ',
-          'words\' ordering. It should also preserve the original whitespace.'
+          'For this question, you\'ll implement the find1stNonRepeatedChar function. ',
+          'Write a function to find the first character in a String that doesn\'t repeat.'
         ].join(''),
-        'For instance, \'moo cow bark dog\' would become \'oom woc krab god\'.'
+        'For instance, \'mom\' would output \'o\'.'
       ],
-      prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
+      prerequisiteSkills: ['Strings', 'String Manipulation'],
       acquiredSkills: ['String Manipulation'],
       inputFunctionName: null,
       outputFunctionName: null,
-      mainFunctionName: 'reverseWords',
+      mainFunctionName: 'find1stNonRepeatedChar',
       correctnessTests: [
-        {input: 'moo cow bark dog', allowedOutputs: ['oom woc krab god']}, {
-          input: 'racecar civic kayak mom noon level',
-          allowedOutputs: ['racecar civic kayak mom noon level']
-        },
-        {input: 'I', allowedOutputs: ['I']}, {input: '', allowedOutputs: ['']},
-        {input: 'ab', allowedOutputs: ['ba']}
+        {input: 'mom', allowedOutputs: ['o']},
+        {input: 'apple', allowedOutputs: ['a']},
+        {input: 'wefffa', allowedOutputs: ['w']},
+        {input: 'weffwa', allowedOutputs: ['e']},
+        {input: '', allowedOutputs: [None]},
+        {input: 'aaaeee', allowedOutputs: [None]}
       ],
       buggyOutputTests: [{
-        buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
+        buggyFunctionName: 'AuxiliaryCode.sortChar',
         messages: [
-          'Try running your code on \'new code\' on paper. What\'s the result?',
-          'Are you sure that you\'re reversing all the words?',
+          'Try running your code on \'wefffa\' on paper. What\'s the result?',
+          'Are you sure that you\'re returning the first non-repeating character in the word?',
           [
-            'It looks like you\'re exiting the function without adding on the ',
-            'last reversed word.'
+            'It looks like you\'re returning the character that is unique but not the first one in the given string.'
           ].join('')
         ]
       }],
