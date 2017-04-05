@@ -95,6 +95,8 @@ tie.factory('FeedbackGeneratorService', [
       correctnessTest, observedOutput) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
+      console.log(_jsToHumanReadable(observedOutput));
+      console.log(_jsToHumanReadable(allowedOutputExample));
       feedback.appendTextParagraph('Your code produced the following result:');
       feedback.appendCodeParagraph(
         'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
