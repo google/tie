@@ -183,7 +183,6 @@ tie.factory('PythonCodePreprocessorService', [
           '\n' +
           VARNAME_CORRECTNESS_TEST_RESULTS + '.append(' + testOutputCode + ')');
       };
-      console.log(testOutputCode)
       return testCode;
     };
 
