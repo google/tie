@@ -59,9 +59,10 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                  <ui-codemirror ui-codemirror="codeMirrorOptions"
                       ng-model="code"
-                      class="tie-codemirror-container"></ui-codemirror>
+                      class="tie-codemirror-container">
+                  </ui-codemirror>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
@@ -339,10 +340,10 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService', 
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStoreService', 
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStoreService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -376,12 +377,10 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          var storedCode = 
-            CodeStorageService.loadStoredCode(questionId, language);
+          var savedCode = CodeStoreService.loadSavedCode(questionId, language);
           $scope.title = question.getTitle();
           $scope.code = 
-            storedCode === null ? 
-              question.getStarterCode(language) : storedCode;
+            savedCode === null ? question.getStarterCode(language) : savedCode;
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -472,12 +471,13 @@ tie.directive('learnerView', [function() {
             $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-          // Whenever a user navigates to a different question,
-          // store their code on the scope.
+          // Before the current code is changed to starter code for 
+          // next question, save it
           var currentQuestionCode = $scope.code;
-          // We need to save the code before loading so that the user will get
-          // their own code back if they click on the current question.
-          CodeStorageService.storeCode(currentQuestionId, 
+          // Store code, the order matters, need to save code before loading 
+          // so when the user clicks on the same question, 
+          // it can be saved and reloaded
+          CodeStoreService.saveCode(currentQuestionId, 
             currentQuestionCode, language);
 
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
@@ -496,7 +496,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
-          CodeStorageService.storeCode(
+          CodeStoreService.saveCode(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
