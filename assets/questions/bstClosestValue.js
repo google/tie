@@ -44,8 +44,9 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
 			node.left = constructTree()
 			node.right = constructTree()
 			return node
-		vals = iter(data.split())
-		return constructTree()
+    inputs = data.split('|')
+		vals = iter(inputs[0].split())
+		return constructTree(),inputs[1]
 `
   },
   tasks: [{
