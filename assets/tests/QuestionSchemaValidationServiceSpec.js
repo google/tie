@@ -27,7 +27,7 @@ describe('QuestionSchemaValidationService', function() {
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
-  var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle', 'bstClosestValue'];
+  var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle'];
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
