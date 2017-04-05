@@ -46,20 +46,17 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
     correctnessTests: [{
       input: 'ababcbcbaaabbdef',
       allowedOutputs: ['baaabb']
-    },{
-    	input:'abcbbcbcbb',
-		allowedOutputs: ['bcbbcbcbb']
-	},
-	{
-		input:'ab',
-		allowedOutputs: ['ab']
-	},
-  {
-    input:'rspbbvueyturpzmxltbnccqqhudcbtumwbflpdrqbsxiolccbeizrbvrjmwunblhtegmpgoawywmpmmvqlkuameudwpaolblwfkk',
-    allowedOutputs: ['ccqq','mpmm']
-  }
-	,
-	],
+    }, {
+      input: 'abcbbcbcbb',
+      allowedOutputs: ['bcbbcbcbb']
+    }, {
+      input: 'ab',
+      allowedOutputs: ['ab']
+    }, {
+      input: 'rspbbvueyturpzmxltbnccqqhudcbtumwbflpdrqbsxiolccbeizrbvrjmwunblhtegmpgoawywmpmmvqlkuameudwpaolblwfkk',
+      allowedOutputs: ['ccqq', 'mpmm']
+    }
+    ], 
     buggyOutputTests: [],
     performanceTests: [{inputDataAtom: 'o',
       transformationFunctionName: 'System.extendString',
