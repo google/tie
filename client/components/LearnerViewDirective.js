@@ -59,10 +59,9 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror="codeMirrorOptions"
+                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                       ng-model="code"
-                      class="tie-codemirror-container">
-                  </ui-codemirror>
+                      class="tie-codemirror-container"></ui-codemirror>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
