@@ -50,12 +50,10 @@ describe('QuestionSchemaValidationService', function() {
   describe('validateTitlesAreUnique', function() {
     it('should verify that all questions have a unique title', function() {
       var titles = new Set();
-      expect(questions.every(function(question) {
-        var title = question.getTitle();
-        var isUnique = !(title in titles);
-        titles.add(title);
-        return isUnique;
-      })).toBe(true);
+      questions.forEach(function(question) {
+        titles.add(question.getTitle());
+      });
+      expect(titles.size).toEqual(questions.length);
     });
   });
 
