@@ -55,18 +55,17 @@ globalData.questions['findChar'] = {
         {input: 'apple', allowedOutputs: ['a']},
         {input: 'wefffa', allowedOutputs: ['w']},
         {input: 'weffwa', allowedOutputs: ['e']},
-        {input: '', allowedOutputs: [None]},
-        {input: 'aaaeee', allowedOutputs: [None]}
+        {input: '', allowedOutputs: []},
+        {input: 'aaaeee', allowedOutputs: []}
       ],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.sortChar',
         messages: [
-          'Try running your code on \'wefffa\' on paper. What\'s the result?',
-          'Are you sure that you\'re returning the first non-repeating character in the word?',
-          [
-            'It looks like you\'re returning the character that is unique but not the first one in the given string.'
-          ].join('')
-        ]
+            [
+          "Try running your code on \'wefffa\' on paper. What\'s the result?   ",
+          "Are you sure that you\'re returning the first non-repeating character in the word?   ",
+            "It looks like you\'re returning the character that is unique but not the first one in the given string."
+        ].join('')]
       }],
       performanceTests: []
     },
