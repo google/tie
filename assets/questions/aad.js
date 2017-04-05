@@ -26,112 +26,86 @@ globalData.questions['aad'] = {  // eslint-disable-line dot-notation
   },
   auxiliaryCode: {
     python:
-`class AuxiliaryCode(object):
-    @classmethod
-    def skipEncodingAtEndOfString(cls, word):
-        if len(word) < 3:
-            return word
-        repeating = False
-        num_repeats = 0
-        start_repeating = 0
-        result = ''
-        for i in range(len(word)):
-            if word[i].isdigit():
-                result += '%sx%s' % (1, word[i])
-                continue
-            if i < (len(word) - 1) and word[i] == word[i + 1]:
-                if not repeating:
-                    repeating = True
-                    num_repeats = 2
-                    start_repeating = i
-                else:
-                    num_repeats += 1
-            elif repeating and i < (len(word) - 1):
-                repeating = False
-                result += '%sx%s' % (num_repeats, word[start_repeating])
-            else:
-                result += word[i]
-        return result
-
-    @classmethod
-    def ignoreStringLengthWhenEncoding(cls, word):
-        repeating = False
-        num_repeats = 0
-        start_repeating = 0
-        result = ''
-        for i in range(len(word)):
-            if word[i].isdigit():
-                result += '%sx%s' % (1, word[i])
-                continue
-            if i < (len(word) - 1) and word[i] == word[i + 1]:
-                if not repeating:
-                    repeating = True
-                    num_repeats = 2
-                    start_repeating = i
-                else:
-                    num_repeats += 1
-            elif repeating:
-                repeating = False
-                result += '%sx%s' % (num_repeats, word[start_repeating])
-            else:
-                result += word[i]
-        if repeating:
-            repeating = False
-            result += '%sx%s' % (num_repeats, word[start_repeating])
-        return result
-
-
-    @classmethod
-    def failToDemarcateBeginningOfEncodedChunk(cls, word):
-        if len(word) < 3:
-            return word
-        repeating = False
-        num_repeats = 0
-        start_repeating = 0
-        result = ''
-        for i in range(len(word)):
-            if i < (len(word) - 1) and word[i] == word[i + 1]:
-                if not repeating:
-                    repeating = True
-                    num_repeats = 2
-                    start_repeating = i
-                else:
-                    num_repeats += 1
-            elif repeating:
-                repeating = False
-                result += '%sx%s' % (num_repeats, word[start_repeating])
-            else:
-                result += word[i]
-        if repeating:
-            repeating = False
-            result += '%sx%s' % (num_repeats, word[start_repeating])
-        return result
-
-
-    @classmethod
-    def decodeEncodedString(cls, encoded_string):
-        number_block = False
-        start_block = 0
-        end_block = 0
-        result = ''
-        i = 0
-        while i < len(encoded_string):
-            if encoded_string[i].isdigit() and not number_block:
-                number_block = True
-                start_block = i
-            elif not encoded_string[i].isdigit() and number_block:
-                number_block = False
-                end_block = i - 1
-                num_string = encoded_string[start_block:(end_block + 1)]
-                num = int(num_string)
-                if encoded_string[i] == 'x' and i < len(encoded_string) - 1:
-                    result += (encoded_string[i + 1] * num)
-                    i += 1
-            elif not number_block:
-                result += encoded_string[i]
-            i += 1
-        return result
 `
+class AuxiliaryCode(object):
+    @classmethod
+    def wrongInNoSolution(cls, words):
+      e = {}
+      deg = {}
+  
+      for str in words:
+          for ch in str:
+              ch = ch.lower()
+              if(not e.has_key(ch)):
+                  e[ch] = []
+                  deg[ch] = 0
+  
+      for i in range(len(words) - 1):
+          for j in range(min(len(words[i]), len(words[i + 1]))):
+              be = words[i][j].lower()
+              to = words[i + 1][j].lower()
+              if(be != to):
+                  e[be].append(to)
+                  deg[to] = deg[to] + 1
+                  break
+  
+      ans = ""
+  
+      while True :
+          flag = False
+          for key in deg:
+              if deg[key] == 0 :
+                  flag = True
+                  ans = ans + key;
+                  for it in e[key]:
+                      deg[it] = deg[it] - 1
+                  del deg[key]
+          if (not flag):
+              break;
+  
+      return ans
+      
+    @classmethod
+    def wrongInUppercase(cls, words):
+      e = {}
+      deg = {}
+  
+      for str in words:
+          for ch in str:
+              if(not e.has_key(ch)):
+                  e[ch] = []
+                  deg[ch] = 0
+  
+      for i in range(len(words) - 1):
+          for j in range(min(len(words[i]), len(words[i + 1]))):
+              be = words[i][j]
+              to = words[i + 1][j]
+              if(be != to):
+                  e[be].append(to)
+                  deg[to] = deg[to] + 1
+                  break
+  
+      ans = ""
+  
+      while True :
+          flag = False
+          for key in deg:
+              if deg[key] == 0 :
+                  flag = True
+                  ans = ans + key;
+                  for it in e[key]:
+                      deg[it] = deg[it] - 1
+                  del deg[key]
+          if (not flag):
+              break;
+      
+      if(not (len(deg) == 0)) :
+          return ""
+  
+      return ans
+   
+`
+ 
   },
   tasks: [{
     instructions: [
@@ -148,6 +122,22 @@ globalData.questions['aad'] = {  // eslint-disable-line dot-notation
     outputFunctionName: null,
     mainFunctionName: 'find_dict',
     correctnessTests: [{
+      input: ["a",
+              "ab",
+              "b"],
+      allowedOutputs: ['ab']
+    }, {
+      input: ["c",
+              "a",
+              "b",
+              "a"],
+      allowedOutputs: ['']
+    }, {
+      input: ["ab",
+              "Aba",
+              "b"],
+      allowedOutputs: ['ab']
+    }, {
       input: ["aaec",
               "aaed",
               "aac",
@@ -224,7 +214,29 @@ globalData.questions['aad'] = {  // eslint-disable-line dot-notation
               "kmrut"],
       allowedOutputs: ['ljhmezirxygadoqckfsvntwbup']
     }],
-    buggyOutputTests: [],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.wrongInNoSolution',
+      messages: [
+        [
+          "What if there's no solution to the input ? ",
+          "Just output \"\" when there's no solution. "
+        ].join(''),
+        [
+          'You may try this case : ["c", "a", "b", "a"]',
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.wrongInUppercase',
+      messages: [
+        [
+          "What if there's Uppercase and lowercase but they're the same? ",
+          "Just take them as the same letter."
+        ].join(''),
+        [
+          'You may try this case : ["a", "Ab", "b"]',
+        ].join('')
+      ]
+    }],
     performanceTests: []
   }],
   styleTests: [{
