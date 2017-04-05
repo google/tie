@@ -26,21 +26,41 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
   },
   auxiliaryCode: {
     python:
-`class AuxiliaryCode(object):
+`from collections import Counter
+class AuxiliaryCode(object):
     @classmethod
-    def foo(cls, word):
-        return None
+    def lettersOnly(cls, word):
+      if word == "":
+        return ""
+      word = [w for w in word if w.isalpha()]
+      counter = Counter(word)
+      result = word[0]
+      for w in counter:
+        if counter[w] > counter[result]: result = w
+      return w
+
+    @classmethod
+    def lowercaseOnly(cls, word):
+      if word == "":
+        return ""
+      word = [w for w in word if w.islower()]
+      counter = Counter(word)
+      result = word[0]
+      for w in counter:
+        if counter[w] > counter[result]: result = w
+      return w
 `
   },
   tasks: [{
     instructions: [
       [
-        'Find the most common character of a string, as described in title. ',
-        "Assume that the string is ASCII, and there's only one most common character. ",
-        'Consider that the answer is unique for now.'
+        "For this problem, we'd like you to write a method to determine",
+        'the most common character in a string You will be given a string',
+        'of ASCII characters, and you may assume that there',
+        ' is only one most common character, for now.'
       ].join(''),
       [
-        'We will guarantee that you will always be passed a string, so ',
+        "There's no need to validate that you're always passed a string",
         "you don't have to take care of integrity check."
       ].join('')
     ],
@@ -56,19 +76,30 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
       input: 'apoiuytrewqsdf*&^%$#ba',
       allowedOutputs: ['a']
     }, {
-      input: 'abb4562873ba',
-      allowedOutputs: ['b']
+      input: 'aBBB4562873ba',
+      allowedOutputs: ['B']
     }, {
       input: 'babaabb',
       allowedOutputs: ['b']
     }],
-    buggyOutputTests: [],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.lowercaseOnly',
+      messages: [
+        'Did you consider lowercase letters only?'
+      ]
+    },
+    {
+      buggyFunctionName: 'AuxiliaryCode.lettersOnly',
+      messages: [
+        'Did you consider alphabetic characters only?'
+      ]
+    }],
     performanceTests: []
   }, {
     instructions: [
       'What if only 6 characters or less can possibly occur in the string?'
     ],
-    prerequisiteSkills: ['Strings', 'String Manipulation', 'HashMap'],
+    prerequisiteSkills: ['Strings', 'String Manipulation', 'Hash Maps'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -88,10 +119,12 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
   }, {
     instructions: [
       [
-        'What if now the string is unicode instead of ASCII?'
+        'Now, check to make sure that your code works for',
+        'different string encodings.',
+        'What if the provided string is unicode, rather than ASCII?'
       ].join('')
     ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'Hashmap'],
+    prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -102,7 +135,7 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [],
     performanceTests: [{
-      inputDataAtom: 'abbac ',
+      inputDataAtom: 'abbac',
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
       evaluationFunctionName: 'findMostCommonChar'
@@ -112,7 +145,7 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in an findMostCommonChar function. ',
+      'You should only be writing code in a findMostCommonChar function. ',
       "While decomposition is generally a good idea, you shouldn't need more than ",
       'just this function for this question.'
     ].join('')
