@@ -29,7 +29,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
 `class AuxiliaryCode(object):
     @classmethod
     def negative(cls, board):
-		return -1
+        return -1
     @classmethod
     def ignoreWalls(cls, board):
         if len(board) == 0 or len(board[0]) == 0: return 0
@@ -110,13 +110,13 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   tasks: [{
     instructions: [
       [
-        'For this question, you will be given a borad, in which all elements are string',
-        'X represent a wall, e represent an enemy, \'\' represent an empty cell.',
-        'You can place an bomb in an empty cell, which will kill enemies in vertical and horizontal',
+        'For this question, you will be given a borad, in which all elements are string. ',
+        'X represent a wall, e represent an enemy, "" represent an empty cell. ',
+        'You can place an bomb in an empty cell, which will kill enemies in vertical and horizontal ',
         'direction until it met a wall.',
-	'Please write a function bomb(board), to find the best position to place a bomb in order to',
-	'kill as many enemies as possible, then return the number of enemies killed.'
-      ].join(''),
+        'Please write a function bomb(board), to find the best position to place a bomb in order to',
+        'kill as many enemies as possible, then return the number of enemies killed.'
+      ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -124,44 +124,48 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     outputFunctionName: null,
     mainFunctionName: 'bomb',
     correctnessTests: [
-    {
-      input: [["e", "", "e", "x", "", "e"]],
-      allowedOutputs: [2]
-    },
-	{
-      input: [["e", "", "e", "", "", "e"]],
-      allowedOutputs: [3]
-    },
-    {
-      input: [["e"],["x"], [""], ["x"]],
-      allowedOutputs: [0]
-    },
-    {
-      input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
-      allowedOutputs: [4]
-    },
+      {
+        input: [],
+        allowedOutputs: [0]
+      },    
+      {
+        input: [["e", "", "e", "x", "", "e"]],
+        allowedOutputs: [2]
+      },
+      {
+        input: [["e", "", "e", "", "", "e"]],
+        allowedOutputs: [3]
+      },
+      {
+        input: [["e"], ["x"], [""], ["x"]],
+        allowedOutputs: [0]
+      },
+      {
+        input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
+        allowedOutputs: [4]
+      }
     ],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
       messages: [[
         "You cannot kill an enemy behind a wall x.",
-        "Stop your fire once you meet a wall",
-        ].join('')
+        "Stop your fire once you meet a wall"
+      ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
       messages: [[
         "You cannot simply kill all enemies on the board.",
-	"Your bomb will kill enemies in the same row and column. ",
-        "Stop your fire once you meet a wall",
-        ].join('')
+        "Your bomb will kill enemies in the same row and column. ",
+        "Stop your fire once you meet a wall"
+      ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.negative',
       messages: [[
-        "Don't just return -1, do something",
+        "Don't just return -1, do something"
         ].join('')
       ]
     }],
