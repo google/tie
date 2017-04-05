@@ -24,7 +24,6 @@ tie.factory('QuestionObjectFactory', [
       this._title = questionDict.title;
       this._starterCode = questionDict.starterCode;
       this._auxiliaryCode = questionDict.auxiliaryCode;
-      console.log(this._auxiliaryCodes);
       this._tasks = questionDict.tasks.map(function(taskDict) {
         return TaskObjectFactory.create(taskDict);
       });
