@@ -17,11 +17,11 @@
  */
 
 
-globalData.questions['rle'] = {  // eslint-disable-line dot-notation
+globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
   title: 'Find Closest Value in Binary Search Tree',
   starterCode: {
     python:
-`def findClosestValue(target):
+`def findClosestValue(node, target):
     return ""
 `
   },
@@ -46,9 +46,26 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
 			return node
 		vals = iter(data.split())
 		return constructTree()
- 
 `
   },
   tasks: [{
-    instructions: []}]
+    instructions: [
+      [
+        'In this question, you need to find the closest value in a binary search tree ',
+        'given the target value. The target value is given in float format. It\'s guaranteed ',
+        'that there\'s only one closest value. You will have the root TreeNode. Each TreeNode ',
+        'has attributes val, left and right.'
+      ].join('')
+    ],
+    prerequisiteSkills: ['Binary Search Tree'],
+    acquiredSkills: ['Binary Search Tree', 'Recurssion'],
+    inputFunctionName: 'AuxiliaryCode.deserialize',
+    outputFunctionName: null,
+    mainFunctionName: 'findClosestValue',
+    correctnessTests: [{
+    	input: '2 1 3',
+    	allowedOutputs: ['1']
+    }]
+  }]
+};
 
