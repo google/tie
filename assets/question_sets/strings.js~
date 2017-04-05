@@ -26,5 +26,5 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
       "I will provide you with feedback."
     ].join('')
   ],
-  questionIds: ['reverseWords', 'parens', 'i18n', 'rle', 'bomberman']
+  questionIds: ['reverseWords', 'parens', 'i18n', 'rle']
 };
