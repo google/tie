@@ -187,7 +187,7 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateBuggyOutputTestCode = function(
-        buggyOutputTests, inputFunctionName, outputFunctionName) {
+        buggyOutputTests, outputFunctionName) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
