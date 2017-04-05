@@ -129,7 +129,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
         allowedOutputs: [0]
       },
       {
-        input: [[],[],[]],
+        input: [[], [], []],
         allowedOutputs: [0]
       },   
       {
