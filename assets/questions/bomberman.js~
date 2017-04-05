@@ -113,7 +113,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
         'For this question, you will be given a borad, in which all elements are string. ',
         'X represent a wall, e represent an enemy, "" represent an empty cell. ',
         'You can place an bomb in an empty cell, which will kill enemies in vertical and horizontal ',
-        'direction until it met a wall.',
+        'direction until it met a wall. ',
         'Please write a function bomb(board), to find the best position to place a bomb in order to',
         'kill as many enemies as possible, then return the number of enemies killed.'
       ].join('')
@@ -127,7 +127,11 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
       {
         input: [],
         allowedOutputs: [0]
-      },    
+      },
+      {
+        input: [[],[],[]],
+        allowedOutputs: [0]
+      },   
       {
         input: [["e", "", "e", "x", "", "e"]],
         allowedOutputs: [2]
@@ -141,6 +145,10 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
         allowedOutputs: [0]
       },
       {
+        input: [["e"], ["e"], [""], ["x"]],
+        allowedOutputs: [2]
+      },
+      {
         input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
         allowedOutputs: [4]
       }
@@ -148,17 +156,17 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
       messages: [[
-        "You cannot kill an enemy behind a wall x.",
-        "Stop your fire once you meet a wall"
+        "You cannot kill an enemy behind a wall x. ",
+        "Stop your fire once it meets a wall."
       ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
       messages: [[
-        "You cannot simply kill all enemies on the board.",
-        "Your bomb will kill enemies in the same row and column. ",
-        "Stop your fire once you meet a wall"
+        "You cannot simply kill all enemies on the board. ",
+        "Your bomb can only kill enemies in the same row and column. ",
+        "Stop your fire once it meets a wall."
       ].join('')
       ]
     },
@@ -166,7 +174,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
       buggyFunctionName: 'AuxiliaryCode.negative',
       messages: [[
         "Don't just return -1, do something"
-        ].join('')
+      ].join('')
       ]
     }],
     performanceTests: []
