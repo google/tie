@@ -24,7 +24,7 @@ globalData.questions['common'] = {  // eslint-disable-line dot-notation
     return ""
 `
   },
-auxiliaryCode: {
+  auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
     @classmethod
@@ -35,9 +35,9 @@ auxiliaryCode: {
   tasks: [{
     instructions: [
       [
-	'Find the most common character of a string, as described in title. ',
-	"Assume that the string is ASCII, and there's only one most common character. ",
-	'Consider that the answer is unique for now.'
+        'Find the most common character of a string, as described in title. ',
+        "Assume that the string is ASCII, and there's only one most common character. ",
+        'Consider that the answer is unique for now.'
       ].join(''),
       [
         'We will guarantee that you will always be passed a string, so ',
@@ -66,7 +66,7 @@ auxiliaryCode: {
     performanceTests: []
   }, {
     instructions: [
-        'What if only 6 characters or less can possibly occur in the string?'
+      'What if only 6 characters or less can possibly occur in the string?'
     ],
     prerequisiteSkills: ['Strings', 'String Manipulation', 'HashMap'],
     acquiredSkills: ['String Manipulation'],
