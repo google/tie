@@ -23,7 +23,7 @@ describe('QuestionSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in QuestionSchemaValidationService.
   // Update if you add new question schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 13;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 12;
   // Should contain all question IDs.
   // TODO(eyurko): Figure out a way to dynamically check to make sure
   // that all question IDs are specified.
