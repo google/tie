@@ -26,7 +26,6 @@ globalData.questions['findChar'] = {
   },
   auxiliaryCode: {
     python: `class AuxiliaryCode(object):
-
 `
   },
   tasks: [
@@ -68,31 +67,26 @@ globalData.questions['findChar'] = {
     },
     {
       instructions: [[
-        'Next, double-check your code to make sure that it preserves ',
-        'the original whitespace and handles more than just letters.'
+        'Next, double-check your code to make sure that it handles ',
+        'more than just letters.'
       ].join('')],
       prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
       acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
       inputFunctionName: null,
       outputFunctionName: null,
-      mainFunctionName: 'reverseWords',
+      mainFunctionName: 'find1stNonRepeatedChar',
       correctnessTests: [
-        {
-          input: '   this  is \t a    whitespace  test',
-          allowedOutputs: ['   siht  si \t a    ecapsetihw  tset']
-        },
-        {input: '\t  ', allowedOutputs: ['\t  ']},
-        {input: '123 456 789 ', allowedOutputs: ['321 654 987 ']}, {
-          input: 'test for dashes-and others',
-          allowedOutputs: ['tset rof dna-sehsad srehto']
-        }
+        {input: 'TT AsAs', allowedOutputs: [' ']},
+        {input: 'AbCABcBb', allowedOutputs: ['C']},
+        {input: 'BB337 7122', allowedOutputs: ['1']},
+        {input: 'test11@test', allowedOutputs: ['@']}
       ],
       buggyOutputTests: [],
       performanceTests: [{
         inputDataAtom: 'meow ',
         transformationFunctionName: 'System.extendString',
         expectedPerformance: 'linear',
-        evaluationFunctionName: 'reverseWords'
+        evaluationFunctionName: 'find1stNonRepeatedChar'
       }]
     }
   ],
@@ -100,7 +94,7 @@ globalData.questions['findChar'] = {
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in a reverseWords function. While ',
+      'You should only be writing code in a find1stNonRepeatedChar function. While ',
       'decomposition is generally a good idea, you shouldn\'t need more than ',
       'just this function for this question.'
     ].join('')
