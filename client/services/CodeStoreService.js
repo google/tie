@@ -15,47 +15,47 @@
 /*
  * @fileoverview Service that store code to localStorage
  */
-
-tie.factory('CodeStoreService', [
-  function(codeSnapShot) {
-    var codeStoreService = this;
-
-     var getSavedObjFromLocalStorage = function(questionId){
-      try{
+tie.factory('CodeStoreService', ['DEFAULT_AUTO_SAVE_SECONDS',
+  function(DEFAULT_AUTO_SAVE_SECONDS) {
+    var codeStoreService = {};
+    var SECONDS_TO_MILLISECONDS = 1000;
+    var getObjFromLocalStorage = function(questionId) {
+      try {
         return JSON.parse(localStorage.getItem(questionId));
-      }catch(e){
-        console.log(e);
+      } catch (e) {
         return null;
       }
-    }
+    };
 
-    codeStoreService.saveCode = function(questionId, code, language){
-      var savedLanguageCodes = getSavedObjFromLocalStorage(localStorage.getItem(questionId));
-      if(savedLanguageCodes == null){
+    codeStoreService.saveCode = function(questionId, code, language) {
+      var savedLanguageCodes = getObjFromLocalStorage(
+        localStorage.getItem(questionId));
+      if (savedLanguageCodes === null) {
         savedLanguageCodes = {};
       }
       savedLanguageCodes[language] = code;
       localStorage.setItem(questionId, JSON.stringify(savedLanguageCodes));
-      console.log("Code: [" + savedLanguageCodes[language] + "] saved for question id: " + questionId + ", and language: " + language);
     };
-    codeStoreService.autoSaveCodeWithGivenInterval = function(questionId, code, language, intervalInMS){
-      setInterval(function(){
-          codeStoreService.saveCode(questionId, code);
-        }, intervalInMS);
+    codeStoreService.autoSaveCodeWithGivenInterval = function(
+      questionId, code, language, intervalInSeconds) {
+      setInterval(function() {
+        codeStoreService.saveCode(questionId, code);
+      }, intervalInSeconds * SECONDS_TO_MILLISECONDS);
     };
-    codeStoreService.autoSaveCodeWithDefaultInterval2S = function(questionId, code, language){
-       codeStoreService.autoSaveCodeWithGivenInterval(questionId, code, 2000);
-    }
-    codeStoreService.loadSavedCode = function(questionId, language){
-      console.log("questionId: " + questionId + ", language: " + language);
-      var savedLanguageCodes = getSavedObjFromLocalStorage(questionId);
-      if(savedLanguageCodes == null){
-        console.log("savedLanguageCodes is null");
+    codeStoreService.autoSaveCodeWithDefaultInterval2S = function(
+      questionId, code, language) {
+      codeStoreService.autoSaveCodeWithGivenInterval(
+        questionId, code, language, 
+        DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+    };
+    codeStoreService.loadSavedCode = function(questionId, language) {
+      var savedLanguageCodes = getObjFromLocalStorage(questionId);
+      if (savedLanguageCodes === null) {
         return null;
-      }else{
+      } else {
         return savedLanguageCodes[language];
       }
-    }
+    };
     return codeStoreService;
   }
 ]);
