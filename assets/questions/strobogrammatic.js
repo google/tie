@@ -39,11 +39,11 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions:[[
-        'Implement a function which takes a number N as input and generate a list of ',
-        'numbers which has length N and has rotational symmetry ',
-        'For example, for length 2 , we have [11, 69, 88, 96] '
-        ].join('')
+    instructions: [[ 
+      'Implement a function which takes a number N as input and generate a list of ',
+      'numbers which has length N and has rotational symmetry ',
+      'For example, for length 2 , we have [11, 69, 88, 96] '
+    ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -52,18 +52,18 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'strobogrammatic',
     correctnessTests: [{
       input: '2',
-      allowedOutputs: [["11","69", "88", "96"]]
+      allowedOutputs: [["11", "69", "88", "96"]]
     }, {
       input: '1',
-      allowedOutputs: [['0','1','8']]
+      allowedOutputs: [['0', '1', '8']]
     }, {
       input: '3',
-      allowedOutputs: [['101','111','181','609','619','689','808','818','906','916','986']]
+      allowedOutputs: [['101', '111', '181', '609', '619', '689', '808', '818', '906', '916', '986']]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.firstDigitZero',
       messages: [
-        "You seem forget 0 is also number with rotational symmetry.",
+        "You seem forget 0 is also number with rotational symmetry."
       ]
     },
     {
