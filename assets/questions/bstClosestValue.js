@@ -59,13 +59,16 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
     ],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recurssion'],
-    inputFunctionName: 'AuxiliaryCode.deserialize',
+    inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
     correctnessTests: [{
     	input: '2 1 3',
     	allowedOutputs: ['1']
-    }]
-  }]
+    }],
+    buggyOutputTests: [],
+    performanceTests: []
+  }],
+  styleTests: []
 };
 
