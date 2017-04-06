@@ -1,9 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Running hook from new directory"
+
 echo "Running linter tests"
-sh scripts/run_linter.sh
+lines=$(sh scripts/run_linter.sh | wc -l)
+if [ $lines -eq 1 ]; then
+    echo "Linter tests passed"
+else
+    echo "Linter tests failed"
+    exit 1
+fi
+
 echo "Running karma tests"
-sh scripts/run_karma_tests.sh
+#sh scripts/run_karma_tests.sh
 
 exit 0
