@@ -16,7 +16,7 @@
  * @fileoverview Question data for Most Common Character.
  */
 
-globalData.questions['common'] = {  // eslint-disable-line dot-notation
+globalData.questions['mostCommonChar'] = {  // eslint-disable-line dot-notation
   title: 'Most Common Character',
   starterCode: {
     python:
@@ -38,17 +38,6 @@ class AuxiliaryCode(object):
       for w in counter:
         if counter[w] > counter[result]: result = w
       return w
-
-    @classmethod
-    def lowercaseOnly(cls, word):
-      if word == "":
-        return ""
-      word = [w for w in word if w.islower()]
-      counter = Counter(word)
-      result = word[0]
-      for w in counter:
-        if counter[w] > counter[result]: result = w
-      return w
 `
   },
   tasks: [{
@@ -59,10 +48,7 @@ class AuxiliaryCode(object):
         'of ASCII characters, and you may assume that there',
         ' is only one most common character, for now.'
       ].join(''),
-      [
-        "There's no need to validate that you're always passed a string",
-        "you don't have to take care of integrity check."
-      ].join('')
+      "There's no need to validate that you're always passed a string"
     ],
     prerequisiteSkills: ['String', 'String Manipulation', 'Array'],
     acquiredSkills: ['String Manipulation'],
@@ -83,38 +69,11 @@ class AuxiliaryCode(object):
       allowedOutputs: ['b']
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.lowercaseOnly',
-      messages: [
-        'Did you consider lowercase letters only?'
-      ]
-    },
-    {
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
         'Did you consider alphabetic characters only?'
       ]
     }],
-    performanceTests: []
-  }, {
-    instructions: [
-      'What if only 6 characters or less can possibly occur in the string?'
-    ],
-    prerequisiteSkills: ['Strings', 'String Manipulation', 'Hash Maps'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunctionName: null,
-    outputFunctionName: null,
-    mainFunctionName: 'findMostCommonChar',
-    correctnessTests: [{
-      input: 'aba',
-      allowedOutputs: ['a']
-    }, {
-      input: 'baa',
-      allowedOutputs: ['a']
-    }, {
-      input: 'ababa',
-      allowedOutputs: ['a']
-    }],
-    buggyOutputTests: [],
     performanceTests: []
   }, {
     instructions: [
