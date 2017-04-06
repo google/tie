@@ -119,27 +119,27 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
       messages: [["Try to run your code on ['e', '', 'x', 'e']. ",
-      "Is the result match what you expected? "
+        "Is the result match what you expected? "
       ].join(''),
-      [
-        "You seem to be ignoring walls in your solution, which is incorrect.",
-        "If a bomb is placed, the resulting explosion should only go until it reaches a wall.",
-      ].join('')
+        [
+          "You seem to be ignoring walls in your solution, which is incorrect.",
+          "If a bomb is placed, the resulting explosion should only go until it reaches a wall."
+        ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
       messages: [["Try to run your code on ['e', 'x', '', 'x', 'e']. ",
-      "Is the result match what you expected?"
+        "Is the result match what you expected?"
       ].join(''),
-      [
-        "You seemed to be returning all the enemies on the board. ",
-        "Your bomb can only kill enemies in the same row and column. ",
-      ].join('')
+        [
+          "You seemed to be returning all the enemies on the board. ",
+          "Your bomb can only kill enemies in the same row and column. "
+        ].join('')
       ]
     }],
-    //No performance test here. Since the desired runtime complexity is O(N^2),
-    //which is not currently supported.
+    // No performance test here. Since the desired runtime complexity is O(N^2),
+    // which is not currently supported.
     performanceTests: []
   }],
   styleTests: []
