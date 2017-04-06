@@ -13,8 +13,7 @@
 // limitations under the License.
 
 /*
- * @fileoverview A service that saves student code to the 
-    browser's localStorage.
+ * A service that saves student code to the browser's localStorage.
  */
 tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
   function(DEFAULT_AUTO_SAVE_SECONDS) {
