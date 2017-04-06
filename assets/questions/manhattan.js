@@ -49,7 +49,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
         'The input is a N x 2 int list indicating the coordinates of the people in a 2D grid. ',
         'Your function should return a 1D list indicating the best meeting point for N people. ',
         'For instance, the best meeting point for 3 people at [0, 0], [4, 2], [2, 4] is [2, 2].'
-      ].join(''),
+      ].join('')
     ],
     prerequisiteSkills: ['Math', 'Sort'],
     acquiredSkills: ['Math', 'Sort'],
@@ -57,8 +57,6 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
     outputFunctionName: null,
     mainFunctionName: 'manhattan',
     correctnessTests:[{
-      // input: [['0', '0'], ['4', '2'], ['2', '4']],
-      // allowedOutputs: [['2', '2']]
       input: [[0, 0], [4, 2], [2, 4]],
       allowedOutputs: [[2, 2]]
     }, {
@@ -70,31 +68,31 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [],
     performanceTests: []
+  }, {
+    instructions: [
+      [
+        'Can you find all possible best meeing points? ',
+        '(Return List[List[int]] with function manhattan)'
+      ].join('')
+    ],
+    prerequisiteSkills: ['Math', 'Sort'],
+    acquiredSkills: ['Math', 'Sort'],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'manhattan',
+    correctnessTests:[{
+      input: [[0, 0], [4, 2], [2, 4]],
+      allowedOutputs: [[[2, 2]]]
+    }, {
+      input: [[0, 0], [5, 6], [4, 5], [8, 9]],
+      allowedOutputs: [[[4, 5], [4, 6], [5, 5], [5, 6]]]
+    }, {
+      input: [],
+      allowedOutputs: []
+    }],
+    buggyOutputTests: [],
+    performanceTests: []
   }],
-  // {
-  //  insturctions: [
-  //    'Can you find the best meeting point in linear time?'
-  //  ],
-  //  prerequisiteSkills: ['Math', 'Sort'],
-  //  acquiredSkills: ['Math', 'Sort'],
-  //  inputFunctionName: null,
-  //  outputFunctionName: null,
-  //  mainFunctionName: 'manhattan',
-  //  correctnessTests:[{
-  //    input: [[0, 0], [4, 2], [2, 4]],
-  //    allowedOutputs: [[2, 2]]
-  //  }, {
-  //    input: [[0, 0], [4, 2], [2, 4], [3, 1]],
-  //    allowedOutputs: [[2, 1], [2, 2], [3, 2]]
-  //  }],
-  //  buggyOutputTests: [],
-  //  performanceTests: [{
-  //    inputDataAtom: [[0, 0]],
-  //    transformationFunctionName: 'System.extendString',
-  //    expectedPerformance: 'linear',
-  //    evaluationFunctionName: 'manhattan'
-  //  }]
-  //}],
   styleTests: [{
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
