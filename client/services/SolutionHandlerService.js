@@ -52,7 +52,6 @@ tie.factory('SolutionHandlerService', [
             task.getMainFunctionName(), task.getOutputFunctionName(),
             task.getCorrectnessTests(), task.getBuggyOutputTests(),
             task.getPerformanceTests());
-
           return CodeRunnerDispatcherService.runCodeAsync(
             language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {

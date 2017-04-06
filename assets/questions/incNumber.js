@@ -35,28 +35,30 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     def createDigits(cls, atom, input_size):
         result = []
         for i in xrange(input_size):
-          result.append(atom)
+          result.append(int(atom))
         return result
 
     @classmethod
     def incrementLastDigitOnly(cls, digits):
-        digits[-1] += 1
-        return digits
+        digits_input = [x for x in digits]
+        digits_input[-1] += 1
+        return digits_input
 
     @classmethod
     def incrementWithoutChangeSize(cls, digits):
-        digits[-1] = (digits[-1] + 1) % 10
+        digits_input = [x for x in digits]
+        digits_input[-1] = (digits_input[-1] + 1) % 10
         carry = False
-        if digits[-1] == 0:
+        if digits_input[-1] == 0:
             carry = True
-        for i in xrange(len(digits)-2, -1, -1):
+        for i in xrange(len(digits_input)-2, -1, -1):
             if carry == False:
                 break
-            digits[i] = (digits[-1] + 1) % 10
-            if digits[-1] != 0:
+            digits_input[i] = (digits_input[i] + 1) % 10
+            if digits_input[i] != 0:
                 carry = False
 
-        return digits
+        return digits_input
 `
   },
   tasks: [{
@@ -86,14 +88,8 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       input: [0], 
       allowedOutputs: [[1]]
     }, {
-      input: [9], 
-      allowedOutputs: [[1, 0]]
-    }, {
       input: [1, 9, 9], 
       allowedOutputs: [[2, 0, 0]]
-    }, {
-      input: [9, 9, 9, 9], 
-      allowedOutputs: [[1, 0, 0, 0, 0]]
     }], 
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',
@@ -151,7 +147,7 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       ]
     }],
     performanceTests: [{
-      inputDataAtom: 9,
+      inputDataAtom: '9',
       transformationFunctionName: 'AuxiliaryCode.createDigits',
       expectedPerformance: 'linear',
       evaluationFunctionName: 'incrementDecCodedNumber'
