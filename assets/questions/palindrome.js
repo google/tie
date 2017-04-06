@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Valid Palindrome.
+ * @fileoverview Question data for Balanced Palindrome.
  */
 
 globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
@@ -42,17 +42,24 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         return ret
 
     @classmethod
-    def countNumberOfChar(cls, s):
+    def countNumberOfCharacters(cls, s):
         ascii_codes = {i:0 for i in range(255)}
         for chr in s:
             ascii_codes[ord(chr)] += 1
+
+        odd_cnt = 0
         for code in ascii_codes:
             if ascii_codes[code] % 2 is not 0:
-                return False
-        return True
+                odd_cnt += 1
+
+        if len(s) % 2 == 0 and odd_cnt == 0:
+            return True
+        elif len(s) % 2 == 1 and odd_cnt == 1:
+            return True
+        return False
 
     @classmethod
-    def forgetIgnoreSpace(cls, s):
+    def forgetToIgnoreSpace(cls, s):
         for i in range(len(s)/2):
             if s[i] is not s[-i-1]:
                 return False
@@ -67,12 +74,12 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         'palindrome and False if it is not.'
       ].join(''),
       [
-        'A palindrom is a word, phrase, or sequence that reads the same ',
+        'A palindrome is a word, phrase, or sequence that reads the same ',
         'backward as forward, e.g., \'madam\' or \'nurses run\'.'
       ].join(''),
-      'Note, the input string would only consist of alphabets from a-z and space.'
+      'Note that the input string will consist of lowercase letters (a-z) and spaces.'
     ],
-    prerequisiteSkills: ['Strings', 'String Manipulation'],
+    prerequisiteSkills: ['String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -106,30 +113,30 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
       allowedOutputs: [true]
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.countNumberOfChar',
+      buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',
       messages: [
         "Try running your code on 'abab' on paper. Did you expet that result?",
         [
-          'Are you sure the sentence is actually palindrom? \'abba\' is palindrom, ',
-          'but \'abab\' is not.'
+          'Are you sure the input string is palindrome? \'abab\', for instance, is not.'
         ].join(''),
         [
-          "It looks like you're counting the number of character of the input string, ",
-          "and if you have the even number of each kind, returning true. That's not ",
-          "quite correct. See if you can figure out why."
+          "number of characters in the input string and returning true if ",
+          "there are an even number of each. With strings like 'abab', however, ",
+          "this approach doesn't work. Try to update your code to avoid just ",
+          "counting the characters."
         ].join('')
       ]
     }, {
-      buggyFunctionName: 'AuxiliaryCode.forgetIgnoreSpace',
+      buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpace',
       messages: [
         "Try running your code on 'nurses run' on paper. Did you expect that result?",
         [
-          'Try harder for cases with spaces. \'nurses run\' is palindrom, ',
-          'and \'a b   cba\' is also a palindrom'
+          'What happens if your input string contains spaces?'
         ].join(''),
         [
-          'It looks like you does not ignore spaces in the sentence. By definition, spaces ',
-          'are usually ignored. See if you can change some of your code to make it pass.'
+          'It looks like you\'re not ignoring spaces in the input string. ',
+          'Try to update your code to skip over spaces when determining if ',
+          'a string is a palindrome'
         ].join('')
       ]
     }],
