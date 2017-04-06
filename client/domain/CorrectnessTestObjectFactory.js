@@ -17,6 +17,7 @@
  * domain objects.
  */
 
+
 tie.factory('CorrectnessTestObjectFactory', [
   function() {
     var CorrectnessTest = function(correctnessTestDict) {
@@ -31,6 +32,11 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
+      if (Array.isArray(this._allowedOutputs)) {
+        var searchJson = JSON.stringify(output);
+        var arrJson = this._allowedOutputs.map(JSON.stringify);
+        return arrJson.indexOf(searchJson) !== -1;
+      }
       return this._allowedOutputs.indexOf(output) !== -1;
     };
 
