@@ -380,12 +380,8 @@ tie.directive('learnerView', [function() {
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
           $scope.code = 
-<<<<<<< HEAD
             storedCode === null ? 
               question.getStarterCode(language) : storedCode;
-=======
-            savedCode === null ? question.getStarterCode(language) : savedCode;
->>>>>>> 5c69a5a49f581c8129e2985411eb3affe9a5a517
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -500,11 +496,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
-<<<<<<< HEAD
           CodeStorageService.storeCode(
-=======
-          CodeStoreService.saveCode(
->>>>>>> 5c69a5a49f581c8129e2985411eb3affe9a5a517
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
