@@ -5,7 +5,6 @@ exports.config = {
   capabilities: {
     browserName: 'chrome'
   },
-  seleniumAddress: 'http://localhost:4444/wd/hub',
   specs: ['testing/page-loading-spec.js'],
   baseUrl: 'file://' + __dirname,
   onPrepare: function() {
