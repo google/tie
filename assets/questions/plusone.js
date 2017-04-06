@@ -27,7 +27,9 @@ globalData.questions['plusone'] = {  // eslint-disable-line dot-notation
   auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
-    pass
+    @classmethod
+    def foo(cls, array):
+        return none
 `
   },
   tasks: [{
