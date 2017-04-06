@@ -59,16 +59,16 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '((()))',
-      allowedOutputs: [true]
+      allowedOutputs: [["1", "2"]]
     }, {
       input: '()()()()()()(()',
-      allowedOutputs: [false]
+      allowedOutputs: [["True", "True"]]
     }, {
       input: '))))))((((((',
-      allowedOutputs: [false]
+      allowedOutputs: [["True", "True", "True"]]
     }, {
       input: '()()()()()()()())(',
-      allowedOutputs: [false]
+      allowedOutputs: [["True", "True", "True", "True"]]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfParentheses',
