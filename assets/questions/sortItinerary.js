@@ -42,8 +42,8 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         '"XXX-YYY". This substring represents a ticket and means the plane ',
         'departs from XXX and arrives at YYY, noticing that departure and ',
         'destinations are not necessarily of length 3. ',
-        'For example, "LAX-JFK,JFK-ATL" means it has two flights: one from ',
-        'LAX to JFK and the other from JFK to ATL. ',
+        'As an example, "LAX-JFK,JFK-ATL" means the itinerary has two flights',
+        ': one from LAX to JFK and the other from JFK to ATL. ',
       ].join(''),
       [
         'The function needs to return a string of the sorted itinerary. ',
