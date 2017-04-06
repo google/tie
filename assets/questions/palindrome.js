@@ -63,12 +63,14 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'For this question, you will implement the isPalindrom function. ',
-        'It takes a word as input and return True if the input word is a ',
-        'palindrome and False if it is not. A palindrom is a word, phrase, ',
-        'or sequence that reads the same backward as forward, e.g., \'madam\' ',
-        'or \'nurses run\'. Note, the input string would only consist by ',
-        'alphabets from a-z and space.'
-      ].join('')
+        'It takes a sentense as input and return True if the input is a ',
+        'palindrome and False if it is not.'
+      ].join(''),
+      [
+        'A palindrom is a word, phrase, or sequence that reads the same ',
+        'backward as forward, e.g., \'madam\' or \'nurses run\'.'
+      ].join(''),
+      'Note, the input string would only consist of alphabets from a-z and space.'
     ],
     prerequisiteSkills: ['Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
