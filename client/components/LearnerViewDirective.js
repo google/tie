@@ -379,9 +379,8 @@ tie.directive('learnerView', [function() {
           var storedCode = 
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = 
-            storedCode === null ? 
-              question.getStarterCode(language) : storedCode;
+          $scope.code = storedCode ? 
+              storedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
