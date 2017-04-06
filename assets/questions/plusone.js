@@ -20,16 +20,14 @@ globalData.questions['plusone'] = {  // eslint-disable-line dot-notation
   title: 'Increment a decimal-coded number',
   starterCode: {
     python:
-`def increment(array):
+`def increment(s):
     return '0'
 `
   },
   auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
-    @classmethod
-    def foo(cls, array):
-        return none
+    pass
 `
   },
   tasks: [{
