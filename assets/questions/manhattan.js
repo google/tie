@@ -39,7 +39,8 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
         'N people live in a city with streets that form a regular 2D grid. ',
         'They start out at different intersections and want to meet up. ',
         'They are only able to move along the roads (no crossing blocks diagonally etc.). ',
-        'Find the meeting place that minimizes the total travel distance.'
+        'Find the meeting place that minimizes the total travel distance. ',
+        'Write a function manhattan(people) that returns a meeting place that minimizes the total travel distance.'
       ].join(''),
       [
         'The input is a str list indicating the coordinates of the people in a 2D grid. ',
