@@ -478,18 +478,20 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               var index = 0;
-              fn = function() {
-              SolutionHandlerService.processSolutionAsync(
+              var fn = function() {
+                SolutionHandlerService.processSolutionAsync(
                 tasks[index], code,
                 question.getAuxiliaryCode(language), language
                 ).then(function(feedback) {
-                if (index == currentTaskIndex || !feedback.isAnswerCorrect()) {
-                  setFeedback(feedback);
-                } else {
-                  index += 1;
-                  fn();
-                }
-              })};
+                  if (index === currentTaskIndex ||
+                      !feedback.isAnswerCorrect()) {
+                    setFeedback(feedback);
+                  } else {
+                    index += 1;
+                    fn();
+                  }
+                });
+              };
               fn();
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
