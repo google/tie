@@ -13,42 +13,44 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Reverse Words.
+ * @fileoverview Question data for finding the First Non-Repeating Character in a String.
  */
 
 globalData.questions['findChar'] = { // eslint-disable-line dot-notation
-  title: 'Find the first character in a string that doesn\'t repeat',
+  title: 'Find the First Non-Repeating Character in a String',
   starterCode: {
-    python: `def find1stNonRepeatedChar(word):
+    python: `def findFirstNonRepeatingCharacter(word):
     return ""
 `
   },
   auxiliaryCode: {
     python: `class AuxiliaryCode(object):
     @classmethod
-    def sortChar(cls, word):
+    def sortCharactersInString(cls, word):
         sortedStr = ''.join(sorted(word))        
-        c = [a for a in sortedStr if sortedStr.count(a) == 1]
-        if not c:
+        uniqueChar = [a for a in sortedStr if sortedStr.count(a) == 1]
+        if not uniqueChar:
             return None
         else:
-            return c[0]
+            return uniqueChar[0]
 `
   },
   tasks: [
     {
       instructions: [
         [
-          'For this question, you\'ll implement the find1stNonRepeatedChar function. ',
-          'Write a function to find the first character in a String that doesn\'t repeat.'
+          'For this question, you will implement a findFirstNonRepeatingCharacter function. ',
+          'This function takes a string as input and returns the first character that isn\'t repeated elsewhere in the string.'
+
         ].join(''),
-        'For instance, \'mom\' would output \'o\'.'
+        'For instance, findFirstNonRepeatingCharacter(\"mom\") would return \"o\".',
+        'If there is no appropriate character, please return None.'
       ],
-      prerequisiteSkills: ['Strings', 'String Manipulation'],
-      acquiredSkills: ['String Manipulation'],
+      prerequisiteSkills: ['Strings'],
+      acquiredSkills: ['String Manipulation', 'Hash Maps'],
       inputFunctionName: null,
       outputFunctionName: null,
-      mainFunctionName: 'find1stNonRepeatedChar',
+      mainFunctionName: 'findFirstNonRepeatingCharacter',
       correctnessTests: [
         {input: 'mom', 
           allowedOutputs: ['o']},
@@ -64,11 +66,11 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
           allowedOutputs: [null]}
       ],
       buggyOutputTests: [{
-        buggyFunctionName: 'AuxiliaryCode.sortChar',
+        buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
         messages: [[
           'Try running your code on \'wefffa\' on paper. What\'s the result?   ',
           'Are you sure that you\'re returning the first non-repeating character in the word?   ',
-          'It looks like you\'re returning the character that is unique but not the first one in the given string.'
+          'It looks like you\'re returning a unique character, but you\'re not returning the first one in the provided string.'
         ].join('')]
       }],
       performanceTests: []
@@ -82,7 +84,7 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
       acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
       inputFunctionName: null,
       outputFunctionName: null,
-      mainFunctionName: 'find1stNonRepeatedChar',
+      mainFunctionName: 'findFirstNonRepeatingCharacter',
       correctnessTests: [
         {input: 'TT AsAs', 
           allowedOutputs: [' ']},
@@ -95,10 +97,10 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
       ],
       buggyOutputTests: [],
       performanceTests: [{
-        inputDataAtom: 'meow ',
+        inputDataAtom: 'meow',
         transformationFunctionName: 'System.extendString',
         expectedPerformance: 'linear',
-        evaluationFunctionName: 'find1stNonRepeatedChar'
+        evaluationFunctionName: 'findFirstNonRepeatingCharacter'
       }]
     }
   ],
