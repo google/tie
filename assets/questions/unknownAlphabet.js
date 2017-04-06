@@ -16,93 +16,90 @@
  * @fileoverview Question data for Alien language alphabet.
  */
 
-globalData.questions['aad'] = {  // eslint-disable-line dot-notation
+globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
   title: 'Alien Language Alphabet',
   starterCode: {
     python:
-`def find_dict(words):
-    return ""
-`
+`def findDictionary(words):
+    return ""`
   },
   auxiliaryCode: {
     python:
 `
 class AuxiliaryCode(object):
-    @classmethod
-    def wrongInNoSolution(cls, words):
-      e = {}
-      deg = {}
-  
-      for str in words:
-          for ch in str:
-              ch = ch.lower()
-              if(not e.has_key(ch)):
-                  e[ch] = []
-                  deg[ch] = 0
-  
-      for i in range(len(words) - 1):
-          for j in range(min(len(words[i]), len(words[i + 1]))):
-              be = words[i][j].lower()
-              to = words[i + 1][j].lower()
-              if(be != to):
-                  e[be].append(to)
-                  deg[to] = deg[to] + 1
-                  break
-  
-      ans = ""
-  
-      while True :
-          flag = False
-          for key in deg:
-              if deg[key] == 0 :
-                  flag = True
-                  ans = ans + key;
-                  for it in e[key]:
-                      deg[it] = deg[it] - 1
-                  del deg[key]
-          if (not flag):
-              break;
-  
-      return ans
-      
-    @classmethod
-    def wrongInUppercase(cls, words):
-      e = {}
-      deg = {}
-  
-      for str in words:
-          for ch in str:
-              if(not e.has_key(ch)):
-                  e[ch] = []
-                  deg[ch] = 0
-  
-      for i in range(len(words) - 1):
-          for j in range(min(len(words[i]), len(words[i + 1]))):
-              be = words[i][j]
-              to = words[i + 1][j]
-              if(be != to):
-                  e[be].append(to)
-                  deg[to] = deg[to] + 1
-                  break
-  
-      ans = ""
-  
-      while True :
-          flag = False
-          for key in deg:
-              if deg[key] == 0 :
-                  flag = True
-                  ans = ans + key;
-                  for it in e[key]:
-                      deg[it] = deg[it] - 1
-                  del deg[key]
-          if (not flag):
-              break;
-      
-      if(not (len(deg) == 0)) :
-          return ""
-  
-      return ans
+  @classmethod
+  def wrongInNoSolution(cls, words):
+    #  e stores the edges that need to build for the alphabet graph
+    #  e[ch] is a list of letters for letter ch whose ranks are bigger than
+    #  ch's rank.
+    #  degree stores the degree of each letter.
+    #  For each letter ch, there're degree[ch] letters has an edge goes to ch
+    edges = {}
+    degree = {}
+    for word in words:
+      for ch in word:
+        ch = ch.lower()
+        if(not edges.has_key(ch)):
+          edges[ch] = []
+          degree[ch] = 0
+    for wordIndex in range(len(words) - 1):
+      for letterIndex in range(min(len(words[wordIndex]), len(words[wordIndex + 1]))):
+        letterOne = words[wordIndex][letterIndex].lower()
+        letterTwo = words[wordIndex + 1][letterIndex].lower()
+        if(letterOne != letterTwo):
+          edges[letterOne].append(letterTwo)
+          degree[letterTwo] = degree[letterTwo] + 1
+          break
+    answer  = ""
+    hasZeroDegreeLetter = True
+    while hasZeroDegreeLetter :
+      hasZeroDegreeLetter = False
+      for key in degree:
+        if (0 == degree[key]):
+          hasZeroDegreeLetter = True
+          answer = answer + key
+          for nextLetter in edges[key]:
+            degree[nextLetter] = degree[nextLetter] - 1
+          del degree[key]
+      if (not hasZeroDegreeLetter):
+        break
+    return answer
+    
+    
+  @classmethod
+  def wrongInUppercase(cls, words):
+    edges = {}
+    degree = {}
+    for word in words:
+      for ch in word:
+        ch = ch
+        if(not edges.has_key(ch)):
+          edges[ch] = []
+          degree[ch] = 0
+    for wordIndex in range(len(words) - 1):
+      for letterIndex in range(min(len(words[wordIndex]), len(words[wordIndex + 1]))):
+        letterOne = words[wordIndex][letterIndex]
+        letterTwo = words[wordIndex + 1][letterIndex]
+        if(letterOne != letterTwo):
+          edges[letterOne].append(letterTwo)
+          degree[letterTwo] = degree[letterTwo] + 1
+          break
+    answer  = ""
+    hasZeroDegreeLetter = True
+    while hasZeroDegreeLetter :
+      hasZeroDegreeLetter = False
+      for key in degree:
+        if (0 == degree[key]):
+          hasZeroDegreeLetter = True
+          answer = answer + key
+          for nextLetter in edges[key]:
+            degree[nextLetter] = degree[nextLetter] - 1
+          del degree[key]
+      if (not hasZeroDegreeLetter):
+        break
+    if (not (len(degree) == 0)):
+      return ""
+    return answer
 `
  
   },
@@ -110,18 +107,18 @@ class AuxiliaryCode(object):
     instructions: [
       [
         'Given a dictionary (a list of words in lexicographic order) of all',
-        'words in an unknown/invented language, find the alphabet (an ordered ',
-        'list of characters) of that language. '
+        'words in an unknown/invented language, write a function findDictonary ',
+        'that returns the alphabet (an ordered list of characters) of that language. '
       ].join(''),
       'Example dictionary:',
       '[art, rat, cat, car]',
       'Alphabet is: "atrc"'
     ],
-    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
+    prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'find_dict',
+    mainFunctionName: 'findDictionary',
     correctnessTests: [{
       input: [
         "a",
@@ -223,15 +220,20 @@ class AuxiliaryCode(object):
       ].join(''),
       [
         'For the test case that has no solution, just return "". For the test ',
-        'case that has multi-answers, return the answer has the smallest ',
+        'case that has multiple answers, return the answer has the smallest ',
         'lexicographic order in English alphabet.'
-      ].join('')
+      ].join(''),
+      'Example dictionary:',
+      '[a, b, a]',
+      'Alphabet is: ""',
+      '[cba]',
+      'Alphabet is: "abc"'
     ],
-    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
+    prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'find_dict',
+    mainFunctionName: 'findDictionary',
     correctnessTests: [{
       input: [
         "a",
@@ -258,7 +260,12 @@ class AuxiliaryCode(object):
       buggyFunctionName: 'AuxiliaryCode.wrongInNoSolution',
       messages: [
         [
-          'You may try this case : ["c", "a", "b", "a"]'
+          'What if the test case is ["c", "a", "b", "a"]?',
+          'And what answer your code will generate for this test case?'
+        ].join(''),
+        [
+          'The answer to that case should be a empty string. But what your code',
+          ' have returned?'
         ].join('')
       ]
     }],
@@ -266,16 +273,20 @@ class AuxiliaryCode(object):
   }, {
     instructions: [
       [
-        'Last, Let\'s fix the solution to adapt lowercase and uppercase. We ',
-        'take the lowercase and uppercase of the same letter with equal ',
-        'lexicographic order. And then return the answer in lowercase'
-      ].join('')
+        'Finally, modify your code to handle strings with a mix of lowercase ',
+        'and uppercase letters. Assume that a lowercase and uppercase version ',
+        'of a letter is the same with regards to lexicographic ordering. Your ',
+        'answer, though, should be lowercase.'
+      ].join(''),
+      'Example dictionary:',
+      '[b, Ba]',
+      'Alphabet is: "ab"'
     ],
-    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
+    prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'find_dict',
+    mainFunctionName: 'findDictionary',
     correctnessTests: [{
       input: [
         "ab",
@@ -288,10 +299,11 @@ class AuxiliaryCode(object):
       buggyFunctionName: 'AuxiliaryCode.wrongInUppercase',
       messages: [
         [
-          'You may try this case : ["a", "Ab", "b"]'
+          'Think about this test case in your head: ["a", "Ab", "b"]'
         ].join(''),
         [
-          'The answer to the test case ["a", "Ab", "b"] should be "ab".'
+          'The answer to the test case ["a", "Ab", "b"] should be "ab". Did ',
+          'your code return the string with some letters in uppercase?'
         ].join('')
       ]
     }],
@@ -301,7 +313,7 @@ class AuxiliaryCode(object):
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in an encode function. While ',
+      'You should only be writing code in an findDictionary function. While ',
       "decomposition is generally a good idea, you shouldn't need more than ",
       'just this function for this question.'
     ].join('')
