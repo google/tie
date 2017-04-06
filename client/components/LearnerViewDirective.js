@@ -474,7 +474,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          // Store the current code every time the code is run
+          // Store the current code every time the code is submitted.
           localStorage.setItem("question_code_" + $scope.currentQuestionIndex, code);
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
