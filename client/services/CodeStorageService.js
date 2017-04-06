@@ -30,7 +30,7 @@ tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
     codeStorageService.storeCode = function(questionId, code, language) {
       var storedCode = getObjFromLocalStorage(
         localStorage.getItem(questionId));
-      if (storedCode === null) {
+      if (!storedCode) {
         storedCode = {};
       }
       storedCode[language] = code;
@@ -49,11 +49,11 @@ tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
         DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
     };
     codeStorageService.loadStoredCode = function(questionId, language) {
-      var loadStoredCode = getObjFromLocalStorage(questionId);
-      if (loadStoredCode === null) {
-        return null;
+      var storedCode = getObjFromLocalStorage(questionId);
+      if (storedCode) {
+        return storedCode[language];
       } else {
-        return loadStoredCode[language];
+        return null;
       }
     };
     return codeStorageService;
