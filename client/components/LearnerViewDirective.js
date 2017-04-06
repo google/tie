@@ -30,7 +30,7 @@ tie.directive('learnerView', [function() {
                   ng-click="navigateToQuestion($index)">
                 <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
                   <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
-                  <span class="tie-step-checkmark, ng-hide", ng-show="questionsCompletionStatus[$index]">&#10003;</span>
+                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
@@ -329,7 +329,7 @@ tie.directive('learnerView', [function() {
           margin-top: auto;
           width: 128px;
         }
-        .tie-step-text, .tie-step-checkmark {
+        .tie-step-checkmark, .tie-step-text {
           font-size: 14px;
           vertical-align: middle;
         }
