@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Run-Length Encoding.
+ * @fileoverview Question data for the longest substring.
  */
 
 globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
