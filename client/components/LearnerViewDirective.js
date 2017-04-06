@@ -29,7 +29,8 @@ tie.directive('learnerView', [function() {
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
                 <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                  <span class="tie-step-text">{{$index + 1}}</span>
+                  <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
+                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
@@ -59,10 +60,9 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror="codeMirrorOptions"
+                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                       ng-model="code"
-                      class="tie-codemirror-container">
-                  </ui-codemirror>
+                      class="tie-codemirror-container"></ui-codemirror>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
@@ -329,7 +329,7 @@ tie.directive('learnerView', [function() {
           margin-top: auto;
           width: 128px;
         }
-        .tie-step-text {
+        .tie-step-checkmark, .tie-step-text {
           font-size: 14px;
           vertical-align: middle;
         }
