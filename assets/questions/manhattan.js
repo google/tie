@@ -22,7 +22,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
   starterCode: {
     python:
 `def manhattan(people):
-    return ''
+    return ""
 `
   },
   auxiliaryCode: {
@@ -45,7 +45,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
         'The input is a str list indicating the coordinates of the people in a 2D grid. ',
         'Your function should return a str indicating the best meeting point for N people. ',
         'For instance, the best meeting point for 3 people at ',
-        '\'0, 0\', \'4, 2\', \'2, 4\' is \'2, 2\'.'
+        '\"0, 0\", \"4, 2\", \"2, 4\" is \"2, 2\".'
       ].join('')
     ],
     prerequisiteSkills: ['Math', 'Sort'],
@@ -64,7 +64,12 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['']
     }],
     buggyOutputTests: [],
-    performanceTests: []
+    performanceTests: [{
+      inputDataAtom: ['0, 0'],
+      transformationFunctionName: 'System.extendString',
+      expectedPerformance: 'linear',
+      evaluationFunctionName: 'manhattan'
+    }]
   }, {
     instructions: [
       [
