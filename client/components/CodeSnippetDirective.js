@@ -30,6 +30,7 @@ tie.directive('codeSnippet', [function() {
       <style>
         .tie-code-snippet-line {
           line-height: 24px;
+          word-wrap: break-word;
         }
       </style>
     `,
