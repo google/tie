@@ -45,7 +45,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
         'The input is a str list indicating the coordinates of the people in a 2D grid. ',
         'Your function should return a str indicating the best meeting point for N people. ',
         'For instance, the best meeting point for 3 people at ',
-        '\"0, 0\", \"4, 2\", \"2, 4\" is \"2, 2\".'
+        '"0, 0", "4, 2", "2, 4" is "2, 2".'
       ].join('')
     ],
     prerequisiteSkills: ['Math', 'Sort'],
@@ -53,7 +53,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'manhattan',
-    correctnessTests:[{
+    correctnessTests: [{
       input: ['0, 0', '4, 2', '2, 4'],
       allowedOutputs: ['2, 2']
     }, {
@@ -77,7 +77,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'manhattan',
-    correctnessTests:[{
+    correctnessTests: [{
       input: ['0, 0', '4, 2', '2, 4'],
       allowedOutputs: [['2, 2']]
     }, {
