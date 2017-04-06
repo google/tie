@@ -64,12 +64,7 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['']
     }],
     buggyOutputTests: [],
-    performanceTests: [{
-      inputDataAtom: ['0, 0'],
-      transformationFunctionName: 'System.extendString',
-      expectedPerformance: 'linear',
-      evaluationFunctionName: 'manhattan'
-    }]
+    performanceTests: []
   }, {
     instructions: [
       [
