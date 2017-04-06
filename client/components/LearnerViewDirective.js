@@ -477,10 +477,20 @@ tie.directive('learnerView', [function() {
             feedbackDiv.scrollTop = feedbackDiv.scrollHeight +
               additionalHeightForLoadingIndicator;
             $timeout(function() {
+              var index = 0;
+              fn = function() {
               SolutionHandlerService.processSolutionAsync(
-                tasks[currentTaskIndex], code,
+                tasks[index], code,
                 question.getAuxiliaryCode(language), language
-                ).then(setFeedback);
+                ).then(function(feedback) {
+                if (index == currentTaskIndex || !feedback.isAnswerCorrect()) {
+                  setFeedback(feedback);
+                } else {
+                  index += 1;
+                  fn();
+                }
+              })};
+              fn();
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
         };
