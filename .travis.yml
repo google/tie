@@ -23,4 +23,5 @@ install: true
 script:
 - bash scripts/run_karma_tests.sh --single-run
 - bash scripts/run_linter.sh
+- bash scripts/run_e2e_tests.sh
 sudo: required

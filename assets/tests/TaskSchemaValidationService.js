@@ -159,6 +159,15 @@ tie.factory('TaskSchemaValidationService', [
             }));
         });
       },
+      verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
+        return task.getBuggyOutputTests().every(function(test) {
+          var messages = new Set();
+          test.getMessages().forEach(function(message) {
+            messages.add(message);
+          });
+          return messages.size === test.getMessages().length;
+        });
+      },
       verifyPerformanceTestsAreArray: function(task) {
         var performanceTests = task.getPerformanceTests();
         return angular.isArray(performanceTests);
