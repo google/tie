@@ -16,8 +16,7 @@
  * @fileoverview Question data for Reverse Words.
  */
 
-globalData.questions['findChar'] = {
-  // eslint-disable-line dot-notation
+globalData.questions['findChar'] = { // eslint-disable-line dot-notation
   title: 'Find the first character in a string that doesn\'t repeat',
   starterCode: {
     python: `def find1stNonRepeatedChar(word):
@@ -51,12 +50,18 @@ globalData.questions['findChar'] = {
       outputFunctionName: null,
       mainFunctionName: 'find1stNonRepeatedChar',
       correctnessTests: [
-        {input: 'mom', allowedOutputs: ['o']},
-        {input: 'apple', allowedOutputs: ['a']},
-        {input: 'wefffa', allowedOutputs: ['w']},
-        {input: 'weffwa', allowedOutputs: ['e']},
-        {input: '', allowedOutputs: [null]},
-        {input: 'aaaeee', allowedOutputs: [null]}
+        {input: 'mom', 
+          allowedOutputs: ['o']},
+        {input: 'apple', 
+          allowedOutputs: ['a']},
+        {input: 'wefffa', 
+          allowedOutputs: ['w']},
+        {input: 'weffwa', 
+          allowedOutputs: ['e']},
+        {input: '', 
+          allowedOutputs: [null]},
+        {input: 'aaaeee', 
+          allowedOutputs: [null]}
       ],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.sortChar',
@@ -79,10 +84,14 @@ globalData.questions['findChar'] = {
       outputFunctionName: null,
       mainFunctionName: 'find1stNonRepeatedChar',
       correctnessTests: [
-        {input: 'TT AsAs', allowedOutputs: [' ']},
-        {input: 'AbCABcBb', allowedOutputs: ['C']},
-        {input: 'BB337 7122 ', allowedOutputs: ['1']},
-        {input: 'test11@test', allowedOutputs: ['@']}
+        {input: 'TT AsAs', 
+          allowedOutputs: [' ']},
+        {input: 'AbCABcBb', 
+          allowedOutputs: ['C']},
+        {input: 'BB337 7122 ', 
+          allowedOutputs: ['1']},
+        {input: 'test11@test', 
+          allowedOutputs: ['@']}
       ],
       buggyOutputTests: [],
       performanceTests: [{
