@@ -5,7 +5,7 @@ exports.config = {
   capabilities: {
     browserName: 'chrome'
   },
-  specs: ['testing/page-loading-spec.js'],
+  specs: ['tests/*.js'],
   baseUrl: 'file://' + __dirname,
   onPrepare: function() {
     // By default, Protractor use data:text/html,<html></html> as resetUrl, but 
