@@ -29,8 +29,7 @@ tie.directive('learnerView', [function() {
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
                 <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                  <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
-                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
+                  <span class="tie-step-text">{{$index + 1}}</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
@@ -329,7 +328,7 @@ tie.directive('learnerView', [function() {
           margin-top: auto;
           width: 128px;
         }
-        .tie-step-checkmark, .tie-step-text {
+        .tie-step-text {
           font-size: 14px;
           vertical-align: middle;
         }
@@ -380,6 +379,10 @@ tie.directive('learnerView', [function() {
           currentTaskIndex = 0;
           $scope.title = question.getTitle();
           $scope.code = question.getStarterCode(language);
+          // Check if there is any previously stored code and retrieve it.          
+          if (localStorage.getItem("question_code_" + $scope.currentQuestionIndex)) {
+            $scope.code = localStorage.getItem("question_code_" + $scope.currentQuestionIndex);
+          }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -471,6 +474,8 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
+          // Store the current code every time the code is run
+          localStorage.setItem("question_code_" + $scope.currentQuestionIndex, code);
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
