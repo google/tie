@@ -187,12 +187,13 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateBuggyOutputTestCode = function(
-        buggyOutputTests, outputFunctionName) {
+        buggyOutputTests, inputFunctionName, outputFunctionName) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
-      var testRunCode = 'System.runTest(func, test_input)';
+      var testInputCode = inputFunctionName ? inputFunctionName + '(test_input)' : 'test_input'
+      var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
       var testOutputCode = (
         outputFunctionName ?
         outputFunctionName + '(' + testRunCode + ')' : testRunCode);
@@ -286,7 +287,7 @@ tie.factory('PythonCodePreprocessorService', [
           this._generateCorrectnessTestCode(
             correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName),
           this._generateBuggyOutputTestCode(
-            buggyOutputTests, outputFunctionName),
+            buggyOutputTests, inputFunctionName, outputFunctionName),
           this._generatePerformanceTestCode(performanceTests)
         ].join('\n\n'));
       },
