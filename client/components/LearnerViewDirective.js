@@ -379,9 +379,12 @@ tie.directive('learnerView', [function() {
           currentTaskIndex = 0;
           $scope.title = question.getTitle();
           $scope.code = question.getStarterCode(language);
-          // Check if there is any previously stored code and retrieve it.          
-          if (localStorage.getItem("question_code_" + $scope.currentQuestionIndex)) {
-            $scope.code = localStorage.getItem("question_code_" + $scope.currentQuestionIndex);
+          // Check if there is any previously stored 
+          // code and retrieve it.          
+          if (localStorage.getItem("question_code_" + 
+            $scope.currentQuestionIndex)) {
+            $scope.code = localStorage.getItem("question_code_" + 
+                $scope.currentQuestionIndex);
           }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
@@ -475,7 +478,8 @@ tie.directive('learnerView', [function() {
 
         $scope.submitCode = function(code) {
           // Store the current code every time the code is submitted
-          localStorage.setItem("question_code_" + $scope.currentQuestionIndex, code);
+          localStorage.setItem("question_code_" + 
+            $scope.currentQuestionIndex, code);
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
