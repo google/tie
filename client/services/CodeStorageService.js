@@ -13,11 +13,12 @@
 // limitations under the License.
 
 /*
- * @fileoverview Service that store code to localStorage
+ * @fileoverview A service that saves student code to the 
+    browser's localStorage.
  */
-tie.factory('CodeStoreService', ['DEFAULT_AUTO_SAVE_SECONDS',
+tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
   function(DEFAULT_AUTO_SAVE_SECONDS) {
-    var codeStoreService = {};
+    var codeStorageService = {};
     var SECONDS_TO_MILLISECONDS = 1000;
     var getObjFromLocalStorage = function(questionId) {
       try {
@@ -27,35 +28,35 @@ tie.factory('CodeStoreService', ['DEFAULT_AUTO_SAVE_SECONDS',
       }
     };
 
-    codeStoreService.saveCode = function(questionId, code, language) {
-      var savedLanguageCodes = getObjFromLocalStorage(
+    codeStorageService.storeCode = function(questionId, code, language) {
+      var storedCode = getObjFromLocalStorage(
         localStorage.getItem(questionId));
-      if (savedLanguageCodes === null) {
-        savedLanguageCodes = {};
+      if (storedCode === null) {
+        storedCode = {};
       }
-      savedLanguageCodes[language] = code;
-      localStorage.setItem(questionId, JSON.stringify(savedLanguageCodes));
+      storedCode[language] = code;
+      localStorage.setItem(questionId, JSON.stringify(storedCode));
     };
-    codeStoreService.autoSaveCodeWithGivenInterval = function(
+    codeStorageService.automaticallyStoreCodeOnInterval = function(
       questionId, code, language, intervalInSeconds) {
       setInterval(function() {
-        codeStoreService.saveCode(questionId, code);
+        codeStorageService.saveCode(questionId, code);
       }, intervalInSeconds * SECONDS_TO_MILLISECONDS);
     };
-    codeStoreService.autoSaveCodeWithDefaultInterval2S = function(
+    codeStorageService.automaticallyStoreCode = function(
       questionId, code, language) {
-      codeStoreService.autoSaveCodeWithGivenInterval(
+      codeStorageService.automaticallyStoreCodeOnInterval(
         questionId, code, language, 
         DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
     };
-    codeStoreService.loadSavedCode = function(questionId, language) {
-      var savedLanguageCodes = getObjFromLocalStorage(questionId);
-      if (savedLanguageCodes === null) {
+    codeStorageService.loadStoredCode = function(questionId, language) {
+      var loadStoredCode = getObjFromLocalStorage(questionId);
+      if (loadStoredCode === null) {
         return null;
       } else {
-        return savedLanguageCodes[language];
+        return loadStoredCode[language];
       }
     };
-    return codeStoreService;
+    return codeStorageService;
   }
 ]);
