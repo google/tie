@@ -13,12 +13,12 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Best Meeting location for N People in
+ * @fileoverview Question data for Best Meeting Location for N People in
  * a Manhattan-like City.
  */
 
 globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
-  title: 'Best Meeting location for N People in a Manhattan-like City',
+  title: 'Best Meeting Location for N People in a Manhattan-like City',
   starterCode: {
     python:
 `def manhattan(people):
@@ -45,11 +45,11 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
         'The input is a str list indicating the coordinates of the people in a 2D grid. ',
         'Your function should return a str indicating the best meeting point for N people. ',
         'For instance, the best meeting point for 3 people at ',
-        '"0, 0", "4, 2", "2, 4" is "2, 2".'
+        '"0, 0", "4, 2" and "2, 4" is "2, 2".'
       ].join('')
     ],
-    prerequisiteSkills: ['Math', 'Sort'],
-    acquiredSkills: ['Math', 'Sort'],
+    prerequisiteSkills: ['Math', 'Sorting'],
+    acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'manhattan',
@@ -68,12 +68,12 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
   }, {
     instructions: [
       [
-        'Can you find all possible best meeing points? ',
-        '(Return List[str] with function manhattan)'
+        'You might notice that some inputs have more than one possible "best" meeting point. ',
+        'Can you modify your manhattan function to return a list of all of the best meeting points?'
       ].join('')
     ],
-    prerequisiteSkills: ['Math', 'Sort'],
-    acquiredSkills: ['Math', 'Sort'],
+    prerequisiteSkills: ['Math', 'Sorting'],
+    acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'manhattan',

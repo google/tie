@@ -31,7 +31,17 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-      return this._allowedOutputs.indexOf(output) !== -1;
+      if (typeof this._allowedOutputs === 'object') {
+        for (var i = 0; i < this._allowedOutputs.length; i++) {
+          if (JSON.stringify(this._allowedOutputs[i]) ===
+              JSON.stringify(output)) {
+            return true;
+          }
+        }
+      } else {
+        return this._allowedOutputs.indexOf(output) !== -1;
+      }
+      return false;
     };
 
     CorrectnessTest.prototype.getAnyAllowedOutput = function() {
