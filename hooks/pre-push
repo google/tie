@@ -1,0 +1,4 @@
+#!/bin/sh
+# This is a test pre-push hook
+
+echo "This script is running"
