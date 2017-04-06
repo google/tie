@@ -27,18 +27,16 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
-    @classmethod
-    def negative(cls, board):
-        return -1
+
     @classmethod
     def ignoreWalls(cls, board):
-        if len(board) == 0 or len(board[0]) == 0: return 0
+        if not board or not board[0]: return 0
         rows = len(board)
         cols = len(board[0])
-        maxEnemy = 0
+        maxEnemyKiled = 0
         up = [0 for x in range(cols)]
         left = 0
-        memo = [[0 for x in range(cols)] for y in range(rows)]
+        enemyKilled = [[0 for x in range(cols)] for y in range(rows)]
         for r in range(rows):
             left = 0
             for c in range(cols):
@@ -46,7 +44,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
                     left += 1
                     up[c] += 1
                 else:
-                    memo[r][c] += left + up[c]
+                    enemyKilled[r][c] += left + up[c]
         right = 0
         down = [0 for x in range(cols)]
         for r in range(rows - 1, -1, -1):
@@ -56,13 +54,14 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
                     right += 1
                     down[c] += 1
                 else:
-                    memo[r][c] += right + down[c]
-                    if memo[r][c] > maxEnemy:
-                        maxEnemy = memo[r][c]
-        return maxEnemy
+                    enemyKilled[r][c] += right + down[c]
+                    if enemyKilled[r][c] > maxEnemyKilled:
+                        maxEnemyKiled = enemyKilled[r][c]
+        return maxEnemyKilled
+
     @classmethod
     def bombAllEnemiesOnBoard(cls, board):
-        if (len(board) == 0 or len(board[0]) == 0): return 0
+        if not board or not board[0]: return 0
         count = 0
         for r in range(len(board)):
             for c in range(len(board[0])):
@@ -74,10 +73,10 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   tasks: [{
     instructions: [
       [
-        'For this question, you will be given a borad, in which all elements are string. ',
-        'X represent a wall, e represent an enemy, "" represent an empty cell. ',
-        'You can place an bomb in an empty cell, which will kill enemies in vertical and horizontal ',
-        'direction until it met a wall. ',
+        'For this question, you will be given a board, in which all elements are strings. ',
+        'x represents a wall, e represents an enemy, "" represents an empty cell. ',
+        'You can place an bomb in an empty cell, which will kill all enemies in vertical and horizontal ',
+        'direction until a wall or board boundary is met. ',
         'Please write a function bomb(board), to find the best position to place a bomb in order to',
         'kill as many enemies as possible, then return the number of enemies killed.'
       ].join('')
@@ -119,28 +118,28 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     ],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
-      messages: [[
-        "You cannot kill an enemy behind a wall x. ",
-        "Stop your fire once it meets a wall."
+      messages: [["Try to run your code on ['e', '', 'x', 'e']. ",
+      "Is the result match what you expected? "
+      ].join(''),
+      [
+        "You seem to be ignoring walls in your solution, which is incorrect.",
+        "If a bomb is placed, the resulting explosion should only go until it reaches a wall.",
       ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
-      messages: [[
-        "You cannot simply kill all enemies on the board. ",
+      messages: [["Try to run your code on ['e', 'x', '', 'x', 'e']. ",
+      "Is the result match what you expected?"
+      ].join(''),
+      [
+        "You seemed to be returning all the enemies on the board. ",
         "Your bomb can only kill enemies in the same row and column. ",
-        "Stop your fire once it meets a wall."
-      ].join('')
-      ]
-    },
-    {
-      buggyFunctionName: 'AuxiliaryCode.negative',
-      messages: [[
-        "Don't just return -1, do something"
       ].join('')
       ]
     }],
+    //No performance test here. Since the desired runtime complexity is O(N^2),
+    //which is not currently supported.
     performanceTests: []
   }],
   styleTests: []
