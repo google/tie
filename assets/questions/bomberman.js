@@ -141,7 +141,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
       ]
     }],
     // Since we currently only support O(n) runtime complexities and this
-    // requires an O(n^2) solution, we have skipped performance tests.
+    // requires an O(n^2) solution. We have skipped performance tests.
     performanceTests: []
   }],
   styleTests: []
