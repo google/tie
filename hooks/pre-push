@@ -1,4 +1,9 @@
 #!/bin/sh
-# This is a test pre-push hook
 
-echo "This script is running"
+echo "Running hook from new directory"
+echo "Running linter tests"
+sh scripts/run_linter.sh
+echo "Running karma tests"
+sh scripts/run_karma_tests.sh
+
+exit 0
