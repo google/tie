@@ -28,8 +28,8 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def createBalancedParenthesesString(cls, atom, input_size):
-        return "%s%s" % (atom[0] * input_size, atom[1] * input_size)
+    def justConnectTickets(cls, s):
+        return "-".join(s.split(","))
 `
   },
   tasks: [{
@@ -71,7 +71,13 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       input: 'MUC-LHR,JFK-MUC,SFO-SJC,LHR-SFO',
       allowedOutputs: ['JFK-MUC-LHR-SFO-SJC']
     }],
-    buggyOutputTests: [],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.justConnectTickets',
+      messages: [
+        "Tickets order are scrambled. Don't just connect them in given order. ",
+        "Try use topological search to find an itinerary in the right order. ",
+        "Since no loops, union-find also worth trying. "
+      ]}],
     performanceTests: []
   }, {
     instructions: [
