@@ -29,8 +29,17 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def foo(cls, people):
-        return None
+    def takeTheAverage(cls, people):
+        num = len(people)
+        x = 0
+        y = 0
+        for p in people:
+            [dx, dy] = p.split(', ')
+            x += dx
+            y += dy
+        x /= num
+        y /= num
+        return str(x) + ', ' + str(y)
 `
   },
   tasks: [{
@@ -64,7 +73,13 @@ globalData.questions['manhattan'] = {  // eslint-disable-line dot-notation
       input: [],
       allowedOutputs: ['']
     }],
-    buggyOutputTests: [],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.takeTheAverage',
+      messages: [
+        "The best meeting point is not necessarily the centroid of all the people. ",
+        "Could that be somewhere else?"
+      ]
+    }],
     performanceTests: []
   }, {
     instructions: [
