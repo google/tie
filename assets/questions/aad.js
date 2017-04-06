@@ -1,4 +1,4 @@
-// Copyright 2017 The TIE Authors. All Rights Reserved.
+// Copyright 2017 The TIE Author, s. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  */
 
 globalData.questions['aad'] = {  // eslint-disable-line dot-notation
-  title: 'Alien language alphabet',
+  title: 'Alien Language Alphabet',
   starterCode: {
     python:
 `def find_dict(words):
@@ -110,130 +110,189 @@ class AuxiliaryCode(object):
   tasks: [{
     instructions: [
       [
-        'In this question, you\'ll implement the encode function. It takes a ',
-        'string as input and returns an encoding of the string where long ',
-        'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" could be encoded as "ab5xc".'
-      ].join('')
+        'Given a dictionary (a list of words in lexicographic order) of all',
+        'words in an unknown/invented language, find the alphabet (an ordered ',
+        'list of characters) of that language. '
+      ].join(''),
+      'Example dictionary:',
+      '[art, rat, cat, car]',
+      'Alphabet is: "atrc"'
     ],
-    prerequisiteSkills: ['Toplogy', 'Sorting', 'String Manipulation'],
+    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'find_dict',
     correctnessTests: [{
-      input: ["a",
-              "ab",
-              "b"],
+      input: [
+        "a",
+        "ab",
+        "b"
+      ],
       allowedOutputs: ['ab']
     }, {
-      input: ["c",
-              "a",
-              "b",
-              "a"],
-      allowedOutputs: ['']
-    }, {
-      input: ["ab",
-              "Aba",
-              "b"],
-      allowedOutputs: ['ab']
-    }, {
-      input: ["aaec",
-              "aaed",
-              "aac",
-              "abe",
-              "abc",
-              "bed",
-              "bea",
-              "bcc",
-              "bcd"],
+      input: [
+        "aaec",
+        "aaed",
+        "aac",
+        "abe",
+        "abc",
+        "bed",
+        "bea",
+        "bcc",
+        "bcd"
+      ],
       allowedOutputs: ['ecdab']
     }, {
-      input: ["egdi",
-              "egdb",
-              "egej",
-              "egei",
-              "ebjj",
-              "ebjg",
-              "ebgh",
-              "ebgj",
-              "igac",
-              "igae",
-              "igia",
-              "igif",
-              "idcf",
-              "idcc",
-              "idh"],
+      input: [
+        "egdi",
+        "egdb",
+        "egej",
+        "egei",
+        "ebjj",
+        "ebjg",
+        "ebgh",
+        "ebgj",
+        "igac",
+        "igae",
+        "igia",
+        "igif",
+        "idcf",
+        "idcc",
+        "idh"
+      ],
       allowedOutputs: ['afchjgdeib']
     },
     {
-      input: ["curwfe",
-              "curwfe",
-              "curwst",
-              "curwsw",
-              "curuyc",
-              "curuyf",
-              "curuga",
-              "curugs",
-              "cuxdeh",
-              "cuxdeu",
-              "cuxdbv",
-              "cuxdbn",
-              "cuxolc",
-              "cuxolb",
-              "cuxojd",
-              "cuxojs",
-              "cpcnow",
-              "cpcnob",
-              "cpcnqu",
-              "cpcnqp",
-              "cpctkj",
-              "cpctkd",
-              "cpctfg",
-              "cpctfa",
-              "cpbjeq",
-              "cpbjec",
-              "cpbjz",
-              "cpbhx",
-              "cpbhc",
-              "khjzs",
-              "khjzu",
-              "khjis",
-              "khjiv",
-              "khfax",
-              "khfay",
-              "khftg",
-              "khftq",
-              "kmima",
-              "kmimd",
-              "kmiej",
-              "kmies",
-              "kmrbm",
-              "kmrbr",
-              "kmrus",
-              "kmrut"],
+      input: [
+        "curwfe",
+        "curwfe",
+        "curwst",
+        "curwsw",
+        "curuyc",
+        "curuyf",
+        "curuga",
+        "curugs",
+        "cuxdeh",
+        "cuxdeu",
+        "cuxdbv",
+        "cuxdbn",
+        "cuxolc",
+        "cuxolb",
+        "cuxojd",
+        "cuxojs",
+        "cpcnow",
+        "cpcnob",
+        "cpcnqu",
+        "cpcnqp",
+        "cpctkj",
+        "cpctkd",
+        "cpctfg",
+        "cpctfa",
+        "cpbjeq",
+        "cpbjec",
+        "cpbjz",
+        "cpbhx",
+        "cpbhc",
+        "khjzs",
+        "khjzu",
+        "khjis",
+        "khjiv",
+        "khfax",
+        "khfay",
+        "khftg",
+        "khftq",
+        "kmima",
+        "kmimd",
+        "kmiej",
+        "kmies",
+        "kmrbm",
+        "kmrbr",
+        "kmrus",
+        "kmrut"
+      ],
       allowedOutputs: ['ljhmezirxygadoqckfsvntwbup']
+    }],
+    buggyOutputTests: [],
+    performanceTests: []
+  }, {
+    instructions: [
+      [
+        'Next, double-check your code to make sure it handles unexpected cases',
+        ', such as there\'s no solution to the test case or there\'re more ',
+        'than one answers.'
+      ].join(''),
+      [
+        'For the test case that has no solution, just return "". For the test ',
+        'case that has multi-answers, return the answer has the smallest ',
+        'lexicographic order in English alphabet.'
+      ].join('')
+    ],
+    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
+    acquiredSkills: ['String Manipulation'],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'find_dict',
+    correctnessTests: [{
+      input: [
+        "a",
+        "b",
+        "a"
+      ],
+      allowedOutputs: ['']
+    }, {
+      input: [
+        "c",
+        "a",
+        "b",
+        "a"
+      ],
+      allowedOutputs: ['']
+    }, {
+      input: [
+        "cab",
+        "bc"
+      ],
+      allowedOutputs: ['acb']
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.wrongInNoSolution',
       messages: [
         [
-          "What if there's no solution to the input ? ",
-          "Just output \"\" when there's no solution. "
-        ].join(''),
-        [
-          'You may try this case : ["c", "a", "b", "a"]',
+          'You may try this case : ["c", "a", "b", "a"]'
         ].join('')
       ]
-    }, {
+    }],
+    performanceTests: []
+  }, {
+    instructions: [
+      [
+        'Last, Let\'s fix the solution to adapt lowercase and uppercase. We ',
+        'take the lowercase and uppercase of the same letter with equal ',
+        'lexicographic order. And then return the answer in lowercase'
+      ].join('')
+    ],
+    prerequisiteSkills: ['Topology Sorting', 'String Manipulation'],
+    acquiredSkills: ['String Manipulation'],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'find_dict',
+    correctnessTests: [{
+      input: [
+        "ab",
+        "Aba",
+        "b"
+      ],
+      allowedOutputs: ['ab']
+    }],
+    buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.wrongInUppercase',
       messages: [
         [
-          "What if there's Uppercase and lowercase but they're the same? ",
-          "Just take them as the same letter."
+          'You may try this case : ["a", "Ab", "b"]'
         ].join(''),
         [
-          'You may try this case : ["a", "Ab", "b"]',
+          'The answer to the test case ["a", "Ab", "b"] should be "ab".'
         ].join('')
       ]
     }],
