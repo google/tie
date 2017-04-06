@@ -13,16 +13,22 @@
 // limitations under the License.
 
 /**
- * @fileoverview End-to-end tests for the app.
+ * @fileoverview End-to-end tests for loading all pages.
  */
 
-describe("Loading the homepage", function() {
-  it('should load the homepage without errors', function() {
-  browser.get('/client/app.html');
+var protractorUtil = require('./protractorUtil.js');
 
-  var feedbackParagraphs = element.all(by.repeater('paragraph in feedbackParagraphs track by $index'));
-  expect(feedbackParagraphs.count()).toEqual(3);
-  expect(feedbackParagraphs.get(0).getText()).toEqual('Greetings!');
+describe("Loading all pages", function() {
+  it('should load the feedback page without errors', function() {
+    browser.get('/client/app.html');
 
+    var feedbackParagraphs = element.all(by.repeater('paragraph in feedbackParagraphs track by $index'));
+    expect(feedbackParagraphs.count()).toEqual(3);
+    expect(feedbackParagraphs.get(0).getText()).toEqual('Greetings!');
+
+  });
+
+  afterEach(function() {
+    protractorUtil.checkForConsoleErrors([]);
   });
 });
