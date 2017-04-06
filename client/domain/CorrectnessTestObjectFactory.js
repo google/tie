@@ -31,6 +31,20 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
+    // If allowOutputs should be arrays and learner's code returns an array
+      if (this._allowedOutputs.length > 0 && 
+        this._allowedOutputs[0] instanceof Array &&
+        output instanceof Array) { 
+      // Stringify the arrays and then compare
+        var stringifiedOutput = JSON.stringify(output);
+        for (var i = 0, l = this._allowedOutputs.length; i < l; i++) {
+          if (JSON.stringify(this._allowedOutputs[i]) === stringifiedOutput) {
+            return true;
+          }
+        }
+      // If output matches none allowedOutputs
+        return false; 
+      }
       return this._allowedOutputs.indexOf(output) !== -1;
     };
 
