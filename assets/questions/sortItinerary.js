@@ -43,12 +43,12 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         'departs from XXX and arrives at YYY, noticing that departure and ',
         'destinations are not necessarily of length 3. ',
         'As an example, "LAX-JFK,JFK-ATL" means the itinerary has two flights',
-        ': one from LAX to JFK and the other from JFK to ATL. ',
+        ': one from LAX to JFK and the other from JFK to ATL. '
       ].join(''),
       [
         'The function needs to return a string of the sorted itinerary. ',
         'Locations need to be connected by dash. For the above example, ',
-        'the return string should be "LAX-JFK-ATL". ',
+        'the return string should be "LAX-JFK-ATL". '
       ].join(''),
       [
         'All tickets must be used to form an itinerary. ',
@@ -112,7 +112,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         'The boss would choose ATL over BOS.'
       ].join('')
     ],
-    prerequisiteSkills: ['Graph', 'String Manupulation','Topological Sort'],
+    prerequisiteSkills: ['Graph', 'String Manupulation', 'Topological Sort'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -121,7 +121,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       input: 'JFK-AAA,AAA-JFK,JFK-BBB,JFK-CCC,CCC-JFK',
       allowedOutputs: ['JFK-AAA-JFK-CCC-JFK-BBB']
     }, {
-      input:'JFK-ATL,ORD-PHL,JFK-ORD,PHX-LAX,LAX-JFK,PHL-ATL,ATL-PHX',
+      input: 'JFK-ATL,ORD-PHL,JFK-ORD,PHX-LAX,LAX-JFK,PHL-ATL,ATL-PHX',
       allowedOutputs: ['JFK-ATL-PHX-LAX-JFK-ORD-PHL-ATL']
     }],
     buggyOutputTests: [],
