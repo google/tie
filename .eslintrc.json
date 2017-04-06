@@ -3,7 +3,9 @@
     "env": {
         "browser": true,
         "es6": true,
-        "jasmine": true
+        "jasmine": true,
+        "protractor": true,
+        "node": true
     },
     "extends": "eslint:recommended",
     "globals": {
