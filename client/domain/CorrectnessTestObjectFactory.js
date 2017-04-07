@@ -32,6 +32,8 @@ tie.factory('CorrectnessTestObjectFactory', [
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
     // If allowOutputs should be arrays and learner's code returns an array
+    // Then the if statement will check if learner's output matches
+    // any of arrays in the allowedOutputs
       if (this._allowedOutputs.length > 0 && 
         this._allowedOutputs[0] instanceof Array &&
         output instanceof Array) { 
