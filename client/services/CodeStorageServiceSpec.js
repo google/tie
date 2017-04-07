@@ -17,88 +17,86 @@
  */
 
 describe('CodeStorageService', function() {
+  var LANGUAGE = 'python';
+  var FAILED_LANGUAGE = 'java';
+  var QUESTION_ID_LEN_RANGE = 10;
+  var CODE_LEN_RANGE = 10000;
+  var NUM_QUESTIONS = 5;
+
   var CodeStorageService;
-  var questionIds = [];
-  var studentSubmittedCodes = [];
-  var i;
-  for (i = 0; i < 5; i++) {
-    questionIds[i] = 'question_' + (i + 1);
-    studentSubmittedCodes[i] = 'code_' + (i + 1);
-  }
-  const language = 'python';
-  const failedLanguage = 'java';
 
   var generateRandomChars = function(number) {
     var generatedChars = "";
     var possible = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    for (i = 0; i < number; i++) {
+    for (var i = 0; i < number; i++) {
       generatedChars += possible.charAt(
         Math.floor(Math.random() * possible.length));
     }
     return generatedChars;
   };
 
-  var randomQuestionIds = [];
-  var randomQuestionCodes = [];
+  var sampleQuestionId = [];
+  var sampleQuestionCode = [];
 
-  const questionIdLenRange = 10;
-  const codeLenRange = 10000;
-  const numOfCases = 5;
 
-  for (i = 0; i < numOfCases; i++) {
-    randomQuestionIds[i] = generateRandomChars(
-      Math.floor(Math.random() * questionIdLenRange));
-    randomQuestionCodes[i] = generateRandomChars(
-      Math.floor(Math.random() * codeLenRange));
-  }
-  
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     CodeStorageService = $injector.get('CodeStorageService');
+
+    for (var i = 0; i < NUM_QUESTIONS; i++) {
+      // Generate random questoin Id with 
+      // length of QUESTION_ID_LEN_RANGE
+      sampleQuestionId[i] = generateRandomChars(
+        Math.floor(Math.random() * QUESTION_ID_LEN_RANGE));
+      // Generate random question code with 
+      // length of CODE_LEN_RANGE
+      sampleQuestionCode[i] = generateRandomChars(
+        Math.floor(Math.random() * CODE_LEN_RANGE));
+    }
   }));
 
   describe('storeCode', function() {
     it('should store code to browser', function() {
-      for (i = 0; i < numOfCases; i++) {
-        CodeStorageService
-        .storeCode(questionIds[i], studentSubmittedCodes[i], language);
-        expect(JSON.parse(localStorage.getItem(questionIds[i]))[language])
-          .toEqual(studentSubmittedCodes[i]);
-      }        
+      sampleQuestionId.forEach(function(questionId, index) {
+        CodeStorageService.storeCode(questionId, 
+          sampleQuestionCode[index], LANGUAGE);
+        expect(JSON.parse(localStorage.getItem(questionId))[LANGUAGE])
+          .toEqual(sampleQuestionCode[index]);
+      });     
     });
   });
 
   describe('loadStoredCode', function() {
     it('should retrieve stored code from browser', function() {
-      for (i = 0; i < numOfCases; i++) {
+      for (var i = 0; i < NUM_QUESTIONS; i++) {
         var storedCode = {};
-        storedCode[language] = studentSubmittedCodes[i];
-        localStorage.setItem(questionIds[i], JSON.stringify(storedCode));
+        storedCode[LANGUAGE] = sampleQuestionCode[i];
+        localStorage.setItem(sampleQuestionId[i], JSON.stringify(storedCode));
       }
-      for (i = 0; i < numOfCases; i++) {
-        expect(CodeStorageService.loadStoredCode(questionIds[i], language))
-          .toEqual(studentSubmittedCodes[i]);
-      }
+      sampleQuestionId.forEach(function(questionId, index) {
+        expect(CodeStorageService.loadStoredCode(questionId, 
+          LANGUAGE)).toEqual(sampleQuestionCode[index]);
+      });
     });
 
     it('should fail to retrieve code and return null', function() {
-      for (i = 0; i < numOfCases; i++) {
-        expect(!CodeStorageService
-          .loadStoredCode(questionIds[i], failedLanguage)).toBe(true);
-      }
+      sampleQuestionId.forEach(function(questionId) {
+        expect(!CodeStorageService.loadStoredCode(questionId, 
+          FAILED_LANGUAGE)).toBe(true);
+      });
     });
   });
 
   describe('storeAndLoadCode', function() {
     it('should store and load stored code from browser', function() {
-      for (i = 0; i < randomQuestionIds.length; i++) {
-        CodeStorageService.storeCode(randomQuestionIds[i],
-          randomQuestionCodes[i], language);
-        expect(CodeStorageService
-          .loadStoredCode(randomQuestionIds[i], language))
-          .toEqual(randomQuestionCodes[i]);
-      }
+      sampleQuestionId.forEach(function(questionId, index) {
+        CodeStorageService.storeCode(questionId,
+          sampleQuestionCode[index], LANGUAGE);
+        expect(CodeStorageService.loadStoredCode(questionId, 
+          LANGUAGE)).toEqual(sampleQuestionCode[index]);
+      });
     });
   });
 });
+
