@@ -82,7 +82,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
         "Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now."
       ]
     }],
-    // We need a performance test for exponential time complexity
+    // We need a performance test for exponential time complexity.
     performanceTests: []
   }],
   styleTests: []
