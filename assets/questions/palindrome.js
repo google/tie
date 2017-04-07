@@ -27,41 +27,38 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
   auxiliaryCode: {
     python:
 `class AuxiliaryCode(object):
+
     @classmethod
-    def createPalindromeString(cls, chr_set, input_size):
+    def createPalindromeString(cls, character_set, input_size):
         import random
-        ret = ""
+        palindrome_str = ""
         while input_size > 0:
-            chr = random.choice(chr_set)
+            chr = random.choice(character_set)
             if input_size == 1:
-                ret += chr
+                palindrome_str += chr
                 input_size -= 1
             else:
-                ret = chr + ret + chr
+                palindrome_str = chr + palindrome_str + chr
                 input_size -= 2
-        return ret
+        return palindrome_str
 
     @classmethod
-    def countNumberOfCharacters(cls, s):
+    def countNumberOfCharacters(cls, string):
         ascii_codes = {i:0 for i in range(255)}
-        for chr in s:
+        for chr in string:
             ascii_codes[ord(chr)] += 1
 
-        odd_cnt = 0
+        numOddCharacters = 0
         for code in ascii_codes:
             if ascii_codes[code] % 2 is not 0:
-                odd_cnt += 1
+                numOddCharacters += 1
 
-        if len(s) % 2 == 0 and odd_cnt == 0:
-            return True
-        elif len(s) % 2 == 1 and odd_cnt == 1:
-            return True
-        return False
+        return (len(string) % 2 == 0 and numOddCharacters == 0) or (len(string) % 2 == 1 and numOddCharacters == 1)
 
     @classmethod
-    def forgetToIgnoreSpace(cls, s):
-        for i in range(len(s)/2):
-            if s[i] is not s[-i-1]:
+    def forgetToIgnoreSpace(cls, string):
+        for i in range(len(string)/2):
+            if string[i] is not string[-i-1]:
                 return False
         return True
 `
@@ -69,7 +66,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
   tasks: [{
     instructions: [
       [
-        'For this question, you will implement the isPalindrom function. ',
+        'For this question, you will implement the isPalindrome function. ',
         'It takes a sentense as input and return True if the input is a ',
         'palindrome and False if it is not.'
       ].join(''),
@@ -117,13 +114,13 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
       messages: [
         "Try running your code on 'abab' on paper. Did you expet that result?",
         [
-          'Are you sure the input string is palindrome? \'abab\', for instance, is not.'
+          'Are you sure the input string is a palindrome? \'abab\', for instance, is not.'
         ].join(''),
         [
-          "number of characters in the input string and returning true if ",
-          "there are an even number of each. With strings like 'abab', however, ",
-          "this approach doesn't work. Try to update your code to avoid just ",
-          "counting the characters."
+          "It looks like you're counting the number of characters in the input string ",
+          "and returning true if there are an even number of each. With strings ",
+          "like 'abab', however, this approach doesn't work. Try to update your code ",
+          "to avoid just counting the characters."
         ].join('')
       ]
     }, {
