@@ -16,7 +16,7 @@
  * @fileoverview Question data for Most Common Character.
  */
 
-globalData.questions['mostCommonChar'] = {  // eslint-disable-line dot-notation
+globalData.questions['mostCommonCharacter'] = {  // eslint-disable-line dot-notation
   title: 'Most Common Character',
   starterCode: {
     python:
@@ -48,9 +48,9 @@ class AuxiliaryCode(object):
         'of ASCII characters, and you may assume that there',
         ' is only one most common character, for now.'
       ].join(''),
-      "There's no need to validate that you're always passed a string"
+      "There's no need to validate that you're always passed a string."
     ],
-    prerequisiteSkills: ['String', 'String Manipulation', 'Array'],
+    prerequisiteSkills: ['String Manipulation', 'Arrays'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -71,7 +71,12 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        'Did you consider alphabetic characters only?'
+        [
+          'Try a string that has characters besides letters. ',
+          'Does your code work as well? ',
+          'If you are making an array of size 52 that keeps track of the amount of 52 letters ',
+          '(lowercase and uppercase), that solution may not be generalized enough.'
+        ].join('')
       ]
     }],
     performanceTests: []
