@@ -40,9 +40,9 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [[ 
-      'Implement a function strobogrammatic which takes a number N as input and generates a list of ',
-      'n-digit numbers which look the same if you rotate them 180 degree ',
-      'For example, all the 2-digit strobogrammatic numbers are [11, 69, 88, 96] '
+      'Implement a function strobogrammatic which takes a number n as input and generates a list of ',
+      'n-digit numbers which look the same if you rotate them 180 degrees.',
+      'For example, all the 2-digit strobogrammatic numbers are [11, 69, 88, 96].'
     ].join('')
     ],
     prerequisiteSkills: ['Arrays'],
@@ -65,8 +65,8 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       messages: [
         "Try running your code for 1-digit numbers. Did you get the expected result?",
         [
-          'Are you making sure you get all the answers?',
-          '0 should also be included.'
+          'Are you returning all appropriate numbers?',
+          '0, for instance, should be included.'
         ].join('')
       ]
     },
@@ -75,10 +75,11 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       messages: [
         "Try running your code on 2-digit numbers. Did you get the expected result?",
         [
-          'What happens if the number has a leading zero? Should it still be included?',
-          'like 08?'
+          'What happens if the number has a leading zero, like 08?',
+          'Should it still be included?'
         ].join(''),
         "It looks like you are allowing numbers with a leading zero when they should not be included."
+        "Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now."
       ]
     }],
     // We need a performance test for exponential time complexity
