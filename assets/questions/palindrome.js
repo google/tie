@@ -33,27 +33,28 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         import random
         palindrome_str = ""
         while input_size > 0:
-            chr = random.choice(character_set)
+            character = random.choice(character_set)
             if input_size == 1:
-                palindrome_str += chr
+                palindrome_str += character
                 input_size -= 1
             else:
-                palindrome_str = chr + palindrome_str + chr
+                palindrome_str = character + palindrome_str + character
                 input_size -= 2
         return palindrome_str
 
     @classmethod
     def countNumberOfCharacters(cls, string):
         ascii_codes = {i:0 for i in range(255)}
-        for chr in string:
-            ascii_codes[ord(chr)] += 1
+        for character in string:
+            ascii_codes[ord(character)] += 1
 
         numOddCharacters = 0
         for code in ascii_codes:
             if ascii_codes[code] % 2 is not 0:
                 numOddCharacters += 1
 
-        return (len(string) % 2 == 0 and numOddCharacters == 0) or (len(string) % 2 == 1 and numOddCharacters == 1)
+        return ((len(string) % 2 == 0 and numOddCharacters == 0) or
+                (len(string) % 2 == 1 and numOddCharacters == 1))
 
     @classmethod
     def forgetToIgnoreSpace(cls, string):
