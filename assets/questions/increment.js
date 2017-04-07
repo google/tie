@@ -44,7 +44,7 @@ globalData.questions['increment'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'Write a function increment that takes in a number represented as a string and increments it.',
-	'This function should return the incremented number.'
+        'This function should return the incremented number.'
       ].join(''),
       "For instance, '2788' would become '2789'."
     ],
