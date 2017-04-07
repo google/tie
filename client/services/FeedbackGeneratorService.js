@@ -184,14 +184,16 @@ tie.factory('FeedbackGeneratorService', [
 
           var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          var stdOutput = codeEvalResult.getOutput();
+          var stdOutputs = codeEvalResult.getOutput();
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
+            var outputCount =  stdOutputs.length /correctnessTests.length;
+            var stdOutput = stdOutputs.slice(i * outputCount, (i + 1) * outputCount);
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
               return _getCorrectnessTestFeedback(
-                correctnessTests[i], observedOutput, stdOutput);
+                correctnessTests[i], observedOutput, stdOutput.join(''));
             }
           }
 
