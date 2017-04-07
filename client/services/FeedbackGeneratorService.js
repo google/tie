@@ -187,8 +187,9 @@ tie.factory('FeedbackGeneratorService', [
           var stdOutputs = codeEvalResult.getOutput();
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
-            var outputCount =  stdOutputs.length /correctnessTests.length;
-            var stdOutput = stdOutputs.slice(i * outputCount, (i + 1) * outputCount);
+            var outputCount = stdOutputs.length / correctnessTests.length;
+            var stdOutput = stdOutputs.slice(i * outputCount,
+                (i + 1) * outputCount);
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
