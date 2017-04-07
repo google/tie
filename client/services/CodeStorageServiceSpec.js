@@ -19,14 +19,14 @@
 describe('CodeStorageService', function() {
   var CodeStorageService;
   var questionIds = [];
-  var codes = [];
+  var studentSubmittedCodes = [];
   var i;
   for (i = 0; i < 5; i++) {
     questionIds[i] = 'question_' + (i + 1);
-    codes[i] = 'code_' + (i + 1);
+    studentSubmittedCodes[i] = 'code_' + (i + 1);
   }
-  var language = 'python';
-  var failedLanguage = 'java';
+  const language = 'python';
+  const failedLanguage = 'java';
 
   var generateRandomChars = function(number) {
     var generatedChars = "";
@@ -42,10 +42,11 @@ describe('CodeStorageService', function() {
   var randomQuestionIds = [];
   var randomQuestionCodes = [];
 
-  var questionIdLenRange = 10;
-  var codeLenRange = 10000;
+  const questionIdLenRange = 10;
+  const codeLenRange = 10000;
+  const numOfCases = 5;
 
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < numOfCases; i++) {
     randomQuestionIds[i] = generateRandomChars(
       Math.floor(Math.random() * questionIdLenRange));
     randomQuestionCodes[i] = generateRandomChars(
@@ -59,29 +60,30 @@ describe('CodeStorageService', function() {
 
   describe('storeCode', function() {
     it('should store code to browser', function() {
-      for (i = 0; i < 5; i++) {
-        CodeStorageService.storeCode(questionIds[i], codes[i], language);
+      for (i = 0; i < numOfCases; i++) {
+        CodeStorageService
+        .storeCode(questionIds[i], studentSubmittedCodes[i], language);
         expect(JSON.parse(localStorage.getItem(questionIds[i]))[language])
-          .toEqual(codes[i]);
+          .toEqual(studentSubmittedCodes[i]);
       }        
     });
   });
 
   describe('loadStoredCode', function() {
     it('should retrieve stored code from browser', function() {
-      for (i = 0; i < 5; i++) {
+      for (i = 0; i < numOfCases; i++) {
         var storedCode = {};
-        storedCode[language] = codes[i];
+        storedCode[language] = studentSubmittedCodes[i];
         localStorage.setItem(questionIds[i], JSON.stringify(storedCode));
       }
-      for (i = 0; i < 5; i++) {
+      for (i = 0; i < numOfCases; i++) {
         expect(CodeStorageService.loadStoredCode(questionIds[i], language))
-          .toEqual(codes[i]);
+          .toEqual(studentSubmittedCodes[i]);
       }
     });
 
     it('should fail to retrieve code and return null', function() {
-      for (i = 0; i < 5; i++) {
+      for (i = 0; i < numOfCases; i++) {
         expect(!CodeStorageService
           .loadStoredCode(questionIds[i], failedLanguage)).toBe(true);
       }
