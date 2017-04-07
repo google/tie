@@ -29,18 +29,27 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
 `class AuxiliaryCode(object):
 
     @classmethod
-    def createPalindromeString(cls, character_set, input_size):
+    def createPalindrome(cls, character_set, input_size):
         import random
-        palindrome_str = ""
-        while input_size > 0:
+
+        space_number = random.randint(0, input_size)
+        character_number = input_size - space_number
+
+        palindrome = []
+        while character_number > 0:
             character = random.choice(character_set)
-            if input_size == 1:
-                palindrome_str += character
-                input_size -= 1
+            if character_number == 1:
+                palindrome.insert(int(len(palindrome)/2), character)
+                character_number -= 1
             else:
-                palindrome_str = character + palindrome_str + character
-                input_size -= 2
-        return palindrome_str
+                palindrome = [character] + palindrome + [character]
+                character_number -= 2
+
+        for i in range(space_number):
+            position = random.randint(0, len(palindrome))
+            palindrome.insert(position, ' ')
+
+        return ''.join(palindrome)
 
     @classmethod
     def countNumberOfCharacters(cls, string):
@@ -58,7 +67,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
 
     @classmethod
     def forgetToIgnoreSpace(cls, string):
-        for i in range(len(string)/2):
+        for i in range(len(string) / 2):
             if string[i] is not string[-i - 1]:
                 return False
         return True
