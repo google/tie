@@ -92,13 +92,14 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     var _getCorrectnessTestFeedback = function(
-      correctnessTest, observedOutput) {
+      correctnessTest, observedOutput, stdOutput) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph('Your code produced the following result:');
       feedback.appendCodeParagraph(
         'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
-        'Output: ' + _jsToHumanReadable(observedOutput));
+        'Output: ' + _jsToHumanReadable(observedOutput) + '\n' +
+        'stdout: ' + stdOutput);
       feedback.appendTextParagraph('However, the expected output is:');
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
@@ -183,13 +184,14 @@ tie.factory('FeedbackGeneratorService', [
 
           var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+          var stdOutput = codeEvalResult.getOutput();
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
               return _getCorrectnessTestFeedback(
-                correctnessTests[i], observedOutput);
+                correctnessTests[i], observedOutput, stdOutput);
             }
           }
 
