@@ -35,17 +35,12 @@ tie.factory('CorrectnessTestObjectFactory', [
     // Then the if statement will check if learner's output matches
     // any of arrays in the allowedOutputs
       if (this._allowedOutputs.length > 0 && 
-        this._allowedOutputs[0] instanceof Array &&
-        output instanceof Array) { 
-      // Stringify the arrays and then compare
+          angular.isArray(this._allowedOutputs[0]) &&
+          angular.isArray(output)) {
         var stringifiedOutput = JSON.stringify(output);
-        for (var i = 0, l = this._allowedOutputs.length; i < l; i++) {
-          if (JSON.stringify(this._allowedOutputs[i]) === stringifiedOutput) {
-            return true;
-          }
-        }
-      // If output matches none allowedOutputs
-        return false; 
+        return this._allowedOutputs.some(function(allowedOutput) {
+          return JSON.stringify(allowedOutput) === stringifiedOutput;
+        });
       }
       return this._allowedOutputs.indexOf(output) !== -1;
     };
