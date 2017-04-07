@@ -28,26 +28,25 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def firstDigitShouldNotBeZero(cls, length):
+    def allowLeadingZeroInResult(cls, length):
         if length == 2:
            return [["00","11","69","88","96"]]
 
     @classmethod
-    def forgetZero(cls, length):
+    def forgetToIncludeZero(cls, length):
         if length == 1:
            return [["1","8"]]
 `
   },
   tasks: [{
     instructions: [[ 
-      'Implement a function which takes a number N as input and generates a list of ',
-      'numbers which has length N and has rotational symmetry ',
-      'rotational symmetry means you will get same number when the number is rotated 180 degree',
-      'For example, for length 2 , we have [11, 69, 88, 96] '
+      'Implement a function strobogrammatic which takes a number N as input and generates a list of ',
+      'n-digit numbers which look the same if you rotate them 180 degree ',
+      'For example, all the 2-digit strobogrammatic numbers are [11, 69, 88, 96] '
     ].join('')
     ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
-    acquiredSkills: ['String Manipulation'],
+    prerequisiteSkills: ['Arrays'],
+    acquiredSkills: ['Arrays'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'strobogrammatic',
@@ -62,26 +61,27 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       allowedOutputs: [['101', '111', '181', '609', '619', '689', '808', '818', '906', '916', '986']]
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.forgetZero',
+      buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
       messages: [
-        "Try running your code on length 1. Did you expect that result?",
+        "Try running your code for 1-digit numbers. Did you get the expected result?",
         [
           'Are you making sure you get all the answers?',
-          '0 should also be included'
+          '0 should also be included.'
         ].join('')
       ]
     },
     {
-      buggyFunctionName: 'AuxiliaryCode.firstDigitShouldNotBeZero',
+      buggyFunctionName: 'AuxiliaryCode.allowLeadingZeroInResult',
       messages: [
-        "Try running your code on length 2. Did you expect that result?",
+        "Try running your code on 2-digit numbers. Did you get the expected result?",
         [
-          'Are you making sure you don\'t include any strange format number?',
+          'What happens if the number has a leading zero? Should it still be included?',
           'like 08?'
         ].join(''),
-        "You should not include 00 in your answer."
+        "It looks like you are allowing numbers with a leading zero when they should not be included."
       ]
     }],
+    //we need a performance test for exponential time complexity
     performanceTests: []
   }],
   styleTests: []
