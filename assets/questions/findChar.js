@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for finding the First Non-Repeating Character in a String.
+ * @fileoverview Question data for finding the 
+ * First Non-Repeating Character in a String.
  */
 
 globalData.questions['findChar'] = { // eslint-disable-line dot-notation
@@ -41,10 +42,9 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
         [
           'For this question, you will implement a findFirstNonRepeatingCharacter function. ',
           'This function takes a string as input and returns the first character that isn\'t repeated elsewhere in the string.'
-
         ].join(''),
-        'For instance, findFirstNonRepeatingCharacter(\"mom\") would return \"o\".',
-        'If there is no appropriate character, please return None.'
+        'For instance, findFirstNonRepeatingCharacter("mom") would return "o".',
+        'If there is no appropriate character, return None.'
       ],
       prerequisiteSkills: ['Strings'],
       acquiredSkills: ['String Manipulation', 'Hash Maps'],
@@ -67,11 +67,11 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
       ],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
-        messages: [[
-          'Try running your code on \'wefffa\' on paper. What\'s the result?   ',
-          'Are you sure that you\'re returning the first non-repeating character in the word?   ',
+        messages: [
+          'Try running your code on \'wefffa\' on paper. What\'s the result?',
+          'Are you sure that you\'re returning the first non-repeating character in the word?',
           'It looks like you\'re returning a unique character, but you\'re not returning the first one in the provided string.'
-        ].join('')]
+        ]
       }],
       performanceTests: []
     },
@@ -108,7 +108,7 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in a find1stNonRepeatedChar function. While ',
+      'You should only be writing code in a findFirstNonRepeatingCharacter function. While ',
       'decomposition is generally a good idea, you shouldn\'t need more than ',
       'just this function for this question.'
     ].join('')
