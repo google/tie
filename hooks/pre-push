@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Running hook from new directory"
-
 echo "Running linter tests"
 lines=$(sh scripts/run_linter.sh | wc -l)
 if [ $lines -eq 1 ]; then
@@ -12,6 +10,7 @@ else
 fi
 
 echo "Running karma tests"
+#TODO
 #sh scripts/run_karma_tests.sh
 
 exit 0
