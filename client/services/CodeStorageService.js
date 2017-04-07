@@ -36,18 +36,21 @@ tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
       storedCode[language] = code;
       localStorage.setItem(questionId, JSON.stringify(storedCode));
     };
+
     codeStorageService.automaticallyStoreCodeOnInterval = function(
       questionId, code, language, intervalInSeconds) {
       setInterval(function() {
         codeStorageService.saveCode(questionId, code);
       }, intervalInSeconds * SECONDS_TO_MILLISECONDS);
     };
+
     codeStorageService.automaticallyStoreCode = function(
       questionId, code, language) {
       codeStorageService.automaticallyStoreCodeOnInterval(
         questionId, code, language, 
         DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
     };
+
     codeStorageService.loadStoredCode = function(questionId, language) {
       var storedCode = getObjFromLocalStorage(questionId);
       if (storedCode) {
@@ -56,6 +59,7 @@ tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
         return null;
       }
     };
+    
     return codeStorageService;
   }
 ]);
