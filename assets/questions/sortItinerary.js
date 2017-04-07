@@ -28,16 +28,29 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def justConnectTickets(cls, s):
+    def connectTicketsInGivenOrder(cls, s):
         return "-".join(s.split(","))
+    
+    @classmethod
+    def createLongLinearItinerary(cls, atom, input_size):
+        if input_size <= 1: return "0-1"
+        
+        locations = [str(i) for i in xrange(input_size)]
+        tickets = []
+        for i in xrange(0, input_size-1):
+          ticket = "-".join(locations[i:i+2])
+          tickets.append(ticket)
+        
+        linear_combined_tickets = ",".join(tickets)
+        return linear_combined_tickets
 `
   },
   tasks: [{
     instructions: [
       [
-        'Whoops! Airline tickets for trips of your boss are messed up! ',
-        'But do not worry, the sortItinerary function can sort this out. ',
-        'It takes a string that represents some airline tickets as input. ',
+        'In this question, you will implement the sortItinerary function ',
+        'that sort scrembled airline tickets. ',
+        'It takes a string that represents airline tickets as input. ',
         'The string can be split by comma into substrings that looks like ',
         '"XXX-YYY". This substring represents a ticket and means the plane ',
         'departs from XXX and arrives at YYY, noticing that departure and ',
@@ -56,8 +69,8 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         'to have one and only one itinerary given the list of tickets. '
       ].join('')
     ],
-    prerequisiteSkills: ['Graph', 'String', 'String Manupulation'],
-    acquiredSkills: ['Graph Traverse', 'Topological Sort'],
+    prerequisiteSkills: ['Graph', 'String Manipulation'],
+    acquiredSkills: ['Graph Traversal', 'Topological Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
@@ -72,23 +85,33 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['JFK-MUC-LHR-SFO-SJC']
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.justConnectTickets',
+      buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
       messages: [
-        "Tickets order are scrambled. Don't just connect them in given order. ",
-        "Try use topological search to find an itinerary in the right order. ",
-        "Since no loops, union-find also worth trying. "
+        "Tickets order are scrambled. Just connect them in given order ",
+        "doesn't help. ",
+        "Try think each ticket as an directed edge that connects locations. ",
+        "Draw those edges and locations on paper. Do they look like a graph? ",
+        "Can you do graph traversal or find an order of locations? "
       ]}],
     performanceTests: []
+    // True performance tests are commented out since framework doesn't support
+    // quadratic mode: 
+    //
+    // performanceTests: [{
+    //  inputDataAtom: '',
+    //  transformationFunctionName: 'AuxiliaryCode.createLongLinearItinerary',
+    //  expectedPerformance: 'quadratic',
+    //  evaluationFunctionName: 'sortItinerary'
+    // }]
   }, {
     instructions: [
       [
-        'Good job! Now you realize that trip can contain loops. ',
-        'For example, your boss might leave home for an beautiful island ',
-        'and come back, then fly to NY. The home<->island part of the trip ',
-        'is a loop. Can you handle loops in itinerary?'
+        'Good job! Now we loose the assumption that itinerary do not ',
+        'have loops. For instance, the itinerary can be ',
+        'NY -> ATL -> NY -> BOS'
       ].join('')
     ],
-    prerequisiteSkills: ['Graph', 'String', 'String Manupulation'],
+    prerequisiteSkills: ['Graph', 'String Manupulation'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -109,16 +132,15 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'Sorting work is almost done but you find some tickets can form  ',
-        'two or more itineraries. How to find the one that boss really want? ',
-        'Luckily, you remember that boss likes to visit places in alphabetic ',
-        'order when possible. Can you identify the one true itinerary now?'
+        'two or more itineraries. In this case, the function should prefer ',
+        'the one ranks higher alphabetically. '
       ].join(''),
       [
         'For instance, if either visiting ATL or BOS can form valid itinerary, ',
-        'The boss would choose ATL over BOS.'
+        'The function would choose ATL over BOS.'
       ].join('')
     ],
-    prerequisiteSkills: ['Graph', 'String Manupulation', 'Topological Sort'],
+    prerequisiteSkills: ['Graph', 'String Manipulation', 'Topological Sorting'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
     outputFunctionName: null,
