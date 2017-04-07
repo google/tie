@@ -36,7 +36,8 @@ class AuxiliaryCode(object):
       counter = Counter(word)
       result = word[0]
       for w in counter:
-        if counter[w] > counter[result]: result = w
+        if counter[w] > counter[result]:
+          result = w
       return w
 `
   },
@@ -44,7 +45,7 @@ class AuxiliaryCode(object):
     instructions: [
       [
         "For this problem, we'd like you to write a method to determine",
-        'the most common character in a string You will be given a string',
+        'the most common character in a string. You will be given a string',
         'of ASCII characters, and you may assume that there',
         ' is only one most common character, for now.'
       ].join(''),
@@ -71,12 +72,9 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        [
-          'Try a string that has characters besides letters. ',
-          'Does your code work as well? ',
-          'If you are making an array of size 52 that keeps track of the amount of 52 letters ',
-          '(lowercase and uppercase), that solution may not be generalized enough.'
-        ].join('')
+        "Try a string that has digit characters, Did you only consider letters.",
+        "Did you consider special characters such as ~!@#.",
+        "It looks like that you didn't consider all the characters of ASCII."
       ]
     }],
     performanceTests: []
