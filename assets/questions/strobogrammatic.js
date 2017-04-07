@@ -81,7 +81,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
         "It looks like you are allowing numbers with a leading zero when they should not be included."
       ]
     }],
-    //we need a performance test for exponential time complexity
+    // We need a performance test for exponential time complexity
     performanceTests: []
   }],
   styleTests: []
