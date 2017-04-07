@@ -59,7 +59,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     @classmethod
     def forgetToIgnoreSpace(cls, string):
         for i in range(len(string)/2):
-            if string[i] is not string[-i-1]:
+            if string[i] is not string[-i - 1]:
                 return False
         return True
 `
@@ -68,7 +68,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'For this question, you will implement the isPalindrome function. ',
-        'It takes a sentense as input and return True if the input is a ',
+        'It takes a sentence as input and returns True if the input is a ',
         'palindrome and False if it is not.'
       ].join(''),
       [
@@ -113,7 +113,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',
       messages: [
-        "Try running your code on 'abab' on paper. Did you expet that result?",
+        "Try running your code on 'abab' on paper. Did you expect that result?",
         [
           'Are you sure the input string is a palindrome? \'abab\', for instance, is not.'
         ].join(''),
