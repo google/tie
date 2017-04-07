@@ -5,11 +5,14 @@ lines=$(sh scripts/run_linter.sh | wc -l)
 if [ $lines -eq 1 ]; then
     echo "Linter tests passed"
 else
-    read -p "Linter tests failed. Do you want to continue anyway? (y/n)" option
-    case $option in
-        [Yy]* ) break;;
-        [Nn]* ) exit 1;;
-        * ) echo "Please enter y or n.";;
+    # Assign standard input to keyboard
+    exec < /dev/tty
+
+    read -p "Linter tests failed. Do you want to continue anyway? (y/n)" yn
+    case $yn in
+        [Yy]* ) ;;
+        [Nn]* ) echo "Not pushing changes"; exit 1;;
+        * ) echo "Invalid input";;
     esac
 fi
 
