@@ -5,8 +5,12 @@ lines=$(sh scripts/run_linter.sh | wc -l)
 if [ $lines -eq 1 ]; then
     echo "Linter tests passed"
 else
-    echo "Linter tests failed"
-    exit 1
+    read -p "Linter tests failed. Do you want to continue anyway? (y/n)" option
+    case $option in
+        [Yy]* ) break;;
+        [Nn]* ) exit 1;;
+        * ) echo "Please enter y or n.";;
+    esac
 fi
 
 echo "Running karma tests"
