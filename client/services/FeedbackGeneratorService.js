@@ -99,7 +99,7 @@ tie.factory('FeedbackGeneratorService', [
       feedback.appendCodeParagraph(
         'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
         'Output: ' + _jsToHumanReadable(observedOutput) + '\n' +
-        'stdout: ' + stdOutput);
+        'Stdout: ' + stdOutput);
       feedback.appendTextParagraph('However, the expected output is:');
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
