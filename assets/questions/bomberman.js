@@ -91,61 +91,59 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'bomb',
-    correctnessTests: [
-      {
-        input: [],
-        allowedOutputs: [0]
-      },
-      {
-        input: [[], [], []],
-        allowedOutputs: [0]
-      },   
-      {
-        input: [["e", "", "e", "x", "", "e"]],
-        allowedOutputs: [2]
-      },
-      {
-        input: [["e", "", "e", "", "", "e"]],
-        allowedOutputs: [3]
-      },
-      {
-        input: [["e"], ["x"], [""], ["x"]],
-        allowedOutputs: [0]
-      },
-      {
-        input: [["e"], ["e"], [""], ["x"]],
-        allowedOutputs: [2]
-      },
-      {
-        input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
-        allowedOutputs: [4]
-      }
-    ],
+    correctnessTests: [{
+      input: [],
+      allowedOutputs: [0]
+    }, {
+      input: [[], [], []],
+      allowedOutputs: [0]
+    }, {
+      input: [["e", "", "e", "x", "", "e"]],
+      allowedOutputs: [2]
+    }, {
+      input: [["e", "", "e", "", "", "e"]],
+      allowedOutputs: [3]
+    }, {
+      input: [["e"], ["x"], [""], ["x"]],
+      allowedOutputs: [0]
+    }, {
+      input: [["e"], ["e"], [""], ["x"]],
+      allowedOutputs: [2]
+    }, {
+      input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
+      allowedOutputs: [4]
+    }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
-      messages: [["Try to run your code on [['e', '', 'x', 'e']]. ",
-        "Does the result match what you expected? "
-      ].join(''),
+      messages: [
+        [
+          "Try to run your code on [['e', '', 'x', 'e']]. ",
+          "What's the result?"
+        ].join(''),
         [
           "You seem to be ignoring walls in your solution, which is",
           " incorrect. If a bomb is placed, the resulting explosion",
-          " should only go until it reaches a wall."
+          " could only go until it reaches a wall."
         ].join('')
       ]
     },
     {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
-      messages: [["Try to run your code on [['e', 'x', '', 'x', 'e']]. ",
-        "Does the result match what you expected?"
-      ].join(''),
+      messages: [
+        [
+          "Try to run your code on [['e', 'x', '', 'x', 'e']]. ",
+          "What's the result?"
+        ].join(''),
         [
           "You seem to be returning all the enemies on the board. ",
-          "Your bomb can only kill enemies in the same row and column. "
+          "Your bomb can only kill enemies in the same row and column. ",
+          "And the explosion should stop once it hits a wall."
         ].join('')
       ]
     }],
-    // Since we currently only support O(n) runtime complexities and this
-    // requires an O(n^2) solution. We have skipped performance tests.
+    // The system currently only supports O(n) runtime complexities and 
+    // this requires an O(n^2) solution, so performance tests will be 
+    // implemented at a later date.
     performanceTests: []
   }],
   styleTests: []
