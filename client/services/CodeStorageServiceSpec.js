@@ -20,7 +20,7 @@ describe('CodeStorageService', function() {
   var LANGUAGE = 'python';
   var FAILED_LANGUAGE = 'java';
   var NUM_CHARS_QUESTION_ID = 10;
-  var NUM_CHARS_CODE = 1000;
+  var NUM_CHARS_CODE = 10;
   var NUM_QUESTIONS = 5;
 
   var CodeStorageService;
@@ -39,13 +39,12 @@ describe('CodeStorageService', function() {
   var sampleQuestionIds = [];
   var sampleQuestionCodes = [];
 
-
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     CodeStorageService = $injector.get('CodeStorageService');
 
     for (var i = 0; i < NUM_QUESTIONS; i++) {
-      // Generate random questoin Id with 
+      // Generate random question Id with 
       // length of NUM_CHARS_QUESTION_ID
       sampleQuestionIds[i] = generateRandomChars(
         Math.floor(Math.random() * NUM_CHARS_QUESTION_ID));
@@ -56,23 +55,45 @@ describe('CodeStorageService', function() {
     }
   }));
 
+  afterEach(function() {
+    sampleQuestionIds.forEach(function(questionId) {
+      var hashKey = "[" + questionId + ":" + LANGUAGE + "]";
+      localStorage.removeItem(hashKey);
+      hashKey = "[" + questionId + ":" + FAILED_LANGUAGE + "]";
+      localStorage.removeItem(hashKey);
+    }); 
+  });
+
+  describe('getLocalStorageHashKey', function() {
+    it('should create a hash key based on given questionId and language', function() {
+      sampleQuestionIds.forEach(function(questionId) {
+        expect(CodeStorageService.getLocalStorageHashKey(questionId, LANGUAGE))
+          .toEqual("[" + questionId + ":" + LANGUAGE + "]");
+        expect(CodeStorageService.getLocalStorageHashKey(
+          questionId, FAILED_LANGUAGE)).toEqual(
+             "[" + questionId + ":" + FAILED_LANGUAGE + "]");
+      });
+    });
+  });
+
   describe('storeCode', function() {
     it('should store code to browser', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId, 
           sampleQuestionCodes[index], LANGUAGE);
-        expect(JSON.parse(localStorage.getItem(questionId))[LANGUAGE])
-          .toEqual(sampleQuestionCodes[index]);
+        var hashKey = "[" + questionId + ":" + LANGUAGE + "]";
+        expect(localStorage.getItem(hashKey)).toEqual(
+          sampleQuestionCodes[index]);
       });     
     });
   });
 
   describe('loadStoredCode', function() {
     it('should retrieve stored code from browser', function() {
+      var hashKeys = [];
       for (var i = 0; i < NUM_QUESTIONS; i++) {
-        var storedCode = {};
-        storedCode[LANGUAGE] = sampleQuestionCodes[i];
-        localStorage.setItem(sampleQuestionIds[i], JSON.stringify(storedCode));
+        hashKeys[i] = "[" + sampleQuestionIds[i] + ":" + LANGUAGE + "]";
+        localStorage.setItem(hashKeys[i], sampleQuestionCodes[i]);
       }
       sampleQuestionIds.forEach(function(questionId, index) {
         expect(CodeStorageService.loadStoredCode(questionId, 
@@ -80,10 +101,10 @@ describe('CodeStorageService', function() {
       });
     });
 
-    it('should fail to retrieve code and return undefined or null or empty', function() {
+    it('should fail to retrieve code and return null', function() {
       sampleQuestionIds.forEach(function(questionId) {
-        expect(!CodeStorageService.loadStoredCode(questionId, 
-          FAILED_LANGUAGE)).toBe(true);
+        expect(CodeStorageService.loadStoredCode(questionId, 
+          FAILED_LANGUAGE)).toEqual(null);
       });
     });
   });
