@@ -19,8 +19,8 @@
 describe('CodeStorageService', function() {
   var LANGUAGE = 'python';
   var FAILED_LANGUAGE = 'java';
-  var QUESTION_ID_LEN_RANGE = 10;
-  var CODE_LEN_RANGE = 10000;
+  var NUM_CHARS_QUESTION_ID = 10;
+  var NUM_CHARS_CODE = 1000;
   var NUM_QUESTIONS = 5;
 
   var CodeStorageService;
@@ -36,8 +36,8 @@ describe('CodeStorageService', function() {
     return generatedChars;
   };
 
-  var sampleQuestionId = [];
-  var sampleQuestionCode = [];
+  var sampleQuestionIds = [];
+  var sampleQuestionCodes = [];
 
 
   beforeEach(module('tie'));
@@ -46,23 +46,23 @@ describe('CodeStorageService', function() {
 
     for (var i = 0; i < NUM_QUESTIONS; i++) {
       // Generate random questoin Id with 
-      // length of QUESTION_ID_LEN_RANGE
-      sampleQuestionId[i] = generateRandomChars(
-        Math.floor(Math.random() * QUESTION_ID_LEN_RANGE));
+      // length of NUM_CHARS_QUESTION_ID
+      sampleQuestionIds[i] = generateRandomChars(
+        Math.floor(Math.random() * NUM_CHARS_QUESTION_ID));
       // Generate random question code with 
-      // length of CODE_LEN_RANGE
-      sampleQuestionCode[i] = generateRandomChars(
-        Math.floor(Math.random() * CODE_LEN_RANGE));
+      // length of NUM_CHARS_CODE
+      sampleQuestionCodes[i] = generateRandomChars(
+        Math.floor(Math.random() * NUM_CHARS_CODE));
     }
   }));
 
   describe('storeCode', function() {
     it('should store code to browser', function() {
-      sampleQuestionId.forEach(function(questionId, index) {
+      sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId, 
-          sampleQuestionCode[index], LANGUAGE);
+          sampleQuestionCodes[index], LANGUAGE);
         expect(JSON.parse(localStorage.getItem(questionId))[LANGUAGE])
-          .toEqual(sampleQuestionCode[index]);
+          .toEqual(sampleQuestionCodes[index]);
       });     
     });
   });
@@ -71,17 +71,17 @@ describe('CodeStorageService', function() {
     it('should retrieve stored code from browser', function() {
       for (var i = 0; i < NUM_QUESTIONS; i++) {
         var storedCode = {};
-        storedCode[LANGUAGE] = sampleQuestionCode[i];
-        localStorage.setItem(sampleQuestionId[i], JSON.stringify(storedCode));
+        storedCode[LANGUAGE] = sampleQuestionCodes[i];
+        localStorage.setItem(sampleQuestionIds[i], JSON.stringify(storedCode));
       }
-      sampleQuestionId.forEach(function(questionId, index) {
+      sampleQuestionIds.forEach(function(questionId, index) {
         expect(CodeStorageService.loadStoredCode(questionId, 
-          LANGUAGE)).toEqual(sampleQuestionCode[index]);
+          LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
 
-    it('should fail to retrieve code and return null', function() {
-      sampleQuestionId.forEach(function(questionId) {
+    it('should fail to retrieve code and return undefined or null or empty', function() {
+      sampleQuestionIds.forEach(function(questionId) {
         expect(!CodeStorageService.loadStoredCode(questionId, 
           FAILED_LANGUAGE)).toBe(true);
       });
@@ -90,11 +90,11 @@ describe('CodeStorageService', function() {
 
   describe('storeAndLoadCode', function() {
     it('should store and load stored code from browser', function() {
-      sampleQuestionId.forEach(function(questionId, index) {
+      sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
-          sampleQuestionCode[index], LANGUAGE);
+          sampleQuestionCodes[index], LANGUAGE);
         expect(CodeStorageService.loadStoredCode(questionId, 
-          LANGUAGE)).toEqual(sampleQuestionCode[index]);
+          LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
   });
