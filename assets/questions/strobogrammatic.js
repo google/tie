@@ -17,10 +17,10 @@
  */
 
 globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
-  title: 'strobogrammatic',
+  title: 'Get N-Digit Strobogrammatic Numbers',
   starterCode: {
     python:
-`def strobogrammatic(length):
+`def strobogrammatic(num_digits):
     return []
 `
   },
@@ -42,7 +42,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     instructions: [[ 
       'Implement a function strobogrammatic which takes a number n as input and generates a list of ',
       'n-digit numbers which look the same if you rotate them 180 degrees.',
-      'For example, all the 2-digit strobogrammatic numbers are [11, 69, 88, 96].'
+      'For example,there are only four 2-digit strobogrammatic numbers:[11, 69, 88, 96].'
     ].join('')
     ],
     prerequisiteSkills: ['Arrays'],
@@ -79,10 +79,9 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
           'Should it still be included?'
         ].join(''),
         "It looks like you are allowing numbers with a leading zero when they should not be included."
-        "Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now."
       ]
     }],
-    // We need a performance test for exponential time complexity.
+    // Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now.
     performanceTests: []
   }],
   styleTests: []
