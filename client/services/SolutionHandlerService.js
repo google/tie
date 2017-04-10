@@ -49,8 +49,9 @@ tie.factory('SolutionHandlerService', [
             studentCode.trim());
           CodePreprocessorDispatcherService.preprocess(
             language, codeSubmission, auxiliaryCode,
-            task.getMainFunctionName(), task.getOutputFunctionName(),
-            task.getCorrectnessTests(), task.getBuggyOutputTests(),
+            task.getInputFunctionName(), task.getMainFunctionName(), 
+            task.getOutputFunctionName(), task.getCorrectnessTests(), 
+            task.getBuggyOutputTests(),
             task.getPerformanceTests());
 
           return CodeRunnerDispatcherService.runCodeAsync(

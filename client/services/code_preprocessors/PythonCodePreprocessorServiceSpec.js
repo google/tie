@@ -446,12 +446,12 @@ describe('PythonCodePreprocessorService', function() {
           '',
           'correctness_test_results = []',
           'correctness_test_results.append(outputFnName(' +
-            'System.runTest(StudentCode().mainFnName, test_inputs[0])))'
+            'System.runTest(StudentCode().mainFnName, inputFnName(test_inputs[0]))))'
         ].join('\n');
 
         expect(
           PythonCodePreprocessorService._generateCorrectnessTestCode(
-            correctnessTests, 'mainFnName', 'outputFnName')
+            correctnessTests, 'inputFnName', 'mainFnName', 'outputFnName')
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -482,7 +482,7 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, null)
+            buggyOutputTests, null, null)
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -507,7 +507,57 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, 'outputFunctionName')
+            buggyOutputTests, null, 'outputFunctionName')
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+
+    it('should add correct buggy output test code with an input function name',
+      function() {
+        var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc',
+          messages: ['a', 'b', 'c']
+        })];
+        var expectedGeneratedCode = [
+          'def matches_buggy_function(func):',
+          '    buggy_results = []',
+          '    for test_input in test_inputs:',
+          '        buggy_results.append(System.runTest(func, inputFunctionName(test_input)))',
+          '    return buggy_results == correctness_test_results',
+          '',
+          'buggy_output_test_results = []',
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          ''
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateBuggyOutputTestCode(
+            buggyOutputTests, 'inputFunctionName', null)
+        ).toEqual(expectedGeneratedCode);
+      }
+    );
+
+    it('should add correct buggy output test code with both input and output function name',
+      function() {
+        var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc',
+          messages: ['a', 'b', 'c']
+        })];
+        var expectedGeneratedCode = [
+          'def matches_buggy_function(func):',
+          '    buggy_results = []',
+          '    for test_input in test_inputs:',
+          '        buggy_results.append(outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '    return buggy_results == correctness_test_results',
+          '',
+          'buggy_output_test_results = []',
+          'buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          ''
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._generateBuggyOutputTestCode(
+            buggyOutputTests, 'inputFunctionName', 'outputFunctionName')
         ).toEqual(expectedGeneratedCode);
       }
     );
