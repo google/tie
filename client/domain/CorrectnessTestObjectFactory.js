@@ -32,12 +32,15 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-      if (Array.isArray(this._allowedOutputs)) {
-        var searchJson = JSON.stringify(output);
-        var arrJson = this._allowedOutputs.map(JSON.stringify);
-        return arrJson.indexOf(searchJson) !== -1;
+      var arrJson = this._allowedOutputs;
+      var target = output;
+      if (Array.isArray(output)) {
+        target = JSON.stringify(output);
+        arrJson = this._allowedOutputs.map(JSON.stringify);
       }
-      return this._allowedOutputs.indexOf(output) !== -1;
+      return arrJson.some(function(allowedOutput) {
+        return angular.equals(allowedOutput, target);
+      });
     };
 
     CorrectnessTest.prototype.getAnyAllowedOutput = function() {
