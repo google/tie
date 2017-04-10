@@ -60,6 +60,11 @@ tie.factory('QuestionSchemaValidationService', [
           angular.isArray(question.getTasks()) &&
           question.getTasks().length > 0);
       },
+      verifyAtLeastOneBuggyOutputTestExists: function(question) {
+        return question.getTasks().some(function(task) {
+          return task.getBuggyOutputTests().length > 0;
+        });
+      },
       verifyStyleTestsAreArray: function(question) {
         return angular.isArray(question.getStyleTests());
       },
