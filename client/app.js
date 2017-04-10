@@ -18,6 +18,8 @@
 
 window.globalData = {
   // Question data will be stored here, keyed by question ID.
+  // Questions are instantiated in assets/questions, and they add themselves
+  // to this dictionary when they're instantiated.
   questions: {},
   // Question set data will be stored here, keyed by question set ID.
   questionSets: {}
