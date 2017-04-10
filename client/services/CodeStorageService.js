@@ -18,31 +18,22 @@
 tie.factory('CodeStorageService', [
   function() {
     var codeStorageService = {};
-    var getObjFromLocalStorage = function(questionId) {
-      try {
-        return JSON.parse(localStorage.getItem(questionId));
-      } catch (e) {
-        return null;
-      }
+    
+    codeStorageService.getLocalStorageHashKey = function(questionId, language) {
+      return "[" + questionId + ":" + language + "]";
     };
 
     codeStorageService.storeCode = function(questionId, code, language) {
-      var storedCode = getObjFromLocalStorage(
-        localStorage.getItem(questionId));
-      if (!storedCode) {
-        storedCode = {};
-      }
-      storedCode[language] = code;
-      localStorage.setItem(questionId, JSON.stringify(storedCode));
+      var localStorageKey = codeStorageService.getLocalStorageHashKey(
+        questionId, language);
+      localStorage.setItem(localStorageKey, code);
     };
 
     codeStorageService.loadStoredCode = function(questionId, language) {
-      var storedCode = getObjFromLocalStorage(questionId);
-      if (storedCode) {
-        return storedCode[language];
-      } else {
-        return null;
-      }
+      var localStorageKey = codeStorageService.getLocalStorageHashKey(
+        questionId, language);
+      var storedCode = localStorage.getItem(localStorageKey);
+      return storedCode;
     };
 
     return codeStorageService;
