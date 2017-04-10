@@ -20,20 +20,19 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
   title: 'Unknown Alphabet',
   starterCode: {
     python:
-`def findDictionary(words):
+`def findAlphabet(words):
     return ""`
   },
   auxiliaryCode: {
     python:
-`
-class AuxiliaryCode(object):
+`class AuxiliaryCode(object):
   @classmethod
   def failsOnNoSolution(cls, words):
     """
       edges stores the edges that need to build for the alphabet graph
       edges[ch] is a list of letters for letter ch whose ranks are bigger than
       ch's rank.
-      degree stores the degree of each letter.
+      degree stores the degree of each lfindAlphabetetter.
       For each letter ch, there're degree[ch] letters has an edge goes to ch
     """
     edges = {}
@@ -54,7 +53,7 @@ class AuxiliaryCode(object):
           break
     answer  = ""
     hasZeroDegreeLetter = True
-    while hasZeroDegreeLetter :
+    while hasZeroDegreeLetter:
       hasZeroDegreeLetter = False
       for key in degree:
         if degree[key] == 0:
@@ -87,7 +86,7 @@ class AuxiliaryCode(object):
           break
     answer  = ""
     hasZeroDegreeLetter = True
-    while hasZeroDegreeLetter :
+    while hasZeroDegreeLetter:
       hasZeroDegreeLetter = False
       for key in degree:
         if degree[key] == 0:
@@ -119,7 +118,7 @@ class AuxiliaryCode(object):
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'findDictionary',
+    mainFunctionName: 'findAlphabet',
     correctnessTests: [{
       input: [
         "a",
@@ -234,7 +233,7 @@ class AuxiliaryCode(object):
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'findDictionary',
+    mainFunctionName: 'findAlphabet',
     correctnessTests: [{
       input: [
         "a",
@@ -261,12 +260,13 @@ class AuxiliaryCode(object):
       buggyFunctionName: 'AuxiliaryCode.failsOnNoSolution',
       messages: [
         [
-          'What if the test case is ["c", "a", "b", "a"]?',
-          'And what answer your code will generate for this test case?'
+          'Try running your function on ["c", "a", "b", "a"] on paper. ',
+          'Is your result what you expect?'
         ].join(''),
         [
-          'The answer to that case should be a empty string. But what your code',
-          ' have returned?'
+          'It looks like your answer is not an empty string',
+          'Can you examine whether your order is valid on the test case ',
+          '["c", "a", "b", "a"]?'
         ].join('')
       ]
     }],
@@ -287,7 +287,7 @@ class AuxiliaryCode(object):
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'findDictionary',
+    mainFunctionName: 'findAlphabet',
     correctnessTests: [{
       input: [
         "ab",
@@ -305,8 +305,8 @@ class AuxiliaryCode(object):
         ].join(''),
         'How does your code handle uppercase letters?',
         [
-          'The answer to the test case ["a", "Ab", "b"] should be "ab". Did ',
-          'your code return the string with some letters in uppercase?'
+          'The answer to the test case ["a", "Ab", "b"] should be "ab". It ',
+          'looks like you returned a string with some uppercase letters.'
         ].join('')
       ]
     }],
@@ -317,7 +317,7 @@ class AuxiliaryCode(object):
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in an findDictionary function. While ',
+      'You should only be writing code in an findAlphabet function. While ',
       "decomposition is generally a good idea, you shouldn't need more than ",
       'just this function for this question.'
     ].join('')
