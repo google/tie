@@ -31,7 +31,8 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     def allowLeadingZeroInResult(cls, length):
         if length == 2:
            return [["00","11","69","88","96"]]
-
+        if length == 3:
+           return  [['000','080', '010', '101', '111', '181', '609', '619', '689', '808', '818', '906', '916', '986']]
     @classmethod
     def forgetToIncludeZero(cls, length):
         if length == 1:
@@ -78,7 +79,10 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
           'What happens if the number has a leading zero, like 08?',
           'Should it still be included?'
         ].join(''),
-        "It looks like you are allowing numbers with a leading zero when they should not be included."
+        [
+          "It looks like you are allowing numbers with a leading zero",
+          "when they should not be included."
+        ].join('')
       ]
     }],
     // Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now.
