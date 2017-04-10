@@ -43,6 +43,13 @@ install_node_module() {
     NPM_INSTALLED_MODULES="$(npm list)"
   fi
 }
+
+if ! [[ $* == *--disable-presubmit-checks* ]]
+then
+    echo "Setting up hooks"
+    git config core.hooksPath "./hooks"
+fi
+
 export -f install_node_module
 
 # Ensure that there is a node_modules folder in the root, otherwise node may
@@ -83,3 +90,6 @@ fi
 
 # Generate a list of already-installed modules.
 NPM_INSTALLED_MODULES="$(npm list)"
+
+# Set up hooks if not disabled
+
