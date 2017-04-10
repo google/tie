@@ -31,7 +31,9 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-      return this._allowedOutputs.indexOf(output) !== -1;
+      return this._allowedOutputs.some(function(allowedOutput) {
+        return angular.equals(allowedOutput, output);
+      });
     };
 
     CorrectnessTest.prototype.getAnyAllowedOutput = function() {
