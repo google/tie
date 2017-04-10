@@ -17,7 +17,7 @@
  */
 
 globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
-  title: 'Run-Length Encoding',
+  title: 'Longest Substring',
   starterCode: {
     python:
 `def longestSubstring(seq):
@@ -28,8 +28,19 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def skipEncodingAtEndOfString(cls, word):
-        return None
+    def oneLetterResult(cls, word):
+        longest=''
+        for i in range(len(word)):
+          diff=False
+          for j in range(i, len(word)):
+            if word[j]!=word[i]:
+              diff=True;
+              break;
+          if diff:
+            j=j-1
+          if len(longest)< j-i+1:
+            longest=word[i:j+1];
+        return longest
 `
   },
   tasks: [{
@@ -57,7 +68,16 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['ccqq', 'mpmm']
     }
     ], 
-    buggyOutputTests: [],
+    buggyOutputTests: [
+      {
+        buggyFunctionName: 'AuxiliaryCode.oneLetterResult',
+        messages: [
+          ["For string that has more than one type of character, the result should have at least two types of characters",
+            "For example, 'abbba' should yield the result of 'abbba' and not 'bcbbcbcbb'",
+            "Fix your code accordingly"].join('.')
+        ]
+      }
+    ],
     performanceTests: [{inputDataAtom: 'o',
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
