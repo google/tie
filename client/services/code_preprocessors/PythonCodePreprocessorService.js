@@ -47,6 +47,8 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return "'" + pythonStringContent + "'";
+      } else if (typeof jsonVariable == 'number') {
+        return String(jsonVariable);
       } else if (typeof jsonVariable == 'boolean') {
         return jsonVariable ? 'True' : 'False';
       } else if (Array.isArray(jsonVariable)) {
