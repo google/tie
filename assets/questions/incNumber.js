@@ -65,10 +65,10 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'Implement a function for increment a decimal-coded number. A ',
-        'Decimal-Coded number is a list of digits (0 - 9) which can represent ',
-        'a decimal number, such as [1,2] for 12, [3,2,4] for 324. ',
-        'Your task is to increment a given decimal-coded number and return the ',
-        'result (a list of digits). ',
+        'Decimal-Coded number is a list of digits (0 - 9) which can ',
+        'represent a decimal number, such as [1,2] for 12, [3,2,4] for 324. ',
+        'Your task is to increment a given decimal-coded number and return ',
+        'the result (a list of digits). ',
         'For example, [1,2,3,4] should become to [1,2,3,5], [2,0,9] should ',
         'become to [2,1,0]. '
       ].join('')
@@ -85,6 +85,9 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       input: [2, 0, 9], 
       allowedOutputs: [[2, 1, 0]]
     }, {
+      input: [2, 7, 8, 9], 
+      allowedOutputs: [[2, 7, 9, 0]]
+    }, {
       input: [0], 
       allowedOutputs: [[1]]
     }, {
@@ -96,8 +99,8 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       messages: [
         "Try running your code on [1,9] in your head. What's the result?.",
         [
-          "You seem to increment the last digit only without any mathematical carry. ",
-          "Is it the correct way?"
+          "You seem to increment the last digit only without any mathematical ",
+          "carry. Is it the correct way?"
         ].join(''),
         [
           "Make sure to modify other digits when there is a carrying."
@@ -109,11 +112,11 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'Great! Now your code can handle the case that incrementing will ',
-        'cause mathematical carry. Next, modify your code to handle the ',
+        'cause mathematical carry. Next, check and modify your code to handle ',
         'the input which may change the number of digits when incrementing.'
       ].join('')
     ],
-    prerequisiteSkills: ['Arrays'],
+    prerequisiteSkills: ['Arrays', 'Math', 'Array Manipulation'],
     acquiredSkills: ['Array Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
@@ -124,6 +127,9 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     }, {
       input: [2, 0, 9], 
       allowedOutputs: [[2, 1, 0]]
+    }, {
+      input: [2, 7, 8, 9], 
+      allowedOutputs: [[2, 7, 9, 0]]
     }, {
       input: [0], 
       allowedOutputs: [[1]]
@@ -142,7 +148,7 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       messages: [
         [
           "Think about how your code handles edge cases. ",
-          "When incrementing [9], then answer should be [1,0]."
+          "When incrementing [9, 9], then answer should be [1, 0, 0]."
         ].join('')
       ]
     }],
