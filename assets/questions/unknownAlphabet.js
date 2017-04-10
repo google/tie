@@ -310,7 +310,8 @@ class AuxiliaryCode(object):
         ].join('')
       ]
     }],
-    performanceTests: []
+    // TODO: Time complexity is O(m), which is non-linear. Fix in the future.
+    performanceTests: [] 
   }],
   styleTests: [{
     evaluationFunctionName: 'allowOnlyOneFunction',
