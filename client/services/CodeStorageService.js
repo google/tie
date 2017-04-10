@@ -15,10 +15,9 @@
 /*
  * A service that saves student code to the browser's localStorage.
  */
-tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
-  function(DEFAULT_AUTO_SAVE_SECONDS) {
+tie.factory('CodeStorageService', [
+  function() {
     var codeStorageService = {};
-    var SECONDS_TO_MILLISECONDS = 1000;
     var getObjFromLocalStorage = function(questionId) {
       try {
         return JSON.parse(localStorage.getItem(questionId));
@@ -35,20 +34,6 @@ tie.factory('CodeStorageService', ['DEFAULT_AUTO_SAVE_SECONDS',
       }
       storedCode[language] = code;
       localStorage.setItem(questionId, JSON.stringify(storedCode));
-    };
-
-    codeStorageService.automaticallyStoreCodeOnInterval = function(
-      questionId, code, language, intervalInSeconds) {
-      setInterval(function() {
-        codeStorageService.saveCode(questionId, code);
-      }, intervalInSeconds * SECONDS_TO_MILLISECONDS);
-    };
-
-    codeStorageService.automaticallyStoreCode = function(
-      questionId, code, language) {
-      codeStorageService.automaticallyStoreCodeOnInterval(
-        questionId, code, language, 
-        DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
     };
 
     codeStorageService.loadStoredCode = function(questionId, language) {
