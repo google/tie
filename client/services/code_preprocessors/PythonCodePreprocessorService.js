@@ -166,12 +166,14 @@ tie.factory('PythonCodePreprocessorService', [
       ].join('\n');
       for (var i = 0; i < correctnessTests.length; i++) {
         var testInputCode = (
-          inputFunctionName ? inputFunctionName + '(' + VARNAME_TEST_INPUTS + 
-          '[' + i + '])' + ')'
-          : VARNAME_TEST_INPUTS + '[' + i + '])'
-          );
+          inputFunctionName ?
+          inputFunctionName + '(' + VARNAME_TEST_INPUTS + '[' + i + '])' :
+          VARNAME_TEST_INPUTS + '[' + i + ']'
+        );
         var testRunCode = (
-          'System.runTest(' + qualifiedMainFunctionName + ', ' + testInputCode);
+          'System.runTest(' + qualifiedMainFunctionName + ', '
+          + testInputCode + ')'
+        );
         var testOutputCode = (
           outputFunctionName ?
           outputFunctionName + '(' + testRunCode + ')' : testRunCode);
@@ -190,7 +192,11 @@ tie.factory('PythonCodePreprocessorService', [
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
-      var testInputCode = inputFunctionName ? inputFunctionName + '(test_input)' : 'test_input';
+      var testInputCode = (
+        inputFunctionName ? 
+        inputFunctionName + '(test_input)' :
+        'test_input'
+      );
       var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
       var testOutputCode = (
         outputFunctionName ?
@@ -264,8 +270,9 @@ tie.factory('PythonCodePreprocessorService', [
 
     return {
       preprocess: function(
-          codeSubmission, auxiliaryCode, inputFunctionName, mainFunctionName, outputFunctionName,
-          correctnessTests, buggyOutputTests, performanceTests) {
+          codeSubmission, auxiliaryCode, inputFunctionName, mainFunctionName,
+          outputFunctionName, correctnessTests, buggyOutputTests,
+          performanceTests) {
         // Transform the student code (without changing the number of lines) to
         // put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(

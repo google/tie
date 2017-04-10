@@ -537,7 +537,6 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-
     it('should add correct buggy output test code with both an input and output function name',
       function() {
         var buggyOutputTests = [BuggyOutputTestObjectFactory.create({
@@ -562,8 +561,6 @@ describe('PythonCodePreprocessorService', function() {
         ).toEqual(expectedGeneratedCode);
       }
     );
-
-
   });
 
   describe('_generatePerformanceTestCode', function() {
