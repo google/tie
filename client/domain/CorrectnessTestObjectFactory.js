@@ -31,18 +31,9 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-    // If allowOutputs should be arrays and learner's code returns an array
-    // Then the if statement will check if learner's output matches
-    // any of arrays in the allowedOutputs
-      if (this._allowedOutputs.length > 0 && 
-          angular.isArray(this._allowedOutputs[0]) &&
-          angular.isArray(output)) {
-        var stringifiedOutput = JSON.stringify(output);
-        return this._allowedOutputs.some(function(allowedOutput) {
-          return JSON.stringify(allowedOutput) === stringifiedOutput;
-        });
-      }
-      return this._allowedOutputs.indexOf(output) !== -1;
+      return this._allowedOutputs.some(function(allowedOutput) {
+        return angular.equals(allowedOutput, output);
+      });
     };
 
     CorrectnessTest.prototype.getAnyAllowedOutput = function() {
