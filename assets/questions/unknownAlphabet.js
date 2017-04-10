@@ -17,7 +17,7 @@
  */
 
 globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
-  title: 'Unknow Alphabet',
+  title: 'Unknown Alphabet',
   starterCode: {
     python:
 `def findDictionary(words):
@@ -69,7 +69,7 @@ class AuxiliaryCode(object):
     
     
   @classmethod
-  def failsO nUppercase(cls, words):
+  def failsOnUppercase(cls, words):
     edges = {}
     degree = {}
     for word in words:
@@ -258,7 +258,7 @@ class AuxiliaryCode(object):
       allowedOutputs: ['acb']
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.wrongInNoSolution',
+      buggyFunctionName: 'AuxiliaryCode.failsOnNoSolution',
       messages: [
         [
           'What if the test case is ["c", "a", "b", "a"]?',
@@ -297,7 +297,7 @@ class AuxiliaryCode(object):
       allowedOutputs: ['ab']
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.wrongInUppercase',
+      buggyFunctionName: 'AuxiliaryCode.failsOnUppercase',
       messages: [
         [
           'Try running your code over ["a", "Ab", "b"]. Do you get the result ',
