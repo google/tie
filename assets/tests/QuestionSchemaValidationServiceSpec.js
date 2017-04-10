@@ -23,11 +23,9 @@ describe('QuestionSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in QuestionSchemaValidationService.
   // Update if you add new question schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 11;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 12;
   // Should contain all question IDs.
-  // TODO(eyurko): Figure out a way to dynamically check to make sure
-  // that all question IDs are specified.
-  var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle', 'findChar'];
+  var QUESTION_IDS = Object.keys(globalData.questions);
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -38,14 +36,24 @@ describe('QuestionSchemaValidationService', function() {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
-    QuestionSchemaValidationService = $injector.get(
-      'QuestionSchemaValidationService');
+    QuestionSchemaValidationService =
+        $injector.get('QuestionSchemaValidationService');
 
     QuestionDataService.initCurrentQuestionSet('all');
     questions = QUESTION_IDS.map(function(questionId) {
       return QuestionDataService.getQuestion(questionId);
     });
   }));
+
+  describe('validateTitlesAreUnique', function() {
+    it('should verify that all questions have a unique title', function() {
+      var titles = new Set();
+      questions.forEach(function(question) {
+        titles.add(question.getTitle());
+      });
+      expect(titles.size).toEqual(questions.length);
+    });
+  });
 
   describe('validateAllQuestions', function() {
     it('should validate the structure of all sample questions', function() {
@@ -56,11 +64,10 @@ describe('QuestionSchemaValidationService', function() {
 
         functions.forEach(function(verifierFunctionName) {
           functionCount++;
-          var verifierFunction = QuestionSchemaValidationService[
-            verifierFunctionName];
+          var verifierFunction =
+              QuestionSchemaValidationService[verifierFunctionName];
           expect(verifierFunction(question)).toBe(true, [
-            verifierFunctionName,
-            ' failed for the question: "' + title + '"'
+            verifierFunctionName, ' failed for the question: "' + title + '"'
           ].join(''));
         });
 
