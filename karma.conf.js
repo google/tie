@@ -38,6 +38,12 @@ module.exports = function(config) {
       subdir: '.',
       dir: './karma_coverage_reports'
     },
+    // Browsers
+    browsers: ['PhantomJS'],
+    // Phantomjs launcher properties
+    phantomjsLauncher: {
+      exitOnResourceError: true
+    },
     // Web server port.
     port: 9876,
     // Enable / disable colors in the output (reporters and logs).

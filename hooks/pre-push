@@ -20,6 +20,22 @@
 #     Runs automatically before a git push command is executed
 #     Behaviour can be set up using "bash scripts/setup_hooks.sh"
 
+# Ask user if push should continue anyway if a test fails
+proceed_when_test_fail () {
+    # Assign standard input to keyboard
+    exec < /dev/tty
+
+    read -p "$1 tests failed. Do you want to continue anyway? (y/n) " yn
+    case $yn in
+        [Yy]* ) ;;
+        [Nn]* ) echo "Not pushing changes"; exit 1;;
+        * ) echo "Invalid input"; exit 1;;
+    esac
+
+    # Close standard input
+    exec <&-
+}
+
 echo "Running linter tests"
 sh scripts/run_linter.sh
 
@@ -28,22 +44,17 @@ if [ $? -eq 0 ]
 then
     echo "Linter tests passed"
 else
-    # Assign standard input to keyboard
-    exec < /dev/tty
-
-    read -p "Linter tests failed. Do you want to continue anyway? (y/n)" yn
-    case $yn in
-        [Yy]* ) ;;
-        [Nn]* ) echo "Not pushing changes"; exit 1;;
-        * ) echo "Invalid input";;
-    esac
-
-    # Close standard input
-    exec <&-
+    proceed_when_test_fail "Linter"
 fi
 
 echo "Running karma tests"
-#TODO
-#sh scripts/run_karma_tests.sh
+sh scripts/run_karma_tests.sh --browsers PhantomJS
+
+# Checking exit code returned
+if [ $? -eq 0 ]
+then
+    echo "Karma tests passed"
+else
+    proceed_when_test_fail "Karma" 
 
 exit 0
