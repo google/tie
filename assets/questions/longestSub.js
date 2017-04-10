@@ -13,14 +13,15 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for the longest substring.
+ * @fileoverview Question data for longest substring with at most two distinct 
+ * characters problem.
  */
 
-globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
-  title: 'Longest Substring',
+globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notation
+  title: 'Longest Substring With At Most Two Distinct Characters',
   starterCode: {
     python:
-`def longestSubstring(seq):
+`def longestSubstring(str):
     return ""
 `
   },
@@ -29,24 +30,26 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
 `class AuxiliaryCode(object):
     @classmethod
     def oneLetterResult(cls, word):
-        longest=''
+        longest = ''
         for i in range(len(word)):
-          diff=False
+          diff = False
           for j in range(i, len(word)):
-            if word[j]!=word[i]:
-              diff=True;
+            if word[j] != word[i]:
+              diff = True;
               break;
           if diff:
-            j=j-1
-          if len(longest)< j-i+1:
-            longest=word[i:j+1];
+            j = j-1
+          if len(longest) < j-i+1:
+            longest = word[i:j+1];
         return longest
 `
   },
   tasks: [{
     instructions: [
       [
-        'Given a string, find the longest substring that contains at most 2 distinct characters.'
+        "For this problem, you'll be writing a longestSubstring method that, given a string",
+        ', find the longest substring that contains at most 2 distinct characters.',
+        'For instance, the string "cababadadad" would return "adadad" as its longest substring.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -64,21 +67,25 @@ globalData.questions['longestSub'] = {  // eslint-disable-line dot-notation
       input: 'ab',
       allowedOutputs: ['ab']
     }, {
-      input: 'rspbbvueyturpzmxltbnccqqhudcbtumwbflpdrqbsxiolccbeizrbvrjmwunblhtegmpgoawywmpmmvqlkuameudwpaolblwfkk',
-      allowedOutputs: ['ccqq', 'mpmm']
+      input: 'cababadadad',
+      allowedOutputs: ['adadad']
     }
     ], 
     buggyOutputTests: [
       {
+        /** This test is when provided with a multiple-character string, 
+         * the student's result only yield a substring that has one 
+         * type of character. This means it is incorrect
+        */
         buggyFunctionName: 'AuxiliaryCode.oneLetterResult',
         messages: [
           ["For string that has more than one type of character, the result should have at least two types of characters",
-            "For example, 'abbba' should yield the result of 'abbba' and not 'bcbbcbcbb'",
-            "Fix your code accordingly"].join('.')
+            "For example, 'abbba' should yield the result of 'abbba' and not 'bcbbcbcbb'"].join('.')
         ]
       }
     ],
-    performanceTests: [{inputDataAtom: 'o',
+    performanceTests: [{
+      inputDataAtom: 'o',
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
       evaluationFunctionName: 'longestSubstring'}]
