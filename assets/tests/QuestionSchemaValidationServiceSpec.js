@@ -79,5 +79,12 @@ describe('QuestionSchemaValidationService', function() {
         ].join(''));
       });
     });
+
+    it('should check if a question id contains only chars and digits', function() {
+      QUESTION_IDS.forEach(function(questionId, index) {
+        expect(/^\w+$/.test(QUESTION_IDS[index])).toBe(true);
+      });
+    });
   });
 });
+

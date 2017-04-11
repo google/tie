@@ -474,11 +474,10 @@ tie.directive('learnerView', [function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           // Whenever a user navigates to a different question,
           // store their code on the scope.
-          var currentQuestionCode = $scope.code;
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(currentQuestionId, 
-            currentQuestionCode, language);
+            $scope.code, language);
 
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };

@@ -17,26 +17,23 @@
  */
 tie.factory('CodeStorageService', [
   function() {
-    var codeStorageService = {};
-    
-    codeStorageService.getLocalStorageHashKey = function(questionId, language) {
-      return "[" + questionId + ":" + language + "]";
+    var getLocalStorageHashKey = function(questionId, language) {
+      return questionId + ":" + language;
     };
 
-    codeStorageService.storeCode = function(questionId, code, language) {
-      var localStorageKey = codeStorageService.getLocalStorageHashKey(
-        questionId, language);
-      localStorage.setItem(localStorageKey, code);
+    return {
+      storeCode: function(questionId, code, language) {
+        var localStorageKey = getLocalStorageHashKey(
+          questionId, language);
+        localStorage.setItem(localStorageKey, code);
+      },
+      loadStoredCode: function(questionId, language) {
+        var localStorageKey = getLocalStorageHashKey(
+          questionId, language);
+        var storedCode = localStorage.getItem(localStorageKey);
+        return storedCode;
+      }
     };
-
-    codeStorageService.loadStoredCode = function(questionId, language) {
-      var localStorageKey = codeStorageService.getLocalStorageHashKey(
-        questionId, language);
-      var storedCode = localStorage.getItem(localStorageKey);
-      return storedCode;
-    };
-
-    return codeStorageService;
   }
 ]);
 
