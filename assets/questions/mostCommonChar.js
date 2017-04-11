@@ -48,8 +48,8 @@ class AuxiliaryCode(object):
         "For this problem, we'd like you to write a method to determine ",
         'the most common character in a string. You will be given a string ',
         'of ASCII characters, and you may assume that there ',
-        'is only one most common character, ',
-        'and you do not have to consider spaces, for now.'
+        'is only one most common character. ',
+        'For now, you do not have to consider spaces.'
       ].join(''),
       "There's no need to validate that you're always passed a string."
     ],
@@ -74,9 +74,10 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        "Try running code on '1600Amphitheatre'. Have you considered digits?",
-        "Did you consider special characters such as '~!?@#' ?",
-        "It looks like you didn't consider all ASCII characters."
+        "It looks like you might not have considered different types of ASCII characters. ",
+        "Check your code to see if it properly handles strings with digits, ",
+        "such as 1600Amphitheatre. ",
+        "Do not forget to consider special chracters too, such as '~!?@#'."
       ]
     }],
     performanceTests: []
