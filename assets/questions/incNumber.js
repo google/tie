@@ -17,7 +17,7 @@
  */
 
 
-/* eslint no-magic-numbers: ["error", 
+/* eslint no-magic-numbers: ["error",
                             { "ignore": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }] */
 
 globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
@@ -79,21 +79,21 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     outputFunctionName: null,
     mainFunctionName: 'incrementDecCodedNumber',
     correctnessTests: [{
-      input: [1, 2, 3, 4], 
+      input: [1, 2, 3, 4],
       allowedOutputs: [[1, 2, 3, 5]]
     }, {
-      input: [2, 0, 9], 
+      input: [2, 0, 9],
       allowedOutputs: [[2, 1, 0]]
     }, {
-      input: [2, 7, 8, 9], 
+      input: [2, 7, 8, 9],
       allowedOutputs: [[2, 7, 9, 0]]
     }, {
-      input: [0], 
+      input: [0],
       allowedOutputs: [[1]]
     }, {
-      input: [1, 9, 9], 
+      input: [1, 9, 9],
       allowedOutputs: [[2, 0, 0]]
-    }], 
+    }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',
       messages: [
@@ -122,25 +122,25 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     outputFunctionName: null,
     mainFunctionName: 'incrementDecCodedNumber',
     correctnessTests: [{
-      input: [1, 2, 3, 4], 
+      input: [1, 2, 3, 4],
       allowedOutputs: [[1, 2, 3, 5]]
     }, {
-      input: [2, 0, 9], 
+      input: [2, 0, 9],
       allowedOutputs: [[2, 1, 0]]
     }, {
-      input: [2, 7, 8, 9], 
+      input: [2, 7, 8, 9],
       allowedOutputs: [[2, 7, 9, 0]]
     }, {
-      input: [0], 
+      input: [0],
       allowedOutputs: [[1]]
     }, {
-      input: [9], 
+      input: [9],
       allowedOutputs: [[1, 0]]
     }, {
-      input: [1, 9, 9], 
+      input: [1, 9, 9],
       allowedOutputs: [[2, 0, 0]]
     }, {
-      input: [9, 9, 9, 9], 
+      input: [9, 9, 9, 9],
       allowedOutputs: [[1, 0, 0, 0, 0]]
     }],
     buggyOutputTests: [{
