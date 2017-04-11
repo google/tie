@@ -86,7 +86,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Question {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <h3 class="tie-question-title">{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
@@ -336,6 +336,9 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
+	.tie-question-title {
+          color: rgb(66, 133, 244);
+	}
       </style>
     `,
     controller: [
