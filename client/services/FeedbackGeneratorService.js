@@ -188,13 +188,17 @@ tie.factory('FeedbackGeneratorService', [
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
             var outputCount = outputLines.length / correctnessTests.length;
-            var stdout = outputLines.slice(i * outputCount,
+            var stdoutLines = outputLines.slice(i * outputCount,
                 (i + 1) * outputCount);
+            stdout = stdoutLines.join('');
+            if (stdout.slice(-1) == '\n') {
+              stdout = stdout.slice(0, -1);
+            }
 
             // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
               return _getCorrectnessTestFeedback(
-                correctnessTests[i], observedOutput, stdout.join(''));
+                correctnessTests[i], observedOutput, stdout);
             }
           }
 
