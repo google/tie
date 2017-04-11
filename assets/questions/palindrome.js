@@ -32,20 +32,20 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     def createPalindrome(cls, character_set, input_size):
         import random
 
-        space_number = random.randint(0, input_size)
-        character_number = input_size - space_number
+        number_of_spaces = random.randint(0, input_size)
+        number_of_characters = input_size - number_of_spaces
 
         palindrome = []
-        while character_number > 0:
-            character = random.choice(character_set)
-            if character_number == 1:
-                palindrome.insert(int(len(palindrome)/2), character)
-                character_number -= 1
-            else:
-                palindrome = [character] + palindrome + [character]
-                character_number -= 2
+        if number_of_characters % 2 != 0:
+            palindrome = [random.choice(character_set)]
+            number_of_characters -= 1
 
-        for i in range(space_number):
+        while number_of_characters > 0:
+            character = random.choice(character_set)
+            palindrome = [character] + palindrome + [character]
+            number_of_characters -= 2
+
+        for i in range(number_of_spaces):
             position = random.randint(0, len(palindrome))
             palindrome.insert(position, ' ')
 
@@ -59,7 +59,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
 
         numOddCharacters = 0
         for code in ascii_codes:
-            if ascii_codes[code] % 2 is not 0:
+            if ascii_codes[code] % 2 != 0:
                 numOddCharacters += 1
 
         return ((len(string) % 2 == 0 and numOddCharacters == 0) or
@@ -128,9 +128,9 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         ].join(''),
         [
           "It looks like you're counting the number of characters in the input string ",
-          "and returning true if there are an even number of each. With strings ",
-          "like 'abab', however, this approach doesn't work. Try to update your code ",
-          "to avoid just counting the characters."
+          "and returning true if there are an even number of each type of character. ",
+          "With strings like 'abab', however, this approach doesn't work. Try to update ",
+          "your code to avoid just counting the characters."
         ].join('')
       ]
     }, {
@@ -143,7 +143,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         [
           'It looks like you\'re not ignoring spaces in the input string. ',
           'Try to update your code to skip over spaces when determining if ',
-          'a string is a palindrome'
+          'a string is a palindrome.'
         ].join('')
       ]
     }],
