@@ -151,7 +151,7 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateCorrectnessTestCode = function(
-        correctnessTests, mainFunctionName, outputFunctionName) {
+        correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName) {
       var qualifiedMainFunctionName = (
         CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
 
@@ -165,9 +165,15 @@ tie.factory('PythonCodePreprocessorService', [
         VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
       ].join('\n');
       for (var i = 0; i < correctnessTests.length; i++) {
+        var testInputCode = (
+          inputFunctionName ?
+          inputFunctionName + '(' + VARNAME_TEST_INPUTS + '[' + i + '])' :
+          VARNAME_TEST_INPUTS + '[' + i + ']'
+        );
         var testRunCode = (
-          'System.runTest(' + qualifiedMainFunctionName + ', ' +
-          VARNAME_TEST_INPUTS + '[' + i + '])');
+          'System.runTest(' + qualifiedMainFunctionName + ', '
+          + testInputCode + ')'
+        );
         var testOutputCode = (
           outputFunctionName ?
           outputFunctionName + '(' + testRunCode + ')' : testRunCode);
@@ -181,12 +187,17 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateBuggyOutputTestCode = function(
-        buggyOutputTests, outputFunctionName) {
+        buggyOutputTests, inputFunctionName, outputFunctionName) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
-      var testRunCode = 'System.runTest(func, test_input)';
+      var testInputCode = (
+        inputFunctionName ? 
+        inputFunctionName + '(test_input)' :
+        'test_input'
+      );
+      var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
       var testOutputCode = (
         outputFunctionName ?
         outputFunctionName + '(' + testRunCode + ')' : testRunCode);
@@ -259,8 +270,9 @@ tie.factory('PythonCodePreprocessorService', [
 
     return {
       preprocess: function(
-          codeSubmission, auxiliaryCode, mainFunctionName, outputFunctionName,
-          correctnessTests, buggyOutputTests, performanceTests) {
+          codeSubmission, auxiliaryCode, inputFunctionName, mainFunctionName,
+          outputFunctionName, correctnessTests, buggyOutputTests,
+          performanceTests) {
         // Transform the student code (without changing the number of lines) to
         // put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(
@@ -279,9 +291,9 @@ tie.factory('PythonCodePreprocessorService', [
         codeSubmission.append([
           auxiliaryCode,
           this._generateCorrectnessTestCode(
-            correctnessTests, mainFunctionName, outputFunctionName),
+            correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName),
           this._generateBuggyOutputTestCode(
-            buggyOutputTests, outputFunctionName),
+            buggyOutputTests, inputFunctionName, outputFunctionName),
           this._generatePerformanceTestCode(performanceTests)
         ].join('\n\n'));
       },
