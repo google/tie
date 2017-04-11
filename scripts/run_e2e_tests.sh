@@ -14,15 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Usage:
-#
-#     bash scripts/run_linter.sh
+# TODO(feiluo): Need a way to control the log level to avoid thounsands of lines of log.
+
 set -e
 
 source $(dirname $0)/setup.sh || exit 1
 
 # Install the following node modules if they aren't already installed.
-install_node_module eslint 3.18.0
+install_node_module protractor 5.1.1
 
-# Run eslint, passing in any arguments passed to this script.
-./node_modules/eslint/bin/eslint.js -c ./.eslintrc.json assets/**/*.js client/*.js client/**/*.js tests/*.js
+# Start up a Selenium Server
+./node_modules/protractor/bin/webdriver-manager update
+./node_modules/protractor/bin/webdriver-manager start &
+
+# Run the test
+./node_modules/protractor/bin/protractor ./protractor.conf.js
+

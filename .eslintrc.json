@@ -3,7 +3,9 @@
     "env": {
         "browser": true,
         "es6": true,
-        "jasmine": true
+        "jasmine": true,
+        "protractor": true,
+        "node": true
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -120,6 +122,7 @@
         "no-shadow-restricted-names": "error",
         "no-tabs": "error",
         "no-throw-literal": "error",
+        "no-trailing-spaces": "error",
         "no-undef-init": "error",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
