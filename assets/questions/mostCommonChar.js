@@ -27,6 +27,7 @@ globalData.questions['mostCommonCharacter'] = {  // eslint-disable-line dot-nota
   auxiliaryCode: {
     python:
 `from collections import Counter
+
 class AuxiliaryCode(object):
     @classmethod
     def lettersOnly(cls, word):
@@ -44,10 +45,11 @@ class AuxiliaryCode(object):
   tasks: [{
     instructions: [
       [
-        "For this problem, we'd like you to write a method to determine",
-        'the most common character in a string. You will be given a string',
-        'of ASCII characters, and you may assume that there',
-        ' is only one most common character, for now.'
+        "For this problem, we'd like you to write a method to determine ",
+        'the most common character in a string. You will be given a string ',
+        'of ASCII characters, and you may assume that there ',
+        'is only one most common character, ',
+        'and you do not have to consider spaces, for now.'
       ].join(''),
       "There's no need to validate that you're always passed a string."
     ],
@@ -72,18 +74,18 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        "Try a string that has digit characters, Did you only consider letters.",
-        "Did you consider special characters such as ~!@#.",
-        "It looks like that you didn't consider all the characters of ASCII."
+        "Try running code on '1600Amphitheatre'. Have you considered digits?",
+        "Did you consider special characters such as '~!?@#' ?",
+        "It looks like you didn't consider all ASCII characters."
       ]
     }],
     performanceTests: []
   }, {
     instructions: [
       [
-        'Now, check to make sure that your code works for',
-        'different string encodings.',
-        'What if the provided string is unicode, rather than ASCII?'
+        'Now, make sure that your code works for ',
+        'different string encodings. ',
+        'What if the provided string is unicode, rather than ASCII? '
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
