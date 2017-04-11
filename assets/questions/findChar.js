@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for finding the 
+ * @fileoverview Question data for finding the
  * First Non-Repeating Character in a String.
  */
 
