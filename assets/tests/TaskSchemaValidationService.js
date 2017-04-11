@@ -201,7 +201,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyPerformanceTestsHaveLinearExpectedPerformance: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
-          return ALLOWED_RUNTIMES.includes(test.getExpectedPerformance());
+          return (ALLOWED_RUNTIMES.indexOf(test.getExpectedPerformance()) != -1);
         });
       },
       verifyPerformanceTestsHaveEvaluationFunctionName: function(task) {
