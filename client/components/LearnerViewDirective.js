@@ -336,9 +336,9 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
-	.tie-question-title {
+        .tie-question-title {
           color: rgb(66, 133, 244);
-	}
+        }
       </style>
     `,
     controller: [
