@@ -42,6 +42,7 @@ describe('CodeStorageService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    localStorage.clear();
     CodeStorageService = $injector.get('CodeStorageService');
 
     for (var i = 0; i < NUM_QUESTIONS; i++) {
@@ -57,16 +58,12 @@ describe('CodeStorageService', function() {
   }));
 
   afterEach(function() {
-    sampleQuestionIds.forEach(function(questionId) {
-      var hashKey = questionId + ":" + LANGUAGE;
-      localStorage.removeItem(hashKey);
-      hashKey = questionId + ":" + FAILED_LANGUAGE;
-      localStorage.removeItem(hashKey);
-    });
+    localStorage.clear();
   });
 
   describe('storeCode', function() {
     it('should store code to browser', function() {
+      expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
@@ -79,6 +76,7 @@ describe('CodeStorageService', function() {
 
   describe('loadStoredCode', function() {
     it('should retrieve stored code from browser', function() {
+      expect(localStorage.length).toEqual(0);
       var hashKeys = [];
       for (var i = 0; i < NUM_QUESTIONS; i++) {
         hashKeys[i] = sampleQuestionIds[i] + ":" + LANGUAGE;
@@ -91,6 +89,7 @@ describe('CodeStorageService', function() {
     });
 
     it('should fail to retrieve code and return null', function() {
+      expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId) {
         expect(CodeStorageService.loadStoredCode(questionId,
           FAILED_LANGUAGE)).toEqual(null);
@@ -100,6 +99,7 @@ describe('CodeStorageService', function() {
 
   describe('storeAndLoadCode', function() {
     it('should store and load stored code from browser', function() {
+      expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
@@ -111,6 +111,7 @@ describe('CodeStorageService', function() {
 
   describe('verifyLocalStorageHashKey', function() {
     it('should verify composed hash keys match localStorage keys', function() {
+      expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
