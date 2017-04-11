@@ -75,7 +75,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   tasks: [{
     instructions: [
       [
-        'For this question, you will be given a board, in which all', 
+        'For this question, you will be given a board, in which all',
         'elements are strings. "x" represents a wall, "e" represents',
         ' an enemy, and "" represents an empty cell. You can place ',
         'an bomb in an empty cell, which will kill all enemies in ',
@@ -141,8 +141,8 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
-    // The system currently only supports O(n) runtime complexities and 
-    // this requires an O(n^2) solution, so performance tests will be 
+    // The system currently only supports O(n) runtime complexities and
+    // this requires an O(n^2) solution, so performance tests will be
     // implemented at a later date.
     performanceTests: []
   }],

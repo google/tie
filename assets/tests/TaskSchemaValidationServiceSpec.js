@@ -25,9 +25,7 @@ describe('TaskSchemaValidationService', function() {
   // Update if you add new task schema tests.
   var EXPECTED_VERIFIER_FUNCTION_COUNT = 24;
   // Should contain all question IDs.
-  // TODO(eyurko): Figure out a way to dynamically check to make sure
-  // that all question IDs are specified.
-  var QUESTION_IDS = ['reverseWords', 'parens', 'i18n', 'rle', 'bomberman'];
+  var QUESTION_IDS = Object.keys(globalData.questions);
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
