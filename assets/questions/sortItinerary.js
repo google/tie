@@ -89,16 +89,18 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
       messages: [
-        "Connecting tickets in the given order doesn't sort them into a valid ",
-        "itinerary since those tickets can be scrambled. ",
-        "How about treating each ticket as an directed edge that connects ",
-        "two locations? Draw those tickets and locations on paper ", 
-        "as edges and nodes in a graph. ",
-        "Can you traverse all those nodes exactly once in an ordered way? "
+        [
+          "Connecting tickets in the given order doesn't sort them into ",
+          "a valid itinerary since those tickets can be scrambled. ",
+          "How about treating each ticket as an directed edge that connects ",
+          "two locations? Draw those tickets and locations on paper ",
+          "as edges and nodes in a graph. ",
+          "Can you traverse all those nodes exactly once in an ordered way? "
+        ].join('')
       ]}],
     performanceTests: []
-    // The intended performance test below is commented out because framework 
-    // currently doesn't support nonlinear runtime complexities. 
+    // The intended performance test below is commented out because framework
+    // currently doesn't support nonlinear runtime complexities.
     //
     // performanceTests: [{
     //  inputDataAtom: '',
@@ -124,7 +126,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['JFK-NRT-KUL']
     }, {
       input: 'JFK-SFO,JFK-ATL,SFO-ATL,ATL-JFK,ATL-SFO',
-      allowedOutputs: ['JFK-ATL-JFk-SFO-ATl-SFO']
+      allowedOutputs: ['JFK-ATL-JFK-SFO-ATl-SFO']
     }, {
       input: 'AXA-TIA,JFK-ANU,ANU-TIA,TIA-AXA',
       allowedOutputs: ['JFK-ANU-TIA-AXA-TIA']
