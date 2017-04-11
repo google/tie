@@ -20,6 +20,7 @@
 #     Behaviour can be set up using "bash scripts/setup_hooks.sh"
 
 # Ask user if push should continue anyway if a test fails
+
 proceed_when_test_fail () {
     # Assign standard input to keyboard
     exec < /dev/tty
@@ -35,27 +36,22 @@ proceed_when_test_fail () {
     exec <&-
 }
 
+check_test_status () {
+    # Checking exit code returned
+    if [ $? -eq 0 ]
+    then
+        echo "$1 tests passed"
+    else
+        proceed_when_test_fail "$1"
+    fi
+}
+
 echo "Running linter tests"
 sh scripts/run_linter.sh
-
-# Checking exit code returned
-if [ $? -eq 0 ]
-then
-    echo "Linter tests passed"
-else
-    proceed_when_test_fail "Linter"
-fi
+check_test_status "Linter"
 
 echo "Running karma tests"
 sh scripts/run_karma_tests.sh --browsers PhantomJS karma.auto_test.conf.js
-
-# Checking exit code returned
-if [ $? -eq 0 ]
-then
-    echo "Karma tests passed"
-else
-    proceed_when_test_fail "Karma" 
-fi
-echo "All done, pushing"
+check_test_status "Karma"
 
 exit 0
