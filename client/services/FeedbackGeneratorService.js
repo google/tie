@@ -190,8 +190,8 @@ tie.factory('FeedbackGeneratorService', [
             var outputCount = outputLines.length / correctnessTests.length;
             var stdoutLines = outputLines.slice(i * outputCount,
                 (i + 1) * outputCount);
-            stdout = stdoutLines.join('');
-            if (stdout.slice(-1) == '\n') {
+            var stdout = stdoutLines.join('');
+            if (stdout.slice(-1) === '\n') {
               stdout = stdout.slice(0, -1);
             }
 
