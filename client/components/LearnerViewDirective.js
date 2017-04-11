@@ -29,7 +29,8 @@ tie.directive('learnerView', [function() {
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
                 <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                  <span class="tie-step-text">{{$index + 1}}</span>
+                  <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
+                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
@@ -145,9 +146,9 @@ tie.directive('learnerView', [function() {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
-          white-space:normal;
           display: inline-block;
           margin: 8px;
+          white-space: normal;
         }
         @-webkit-keyframes tie-dot {
           from { -webkit-transform: translate(0px, 0px); }
@@ -177,7 +178,7 @@ tie.directive('learnerView', [function() {
         .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
-          white-space:nowrap;
+          white-space: nowrap;
         }
         .tie-question-ui-outer {
           display: table;
@@ -330,7 +331,7 @@ tie.directive('learnerView', [function() {
           margin-top: auto;
           width: 128px;
         }
-        .tie-step-text {
+        .tie-step-checkmark, .tie-step-text {
           font-size: 14px;
           vertical-align: middle;
         }
