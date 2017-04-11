@@ -33,7 +33,8 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     
     @classmethod
     def createLongLinearItinerary(cls, atom, input_size):
-        if input_size <= 1: return "0-1"
+        if input_size <= 1: 
+          return "0-1"
         
         locations = [str(i) for i in xrange(input_size)]
         tickets = []
@@ -53,20 +54,21 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         'It takes a string that represents airline tickets as input. ',
         'The string can be split by comma into substrings that looks like ',
         '"XXX-YYY". This substring represents a ticket and means the plane ',
-        'departs from XXX and arrives at YYY, noticing that departure and ',
+        'departs from XXX and arrives at YYY, noticing that departures and ',
         'destinations are not necessarily of length 3. ',
-        'As an example, "LAX-JFK,JFK-ATL" means the itinerary has two flights',
-        ': one from LAX to JFK and the other from JFK to ATL. '
+        'To give an example, "LAX-JFK,JFK-ATL" means the itinerary has ',
+        'two flights: one from LAX to JFK and the other from JFK to ATL. '
       ].join(''),
       [
         'The function needs to return a string of the sorted itinerary. ',
-        'Locations need to be connected by dash. For the above example, ',
-        'the return string should be "LAX-JFK-ATL". '
+        'Locations need to be connected by dash. For the given example, ',
+        'your function should return the string "LAX-JFK-ATL". '
       ].join(''),
       [
         'All tickets must be used to form an itinerary. ',
-        'For now, assume there is no loops in the itinerary and is guaranteed ',
-        'to have one and only one itinerary given the list of tickets. '
+        'For now, assume there are no loops in the itinerary and it is ',
+        'guaranteed to have one and only one itinerary, ',
+        'given the tickets. '
       ].join('')
     ],
     prerequisiteSkills: ['Graph', 'String Manipulation'],
@@ -87,15 +89,16 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
       messages: [
-        "Tickets order are scrambled. Just connect them in given order ",
-        "doesn't help. ",
-        "Try think each ticket as an directed edge that connects locations. ",
-        "Draw those edges and locations on paper. Do they look like a graph? ",
-        "Can you do graph traversal or find an order of locations? "
+        "Connecting tickets in the given order doesn't sort them into a valid ",
+        "itinerary since those tickets can be scrambled. ",
+        "How about treating each ticket as an directed edge that connects ",
+        "two locations? Draw those tickets and locations on paper ", 
+        "as edges and nodes in a graph. ",
+        "Can you traverse all those nodes exactly once in an ordered way? "
       ]}],
     performanceTests: []
-    // True performance tests are commented out since framework doesn't support
-    // quadratic mode: 
+    // The intended performance test below is commented out because framework 
+    // currently doesn't support nonlinear runtime complexities. 
     //
     // performanceTests: [{
     //  inputDataAtom: '',
@@ -131,13 +134,13 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
   }, {
     instructions: [
       [
-        'Sorting work is almost done but you find some tickets can form  ',
-        'two or more itineraries. In this case, the function should prefer ',
-        'the one ranks higher alphabetically. '
+        'Sorting work is almost done but you find some tickets can form ',
+        'two or more valid itineraries. In this case, the function ',
+        'should prefer the one ranks higher alphabetically. '
       ].join(''),
       [
-        'For instance, if either visiting ATL or BOS can form valid itinerary, ',
-        'The function would choose ATL over BOS.'
+        'For instance, if either visiting ATL or BOS can form a valid ',
+        'itinerary, the function should choose ATL over BOS.'
       ].join('')
     ],
     prerequisiteSkills: ['Graph', 'String Manipulation', 'Topological Sorting'],
