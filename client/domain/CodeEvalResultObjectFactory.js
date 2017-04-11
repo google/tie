@@ -20,10 +20,10 @@
 tie.factory('CodeEvalResultObjectFactory', [
   function() {
     var CodeEvalResult = function(
-        code, output, correctnessTestResults, buggyOutputTestResults,
+        code, outputLines, correctnessTestResults, buggyOutputTestResults,
         performanceTestResults, errorTraceback, errorInput) {
       this._code = code;
-      this._output = output;
+      this._outputLines = outputLines;
       // Several lists of test results.
       this._correctnessTestResults = correctnessTestResults;
       this._buggyOutputTestResults = buggyOutputTestResults;
@@ -39,7 +39,7 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     CodeEvalResult.prototype.getOutput = function() {
-      return this._output;
+      return this._outputLines;
     };
 
     CodeEvalResult.prototype.getCorrectnessTestResults = function() {
@@ -67,10 +67,10 @@ tie.factory('CodeEvalResultObjectFactory', [
 
     // Static class methods.
     CodeEvalResult.create = function(
-        code, output, correctnessTestResults, buggyOutputTestResults,
+        code, outputLines, correctnessTestResults, buggyOutputTestResults,
         performanceTestResults, errorTraceback, errorInput) {
       return new CodeEvalResult(
-        code, output, correctnessTestResults, buggyOutputTestResults,
+        code, outputLines, correctnessTestResults, buggyOutputTestResults,
         performanceTestResults, errorTraceback, errorInput);
     };
 
