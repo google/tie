@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Unit tests for the CodeStorageService.
+ * Please be aware, the hash key format is {{questionId}}:{{language}}
  */
 
 describe('CodeStorageService', function() {
@@ -57,23 +58,11 @@ describe('CodeStorageService', function() {
 
   afterEach(function() {
     sampleQuestionIds.forEach(function(questionId) {
-      var hashKey = "[" + questionId + ":" + LANGUAGE + "]";
+      var hashKey = questionId + ":" + LANGUAGE;
       localStorage.removeItem(hashKey);
-      hashKey = "[" + questionId + ":" + FAILED_LANGUAGE + "]";
+      hashKey = questionId + ":" + FAILED_LANGUAGE;
       localStorage.removeItem(hashKey);
     }); 
-  });
-
-  describe('getLocalStorageHashKey', function() {
-    it('should create a hash key based on given questionId and language', function() {
-      sampleQuestionIds.forEach(function(questionId) {
-        expect(CodeStorageService.getLocalStorageHashKey(questionId, LANGUAGE))
-          .toEqual("[" + questionId + ":" + LANGUAGE + "]");
-        expect(CodeStorageService.getLocalStorageHashKey(
-          questionId, FAILED_LANGUAGE)).toEqual(
-             "[" + questionId + ":" + FAILED_LANGUAGE + "]");
-      });
-    });
   });
 
   describe('storeCode', function() {
@@ -81,7 +70,7 @@ describe('CodeStorageService', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId, 
           sampleQuestionCodes[index], LANGUAGE);
-        var hashKey = "[" + questionId + ":" + LANGUAGE + "]";
+        var hashKey = questionId + ":" + LANGUAGE;
         expect(localStorage.getItem(hashKey)).toEqual(
           sampleQuestionCodes[index]);
       });     
@@ -92,7 +81,7 @@ describe('CodeStorageService', function() {
     it('should retrieve stored code from browser', function() {
       var hashKeys = [];
       for (var i = 0; i < NUM_QUESTIONS; i++) {
-        hashKeys[i] = "[" + sampleQuestionIds[i] + ":" + LANGUAGE + "]";
+        hashKeys[i] = sampleQuestionIds[i] + ":" + LANGUAGE;
         localStorage.setItem(hashKeys[i], sampleQuestionCodes[i]);
       }
       sampleQuestionIds.forEach(function(questionId, index) {
@@ -116,6 +105,18 @@ describe('CodeStorageService', function() {
           sampleQuestionCodes[index], LANGUAGE);
         expect(CodeStorageService.loadStoredCode(questionId, 
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
+      });
+    });
+  });
+
+  describe('verifyLocalStorageHashKey', function() {
+    it('should verify composed hash keys match localStorage keys', function() {
+      sampleQuestionIds.forEach(function(questionId, index) {
+        CodeStorageService.storeCode(questionId,
+          sampleQuestionCodes[index], LANGUAGE);
+        var hashKey = questionId + ':' + LANGUAGE;
+        expect(localStorage.getItem(hashKey)).toEqual(
+          sampleQuestionCodes[index]);
       });
     });
   });
