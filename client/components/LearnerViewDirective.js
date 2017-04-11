@@ -340,7 +340,7 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService', 
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
           LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
@@ -377,10 +377,10 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          var storedCode = 
+          var storedCode =
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = storedCode ? 
+          $scope.code = storedCode ?
               storedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
@@ -468,7 +468,7 @@ tie.directive('learnerView', [function() {
 
         $scope.navigateToQuestion = function(index) {
           // Before the questionId is changed, save it for later use.
-          var currentQuestionId = 
+          var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
@@ -476,7 +476,7 @@ tie.directive('learnerView', [function() {
           // store their code on the scope.
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
-          CodeStorageService.storeCode(currentQuestionId, 
+          CodeStorageService.storeCode(currentQuestionId,
             $scope.code, language);
 
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());

@@ -45,11 +45,11 @@ describe('CodeStorageService', function() {
     CodeStorageService = $injector.get('CodeStorageService');
 
     for (var i = 0; i < NUM_QUESTIONS; i++) {
-      // Generate random question Id with 
+      // Generate random question Id with
       // length of NUM_CHARS_QUESTION_ID
       sampleQuestionIds[i] = generateRandomChars(
         Math.floor(Math.random() * NUM_CHARS_QUESTION_ID));
-      // Generate random question code with 
+      // Generate random question code with
       // length of NUM_CHARS_CODE
       sampleQuestionCodes[i] = generateRandomChars(
         Math.floor(Math.random() * NUM_CHARS_CODE));
@@ -62,18 +62,18 @@ describe('CodeStorageService', function() {
       localStorage.removeItem(hashKey);
       hashKey = questionId + ":" + FAILED_LANGUAGE;
       localStorage.removeItem(hashKey);
-    }); 
+    });
   });
 
   describe('storeCode', function() {
     it('should store code to browser', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
-        CodeStorageService.storeCode(questionId, 
+        CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
         var hashKey = questionId + ":" + LANGUAGE;
         expect(localStorage.getItem(hashKey)).toEqual(
           sampleQuestionCodes[index]);
-      });     
+      });
     });
   });
 
@@ -85,14 +85,14 @@ describe('CodeStorageService', function() {
         localStorage.setItem(hashKeys[i], sampleQuestionCodes[i]);
       }
       sampleQuestionIds.forEach(function(questionId, index) {
-        expect(CodeStorageService.loadStoredCode(questionId, 
+        expect(CodeStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
 
     it('should fail to retrieve code and return null', function() {
       sampleQuestionIds.forEach(function(questionId) {
-        expect(CodeStorageService.loadStoredCode(questionId, 
+        expect(CodeStorageService.loadStoredCode(questionId,
           FAILED_LANGUAGE)).toEqual(null);
       });
     });
@@ -103,7 +103,7 @@ describe('CodeStorageService', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
-        expect(CodeStorageService.loadStoredCode(questionId, 
+        expect(CodeStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
