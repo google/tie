@@ -20,7 +20,14 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
   title: 'Find Closest Value in Binary Search Tree',
   starterCode: {
     python:
-`# Definition for a binary tree node.
+`# The tree is represented as a preorder traversal sequence of node values, 
+# in which '#' represents an empty node.
+# For example:
+# The input '2 1 # # #' represents the serialized format of a binary tree
+# using preorder order traversal, where root value is 2 and only has a left
+# child with value 1
+#
+# Definition for a binary tree node.
 # class TreeNode(object):
 #     def __init__(self, x):
 #         self.val = x
@@ -45,6 +52,7 @@ def findClosestValue(input):
                     self.val = x
                     self.left = None
                     self.right = None
+
 
                 def __str__(self):
                     return self.val
