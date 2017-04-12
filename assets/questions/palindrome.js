@@ -57,13 +57,13 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         for character in string:
             ascii_codes[ord(character)] += 1
 
-        numOddCharacters = 0
+        num_odd_characters = 0
         for code in ascii_codes:
             if ascii_codes[code] % 2 != 0:
-                numOddCharacters += 1
+                num_odd_characters += 1
 
-        return ((len(string) % 2 == 0 and numOddCharacters == 0) or
-                (len(string) % 2 == 1 and numOddCharacters == 1))
+        return ((len(string) % 2 == 0 and num_odd_characters == 0) or
+                (len(string) % 2 == 1 and num_odd_characters == 1))
 
     @classmethod
     def forgetToIgnoreSpace(cls, string):
@@ -84,7 +84,10 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         'A palindrome is a word, phrase, or sequence that reads the same ',
         'backward as forward, e.g., \'madam\' or \'nurses run\'.'
       ].join(''),
-      'Note that the input string will consist of lowercase letters (a-z) and spaces.'
+      [
+        'Note that the input string will consist of lowercase letters (a-z) ',
+        'and spaces.'
+      ].join('')
     ],
     prerequisiteSkills: ['String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -122,21 +125,29 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',
       messages: [
-        "Try running your code on 'abab' on paper. Did you expect that result?",
         [
-          'Are you sure the input string is a palindrome? \'abab\', for instance, is not.'
+          'Try running your code on \'abab\' on paper. Did you expect that',
+          'result?'
         ].join(''),
         [
-          "It looks like you're counting the number of characters in the input string ",
-          "and returning true if there are an even number of each type of character. ",
-          "With strings like 'abab', however, this approach doesn't work. Try to update ",
-          "your code to avoid just counting the characters."
+          'Are you sure the input string is a palindrome? \'abab\', for ',
+          'instance, is not.'
+        ].join(''),
+        [
+          'It looks like you\'re counting the number of characters in the ',
+          'input string and returning true if there are an even number of ',
+          'each type of character. With strings like \'abab\', however, ',
+          'this approach doesn\'t work. Try to update your code to avoid ',
+          'just counting the characters.'
         ].join('')
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpace',
       messages: [
-        "Try running your code on 'nurses run' on paper. Did you expect that result?",
+        [
+          'Try running your code on \'nurses run\' on paper. Did you ',
+          'expect that result?'
+        ].join(''),
         [
           'What happens if your input string contains spaces?'
         ].join(''),
