@@ -345,16 +345,15 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -383,8 +382,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
+          var storedCode =
+            CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = question.getStarterCode(language);
+          $scope.code = storedCode ?
+              storedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -470,8 +472,16 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before the questionId is changed, save it for later use.
+          var currentQuestionId =
+            $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          // We need to save the code before loading so that the user will get
+          // their own code back if they click on the current question.
+          CodeStorageService.storeCode(currentQuestionId,
+            $scope.code, language);
+
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
@@ -488,6 +498,8 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
+          CodeStorageService.storeCode(
+            $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
         loadQuestion(
