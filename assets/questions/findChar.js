@@ -40,8 +40,10 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
     {
       instructions: [
         [
-          'For this question, you will implement a findFirstNonRepeatingCharacter function. ',
-          'This function takes a string as input and returns the first character that isn\'t repeated elsewhere in the string.'
+          'For this question, you will implement a ',
+          'findFirstNonRepeatingCharacter function. ',
+          'This function takes a string as input and returns ',
+          'the first character that isn\'t repeated elsewhere in the string.'
         ].join(''),
         'For instance, findFirstNonRepeatingCharacter("mom") would return "o".',
         'If there is no appropriate character, return None.'
@@ -51,26 +53,35 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'findFirstNonRepeatingCharacter',
-      correctnessTests: [
-        {input: 'mom',
-          allowedOutputs: ['o']},
-        {input: 'apple',
-          allowedOutputs: ['a']},
-        {input: 'wefffa',
-          allowedOutputs: ['w']},
-        {input: 'weffwa',
-          allowedOutputs: ['e']},
-        {input: '',
-          allowedOutputs: [null]},
-        {input: 'aaaeee',
-          allowedOutputs: [null]}
-      ],
+      correctnessTests: [{
+        input: 'mom',
+        allowedOutputs: ['o']
+      }, {
+        input: 'apple',
+        allowedOutputs: ['a']
+      }, {
+        input: 'wefffa',
+        allowedOutputs: ['w']
+      }, {
+        input: 'weffwa',
+        allowedOutputs: ['e']
+      }, {
+        input: '',
+        allowedOutputs: [null]
+      }, {
+        input: 'aaaeee',
+        allowedOutputs: [null]
+      }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
         messages: [
-          'Try running your code on \'wefffa\' on paper. What\'s the result?',
-          'Are you sure that you\'re returning the first non-repeating character in the word?',
-          'It looks like you\'re returning a unique character, but you\'re not returning the first one in the provided string.'
+          [
+            'Try running your code on \'wefffa\' on paper. What\'s the result?',
+            'Are you sure that you\'re returning the first non-repeating ',
+            'character in the word?',
+            'It looks like you\'re returning a unique character, ',
+            'but you\'re not returning the first one in the provided string.'
+          ].join('')
         ]
       }],
       performanceTests: []
@@ -85,16 +96,19 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'findFirstNonRepeatingCharacter',
-      correctnessTests: [
-        {input: 'TT AsAs',
-          allowedOutputs: [' ']},
-        {input: 'AbCABcBb',
-          allowedOutputs: ['C']},
-        {input: 'BB337 7122 ',
-          allowedOutputs: ['1']},
-        {input: 'test11@test',
-          allowedOutputs: ['@']}
-      ],
+      correctnessTests: [{
+        input: 'TT AsAs',
+        allowedOutputs: [' ']
+      }, {
+        input: 'AbCABcBb',
+        allowedOutputs: ['C']
+      }, {
+        input: 'BB337 7122 ',
+        allowedOutputs: ['1']
+      }, {
+        input: 'test11@test',
+        allowedOutputs: ['@']
+      }],
       buggyOutputTests: [],
       performanceTests: [{
         inputDataAtom: 'meow',
@@ -108,9 +122,9 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in a findFirstNonRepeatingCharacter function. While ',
-      'decomposition is generally a good idea, you shouldn\'t need more than ',
-      'just this function for this question.'
+      'You should only be writing code in a findFirstNonRepeatingCharacter',
+      'function. While decomposition is generally a good idea, ',
+      'you shouldn\'t need more than just this function for this question.'
     ].join('')
   }]
 };
