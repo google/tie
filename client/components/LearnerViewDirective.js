@@ -148,6 +148,7 @@ tie.directive('learnerView', [function() {
         .tie-coding-ui, .tie-question-ui {
           display: inline-block;
           margin: 8px;
+          white-space: normal;
         }
         @-webkit-keyframes tie-dot {
           from { -webkit-transform: translate(0px, 0px); }
@@ -177,6 +178,7 @@ tie.directive('learnerView', [function() {
         .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
+          white-space: nowrap;
         }
         .tie-question-ui-outer {
           display: table;
