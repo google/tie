@@ -258,6 +258,9 @@ tie.directive('learnerView', [function() {
         .tie-previous-instructions {
           opacity: 0.5;
         }
+        .tie-question-title {
+          color: rgb(66, 133, 244);
+        }
         .tie-question-ui {
           vertical-align: top;
         }
@@ -335,9 +338,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
-        }
-        .tie-question-title {
-          color: rgb(66, 133, 244);
         }
       </style>
     `,
