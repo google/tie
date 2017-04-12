@@ -5,7 +5,7 @@ module.exports = function(config) {
   config.set({
     // Base path that will be used to resolve all patterns (eg. files, exclude).
     basePath: '',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'es6-shim'],
     // List of files / patterns to load in the browser.
     files: [
       'third_party/angular-1.6.1/angular.min.js',
@@ -19,12 +19,18 @@ module.exports = function(config) {
       'client/**/*.js',
       'assets/**/*.js'
     ],
+    '6to5Preprocessor': {
+      options: {
+        sourceMap: 'inline'
+      }
+    },
     // List of files to exclude.
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      'client/*.js': ['coverage'],
-      'client/**/*.js': ['coverage']
+      'client/*.js': ['coverage', '6to5'],
+      'client/**/*.js': ['coverage', '6to5'],
+      'assets/**/*.js': ['6to5']
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
     // Available reporters: https://npmjs.org/browse/keyword/karma-reporter.
@@ -38,9 +44,21 @@ module.exports = function(config) {
       subdir: '.',
       dir: './karma_coverage_reports'
     },
-    // Browsers
-    browsers: ['PhantomJS'],
-    // Phantomjs launcher properties
+    // Custom launcher (to test without browser access)
+    customLaunchers: {
+      'phantomjs': {
+        base: 'PhantomJS',
+        options: {
+          windowName: 'my-window',
+          settings: {
+            webSecurityEnabled: false
+          },
+        },
+        flags: ['--load-images=true'],
+        debug: true
+      }
+    },
+    // Phantomjs properties
     phantomjsLauncher: {
       exitOnResourceError: true
     },
@@ -57,7 +75,7 @@ module.exports = function(config) {
     browsers: ['Chrome'],
     // Continuous Integration mode.
     // If true, Karma captures browsers, runs the tests and exits.
-    singleRun: false,
+    singleRun: true,
     // Concurrency level (how many browser should be started simultaneously).
     concurrency: Infinity
   })
