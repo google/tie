@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 # Flags:
-#   --disable-presubmit-checks: set to disable hooks that run presubmit checks
+#   --disable-presubmit-checks: set to disable hooks that run presubmit checks.
 
 set -e
 
@@ -47,6 +47,7 @@ install_node_module() {
   fi
 }
 
+# Set up hooks if not disabled.
 if ! [[ $* == *--disable-presubmit-checks* ]]
 then
     git config core.hooksPath "./hooks"
@@ -93,5 +94,4 @@ fi
 # Generate a list of already-installed modules.
 NPM_INSTALLED_MODULES="$(npm list)"
 
-# Set up hooks if not disabled
 
