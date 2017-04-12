@@ -99,7 +99,11 @@ def findClosestValue(input):
         'given the target value. The target value is given in float format. It\'s guaranteed ',
         'that there\'s only one closest value. You will have the root TreeNode. Each TreeNode ',
         'has attributes val, left and right.'
-      ].join('')
+      ].join(''),
+      'For instance, given the following tree and the target value 1.1, you should return 1',
+      '2',
+      '/\\',
+      '1 3'
     ],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
