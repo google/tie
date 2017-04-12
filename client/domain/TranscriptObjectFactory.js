@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Factory for creating a transcript of a student's TIE 
+ * @fileoverview Factory for creating a transcript of a student's TIE
  * session.
  */
 
