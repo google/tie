@@ -21,28 +21,28 @@
 
 # Ask user if push should continue anyway if a test fails.
 proceed_when_test_fail () {
-    # Assign standard input to keyboard.
-    exec < /dev/tty
+  # Assign standard input to keyboard.
+  exec < /dev/tty
 
-    read -p "$1 tests failed. Do you want to continue anyway? (y/n) " yn
-    case $yn in
-        [Yy]* ) ;;
-        [Nn]* ) echo "Not pushing changes"; exit 1;;
-        * ) echo "Invalid input"; exit 1;;
-    esac
+  read -p "$1 tests failed. Do you want to continue anyway? (y/n) " yn
+  case $yn in
+    [Yy]* ) ;;
+    [Nn]* ) echo "Not pushing changes"; exit 1;;
+    * ) echo "Invalid input"; exit 1;;
+  esac
 
-    # Close standard input.
-    exec <&-
+  # Close standard input.
+  exec <&-
 }
 
 check_test_status () {
-    # Checking exit code returned.
-    if [ $? -eq 0 ]
-    then
-        echo "$1 tests passed"
-    else
-        proceed_when_test_fail "$1"
-    fi
+  # Checking exit code returned.
+  if [ $? -eq 0 ]
+  then
+    echo "$1 tests passed"
+  else
+    proceed_when_test_fail "$1"
+  fi
 }
 
 echo "Running linter tests"
