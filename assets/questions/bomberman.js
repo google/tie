@@ -75,15 +75,15 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   tasks: [{
     instructions: [
       [
-        'For this question, you will be given a board, in which all',
-        'elements are strings. "x" represents a wall, "e" represents',
-        ' an enemy, and "" represents an empty cell. You can place ',
+        'For this question, you will be given a board, in which all ',
+        'elements are strings. "x" represents a wall, "e" represents ',
+        'an enemy, and "" represents an empty cell. You can place ',
         'an bomb in an empty cell, which will kill all enemies in ',
         'vertical and horizontal directions until the blast hits a ',
-        'wall or the edge of the board. Write a function bomb(board),',
-        ' to find the best position to place a bomb in order to',
-        'kill as many enemies as possible, then return the number',
-        ' of enemies killed.'
+        'wall or the edge of the board. Write a function bomb(board), ',
+        'to find the best position to place a bomb in order to ',
+        'kill as many enemies as possible, then return the number ',
+        'of enemies killed.'
       ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings'],
@@ -121,9 +121,9 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
           "What's the result?"
         ].join(''),
         [
-          "You seem to be ignoring walls in your solution, which is",
-          " incorrect. If a bomb is placed, the resulting explosion",
-          " could only go until it reaches a wall."
+          "You seem to be ignoring walls in your solution, which is ",
+          "incorrect. If a bomb is placed, the resulting explosion ",
+          "could only go until it reaches a wall."
         ].join('')
       ]
     },
