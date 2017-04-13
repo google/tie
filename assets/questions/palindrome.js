@@ -160,7 +160,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
     }],
     performanceTests: [{
       inputDataAtom: 'abcdefghijklmnopqrstuvwxyz',
-      transformationFunctionName: 'AuxiliaryCode.createPalindromeString',
+      transformationFunctionName: 'AuxiliaryCode.createPalindrome',
       expectedPerformance: 'linear',
       evaluationFunctionName: 'isPalindrome'
     }]
