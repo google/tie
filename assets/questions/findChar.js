@@ -17,7 +17,7 @@
  * First Non-Repeating Character in a String.
  */
 
-globalData.questions['findChar'] = { // eslint-disable-line dot-notation
+globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-line dot-notation
   title: 'Find the First Non-Repeating Character in a String',
   starterCode: {
     python: `def findFirstNonRepeatingCharacter(word):
@@ -25,7 +25,8 @@ globalData.questions['findChar'] = { // eslint-disable-line dot-notation
 `
   },
   auxiliaryCode: {
-    python: `class AuxiliaryCode(object):
+    python: 
+`class AuxiliaryCode(object):
     @classmethod
     def sortCharactersInString(cls, word):
         sortedStr = ''.join(sorted(word))        
