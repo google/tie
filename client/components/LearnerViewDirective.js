@@ -69,7 +69,7 @@ tie.directive('learnerView', [function() {
                 </select>
                 <button class="tie-code-reset" name="code-reset"
                     ng-click="resetCode()">
-                  Reset
+                  Reset Code
                 </button>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
@@ -146,7 +146,7 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            tie-code-reset:focus, .tie-run-button:focus {
+            .tie-run-button:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
