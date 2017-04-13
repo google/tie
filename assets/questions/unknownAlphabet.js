@@ -101,7 +101,7 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
       return ""
     return answer
 `
- 
+
   },
   tasks: [{
     instructions: [
@@ -311,7 +311,7 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
       ]
     }],
     // TODO: Time complexity is O(m), which is non-linear. Fix in the future.
-    performanceTests: [] 
+    performanceTests: []
   }],
   styleTests: [{
     evaluationFunctionName: 'allowOnlyOneFunction',
