@@ -32,14 +32,14 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-      var arrJson = this._allowedOutputs;
+      var allowedOutputs = this._allowedOutputs;
       var target = output;
       if (Array.isArray(output)) {
         target = JSON.stringify(output);
-        arrJson = this._allowedOutputs.map(JSON.stringify);
+        allowedOutputs = this._allowedOutputs.map(JSON.stringify);
       }
-      return arrJson.some(function(allowedOutput) {
-        return angular.equals(allowedOutput, target);
+      return allowedOutputs.some(function(allowedOutput) {
+        return allowedOutputs.equals(allowedOutput, target);
       });
     };
 
