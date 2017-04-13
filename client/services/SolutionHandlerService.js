@@ -45,13 +45,16 @@ tie.factory('SolutionHandlerService', [
           // Otherwise, the code doesn't have any obvious syntax errors.
           // Generate a CodeSubmission object that wraps the student's code
           // into a class and appends some test code, then run the whole thing.
-          correctnessTests = [];
-          buggyOutputTests = [];
-          performanceTests = [];
+          var correctnessTests = [];
+          var buggyOutputTests = [];
+          var performanceTests = [];
           for (var i = 0; i < tasks.length; i++) {
-            correctnessTests = correctnessTests.concat(tasks[i].getCorrectnessTests());
-            buggyOutputTests = buggyOutputTests.concat(tasks[i].getBuggyOutputTests());
-            performanceTests = performanceTests.concat(tasks[i].getPerformanceTests());
+            correctnessTests = correctnessTests.concat(
+                tasks[i].getCorrectnessTests());
+            buggyOutputTests = buggyOutputTests.concat(
+                tasks[i].getBuggyOutputTests());
+            performanceTests = performanceTests.concat(
+                tasks[i].getPerformanceTests());
           }
           var lastTask = tasks[tasks.length - 1];
           var codeSubmission = CodeSubmissionObjectFactory.create(

@@ -177,13 +177,16 @@ tie.factory('FeedbackGeneratorService', [
           var correctnessTests = [];
           var performanceTests = [];
           for (var i = 0; i < tasks.length; i++) {
-            buggyOutputTests = buggyOutputTests.concat(tasks[i].getBuggyOutputTests());
-            correctnessTests = correctnessTests.concat(tasks[i].getCorrectnessTests());
-            performanceTests = performanceTests.concat(tasks[i].getPerformanceTests());
+            buggyOutputTests = buggyOutputTests.concat(
+                tasks[i].getBuggyOutputTests());
+            correctnessTests = correctnessTests.concat(
+                tasks[i].getCorrectnessTests());
+            performanceTests = performanceTests.concat(
+                tasks[i].getPerformanceTests());
           }
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
-          for (var i = 0; i < buggyOutputTests.length; i++) {
+          for (i = 0; i < buggyOutputTests.length; i++) {
             if (buggyOutputTestResults[i]) {
               return _getBuggyOutputTestFeedback(
                 buggyOutputTests[i], codeEvalResult);

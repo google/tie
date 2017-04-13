@@ -13,6 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Flags:
+#   --disable-presubmit-checks: set to disable hooks that run presubmit checks.
 
 set -e
 
@@ -43,6 +46,13 @@ install_node_module() {
     NPM_INSTALLED_MODULES="$(npm list)"
   fi
 }
+
+# Set up hooks if not disabled.
+if ! [[ $* == *--disable-presubmit-checks* ]]
+then
+  git config core.hooksPath "./hooks"
+fi
+
 export -f install_node_module
 
 # Ensure that there is a node_modules folder in the root, otherwise node may
