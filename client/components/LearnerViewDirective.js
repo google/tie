@@ -67,6 +67,10 @@ tie.directive('learnerView', [function() {
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
+                <button class="tie-code-reset" name="code-reset"
+                    ng-click="resetCode()">
+                  Reset Code
+                </button>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -115,6 +119,11 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -500,6 +509,12 @@ tie.directive('learnerView', [function() {
           }, 0);
           CodeStorageService.storeCode(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
+        };
+
+        $scope.resetCode = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          CodeStorageService.clearLocalStorageCode(questionId, language);
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
         loadQuestion(
