@@ -50,7 +50,6 @@ globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notat
         'N people live in a city with streets that form a regular 2D grid. ',
         'They start out at different intersections and want to meet up. ',
         'They are only able to move along the roads (no crossing blocks diagonally etc.). ',
-        'Find the meeting place that minimizes the total travel distance. ',
         'Write a function bestMeetupLocation(people) that returns a meeting place that ',
         'minimizes the total travel distance.'
       ].join(''),
@@ -80,11 +79,11 @@ globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notat
       buggyFunctionName: 'AuxiliaryCode.findAverageLocation',
       messages: [
         [
-          "Try to run on test case ['0, 0', '4, 2', '10, 10']. ",
+          "Try running your code on ['0, 0', '4, 2', '10, 10']. ",
           "Is the result what you expected?"
         ].join(''),
         [
-          "The best meeting point is not necessary to be ",
+          "The best meeting point is not necessarily",
           "the geometric center of all the points."
         ].join('')
       ]
