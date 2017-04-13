@@ -37,7 +37,7 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-coding-ui">
-            <div class="tie-feedback-window">
+            <div class="tie-feedback-window {{tieFeedbackWindowClass}}">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
                    class="tie-feedback-paragraph"
@@ -67,6 +67,12 @@ tie.directive('learnerView', [function() {
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
+                <select class="tie-theme-select" name="theme-select" 
+                        ng-change="changeTheme()" ng-model="theme"
+                        ng-options="i.themeName as i.themeName for i in themes">
+                  <option style="display:none" value="">Theme</option>
+                  <option></option>
+                </select>     
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -85,7 +91,7 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-question-ui">
-            <div class="tie-question-window">
+            <div class="tie-question-window {{tieQuestionWindowClass}}">
               <h3 class="tie-question-title">{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -105,6 +111,9 @@ tie.directive('learnerView', [function() {
           background-color: rgb(242, 242, 242);
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
+        }
+        body.night-mode {
+          background-color: #212121;
         }
         .tie-arrow-highlighter {
           background-color: white;
@@ -135,10 +144,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-coding-terminal, .tie-question-window {
           background-color: rgb(255, 255, 255);
-          border-color: rgb(222, 222, 222);
-          border-radius: 3px;
-          border-style: solid;
-          border-width: 1px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-coding-terminal.night-mode, .tie-question-window.night-mode {
+          background-color: rgb(255, 255, 255);
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
@@ -188,10 +197,17 @@ tie.directive('learnerView', [function() {
         }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
-          border-color: rgb(222, 222, 222);
-          border-radius: 3px;
-          border-style: solid;
-          border-width: 1px;
+          font-size: 14px;
+          height: 128px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 642px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-window.night-mode {
+          background-color: #37474F;
+          color: #E0E0E0;
           font-size: 14px;
           height: 128px;
           overflow: auto;
@@ -212,6 +228,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-select-menu {
           float: left;
+          margin-top: 10px;
+        }
+        .tie-theme-select {
+          margin-left: 5px;
           margin-top: 10px;
         }
         .tie-lang-terminal {
@@ -273,6 +293,10 @@ tie.directive('learnerView', [function() {
           padding: 10px;
           resize: both;
           width: 548px;
+        }
+        .tie-question-window.night-mode {
+          background-color: #37474F;
+          color: #E0E0E0;
         }
         .tie-run-button {
           background-color: rgb(66, 133, 244);
@@ -344,11 +368,13 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
+      '$rootScope', '$scope', '$timeout', 'SolutionHandlerService',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'CodeStorageService',
       function(
-          $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
+          $rootScope, $scope, $timeout, SolutionHandlerService,
+          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
+          CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -359,6 +385,11 @@ tie.directive('learnerView', [function() {
             'Take a look at the next question to the right, and code your ',
             'answer below.'
           ].join('\n')
+        ];
+
+        $scope.themes = [
+          {themeName: "Light"},
+          {themeName: "Dark"}
         ];
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -434,6 +465,21 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
         };
 
+        $scope.changeTheme = function() {
+          if ($scope.theme === "Dark") {
+            $rootScope.bodyClass = "night-mode";
+            $scope.codeMirrorOptions.theme = "material";
+            $scope.tieFeedbackWindowClass = "night-mode";
+            $scope.tieQuestionWindowClass = "night-mode";
+          }
+          if ($scope.theme === "Light") {
+            $rootScope.bodyClass = "";
+            $scope.codeMirrorOptions.theme = "default";
+            $scope.tieFeedbackWindowClass = "tie-feedback-window";
+            $scope.tieQuestionWindowClass = "tie-question-window";
+          }
+        };
+
         $scope.codeMirrorOptions = {
           autofocus: true,
           extraKeys: {
@@ -449,7 +495,8 @@ tie.directive('learnerView', [function() {
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: true,
-          tabSize: 4
+          tabSize: 4,
+          theme: "default"
         };
 
         $scope.showNextTask = function() {
