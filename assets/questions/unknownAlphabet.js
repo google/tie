@@ -32,7 +32,7 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
       edges stores the edges that need to build for the alphabet graph
       edges[ch] is a list of letters for letter ch whose ranks are bigger than
       ch's rank.
-      degree stores the degree of each lfindAlphabetetter.
+      degree stores the degree of each letter.
       For each letter ch, there're degree[ch] letters has an edge goes to ch
     """
     edges = {}
@@ -264,7 +264,7 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
           'Is your result what you expect?'
         ].join(''),
         [
-          'It looks like your answer is not an empty string',
+          'It looks like your answer is not an empty string.',
           'Can you examine whether your order is valid on the test case ',
           '["c", "a", "b", "a"]?'
         ].join('')
