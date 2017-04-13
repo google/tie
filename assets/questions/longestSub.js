@@ -48,7 +48,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     instructions: [
       [
         "For this problem, you'll be writing a longestSubstring method that, given a string",
-        ', find the longest substring that contains at most 2 distinct characters.',
+        ', finds the longest substring that contains at most 2 distinct characters.',
         'For instance, the string "cababadadad" would return "adadad" as its longest substring.'
       ].join('')
     ],
@@ -69,6 +69,9 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     }, {
       input: 'cababadadad',
       allowedOutputs: ['adadad']
+    }, {
+      input: 'abbba',
+      allowedOutputs: ['abbba']
     }
     ], 
     buggyOutputTests: [
@@ -79,8 +82,8 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
         */
         buggyFunctionName: 'AuxiliaryCode.oneLetterResult',
         messages: [
-          ["For string that has more than one type of character, the result should have at least two types of characters",
-            "For example, 'abbba' should yield the result of 'abbba' and not 'bcbbcbcbb'"].join('.')
+          ["For a string that has more than one type of character, the result should have at least two types of characters",
+            "For example, 'abbba' should yield the result of 'abbba' and not 'bbb'"].join('.')
         ]
       }
     ],
