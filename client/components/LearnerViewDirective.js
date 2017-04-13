@@ -488,6 +488,8 @@ tie.directive('learnerView', [function() {
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
+
+        $(".tie-coding-terminal").resizable();
       }
     ]
   };
