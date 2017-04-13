@@ -120,6 +120,11 @@ tie.directive('learnerView', [function() {
           top: calc(50% - 25px);
           width: 50px;
         }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
+        }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
           height: 100%;
@@ -217,11 +222,6 @@ tie.directive('learnerView', [function() {
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
-        }
-        .tie-code-reset {
-          float: left;
-          margin-top: 10px;
-          margin-left: 10px;
         }
         .tie-lang-terminal {
           display: inline;
