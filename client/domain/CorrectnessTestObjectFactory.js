@@ -39,7 +39,7 @@ tie.factory('CorrectnessTestObjectFactory', [
         allowedOutputs = this._allowedOutputs.map(JSON.stringify);
       }
       return allowedOutputs.some(function(allowedOutput) {
-        return allowedOutputs.equals(allowedOutput, target);
+        return angular.equals(allowedOutput, target);
       });
     };
 
