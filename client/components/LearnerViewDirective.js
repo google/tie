@@ -71,6 +71,9 @@ tie.directive('learnerView', [function() {
                     ng-click="resetCode()">
                   Reset Code
                 </button>
+                <div class="tie-code-auto-save" ng-show="displayAutoSaveText">
+                  Saving code now...
+                </div>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -119,6 +122,12 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-code-auto-save {
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-code-reset {
           float: left;
@@ -370,6 +379,13 @@ tie.directive('learnerView', [function() {
           ].join('\n')
         ];
 
+        var SECONDS_TO_MILLISECONDS = 1000;
+        // Default time interval in seconds that codes will be auto saved.
+        // Codes will be auto-saved every minute.
+        var DEFAULT_AUTO_SAVE_SECONDS = 60;
+        // "Saving code now..." will last for 3 seconds and disappear.
+        var DISPLAY_AUTO_SAVE_TEXT_SECONDS = 3;
+
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -381,6 +397,7 @@ tie.directive('learnerView', [function() {
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
+        $scope.displayAutoSaveText = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -517,9 +534,29 @@ tie.directive('learnerView', [function() {
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
+        var displayAutoSaveTextForSeconds = function(displaySeconds) {
+          $scope.displayAutoSaveText = true;
+          $scope.$apply();
+          $timeout(function() {
+            $scope.displayAutoSaveText = false;
+          }, displaySeconds * SECONDS_TO_MILLISECONDS);
+        };
+
+        var codeAutoSave = function() {
+          setInterval(function() {
+            var currentQuestionId =
+              $scope.questionIds[$scope.currentQuestionIndex];
+            displayAutoSaveTextForSeconds(DISPLAY_AUTO_SAVE_TEXT_SECONDS);
+            CodeStorageService.storeCode(
+              currentQuestionId, $scope.code, language);
+          }, DEFAULT_AUTO_SAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+        };
+
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
+
+        codeAutoSave();
       }
     ]
   };
