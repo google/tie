@@ -161,7 +161,7 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
-      getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         var errorString = codeEvalResult.getErrorString();
         if (errorString) {
           // We want to catch and handle a timeout error uniquely, rather than
@@ -171,7 +171,16 @@ tie.factory('FeedbackGeneratorService', [
             _getTimeoutErrorFeedback() :
             _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
         } else {
-          var buggyOutputTests = task.getBuggyOutputTests();
+          // Get all the tests from first task to current that need to be
+          // executed.
+          var buggyOutputTests = [];
+          var correctnessTests = [];
+          var performanceTests = [];
+          for (var i = 0; i < tasks.length; i++) {
+            buggyOutputTests = buggyOutputTests.concat(tasks[i].getBuggyOutputTests());
+            correctnessTests = correctnessTests.concat(tasks[i].getCorrectnessTests());
+            performanceTests = performanceTests.concat(tasks[i].getPerformanceTests());
+          }
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
           for (var i = 0; i < buggyOutputTests.length; i++) {
@@ -181,7 +190,6 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
@@ -193,7 +201,6 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
           for (i = 0; i < performanceTests.length; i++) {

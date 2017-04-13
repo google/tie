@@ -477,22 +477,14 @@ tie.directive('learnerView', [function() {
             feedbackDiv.scrollTop = feedbackDiv.scrollHeight +
               additionalHeightForLoadingIndicator;
             $timeout(function() {
-              var index = 0;
-              var fn = function() {
-                SolutionHandlerService.processSolutionAsync(
-                tasks[index], code,
+              var tasksToCurrent = []; // Tasks from the first to current.
+              for (var i = 0; i <= currentTaskIndex; i++) {
+                tasksToCurrent = tasksToCurrent.concat(tasks[i]);
+              }
+              SolutionHandlerService.processSolutionAsync(
+                tasksToCurrent, code,
                 question.getAuxiliaryCode(language), language
-                ).then(function(feedback) {
-                  if (index === currentTaskIndex ||
-                      !feedback.isAnswerCorrect()) {
-                    setFeedback(feedback);
-                  } else {
-                    index += 1;
-                    fn();
-                  }
-                });
-              };
-              fn();
+              ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
         };

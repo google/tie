@@ -28,7 +28,7 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          task, studentCode, auxiliaryCode, language) {
+          tasks, studentCode, auxiliaryCode, language) {
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -45,19 +45,28 @@ tie.factory('SolutionHandlerService', [
           // Otherwise, the code doesn't have any obvious syntax errors.
           // Generate a CodeSubmission object that wraps the student's code
           // into a class and appends some test code, then run the whole thing.
+          correctnessTests = [];
+          buggyOutputTests = [];
+          performanceTests = [];
+          for (var i = 0; i < tasks.length; i++) {
+            correctnessTests = correctnessTests.concat(tasks[i].getCorrectnessTests());
+            buggyOutputTests = buggyOutputTests.concat(tasks[i].getBuggyOutputTests());
+            performanceTests = performanceTests.concat(tasks[i].getPerformanceTests());
+          }
+          var lastTask = tasks[tasks.length - 1];
           var codeSubmission = CodeSubmissionObjectFactory.create(
             studentCode.trim());
           CodePreprocessorDispatcherService.preprocess(
             language, codeSubmission, auxiliaryCode,
-            task.getMainFunctionName(), task.getOutputFunctionName(),
-            task.getCorrectnessTests(), task.getBuggyOutputTests(),
-            task.getPerformanceTests());
+            lastTask.getInputFunctionName(), lastTask.getMainFunctionName(),
+            lastTask.getOutputFunctionName(), correctnessTests,
+            buggyOutputTests, performanceTests);
 
           return CodeRunnerDispatcherService.runCodeAsync(
             language, codeSubmission.getPreprocessedCode()
           ).then(function(codeEvalResult) {
             var runtimeFeedback = FeedbackGeneratorService.getFeedback(
-              task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
+              tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
             return runtimeFeedback;
