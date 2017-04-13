@@ -40,25 +40,22 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
 
     @classmethod
     def incrementLastDigitOnly(cls, digits):
-        digits_input = [x for x in digits]
-        digits_input[-1] += 1
-        return digits_input
+        digits_array = [x for x in digits]
+        digits_array[-1] += 1
+        return digits_array
 
     @classmethod
     def incrementWithoutChangeSize(cls, digits):
-        digits_input = [x for x in digits]
-        digits_input[-1] = (digits_input[-1] + 1) % 10
-        carry = False
-        if digits_input[-1] == 0:
-            carry = True
-        for i in xrange(len(digits_input)-2, -1, -1):
+        digits_array = [x for x in digits]
+        digits_array[-1] = (digits_array[-1] + 1) % 10
+        carry = (digits_array[-1] == 0)
+        for i in xrange(len(digits_array) - 2, -1, -1):
             if carry == False:
                 break
-            digits_input[i] = (digits_input[i] + 1) % 10
-            if digits_input[i] != 0:
-                carry = False
+            digits_array[i] = (digits_array[i] + 1) % 10
+            carry = (digits_array[-1] == 0)
 
-        return digits_input
+        return digits_array
 `
   },
   tasks: [{
