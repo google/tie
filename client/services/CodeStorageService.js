@@ -32,6 +32,11 @@ tie.factory('CodeStorageService', [
           questionId, language);
         var storedCode = localStorage.getItem(localStorageKey);
         return storedCode;
+      },
+      clearLocalStorageCode: function(questionId, language) {
+        var localStorageKey = getLocalStorageHashKey(
+          questionId, language);
+        localStorage.removeItem(localStorageKey);
       }
     };
   }

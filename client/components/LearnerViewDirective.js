@@ -67,6 +67,10 @@ tie.directive('learnerView', [function() {
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
+                <button class="tie-code-reset" name="code-reset"
+                    ng-click="resetCode()">
+                  Reset
+                </button>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -142,7 +146,7 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus {
+            tie-code-reset:focus, .tie-run-button:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -213,6 +217,11 @@ tie.directive('learnerView', [function() {
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
+        }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-lang-terminal {
           display: inline;
@@ -500,6 +509,12 @@ tie.directive('learnerView', [function() {
           }, 0);
           CodeStorageService.storeCode(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
+        };
+
+        $scope.resetCode = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          CodeStorageService.clearLocalStorageCode(questionId, language);
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
         loadQuestion(
