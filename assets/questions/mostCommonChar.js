@@ -75,8 +75,10 @@ class AuxiliaryCode(object):
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
         "It looks like you might not have considered different types of ASCII characters. ",
-        "Check your code to see if it properly handles strings with digits, ",
-        "such as 1600Amphitheatre. ",
+        [
+          "Check your code to see if it properly handles strings with digits, ",
+          "such as '1600Amphitheatre'."
+        ].join(''),
         "Do not forget to consider special chracters too, such as '~!?@#'."
       ]
     }],
