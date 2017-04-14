@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for Balanced Palindrome.
+ * @fileoverview Question data for Is Palindrome.
  */
 
 globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
-  title: 'Balanced Palindrome',
+  title: 'Is Palindrome',
   starterCode: {
     python:
 `def isPalindrome(s):
@@ -66,7 +66,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
                 (len(string) % 2 == 1 and num_odd_characters == 1))
 
     @classmethod
-    def forgetToIgnoreSpace(cls, string):
+    def forgetToIgnoreSpaces(cls, string):
         for i in range(len(string) / 2):
             if string[i] is not string[-i - 1]:
                 return False
@@ -148,9 +148,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
           'Try running your code on \'nurses run\' on paper. Did you ',
           'expect that result?'
         ].join(''),
-        [
-          'What happens if your input string contains spaces?'
-        ].join(''),
+        'What happens if your input string contains spaces?',
         [
           'It looks like you\'re not ignoring spaces in the input string. ',
           'Try to update your code to skip over spaces when determining if ',
