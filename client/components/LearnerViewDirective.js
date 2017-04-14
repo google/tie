@@ -194,9 +194,7 @@ tie.directive('learnerView', [function() {
           border-width: 1px;
           font-size: 14px;
           height: 128px;
-          overflow: auto;
           padding: 10px;
-          resize: both;
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
@@ -269,9 +267,7 @@ tie.directive('learnerView', [function() {
         .tie-question-window {
           font-size: 14px;
           height: 508px;
-          overflow: auto;
           padding: 10px;
-          resize: both;
           width: 548px;
         }
         .tie-run-button {
@@ -509,6 +505,14 @@ tie.directive('learnerView', [function() {
         $(".tie-coding-terminal").resizable({
           minHeight: $(".tie-coding-terminal").height(),
           minWidth: $(".tie-coding-terminal").width()
+        });
+        $(".tie-feedback-window").resizable({
+          minHeight: $(".tie-feedback-window").height(),
+          minWidth: $(".tie-feedback-window").width()
+        });
+        $(".tie-question-window").resizable({
+          minHeight: $(".tie-question-window").height(),
+          minWidth: $(".tie-question-window").width()
         });
       }
     ]
