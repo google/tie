@@ -77,12 +77,10 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
         buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
         messages: [
           [
-            'Try running your code on \'wefffa\' on paper. What\'s the result?',
-            'Are you sure that you\'re returning the first non-repeating ',
-            'character in the word?',
             'It looks like you\'re returning a unique character, ',
-            'but you\'re not returning the first one in the provided string.'
-          ].join('')
+            'but it is not the first one in the provided string.'
+          ].join(''),
+          'Try running your code on \'wefffa\' on paper. What\'s the result?'
         ]
       }],
       performanceTests: []
