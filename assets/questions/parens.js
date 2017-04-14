@@ -40,7 +40,7 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
                 numleft += 1
             elif char == ')':
                 numright += 1
-            return numleft == numright
+        return numleft == numright
 `
   },
   tasks: [{

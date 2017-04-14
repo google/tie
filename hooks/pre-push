@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Copyright 2017 The TIE Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Usage:
+#     Not meant for manual use.
+#     Runs automatically before a git push command is executed.
+#     Behaviour can be set up using "bash scripts/setup_hooks.sh".
+
+# Ask user if push should continue anyway if a test fails.
+proceed_when_test_fail () {
+  # Assign standard input to keyboard.
+  exec < /dev/tty
+
+  read -p "$1 tests failed. Do you want to continue anyway? (y/n) " yn
+  case $yn in
+    [Yy]* ) ;;
+    [Nn]* ) echo "Not pushing changes"; exit 1;;
+    * ) echo "Invalid input"; exit 1;;
+  esac
+
+  # Close standard input.
+  exec <&-
+}
+
+check_test_status () {
+  # Checking exit code returned.
+  if [ $? -eq 0 ]
+  then
+    echo "$1 tests passed"
+  else
+    proceed_when_test_fail "$1"
+  fi
+}
+
+echo "Running linter tests"
+bash scripts/run_linter.sh
+check_test_status "Linter"
+
+echo "Running karma tests"
+bash scripts/run_karma_tests.sh --browsers PhantomJS
+check_test_status "Karma"
+
+exit 0

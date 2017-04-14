@@ -49,6 +49,8 @@ tie.factory('PythonCodePreprocessorService', [
         return "'" + pythonStringContent + "'";
       } else if (typeof jsonVariable == 'boolean') {
         return jsonVariable ? 'True' : 'False';
+      } else if (typeof jsonVariable === 'number') {
+        return parseFloat(jsonVariable);
       } else if (Array.isArray(jsonVariable)) {
         // We have to recursively convert the array's elements to Python variables.
         var pythonElements = jsonVariable.map(function(arrayElement) {
