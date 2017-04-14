@@ -34,7 +34,7 @@ tie.factory('CorrectnessTestObjectFactory', [
     CorrectnessTest.prototype.matchesOutput = function(output) {
       var allowedOutputs = this._allowedOutputs;
       var target = output;
-      if (Array.isArray(output)) {
+      if (angular.isArray(output)) {
         target = JSON.stringify(output);
         allowedOutputs = this._allowedOutputs.map(JSON.stringify);
       }
