@@ -50,6 +50,16 @@ tie.directive('learnerView', [function() {
                     <code-snippet content="paragraph.getContent()"></code-snippet>
                   </span>
                 </p>
+                <div class="tie-feedback-syntax-error">
+                  <button ng-click="showSyntaxErrorHint()", ng-show="isSyntaxErrorButtonShown">
+                    <span>
+                      {{isSyntaxErrorShown ? 'hide' : 'hint'}}
+                    </span>
+                  </button>
+                  <p class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                    {{syntaxErrorString}}
+                  </p>
+                </div>
               </div>
               <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                 <div class="tie-dot tie-dot-1"></div>
@@ -186,6 +196,9 @@ tie.directive('learnerView', [function() {
           margin-right: auto;
           margin-top: 16px;
         }
+        .tie-feedback-error-string {
+          color: #FF0000;
+        }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
           border-color: rgb(222, 222, 222);
@@ -209,6 +222,9 @@ tie.directive('learnerView', [function() {
           font-family: monospace;
           padding: 10px;
           width: 95%;
+        }
+        .tie-feedback-syntax-error {
+          display: inline-block;
         }
         .tie-lang-select-menu {
           float: left;
@@ -351,6 +367,7 @@ tie.directive('learnerView', [function() {
           LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
+        var syntaxErrorString = null;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
@@ -369,6 +386,7 @@ tie.directive('learnerView', [function() {
         $scope.questionIds = questionSet.getQuestionIds();
         $scope.questionsCompletionStatus = [];
         $scope.loadingIndicatorIsShown = false;
+        $scope.isSyntaxErrorShown = false;
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
@@ -402,6 +420,11 @@ tie.directive('learnerView', [function() {
           $scope.feedbackParagraphs = [];
         };
 
+        var clearSyntaxErrorHint = function() {
+          $scope.isSyntaxErrorShown = false;
+          $scope.isSyntaxErrorButtonShown = false;
+        }
+
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
@@ -427,7 +450,17 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
-            $scope.feedbackParagraphs = feedback.getParagraphs();
+            var feedbackParagraphs = feedback.getParagraphs();
+            syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            if (syntaxErrorIndex) {
+              console.log("syntaxError should be shown.");
+              syntaxErrorParagraph =  feedbackParagraphs[syntaxErrorIndex];
+              feedbackParagraphs.splice(syntaxErrorIndex, 1);
+              $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+              $scope.isSyntaxErrorButtonShown = true;
+            }
+            console.log(syntaxErrorIndex);
+            $scope.feedbackParagraphs = feedbackParagraphs;
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
@@ -452,6 +485,10 @@ tie.directive('learnerView', [function() {
           tabSize: 4
         };
 
+        $scope.showSyntaxErrorHint = function(errorString) {
+          $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
+        };
+
         $scope.showNextTask = function() {
           if (question.isLastTask(currentTaskIndex)) {
             $scope.currentQuestionIndex++;
@@ -472,6 +509,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          clearSyntaxErrorHint();
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
@@ -486,6 +524,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
+          clearSyntaxErrorHint();
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {

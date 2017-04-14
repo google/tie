@@ -217,8 +217,9 @@ tie.factory('FeedbackGeneratorService', [
       getSyntaxErrorFeedback: function(errorString) {
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
-          "Looks like your code did not compile. Here's the error trace: ");
+          "Looks like your code has syntax error. Try to find and fix it.");
         feedback.appendCodeParagraph(errorString);
+        feedback.setSyntaxErrorIndex(feedback.getParagraphs().length - 1);
         return feedback;
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
