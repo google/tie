@@ -25,7 +25,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
 `
   },
   auxiliaryCode: {
-    python: 
+    python:
 `class AuxiliaryCode(object):
     @classmethod
     def sortCharactersInString(cls, word):
