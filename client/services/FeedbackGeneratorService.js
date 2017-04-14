@@ -171,48 +171,52 @@ tie.factory('FeedbackGeneratorService', [
             _getTimeoutErrorFeedback() :
             _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
         } else {
-          // Get all the tests from first task to current that need to be
-          // executed.
-          var buggyOutputTests = [];
-          var correctnessTests = [];
-          var performanceTests = [];
-          for (var i = 0; i < tasks.length; i++) {
-            buggyOutputTests = buggyOutputTests.concat(
-                tasks[i].getBuggyOutputTests());
-            correctnessTests = correctnessTests.concat(
-                tasks[i].getCorrectnessTests());
-            performanceTests = performanceTests.concat(
-                tasks[i].getPerformanceTests());
-          }
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
-          for (i = 0; i < buggyOutputTests.length; i++) {
-            if (buggyOutputTestResults[i]) {
-              return _getBuggyOutputTestFeedback(
-                buggyOutputTests[i], codeEvalResult);
-            }
-          }
-
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          for (i = 0; i < correctnessTests.length; i++) {
-            var observedOutput = observedOutputs[i];
-
-            // TODO(eyurko): Add varied statements for when code is incorrect.
-            if (!correctnessTests[i].matchesOutput(observedOutput)) {
-              return _getCorrectnessTestFeedback(
-                correctnessTests[i], observedOutput);
-            }
-          }
-
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
-          for (i = 0; i < performanceTests.length; i++) {
-            var expectedPerformance = (
-              performanceTests[i].getExpectedPerformance());
-            var observedPerformance = performanceTestResults[i];
 
-            if (expectedPerformance !== observedPerformance) {
-              return _getPerformanceTestFeedback(expectedPerformance);
+          var indexOfBuggyOutputTestResults = 0;
+          var indexOfObservedOutputs = 0;
+          var indexOfPerformanceTestResults = 0;
+
+          for (var i = 0; i < tasks.length; i++) {
+            // Firstly, verify buggy output tests.
+            var buggyOutputTests = tasks[i].getBuggyOutputTests();
+            for (var j = 0; j < buggyOutputTests.length; j++) {
+              if (buggyOutputTestResults[indexOfBuggyOutputTestResults]) {
+                return _getBuggyOutputTestFeedback(
+                  buggyOutputTests[j], codeEvalResult);
+              }
+              indexOfBuggyOutputTestResults++;
+            }
+
+            // Secondly, verify correctness tests.
+            var correctnessTests = tasks[i].getCorrectnessTests();
+            for (j = 0; j < correctnessTests.length; j++) {
+              var observedOutput = observedOutputs[indexOfObservedOutputs];
+
+              // TODO(eyurko): Add varied statements for when code is incorrect.
+              if (!correctnessTests[j].matchesOutput(observedOutput)) {
+                return _getCorrectnessTestFeedback(
+                  correctnessTests[j], observedOutput);
+              }
+              indexOfObservedOutputs++;
+            }
+
+            // Lastly, verify performance tests.
+            var performanceTests = tasks[i].getPerformanceTests();
+            for (j = 0; j < performanceTests.length; j++) {
+              var expectedPerformance = (
+                performanceTests[j].getExpectedPerformance());
+              var observedPerformance =
+                  performanceTestResults[indexOfPerformanceTestResults];
+
+              if (expectedPerformance !== observedPerformance) {
+                return _getPerformanceTestFeedback(expectedPerformance);
+              }
+              indexOfPerformanceTestResults++;
             }
           }
 
