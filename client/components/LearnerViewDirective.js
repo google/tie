@@ -67,6 +67,13 @@ tie.directive('learnerView', [function() {
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
+                <button class="tie-code-reset" name="code-reset"
+                    ng-click="resetCode()">
+                  Reset Code
+                </button>
+                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                  Saving code now...
+                </div>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -115,6 +122,17 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-code-auto-save {
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
+        }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -340,11 +358,13 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
+      '$scope', '$interval', '$timeout', 'SolutionHandlerService',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'CodeStorageService',
       function(
-          $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
+          $scope, $interval, $timeout, SolutionHandlerService,
+          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
+          CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -357,6 +377,13 @@ tie.directive('learnerView', [function() {
           ].join('\n')
         ];
 
+        var SECONDS_TO_MILLISECONDS = 1000;
+        // Default time interval, in seconds, after which code will
+        // be auto-saved.
+        var DEFAULT_AUTOSAVE_SECONDS = 30;
+        // "Saving code now..." will last for 3 seconds and disappear.
+        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
+
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -368,6 +395,7 @@ tie.directive('learnerView', [function() {
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
+        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -498,6 +526,29 @@ tie.directive('learnerView', [function() {
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
+        $scope.resetCode = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          CodeStorageService.clearLocalStorageCode(questionId, language);
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+        };
+
+        var triggerAutosaveNotification = function(displaySeconds) {
+          $scope.autosaveTextIsDisplayed = true;
+          $timeout(function() {
+            $scope.autosaveTextIsDisplayed = false;
+          }, displaySeconds * SECONDS_TO_MILLISECONDS);
+        };
+
+        var activateAutosaving = function() {
+          $interval(function() {
+            var currentQuestionId =
+              $scope.questionIds[$scope.currentQuestionIndex];
+            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+            CodeStorageService.storeCode(
+              currentQuestionId, $scope.code, language);
+          }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+        };
+
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
@@ -514,6 +565,8 @@ tie.directive('learnerView', [function() {
           minHeight: $(".tie-question-window").height(),
           minWidth: $(".tie-question-window").width()
         });
+
+        activateAutosaving();
       }
     ]
   };

@@ -17,6 +17,7 @@
  * domain objects.
  */
 
+
 tie.factory('CorrectnessTestObjectFactory', [
   function() {
     var CorrectnessTest = function(correctnessTestDict) {
@@ -31,8 +32,14 @@ tie.factory('CorrectnessTestObjectFactory', [
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
-      return this._allowedOutputs.some(function(allowedOutput) {
-        return angular.equals(allowedOutput, output);
+      var allowedOutputs = this._allowedOutputs;
+      var target = output;
+      if (angular.isArray(output)) {
+        target = JSON.stringify(output);
+        allowedOutputs = this._allowedOutputs.map(JSON.stringify);
+      }
+      return allowedOutputs.some(function(allowedOutput) {
+        return angular.equals(allowedOutput, target);
       });
     };
 
