@@ -489,7 +489,10 @@ tie.directive('learnerView', [function() {
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
 
-        $(".tie-coding-terminal").resizable();
+        $(".tie-coding-terminal").resizable({
+          minHeight: $(".tie-coding-terminal").height(),
+          minWidth: $(".tie-coding-terminal").width()
+        });
       }
     ]
   };
