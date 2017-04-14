@@ -384,7 +384,7 @@ tie.directive('learnerView', [function() {
         var SECONDS_TO_MILLISECONDS = 1000;
         // Default time interval, in seconds, after which code will
         // be auto-saved.
-        var DEFAULT_AUTOSAVE_SECONDS = 60;
+        var DEFAULT_AUTOSAVE_SECONDS = 30;
         // "Saving code now..." will last for 3 seconds and disappear.
         var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
 
