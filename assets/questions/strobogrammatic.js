@@ -28,22 +28,25 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def allowLeadingZeroInResult(cls, length):
-        if length == 2:
+    def allowLeadingZeroInResult(cls, num_digits):
+        if num_digits == 2:
            return [["00","11","69","88","96"]]
-        if length == 3:
-           return  [['000','080', '010', '101', '111', '181', '609', '619', '689', '808', '818', '906', '916', '986']]
+        if num_digits == 3:
+           return  [[
+             '000','080', '010', '101', '111', '181', '609', '619', '689',
+             '808', '818', '906', '916', '986']]
     @classmethod
-    def forgetToIncludeZero(cls, length):
-        if length == 1:
+    def forgetToIncludeZero(cls, num_digits):
+        if num_digits == 1:
            return [["1","8"]]
 `
   },
   tasks: [{
     instructions: [[ 
-      'Implement a function strobogrammatic which takes a number n as input and generates a list of ',
+      'Implement a function strobogrammatic which takes a number n as input ',
+      'and generates a list of ',
       'n-digit numbers which look the same if you rotate them 180 degrees.',
-      'For example,there are only four 2-digit strobogrammatic numbers:[11, 69, 88, 96].'
+      'There are only four 2-digit strobogrammatic numbers:[11, 69, 88, 96].'
     ].join('')
     ],
     prerequisiteSkills: ['Arrays'],
@@ -59,12 +62,13 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       allowedOutputs: [['0', '1', '8']]
     }, {
       input: '3',
-      allowedOutputs: [['101', '111', '181', '609', '619', '689', '808', '818', '906', '916', '986']]
+      allowedOutputs: [['101', '111', '181', '609', '619', '689', 
+                         '808', '818', '906', '916', '986']]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
       messages: [
-        "Try running your code for 1-digit numbers. Did you get the expected result?",
+        "Try your code for 1-digit numbers. Did you get the expected result?",
         [
           'Are you returning all appropriate numbers?',
           '0, for instance, should be included.'
@@ -85,7 +89,8 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
-    // Currently, the system does not support nonlinear runtime complexities, so we are omitting performance tests, for now.
+    // Currently, the system does not support nonlinear runtime complexities
+    // so we are omitting performance tests, for now.
     performanceTests: []
   }],
   styleTests: []
