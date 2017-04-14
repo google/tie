@@ -86,7 +86,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Question {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <h3 class="tie-question-title">{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
@@ -148,6 +148,7 @@ tie.directive('learnerView', [function() {
         .tie-coding-ui, .tie-question-ui {
           display: inline-block;
           margin: 8px;
+          white-space: normal;
         }
         @-webkit-keyframes tie-dot {
           from { -webkit-transform: translate(0px, 0px); }
@@ -177,6 +178,7 @@ tie.directive('learnerView', [function() {
         .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
+          white-space: nowrap;
         }
         .tie-question-ui-outer {
           display: table;
@@ -257,6 +259,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-question-title {
+          color: rgb(66, 133, 244);
         }
         .tie-question-ui {
           vertical-align: top;
@@ -340,16 +345,15 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
       function(
           $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory) {
+          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -378,8 +382,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
+          var storedCode =
+            CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = question.getStarterCode(language);
+          $scope.code = storedCode ?
+              storedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -465,8 +472,16 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before the questionId is changed, save it for later use.
+          var currentQuestionId =
+            $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          // We need to save the code before loading so that the user will get
+          // their own code back if they click on the current question.
+          CodeStorageService.storeCode(currentQuestionId,
+            $scope.code, language);
+
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
@@ -483,6 +498,8 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
+          CodeStorageService.storeCode(
+            $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
         loadQuestion(
