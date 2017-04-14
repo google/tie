@@ -20,16 +20,7 @@ globalData.questions['stringToDict'] = {  // eslint-disable-line dot-notation
   title: 'Split String to Words',
   starterCode: {
     python:
-`def preProcess(s): // necessary because no functionality for taking multiple inputs
-    // s is passed in as 'stringtoparse:words in dictionary' and converted two two parameters
-    spl = s.split(":")
-    dict_str = spl[1].split(" ")
-    dict = set()
-    for el in dict_str:
-      dict.add(el)
-    return stringToDict(spl[0], dict)
-
-def stringToDict(s, dict):
+`def stringToDict(lst):
     return ""
 `
   },
@@ -39,30 +30,33 @@ def stringToDict(s, dict):
     @classmethod
     def returnOriginalString(cls, s):
         return s
+
+    @classmethod
+    def processLongStringToStringAndDict(cls, s):
+      spl = s.split(":")
+      dict_str = spl[1].split(" ")
+      dict = set()
+      for el in dict_str:
+        dict.add(el)
+      return [spl[0], dict]
 `
   },
   tasks: [{
     instructions: [
       [
-        'For this question, you\'ll implement the stringToDict function. This ',
-        'function takes a string of alphabetic letters with no whitespaces and a ',
-        'dictionary represented as a set. The function should take the input string and ',
-        'split it into two space-separated words that are both in the given dictionary. ',
-        'If there is no valid solution, return \'No Solution\' .'
+        'For this question, you\'ll implement the stringToDict function. This function takes a ',
+        'list of two elements, the first element being a string of alphabetic letters with no whitespaces ',
+        'and the second element being a dictionary of valid words represented as a Python set. The function ',
+        'should take the input string and split it into two space-separated words that are both in the given ',
+        'dictionary. If there is no valid solution, return \'No Solution\' .'
       ].join(''),
-      "For instance, 'fruitsalad' becomes 'fruit salad', assuming fruit and salad are in the dictionary.",
-      [
-        'Note: You do not need to understand the preProcess function. Preprocess does some ',
-        'preprocessing that allows two arguments to be passed into the stringToDict function which ',
-        'you will implement. An input string is passed into preProcess that contains both the ',
-        'string you are to parse and the given dictionary for stringToDict, separated by a colon.'
-      ].join('')
+      "For instance, 'fruitsalad' becomes 'fruit salad', assuming fruit and salad are in the dictionary."
     ],
-    prerequisiteSkills: ['Arrays', 'Strings', 'Sets'],
+    prerequisiteSkills: ['Arrays', 'Strings', 'Sets', 'Lists'],
     acquiredSkills: ['String Parsing'],
-    inputFunctionName: null,
+    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndDict',
     outputFunctionName: null,
-    mainFunctionName: 'preProcess',
+    mainFunctionName: 'stringToDict',
     correctnessTests: [{
       input: 'goodneighbor:good neighbor',
       allowedOutputs: ['good neighbor']
@@ -95,9 +89,9 @@ def stringToDict(s, dict):
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets'],
     acquiredSkills: ['String Manipulation', 'Shortest Path Search'],
-    inputFunctionName: null,
+    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndDict',
     outputFunctionName: null,
-    mainFunctionName: 'preProcess',
+    mainFunctionName: 'stringToDict',
     correctnessTests: [{
       input: 'bluehondacivic:honda civic accord blue',
       allowedOutputs: ['blue honda civic']
