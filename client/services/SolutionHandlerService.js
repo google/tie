@@ -49,12 +49,9 @@ tie.factory('SolutionHandlerService', [
           var buggyOutputTests = [];
           var performanceTests = [];
           for (var i = 0; i < tasks.length; i++) {
-            correctnessTests = correctnessTests.concat(
-                tasks[i].getCorrectnessTests());
-            buggyOutputTests = buggyOutputTests.concat(
-                tasks[i].getBuggyOutputTests());
-            performanceTests = performanceTests.concat(
-                tasks[i].getPerformanceTests());
+            correctnessTests.push(tasks[i].getCorrectnessTests());
+            buggyOutputTests.push(tasks[i].getBuggyOutputTests());
+            performanceTests.push(tasks[i].getPerformanceTests());
           }
           var lastTask = tasks[tasks.length - 1];
           var codeSubmission = CodeSubmissionObjectFactory.create(
