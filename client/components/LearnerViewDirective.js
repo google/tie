@@ -305,7 +305,7 @@ tie.directive('learnerView', [function() {
           overflow: auto;
         }
         .tie-question-window * {
-          padding: 8px;
+          padding-right: 5px;
         }
         .tie-run-button {
           background-color: rgb(66, 133, 244);
