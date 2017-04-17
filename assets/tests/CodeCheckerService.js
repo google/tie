@@ -26,8 +26,9 @@ tie.factory('CodeCheckerService', [
     };
 
     var _checkIfClassDefinitionExistsInCode = function(className, code) {
-      var classDefinition = 'class ' + className + '(object):';
-      return code.indexOf(classDefinition) !== -1;
+      var classDefinitionPattern = new RegExp('class ' + className +
+                                              '\\((object)?\\):');
+      return code.match(classDefinitionPattern) !== null;
     };
 
     return {
