@@ -50,7 +50,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
         'second element being a set of valid words represented as a ',
         'Python set. The function should take the input string and split it ',
         'into two space-separated words that are both in the given ',
-        'set. If there is no valid solution, return \'No Solution\'.'
+        'set. If there is no valid solution, return \'None\'.'
       ].join(''),
       [
         'For instance, \'fruitsalad\' becomes \'fruit salad\', assuming ',
@@ -70,7 +70,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['honda civic']
     }, {
       input: 'toyotacamry:honda civic accord',
-      allowedOutputs: ['No Solution']
+      allowedOutputs: ['None']
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
@@ -105,7 +105,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['very good neighbor']
     }, {
       input: 'graytoyotacamry:honda civic accord gray blue',
-      allowedOutputs: ['No Solution']
+      allowedOutputs: ['None']
     }],
     buggyOutputTests: [],
     performanceTests: []
