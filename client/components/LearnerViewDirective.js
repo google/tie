@@ -61,10 +61,12 @@ tie.directive('learnerView', [function() {
             </div>
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
-                <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                      ng-model="code"
-                      class="tie-codemirror-container"></ui-codemirror>
+                <div class="tie-coding-terminal-wrapper">
+                  <div class="tie-coding-terminal">
+                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                        ng-model="code"
+                        class="tie-codemirror-container"></ui-codemirror>
+                  </div>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
@@ -138,24 +140,31 @@ tie.directive('learnerView', [function() {
           margin-top: 10px;
           margin-left: 10px;
         }
-        .tie-coding-terminal .CodeMirror {
+        .tie-coding-terminal-wrapper .CodeMirror {
           /* Overwriting codemirror defaults */
           height: 100%;
         }
         .tie-codemirror-container {
           width: 100%;
         }
-        .tie-coding-terminal {
+        .tie-coding-terminal-wrapper {
           display: flex;
           font-size: 13px;
           height: 368px;
           margin-top: 10px;
-          width: 662px;
+          width: 652px;
+          padding-right: 10px;
+          padding-bottom: 10px;
+        }
+        .tie-coding-terminal {
+          width: 100%;
+          height: 100%;
+          overflow: auto;
         }
         .tie-coding-window {
           display: flex;
         }
-        .tie-coding-terminal, .tie-question-window-wrapper {
+        .tie-coding-terminal-wrapper, .tie-question-window-wrapper {
           background-color: rgb(255, 255, 255);
           border-color: rgb(222, 222, 222);
           border-radius: 3px;
@@ -163,7 +172,7 @@ tie.directive('learnerView', [function() {
           border-width: 1px;
           -webkit-font-smoothing: antialiased;
         }
-        .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
+        .tie-coding-terminal-wrapper:focus, .tie-lang-select-menu:focus,
             .tie-run-button:focus {
           outline: 0;
         }
@@ -570,9 +579,9 @@ tie.directive('learnerView', [function() {
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
 
-        $(".tie-coding-terminal").resizable({
-          minHeight: $(".tie-coding-terminal").height(),
-          minWidth: $(".tie-coding-terminal").width()
+        $(".tie-coding-terminal-wrapper").resizable({
+          minHeight: $(".tie-coding-terminal-wrapper").height(),
+          minWidth: $(".tie-coding-terminal-wrapper").width()
         });
         $(".tie-feedback-window-wrapper").resizable({
           minHeight: $(".tie-feedback-window-wrapper").height(),
