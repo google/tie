@@ -17,7 +17,7 @@
  */
 
 globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
-  title: 'Split String to Words',
+  title: 'Split String into Words',
   starterCode: {
     python:
 `def stringToWords(lst):
@@ -33,12 +33,12 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
 
     @classmethod
     def processLongStringToStringAndDict(cls, s):
-      spl = s.split(":")
-      dict_str = spl[1].split(" ")
-      dict = set()
-      for el in dict_str:
-        dict.add(el)
-      return [spl[0], dict]
+      split_string = s.split(":")
+      set_string = split_string[1].split(" ")
+      set_object = set()
+      for word in set_string:
+        dict.add(word)
+      return [split_string[0], set_object]
 `
   },
   tasks: [{
