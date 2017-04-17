@@ -120,3 +120,4 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     ].join('')
   }]
 };
+
