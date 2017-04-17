@@ -25,9 +25,17 @@ tie.factory('CodeCheckerService', [
       return code.indexOf(functionDefinition) !== -1;
     };
 
+    var _checkIfClassDefinitionExistsInCode = function(className, code) {
+      var classDefinition = 'class ' + className + '(object):';
+      return code.indexOf(classDefinition) !== -1;
+    };
+
     return {
       checkIfFunctionExistsInCode: function(functionName, code) {
         return _checkIfFunctionExistsInCode(functionName, code);
+      },
+      checkIfClassDefinitionExistsInCode: function(className, code) {
+        return _checkIfClassDefinitionExistsInCode(className, code);
       },
       // TODO(eyurko): Add check that function exists in specified class.
       checkIfFunctionExistsInClass: function(functionName, className, code) {
