@@ -20,11 +20,19 @@
 tie.factory('PythonCodePreprocessorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
+  'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS',
+  'VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
+      VARNAME_PERFORMANCE_TEST_RESULTS,
+      VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS,
+      VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS,
+      VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS,
+      VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
     var VARNAME_TEST_INPUTS = 'test_inputs';
@@ -169,7 +177,6 @@ tie.factory('PythonCodePreprocessorService', [
         VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
       ].join('\n');
 
-      var VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS = 'one_task_test_results';
       for (var i = 0; i < correctnessTests.length; i++) {
         var oneTaskTests = correctnessTests[i];
         testCode += (
@@ -193,12 +200,14 @@ tie.factory('PythonCodePreprocessorService', [
 
           testCode += (
             '\n' +
-            VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS + '.append(' + testOutputCode + ')');
+            VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS +
+            '.append(' + testOutputCode + ')');
         }
 
           testCode += (
             '\n' +
-            VARNAME_CORRECTNESS_TEST_RESULTS + '.append(' + VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS + ')');
+            VARNAME_CORRECTNESS_TEST_RESULTS +
+            '.append(' + VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS + ')');
       };
 
       return testCode;
@@ -224,17 +233,17 @@ tie.factory('PythonCodePreprocessorService', [
         'def matches_buggy_function(func):',
         '    buggy_results = []',
         '    for tests in test_inputs:',
-        '        one_task_result = []',
+        '        one_task_results = []',
         '        for test in tests:',
-        '            one_task_result.append(' + testOutputCode + ')',
-        '        buggy_results.append(one_task_result)',
+        '            one_task_results' +
+        '.append(' + testOutputCode + ')',
+        '        buggy_results.append(one_task_results)',
         '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
         '',
         VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
         ''
       ].join('\n');
 
-      var VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS = 'one_buggy_output_test_results';
       buggyOutputTests.forEach(function(oneTaskBuggyOutputTest) {
         fullTestCode += (
             VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
@@ -257,8 +266,7 @@ tie.factory('PythonCodePreprocessorService', [
 
     var _generatePerformanceTestCode = function(performanceTests) {
       var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n')
-      var VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS = 'one_task_performance_test_results';
-
+      var performanceTestFunctionSet = new Set();
       performanceTests.forEach(function(oneTaskPerformanceTests, index) {
         testCode += (VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
         oneTaskPerformanceTests.forEach(function(test) {
@@ -269,39 +277,42 @@ tie.factory('PythonCodePreprocessorService', [
           // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
           // TODO(eyurko): Use linear regression to determine if the data points
           // "look" linear, quadratic, etc, and then provide feedback accordingly.
-          testCode += [
-            '',
-            'def get_test_input_from_'+
-                qualifiedTransformationFunctionName.replace('.', '_') + '_' + index +
-                '(atom, input_size):',
-            '    return ' + qualifiedTransformationFunctionName + (
-              '(atom, input_size)'),
-            '',
-            'def run_performance_test_from_'+
-                 qualifiedTransformationFunctionName.replace('.', '_') + '_' + index +
-                 '(test_input):',
-            '    time_array = []',
-            '    for input_size in [' + SMALL_INPUT_SIZE + (
-              ', ' + LARGE_INPUT_SIZE + ']:'),
-            '        start = time.time()',
-            '        output = ' + qualifiedEvaluationFunctionName + (
-              '(get_test_input_from_' +
-                qualifiedTransformationFunctionName.replace('.', '_') + '_' + index + '(test_input, input_size))'),
-            '        finish = time.time() - start',
-            '        time_array.append(finish)',
-            '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
-              ' * time_array[0]:'),
-            '        return "not linear"',
-            '    return "linear"',
-            '',
-          ].join('\n');
-
+          if (!performanceTestFunctionSet.has(qualifiedEvaluationFunctionName)) {
+            performanceTestFunctionSet.add(qualifiedEvaluationFunctionName);
+            testCode += [
+              '',
+              'def get_test_input_from_'+
+                  qualifiedTransformationFunctionName.replace('.', '_') +
+                  '(atom, input_size):',
+              '    return ' + qualifiedTransformationFunctionName + (
+                '(atom, input_size)'),
+              '',
+              'def run_performance_test_from_'+
+                   qualifiedTransformationFunctionName.replace('.', '_') +
+                   '(test_input):',
+              '    time_array = []',
+              '    for input_size in [' + SMALL_INPUT_SIZE + (
+                ', ' + LARGE_INPUT_SIZE + ']:'),
+              '        start = time.time()',
+              '        output = ' + qualifiedEvaluationFunctionName + (
+                '(get_test_input_from_' +
+                  qualifiedTransformationFunctionName.replace('.', '_') +
+                   '(test_input, input_size))'),
+              '        finish = time.time() - start',
+              '        time_array.append(finish)',
+              '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
+                ' * time_array[0]:'),
+              '        return "not linear"',
+              '    return "linear"',
+              '',
+            ].join('\n');
+          }
           testCode += '\n' + [
           VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
-          '    run_performance_test_from_' + qualifiedTransformationFunctionName.replace('.', '_') + '_' + index + '(' + (
-            _jsonVariableToPython(test.getInputDataAtom()) + '))')
+            '    run_performance_test_from_' +
+            qualifiedTransformationFunctionName.replace('.', '_') + '(' + 
+            (_jsonVariableToPython(test.getInputDataAtom()) + '))')
           ].join('\n');
-
         });
         testCode += '\n' + [
           (VARNAME_PERFORMANCE_TEST_RESULTS + '.append(' +

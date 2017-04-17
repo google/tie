@@ -493,12 +493,12 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               // Tasks from the first to current.
-              var tasksToCurrent = [];
+              var orderedTasks = [];
               for (var index = 0; index <= currentTaskIndex; index++) {
-                tasksToCurrent = tasksToCurrent.concat(tasks[index]);
+                orderedTasks = orderedTasks.concat(tasks[index]);
               }
               SolutionHandlerService.processSolutionAsync(
-                tasksToCurrent, code,
+                orderedTasks, code,
                 question.getAuxiliaryCode(language), language
               ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
