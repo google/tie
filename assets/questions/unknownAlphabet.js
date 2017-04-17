@@ -29,11 +29,11 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
   @classmethod
   def failsOnNoSolution(cls, words):
     """
-      edges stores the edges that need to build for the alphabet graph
-      edges[ch] is a list of letters for letter ch whose ranks are bigger than
-      ch's rank.
-      degree stores the degree of each letter.
-      For each letter ch, there're degree[ch] letters has an edge goes to ch
+      Dictionary 'edges' stores the pairs of characters which the second one has 
+      the higher rank than the first one. These pairs can be represented as 
+      graph's edges. 'edges[ch]' is a list of letters which have higher rank than 
+      ch's rank. Dictionary 'degree' stores the in-degree in the graph of each letter.
+      For each letter 'ch', there're 'degree[ch]' letters goes to ch.
     """
     edges = {}
     degree = {}
@@ -107,9 +107,11 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
     instructions: [
       [
         'Given a dictionary (a list of words in lexicographic order) of all',
-        'words in an unknown or invented language, write a function findDictonary ',
-        'that returns the alphabet (an ordered list of characters) of that language.'
+        'words in an unknown or invented language, write a function findAlphabet ',
+        'that returns the alphabet (an ordered list of characters sorted by ', 
+        'lexicographic) of that language.'
       ].join(''),
+      'You may suppose there\'s one and only one solution to this problem.', 
       'Example dictionary:',
       '[art, rat, cat, car]',
       'Alphabet is: "atrc"'
@@ -219,9 +221,8 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
         'one correct answer.'
       ].join(''),
       [
-        'For the test case that has no solution, just return "". For the test ',
-        'case that has multiple answers, return the first answer in English ',
-        'lexicographic (alphabetical) order.'
+        'For the test case that has no solution, just return "". If multiple ',
+        'letters have the same frequency, return them in alphabetical order.'
       ].join(''),
       'Example dictionary:',
       '[a, b, a]',
@@ -264,9 +265,9 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
           'Is your result what you expect?'
         ].join(''),
         [
-          'It looks like your answer is not an empty string.',
-          'Can you examine whether your order is valid on the test case ',
-          '["c", "a", "b", "a"]?'
+          'For this case, there\'s no solution as "a" appears both before ',
+          'and after "b". But it seems that you return a single string "c" ',
+          'as the answer. Can you fix the issue?'
         ].join('')
       ]
     }],
