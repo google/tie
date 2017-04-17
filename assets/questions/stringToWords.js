@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Question data for String to Dict.
+ * @fileoverview Question data for Split String into Words.
  */
 
 globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
@@ -32,29 +32,34 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
         return s
 
     @classmethod
-    def processLongStringToStringAndDict(cls, s):
+    def processLongStringToStringAndSet(cls, s):
       split_string = s.split(":")
       set_string = split_string[1].split(" ")
       set_object = set()
       for word in set_string:
-        dict.add(word)
+        set_object.add(word)
       return [split_string[0], set_object]
 `
   },
   tasks: [{
     instructions: [
       [
-        'For this question, you\'ll implement the stringToWords function. This function takes a ',
-        'list of two elements, the first element being a string of alphabetic letters with no whitespaces ',
-        'and the second element being a dictionary of valid words represented as a Python set. The function ',
-        'should take the input string and split it into two space-separated words that are both in the given ',
-        'dictionary. If there is no valid solution, return \'No Solution\' .'
+        'For this question, you\'ll implement the stringToWords function. ',
+        'This function takes a list of two elements, the first element ',
+        ' being a string of alphabetic letters with no whitespaces and the ',
+        'second element being a set of valid words represented as a ',
+        'Python set. The function should take the input string and split it ',
+        'into two space-separated words that are both in the given ',
+        'set. If there is no valid solution, return \'No Solution\'.'
       ].join(''),
-      "For instance, 'fruitsalad' becomes 'fruit salad', assuming fruit and salad are in the dictionary."
+      [
+        'For instance, \'fruitsalad\' becomes \'fruit salad\', assuming ',
+        'fruit and salad are in the set.'
+      ].join('')
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets', 'Lists'],
     acquiredSkills: ['String Parsing'],
-    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndDict',
+    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'stringToWords',
     correctnessTests: [{
@@ -71,25 +76,25 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
       messages: [
         [
-          "Try running your code on 'newcode' on paper, assuming 'new' and 'code' ",
-          "are valid words. What's the result?"
+          "Try running your code on 'newcode' on paper, assuming 'new' and ",
+          "'code' are valid words. What's the result?"
         ].join(''),
         "Are you sure that you're separating 'new' and 'code' properly?",
-        "It looks like you're returning the original string without adding a space."
+        "It looks like you're returning the input without adding a space."
       ]
     }],
     performanceTests: []
   }, {
     instructions: [
       [
-        'Next, expand your solution so that it can handle splitting the string ',
-        'into more than just 2 valid words.'
+        'Next, expand your solution so that it can handle splitting the ',
+        'string into more than just 2 valid words.'
       ].join(''),
       "For instance, 'freshfruitsalad' becomes 'fresh fruit salad'."
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets'],
     acquiredSkills: ['String Manipulation', 'Shortest Path Search'],
-    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndDict',
+    inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'stringToWords',
     correctnessTests: [{
@@ -110,7 +115,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     expectedOutput: true,
     message: [
       'You should only be writing code in the stringToWords function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
+      'decomposition is generally a good idea, you shouldn\'t need more than ',
       'just this function for this question.'
     ].join('')
   }]
