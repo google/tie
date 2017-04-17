@@ -265,9 +265,8 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
           'Is your result what you expect?'
         ].join(''),
         [
-          'For this case, there\'s no solution as "a" appears both before ',
-          'and after "b". But it seems that you return a single string "c" ',
-          'as the answer. Can you fix the issue?'
+          'In the case ["c", "a", "b", "a"] your code returns "c", even though ',
+          '"a" appears both before and after "b". It should return no solution.'
         ].join('')
       ]
     }],
