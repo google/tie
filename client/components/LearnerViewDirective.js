@@ -503,7 +503,7 @@ tie.directive('learnerView', [function() {
           mode: LANGUAGE_PYTHON,
           smartIndent: true,
           tabSize: 4,
-          theme: "default"
+          theme: 'default'
         };
 
         $scope.showNextTask = function() {
