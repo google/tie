@@ -108,10 +108,10 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
       [
         'Given a dictionary (a list of words in lexicographic order) of all',
         'words in an unknown or invented language, write a function findAlphabet ',
-        'that returns the alphabet (an ordered list of characters sorted by ', 
+        'that returns the alphabet (an ordered list of characters sorted by ',
         'lexicographic) of that language.'
       ].join(''),
-      'You may suppose there\'s one and only one solution to this problem.', 
+      'You may suppose there\'s one and only one solution to this problem.',
       'Example dictionary:',
       '[art, rat, cat, car]',
       'Alphabet is: "atrc"'
