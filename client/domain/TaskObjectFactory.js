@@ -29,6 +29,7 @@ tie.factory('TaskObjectFactory', [
       this._instructions = taskDict.instructions;
       this._prerequisiteSkills = taskDict.prerequisiteSkills;
       this._acquiredSkills = taskDict.acquiredSkills;
+      this._tasktype = taskDict.taskType;
       this._inputFunctionName = taskDict.inputFunctionName;
       this._outputFunctionName = taskDict.outputFunctionName;
       this._mainFunctionName = taskDict.mainFunctionName;
@@ -81,6 +82,10 @@ tie.factory('TaskObjectFactory', [
 
     Task.prototype.getAcquiredSkills = function() {
       return this._acquiredSkills;
+    };
+
+    Task.prototype.getTaskType = function() {
+      return this._taskType;
     };
 
     Task.prototype.getPrerequisiteSkills = function() {

@@ -121,6 +121,11 @@ tie.factory('TaskSchemaValidationService', [
         var acquiredSkills = task.getAcquiredSkills();
         return acquiredSkills.length > 0;
       },
+      verifyTaskTypeIsDefined: function(task) {
+        var taskType = task.getTaskType();
+        var numWords = taskType.split(' ').length;
+        return numWords >= 1 && numWords <= 3;
+      },
       verifyCorrectnessTestsAreArray: function(task) {
         var correctnessTests = task.getCorrectnessTests();
         return angular.isArray(correctnessTests);
