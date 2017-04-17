@@ -26,27 +26,27 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getQuestionsIds', function() {
     it('should get question ids', function() {
-      var dict = {questionIds: ["q0", "q1"]};
-      var questionSet = QuestionSetObjectFactory.create(dict);
-      var thisDict = questionSet.getQuestionIds();
+      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSet = QuestionSetObjectFactory.create(questionSetDict);
+      var questionIds = questionSet.getQuestionIds();
 
-      expect(thisDict).toEqual(dict.questionIds);
+      expect(questionIds).toEqual(questionSetDict.questionIds);
     });
   });
 
   describe('getQuestionsId', function() {
     it('should get question id index', function() {
-      var dict = {questionIds: ["q0", "q1"]};
-      var questionSet = QuestionSetObjectFactory.create(dict);
-      var thisId = questionSet.getQuestionId(1);
+      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSet = QuestionSetObjectFactory.create(questionSetDict);
+      var questionId = questionSet.getQuestionId(1);
 
-      expect(thisId).toMatch("q1");
+      expect(questionId).toMatch("q1");
     });
 
-    it('should throw error if index out of bounds of number of questions', function() {
+    it('should throw error if index passed to getQuestionId is out of bounds', function() {
       var errorFunction = function() {
-        var dict = {questionIds: ["q0", "q1"]};
-        var questionSet = QuestionSetObjectFactory.create(dict);
+        var questionSetDict = {questionIds: ["q0", "q1"]};
+        var questionSet = QuestionSetObjectFactory.create(questionSetDict);
         questionSet.getQuestionId(-1);
       };
 
@@ -56,8 +56,8 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getFirstQuestionId', function() {
     it('should get question id of first question', function() {
-      var dict = {questionIds: ["q0", "q1"]};
-      var questionSet = QuestionSetObjectFactory.create(dict);
+      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var firstQuestionId = questionSet.getFirstQuestionId();
 
       expect(firstQuestionId).toMatch("q0");
@@ -66,8 +66,8 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getNumberOfQuestions', function() {
     it('should get total number of questions', function() {
-      var dict = {questionIds: ["q0", "q1"]};
-      var questionSet = QuestionSetObjectFactory.create(dict);
+      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var numberOfQuestions = questionSet.getNumberOfQuestions();
 
       expect(numberOfQuestions).toEqual(2);
@@ -76,11 +76,13 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getIntroductionParagraphs', function() {
     it('should get introduction paragraph', function() {
-      var dict = {introductionParagraphs: "introduction"};
-      var questionSet = QuestionSetObjectFactory.create(dict);
+      var paragraphsDict = {introductionParagraphs: "introduction"};
+      var questionSet = QuestionSetObjectFactory.create(paragraphsDict);
       var introductionParagraphs = questionSet.getIntroductionParagraphs();
 
-      expect(introductionParagraphs).toMatch("introduction");
+      expect(introductionParagraphs)
+        .toMatch(paragraphsDict.introductionParagraphs);
     });
   });
 });
+
