@@ -30,23 +30,23 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     @classmethod
     def allowLeadingZeroInResult(cls, num_digits):
         if num_digits == 2:
-           return [["00","11","69","88","96"]]
+           return [["00", "11", "69", "88", "96"]]
         if num_digits == 3:
            return  [[
-             '000','080', '010', '101', '111', '181', '609', '619', '689',
+             '000', '080', '010', '101', '111', '181', '609', '619', '689',
              '808', '818', '906', '916', '986']]
     @classmethod
     def forgetToIncludeZero(cls, num_digits):
         if num_digits == 1:
-           return [["1","8"]]
+           return [["1", "8"]]
 `
   },
   tasks: [{
     instructions: [[ 
       'Implement a function strobogrammatic which takes a number n as input ',
-      'and generates a list of ',
-      'n-digit numbers which look the same if you rotate them 180 degrees.',
-      'There are only four 2-digit strobogrammatic numbers:[11, 69, 88, 96].'
+      'and generates a list of n-digit numbers which look the same',
+      'if you rotate them 180 degrees.',
+      'There are only four 2-digit strobogrammatic numbers: [11, 69, 88, 96].'
     ].join('')
     ],
     prerequisiteSkills: ['Arrays'],
@@ -95,3 +95,4 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
   }],
   styleTests: []
 };
+
