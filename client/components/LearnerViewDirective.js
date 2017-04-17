@@ -174,7 +174,7 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus {
+            .tie-run-button:focus, .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
