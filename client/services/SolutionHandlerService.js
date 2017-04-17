@@ -29,43 +29,56 @@ tie.factory('SolutionHandlerService', [
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
           task, studentCode, auxiliaryCode, language) {
-        // Do an initial run of the code to check for syntax errors.
-        return CodeRunnerDispatcherService.runCodeAsync(
+        // First, check pre-requisites for the submitted code
+        return PreRequisiteCheckDispatcherService.checkCode(
           language, studentCode
-        ).then(function(rawCodeEvalResult) {
-          var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
-          if (potentialSyntaxErrorString) {
-            var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-              potentialSyntaxErrorString);
+        ).then(function(preRequisiteCheckResult) {
+          var preRequisiteFailureString = preRequisiteCheckResult.getPreRequisiteFailureString();
+          if (preRequisiteFailureString) {
+            var feedback = FeedbackGeneratorService.getPreRequisiteFailureFeedback(
+              preRequisiteFailureString);
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
+              SnapshotObjectFactory.create(preRequisiteCheckResult, feedback));
             return $q.resolve(feedback);
           }
 
-          // Otherwise, the code doesn't have any obvious syntax errors.
-          // Generate a CodeSubmission object that wraps the student's code
-          // into a class and appends some test code, then run the whole thing.
-          var codeSubmission = CodeSubmissionObjectFactory.create(
-            studentCode.trim());
-          CodePreprocessorDispatcherService.preprocess(
-            language, codeSubmission, auxiliaryCode,
-            task.getInputFunctionName(), task.getMainFunctionName(),
-            task.getOutputFunctionName(), task.getCorrectnessTests(),
-            task.getBuggyOutputTests(), task.getPerformanceTests());
-
+          // Next, do an initial run of the code to check for syntax errors.
           return CodeRunnerDispatcherService.runCodeAsync(
-            language, codeSubmission.getPreprocessedCode()
-          ).then(function(codeEvalResult) {
-            var runtimeFeedback = FeedbackGeneratorService.getFeedback(
-              task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
-            TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
-            return runtimeFeedback;
+            language, studentCode
+          ).then(function(rawCodeEvalResult) {
+            var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
+            if (potentialSyntaxErrorString) {
+              var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+                potentialSyntaxErrorString);
+              TranscriptService.recordSnapshot(
+                SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
+              return $q.resolve(feedback);
+            }
+
+            // Otherwise, the code doesn't have any obvious syntax errors.
+            // Generate a CodeSubmission object that wraps the student's code
+            // into a class and appends some test code, then run the whole thing.
+            var codeSubmission = CodeSubmissionObjectFactory.create(
+              studentCode.trim());
+            CodePreprocessorDispatcherService.preprocess(
+              language, codeSubmission, auxiliaryCode,
+              task.getInputFunctionName(), task.getMainFunctionName(),
+              task.getOutputFunctionName(), task.getCorrectnessTests(),
+              task.getBuggyOutputTests(), task.getPerformanceTests());
+
+            return CodeRunnerDispatcherService.runCodeAsync(
+              language, codeSubmission.getPreprocessedCode()
+            ).then(function(codeEvalResult) {
+              var runtimeFeedback = FeedbackGeneratorService.getFeedback(
+                task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
+              TranscriptService.recordSnapshot(
+                SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
+              return runtimeFeedback;
+            });
+          }).then(function(feedback) {
+            return feedback;
           });
-        }).then(function(feedback) {
-          return feedback;
-        });
-      }
+      });
     };
   }
 ]);

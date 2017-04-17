@@ -221,6 +221,14 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendCodeParagraph(errorString);
         return feedback;
       },
+      getPreRequisiteFailureFeedback: function(failureString) { 
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph(
+          "Oops!  There is a problem with your code:");
+        feedback.appendTextParagraph(failureString);
+        feeback.appendCodeParagraph("Can you correct this issue?");
+        return feedback; 
+      },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
@@ -230,3 +238,4 @@ tie.factory('FeedbackGeneratorService', [
     };
   }
 ]);
+
