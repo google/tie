@@ -225,8 +225,6 @@ tie.directive('learnerView', [function() {
           height: 100%;
           overflow: auto;
         }
-        .tie-feedback 
-        }
         .tie-feedback-paragraph {
           width: 100%;
         }
