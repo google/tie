@@ -47,8 +47,8 @@ describe('QuestionSetObjectFactory', function() {
       var errorFunction = function() {
         var dict = {questionIds: ["q0", "q1"]};
         var questionSet = QuestionSetObjectFactory.create(dict);
-        var error = questionSet.getQuestionId(-1)    
-      }
+        questionSet.getQuestionId(-1);
+      };
 
       expect(errorFunction).toThrowError(Error);
     });
@@ -76,7 +76,7 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getIntroductionParagraphs', function() {
     it('should get introduction paragraph', function() {
-      var dict = {questionIds: ["q0", "q1"], introductionParagraphs: "introduction"};
+      var dict = {introductionParagraphs: "introduction"};
       var questionSet = QuestionSetObjectFactory.create(dict);
       var introductionParagraphs = questionSet.getIntroductionParagraphs();
 
