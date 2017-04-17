@@ -74,12 +74,13 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        "It looks like you might not have considered different types of ASCII characters. ",
+        "Try running your code on '1600Amphitheatre'. Do you get the result you expected?",
+        "What happens if you pass in strings that contain numbers?",
         [
-          "Check your code to see if it properly handles strings with digits, ",
-          "such as '1600Amphitheatre'."
-        ].join(''),
-        "Do not forget to consider special chracters too, such as '~!?@#'."
+          "It looks like you are not handling strings properly ",
+          "if they contain digits or special characters, ",
+          "such as '0123456789' or '~?!@#$%'."
+        ].join('')
       ]
     }],
     performanceTests: []
