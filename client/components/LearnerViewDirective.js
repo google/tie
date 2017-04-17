@@ -37,6 +37,7 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-coding-ui">
+            <div class="tie-feedback-window-wrapper">
             <div class="tie-feedback-window">
               <div class="tie-feedback">
                 <p ng-repeat="paragraph in feedbackParagraphs track by $index"
@@ -56,6 +57,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-dot tie-dot-2"></div>
                 <div class="tie-dot tie-dot-3"></div>
               </div>
+            </div>
             </div>
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
@@ -92,16 +94,18 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
           <div class="tie-question-ui">
-            <div class="tie-question-window">
-              <h3 class="tie-question-title">{{title}}</h3>
-              <div class="tie-previous-instructions">
-                <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                  <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
-                  <hr>
+            <div class="tie-question-window-wrapper">
+              <div class="tie-question-window">
+                <h3 class="tie-question-title">{{title}}</h3>
+                <div class="tie-previous-instructions">
+                  <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                    <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
+                    <hr>
+                  </div>
                 </div>
-              </div>
-              <div class="tie-instructions">
-                <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                <div class="tie-instructions">
+                  <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -151,7 +155,7 @@ tie.directive('learnerView', [function() {
         .tie-coding-window {
           display: flex;
         }
-        .tie-coding-terminal, .tie-question-window {
+        .tie-coding-terminal, .tie-question-window-wrapper {
           background-color: rgb(255, 255, 255);
           border-color: rgb(222, 222, 222);
           border-radius: 3px;
@@ -204,7 +208,7 @@ tie.directive('learnerView', [function() {
           margin-right: auto;
           margin-top: 16px;
         }
-        .tie-feedback-window {
+        .tie-feedback-window-wrapper {
           background-color: rgb(255, 255, 242);
           border-color: rgb(222, 222, 222);
           border-radius: 3px;
@@ -215,6 +219,13 @@ tie.directive('learnerView', [function() {
           padding: 10px;
           width: 642px;
           -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-window {
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+        }
+        .tie-feedback 
         }
         .tie-feedback-paragraph {
           width: 100%;
@@ -282,11 +293,19 @@ tie.directive('learnerView', [function() {
         .tie-question-ui {
           vertical-align: top;
         }
-        .tie-question-window {
+        .tie-question-window-wrapper {
           font-size: 14px;
           height: 508px;
           padding: 10px;
           width: 548px;
+        }
+        .tie-question-window {
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+        }
+        .tie-question-window * {
+          padding: 8px;
         }
         .tie-run-button {
           background-color: rgb(66, 133, 244);
@@ -557,13 +576,13 @@ tie.directive('learnerView', [function() {
           minHeight: $(".tie-coding-terminal").height(),
           minWidth: $(".tie-coding-terminal").width()
         });
-        $(".tie-feedback-window").resizable({
-          minHeight: $(".tie-feedback-window").height(),
-          minWidth: $(".tie-feedback-window").width()
+        $(".tie-feedback-window-wrapper").resizable({
+          minHeight: $(".tie-feedback-window-wrapper").height(),
+          minWidth: $(".tie-feedback-window-wrapper").width()
         });
-        $(".tie-question-window").resizable({
-          minHeight: $(".tie-question-window").height(),
-          minWidth: $(".tie-question-window").width()
+        $(".tie-question-window-wrapper").resizable({
+          minHeight: $(".tie-question-window-wrapper").height(),
+          minWidth: $(".tie-question-window-wrapper").width()
         });
 
         activateAutosaving();
