@@ -18,6 +18,8 @@
 
 window.globalData = {
   // Question data will be stored here, keyed by question ID.
+  // Questions are instantiated in assets/questions, and they add themselves
+  // to this dictionary when they're instantiated.
   questions: {},
   // Question set data will be stored here, keyed by question set ID.
   questionSets: {}
@@ -72,3 +74,5 @@ tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
 tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
 // Name of the variable in which a copy of the most recent input is stored.
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
+// Default auto save time in seconds.
+tie.constant('DEFAULT_AUTO_SAVE_SECONDS', 3);

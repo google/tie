@@ -89,6 +89,10 @@ tie.factory('TaskSchemaValidationService', [
             outputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
         );
       },
+      verifyAuxiliaryCotainsClassDefinition: function() {
+        return CodeCheckerService.checkIfClassDefinitionExistsInCode(
+          CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode);
+      },
       verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
         if (angular.isArray(prerequisiteSkills)) {
@@ -159,6 +163,15 @@ tie.factory('TaskSchemaValidationService', [
             }));
         });
       },
+      verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
+        return task.getBuggyOutputTests().every(function(test) {
+          var messages = new Set();
+          test.getMessages().forEach(function(message) {
+            messages.add(message);
+          });
+          return messages.size === test.getMessages().length;
+        });
+      },
       verifyPerformanceTestsAreArray: function(task) {
         var performanceTests = task.getPerformanceTests();
         return angular.isArray(performanceTests);
@@ -192,7 +205,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyPerformanceTestsHaveLinearExpectedPerformance: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
-          return ALLOWED_RUNTIMES.includes(test.getExpectedPerformance());
+          return ALLOWED_RUNTIMES.indexOf(test.getExpectedPerformance()) !== -1;
         });
       },
       verifyPerformanceTestsHaveEvaluationFunctionName: function(task) {

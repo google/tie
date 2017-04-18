@@ -29,7 +29,8 @@ tie.directive('learnerView', [function() {
                   ng-repeat="questionId in questionIds track by $index"
                   ng-click="navigateToQuestion($index)">
                 <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                  <span class="tie-step-text">{{$index + 1}}</span>
+                  <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
+                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
@@ -59,14 +60,20 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-window">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror="codeMirrorOptions"
+                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                       ng-model="code"
-                      class="tie-codemirror-container">
-                  </ui-codemirror>
+                      class="tie-codemirror-container"></ui-codemirror>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
+                <button class="tie-code-reset" name="code-reset"
+                    ng-click="resetCode()">
+                  Reset Code
+                </button>
+                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                  Saving code now...
+                </div>
                 <button class="tie-run-button"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(code)"
@@ -86,7 +93,7 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-question-ui">
             <div class="tie-question-window">
-              <h3>Question {{currentQuestionIndex + 1}}: {{title}}</h3>
+              <h3 class="tie-question-title">{{title}}</h3>
               <div class="tie-previous-instructions">
                 <div ng-repeat="previousInstruction in previousInstructions track by $index">
                   <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
@@ -106,9 +113,6 @@ tie.directive('learnerView', [function() {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
         }
-        .CodeMirror-scroll > .CodeMirror-gutters {
-          z-index: 1;
-        }
         .tie-arrow-highlighter {
           background-color: white;
           border-radius: 100px;
@@ -118,6 +122,17 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-code-auto-save {
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
+        }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -151,6 +166,7 @@ tie.directive('learnerView', [function() {
         .tie-coding-ui, .tie-question-ui {
           display: inline-block;
           margin: 8px;
+          white-space: normal;
         }
         @-webkit-keyframes tie-dot {
           from { -webkit-transform: translate(0px, 0px); }
@@ -180,6 +196,7 @@ tie.directive('learnerView', [function() {
         .tie-question-ui-inner {
           padding-left: 32px;
           padding-right: 32px;
+          white-space: nowrap;
         }
         .tie-question-ui-outer {
           display: table;
@@ -261,6 +278,9 @@ tie.directive('learnerView', [function() {
         .tie-previous-instructions {
           opacity: 0.5;
         }
+        .tie-question-title {
+          color: rgb(66, 133, 244);
+        }
         .tie-question-ui {
           vertical-align: top;
         }
@@ -332,7 +352,7 @@ tie.directive('learnerView', [function() {
           margin-top: auto;
           width: 128px;
         }
-        .tie-step-text {
+        .tie-step-checkmark, .tie-step-text {
           font-size: 14px;
           vertical-align: middle;
         }
@@ -342,23 +362,31 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      '$scope', '$interval', '$timeout', 'SolutionHandlerService',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'CodeStorageService',
       function(
-          $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory) {
+          $scope, $interval, $timeout, SolutionHandlerService,
+          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
+          CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
             'answer below.'
           ].join('\n')
         ];
+
+        var SECONDS_TO_MILLISECONDS = 1000;
+        // Default time interval, in seconds, after which code will
+        // be auto-saved.
+        var DEFAULT_AUTOSAVE_SECONDS = 30;
+        // "Saving code now..." will last for 3 seconds and disappear.
+        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
@@ -371,6 +399,7 @@ tie.directive('learnerView', [function() {
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
+        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -381,8 +410,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
+          var storedCode =
+            CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = question.getStarterCode(language);
+          $scope.code = storedCode ?
+              storedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -468,8 +500,16 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before the questionId is changed, save it for later use.
+          var currentQuestionId =
+            $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          // We need to save the code before loading so that the user will get
+          // their own code back if they click on the current question.
+          CodeStorageService.storeCode(currentQuestionId,
+            $scope.code, language);
+
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
@@ -486,11 +526,38 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
+          CodeStorageService.storeCode(
+            $scope.questionIds[$scope.currentQuestionIndex], code, language);
+        };
+
+        $scope.resetCode = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          CodeStorageService.clearLocalStorageCode(questionId, language);
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+        };
+
+        var triggerAutosaveNotification = function(displaySeconds) {
+          $scope.autosaveTextIsDisplayed = true;
+          $timeout(function() {
+            $scope.autosaveTextIsDisplayed = false;
+          }, displaySeconds * SECONDS_TO_MILLISECONDS);
+        };
+
+        var activateAutosaving = function() {
+          $interval(function() {
+            var currentQuestionId =
+              $scope.questionIds[$scope.currentQuestionIndex];
+            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+            CodeStorageService.storeCode(
+              currentQuestionId, $scope.code, language);
+          }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
         };
 
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
+
+        activateAutosaving();
       }
     ]
   };
