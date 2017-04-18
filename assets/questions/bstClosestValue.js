@@ -94,17 +94,28 @@ def findClosestValue(input):
   },
   tasks: [{
     instructions: [
-      [
-        'In this question, you need to find the closest value in a non-empty binary search tree ',
-        'given the target value. The target value is given in float format. It\'s guaranteed ',
-        'that there\'s only one closest value. You will have the root TreeNode. Each TreeNode ',
-        'has attributes val, left and right.'
-      ].join(''),
-      'For instance, given the following tree and the target value 1.1, you should return 1',
-      '2',
-      '/\\',
-      '1 3'
+      {
+        content:
+        [
+          'In this question, you need to find the closest value in a non-empty binary search tree ',
+          'given the target value. The target value is given in float format. It\'s guaranteed ',
+          'that there\'s only one closest value. You will have the root TreeNode. Each TreeNode ',
+          'has attributes val, left and right.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content:
+        [
+          'For instance, given the following tree and the target value 1.1, you should return 1.',
+          '  2',
+          ' / \\',
+          '1   3'
+        ].join('\n'),
+        type: 'example'
+      }
     ],
+    
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
@@ -139,9 +150,13 @@ def findClosestValue(input):
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Next, make sure you compare all possible candidates'
-      ].join('')
+      {
+        content:
+        [
+          'Next, make sure you compare all possible candidates'
+        ].join(''),
+        type:'text'
+      }
     ],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
