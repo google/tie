@@ -41,6 +41,18 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("'stringify'");
     });
 
+    it('should correctly convert a json String with back slashes', function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython('strin\\gify')
+      ).toEqual("'strin\\\\gify'");
+    });
+
+    it('should correctly convert a json number to a Python number', function() {
+      expect(
+        PythonCodePreprocessorService._jsonVariableToPython(12)
+      ).toEqual(12);
+    });
+
     it(
       [
         'should correctly convert a json Array to a string version ',
@@ -68,6 +80,15 @@ describe('PythonCodePreprocessorService', function() {
         PythonCodePreprocessorService._jsonVariableToPython(
           [[true, true], [false, false], [true, false]])
       ).toEqual("[[True, True], [False, False], [True, False]]");
+    });
+
+    it('should throw error for unsupported inputs', function() {
+      var errorMsg = "Only string, array, and boolean inputs are supported.";
+      expect(function() {
+        PythonCodePreprocessorService._jsonVariableToPython({
+          "foo": "val"
+        });
+      }).toThrow(new Error(errorMsg));
     });
   });
 
