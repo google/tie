@@ -265,7 +265,7 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
           'Is your result what you expect?'
         ].join(''),
         [
-          'In the case ["c", "a", "b", "a"] your code returns "c", even though ',
+          'For the case ["c", "a", "b", "a"] your code returns "c", even though ',
           '"a" appears both before and after "b". It should return no solution.'
         ].join('')
       ]
