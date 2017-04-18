@@ -68,7 +68,7 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
-                  <select class="tie-theme-select" name="theme-select" 
+                  <select class="tie-theme-select-menu" name="theme-select" 
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
@@ -126,12 +126,6 @@ tie.directive('learnerView', [function() {
           height: 100%;
           margin: 0px;
         }
-        .tie-wrapper {
-          height: 100%;
-        }
-        .tie-wrapper.night-mode {
-          background-color: #212121;
-        }
         .tie-arrow-highlighter {
           background-color: white;
           border-radius: 100px;
@@ -175,7 +169,7 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-theme-select:focus {
+            .tie-run-button:focus, .tie-theme-select-menu:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -252,11 +246,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-select-menu {
           float: left;
-          margin-top: 10px;
-        }
-        .tie-theme-select {
-          float: left;
-          margin-left: 5px;
           margin-top: 10px;
         }
         .tie-lang-terminal {
@@ -387,6 +376,17 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
+        }
+        .tie-theme-select-menu {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
+        }
+        .tie-wrapper {
+          height: 100%;
+        }
+        .tie-wrapper.night-mode {
+          background-color: #212121;
         }
       </style>
     `,
