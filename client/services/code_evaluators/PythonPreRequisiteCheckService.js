@@ -21,6 +21,20 @@ tie.factory('PythonPreRequisiteCheckService', [
   function(
       PreRequisiteCheckResultObjectFactory) {   
 
+    var checkStarterCodePresent = function(starterCode, code) {
+      var starterCodeLines = starterCode.split('\n');
+      var codeLines = code.split('\n')
+      for (i = 0; i < codeLines.length; i++) { 
+        codeLines[i] = codeLines[i].trim();
+      }
+      for (i = 0; i < starterCodeLines.length; i++) { 
+        if (!(codeLines.includes(starterCodeLines[i].trim()))) {
+          return false; 
+        }
+      }
+      return true;
+    };
+
     return {
       // Returns a promise.
       checkCode: function(starterCode, code) {
@@ -28,15 +42,25 @@ tie.factory('PythonPreRequisiteCheckService', [
         // TODO: check that starter code has not been modified: 
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
-        //  code, errorMessage); 
-
+        //  code, errorMessage);
+        if (!(checkStarterCodePresent(starterCode, code))) {
+          var errorMessage = ['It looks like you deleted or modified ',
+            'the starter code!  Our evaluation program requires the ',
+            'function names given in the starter code.  Here\'s the '
+            ,'starter code again:'].join(''); 
+          return Promise.resolve(
+            PreRequisiteCheckResultObjectFactory.create(
+              code, errorMessage, starterCode));
+        } 
+        
+        
 
 
         // TODO: check that there are no unsupported/disallowed imports (e.g., numpy)
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
         //    code, errorMessage);
-        console.log(starterCode);
+        
         
         // Otherwise, code passed all pre-requisite checks
         return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));

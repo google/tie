@@ -20,9 +20,10 @@
 tie.factory('PreRequisiteCheckResultObjectFactory', [
   function() {
     var PreRequisiteCheckResult = function(
-      code, preRequisiteFailureString) {
+      code, preRequisiteFailureString, starterCode) {
       this._code = code;
       this._preRequisiteFailureString = preRequisiteFailureString;
+      this._starterCode = starterCode;
     };
 
     //Instance methods
@@ -34,11 +35,15 @@ tie.factory('PreRequisiteCheckResultObjectFactory', [
       return this._preRequisiteFailureString;
     };
 
+    PreRequisiteCheckResult.prototype.getStarterCode = function() {
+      return this._starterCode;
+    };
+
     // Static class methods.
     PreRequisiteCheckResult.create = function(
-      code, preRequisiteFailureString) {
+      code, preRequisiteFailureString, starterCode) {
       return new PreRequisiteCheckResult(
-        code, preRequisiteFailureString);
+        code, preRequisiteFailureString, starterCode);
     };
 
     return PreRequisiteCheckResult;

@@ -33,10 +33,11 @@ tie.factory('SolutionHandlerService', [
         return PreRequisiteCheckDispatcherService.checkCode(
           language, starterCode, studentCode
         ).then(function(preRequisiteCheckResult) {
-          var preRequisiteFailureString = preRequisiteCheckResult.getPreRequisiteFailureString();
+          var preRequisiteFailureString = 
+            preRequisiteCheckResult.getPreRequisiteFailureString();
           if (preRequisiteFailureString) {
             var feedback = FeedbackGeneratorService.getPreRequisiteFailureFeedback(
-              preRequisiteFailureString);
+              preRequisiteCheckResult);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(preRequisiteCheckResult, feedback));
             return $q.resolve(feedback);
