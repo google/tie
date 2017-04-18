@@ -34,14 +34,20 @@ describe('ErrorTracebackObjectFactory', function() {
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
 
-      var skulptError = new Object();
+      var skulptError = {};
       skulptError.msg = 'ZeroDivisionError: integer division or modulo by zero ';
-      skulptError.traceback = [{lineno:5,colno:1}];
+      skulptError.traceback = [{
+        lineno: 5,
+        colno: 1
+      }];
 
-      skulptError.toString = function errorToString() {return this.msg;}
+      skulptError.toString = function toString() {
+        return this.msg;
+      };
 
       expect(ErrorTracebackObjectFactory.fromSkulptError(
-            skulptError).getErrorString()).toEqual(errorTraceback.getErrorString());
+            skulptError).getErrorString()).toEqual(
+              errorTraceback.getErrorString());
     });
   });
 });
