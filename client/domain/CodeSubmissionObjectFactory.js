@@ -77,13 +77,14 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
-    // move all global imports in student code out of StudentCode
+    // Move all global imports in student code out of StudentCode
     // class
     CodeSubmission.prototype.advanceImports = function() {
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
-          var importLine = this._preprocessedCodeLines[i].slice(this.START_INDENT.length);
+          var importLine = this._preprocessedCodeLines[i].slice(
+              this.START_INDENT.length);
           this._preprocessedCodeLines.splice(i, 1);
           this._preprocessedCodeLines.splice(insertPos, 0, importLine);
           this._rawCodeLineIndexes.splice(i, 1);
