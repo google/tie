@@ -44,14 +44,22 @@ class AuxiliaryCode(object):
   },
   tasks: [{
     instructions: [
-      [
-        "For this problem, we'd like you to write a method to determine ",
-        'the most common character in a string. You will be given a string ',
-        'of ASCII characters, and you may assume that there ',
-        'is only one most common character. ',
-        'For now, you do not have to consider spaces.'
-      ].join(''),
-      "There's no need to validate that you're always passed a string."
+      {
+        content: [
+          'For this problem, we\'d like you to write a method to determine ',
+          'the most common character in a string. You will be given a string ',
+          'of ASCII characters, and you may assume that there ',
+          'is only one most common character. ',
+          'For now, you do not have to consider spaces.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'There\'s no need to validate that you\'re always passed a string.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['String Manipulation', 'Arrays'],
     acquiredSkills: ['String Manipulation'],
@@ -86,11 +94,14 @@ class AuxiliaryCode(object):
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Now, make sure that your code works for ',
-        'different string encodings. ',
-        'What if the provided string is unicode, rather than ASCII? '
-      ].join('')
+      {
+        content: [
+          'Now, make sure that your code works for ',
+          'different string encodings. ',
+          'What if the provided string is unicode, rather than ASCII?'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
     acquiredSkills: ['String Manipulation'],
