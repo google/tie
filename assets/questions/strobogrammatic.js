@@ -42,7 +42,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions: [[ 
+    instructions: [[
       'Implement a function strobogrammatic which takes a number n as input ',
       'and generates a list of n-digit numbers which look the same',
       'if you rotate them 180 degrees.',
@@ -62,8 +62,8 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       allowedOutputs: [['0', '1', '8']]
     }, {
       input: '3',
-      allowedOutputs: [['101', '111', '181', '609', '619', '689', 
-                         '808', '818', '906', '916', '986']]
+      allowedOutputs: [['101', '111', '181', '609', '619', '689',
+        '808', '818', '906', '916', '986']]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
