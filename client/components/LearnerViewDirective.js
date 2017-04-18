@@ -53,9 +53,9 @@ tie.directive('learnerView', [function() {
                   </p>
                 </div>
                 <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                  <div class="tie-dot tie-dot-1"></div>
-                  <div class="tie-dot tie-dot-2"></div>
-                  <div class="tie-dot tie-dot-3"></div>
+                  <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
+                  <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
+                  <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                 </div>
               </div>
               <div class="tie-coding-window">
@@ -195,6 +195,9 @@ tie.directive('learnerView', [function() {
           margin-right: 7px;
           margin-top: 3px;
           width: 4px;
+        }
+        .tie-dot.night-mode {
+          background-color: #E0E0E0;
         }
         .tie-dot-2 {
           -webkit-animation-delay: 0.1s;
