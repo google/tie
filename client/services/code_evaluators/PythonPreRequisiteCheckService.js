@@ -29,8 +29,8 @@ tie.factory('PythonPreRequisiteCheckService', [
       }
       for (var i = 0; i < starterCodeLines.length; i++) {
         var starterCodeLine = starterCodeLines[i].trim();
-        var codePresent = codeLines.includes(starterCodeLine); 
-        if (!codePresent) {
+        // var codePresent = codeLines.includes(starterCodeLine); 
+        if (codeLines.indexOf(starterCodeLine) < 0) {
           return false; 
         }
       }
