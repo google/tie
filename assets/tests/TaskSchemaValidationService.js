@@ -25,6 +25,7 @@ tie.factory('TaskSchemaValidationService', [
       CLASS_NAME_AUXILIARY_CODE + '.', CLASS_NAME_SYSTEM_CODE + '.'];
     // TODO(eyurko): Update this once we support nonlinear runtimes.
     var ALLOWED_RUNTIMES = ['linear'];
+    var TASK_TYPE_LENGTH_LIMIT = 40;
 
     var _starterCode;
     var _auxiliaryCode;
@@ -122,9 +123,8 @@ tie.factory('TaskSchemaValidationService', [
         return acquiredSkills.length > 0;
       },
       verifyTaskTypeIsDefined: function(task) {
-        var taskType = task.getTaskType();
-        var numWords = taskType.split(' ').length;
-        return numWords >= 1 && numWords <= 3;
+        var taskTypeLength = task.getTaskType().length;
+        return taskTypeLength > 0 && taskTypeLength <= TASK_TYPE_LENGTH_LIMIT;
       },
       verifyCorrectnessTestsAreArray: function(task) {
         var correctnessTests = task.getCorrectnessTests();
