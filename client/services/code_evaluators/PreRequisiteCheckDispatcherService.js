@@ -22,9 +22,9 @@ tie.factory('PreRequisiteCheckDispatcherService', [
   function(PythonPreRequisiteCheckService, LANGUAGE_PYTHON) {
     return {
       // Returns a promise.
-      checkCode: function(language, code) {
+      checkCode: function(language, starterCode, code) {
         if (language === LANGUAGE_PYTHON) {
-          return PythonPreRequisiteCheckService.checkCode(code);
+          return PythonPreRequisiteCheckService.checkCode(starterCode, code);
         } else {
           throw Error('Language not supported: ' + language);
         }

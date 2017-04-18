@@ -23,7 +23,7 @@ tie.factory('PythonPreRequisiteCheckService', [
 
     return {
       // Returns a promise.
-      checkCode: function(code) {
+      checkCode: function(starterCode, code) {
         
         // TODO: check that starter code has not been modified: 
         // if check fails:
@@ -36,9 +36,10 @@ tie.factory('PythonPreRequisiteCheckService', [
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
         //    code, errorMessage);
+        console.log(starterCode);
         
         // Otherwise, code passed all pre-requisite checks
-        return PreRequisiteCheckResultObjectFactory.create(code, null);
+        return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
       }
     };
   }

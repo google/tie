@@ -28,10 +28,10 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          task, studentCode, auxiliaryCode, language) {
+          task, starterCode, studentCode, auxiliaryCode, language) {
         // First, check pre-requisites for the submitted code
         return PreRequisiteCheckDispatcherService.checkCode(
-          language, studentCode
+          language, starterCode, studentCode
         ).then(function(preRequisiteCheckResult) {
           var preRequisiteFailureString = preRequisiteCheckResult.getPreRequisiteFailureString();
           if (preRequisiteFailureString) {
