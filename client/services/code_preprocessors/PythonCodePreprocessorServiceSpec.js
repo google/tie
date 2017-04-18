@@ -35,19 +35,21 @@ describe('PythonCodePreprocessorService', function() {
   }));
 
   describe('_jsonVariableToPython', function() {
-    it('should correctly convert a json String to a Python string', function() {
+    it('should correctly convert a JSON String to a Python string', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython('stringify')
       ).toEqual("'stringify'");
     });
 
-    it('should correctly convert a json String with back slashes', function() {
+    it('should correctly convert a JSON string with escaped characters',
+      function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython('strin\\gify')
       ).toEqual("'strin\\\\gify'");
     });
 
-    it('should correctly convert a json number to a Python number', function() {
+    it('should correctly convert a JSON integer to a Python integer',
+      function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(12)
       ).toEqual(12);
@@ -55,7 +57,7 @@ describe('PythonCodePreprocessorService', function() {
 
     it(
       [
-        'should correctly convert a json Array to a string version ',
+        'should correctly convert a JSON Array to a string version ',
         'of a Python array'
       ].join('') , function() {
       expect(
@@ -63,7 +65,7 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("['cat', '2', '3']");
     });
 
-    it('should correctly convert a nested json Array to a similar Python array'
+    it('should correctly convert a nested JSON Array to a similar Python array'
       , function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(
@@ -73,7 +75,7 @@ describe('PythonCodePreprocessorService', function() {
 
     it(
       [
-        'should correctly convert a json boolean Array to a string version ',
+        'should correctly convert a JSON boolean Array to a string version ',
         'of a Python boolean array'
       ].join('') , function() {
       expect(
@@ -82,7 +84,7 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("[[True, True], [False, False], [True, False]]");
     });
 
-    it('should throw error for unsupported inputs', function() {
+    it('should throw an error if the input type is unsupported', function() {
       var errorMsg = "Only string, array, and boolean inputs are supported.";
       expect(function() {
         PythonCodePreprocessorService._jsonVariableToPython({

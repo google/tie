@@ -34,13 +34,14 @@ describe('CodePreprocessorDispatcherService', function() {
   }));
 
   describe('preprocess', function() {
-    it('should throw error of Language not supported', function() {
+    it('should throw an error if the language passed in is not supported',
+      function() {
       var unsupportedLanguage = "someLanguage";
-      var failFunction = function() {
+      var failingFunction = function() {
         CodePreprocessorDispatcherService.preprocess(unsupportedLanguage,
         '', '', '', '', '', '', '', '');
       };
-      expect(failFunction).toThrow(new Error("Language not supported: "
+      expect(failingFunction).toThrow(new Error("Language not supported: "
                                               + unsupportedLanguage));
     });
     it('should preprocess python source code', function(){
@@ -53,3 +54,4 @@ describe('CodePreprocessorDispatcherService', function() {
     });
   });
 });
+
