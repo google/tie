@@ -29,24 +29,24 @@ describe('ErrorTracebackObjectFactory', function() {
   }));
 
   describe('fromSkulptError', function() {
-    it('should correctly create error track', function() {
+    it('should return correct traceback for Skulpt errors', function() {
       var errorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
 
-      var skulptError = {};
-      skulptError.msg = 'ZeroDivisionError: integer division or modulo by zero ';
-      skulptError.traceback = [{
+      var skulptErrorMock = {};
+      skulptErrorMock.msg = 'ZeroDivisionError: integer division or modulo by zero ';
+      skulptErrorMock.traceback = [{
         lineno: 5,
         colno: 1
       }];
 
-      skulptError.toString = function toString() {
+      skulptErrorMock.toString = function toString() {
         return this.msg;
       };
 
       expect(ErrorTracebackObjectFactory.fromSkulptError(
-            skulptError).getErrorString()).toEqual(
+            skulptErrorMock).getErrorString()).toEqual(
               errorTraceback.getErrorString());
     });
   });
