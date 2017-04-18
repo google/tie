@@ -77,12 +77,9 @@ describe('CodeStorageService', function() {
   describe('loadStoredCode', function() {
     it('should retrieve stored code from browser', function() {
       expect(localStorage.length).toEqual(0);
-      var hashKeys = [];
-      for (var i = 0; i < NUM_QUESTIONS; i++) {
-        hashKeys[i] = sampleQuestionIds[i] + ":" + LANGUAGE;
-        localStorage.setItem(hashKeys[i], sampleQuestionCodes[i]);
-      }
       sampleQuestionIds.forEach(function(questionId, index) {
+        var hashKey = questionId + ":" + LANGUAGE;
+        localStorage.setItem(hashKey, sampleQuestionCodes[index]);
         expect(CodeStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });

@@ -62,6 +62,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-coding-terminal">
                   <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                       ng-model="code"
+                      ng-change="activateAutosaving()"
                       class="tie-codemirror-container"></ui-codemirror>
                 </div>
                 <select class="tie-lang-select-menu" name="lang-select-menu">
@@ -384,9 +385,11 @@ tie.directive('learnerView', [function() {
         var SECONDS_TO_MILLISECONDS = 1000;
         // Default time interval, in seconds, after which code will
         // be auto-saved.
-        var DEFAULT_AUTOSAVE_SECONDS = 30;
-        // "Saving code now..." will last for 3 seconds and disappear.
-        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
+        var DEFAULT_AUTOSAVE_SECONDS = 5;
+        // "Saving code..." will last for 1 seconds and disappear.
+        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 1;
+
+        var autosaveCancelPromise;
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
@@ -543,21 +546,36 @@ tie.directive('learnerView', [function() {
           }, displaySeconds * SECONDS_TO_MILLISECONDS);
         };
 
-        var activateAutosaving = function() {
-          $interval(function() {
-            var currentQuestionId =
-              $scope.questionIds[$scope.currentQuestionIndex];
-            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
-            CodeStorageService.storeCode(
-              currentQuestionId, $scope.code, language);
-          }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+        $scope.activateAutosaving = function() {
+          if (!$scope.autosaveOn) {
+            $scope.autosaveOn = true;
+            autosaveCancelPromise = $interval(function() {
+              var currentQuestionId =
+                $scope.questionIds[$scope.currentQuestionIndex];
+              var storedCode = CodeStorageService.loadStoredCode(
+                currentQuestionId, language);
+              if (angular.equals(storedCode, $scope.code)) {
+                // No code change, stop autosave loop.
+                stopAutosave();
+              } else {
+                // Code change detected, notify user,
+                // save code and continue this loop.
+                CodeStorageService.storeCode(
+                  currentQuestionId, $scope.code, language);
+                triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+              }
+            }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+          }
+        };
+
+        var stopAutosave = function() {
+          $scope.autosaveOn = false;
+          $interval.cancel(autosaveCancelPromise);
         };
 
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
-
-        activateAutosaving();
       }
     ]
   };
