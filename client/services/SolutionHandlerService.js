@@ -19,12 +19,13 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'PreRequisiteCheckDispatcherService', 
+  'FeedbackGeneratorService', 'PreRequisiteCheckDispatcherService',
   'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, PreRequisiteCheckDispatcherService, SnapshotObjectFactory, 
-      TranscriptService, CodeSubmissionObjectFactory) {
+      FeedbackGeneratorService, PreRequisiteCheckDispatcherService,
+      SnapshotObjectFactory, TranscriptService,
+      CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
@@ -33,14 +34,16 @@ tie.factory('SolutionHandlerService', [
         return PreRequisiteCheckDispatcherService.checkCode(
           language, starterCode, studentCode
         ).then(function(preRequisiteCheckResult) {
-          var preRequisiteFailureString = 
+          var preRequisiteFailureString =
             preRequisiteCheckResult.getPreRequisiteFailureString();
           if (preRequisiteFailureString) {
-            var feedback = FeedbackGeneratorService.getPreRequisiteFailureFeedback(
+            var preReqFeedback =
+              FeedbackGeneratorService.getPreRequisiteFailureFeedback(
               preRequisiteCheckResult);
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(preRequisiteCheckResult, feedback));
-            return $q.resolve(feedback);
+              SnapshotObjectFactory.create(preRequisiteCheckResult,
+                preReqFeedback));
+            return $q.resolve(preReqFeedback);
           }
 
           // Next, do an initial run of the code to check for syntax errors.
@@ -79,7 +82,8 @@ tie.factory('SolutionHandlerService', [
           }).then(function(feedback) {
             return feedback;
           });
-      });
-    }
-  };
-}]);
+        });
+      }
+    };
+  }]);
+

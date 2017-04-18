@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview Factory for creating new frontend instances of PreRequisiteCheckResult
- * domain objects.
+ * @fileoverview Factory for creating new frontend instances of
+ * PreRequisiteCheckResult domain objects.
  */
 
 tie.factory('PreRequisiteCheckResultObjectFactory', [
@@ -26,12 +26,13 @@ tie.factory('PreRequisiteCheckResultObjectFactory', [
       this._starterCode = starterCode;
     };
 
-    //Instance methods
+    // Instance methods
     PreRequisiteCheckResult.prototype.getCode = function() {
       return this._code;
     };
 
-    PreRequisiteCheckResult.prototype.getPreRequisiteFailureString = function() {
+    PreRequisiteCheckResult.prototype.getPreRequisiteFailureString =
+    function() {
       return this._preRequisiteFailureString;
     };
 
