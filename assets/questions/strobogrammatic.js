@@ -89,8 +89,8 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
-    // Currently, the system does not support nonlinear runtime complexities
-    // so we are omitting performance tests, for now.
+    // Currently, the system does not support nonlinear runtime complexities.
+    // So we are omitting performance tests, for now.
     performanceTests: []
   }],
   styleTests: []
