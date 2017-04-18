@@ -15,21 +15,21 @@
 /**
  * @fileoverview Unit tests for the QuestionDataService.
  */
- 
+
 describe('QuestionDataService', function() {
   var QuestionDataService;
   var QUESTION_IDS = Object.keys(globalData.questions);
- 
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     globalData.questionSets.all = {};
     globalData.questionSets.all.questionIds = QUESTION_IDS;
     globalData.questionSets.all.introductionParagraphs = [];
-    
+
     QuestionDataService = $injector.get('QuestionDataService');
   }));
- 
-  describe('initCurrentQuestionSet', function() { 
+
+  describe('initCurrentQuestionSet', function() {
     it('should throw an error if the question set id does not exist',
     function() {
       expect(function() {
@@ -37,7 +37,7 @@ describe('QuestionDataService', function() {
       }).toThrow();
     });
   });
- 
+
   describe('getCurrentQuestionSet', function() {
     it('should correctly get current question set', function() {
       QuestionDataService.initCurrentQuestionSet('all');
@@ -53,7 +53,7 @@ describe('QuestionDataService', function() {
       }).toThrow();
     });
   });
- 
+
   describe('getQuestion', function() {
     it('should throw an error if the question id does not exist', function() {
       QuestionDataService.initCurrentQuestionSet('all');
