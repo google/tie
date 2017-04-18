@@ -19,6 +19,7 @@
 describe('FeedbackGeneratorService', function() {
   var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
+  var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
   var SnapshotObjectFactory;
@@ -32,11 +33,12 @@ describe('FeedbackGeneratorService', function() {
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
+    CorrectnessTestObjectFactory = $injector.get('CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
-    TracebackCoordinatesObjectFactory = $injector.get(
-      'TracebackCoordinatesObjectFactory');
+    TracebackCoordinatesObjectFactory = $injector
+      .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -81,8 +83,59 @@ describe('FeedbackGeneratorService', function() {
             c: 'j'
           })
         ).toEqual('{"a": 3, "b": 5, "c": "j"}');
+        // Need to define and call blankFunction for 100% karma coverage
+        var blankFunction = function() {
+          return null;
+        };
+        blankFunction();
+        expect(
+          FeedbackGeneratorService._jsToHumanReadable(blankFunction)
+        ).toEqual('[UNKNOWN OBJECT]');
       }
     );
+  });
+
+  describe('_getCorrectnessTestFeedback', function() {
+    it('should return output of user function with issues', function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a']
+      });
+
+      var paragraphs = FeedbackGeneratorService
+        ._getCorrectnessTestFeedback(correctnessTest, "output").getParagraphs();
+      expect(paragraphs.length).toEqual(5);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        "Your code produced the following result:");
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe(
+        "Input: \"cat\"\nOutput: \"output\"");
+      expect(paragraphs[2].isTextParagraph()).toBe(true);
+      expect(paragraphs[2].getContent()).toBe(
+        "However, the expected output is:");
+      expect(paragraphs[3].isCodeParagraph()).toBe(true);
+      expect(paragraphs[3].getContent()).toBe("\"a\"");
+      expect(paragraphs[4].isTextParagraph()).toBe(true);
+      expect(paragraphs[4].getContent()).toBe(
+        "Could you fix this?");
+    });
+  });
+
+  describe('_getPerformanceTestFeedback', function() {
+    it('should return output of user function performance slow', function() {
+      var performanceParagraphs = FeedbackGeneratorService
+        ._getPerformanceTestFeedback("linear").getParagraphs();
+
+      expect(performanceParagraphs.length).toEqual(1);
+      expect(performanceParagraphs[0].isTextParagraph()).toBe(true);
+      expect(performanceParagraphs[0].getContent()).toBe(
+      [
+        'Your code is running more slowly than expected. Can you ',
+        'reconfigure it such that it runs in linear time?'
+      ].join(''));
+
+    });
   });
 
   describe('_getRuntimeErrorFeedback', function() {
@@ -146,6 +199,71 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on a line ' +
         'in the test code');
+    });
+  });
+
+ /*
+  TODO: Having a hard time getting coverage for getFeedback else branch
+ describe('_getFeedback', function() {
+    it('no error string should trigger multiple tasks', function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a']
+      });
+      var buggyOutputTestDict = {
+        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+        messages: [
+          [
+            "Try running your code on '))((' on paper. ",
+            'Did you expect that result?'
+          ].join(''),
+          [
+            'Are you making sure the parentheses are properly balanced? () ',
+            'is balanced, but )( is not.'
+          ].join(''),
+          [
+            "It looks like you're counting the number of parentheses, and if ",
+            "you have the same # of each kind, returning true. That's not ",
+            "quite correct. See if you can figure out why."
+          ].join('')
+        ]
+      };
+      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+        buggyOutputTestDict);
+      var performanceTest = PerformanceTestObjectFactory.create({
+        inputDataAtom: null,
+        transformationFunctionName: null,
+        expectedPerformance: "linear",
+        evaluationFunctionName: null
+      })
+
+      var taskDict = {}
+      taskDict.correctnessTest = correctnessTest;
+      taskDict.buggyOutputTest = buggyOutputTest;
+      taskDict.performanceTest = performanceTest;
+      var taskObject = TaskObjectFactory.create(taskDict);
+
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], [], null, 'testInput');
+
+      var paragraphs = FeedbackGeneratorService.getFeedback(
+        taskObject, codeEvalResult, []).getParagraphs();
+
+    });
+  }); */
+
+  describe('_getSyntaxErrorFeedback', function() {
+    it('should print error trace when error thrown', function() {
+      var paragraphs = FeedbackGeneratorService
+        .getSyntaxErrorFeedback('some error').getParagraphs();
+
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        "Looks like your code did not compile. Here's the error trace: ");
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe('some error');
+
     });
   });
 
