@@ -46,7 +46,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
       [
         'For this question, you\'ll implement the stringToWords function. ',
         'This function takes a list of two elements, the first element ',
-        ' being a string of alphabetic letters with no whitespaces and the ',
+        'being a string of alphabetic letters with no whitespaces and the ',
         'second element being a set of valid words represented as a ',
         'Python set. The function should take the input string and split it ',
         'into two space-separated words that are both in the given ',
