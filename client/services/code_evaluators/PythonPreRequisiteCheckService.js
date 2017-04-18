@@ -24,10 +24,10 @@ tie.factory('PythonPreRequisiteCheckService', [
     var checkStarterCodePresent = function(starterCode, code) {
       var starterCodeLines = starterCode.split('\n');
       var codeLines = code.split('\n')
-      for (i = 0; i < codeLines.length; i++) { 
+      for (var i = 0; i < codeLines.length; i++) { 
         codeLines[i] = codeLines[i].trim();
       }
-      for (i = 0; i < starterCodeLines.length; i++) { 
+      for (var i = 0; i < starterCodeLines.length; i++) { 
         if (!(codeLines.includes(starterCodeLines[i].trim()))) {
           return false; 
         }
@@ -64,7 +64,8 @@ tie.factory('PythonPreRequisiteCheckService', [
         
         // Otherwise, code passed all pre-requisite checks
         return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
-      }
+      },
+      checkStarterCodePresent: checkStarterCodePresent
     };
   }
 ]);
