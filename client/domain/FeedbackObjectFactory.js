@@ -25,7 +25,7 @@ tie.factory('FeedbackObjectFactory', [
       // This records what message was displayed with this feedback.
       // If no message was displayed, this will remain null.
       this._hintIndex = null;
-      this._syntaxErrorIndex= null;
+      this._syntaxErrorIndex = null;
     };
 
     // Instance methods.

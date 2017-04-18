@@ -50,17 +50,16 @@ tie.directive('learnerView', [function() {
                     <code-snippet content="paragraph.getContent()"></code-snippet>
                   </span>
                 </p>
-                <div class="tie-feedback-syntax-error">
-                  <button ng-click="showSyntaxErrorHint()", ng-show="isSyntaxErrorButtonShown">
-                    <span>
-                      {{isSyntaxErrorShown ? 'hide' : 'hint'}}
-                    </span>
-                  </button>
-                  <p class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
-                    {{syntaxErrorString}}
-                  </p>
-                </div>
               </div>
+              <div class="tie-feedback-syntax-error">
+                <a href class="tie-feedback-syntax-error-link", ng-click="toggleSyntaxErrorHint()", 
+                        ng-show="isSyntaxErrorLinkShown">
+                  {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                </a>
+              </div>
+              <p class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                {{syntaxErrorString}}
+              </p>
               <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                 <div class="tie-dot tie-dot-1"></div>
                 <div class="tie-dot tie-dot-2"></div>
@@ -223,8 +222,11 @@ tie.directive('learnerView', [function() {
           padding: 10px;
           width: 95%;
         }
-        .tie-feedback-syntax-error {
+        .tie-feedback, .tie-feedback-syntax-error {
           display: inline-block;
+        }
+        .tie-feedback-syntax-error-link {
+          font-size: 12px;
         }
         .tie-lang-select-menu {
           float: left;
@@ -367,7 +369,6 @@ tie.directive('learnerView', [function() {
           LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
-        var syntaxErrorString = null;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
@@ -420,10 +421,9 @@ tie.directive('learnerView', [function() {
           $scope.feedbackParagraphs = [];
         };
 
-        var clearSyntaxErrorHint = function() {
-          $scope.isSyntaxErrorShown = false;
-          $scope.isSyntaxErrorButtonShown = false;
-        }
+        var hideSyntaxErrorLink = function() {
+          $scope.isSyntaxErrorLinkShown = false;
+        };
 
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
@@ -451,15 +451,16 @@ tie.directive('learnerView', [function() {
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
-            syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            // Get the index of syntax error in feedback.
+            var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            // The index must be either null(indicating no syntax error)
+            // or a positive integer.
             if (syntaxErrorIndex) {
-              console.log("syntaxError should be shown.");
-              syntaxErrorParagraph =  feedbackParagraphs[syntaxErrorIndex];
+              var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
               feedbackParagraphs.splice(syntaxErrorIndex, 1);
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
-              $scope.isSyntaxErrorButtonShown = true;
+              $scope.isSyntaxErrorLinkShown = true;
             }
-            console.log(syntaxErrorIndex);
             $scope.feedbackParagraphs = feedbackParagraphs;
           }
           // Skulpt processing happens outside an Angular context, so
@@ -485,7 +486,7 @@ tie.directive('learnerView', [function() {
           tabSize: 4
         };
 
-        $scope.showSyntaxErrorHint = function(errorString) {
+        $scope.toggleSyntaxErrorHint = function() {
           $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
         };
 
@@ -509,7 +510,10 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          clearSyntaxErrorHint();
+          // Before navigating to new question,
+          // disable the syntax error link and content.
+          hideSyntaxErrorLink();
+          $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
@@ -524,7 +528,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          clearSyntaxErrorHint();
+          hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
