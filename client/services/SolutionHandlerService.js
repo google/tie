@@ -19,12 +19,12 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'SnapshotObjectFactory', 'TranscriptService',
-  'CodeSubmissionObjectFactory',
+  'FeedbackGeneratorService', 'PreRequisiteCheckDispatcherService', 
+  'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, SnapshotObjectFactory, TranscriptService,
-      CodeSubmissionObjectFactory) {
+      FeedbackGeneratorService, PreRequisiteCheckDispatcherService, SnapshotObjectFactory, 
+      TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
@@ -79,6 +79,6 @@ tie.factory('SolutionHandlerService', [
             return feedback;
           });
       });
-    };
-  }
-]);
+    }
+  };
+}]);
