@@ -19,6 +19,7 @@
 tie.directive('learnerView', [function() {
   return {
     restrict: 'E',
+    scope: {},
     template: `
       <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode}">
         <div class="tie-question-ui-outer">
