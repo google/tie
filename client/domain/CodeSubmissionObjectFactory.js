@@ -74,6 +74,21 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
+    CodeSubmission.prototype.advanceImports = function() {
+      var pattern = new RegExp('^\\ {4}import\\ \\w+$');
+      var insertPos = 0;
+      for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
+        if (pattern.test(this._preprocessedCodeLines[i])) {
+          var importLine = this._preprocessedCodeLines[i].slice(4);
+          this._preprocessedCodeLines.splice(i, 1);
+          this._preprocessedCodeLines.splice(insertPos, 0, importLine);
+          this._rawCodeLineIndexes.splice(i, 1);
+          this._rawCodeLineIndexes.splice(insertPos, 0, importLine);
+          insertPos++;
+        }
+      }
+    };
+
     // Static class methods.
     CodeSubmission.create = function(rawCode) {
       return new CodeSubmission(rawCode);
