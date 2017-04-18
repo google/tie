@@ -121,5 +121,18 @@ describe('CodeStorageService', function() {
       });
     });
   });
+
+  describe('clearLocalStorageCode', function() {
+    it('should remove code from localStorage', function() {
+      sampleQuestionIds.forEach(function(questionId, index) {
+        var hashKey = questionId + ':' + LANGUAGE;
+        localStorage.setItem(hashKey, sampleQuestionCodes[index]);
+        expect(localStorage.getItem(hashKey)).toEqual(
+          sampleQuestionCodes[index]);
+        CodeStorageService.clearLocalStorageCode(questionId, LANGUAGE);
+        expect(localStorage.getItem(hashKey)).toEqual(null);
+      });
+    });
+  });
 });
 

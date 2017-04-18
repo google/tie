@@ -21,37 +21,40 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-question-ui-outer">
-        <div class="tie-question-ui-inner">
-          <div class="tie-step-container-outer">
-            <div class="tie-step-container-inner">
-              <div class="tie-step-item"
-                  ng-repeat="questionId in questionIds track by $index"
-                  ng-click="navigateToQuestion($index)">
-                <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                  <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
-                  <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
+      <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode}">
+        <div class="tie-question-ui-outer">
+          <div class="tie-question-ui-inner">
+            <div class="tie-step-container-outer">
+              <div class="tie-step-container-inner">
+                <div class="tie-step-item"
+                    ng-repeat="questionId in questionIds track by $index"
+                    ng-click="navigateToQuestion($index)">
+                  <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
+                    <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
+                    <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
+                  </div>
+                  <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
                 </div>
                 <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
               </div>
             </div>
           </div>
-          <div class="tie-coding-ui">
-            <div class="tie-feedback-window">
-              <div class="tie-feedback">
-                <p ng-repeat="paragraph in feedbackParagraphs track by $index"
-                   class="tie-feedback-paragraph"
-                   ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
-                  <span ng-if="$first">{{feedbackTimestamp}}</span>
-                  <span ng-if="paragraph.isTextParagraph()">
-                    {{paragraph.getContent()}}
-                  </span>
-                  <span ng-if="paragraph.isCodeParagraph()">
-                    <code-snippet content="paragraph.getContent()"></code-snippet>
-                  </span>
-                </p>
-              </div>
-              <div class="tie-feedback-syntax-error">
+            <div class="tie-coding-ui">
+              <div class="tie-feedback-window" ng-class="{'night-mode': isInDarkMode}">
+                <div class="tie-feedback">
+                  <p ng-repeat="paragraph in feedbackParagraphs track by $index"
+                     class="tie-feedback-paragraph"
+                     ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                    <span ng-if="$first">{{feedbackTimestamp}}</span>
+                    <span ng-if="paragraph.isTextParagraph()">
+                      {{paragraph.getContent()}}
+                    </span>
+                    <span ng-if="paragraph.isCodeParagraph()">
+                      <code-snippet content="paragraph.getContent()"></code-snippet>
+                    </span>
+                  </p>
+                </div>
+                <div class="tie-feedback-syntax-error">
                 <a href class="tie-feedback-syntax-error-link", ng-click="toggleSyntaxErrorHint()", 
                         ng-show="isSyntaxErrorLinkShown">
                   {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
@@ -60,60 +63,79 @@ tie.directive('learnerView', [function() {
               <p class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
                 {{syntaxErrorString}}
               </p>
-              <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                <div class="tie-dot tie-dot-1"></div>
-                <div class="tie-dot tie-dot-2"></div>
-                <div class="tie-dot tie-dot-3"></div>
-              </div>
-            </div>
-            <div class="tie-coding-window">
-              <div class="tie-lang-terminal">
-                <div class="tie-coding-terminal">
-                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                      ng-model="code"
-                      class="tie-codemirror-container"></ui-codemirror>
+                <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                  <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
+                  <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
+                  <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                 </div>
-                <select class="tie-lang-select-menu" name="lang-select-menu">
-                  <option value="Python" selected>Python</option>
-                </select>
-                <button class="tie-run-button"
-                    ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(code)"
-                    ng-disabled="nextButtonIsShown">
-                  Run
-                </button>
-                <div class="tie-next-curtain-container"
-                    ng-if="nextButtonIsShown">
-                  <div class="tie-next-curtain"></div>
-                  <div class="tie-arrow-highlighter"></div>
-                  <div ng-click="showNextTask()" class="tie-next-arrow">
-                    <span class="tie-next-button-text">Next</span>
+              </div>
+              <div class="tie-coding-window">
+                <div class="tie-lang-terminal">
+                  <div class="tie-coding-terminal">
+                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                        ng-model="code"
+                        class="tie-codemirror-container"></ui-codemirror>
+                  </div>
+                  <select class="tie-lang-select-menu" name="lang-select-menu">
+                    <option value="Python" selected>Python</option>
+                  </select>
+                  <select class="tie-theme-select" name="theme-select" 
+                          ng-change="changeTheme()" ng-model="theme"
+                          ng-options="i.themeName as i.themeName for i in themes">
+                    <option style="display: none" value="">Theme</option>
+                    <option></option>
+                  </select>     
+                  <button class="tie-code-reset" name="code-reset"
+                      ng-click="resetCode()">
+                    Reset Code
+                  </button>
+                  <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                    Saving code now...
+                  </div>
+                  <button class="tie-run-button"
+                      ng-class="{'active': !nextButtonIsShown}"
+                      ng-click="submitCode(code)"
+                      ng-disabled="nextButtonIsShown">
+                    Run
+                  </button>
+                  <div class="tie-next-curtain-container"
+                      ng-if="nextButtonIsShown">
+                    <div class="tie-next-curtain"></div>
+                    <div class="tie-arrow-highlighter"></div>
+                    <div ng-click="showNextTask()" class="tie-next-arrow">
+                      <span class="tie-next-button-text">Next</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="tie-question-ui">
-            <div class="tie-question-window">
-              <h3 class="tie-question-title">{{title}}</h3>
-              <div class="tie-previous-instructions">
-                <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                  <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
-                  <hr>
+            <div class="tie-question-ui">
+              <div class="tie-question-window" ng-class="{'night-mode': isInDarkMode}">
+                <h3 class="tie-question-title">{{title}}</h3>
+                <div class="tie-previous-instructions">
+                  <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                    <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
+                    <hr>
+                  </div>
                 </div>
-              </div>
-              <div class="tie-instructions">
-                <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                <div class="tie-instructions">
+                  <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <style>
+        html {
+          height: 100%;
+        }
         body {
           background-color: rgb(242, 242, 242);
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 15px;
+          height: 100%;
+          margin: 0px;
         }
         .tie-arrow-highlighter {
           background-color: white;
@@ -124,6 +146,17 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-code-auto-save {
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
+        }
+        .tie-code-reset {
+          float: left;
+          margin-top: 10px;
+          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -144,14 +177,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-coding-terminal, .tie-question-window {
           background-color: rgb(255, 255, 255);
-          border-color: rgb(222, 222, 222);
-          border-radius: 3px;
-          border-style: solid;
-          border-width: 1px;
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus {
+            .tie-run-button:focus, .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -178,6 +207,9 @@ tie.directive('learnerView', [function() {
           margin-top: 3px;
           width: 4px;
         }
+        .tie-dot.night-mode {
+          background-color: #E0E0E0;
+        }
         .tie-dot-2 {
           -webkit-animation-delay: 0.1s;
         }
@@ -200,10 +232,17 @@ tie.directive('learnerView', [function() {
         }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
-          border-color: rgb(222, 222, 222);
-          border-radius: 3px;
-          border-style: solid;
-          border-width: 1px;
+          font-size: 14px;
+          height: 128px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 642px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-window.night-mode {
+          background-color: #37474F;
+          color: #E0E0E0;
           font-size: 14px;
           height: 128px;
           overflow: auto;
@@ -284,6 +323,17 @@ tie.directive('learnerView', [function() {
         .tie-question-ui {
           vertical-align: top;
         }
+        .tie-question-ui-inner {
+          padding-left: 32px;
+          padding-right: 32px;
+          white-space: nowrap;
+        }
+        .tie-question-ui-outer {
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+          padding-top: 16px;
+        }
         .tie-question-window {
           font-size: 14px;
           height: 508px;
@@ -291,6 +341,10 @@ tie.directive('learnerView', [function() {
           padding: 10px;
           resize: both;
           width: 548px;
+        }
+        .tie-question-window.night-mode {
+          background-color: #263238;
+          color: #E0E0E0;
         }
         .tie-run-button {
           background-color: rgb(66, 133, 244);
@@ -330,8 +384,6 @@ tie.directive('learnerView', [function() {
           background-color: rgb(164, 164, 164);
           border-color: rgb(222, 222, 222);
           border-radius: 20px;
-          border-style: solid;
-          border-width: 1px;
           color: rgb(255, 255, 255);
           cursor: pointer;
           height: 20px;
@@ -359,14 +411,27 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
+        .tie-theme-select {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
+        }
+        .tie-wrapper {
+          height: 100%;
+        }
+        .tie-wrapper.night-mode {
+          background-color: #212121;
+        }
       </style>
     `,
     controller: [
-      '$scope', '$timeout', 'SolutionHandlerService', 'QuestionDataService',
-      'LANGUAGE_PYTHON', 'FeedbackObjectFactory', 'CodeStorageService',
+      '$scope', '$interval', '$timeout', 'SolutionHandlerService',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'CodeStorageService',
       function(
-          $scope, $timeout, SolutionHandlerService, QuestionDataService,
-          LANGUAGE_PYTHON, FeedbackObjectFactory, CodeStorageService) {
+          $scope, $interval, $timeout, SolutionHandlerService,
+          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
+          CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -378,6 +443,18 @@ tie.directive('learnerView', [function() {
             'answer below.'
           ].join('\n')
         ];
+
+        $scope.themes = [
+          {themeName: 'Light'},
+          {themeName: 'Dark'}
+        ];
+
+        var SECONDS_TO_MILLISECONDS = 1000;
+        // Default time interval, in seconds, after which code will
+        // be auto-saved.
+        var DEFAULT_AUTOSAVE_SECONDS = 30;
+        // "Saving code now..." will last for 3 seconds and disappear.
+        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
@@ -391,6 +468,7 @@ tie.directive('learnerView', [function() {
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
+        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -468,6 +546,17 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
         };
 
+        $scope.changeTheme = function() {
+          if ($scope.theme === 'Dark') {
+            $scope.isInDarkMode = true;
+            $scope.codeMirrorOptions.theme = 'material';
+          }
+          if ($scope.theme === 'Light') {
+            $scope.isInDarkMode = false;
+            $scope.codeMirrorOptions.theme = 'default';
+          }
+        };
+
         $scope.codeMirrorOptions = {
           autofocus: true,
           extraKeys: {
@@ -483,7 +572,8 @@ tie.directive('learnerView', [function() {
           lineNumbers: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: true,
-          tabSize: 4
+          tabSize: 4,
+          theme: 'default'
         };
 
         $scope.toggleSyntaxErrorHint = function() {
@@ -545,9 +635,34 @@ tie.directive('learnerView', [function() {
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
+        $scope.resetCode = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          CodeStorageService.clearLocalStorageCode(questionId, language);
+          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+        };
+
+        var triggerAutosaveNotification = function(displaySeconds) {
+          $scope.autosaveTextIsDisplayed = true;
+          $timeout(function() {
+            $scope.autosaveTextIsDisplayed = false;
+          }, displaySeconds * SECONDS_TO_MILLISECONDS);
+        };
+
+        var activateAutosaving = function() {
+          $interval(function() {
+            var currentQuestionId =
+              $scope.questionIds[$scope.currentQuestionIndex];
+            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+            CodeStorageService.storeCode(
+              currentQuestionId, $scope.code, language);
+          }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+        };
+
         loadQuestion(
           questionSet.getFirstQuestionId(),
           questionSet.getIntroductionParagraphs());
+
+        activateAutosaving();
       }
     ]
   };
