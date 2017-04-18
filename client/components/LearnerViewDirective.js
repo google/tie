@@ -103,6 +103,9 @@ tie.directive('learnerView', [function() {
               <div class="tie-instructions">
                 <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
               </div>
+              <div class="tie-reinforcement">
+                <p ng-repeat="paragraph in reinforcements">{{paragraph}}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -277,6 +280,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-reinforcements {
+        
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
