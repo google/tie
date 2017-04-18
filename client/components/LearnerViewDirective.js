@@ -427,7 +427,6 @@ tie.directive('learnerView', [function() {
         var DISPLAY_AUTOSAVE_TEXT_SECONDS = 1;
 
         var autosaveCancelPromise;
-        
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
