@@ -202,17 +202,6 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
-        .tie-question-ui-inner {
-          padding-left: 32px;
-          padding-right: 32px;
-          white-space: nowrap;
-        }
-        .tie-question-ui-outer {
-          display: table;
-          margin-left: auto;
-          margin-right: auto;
-          padding-top: 16px;
-        }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
           font-size: 14px;
@@ -299,6 +288,17 @@ tie.directive('learnerView', [function() {
         }
         .tie-question-ui {
           vertical-align: top;
+        }
+        .tie-question-ui-inner {
+          padding-left: 32px;
+          padding-right: 32px;
+          white-space: nowrap;
+        }
+        .tie-question-ui-outer {
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+          padding-top: 16px;
         }
         .tie-question-window {
           font-size: 14px;
