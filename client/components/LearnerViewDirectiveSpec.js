@@ -40,11 +40,8 @@ describe('LearnerViewDirective', function() {
 
   var SECONDS_TO_MILLISECONDS;
   var DEFAULT_AUTOSAVE_SECONDS;
-
   var DELTA_MILLISECONDS = 100;
-
   var AUTOSAVE_MILLISECONDS;
-
   var AUTOSAVE_REPEAT_RANGE = 20;
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
@@ -89,7 +86,7 @@ describe('LearnerViewDirective', function() {
     });
   });
 
-  describe("activateAutosaving", function() {
+  describe("autosave", function() {
     var $interval;
     var $timeout;
     var CodeStorageService;
@@ -123,20 +120,19 @@ describe('LearnerViewDirective', function() {
         // before autosave is triggered.
         expect(CodeStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(null);
-        $scope.activateAutosaving();
-        checkActivateAutosaveOnceDetail(questionId, starterCode);
+        $scope.autosave();
+        checkAutosaveDetail(questionId, starterCode);
         expect(CodeStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(starterCode);
       }
     });
 
-    // This helper function is to test when autosave is triggered, what will
-    // happen. After it's triggered, 5 seconds later, autosave text should be
-    // displayed for 1 second. Then, the autosave text should be gone while the
-    // autosave is still running. Then, at 10 seconds, autosave will compare the
-    // code again, since they are the same, autosave will stop. Thus, at 10.1
-    // seconds, autosave should be canceled, thus, autosaveOn should be false.
-    var checkActivateAutosaveOnceDetail = function(questionId, starterCode) {
+    // Autosave is triggered. 5 seconds later, autosave text should be
+    // displayed for 1 second. Then, the autosave text should be gone but the
+    // autosave is still running. At 10 seconds, cachedCode will be compared
+    // to $scope.code, since they are the same, autosave will stop. Thus, at
+    // 10.1 seconds, autosave should be canceled and autosaveOn should be false.
+    var checkAutosaveDetail = function(questionId, starterCode) {
       expect($scope.autosaveOn).toBe(true);
       // Flush 4900 milliseconds -- time: 4.9s
       expect($scope.autosaveTextIsDisplayed).toBe(false);
@@ -175,7 +171,7 @@ describe('LearnerViewDirective', function() {
         // before autosave is triggerred.
         expect(CodeStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(null);
-        $scope.activateAutosaving();
+        $scope.autosave();
         var randomCodes;
         for (var j = 0; j < repeatTimes; j++) {
           randomCodes = generateRandomChars(NUM_CHARS_CODE);

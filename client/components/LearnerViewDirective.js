@@ -63,7 +63,7 @@ tie.directive('learnerView', [function() {
                   <div class="tie-coding-terminal">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                         ng-model="code"
-                        ng-change="activateAutosaving()"
+                        ng-change="autosave()"
                         class="tie-codemirror-container"></ui-codemirror>
                   </div>
                   <select class="tie-lang-select-menu" name="lang-select-menu">
@@ -422,7 +422,7 @@ tie.directive('learnerView', [function() {
         ];
 
         var autosaveCancelPromise;
-        var codeCache;
+        var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -445,11 +445,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          codeCache =
+          cachedCode =
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = codeCache ?
-              codeCache : question.getStarterCode(language);
+          $scope.code = cachedCode ?
+              cachedCode : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -572,7 +572,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
-          storeCodeAndUpdateCodeCache(
+          storeCodeAndUpdateCachedCode(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
@@ -589,19 +589,19 @@ tie.directive('learnerView', [function() {
           }, displaySeconds * SECONDS_TO_MILLISECONDS);
         };
 
-        $scope.activateAutosaving = function() {
+        $scope.autosave = function() {
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                 $scope.questionIds[$scope.currentQuestionIndex];
-              if (angular.equals(codeCache, $scope.code)) {
+              if (angular.equals(cachedCode, $scope.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
               } else {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
-                storeCodeAndUpdateCodeCache(
+                storeCodeAndUpdateCachedCode(
                   currentQuestionId, $scope.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
@@ -614,10 +614,10 @@ tie.directive('learnerView', [function() {
           $interval.cancel(autosaveCancelPromise);
         };
 
-        var storeCodeAndUpdateCodeCache = function(
+        var storeCodeAndUpdateCachedCode = function(
           questionId, code, lang) {
           CodeStorageService.storeCode(questionId, code, lang);
-          codeCache = code;
+          cachedCode = code;
         };
 
         loadQuestion(

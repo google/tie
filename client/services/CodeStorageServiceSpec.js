@@ -67,8 +67,8 @@ describe('CodeStorageService', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
-        var hashKey = questionId + ":" + LANGUAGE;
-        expect(localStorage.getItem(hashKey)).toEqual(
+        var key = questionId + ":" + LANGUAGE;
+        expect(localStorage.getItem(key)).toEqual(
           sampleQuestionCodes[index]);
       });
     });
@@ -78,8 +78,8 @@ describe('CodeStorageService', function() {
     it('should retrieve stored code from browser', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
-        var hashKey = questionId + ":" + LANGUAGE;
-        localStorage.setItem(hashKey, sampleQuestionCodes[index]);
+        var key = questionId + ":" + LANGUAGE;
+        localStorage.setItem(key, sampleQuestionCodes[index]);
         expect(CodeStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
@@ -106,14 +106,14 @@ describe('CodeStorageService', function() {
     });
   });
 
-  describe('verifyLocalStorageHashKey', function() {
-    it('should verify composed hash keys match localStorage keys', function() {
+  describe('verifyLocalStorageKey', function() {
+    it('should verify composed keys match localStorage keys', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
         CodeStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
-        var hashKey = questionId + ':' + LANGUAGE;
-        expect(localStorage.getItem(hashKey)).toEqual(
+        var key = questionId + ':' + LANGUAGE;
+        expect(localStorage.getItem(key)).toEqual(
           sampleQuestionCodes[index]);
       });
     });
@@ -122,12 +122,12 @@ describe('CodeStorageService', function() {
   describe('clearLocalStorageCode', function() {
     it('should remove code from localStorage', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
-        var hashKey = questionId + ':' + LANGUAGE;
-        localStorage.setItem(hashKey, sampleQuestionCodes[index]);
-        expect(localStorage.getItem(hashKey)).toEqual(
+        var key = questionId + ':' + LANGUAGE;
+        localStorage.setItem(key, sampleQuestionCodes[index]);
+        expect(localStorage.getItem(key)).toEqual(
           sampleQuestionCodes[index]);
         CodeStorageService.clearLocalStorageCode(questionId, LANGUAGE);
-        expect(localStorage.getItem(hashKey)).toEqual(null);
+        expect(localStorage.getItem(key)).toEqual(null);
       });
     });
   });
