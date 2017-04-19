@@ -28,7 +28,7 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          task, studentCode, auxiliaryCode, language) {
+        questionId, task, studentCode, auxiliaryCode, language) {
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -60,9 +60,8 @@ tie.factory('SolutionHandlerService', [
               task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
-            console.log(runtimeFeedback);
             var finalFeedback = ReinforcementGeneratorService.getReinforcement(
-              runtimeFeedback, task, codeEvalResult);
+              questionId, task, codeEvalResult, runtimeFeedback);
             return finalFeedback;
           });
         }).then(function(feedback) {
