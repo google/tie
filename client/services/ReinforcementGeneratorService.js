@@ -29,7 +29,7 @@ tie.factory('ReinforcementGeneratorService', [
         
         // Initializing question reinforcement data if not done already 
         if (!question.passedList) question.passedList = ['test'];
-        if (!question.pastFailingList) question.pastFailingList = {};
+        if (!question.pastFailsList) question.pastFailsList = {};
         
         // Go through correctness tests to update reinforcement data
         var correctnessTests = task.getCorrectnessTests();
@@ -39,25 +39,25 @@ tie.factory('ReinforcementGeneratorService', [
           var observedOutput = observedOutputs[i];
           if (!correctnessTests[i].matchesOutput(observedOutput)) {
             if (!failedCaseSeen) {
-              question.pastFailingList[correctnessTests[i].getInput()] = false;
+              question.pastFailsList[correctnessTests[i].getInput()] = false;
               failedCaseSeen = true;
             }
           } else {
-            if (correctnessTests[i].getInput() in question.pastFailingList) {
-              question.pastFailingList[correctnessTests[i].getInput()] = true;
+            if (correctnessTests[i].getInput() in question.pastFailsList) {
+              question.pastFailsList[correctnessTests[i].getInput()] = true;
             }
           }
         }
         
         // TODO(shaman-rajan) Generate text to return from reinforcement data
         runtimeFeedback['passedList'] = question.passedList.slice();
-        runtimeFeedback['pastFailingList'] = {};
+        runtimeFeedback['pastFailsList'] = {};
         
-        for (testCase in question.pastFailingList) {
-          if (question.pastFailingList[testCase]) {
-            runtimeFeedback.pastFailingList[testCase] = true;
+        for (var testCase in question.pastFailsList) {
+          if (question.pastFailsList[testCase]) {
+            runtimeFeedback.pastFailsList[testCase] = true;
           } else {
-            runtimeFeedback.pastFailingList[testCase] = false;
+            runtimeFeedback.pastFailsList[testCase] = false;
           }
         }
 

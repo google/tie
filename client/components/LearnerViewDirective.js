@@ -104,7 +104,7 @@ tie.directive('learnerView', [function() {
                 <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
               </div>
               <div class="tie-reinforcement">
-                <p ng-repeat="paragraph in reinforcements">{{paragraph}}</p>
+                <p ng-repeat="bullet in reinforcementBullets"><span ng-bind="bullet.getContent()"></span></p>
               </div>
             </div>
           </div>
@@ -370,11 +370,11 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'CodeStorageService',
+      'ReinforcementObjectFactory', 'CodeStorageService',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          CodeStorageService) {
+          ReinforcementObjectFactory, CodeStorageService) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -395,6 +395,7 @@ tie.directive('learnerView', [function() {
         var DISPLAY_AUTOSAVE_TEXT_SECONDS = 3;
 
         var congratulatoryFeedback = FeedbackObjectFactory.create();
+        var reinforcement = ReinforcementObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
           questionSetId);
@@ -425,6 +426,7 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
+          reinforcement = ReinforcementObjectFactory.create();
           introParagraphs.forEach(function(paragraph) {
             feedback.appendTextParagraph(paragraph);
           });
@@ -463,6 +465,22 @@ tie.directive('learnerView', [function() {
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
           }
+          
+          // Setting reinforcement bullets
+          reinforcement.clear();
+          for (var i = 0; i < feedback.passedList.length; ++i) {
+            reinforcement.appendPassedBullet(
+              "Handled " + feedback.passedList[i]);
+          }
+          for (var testCase in feedback.pastFailsList) {
+            if (feedback.pastFailsList[testCase]) {
+              reinforcement.appendPassedBullet("Handles " + testCase);
+            } else {
+              reinforcement.appendFailedBullet("Failed on " + testCase);
+            }
+          }
+          $scope.reinforcementBullets = reinforcement.getBullets();
+          
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
