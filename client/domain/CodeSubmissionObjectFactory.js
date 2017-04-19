@@ -35,7 +35,7 @@ tie.factory('CodeSubmissionObjectFactory', [
     };
 
     CodeSubmission.prototype.IMPORT_PATTERN = new RegExp('^\\ {4}import\\ \\w+$');
-    CodeSubmission.prototype.TAB_LENGHT = 4;
+    CodeSubmission.prototype.TAB_LENGTH = 4;
 
     // Instance methods.
     CodeSubmission.prototype.getRawCode = function() {
@@ -84,7 +84,7 @@ tie.factory('CodeSubmissionObjectFactory', [
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
           var importLine = this._preprocessedCodeLines[i].slice(
-              this.TAB_LENGHT);
+              this.TAB_LENGTH);
           this._preprocessedCodeLines.splice(i, 1);
           this._preprocessedCodeLines.splice(insertPos, 0, importLine);
           this._rawCodeLineIndexes.splice(i, 1);
