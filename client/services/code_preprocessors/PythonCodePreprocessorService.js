@@ -285,6 +285,7 @@ tie.factory('PythonCodePreprocessorService', [
           'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
         codeSubmission.prepend(studentCodeFirstLine);
         codeSubmission.prepend(SYSTEM_CODE['python']);
+        codeSubmission.removeImportsFromStudentCode();
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');
 
