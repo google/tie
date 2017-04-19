@@ -34,7 +34,7 @@ describe('QuestionDataService', function() {
     function() {
       expect(function() {
         QuestionDataService.initCurrentQuestionSet('other');
-      }).toThrow();
+      }).toThrowError('Could not find question set with ID: other');
     });
   });
 
@@ -50,7 +50,7 @@ describe('QuestionDataService', function() {
     function() {
       expect(function() {
         QuestionDataService.getCurrentQuestionSet('other');
-      }).toThrow();
+      }).toThrowError('No question set has been initialized.');
     });
   });
 
@@ -59,7 +59,8 @@ describe('QuestionDataService', function() {
       QuestionDataService.initCurrentQuestionSet('all');
       expect(function() {
         QuestionDataService.getQuestion('');
-      }).toThrow();
+      }).toThrowError(
+      'The current question set does not contain a question with ID: ');
     });
   });
 });
