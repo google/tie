@@ -470,7 +470,7 @@ tie.directive('learnerView', [function() {
           reinforcement.clear();
           for (var idx = 0; idx < feedback.passedList.length; ++idx) {
             reinforcement.appendPassedBullet(
-              "Handled " + feedback.passedList[i]);
+              "Handled " + feedback.passedList[idx]);
           }
           for (var testCase in feedback.pastFailsList) {
             if (feedback.pastFailsList[testCase]) {
