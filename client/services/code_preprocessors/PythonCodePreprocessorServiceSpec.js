@@ -611,7 +611,8 @@ describe('PythonCodePreprocessorService', function() {
           '    time_array = []',
           '    for input_size in [10, 100]:',
           '        start = time.time()',
-          '        output = StudentCode().katamariDamashi(get_test_input_from_System_extendString(test_input, input_size))',
+          '        output = StudentCode().katamariDamashi(' +
+              'get_test_input_from_System_extendString(test_input, input_size))',
           '        finish = time.time() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > 30 * time_array[0]:',
