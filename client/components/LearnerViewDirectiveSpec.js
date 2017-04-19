@@ -158,9 +158,10 @@ describe('LearnerViewDirective', function() {
     it("should store the latest code into localStorage", function() {
       for (var i = 0; i < $scope.questionIds.length; i++) {
         if (i !== 0) {
-          // The default question index is 0, we don't want to
-          // navigate to question 0 again because navigateToQuestion
-          // will store code for current question, thus, fail the test
+          // The default question index is 0, so we don't want to
+          // navigate to question 0 again as navigateToQuestion
+          // will already have stored code for the current question
+          // and will fail the test.
           $scope.navigateToQuestion(i);
         }
         // Repeat 1 - 20 times
