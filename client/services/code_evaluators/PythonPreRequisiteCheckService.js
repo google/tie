@@ -17,10 +17,10 @@
  */
 
 tie.factory('PythonPreRequisiteCheckService', [
-  '$http','$q',
+  'PYTHON_STANDARD_LIBRARIES',
   'PreRequisiteCheckResultObjectFactory', 
   function(
-      $http, $q,
+      PYTHON_STANDARD_LIBRARIES,
       PreRequisiteCheckResultObjectFactory) {   
 
     var checkStarterCodePresent = function(starterCode, code) {
@@ -71,50 +71,33 @@ tie.factory('PythonPreRequisiteCheckService', [
               code, errorMessage, starterCode));
         } 
         
-        
-
 
         // TODO: check that there are no unsupported/disallowed imports (e.g., numpy)
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
         //    code, errorMessage);
 
-        var d = $q.defer();
-        var libErrorMessage = ['It looks like you use a external',
-                        'Library. The external library could be:'].join('');
-        console.log($http.get('libs_json.json'));
-        return $http.get('libs_json.json').then(function(success){
-                    var standardLibs = success.data.Standard_Libs;
-                    var codeLibs = getCodeLibs(code);
-                    for(i = 0; i<codeLibs.length; i++){
-                        if(!standardLibs.includes(codeLibs[i])){
-                            //console.log('here');
-                            //return Promise.resolve(
-                                    //PreRequisiteCheckResultObjectFactory.create(
-                                        //codeLibs[i], libErrorMessage));
-                        //d.resolve(Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null, null)));
-                        //console.log(PreRequisiteCheckResultObjectFactory.create(code, null, null));
-                        return PreRequisiteCheckResultObjectFactory.create(code, null, null);
-                        //return PreRequisiteCheckResultObjectFactory.create(code, null);
-                        }
-                    }
-                    //return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
-                }
-                //}, function(error){
-                        //console.log(error);
-                    //}
-                );
-            //return ret;
-           //console.log(d.promise);
-          //return d.promise;
-           //console.log(Promise.resolve(ret)); 
-           //console.log(Promise.resolve(d.promise));
-           //return d.promise.then(function(data){
-              ////console.log(Promise.resolve(data));  
-              //return Promise.resolve(data);
-           //});
-        
-        
+        var libErrorMessage = ['It looks like you use a external ',
+                        'Library. You can only use standard libraries.',
+                        'The external Libraries could be:'].join('');
+        codeLibs = getCodeLibs(code);
+        var extLibs = [];
+        for(var i = 0; i<codeLibs.length; i++){
+            var lib = codeLibs[i].trim();
+            if(PYTHON_STANDARD_LIBRARIES.indexOf(lib)<0){
+                extLibs.push(lib);
+            }
+        }
+        if(extLibs.length!==0){
+            var extLibsString = '';
+            for(var i = 0; i<extLibs.length; i++){
+                extLibsString = extLibsString.concat(extLibs[i]+'\n');
+            }
+            extLibsString = extLibsString.substring(0, extLibsString.length-1);
+            return Promise.resolve(
+                    PreRequisiteCheckResultObjectFactory.create(
+                        code, libErrorMessage, extLibsString));
+        }
         // Otherwise, code passed all pre-requisite checks
         return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
       },
