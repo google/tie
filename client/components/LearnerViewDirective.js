@@ -422,7 +422,7 @@ tie.directive('learnerView', [function() {
         ];
 
         var autosaveCancelPromise;
-        var localCodeCache;
+        var codeCache;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -445,11 +445,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          localCodeCache =
+          codeCache =
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = localCodeCache ?
-              localCodeCache : question.getStarterCode(language);
+          $scope.code = codeCache ?
+              codeCache : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -572,7 +572,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
-          storeCodeAndUpdateLocalCodeCache(
+          storeCodeAndUpdateCodeCache(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
@@ -595,13 +595,13 @@ tie.directive('learnerView', [function() {
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                 $scope.questionIds[$scope.currentQuestionIndex];
-              if (angular.equals(localCodeCache, $scope.code)) {
+              if (angular.equals(codeCache, $scope.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
               } else {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
-                storeCodeAndUpdateLocalCodeCache(
+                storeCodeAndUpdateCodeCache(
                   currentQuestionId, $scope.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
@@ -614,10 +614,10 @@ tie.directive('learnerView', [function() {
           $interval.cancel(autosaveCancelPromise);
         };
 
-        var storeCodeAndUpdateLocalCodeCache = function(
+        var storeCodeAndUpdateCodeCache = function(
           questionId, code, lang) {
           CodeStorageService.storeCode(questionId, code, lang);
-          localCodeCache = code;
+          codeCache = code;
         };
 
         loadQuestion(

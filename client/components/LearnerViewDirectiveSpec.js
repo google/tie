@@ -53,8 +53,9 @@ describe('LearnerViewDirective', function() {
 
     // The reason why we have to go through this trouble to get $scope
     // is the controller is anonymous, thus, there is no easy way to do
-    // it. Recommend future refactor.
-    // TODO
+    // it.
+    // TODO (mengchaowang): Refactor learnerViewDirective controller to a
+    // separate controller instead of anonymous controller.
     element = angular.element('<learner-view></learner-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();
@@ -116,37 +117,47 @@ describe('LearnerViewDirective', function() {
         }
         expect(!$scope.autosaveOn).toBe(true);
         var questionId = $scope.questionIds[i];
+        var question = QuestionDataService.getQuestion(questionId);
+        var starterCode = question.getStarterCode(LANGUAGE);
         // There should be no code stored in localStorage
         // before autosave is triggered.
         expect(CodeStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(null);
         $scope.activateAutosaving();
-        expect($scope.autosaveOn).toBe(true);
-        // Flush 4900 milliseconds -- time: 4.9s
-        expect($scope.autosaveTextIsDisplayed).toBe(false);
-        flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS - DELTA_MILLISECONDS);
-        expect($scope.autosaveOn).toBe(true);
-        expect(CodeStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(null);
-        // Flush 200 milliseconds -- time: 5.1s
-        flushIntervalAndTimeout(2 * DELTA_MILLISECONDS);
-        var question = QuestionDataService.getQuestion(questionId);
-        var starterCode = question.getStarterCode(LANGUAGE);
-        expect(CodeStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(starterCode);
-        expect($scope.autosaveOn).toBe(true);
-        expect($scope.autosaveTextIsDisplayed).toBe(true);
-        // Flush 1000 milliseconds -- time: 6.1s
-        flushIntervalAndTimeout(SECONDS_TO_MILLISECONDS);
-        expect($scope.autosaveTextIsDisplayed).toBe(false);
-        // Flush 4000 milliseconds -- time: 10.1s
-        flushIntervalAndTimeout(4 * SECONDS_TO_MILLISECONDS);
-        expect($scope.autosaveTextIsDisplayed).toBe(false);
-        expect($scope.autosaveOn).toBe(false);
+        checkActivateAutosaveOnceDetail(questionId, starterCode);
         expect(CodeStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(starterCode);
       }
     });
+
+    // This helper function is to test when autosave is triggered, what will
+    // happen. After it's triggered, 5 seconds later, autosave text should be
+    // displayed for 1 second. Then, the autosave text should be gone while the
+    // autosave is still running. Then, at 10 seconds, autosave will compare the
+    // code again, since they are the same, autosave will stop. Thus, at 10.1
+    // seconds, autosave should be canceled, thus, autosaveOn should be false.
+    var checkActivateAutosaveOnceDetail = function(questionId, starterCode) {
+      expect($scope.autosaveOn).toBe(true);
+      // Flush 4900 milliseconds -- time: 4.9s
+      expect($scope.autosaveTextIsDisplayed).toBe(false);
+      flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS - DELTA_MILLISECONDS);
+      expect($scope.autosaveOn).toBe(true);
+      expect(CodeStorageService.loadStoredCode(
+        questionId, LANGUAGE)).toEqual(null);
+      // Flush 200 milliseconds -- time: 5.1s
+      flushIntervalAndTimeout(2 * DELTA_MILLISECONDS);
+      expect(CodeStorageService.loadStoredCode(
+        questionId, LANGUAGE)).toEqual(starterCode);
+      expect($scope.autosaveOn).toBe(true);
+      expect($scope.autosaveTextIsDisplayed).toBe(true);
+      // Flush 1000 milliseconds -- time: 6.1s
+      flushIntervalAndTimeout(SECONDS_TO_MILLISECONDS);
+      expect($scope.autosaveTextIsDisplayed).toBe(false);
+      // Flush 4000 milliseconds -- time: 10.1s
+      flushIntervalAndTimeout(4 * SECONDS_TO_MILLISECONDS);
+      expect($scope.autosaveTextIsDisplayed).toBe(false);
+      expect($scope.autosaveOn).toBe(false);
+    };
 
     it("should store the latest code into localStorage", function() {
       for (var i = 0; i < $scope.questionIds.length; i++) {
