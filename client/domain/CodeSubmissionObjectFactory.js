@@ -35,7 +35,7 @@ tie.factory('CodeSubmissionObjectFactory', [
     };
 
     CodeSubmission.prototype.IMPORT_PATTERN = new RegExp('^\\ {4}import\\ \\w+$');
-    CodeSubmission.prototype.START_INDENT = '    ';
+    CodeSubmission.prototype.TAB_LENGHT = 4;
 
     // Instance methods.
     CodeSubmission.prototype.getRawCode = function() {
@@ -79,12 +79,12 @@ tie.factory('CodeSubmissionObjectFactory', [
 
     // Move all global imports in student code out of StudentCode
     // class
-    CodeSubmission.prototype.advanceImports = function() {
+    CodeSubmission.prototype.removeImportsFromStudentCode = function() {
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
           var importLine = this._preprocessedCodeLines[i].slice(
-              this.START_INDENT.length);
+              this.TAB_LENGHT);
           this._preprocessedCodeLines.splice(i, 1);
           this._preprocessedCodeLines.splice(insertPos, 0, importLine);
           this._rawCodeLineIndexes.splice(i, 1);
