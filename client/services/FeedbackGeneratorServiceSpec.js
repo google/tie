@@ -83,6 +83,13 @@ describe('FeedbackGeneratorService', function() {
             c: 'j'
           })
         ).toEqual('{"a": 3, "b": 5, "c": "j"}');
+      }
+    );
+  });
+
+  describe('_jsToHumanReadableUnknownObject', function() {
+    it('should return [UNKNOWN OBJECT] if provided input cannot be converted',
+      function() {
         // Define and call blankFunction to pass lint test add 100% coverage
         var blankFunction = function() {
           return null;
@@ -128,7 +135,7 @@ describe('FeedbackGeneratorService', function() {
   describe('_getPerformanceTestFeedback', function() {
     it([
       'should return feedback if user\'s function is running ',
-      'significantly slower than expected'
+      'significantly more slowly than expected'
     ].join(''), function() {
       var performanceParagraphs = FeedbackGeneratorService
         ._getPerformanceTestFeedback("linear").getParagraphs();
@@ -424,3 +431,4 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 });
+
