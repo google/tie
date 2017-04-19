@@ -80,7 +80,7 @@ tie.directive('learnerView', [function() {
                     Reset Code
                   </button>
                   <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
-                    Saving code now...
+                    Saving code...
                   </div>
                   <button class="tie-run-button"
                       ng-class="{'active': !nextButtonIsShown}"
@@ -397,11 +397,13 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'CodeStorageService',
+      'CodeStorageService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          CodeStorageService) {
+          CodeStorageService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -419,14 +421,8 @@ tie.directive('learnerView', [function() {
           {themeName: 'Dark'}
         ];
 
-        var SECONDS_TO_MILLISECONDS = 1000;
-        // Default time interval, in seconds, after which code will
-        // be auto-saved.
-        var DEFAULT_AUTOSAVE_SECONDS = 5;
-        // "Saving code..." will last for 1 seconds and disappear.
-        var DISPLAY_AUTOSAVE_TEXT_SECONDS = 1;
-
         var autosaveCancelPromise;
+        var localCodeCache;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         QuestionDataService.initCurrentQuestionSet(questionSetId);
         var questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -449,11 +445,11 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          var storedCode =
+          localCodeCache =
             CodeStorageService.loadStoredCode(questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = storedCode ?
-              storedCode : question.getStarterCode(language);
+          $scope.code = localCodeCache ?
+              localCodeCache : question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -560,7 +556,6 @@ tie.directive('learnerView', [function() {
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(currentQuestionId,
             $scope.code, language);
-
           loadQuestion(questionId, questionSet.getIntroductionParagraphs());
         };
 
@@ -577,7 +572,7 @@ tie.directive('learnerView', [function() {
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
-          CodeStorageService.storeCode(
+          storeCodeAndUpdateLocalCodeCache(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
@@ -600,15 +595,13 @@ tie.directive('learnerView', [function() {
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                 $scope.questionIds[$scope.currentQuestionIndex];
-              var storedCode = CodeStorageService.loadStoredCode(
-                currentQuestionId, language);
-              if (angular.equals(storedCode, $scope.code)) {
+              if (angular.equals(localCodeCache, $scope.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
               } else {
-                // Code change detected, notify user,
-                // save code and continue this loop.
-                CodeStorageService.storeCode(
+                // Code change detected, notify user, save code,
+                // update code cache and continue this loop.
+                storeCodeAndUpdateLocalCodeCache(
                   currentQuestionId, $scope.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
@@ -619,6 +612,12 @@ tie.directive('learnerView', [function() {
         var stopAutosave = function() {
           $scope.autosaveOn = false;
           $interval.cancel(autosaveCancelPromise);
+        };
+
+        var storeCodeAndUpdateLocalCodeCache = function(
+          questionId, code, lang) {
+          CodeStorageService.storeCode(questionId, code, lang);
+          localCodeCache = code;
         };
 
         loadQuestion(
