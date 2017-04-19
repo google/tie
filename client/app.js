@@ -75,4 +75,8 @@ tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
 // Name of the variable in which a copy of the most recent input is stored.
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
 // Default auto save time in seconds.
-tie.constant('DEFAULT_AUTO_SAVE_SECONDS', 3);
+var SECONDS_TO_MILLISECONDS = 1000;
+tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
+tie.constant('SECONDS_TO_MILLISECONDS', SECONDS_TO_MILLISECONDS);
+// "Saving code..." will last for 1 second and disappear.
+tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
