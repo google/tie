@@ -149,7 +149,6 @@ tie.factory('PythonCodePreprocessorService', [
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
       }
-      return code;
     };
 
     var _generateCorrectnessTestCode = function(
@@ -195,7 +194,7 @@ tie.factory('PythonCodePreprocessorService', [
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
       var testInputCode = (
-        inputFunctionName ? 
+        inputFunctionName ?
         inputFunctionName + '(test_input)' :
         'test_input'
       );
