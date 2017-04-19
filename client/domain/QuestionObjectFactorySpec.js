@@ -38,7 +38,10 @@ describe('QuestionObjectFactory', function() {
   }));
 
   describe('getStarterCodeError', function() {
-    it('should return error when starter code language invalid', function() {
+    it([
+      'should throw an error when the starter code language ',
+      'is invalid'
+    ].join(''), function() {
       var errorFunction = function() {
         question.getStarterCode(INVALID_LANGUAGE);
       };
@@ -48,7 +51,10 @@ describe('QuestionObjectFactory', function() {
   });
 
   describe('getAuxiliaryCodeError', function() {
-    it('should return error when auxiliary code language invalid', function() {
+    it([
+      'should throw an error when the auxiliary code ',
+      'language is invalid'
+    ].join(''), function() {
       var errorFunction = function() {
         question.getAuxiliaryCode(INVALID_LANGUAGE);
       };
@@ -57,7 +63,10 @@ describe('QuestionObjectFactory', function() {
   });
 
   describe('isLastTask', function() {
-    it('should return whether provided index is last task', function() {
+    it([
+      'should return true if the provided index is ',
+      'the index of the last task'
+    ].join(''), function() {
       expect(question.isLastTask(2)).toBe(false);
     });
   });
