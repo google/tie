@@ -18,41 +18,43 @@
  */
 
 tie.factory('ReinforcementGeneratorService', [
-  function(ReinforcementObjectFactory) {
+  function() {
 
     return {
       getReinforcement: function(questionId, task, codeEvalResult,
         runtimeFeedback) {
-        
+
         // Getting the question user is working on
-        question = globalData.questions[questionId];
-        
-        // Initializing question reinforcement data if not done already 
-        if (!question.passedList) question.passedList = ['test'];
-        if (!question.pastFailsList) question.pastFailsList = {};
-        
+        var question = globalData.questions[questionId];
+
+        // Initializing question reinforcement data if not done already
+        if (!question.passedList) {
+          question.passedList = ['test'];
+        }
+        if (!question.pastFailsList) {
+          question.pastFailsList = {};
+        }
+
         // Go through correctness tests to update reinforcement data
         var correctnessTests = task.getCorrectnessTests();
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
         var failedCaseSeen = false;
-        for (i = 0; i < correctnessTests.length; i++) {
+        for (var i = 0; i < correctnessTests.length; i++) {
           var observedOutput = observedOutputs[i];
-          if (!correctnessTests[i].matchesOutput(observedOutput)) {
-            if (!failedCaseSeen) {
-              question.pastFailsList[correctnessTests[i].getInput()] = false;
-              failedCaseSeen = true;
-            }
-          } else {
+          if (correctnessTests[i].matchesOutput(observedOutput)) {
             if (correctnessTests[i].getInput() in question.pastFailsList) {
               question.pastFailsList[correctnessTests[i].getInput()] = true;
             }
+          } else if (!failedCaseSeen) {
+            question.pastFailsList[correctnessTests[i].getInput()] = false;
+            failedCaseSeen = true;
           }
         }
-        
+
         // TODO(shaman-rajan) Generate text to return from reinforcement data
-        runtimeFeedback['passedList'] = question.passedList.slice();
-        runtimeFeedback['pastFailsList'] = {};
-        
+        runtimeFeedback.passedList = question.passedList.slice();
+        runtimeFeedback.pastFailsList = {};
+
         for (var testCase in question.pastFailsList) {
           if (question.pastFailsList[testCase]) {
             runtimeFeedback.pastFailsList[testCase] = true;
@@ -66,4 +68,3 @@ tie.factory('ReinforcementGeneratorService', [
     };
   }
 ]);
-  

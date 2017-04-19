@@ -65,7 +65,6 @@ tie.factory('SolutionHandlerService', [
             return finalFeedback;
           });
         }).then(function(feedback) {
-          console.log(feedback);
           return feedback;
         });
       }

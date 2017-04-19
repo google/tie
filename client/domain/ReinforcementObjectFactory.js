@@ -22,12 +22,12 @@ tie.factory('ReinforcementObjectFactory', [
     var Reinforcement = function() {
       this._bullets = [];
     };
-    
+
     // Instance methods.
     Reinforcement.prototype.getBullets = function() {
       return this._bullets;
     };
-    
+
     Reinforcement.prototype.appendPassedBullet = function(content) {
       this._bullets.push(
         ReinforcementBulletObjectFactory.createPassedBullet(content));

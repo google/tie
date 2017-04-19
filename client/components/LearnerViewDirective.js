@@ -465,10 +465,10 @@ tie.directive('learnerView', [function() {
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
           }
-          
+
           // Setting reinforcement bullets
           reinforcement.clear();
-          for (var i = 0; i < feedback.passedList.length; ++i) {
+          for (var idx = 0; idx < feedback.passedList.length; ++idx) {
             reinforcement.appendPassedBullet(
               "Handled " + feedback.passedList[i]);
           }
@@ -480,7 +480,7 @@ tie.directive('learnerView', [function() {
             }
           }
           $scope.reinforcementBullets = reinforcement.getBullets();
-          
+
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
