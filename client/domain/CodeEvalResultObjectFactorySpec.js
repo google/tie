@@ -18,27 +18,32 @@
 
 describe('CodeEvalResultObjectFactory', function() {
   var CodeEvalResultObjectFactory;
+  var codeEvalResult;
+  var CODE = "code";
+  var OUTPUT = "output";
+  var CORRECTNESS_TEST_RESULTS = "correctnessTestResults";
+  var BUGGY_OUTPUT_TEST_RESULTS = "buggyOutputTestResults";
+  var PERFORMANCE_TEST_RESULTS = "performanceTestResults";
+  var ERROR_STRING = null;
+  var ERROR_INPUT = "errorInput";
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     CodeEvalResultObjectFactory = $injector.get(
       'CodeEvalResultObjectFactory');
+    codeEvalResult = CodeEvalResultObjectFactory.create(CODE, OUTPUT,
+      CORRECTNESS_TEST_RESULTS, BUGGY_OUTPUT_TEST_RESULTS,
+      PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
   }));
 
   describe('getOutput', function() {
     it('should correctly get output', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create("code", "output",
-       "correctnessTestResults", "buggyOutputTestResults",
-       "performanceTestResults", "errorTraceback", "errorInput");
       expect(codeEvalResult.getOutput()).toMatch("output");
     });
   });
 
   describe('getCorrectnessTestResults', function() {
     it('should correctly get correctness test results', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create("code", "output",
-       "correctnessTestResults", "buggyOutputTestResults",
-       "performanceTestResults", "errorTraceback", "errorInput");
       expect(codeEvalResult.getCorrectnessTestResults())
       .toMatch("correctnessTestResults");
     });
@@ -46,9 +51,6 @@ describe('CodeEvalResultObjectFactory', function() {
 
   describe('getBuggyOutputTestResults', function() {
     it('should correctly get buggy output test results', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create("code", "output",
-       "correctnessTestResults", "buggyOutputTestResults",
-       "performanceTestResults", "errorTraceback", "errorInput");
       expect(codeEvalResult.getBuggyOutputTestResults())
       .toMatch("buggyOutputTestResults");
     });
@@ -56,20 +58,15 @@ describe('CodeEvalResultObjectFactory', function() {
 
   describe('getPerformanceTestResults', function() {
     it('should correctly get performance test results', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create("code", "output",
-       "correctnessTestResults", "buggyOutputTestResults",
-       "performanceTestResults", "errorTraceback", "errorInput");
       expect(codeEvalResult.getPerformanceTestResults())
       .toMatch("performanceTestResults");
     });
   });
 
   describe('nullErrorString', function() {
-    it('should return null if no error traceback', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create("code", "output",
-       "correctnessTestResults", "buggyOutputTestResults",
-       "performanceTestResults", null, "errorInput");
+    it('should return null if no error traceback is present', function() {
       expect(codeEvalResult.getErrorString()).toBe(null);
     });
   });
 });
+

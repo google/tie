@@ -18,6 +18,7 @@
 
 describe('CorrectnessTestObjectFactory', function() {
   var CorrectnessTestObjectFactory;
+  var MESSAGE = "hello";
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -67,10 +68,11 @@ describe('CorrectnessTestObjectFactory', function() {
       var correctnessTest = CorrectnessTestObjectFactory.create({
         input: 'cat',
         allowedOutputs: ['a', 'b'],
-        message: "hello"
+        message: MESSAGE
       });
 
-      expect(correctnessTest.getMessage()).toMatch("hello");
+      expect(correctnessTest.getMessage()).toMatch(MESSAGE);
     });
   });
 });
+

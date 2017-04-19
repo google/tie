@@ -1,0 +1,65 @@
+// Copyright 2017 The TIE Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Unit tests for QuestionObject domain objects.
+ */
+
+describe('QuestionObjectFactory', function() {
+  var QuestionObjectFactory;
+  var question;
+  var TITLE = "title";
+  var STARTER_CODE = "starterCode";
+  var AUXILIARY_CODE = "auxiliaryCode";
+  var INVALID_LANGUAGE = "invalidLanguage";
+
+  beforeEach(module('tie'));
+  beforeEach(inject(function($injector) {
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    question = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: [],
+      styleTests: []
+    });
+  }));
+
+  describe('getStarterCodeError', function() {
+    it('should return error when starter code language invalid', function() {
+      var errorFunction = function() {
+        question.getStarterCode(INVALID_LANGUAGE);
+      };
+      expect(errorFunction)
+      .toThrowError(Error);
+    });
+  });
+
+  describe('getAuxiliaryCodeError', function() {
+    it('should return error when auxiliary code language invalid', function() {
+      var errorFunction = function() {
+        question.getAuxiliaryCode(INVALID_LANGUAGE);
+      };
+      expect(errorFunction).toThrowError(Error);
+    });
+  });
+
+  describe('isLastTask', function() {
+    it('should return whether provided index is last task', function() {
+      expect(question.isLastTask(2)).toBe(false);
+    });
+  });
+});
+

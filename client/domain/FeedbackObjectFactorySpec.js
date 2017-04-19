@@ -18,38 +18,36 @@
 
 describe('FeedbackObjectFactory', function() {
   var FeedbackObjectFactory;
+  var feedback;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     FeedbackObjectFactory = $injector.get(
       'FeedbackObjectFactory');
+    feedback = FeedbackObjectFactory.create(true);
   }));
 
   describe('isAnswerCorrect', function() {
-    it('should correctly get whether answer is correct', function() {
-      var Feedback = FeedbackObjectFactory.create(true);
-      expect(Feedback.isAnswerCorrect()).toBe(true);
+    it('should return whether or not answer is correct', function() {
+      expect(feedback.isAnswerCorrect()).toBe(true);
     });
   });
 
   describe('firstParagraphText', function() {
-    it('should error when adding first paragraph as code', function() {
+    it('should throw an error when adding paragraph one as code', function() {
       var errorFunction = function() {
-        var Feedback = FeedbackObjectFactory.create(true);
-        Feedback.appendCodeParagraph("code");
+        feedback.appendCodeParagraph("code");
       };
-
       expect(errorFunction).toThrowError(Error);
     });
   });
 
   describe('clearParagraphs', function() {
-    it('should clear paragraphs making its length 0', function() {
-      var Feedback = FeedbackObjectFactory.create(true);
-      Feedback.appendTextParagraph("text");
-      Feedback.clear();
-      expect(Feedback.getParagraphs.length).toEqual(0);
+    it('should clear all paragraphs in the current feedback', function() {
+      feedback.appendTextParagraph("text");
+      feedback.clear();
+      expect(feedback.getParagraphs.length).toEqual(0);
     });
   });
-
 });
+

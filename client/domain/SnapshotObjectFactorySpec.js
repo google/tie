@@ -18,20 +18,20 @@
 
 describe('SnapshotObjectFactory', function() {
   var SnapshotObjectFactory;
+  var snapshot;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     SnapshotObjectFactory = $injector.get(
       'SnapshotObjectFactory');
+    snapshot = SnapshotObjectFactory.create({
+      codeEvalResult: null,
+      feedback: null
+    });
   }));
 
   describe('setCodeEvalResult', function() {
-    it('should correctly set and get code eval result', function() {
-      var snapshot = SnapshotObjectFactory.create({
-        codeEvalResult: null,
-        feedback: null
-      });
-
+    it('should correctly set and get codeEvalResult', function() {
       snapshot.setCodeEvalResult("true");
       expect(snapshot.getCodeEvalResult()).toMatch("true");
     });
@@ -39,13 +39,9 @@ describe('SnapshotObjectFactory', function() {
 
   describe('setFeedback', function() {
     it('should correctly set and get feedback', function() {
-      var snapshot = SnapshotObjectFactory.create({
-        codeEvalResult: null,
-        feedback: null
-      });
-
       snapshot.setFeedback("good");
       expect(snapshot.getFeedback()).toMatch("good");
     });
   });
 });
+
