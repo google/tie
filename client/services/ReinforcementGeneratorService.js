@@ -22,7 +22,7 @@ tie.factory('ReinforcementGeneratorService', [
     
     return {
       getReinforcement: function(runtimeFeedback, task, codeEvalResult) {
-        var buggyOutputTests = task.getBuggyOutputTests();
+        /*var buggyOutputTests = task.getBuggyOutputTests();
         var buggyOutputTestResults =
             codeEvalResult.getBuggyOutputTestResults();
         for (var i = 0; i < buggyOutputTests.length; i++) {
@@ -42,7 +42,8 @@ tie.factory('ReinforcementGeneratorService', [
             return _getCorrectnessTestFeedback(
               correctnessTests[i], observedOutput);
           }
-        }
+        }*/
+        return runtimeFeedback;
       } 
     };
   }
