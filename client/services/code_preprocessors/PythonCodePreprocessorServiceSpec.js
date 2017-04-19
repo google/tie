@@ -35,7 +35,7 @@ describe('PythonCodePreprocessorService', function() {
   }));
 
   describe('_jsonVariableToPython', function() {
-    it('should correctly convert a JSON String to a Python string', function() {
+    it('should correctly convert a JSON string to a Python string', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython('stringify')
       ).toEqual("'stringify'");
@@ -57,7 +57,7 @@ describe('PythonCodePreprocessorService', function() {
 
     it(
       [
-        'should correctly convert a JSON Array to a string version ',
+        'should correctly convert a JSON array to a string version ',
         'of a Python array'
       ].join('') , function() {
       expect(
@@ -65,7 +65,7 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("['cat', '2', '3']");
     });
 
-    it('should correctly convert a nested JSON Array to a similar Python array'
+    it('should correctly convert a nested JSON array to a similar Python array'
       , function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(
@@ -75,7 +75,7 @@ describe('PythonCodePreprocessorService', function() {
 
     it(
       [
-        'should correctly convert a JSON boolean Array to a string version ',
+        'should correctly convert a JSON boolean array to a string version ',
         'of a Python boolean array'
       ].join('') , function() {
       expect(
