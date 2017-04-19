@@ -17,13 +17,15 @@
  */
 
 tie.factory('PythonPreRequisiteCheckService', [
+  '$http','$q',
   'PreRequisiteCheckResultObjectFactory', 
   function(
+      $http, $q,
       PreRequisiteCheckResultObjectFactory) {   
 
     var checkStarterCodePresent = function(starterCode, code) {
       var starterCodeLines = starterCode.split('\n');
-      var codeLines = code.split('\n')
+      var codeLines = code.split('\n');
       for (var i = 0; i < codeLines.length; i++) { 
         codeLines[i] = codeLines[i].trim();
       }
@@ -36,6 +38,20 @@ tie.factory('PythonPreRequisiteCheckService', [
       }
       return true;
     };
+
+	var getCodeLibs = function(code){
+		var codeLines = code.split('\n');
+		var coddLibs = [];
+		//var pattern = new RegExp('^\\ {4}import\\ \\w+$');
+		var pattern = new RegExp('^import\\ \\w+$');
+		for(i=0; i<codeLines.length; i++){
+			if(pattern.test(codeLines[i])){
+				var words = codeLines[i].split(' ');
+				coddLibs.push(words[1]);
+			}
+		}	
+		return coddLibs;
+	};
 
     return {
       // Returns a promise.
@@ -62,6 +78,41 @@ tie.factory('PythonPreRequisiteCheckService', [
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
         //    code, errorMessage);
+
+        var d = $q.defer();
+        var libErrorMessage = ['It looks like you use a external',
+                        'Library. The external library could be:'].join('');
+        console.log($http.get('libs_json.json'));
+        return $http.get('libs_json.json').then(function(success){
+                    var standardLibs = success.data.Standard_Libs;
+                    var codeLibs = getCodeLibs(code);
+                    for(i = 0; i<codeLibs.length; i++){
+                        if(!standardLibs.includes(codeLibs[i])){
+                            //console.log('here');
+                            //return Promise.resolve(
+                                    //PreRequisiteCheckResultObjectFactory.create(
+                                        //codeLibs[i], libErrorMessage));
+                        //d.resolve(Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null, null)));
+                        //console.log(PreRequisiteCheckResultObjectFactory.create(code, null, null));
+                        return PreRequisiteCheckResultObjectFactory.create(code, null, null);
+                        //return PreRequisiteCheckResultObjectFactory.create(code, null);
+                        }
+                    }
+                    //return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
+                }
+                //}, function(error){
+                        //console.log(error);
+                    //}
+                );
+            //return ret;
+           //console.log(d.promise);
+          //return d.promise;
+           //console.log(Promise.resolve(ret)); 
+           //console.log(Promise.resolve(d.promise));
+           //return d.promise.then(function(data){
+              ////console.log(Promise.resolve(data));  
+              //return Promise.resolve(data);
+           //});
         
         
         // Otherwise, code passed all pre-requisite checks
