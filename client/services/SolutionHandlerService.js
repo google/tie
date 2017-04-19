@@ -19,12 +19,12 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'ReinforcementGeneratorService', 'SnapshotObjectFactory',
-  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'FeedbackGeneratorService', 'ReinforcementGeneratorService',
+  'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, ReinforcementGeneratorService, SnapshotObjectFactory,
-      TranscriptService, CodeSubmissionObjectFactory) {
+      FeedbackGeneratorService, ReinforcementGeneratorService,
+      SnapshotObjectFactory, TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
@@ -61,7 +61,7 @@ tie.factory('SolutionHandlerService', [
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
             console.log(runtimeFeedback);
-            finalFeedback = ReinforcementGeneratorService.getReinforcement(
+            var finalFeedback = ReinforcementGeneratorService.getReinforcement(
               runtimeFeedback, task, codeEvalResult);
             return finalFeedback;
           });
