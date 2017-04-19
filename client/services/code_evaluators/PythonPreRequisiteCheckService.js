@@ -17,21 +17,20 @@
  */
 
 tie.factory('PythonPreRequisiteCheckService', [
-  'PreRequisiteCheckResultObjectFactory', 
+  'PreRequisiteCheckResultObjectFactory',
   function(
-      PreRequisiteCheckResultObjectFactory) {   
+      PreRequisiteCheckResultObjectFactory) {
 
     var checkStarterCodePresent = function(starterCode, code) {
       var starterCodeLines = starterCode.split('\n');
       var codeLines = code.split('\n')
-      for (var i = 0; i < codeLines.length; i++) { 
+      for (var i = 0; i < codeLines.length; i++) {
         codeLines[i] = codeLines[i].trim();
       }
       for (var i = 0; i < starterCodeLines.length; i++) {
         var starterCodeLine = starterCodeLines[i].trim();
-        // var codePresent = codeLines.includes(starterCodeLine); 
         if (codeLines.indexOf(starterCodeLine) < 0) {
-          return false; 
+          return false;
         }
       }
       return true;
@@ -40,30 +39,21 @@ tie.factory('PythonPreRequisiteCheckService', [
     return {
       // Returns a promise.
       checkCode: function(starterCode, code) {
-        
-        // TODO: check that starter code has not been modified: 
-        // if check fails:
-        // return PreRequisiteCheckResultObjectFactory.create(
-        //  code, errorMessage);
         if (!(checkStarterCodePresent(starterCode, code))) {
           var errorMessage = ['It looks like you deleted or modified ',
             'the starter code!  Our evaluation program requires the ',
             'function names given in the starter code.  Here\'s the '
-            ,'starter code again:'].join(''); 
+            ,'starter code again:'].join('');
           return Promise.resolve(
             PreRequisiteCheckResultObjectFactory.create(
               code, errorMessage, starterCode));
-        } 
-        
-        
-
+        }
 
         // TODO: check that there are no unsupported/disallowed imports (e.g., numpy)
         // if check fails:
         // return PreRequisiteCheckResultObjectFactory.create(
         //    code, errorMessage);
-        
-        
+
         // Otherwise, code passed all pre-requisite checks
         return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
       },

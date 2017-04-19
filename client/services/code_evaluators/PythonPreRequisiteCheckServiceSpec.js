@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for the PythonPreRequisiteCheckService. 
+ * @fileoverview Unit tests for the PythonPreRequisiteCheckService.
  */
 
 describe('PythonPreRequisiteCheckService', function() {
@@ -25,10 +25,11 @@ describe('PythonPreRequisiteCheckService', function() {
 			'PythonPreRequisiteCheckService');
 	}));
 
+	var starterCode = ['def myFunction(arg):\n',
+		'\treturn result\n'].join();
+
 	describe('checkStarterCodePresent', function() {
 		it('returns true if starter code lines are found in code', function() {
-			var starterCode = ['def myFunction(arg):\n',
-			'\treturn result\n'].join();
 			var code = ['def myFunction(arg):\n',
 			'\tresult = arg.trim()\n',
 			'\treturn result\n'].join();
@@ -37,5 +38,24 @@ describe('PythonPreRequisiteCheckService', function() {
 					starterCode, code);
 			expect(starterCodePresent).toEqual(true);
 		});
+		it('returns false if starter code line is not found (modified)',
+			function() {
+				var code = ['def yourFunction(arg):\n',
+				'\tresult = arg.trim()\n',
+				'\treturn result\n'].join();
+				var starterCodePresent =
+					PythonPreRequisiteCheckService.checkStarterCodePresent(
+						starterCode, code);
+				expect(starterCodePresent).toEqual(false);
+		});
+		it('returns false if starter code line is not found (deleted)',
+			function() {
+				var code = ['\tresult = arg.trim()\n',
+				'\treturn result\n'].join();
+				var starterCodePresent =
+					PythonPreRequisiteCheckService.checkStarterCodePresent(
+						starterCode, code);
+				expect(starterCodePresent).toEqual(false);
+			})
 	});
 });
