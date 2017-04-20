@@ -33,7 +33,7 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
-tie.constant('PYTHON_STANDARD_LIBRARIES',['collections', 'document', 'image',
+tie.constant('PYTHON_STANDARD_LIBRARIES', ['collections', 'document', 'image',
   'math', 'operator', 'processing', 'random', 're', 'string',
   'time', 'turtle']);
 
