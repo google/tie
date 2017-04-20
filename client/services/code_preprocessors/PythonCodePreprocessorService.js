@@ -235,7 +235,7 @@ tie.factory('PythonCodePreprocessorService', [
         '    buggy_results = []',
         '    for task_tests in all_tasks_test_inputs:',
         '        task_results = []',
-        '        for test in task_tests:',
+        '        for test_input in task_tests:',
         '            task_results' +
         '.append(' + testOutputCode + ')',
         '        buggy_results.append(task_results)',
