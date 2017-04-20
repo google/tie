@@ -41,7 +41,7 @@ tie.factory('ReinforcementBulletObjectFactory', [
 
     ReinforcementBullet.prototype.getImgName = function() {
       return this._imgName;
-    }
+    };
 
     // Static class methods.
     ReinforcementBullet.createPassedBullet = function(content) {

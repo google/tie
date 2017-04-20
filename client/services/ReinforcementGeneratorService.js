@@ -21,11 +21,7 @@ tie.factory('ReinforcementGeneratorService', [
   function() {
 
     return {
-      getReinforcement: function(questionId, task, codeEvalResult,
-        runtimeFeedback) {
-
-        // Getting the question user is working on
-        var question = globalData.questions[questionId];
+      getReinforcement: function(task, codeEvalResult, runtimeFeedback) {
 
         // Initializing question reinforcement data if not done already
         if (!task.passedList) {
@@ -95,7 +91,6 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
-        console.log(runtimeFeedback);
         return runtimeFeedback;
       }
     };

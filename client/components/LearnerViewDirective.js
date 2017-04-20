@@ -615,7 +615,6 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               SolutionHandlerService.processSolutionAsync(
-                $scope.questionIds[$scope.currentQuestionIndex],
                 tasks[currentTaskIndex], code,
                 question.getAuxiliaryCode(language), language
                 ).then(setFeedback);

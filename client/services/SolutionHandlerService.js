@@ -28,7 +28,7 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-        questionId, task, studentCode, auxiliaryCode, language) {
+        task, studentCode, auxiliaryCode, language) {
         // Do an initial run of the code to check for syntax errors.
         return CodeRunnerDispatcherService.runCodeAsync(
           language, studentCode
@@ -61,7 +61,7 @@ tie.factory('SolutionHandlerService', [
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
             var finalFeedback = ReinforcementGeneratorService.getReinforcement(
-              questionId, task, codeEvalResult, runtimeFeedback);
+              task, codeEvalResult, runtimeFeedback);
             return finalFeedback;
           });
         }).then(function(feedback) {
