@@ -22,10 +22,11 @@ tie.factory('ReinforcementBulletObjectFactory', [
 
     var ReinforcementBullet = function(passed, content) {
       this._passed = passed;
+      this._content = content;
       if (passed) {
-        this._content = "<span style=\"color: green\">☑</span> " + content;
+        this._imgName = "pass.png";
       } else {
-        this._content = "<span style=\"color: red\">☒ </span> " + content;
+        this._imgName = "fail.png";
       }
     };
 
@@ -37,6 +38,10 @@ tie.factory('ReinforcementBulletObjectFactory', [
     ReinforcementBullet.prototype.getContent = function() {
       return this._content;
     };
+
+    ReinforcementBullet.prototype.getImgName = function() {
+      return this._imgName;
+    }
 
     // Static class methods.
     ReinforcementBullet.createPassedBullet = function(content) {

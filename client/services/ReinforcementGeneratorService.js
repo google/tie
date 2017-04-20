@@ -28,9 +28,11 @@ tie.factory('ReinforcementGeneratorService', [
         var question = globalData.questions[questionId];
 
         // Initializing question reinforcement data if not done already
-        question.passedList = [];
-        if (!question.pastFailsList) {
-          question.pastFailsList = {};
+        if (!task.passedList) {
+          task.passedList = {};
+        }
+        if (!task.pastFailsList) {
+          task.pastFailsList = {};
         }
 
         var splitTestsByTag = function(tests) {
@@ -58,30 +60,42 @@ tie.factory('ReinforcementGeneratorService', [
             var test = correctnessTests[testTag][testIdx];
             var observedOutput = observedOutputs[test.index];
             if (test.matchesOutput(observedOutput)) {
-              if (test.getInput() in question.pastFailsList) {
-                question.pastFailsList[test.getInput()] = true;
+              if (test.getInput() in task.pastFailsList) {
+                task.pastFailsList[test.getInput()] = true;
               }
             } else if (!failedCaseSeen) {
-              question.pastFailsList[test.getInput()] = false;
+              task.pastFailsList[test.getInput()] = false;
               failedCaseSeen = true;
             }
           }
-          if (!failedCaseSeen) {
-            question.passedList.push(testTag);
+          if (failedCaseSeen) {
+            if (testTag in task.passedList) {
+              task.passedList[testTag] = false;
+            }
+          } else {
+            task.passedList[testTag] = true;
           }
         }
 
-        runtimeFeedback.passedList = question.passedList.slice();
-        runtimeFeedback.pastFailsList = {};
+        runtimeFeedback.passedList = {};
+        for (var caseList in task.passedList) {
+          if (task.passedList[caseList]) {
+            runtimeFeedback.passedList[caseList] = true;
+          } else {
+            runtimeFeedback.passedList[caseList] = false;
+          }
+        }
 
-        for (var testCase in question.pastFailsList) {
-          if (question.pastFailsList[testCase]) {
+        runtimeFeedback.pastFailsList = {};
+        for (var testCase in task.pastFailsList) {
+          if (task.pastFailsList[testCase]) {
             runtimeFeedback.pastFailsList[testCase] = true;
           } else {
             runtimeFeedback.pastFailsList[testCase] = false;
           }
         }
 
+        console.log(runtimeFeedback);
         return runtimeFeedback;
       }
     };

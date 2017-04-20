@@ -112,7 +112,10 @@ tie.directive('learnerView', [function() {
                   <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
                 </div>
                 <div class="tie-reinforcement">
-                <p ng-repeat="bullet in reinforcementBullets"><span ng-bind="bullet.getContent()"></span></p>
+                  <li ng-repeat="bullet in reinforcementBullets">
+                    <img class="bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                    <span class="bullet-text">{{bullet.getContent()}}</span>
+                  </li>
                 </div>
               </div>
             </div>
@@ -290,8 +293,20 @@ tie.directive('learnerView', [function() {
         .tie-previous-instructions {
           opacity: 0.5;
         }
-        .tie-reinforcement p {
+        .tie-reinforcement li {
+          list-style: none;
           margin: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+        .bullet-img {
+          width: 15px;
+          height: 15px;
+          position: absolute;
+          bottom: 1px;
+        }
+        .bullet-text {
+          padding-left: 19px;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
@@ -491,6 +506,7 @@ tie.directive('learnerView', [function() {
               $scope.nextButtonIsShown = true;
               $scope.questionsCompletionStatus[
                 $scope.currentQuestionIndex] = true;
+              reinforcement.clear();
             } else {
               congratulatoryFeedback.clear();
               congratulatoryFeedback.appendTextParagraph(
@@ -507,15 +523,18 @@ tie.directive('learnerView', [function() {
 
             // Setting reinforcement bullets
             reinforcement.clear();
-            for (var idx = 0; idx < feedback.passedList.length; ++idx) {
-              reinforcement.appendPassedBullet(
-                "Handles " + feedback.passedList[idx]);
+            for (var caseList in feedback.passedList) {
+              if (feedback.passedList[caseList]) {
+                reinforcement.appendPassedBullet("Handles " + caseList);
+              } else {
+                reinforcement.appendFailedBullet("Fails " + caseList);
+              }
             }
             for (var testCase in feedback.pastFailsList) {
               if (feedback.pastFailsList[testCase]) {
-                reinforcement.appendPassedBullet("Handles " + testCase);
+                reinforcement.appendPassedBullet("Handles '" + testCase + "'");
               } else {
-                reinforcement.appendFailedBullet("Fails on " + testCase);
+                reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
               }
             }
             $scope.reinforcementBullets = reinforcement.getBullets();
