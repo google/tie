@@ -90,6 +90,10 @@ tie.factory('TaskSchemaValidationService', [
             outputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
         );
       },
+      verifyAuxiliaryCotainsClassDefinition: function() {
+        return CodeCheckerService.checkIfClassDefinitionExistsInCode(
+          CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode);
+      },
       verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
         if (angular.isArray(prerequisiteSkills)) {
