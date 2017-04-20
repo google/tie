@@ -56,7 +56,7 @@ describe('QuestionDataService', function() {
 
   describe('getQuestion', function() {
     it('should throw an error if the question id does not exist', function() {
-      QuestionDataService.initCurrentQuestionSet('argleblargle');
+      QuestionDataService.initCurrentQuestionSet('all');
       expect(function() {
         QuestionDataService.getQuestion('');
       }).toThrowError(
