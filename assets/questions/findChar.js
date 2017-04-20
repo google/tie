@@ -40,14 +40,23 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
   tasks: [
     {
       instructions: [
-        [
-          'For this question, you will implement a ',
-          'findFirstNonRepeatingCharacter function. ',
-          'This function takes a string as input and returns ',
-          'the first character that isn\'t repeated elsewhere in the string.'
-        ].join(''),
-        'For instance, findFirstNonRepeatingCharacter("mom") would return "o".',
-        'If there is no appropriate character, return None.'
+        {
+          content: [
+            'For this question, you will implement a ',
+            'findFirstNonRepeatingCharacter function. ',
+            'This function takes a string as input and returns ',
+            'the first character that isn\'t repeated elsewhere in the string.'
+          ].join(''),
+          type: 'text'
+        },
+        {
+          content: 'Input: "mom"\nOutput: "o"',
+          type: 'code'
+        },
+        {
+          content: 'If there is no appropriate character, return None.',
+          type: 'text'
+        }
       ],
       prerequisiteSkills: ['Strings'],
       acquiredSkills: ['String Manipulation', 'Hash Maps'],
@@ -86,10 +95,15 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       performanceTests: []
     },
     {
-      instructions: [[
-        'Next, update your code to handle more than just letters.',
-        'more than just letters.'
-      ].join('')],
+      instructions: [
+        {
+          content: [
+            'Next, update your code to handle more than just letters.',
+            'more than just letters.'
+          ].join(''),
+          type: 'text'
+        }
+      ],
       prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
       acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
       inputFunctionName: null,

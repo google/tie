@@ -104,12 +104,18 @@ tie.directive('learnerView', [function() {
                 <h3 class="tie-question-title">{{title}}</h3>
                 <div class="tie-previous-instructions">
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                    <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
+                    <div ng-repeat="instruction in previousInstruction track by $index">
+                      <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    </div>
                     <hr>
                   </div>
                 </div>
                 <div class="tie-instructions">
-                  <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                  <div ng-repeat="instruction in instructions">
+                    <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -286,6 +292,18 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-question-code {
+          background: rgb(242, 242, 242);
+          border: 1px solid #ccc;
+          font-family: monospace;
+          font-size: 13px;
+          padding: 10px;
+          white-space: -moz-pre-wrap;
+          white-space: -o-pre-wrap;
+          white-space: -pre-wrap;
+          white-space: pre-wrap;
+          word-wrap: break-word;  
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
