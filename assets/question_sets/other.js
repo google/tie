@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Data for the "strings" question set.
+ * @fileoverview Data for the set of non-string questions.
  */
 
 globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation

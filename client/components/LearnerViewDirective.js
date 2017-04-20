@@ -80,12 +80,18 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
-                  <select class="tie-theme-select" name="theme-select" 
+                  <select class="tie-question-set-select" name="question-set-select"
+                          ng-change="changeQuestionSet()" ng-model="questionSetId"
+                          ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                    <option style="display: none" value="">Question Set</option>
+                    <option></option>
+                  </select>
+                  <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
                     <option></option>
-                  </select>     
+                  </select>
                   <button class="tie-code-reset" name="code-reset"
                       ng-click="resetCode()">
                     Reset Code
@@ -162,8 +168,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
+          margin-left: 5px;
           margin-top: 10px;
-          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -187,7 +193,8 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-theme-select:focus {
+            .tie-run-button:focus, .tie-question-set-select,
+            .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -323,7 +330,7 @@ tie.directive('learnerView', [function() {
           white-space: -o-pre-wrap;
           white-space: -pre-wrap;
           white-space: pre-wrap;
-          word-wrap: break-word;  
+          word-wrap: break-word;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
@@ -377,6 +384,11 @@ tie.directive('learnerView', [function() {
           background-color: rgb(42, 112, 232);
           border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
+        }
+        .tie-question-set-select {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
         }
         .tie-step-container-inner {
           display: flex;
@@ -447,6 +459,12 @@ tie.directive('learnerView', [function() {
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
+        var questionSetIds = [
+          {questionSetId: 'strings'},
+          {questionSetId: 'all'},
+          {questionSetId: 'other'}
+        ];
+        $scope.questionSetIds = questionSetIds;
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -560,6 +578,22 @@ tie.directive('learnerView', [function() {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+        };
+
+        $scope.changeQuestionSet = function() {
+          debugger;
+          QuestionDataService.initCurrentQuestionSet($scope.questionSetId);
+          var questionSet = QuestionDataService.getCurrentQuestionSet(
+            questionSetId);
+          $scope.currentQuestionIndex = 0;
+          $scope.questionIds = questionSet.getQuestionIds();
+          $scope.questionsCompletionStatus = [];
+          $scope.loadingIndicatorIsShown = false;
+          $scope.isSyntaxErrorShown = false;
+          for (var i = 0; i < $scope.questionIds.length; i++) {
+            $scope.questionsCompletionStatus.push(false);
+          }
+          $scope.autosaveTextIsDisplayed = false;
         };
 
         $scope.codeMirrorOptions = {
