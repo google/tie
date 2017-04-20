@@ -19,6 +19,7 @@
 describe('FeedbackGeneratorService', function() {
   var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
+  var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
   var SnapshotObjectFactory;
@@ -32,11 +33,12 @@ describe('FeedbackGeneratorService', function() {
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
+    CorrectnessTestObjectFactory = $injector.get('CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
-    TracebackCoordinatesObjectFactory = $injector.get(
-      'TracebackCoordinatesObjectFactory');
+    TracebackCoordinatesObjectFactory = $injector
+      .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -83,6 +85,70 @@ describe('FeedbackGeneratorService', function() {
         ).toEqual('{"a": 3, "b": 5, "c": "j"}');
       }
     );
+  });
+
+  describe('_jsToHumanReadableUnknownObject', function() {
+    it('should return [UNKNOWN OBJECT] if provided input cannot be converted',
+      function() {
+        // Define and call blankFunction to pass lint test add 100% coverage
+        var blankFunction = function() {
+          return null;
+        };
+        blankFunction();
+        expect(
+          FeedbackGeneratorService._jsToHumanReadable(blankFunction)
+        ).toEqual('[UNKNOWN OBJECT]');
+      }
+    );
+  });
+
+  describe('_getCorrectnessTestFeedback', function() {
+    it([
+      'should return feedback on a user function that ',
+      'doesn\'t pass all correctness tests'
+    ].join(''), function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a']
+      });
+
+      var paragraphs = FeedbackGeneratorService
+        ._getCorrectnessTestFeedback(correctnessTest, "output").getParagraphs();
+      expect(paragraphs.length).toEqual(5);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        "Your code produced the following result:");
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe(
+        "Input: \"cat\"\nOutput: \"output\"");
+      expect(paragraphs[2].isTextParagraph()).toBe(true);
+      expect(paragraphs[2].getContent()).toBe(
+        "However, the expected output is:");
+      expect(paragraphs[3].isCodeParagraph()).toBe(true);
+      expect(paragraphs[3].getContent()).toBe("\"a\"");
+      expect(paragraphs[4].isTextParagraph()).toBe(true);
+      expect(paragraphs[4].getContent()).toBe(
+        "Could you fix this?");
+    });
+  });
+
+  describe('_getPerformanceTestFeedback', function() {
+    it([
+      'should return feedback if user\'s function is running ',
+      'significantly more slowly than expected'
+    ].join(''), function() {
+      var performanceParagraphs = FeedbackGeneratorService
+        ._getPerformanceTestFeedback("linear").getParagraphs();
+
+      expect(performanceParagraphs.length).toEqual(1);
+      expect(performanceParagraphs[0].isTextParagraph()).toBe(true);
+      expect(performanceParagraphs[0].getContent()).toBe(
+      [
+        'Your code is running more slowly than expected. Can you ',
+        'reconfigure it such that it runs in linear time?'
+      ].join(''));
+
+    });
   });
 
   describe('_getRuntimeErrorFeedback', function() {
@@ -146,6 +212,23 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on a line ' +
         'in the test code');
+    });
+  });
+
+  describe('_getSyntaxErrorFeedback', function() {
+    it([
+      'should return feedback if a syntax / compiler error is ',
+      'found in the user\'s code'
+    ].join(''), function() {
+      var paragraphs = FeedbackGeneratorService
+        .getSyntaxErrorFeedback('some error').getParagraphs();
+
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        "Looks like your code did not compile. Here's the error trace: ");
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe('some error');
     });
   });
 
@@ -348,3 +431,4 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 });
+
