@@ -21,21 +21,21 @@ tie.factory('PythonCodePreprocessorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS',
-  'VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS',
-  'VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
+  'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS,
-      VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS,
-      VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS,
+      VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
+      VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
+      VARNAME_TASK_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
-    var VARNAME_TEST_INPUTS = 'test_inputs';
+    var VARNAME_TEST_INPUTS = 'all_tasks_test_inputs';
     var START_INDENT = '    ';
 
     var SMALL_INPUT_SIZE = 10;
@@ -57,6 +57,8 @@ tie.factory('PythonCodePreprocessorService', [
         return "'" + pythonStringContent + "'";
       } else if (typeof jsonVariable == 'boolean') {
         return jsonVariable ? 'True' : 'False';
+      } else if (typeof jsonVariable === 'number') {
+        return parseFloat(jsonVariable);
       } else if (Array.isArray(jsonVariable)) {
         // We have to recursively convert the array's elements to Python variables.
         var pythonElements = jsonVariable.map(function(arrayElement) {
@@ -181,7 +183,7 @@ tie.factory('PythonCodePreprocessorService', [
         var oneTaskTests = correctnessTests[i];
         testCode += (
             '\n' +
-            VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
+            VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
 
         for (var j = 0; j < oneTaskTests.length; j++) {
           var testInputCode = (
@@ -200,14 +202,14 @@ tie.factory('PythonCodePreprocessorService', [
 
           testCode += (
             '\n' +
-            VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS +
+            VARNAME_TASK_CORRECTNESS_TEST_RESULTS +
             '.append(' + testOutputCode + ')');
         }
 
           testCode += (
             '\n' +
             VARNAME_CORRECTNESS_TEST_RESULTS +
-            '.append(' + VARNAME_ONE_TASK_CORRECTNESS_TEST_RESULTS + ')');
+            '.append(' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ')');
       };
 
       return testCode;
@@ -232,12 +234,12 @@ tie.factory('PythonCodePreprocessorService', [
       var fullTestCode = [
         'def matches_buggy_function(func):',
         '    buggy_results = []',
-        '    for tests in test_inputs:',
-        '        one_task_results = []',
-        '        for test in tests:',
-        '            one_task_results' +
+        '    for task_tests in all_tasks_test_inputs:',
+        '        task_results = []',
+        '        for test in task_tests:',
+        '            task_results' +
         '.append(' + testOutputCode + ')',
-        '        buggy_results.append(one_task_results)',
+        '        buggy_results.append(task_results)',
         '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
         '',
         VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
@@ -246,19 +248,19 @@ tie.factory('PythonCodePreprocessorService', [
 
       buggyOutputTests.forEach(function(oneTaskBuggyOutputTest) {
         fullTestCode += (
-            VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
+            VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
         oneTaskBuggyOutputTest.forEach(function(buggyOutputTest) {
           var qualifiedBuggyFunctionName = (
               buggyOutputTest.getBuggyFunctionName());
           fullTestCode += (
-              VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS +
+              VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +
               '.append(matches_buggy_function(' +
               qualifiedBuggyFunctionName + '))\n');
         });
 
         fullTestCode += (
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
-          '.append('+ VARNAME_ONE_TASK_BUGGY_OUTPUT_TEST_RESULTS +')\n');
+          '.append('+ VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +')\n');
       });
 
       return fullTestCode;
@@ -268,7 +270,7 @@ tie.factory('PythonCodePreprocessorService', [
       var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n')
       var performanceTestFunctionSet = new Set();
       performanceTests.forEach(function(oneTaskPerformanceTests, index) {
-        testCode += (VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
+        testCode += (VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
         oneTaskPerformanceTests.forEach(function(test) {
           var qualifiedEvaluationFunctionName = (
             CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
@@ -308,7 +310,7 @@ tie.factory('PythonCodePreprocessorService', [
             ].join('\n');
           }
           testCode += '\n' + [
-          VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
+          VARNAME_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
             '    run_performance_test_from_' +
             qualifiedTransformationFunctionName.replace('.', '_') + '(' + 
             (_jsonVariableToPython(test.getInputDataAtom()) + '))')
@@ -316,7 +318,7 @@ tie.factory('PythonCodePreprocessorService', [
         });
         testCode += '\n' + [
           (VARNAME_PERFORMANCE_TEST_RESULTS + '.append(' +
-              VARNAME_ONE_TASK_PERFORMANCE_TEST_RESULTS + ')'),
+              VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ')'),
           ''
         ].join('\n');
       });

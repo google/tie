@@ -104,7 +104,8 @@ describe('SolutionHandlerService', function() {
 
   describe('processSolutionAsync', function() {
     describe('correctnessTests', function() {
-      it('should be passed on both task1 and task2', function() {
+      it('should check both task1 and task2 to ' +
+          'verify that the learner has the correct answer', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    if len(input) > 0 and (input[-1] == "0" or input[-1] == "1"):',
@@ -122,7 +123,8 @@ describe('SolutionHandlerService', function() {
         }, 0);
       });
 
-      it('should be passed on task2 and failed on task1', function() {
+      it('should check both task1 and task2 to ' +
+          'verify that the learner fails on task1', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    if len(input) > 0 and input[-1] == "0":',
@@ -142,7 +144,8 @@ describe('SolutionHandlerService', function() {
         }, 0);
       });
 
-      it('should be passed on task1 and failed on task2', function() {
+      it('should check both task1 and task2 to ' +
+          'verify that the learner fails on task2', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    if len(input) > 0 and input[-1] == "3":',
@@ -162,8 +165,9 @@ describe('SolutionHandlerService', function() {
         }, 0);
       });
 
-      it('should be failed on both task1 and task2' +
-          'but task1\'s feedback is shown', function() {
+      it('should check both task1 and task2, ' +
+          'and though learner fails on both tasks, ' +
+          'error message of task1 is displayed', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    if len(input) > 0 and (input[-1] == "0" or input[-1] == "2"):',
@@ -185,7 +189,8 @@ describe('SolutionHandlerService', function() {
     });
 
     describe("buggyOutputTests", function() {
-      it('should be failed on task1', function() {
+      it('should check both task1 and task2 to ' +
+          'verify that the leaner fails on task1', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    return True'
@@ -203,9 +208,9 @@ describe('SolutionHandlerService', function() {
         }, 0);
       });
 
-      it('should be failed on task2,' +
-          'but since correctnessTests is failed on task1,' +
-          'task1\'s report is shown', function() {
+      it('should check both task1 and task2, ' +
+          'though leaner fails on task2 buggy tests, ' +
+          'error message of task1 is displayed', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    return False'

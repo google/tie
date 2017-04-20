@@ -442,13 +442,14 @@ describe('PythonCodePreprocessorService', function() {
           allowedOutputs: ['at', 'bc']
         })]];
         var expectedGeneratedCode = [
-          'test_inputs = [[\'cat\']]',
+          'all_tasks_test_inputs = [[\'cat\']]',
           '',
           'correctness_test_results = []',
-          'one_task_correctness_test_results = []',
-          'one_task_correctness_test_results.append(outputFnName(' +
-            'System.runTest(StudentCode().mainFnName, inputFnName(test_inputs[0][0]))))',
-          'correctness_test_results.append(one_task_correctness_test_results)'
+          'task_correctness_test_results = []',
+          'task_correctness_test_results.append(outputFnName(' +
+            'System.runTest(StudentCode().mainFnName, inputFnName(' +
+                'all_tasks_test_inputs[0][0]))))',
+          'correctness_test_results.append(task_correctness_test_results)'
         ].join('\n');
 
         expect(
@@ -474,18 +475,20 @@ describe('PythonCodePreprocessorService', function() {
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
           '    buggy_results = []',
-          '    for tests in test_inputs:',
-          '        one_task_results = []',
-          '        for test in tests:',
-          '            one_task_results.append(System.runTest(func, test))',
-          '        buggy_results.append(one_task_results)',
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test in task_tests:',
+          '            task_results.append(System.runTest(func, test))',
+          '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'one_task_buggy_output_test_results = []',
-          'one_task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
-          'one_task_buggy_output_test_results.append(matches_buggy_function(buggyFunc2))',
-          'buggy_output_test_results.append(one_task_buggy_output_test_results)',
+          'task_buggy_output_test_results = []',
+          'task_buggy_output_test_results.append(' +
+              'matches_buggy_function(buggyFunc))',
+          'task_buggy_output_test_results.append(' +
+              'matches_buggy_function(buggyFunc2))',
+          'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
@@ -505,18 +508,18 @@ describe('PythonCodePreprocessorService', function() {
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
           '    buggy_results = []',
-          '    for tests in test_inputs:',
-          '        one_task_results = []',
-          '        for test in tests:',
-          '            one_task_results.append(outputFunctionName(' +
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test in task_tests:',
+          '            task_results.append(outputFunctionName(' +
                 'System.runTest(func, test)))',
-          '        buggy_results.append(one_task_results)',
+          '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'one_task_buggy_output_test_results = []',
-          'one_task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
-          'buggy_output_test_results.append(one_task_buggy_output_test_results)',
+          'task_buggy_output_test_results = []',
+          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
@@ -536,18 +539,18 @@ describe('PythonCodePreprocessorService', function() {
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
           '    buggy_results = []',
-          '    for tests in test_inputs:',
-          '        one_task_results = []',
-          '        for test in tests:',
-          '            one_task_results.append(System.runTest(func, ' +
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test in task_tests:',
+          '            task_results.append(System.runTest(func, ' +
                 'inputFunctionName(test)))',
-          '        buggy_results.append(one_task_results)',
+          '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'one_task_buggy_output_test_results = []',
-          'one_task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
-          'buggy_output_test_results.append(one_task_buggy_output_test_results)',
+          'task_buggy_output_test_results = []',
+          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
@@ -567,18 +570,18 @@ describe('PythonCodePreprocessorService', function() {
         var expectedGeneratedCode = [
           'def matches_buggy_function(func):',
           '    buggy_results = []',
-          '    for tests in test_inputs:',
-          '        one_task_results = []',
-          '        for test in tests:',
-          '            one_task_results.append(outputFunctionName(System.runTest(func, ' +
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test in task_tests:',
+          '            task_results.append(outputFunctionName(System.runTest(func, ' +
                 'inputFunctionName(test))))',
-          '        buggy_results.append(one_task_results)',
+          '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
-          'one_task_buggy_output_test_results = []',
-          'one_task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
-          'buggy_output_test_results.append(one_task_buggy_output_test_results)',
+          'task_buggy_output_test_results = []',
+          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
@@ -602,7 +605,7 @@ describe('PythonCodePreprocessorService', function() {
         var performanceTests = [[performanceTest]];
         var expectedGeneratedCode = [
           'performance_test_results = []',
-          'one_task_performance_test_results = []',
+          'task_performance_test_results = []',
           '',
           'def get_test_input_from_System_extendString(atom, input_size):',
           '    return System.extendString(atom, input_size)',
@@ -619,9 +622,9 @@ describe('PythonCodePreprocessorService', function() {
           '        return "not linear"',
           '    return "linear"',
           '',
-          'one_task_performance_test_results.append(',
+          'task_performance_test_results.append(',
           '    run_performance_test_from_System_extendString(\'na \'))',
-          'performance_test_results.append(one_task_performance_test_results)',
+          'performance_test_results.append(task_performance_test_results)',
           ''
         ].join('\n');
 
