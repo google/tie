@@ -38,28 +38,28 @@ describe('CodeEvalResultObjectFactory', function() {
 
   describe('getOutput', function() {
     it('should correctly get output', function() {
-      expect(codeEvalResult.getOutput()).toMatch("output");
+      expect(codeEvalResult.getOutput()).toMatch(OUTPUT);
     });
   });
 
   describe('getCorrectnessTestResults', function() {
     it('should correctly get correctness test results', function() {
       expect(codeEvalResult.getCorrectnessTestResults())
-      .toMatch("correctnessTestResults");
+      .toMatch(CORRECTNESS_TEST_RESULTS);
     });
   });
 
   describe('getBuggyOutputTestResults', function() {
     it('should correctly get buggy output test results', function() {
       expect(codeEvalResult.getBuggyOutputTestResults())
-      .toMatch("buggyOutputTestResults");
+      .toMatch(BUGGY_OUTPUT_TEST_RESULTS);
     });
   });
 
   describe('getPerformanceTestResults', function() {
     it('should correctly get performance test results', function() {
       expect(codeEvalResult.getPerformanceTestResults())
-      .toMatch("performanceTestResults");
+      .toMatch(PERFORMANCE_TEST_RESULTS);
     });
   });
 
