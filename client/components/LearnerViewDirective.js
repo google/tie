@@ -117,7 +117,7 @@ tie.directive('learnerView', [function() {
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
                     <div ng-repeat="instruction in previousInstruction track by $index">
                       <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                     <hr>
                   </div>
@@ -125,7 +125,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-instructions">
                   <div ng-repeat="instruction in instructions">
                     <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
               </div>
@@ -136,6 +136,7 @@ tie.directive('learnerView', [function() {
       <style>
         html {
           height: 100%;
+          min-height: 622px;
         }
         body {
           background-color: rgb(242, 242, 242);
@@ -327,6 +328,9 @@ tie.directive('learnerView', [function() {
           white-space: -pre-wrap;
           white-space: pre-wrap;
           word-wrap: break-word;  
+        }
+        .tie-question-code.night-mode {
+          background-color: #333;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
