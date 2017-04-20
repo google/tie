@@ -19,12 +19,25 @@
 globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
   introductionParagraphs: [
     'Greetings!',
-    'This is all the questions we currently have, just for testing purposes.',
+    'This is a set of all current questions, just for testing purposes.',
     [
       "Let's get started! You'll see the first question to your right. ",
       "Code a solution in the coding window below and hit \"Run\", and ",
       "I will provide you with feedback."
     ].join('')
   ],
-  questionIds: ['mostCommonCharacter', 'reverseWords', 'parens', 'i18n', 'rle']
+  questionIds: [
+    'bestMeetupLocation',
+    'bomberman',
+    'findFirstNonRepeatingCharacter',
+    'i18n',
+    'incrementDecCodedNumber',
+    'mostCommonChar',
+    'palindrome',
+    'reverseWords',
+    'rle',
+    'stringToWords',
+    'strobogrammatic',
+    'unknownAlphabet'
+  ]
 };

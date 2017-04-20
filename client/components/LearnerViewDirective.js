@@ -81,7 +81,7 @@ tie.directive('learnerView', [function() {
                     <option value="Python" selected>Python</option>
                   </select>
                   <select class="tie-question-set-select" name="question-set-select"
-                          ng-change="changeQuestionSet()" ng-model="questionSetId"
+                          ng-change="changeQuestionSet()" ng-model="currentQuestionSetId"
                           ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                     <option style="display: none" value="">Question Set</option>
                     <option></option>
@@ -581,19 +581,30 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.changeQuestionSet = function() {
-          debugger;
-          QuestionDataService.initCurrentQuestionSet($scope.questionSetId);
-          var questionSet = QuestionDataService.getCurrentQuestionSet(
+          questionSetId = '';
+          switch ($scope.currentQuestionSetId) {
+          case 'strings':
+          case 'other':
+          case 'all':
+            questionSetId = $scope.currentQuestionSetId;
+            break;
+          default:
+            return;
+          }
+          QuestionDataService.initCurrentQuestionSet(questionSetId);
+          questionSet = QuestionDataService.getCurrentQuestionSet(
             questionSetId);
           $scope.currentQuestionIndex = 0;
           $scope.questionIds = questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
-          for (var i = 0; i < $scope.questionIds.length; i++) {
+          for (i = 0; i < $scope.questionIds.length; i++) {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
+          loadQuestion($scope.questionIds[$scope.currentQuestionIndex],
+            questionSet.getIntroductionParagraphs());
         };
 
         $scope.codeMirrorOptions = {
