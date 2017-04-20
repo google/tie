@@ -33,7 +33,7 @@ tie.factory('ReinforcementGeneratorService', [
           question.pastFailsList = {};
         }
 
-        splitTestsByTag = function(tests) {
+        var splitTestsByTag = function(tests) {
           var splitTests = {};
           for (var i = 0; i < tests.length; ++i) {
             var test = tests[i];
@@ -46,7 +46,7 @@ tie.factory('ReinforcementGeneratorService', [
             }
           }
           return splitTests;
-        }
+        };
 
         // Go through correctness tests to update reinforcement data
         var correctnessTests = splitTestsByTag(task.getCorrectnessTests());
