@@ -462,24 +462,25 @@ tie.directive('learnerView', [function() {
               $scope.showNextTask();
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
+            reinforcement.clear();
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
-          }
 
-          // Setting reinforcement bullets
-          reinforcement.clear();
-          for (var idx = 0; idx < feedback.passedList.length; ++idx) {
-            reinforcement.appendPassedBullet(
-              "Handled " + feedback.passedList[idx]);
-          }
-          for (var testCase in feedback.pastFailsList) {
-            if (feedback.pastFailsList[testCase]) {
-              reinforcement.appendPassedBullet("Handles " + testCase);
-            } else {
-              reinforcement.appendFailedBullet("Failed on " + testCase);
+            // Setting reinforcement bullets
+            reinforcement.clear();
+            for (var idx = 0; idx < feedback.passedList.length; ++idx) {
+              reinforcement.appendPassedBullet(
+                "Handled " + feedback.passedList[idx]);
             }
+            for (var testCase in feedback.pastFailsList) {
+              if (feedback.pastFailsList[testCase]) {
+                reinforcement.appendPassedBullet("Handles " + testCase);
+              } else {
+                reinforcement.appendFailedBullet("Failed on " + testCase);
+              }
+            }
+            $scope.reinforcementBullets = reinforcement.getBullets();
           }
-          $scope.reinforcementBullets = reinforcement.getBullets();
 
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
