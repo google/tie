@@ -484,6 +484,7 @@ tie.directive('learnerView', [function() {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.feedbackParagraphs = feedback.getParagraphs();
+          $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         var clearFeedback = function() {

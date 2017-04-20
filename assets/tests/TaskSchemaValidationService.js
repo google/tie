@@ -149,6 +149,12 @@ tie.factory('TaskSchemaValidationService', [
           });
         });
       },
+      verifyCorrectnessTestsHaveTags: function(task) {
+        var correctnessTests = task.getCorrectnessTests();
+        return correctnessTests.every(function(test) {
+          return test.getTag() !== undefined && test.getTag().length > 0;
+        });
+      },
       verifyBuggyOutputTestsAreArray: function(task) {
         var buggyOutputTests = task.getBuggyOutputTests();
         return angular.isArray(buggyOutputTests);
