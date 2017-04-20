@@ -61,18 +61,18 @@ tie.factory('PythonPreRequisiteCheckService', [
       return true;
     };
 
-	var getCodeLibs = function(code){
-		var codeLines = code.split('\n');
-		var coddLibs = [];
-		var pattern = new RegExp('^import\\ \\w+$');
-		for(var i=0; i<codeLines.length; i++) {
-			if(pattern.test(codeLines[i])) {
-				var words = codeLines[i].split(' ');
-				coddLibs.push(words[1]);
-			}
-		}
-		return coddLibs;
-	};
+    var getCodeLibs = function(code) {
+      var codeLines = code.split('\n');
+      var coddLibs = [];
+      var pattern = new RegExp('^import\\ \\w+$');
+      for(var i=0; i<codeLines.length; i++) {
+        if(pattern.test(codeLines[i])) {
+          var words = codeLines[i].split(' ');
+          coddLibs.push(words[1]);
+        }
+      }
+      return coddLibs;
+    };
 
     return {
       // Returns a promise.

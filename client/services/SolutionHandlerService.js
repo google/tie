@@ -62,7 +62,8 @@ tie.factory('SolutionHandlerService', [
 
             // Otherwise, the code doesn't have any obvious syntax errors.
             // Generate a CodeSubmission object that wraps the student's code
-            // into a class and appends some test code, then run the whole thing.
+            // into a class and appends some test code, then run the whole
+            // thing.
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
             CodePreprocessorDispatcherService.preprocess(
