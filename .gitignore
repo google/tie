@@ -3,3 +3,5 @@ tools/*
 .DS_Store
 assets/.DS_Store
 karma_coverage_reports/*
+*~
+

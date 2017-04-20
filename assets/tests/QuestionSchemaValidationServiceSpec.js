@@ -36,8 +36,8 @@ describe('QuestionSchemaValidationService', function() {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
-    QuestionSchemaValidationService = $injector.get(
-      'QuestionSchemaValidationService');
+    QuestionSchemaValidationService =
+        $injector.get('QuestionSchemaValidationService');
 
     QuestionDataService.initCurrentQuestionSet('all');
     questions = QUESTION_IDS.map(function(questionId) {
@@ -64,11 +64,10 @@ describe('QuestionSchemaValidationService', function() {
 
         functions.forEach(function(verifierFunctionName) {
           functionCount++;
-          var verifierFunction = QuestionSchemaValidationService[
-            verifierFunctionName];
+          var verifierFunction =
+              QuestionSchemaValidationService[verifierFunctionName];
           expect(verifierFunction(question)).toBe(true, [
-            verifierFunctionName,
-            ' failed for the question: "' + title + '"'
+            verifierFunctionName, ' failed for the question: "' + title + '"'
           ].join(''));
         });
 
@@ -77,5 +76,12 @@ describe('QuestionSchemaValidationService', function() {
         ].join(''));
       });
     });
+
+    it('should check if a question id contains only chars and digits', function() {
+      QUESTION_IDS.forEach(function(questionId, index) {
+        expect(/^\w+$/.test(QUESTION_IDS[index])).toBe(true);
+      });
+    });
   });
 });
+

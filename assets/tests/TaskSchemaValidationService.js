@@ -38,12 +38,20 @@ tie.factory('TaskSchemaValidationService', [
         var instructions = task.getInstructions();
         return instructions.length > 0;
       },
-      verifyInstructionsIsArrayOfStrings: function(task) {
+      verifyInstructionsIsAssociativeArray: function(task) {
         var instructions = task.getInstructions();
         return (angular.isArray(instructions) &&
           instructions.every(function(instruction) {
-            return angular.isString(instruction);
+            return (angular.isObject(instruction) &&
+                    angular.isString(instruction.content) &&
+                    angular.isString(instruction.type));
           }));
+      },
+      verifyInstructionTypeIsCorrect: function(task) {
+        var instructions = task.getInstructions();
+        return (instructions.every(function(instruction) {
+          return (instruction.type === 'text' || instruction.type === 'code');
+        }));
       },
       verifyMainFunctionNameIsString: function(task) {
         var mainFunctionName = task.getMainFunctionName();
@@ -88,6 +96,10 @@ tie.factory('TaskSchemaValidationService', [
           CodeCheckerService.checkIfFunctionExistsInClass(
             outputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
         );
+      },
+      verifyAuxiliaryCotainsClassDefinition: function() {
+        return CodeCheckerService.checkIfClassDefinitionExistsInCode(
+          CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode);
       },
       verifyPrerequisiteSkillsAreArrayOfStrings: function(task) {
         var prerequisiteSkills = task.getPrerequisiteSkills();
@@ -201,7 +213,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyPerformanceTestsHaveLinearExpectedPerformance: function(task) {
         var performanceTests = task.getPerformanceTests();
         return performanceTests.every(function(test) {
-          return ALLOWED_RUNTIMES.includes(test.getExpectedPerformance());
+          return ALLOWED_RUNTIMES.indexOf(test.getExpectedPerformance()) !== -1;
         });
       },
       verifyPerformanceTestsHaveEvaluationFunctionName: function(task) {

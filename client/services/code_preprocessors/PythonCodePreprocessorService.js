@@ -49,6 +49,8 @@ tie.factory('PythonCodePreprocessorService', [
         return "'" + pythonStringContent + "'";
       } else if (typeof jsonVariable == 'boolean') {
         return jsonVariable ? 'True' : 'False';
+      } else if (typeof jsonVariable === 'number') {
+        return parseFloat(jsonVariable);
       } else if (Array.isArray(jsonVariable)) {
         // We have to recursively convert the array's elements to Python variables.
         var pythonElements = jsonVariable.map(function(arrayElement) {
@@ -147,7 +149,6 @@ tie.factory('PythonCodePreprocessorService', [
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
       }
-      return code;
     };
 
     var _generateCorrectnessTestCode = function(
@@ -193,7 +194,7 @@ tie.factory('PythonCodePreprocessorService', [
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
       var testInputCode = (
-        inputFunctionName ? 
+        inputFunctionName ?
         inputFunctionName + '(test_input)' :
         'test_input'
       );
@@ -284,6 +285,7 @@ tie.factory('PythonCodePreprocessorService', [
           'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
         codeSubmission.prepend(studentCodeFirstLine);
         codeSubmission.prepend(SYSTEM_CODE['python']);
+        codeSubmission.removeImportsFromStudentCode();
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');
 
