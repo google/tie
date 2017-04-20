@@ -116,7 +116,8 @@ tie.factory('PythonPreRequisiteCheckService', [
           PreRequisiteEvalResultObjectFactory.create(
           code, null, null));
       },
-      checkStarterCodePresent: checkStarterCodePresent
+      checkStarterCodePresent: checkStarterCodePresent,
+      getCodeLibs: getCodeLibs
     };
   }
 ]);
