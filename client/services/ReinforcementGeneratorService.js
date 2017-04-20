@@ -28,30 +28,51 @@ tie.factory('ReinforcementGeneratorService', [
         var question = globalData.questions[questionId];
 
         // Initializing question reinforcement data if not done already
-        if (!question.passedList) {
-          question.passedList = ['test'];
-        }
+        question.passedList = [];
         if (!question.pastFailsList) {
           question.pastFailsList = {};
         }
 
-        // Go through correctness tests to update reinforcement data
-        var correctnessTests = task.getCorrectnessTests();
-        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-        var failedCaseSeen = false;
-        for (var i = 0; i < correctnessTests.length; i++) {
-          var observedOutput = observedOutputs[i];
-          if (correctnessTests[i].matchesOutput(observedOutput)) {
-            if (correctnessTests[i].getInput() in question.pastFailsList) {
-              question.pastFailsList[correctnessTests[i].getInput()] = true;
+        function splitTestsByTag(tests) {
+          splitTests = {};
+          for (var i = 0; i < tests.length; ++i) {
+            var test = tests[i];
+            test.index = i;
+            var testTag = test.getTag();
+            if (testTag in splitTests) {
+              splitTests[testTag].push(test);
+            } else {
+              splitTests[testTag] = [test];
             }
-          } else if (!failedCaseSeen) {
-            question.pastFailsList[correctnessTests[i].getInput()] = false;
-            failedCaseSeen = true;
+          }
+          return splitTests;
+        }
+
+        // Go through correctness tests to update reinforcement data
+        var correctnessTests = splitTestsByTag(task.getCorrectnessTests());
+        console.log(correctnessTests);
+        console.log(task.getCorrectnessTests());
+        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+        for (var testTag in correctnessTests) {
+          var failedCaseSeen = false;
+          for (var testIdx = 0; testIdx < correctnessTests[testTag].length;
+           ++testIdx) {
+            var test = correctnessTests[testTag][testIdx];
+            var observedOutput = observedOutputs[test.index];
+            if (test.matchesOutput(observedOutput)) {
+              if (test.getInput() in question.pastFailsList) {
+                question.pastFailsList[test.getInput()] = true;
+              }
+            } else if (!failedCaseSeen) {
+              question.pastFailsList[test.getInput()] = false;
+              failedCaseSeen = true;
+            }
+          }
+          if (!failedCaseSeen) {
+            question.passedList.push(testTag);
           }
         }
 
-        // TODO(shaman-rajan) Generate text to return from reinforcement data
         runtimeFeedback.passedList = question.passedList.slice();
         runtimeFeedback.pastFailsList = {};
 

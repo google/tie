@@ -23,9 +23,9 @@ tie.factory('ReinforcementBulletObjectFactory', [
     var ReinforcementBullet = function(passed, content) {
       this._passed = passed;
       if (passed) {
-        this._content = "<span style=\"color: green\">☑ </span>" + content;
+        this._content = "<span style=\"color: green\">☑</span> " + content;
       } else {
-        this._content = "<span style=\"color: red\">☒  </span>" + content;
+        this._content = "<span style=\"color: red\">☒ </span> " + content;
       }
     };
 

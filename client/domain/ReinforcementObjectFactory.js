@@ -39,7 +39,7 @@ tie.factory('ReinforcementObjectFactory', [
     };
 
     Reinforcement.prototype.clear = function() {
-      this._bullets.length = 0;
+      this._bullets = [];
     };
 
     // Static class methods.

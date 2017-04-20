@@ -501,20 +501,22 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
             reinforcement.clear();
+            $scope.reinforcementBullets = reinforcement.getBullets();
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
 
             // Setting reinforcement bullets
             reinforcement.clear();
+            console.log(feedback.passedList);
             for (var idx = 0; idx < feedback.passedList.length; ++idx) {
               reinforcement.appendPassedBullet(
-                "Handled " + feedback.passedList[idx]);
+                "Handles " + feedback.passedList[idx]);
             }
             for (var testCase in feedback.pastFailsList) {
               if (feedback.pastFailsList[testCase]) {
                 reinforcement.appendPassedBullet("Handles " + testCase);
               } else {
-                reinforcement.appendFailedBullet("Failed on " + testCase);
+                reinforcement.appendFailedBullet("Fails on " + testCase);
               }
             }
             $scope.reinforcementBullets = reinforcement.getBullets();

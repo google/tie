@@ -24,6 +24,7 @@ tie.factory('CorrectnessTestObjectFactory', [
       this._input = correctnessTestDict.input;
       this._allowedOutputs = correctnessTestDict.allowedOutputs;
       this._message = correctnessTestDict.message;
+      this._tag = correctnessTestDict.tag;
     };
 
     // Instance methods.
@@ -53,6 +54,10 @@ tie.factory('CorrectnessTestObjectFactory', [
 
     CorrectnessTest.prototype.getMessage = function() {
       return this._message;
+    };
+
+    CorrectnessTest.prototype.getTag = function() {
+      return this._tag;
     };
 
     // Static class methods.
