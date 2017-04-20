@@ -60,15 +60,23 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [
-      [
-        'Implement a function for increment a decimal-coded number. A ',
-        'Decimal-Coded number is a list of digits (0 - 9) which can ',
-        'represent a decimal number, such as [1,2] for 12, [3,2,4] for 324. ',
-        'Your task is to increment a given decimal-coded number and return ',
-        'the result (a list of digits). ',
-        'For example, [1,2,3,4] should become to [1,2,3,5], [2,0,9] should ',
-        'become to [2,1,0]. '
-      ].join('')
+      {
+        content: [
+          'Implement a function for increment a decimal-coded number. A ',
+          'Decimal-Coded number is a list of digits (0 - 9) which can ',
+          'represent a decimal number, such as [1,2] for 12, [3,2,4] for 324. ',
+          'Your task is to increment a given decimal-coded number and return ',
+          'the result (a list of digits).'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'Input: [1,2,3,4]\nOutput: [1,2,3,5]\n',
+          'Input: [2,0,9]\nOutput: [2,1,0]'
+        ].join(''),
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Array Manipulation'],
@@ -107,11 +115,15 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Great! Now your code can handle the case that incrementing will ',
-        'cause mathematical carry. Next, check and modify your code to handle ',
-        'the input which may change the number of digits when incrementing.'
-      ].join('')
+      {
+        content: [
+          'Great! Now your code can handle the case that incrementing will ',
+          'cause mathematical carry. Next, check and modify your code to ',
+          'handle the input which may change the number of digits when ',
+          'incrementing.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Math', 'Array Manipulation'],
     acquiredSkills: ['Array Manipulation'],

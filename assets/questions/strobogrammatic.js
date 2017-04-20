@@ -42,12 +42,16 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions: [[
-      'Implement a function strobogrammatic which takes a number n as input ',
-      'and generates a list of n-digit numbers which look the same',
-      'if you rotate them 180 degrees.',
-      'There are only four 2-digit strobogrammatic numbers: [11, 69, 88, 96].'
-    ].join('')
+    instructions: [
+      {
+        content: [
+          'Implement a function strobogrammatic which takes a number n as ',
+          'input and generates a list of n-digit numbers which look the same ',
+          'if you rotate them 180 degrees. There are only four 2-digit ',
+          'strobogrammatic numbers: [11, 69, 88, 96].'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Arrays'],

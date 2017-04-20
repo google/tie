@@ -23,9 +23,6 @@ tie.factory('FeedbackParagraphObjectFactory', [
     var PARAGRAPH_TYPE_CODE = 'code';
 
     var FeedbackParagraph = function(type, content) {
-      if ([PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_TEXT].indexOf(type) === -1) {
-        throw Error('Could not construct feedback paragraph of type: ' + type);
-      }
       this._type = type;
       this._content = content;
     };
