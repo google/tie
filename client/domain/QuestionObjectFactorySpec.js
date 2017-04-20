@@ -32,7 +32,16 @@ describe('QuestionObjectFactory', function() {
       title: TITLE,
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
-      tasks: [],
+      tasks: [{
+        correctnessTests: [],
+        buggyOutputTests: [],
+        performanceTests: []
+      },
+      {
+        correctnessTests: [],
+        buggyOutputTests: [],
+        performanceTests: []
+      }],
       styleTests: []
     });
   }));
@@ -68,7 +77,8 @@ describe('QuestionObjectFactory', function() {
       'the index of the last task'
     ].join(''), function() {
       expect(question.isLastTask(2)).toBe(false);
-      expect(question.isLastTask(-1)).toBe(true);
+      expect(question.isLastTask(-1)).toBe(false);
+      expect(question.isLastTask(1)).toBe(true);
     });
   });
 });

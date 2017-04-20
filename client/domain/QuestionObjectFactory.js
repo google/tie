@@ -52,6 +52,9 @@ tie.factory('QuestionObjectFactory', [
     };
 
     Question.prototype.isLastTask = function(taskIndex) {
+      if (!this._tasks.length) {
+        return false;
+      }
       return taskIndex === this._tasks.length - 1;
     };
 
