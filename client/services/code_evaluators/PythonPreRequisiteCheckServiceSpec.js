@@ -30,6 +30,8 @@ describe('PythonPreRequisiteCheckService', function() {
 			'\treturn result\n'].join('');
 
 		it('returns true if starter code lines are found in code', function() {
+			var starterCode = ['def myFunction(arg):\n',
+			'\treturn result\n'].join();
 			var code = ['def myFunction(arg):\n',
 			'\tresult = arg.rstrip()\n',
 			'\treturn result\n'].join('');
