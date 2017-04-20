@@ -41,8 +41,8 @@ tie.directive('learnerView', [function() {
               <div class="tie-feedback-window" ng-class="{'night-mode': isInDarkMode}">
                 <div class="tie-feedback">
                   <p ng-repeat="paragraph in feedbackParagraphs track by $index"
-                     class="tie-feedback-paragraph"
-                     ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                      class="tie-feedback-paragraph"
+                      ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                     <span ng-if="$first">{{feedbackTimestamp}}</span>
                     <span ng-if="paragraph.isTextParagraph()">
                       {{paragraph.getContent()}}
@@ -52,6 +52,17 @@ tie.directive('learnerView', [function() {
                     </span>
                   </p>
                 </div>
+                <div class="tie-feedback-syntax-error">
+                  <a href class="tie-feedback-syntax-error-link",
+                      ng-click="toggleSyntaxErrorHint()",
+                      ng-show="syntaxErrorFound">
+                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                  </a>
+                </div>
+                <br>
+                <span class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                  {{syntaxErrorString}}
+                </span>
                 <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                   <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
                   <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
@@ -212,6 +223,9 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
+        .tie-feedback-error-string {
+          color: #FF0000;
+        }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
           font-size: 14px;
@@ -242,6 +256,12 @@ tie.directive('learnerView', [function() {
           font-family: monospace;
           padding: 10px;
           width: 95%;
+        }
+        .tie-feedback, .tie-feedback-syntax-error {
+          display: inline-block;
+        }
+        .tie-feedback-syntax-error-link {
+          font-size: 12px;
         }
         .tie-lang-select-menu {
           float: left;
@@ -449,6 +469,7 @@ tie.directive('learnerView', [function() {
         $scope.questionIds = questionSet.getQuestionIds();
         $scope.questionsCompletionStatus = [];
         $scope.loadingIndicatorIsShown = false;
+        $scope.isSyntaxErrorShown = false;
         for (var i = 0; i < $scope.questionIds.length; i++) {
           $scope.questionsCompletionStatus.push(false);
         }
@@ -483,6 +504,10 @@ tie.directive('learnerView', [function() {
           $scope.feedbackParagraphs = [];
         };
 
+        var hideSyntaxErrorLink = function() {
+          $scope.syntaxErrorFound = false;
+        };
+
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
@@ -508,7 +533,18 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
-            $scope.feedbackParagraphs = feedback.getParagraphs();
+            var feedbackParagraphs = feedback.getParagraphs();
+            // Get the index of syntax error in feedback.
+            var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            // The index must be either null (indicating no syntax error)
+            // or a positive integer.
+            if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
+              var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
+              feedbackParagraphs.splice(syntaxErrorIndex, 1);
+              $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+              $scope.syntaxErrorFound = true;
+            }
+            $scope.feedbackParagraphs = feedbackParagraphs;
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
@@ -545,6 +581,10 @@ tie.directive('learnerView', [function() {
           theme: 'default'
         };
 
+        $scope.toggleSyntaxErrorHint = function() {
+          $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
+        };
+
         $scope.showNextTask = function() {
           if (question.isLastTask(currentTaskIndex)) {
             $scope.currentQuestionIndex++;
@@ -565,6 +605,10 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before navigating to new question,
+          // disable the syntax error link and content.
+          hideSyntaxErrorLink();
+          $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
@@ -578,6 +622,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
+          hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
