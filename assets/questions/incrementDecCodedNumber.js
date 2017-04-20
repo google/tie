@@ -20,7 +20,7 @@
 /* eslint no-magic-numbers: ["error",
                             { "ignore": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }] */
 
-globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
+globalData.questions['incrementDecCodedNumber'] = {  // eslint-disable-line dot-notation
   title: 'Increment a Decimal-Coded Number',
   starterCode: {
     python:
