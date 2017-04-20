@@ -105,16 +105,26 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [
-      [
-        'Given a dictionary (a list of words in lexicographic order) of all',
-        'words in an unknown or invented language, write a function findAlphabet ',
-        'that returns the alphabet (an ordered list of characters sorted by ',
-        'lexicographic) of that language.'
-      ].join(''),
-      'You may suppose there\'s one and only one solution to this problem.',
-      'Example dictionary:',
-      '[art, rat, cat, car]',
-      'Alphabet is: "atrc"'
+      {
+        content: [
+          'Given a dictionary (a list of words in lexicographic order) of all',
+          'words in an unknown or invented language, write a function ',
+          'findAlphabet that returns the alphabet (an ordered list of ',
+          'characters sorted lexicographically) of that language.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'You may suppose there\'s one and only one solution to this ',
+          'problem.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: ["art", "rat", "cat", "car"]\nOutput: "atrc"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -215,20 +225,25 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Next, double-check your code to make sure it handles unexpected cases',
-        ', such as a test case with no solution or a test case with more than ',
-        'one correct answer.'
-      ].join(''),
-      [
-        'For the test case that has no solution, just return "". If multiple ',
-        'letters have the same frequency, return them in alphabetical order.'
-      ].join(''),
-      'Example dictionary:',
-      '[a, b, a]',
-      'Alphabet is: ""',
-      '[cba]',
-      'Alphabet is: "abc"'
+      {
+        content: [
+          'Next, double-check your code to make sure it handles unexpected cases',
+          ', such as a test case with no solution or a test case with more than ',
+          'one correct answer.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'For the test case that has no solution, just return "". If multiple ',
+          'letters have the same frequency, return them in alphabetical order.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: [a, b, a]\nOutput: ""\nInput: [cba]\nOutput: "abc"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -273,15 +288,19 @@ globalData.questions['unknownAlphabet'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Finally, modify your code to handle strings with a mix of lowercase ',
-        'and uppercase letters. Assume that a lowercase and uppercase version ',
-        'of a letter is the same with regards to lexicographic ordering. Your ',
-        'answer, though, should be lowercase.'
-      ].join(''),
-      'Example dictionary:',
-      '[b, Ba]',
-      'Alphabet is: "ab"'
+      {
+        content: [
+          'Finally, modify your code to handle strings with a mix of lowercase ',
+          'and uppercase letters. Assume that a lowercase and uppercase version ',
+          'of a letter is the same with regards to lexicographic ordering. Your ',
+          'answer, though, should be lowercase.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: ["b", "Ba"]\nOutput: "ab"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],

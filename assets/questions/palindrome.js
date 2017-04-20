@@ -75,19 +75,28 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [
-      [
-        'For this question, you will implement the isPalindrome function. ',
-        'It takes a sentence as input and returns True if the input is a ',
-        'palindrome and False if it is not.'
-      ].join(''),
-      [
-        'A palindrome is a word, phrase, or sequence that reads the same ',
-        'backward as forward, e.g., \'madam\' or \'nurses run\'.'
-      ].join(''),
-      [
-        'Note that the input string will consist of lowercase letters (a-z) ',
-        'and spaces.'
-      ].join('')
+      {
+        content: [
+          'For this question, you will implement the isPalindrome function. ',
+          'It takes a sentence as input and returns True if the input is a ',
+          'palindrome and False if it is not.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'A palindrome is a word, phrase, or sequence that reads the same ',
+          'backward as forward, e.g., "madam" or "nurses run".'
+        ].join(''),
+        type: 'code'
+      },
+      {
+        content: [
+          'Note that the input string will consist of lowercase letters (a-z) ',
+          'and spaces.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['String Manipulation'],
     acquiredSkills: ['String Manipulation'],
