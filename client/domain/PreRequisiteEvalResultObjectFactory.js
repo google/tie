@@ -17,36 +17,36 @@
  * PreRequisiteCheckResult domain objects.
  */
 
-tie.factory('PreRequisiteCheckResultObjectFactory', [
+tie.factory('PreRequisiteEvalResultObjectFactory', [
   function() {
-    var PreRequisiteCheckResult = function(
-      code, preRequisiteFailureString, starterCode) {
+    var PreRequisiteEvalResult = function(
+      code, preReqErrorMessage, starterCode) {
       this._code = code;
-      this._preRequisiteFailureString = preRequisiteFailureString;
+      this._preReqErrorMessage = preReqErrorMessage;
       this._starterCode = starterCode;
     };
 
     // Instance methods
-    PreRequisiteCheckResult.prototype.getCode = function() {
+    PreRequisiteEvalResult.prototype.getCode = function() {
       return this._code;
     };
 
-    PreRequisiteCheckResult.prototype.getPreRequisiteFailureString =
+    PreRequisiteEvalResult.prototype.getPreReqErrorMessage =
     function() {
-      return this._preRequisiteFailureString;
+      return this._preReqErrorMessage;
     };
 
-    PreRequisiteCheckResult.prototype.getStarterCode = function() {
+    PreRequisiteEvalResult.prototype.getStarterCode = function() {
       return this._starterCode;
     };
 
     // Static class methods.
-    PreRequisiteCheckResult.create = function(
-      code, preRequisiteFailureString, starterCode) {
-      return new PreRequisiteCheckResult(
-        code, preRequisiteFailureString, starterCode);
+    PreRequisiteEvalResult.create = function(
+      code, preReqErrorMessage, starterCode) {
+      return new PreRequisiteEvalResult(
+        code, preReqErrorMessage, starterCode);
     };
 
-    return PreRequisiteCheckResult;
+    return PreRequisiteEvalResult;
   }
 ]);

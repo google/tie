@@ -33,15 +33,15 @@ tie.factory('SolutionHandlerService', [
         // First, check pre-requisites for the submitted code
         return PreRequisiteCheckDispatcherService.checkCode(
           language, starterCode, studentCode
-        ).then(function(preRequisiteCheckResult) {
-          var preRequisiteFailureString =
-            preRequisiteCheckResult.getPreRequisiteFailureString();
-          if (preRequisiteFailureString) {
+        ).then(function(preReqEvalResult) {
+          var preReqErrorMessage =
+            preReqEvalResult.getPreReqErrorMessage();
+          if (preReqErrorMessage) {
             var preReqFeedback =
               FeedbackGeneratorService.getPreRequisiteFailureFeedback(
-              preRequisiteCheckResult);
+              preReqEvalResult);
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(preRequisiteCheckResult,
+              SnapshotObjectFactory.create(null, preReqEvalResult,
                 preReqFeedback));
             return $q.resolve(preReqFeedback);
           }
@@ -55,7 +55,8 @@ tie.factory('SolutionHandlerService', [
               var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
+                SnapshotObjectFactory.create(rawCodeEvalResult, null,
+                  feedback));
               return $q.resolve(feedback);
             }
 
@@ -76,7 +77,8 @@ tie.factory('SolutionHandlerService', [
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
                 task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
+                SnapshotObjectFactory.create(codeEvalResult, null,
+                  runtimeFeedback));
               return runtimeFeedback;
             });
           }).then(function(feedback) {

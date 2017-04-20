@@ -25,14 +25,16 @@ describe('PythonPreRequisiteCheckService', function() {
 			'PythonPreRequisiteCheckService');
 	}));
 
-	var starterCode = ['def myFunction(arg):\n',
-		'\treturn result\n'].join();
-
 	describe('checkStarterCodePresent', function() {
+		var starterCode = ['def myFunction(arg):\n',
+			'\treturn result\n'].join('');
+
 		it('returns true if starter code lines are found in code', function() {
+			var starterCode = ['def myFunction(arg):\n',
+			'\treturn result\n'].join('');
 			var code = ['def myFunction(arg):\n',
-			'\tresult = arg.trim()\n',
-			'\treturn result\n'].join();
+			'\tresult = arg.rstrip()\n',
+			'\treturn result\n'].join('');
 			var starterCodePresent =
 				PythonPreRequisiteCheckService.checkStarterCodePresent(
 					starterCode, code);
@@ -41,8 +43,8 @@ describe('PythonPreRequisiteCheckService', function() {
 		it('returns false if starter code line is not found (modified)',
 			function() {
 				var code = ['def yourFunction(arg):\n',
-				'\tresult = arg.trim()\n',
-				'\treturn result\n'].join();
+				'\tresult = arg.rstrip()\n',
+				'\treturn result\n'].join('');
 				var starterCodePresent =
 					PythonPreRequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
@@ -50,12 +52,51 @@ describe('PythonPreRequisiteCheckService', function() {
 		});
 		it('returns false if starter code line is not found (deleted)',
 			function() {
-				var code = ['\tresult = arg.trim()\n',
-				'\treturn result\n'].join();
+				var code = ['\tresult = arg.rstrip()\n',
+				'\treturn result\n'].join('');
 				var starterCodePresent =
 					PythonPreRequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
 				expect(starterCodePresent).toEqual(false);
-			})
+		});
+		it('returns true when only argument to \'return\' is modified)',
+			function() {
+				var code = ['def myFunction(arg):\n',
+					'\tresult = arg.rstrip()\n',
+					'\treturn myResult\n'].join('');
+				var starterCodePresent =
+					PythonPreRequisiteCheckService.checkStarterCodePresent(
+						starterCode, code);
+				expect(starterCodePresent).toEqual(true);
+		});
+		it('returns false when starter code lines are present, but out of order',
+			function() {
+				var code = ['\treturn result\n',
+					'\tresult = arg.rstrip()\n',
+					'def myFunction(arg):\n'].join('');
+				var starterCodePresent =
+					PythonPreRequisiteCheckService.checkStarterCodePresent(
+						starterCode, code);
+				expect(starterCodePresent).toEqual(false);
+		});
+	});
+	describe('getCodeLibs', function() {
+		it('correctly parses import statements', function() {
+			var code = ['import numpy\n',
+				'import pandas\n', '\n',
+				'def myFunction(arg): \n',
+				'\treturn arg'].join('');
+			var codeLibs =
+				PythonPreRequisiteCheckService.getCodeLibs(code);
+			expect(codeLibs).toEqual(['numpy','pandas']);
+		});
+		it('does not capture strings with \'import\' in text', function() {
+			var code = ['def myFunction(arg): \n',
+				'\tresult = str(arg) + \'import this\'',
+				'\treturn result'].join('');
+			var codeLibs =
+				PythonPreRequisiteCheckService.getCodeLibs(code);
+			expect(codeLibs).toEqual([]);
+		});
 	});
 });

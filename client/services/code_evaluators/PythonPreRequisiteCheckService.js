@@ -18,10 +18,10 @@
 
 tie.factory('PythonPreRequisiteCheckService', [
   'PYTHON_STANDARD_LIBRARIES',
-  'PreRequisiteCheckResultObjectFactory',
+  'PreRequisiteEvalResultObjectFactory',
   function(
       PYTHON_STANDARD_LIBRARIES,
-      PreRequisiteCheckResultObjectFactory) {
+      PreRequisiteEvalResultObjectFactory) {
 
     var checkStarterCodePresent = function(starterCode, code) {
       var starterCodeLines = starterCode.split('\n');
@@ -29,9 +29,32 @@ tie.factory('PythonPreRequisiteCheckService', [
       for (var i = 0; i < codeLines.length; i++) {
         codeLines[i] = codeLines[i].trim();
       }
+      var codeLineIndex = 0;
       for (var i = 0; i < starterCodeLines.length; i++) {
         var starterCodeLine = starterCodeLines[i].trim();
-        if (codeLines.indexOf(starterCodeLine) < 0) {
+        // ignore blank lines in starter code
+        if (starterCodeLine.length === 0) {
+          continue;
+        }
+        //handle "return" statements in starter code
+        if (starterCodeLine.replace(/^\s+/,"").startsWith("return ")) {
+          while (codeLineIndex < codeLines.length) {
+            if (codeLines[codeLineIndex].replace(
+              /^\s+/,"").startsWith("return ")) {
+                break;
+            }
+            codeLineIndex++;
+          }
+        }
+        else {
+          while (codeLineIndex < codeLines.length) {
+            if (codeLines[codeLineIndex] === starterCodeLine) {
+              break;
+            }
+            codeLineIndex++;
+          }
+        }
+        if (codeLineIndex >= codeLines.length && i < starterCodeLines.length) {
           return false;
         }
       }
@@ -41,10 +64,9 @@ tie.factory('PythonPreRequisiteCheckService', [
 	var getCodeLibs = function(code){
 		var codeLines = code.split('\n');
 		var coddLibs = [];
-		//var pattern = new RegExp('^\\ {4}import\\ \\w+$');
 		var pattern = new RegExp('^import\\ \\w+$');
-		for(i=0; i<codeLines.length; i++){
-			if(pattern.test(codeLines[i])){
+		for(var i=0; i<codeLines.length; i++) {
+			if(pattern.test(codeLines[i])) {
 				var words = codeLines[i].split(' ');
 				coddLibs.push(words[1]);
 			}
@@ -61,13 +83,14 @@ tie.factory('PythonPreRequisiteCheckService', [
             'function names given in the starter code.  Here\'s the '
             ,'starter code again:'].join('');
           return Promise.resolve(
-            PreRequisiteCheckResultObjectFactory.create(
+            PreRequisiteEvalResultObjectFactory.create(
               code, errorMessage, starterCode));
         }
 
-        var libErrorMessage = ['It looks like you use a external ',
-                        'Library. You can only use standard libraries.',
-                        'The external Libraries could be:'].join('');
+        var libErrorMessage = ['It looks like you are importing an external ',
+                        'library.  Only standard libraries are supported.  ',
+                        'The following libraries are not ',
+                        'supported:\n'].join('');
         codeLibs = getCodeLibs(code);
         var extLibs = [];
         for(var i = 0; i<codeLibs.length; i++){
@@ -79,15 +102,19 @@ tie.factory('PythonPreRequisiteCheckService', [
         if(extLibs.length!==0){
             var extLibsString = '';
             for(var i = 0; i<extLibs.length; i++){
-                extLibsString = extLibsString.concat(extLibs[i]+'\n');
+                extLibsString = extLibsString.concat('-- '+extLibs[i]+'\n');
             }
             extLibsString = extLibsString.substring(0, extLibsString.length-1);
+            errorMessage = libErrorMessage + extLibsString;
             return Promise.resolve(
-                    PreRequisiteCheckResultObjectFactory.create(
-                        code, libErrorMessage, extLibsString));
+              PreRequisiteEvalResultObjectFactory.create(
+                code, errorMessage, null));
         }
+
         // Otherwise, code passed all pre-requisite checks
-        return Promise.resolve(PreRequisiteCheckResultObjectFactory.create(code, null));
+        return Promise.resolve(
+          PreRequisiteEvalResultObjectFactory.create(
+          code, null, null));
       },
       checkStarterCodePresent: checkStarterCodePresent,
       getCodeLibs: getCodeLibs
