@@ -518,7 +518,7 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
             var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
-            // The index must be either null(indicating no syntax error)
+            // The index must be either null (indicating no syntax error)
             // or a positive integer.
             if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
               var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];

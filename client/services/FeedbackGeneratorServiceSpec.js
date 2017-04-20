@@ -226,7 +226,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(
-        "Looks like your code has a syntax error. Try to find and fix it.");
+        "Looks like your code has a syntax error.");
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe('some error');
     });
