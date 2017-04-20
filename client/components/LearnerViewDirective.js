@@ -507,7 +507,6 @@ tie.directive('learnerView', [function() {
 
             // Setting reinforcement bullets
             reinforcement.clear();
-            console.log(feedback.passedList);
             for (var idx = 0; idx < feedback.passedList.length; ++idx) {
               reinforcement.appendPassedBullet(
                 "Handles " + feedback.passedList[idx]);
