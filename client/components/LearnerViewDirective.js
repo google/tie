@@ -551,6 +551,9 @@ tie.directive('learnerView', [function() {
               feedbackParagraphs.splice(syntaxErrorIndex, 1);
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
               $scope.syntaxErrorFound = true;
+            } else if (syntaxErrorIndex === null) {
+              $scope.syntaxErrorString = '';
+              $scope.syntaxErrorFound = false;
             }
             $scope.feedbackParagraphs = feedbackParagraphs;
           }
