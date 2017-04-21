@@ -137,6 +137,7 @@ tie.directive('learnerView', [function() {
         html {
           height: 100%;
           min-height: 622px;
+          min-width: 1331px;
         }
         body {
           background-color: rgb(242, 242, 242);
