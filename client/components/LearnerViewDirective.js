@@ -325,7 +325,7 @@ tie.directive('learnerView', [function() {
           white-space: pre-wrap;
           word-wrap: break-word;
         }
-        .tie-question-code {
+        .tie-question-code.night-mode {
           background: #212121;
         }
         .tie-question-title {
