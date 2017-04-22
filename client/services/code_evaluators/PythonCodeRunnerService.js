@@ -77,7 +77,7 @@ tie.factory('PythonCodeRunnerService', [
 
           // The run was successful.
           return CodeEvalResultObjectFactory.create(
-            code, outputLines.join('\n'), correctnessTestResults,
+            code, outputLines, correctnessTestResults,
             buggyOutputTestResults, performanceTestResults, null, null);
         }, function(skulptError) {
           var errorInput = null;
