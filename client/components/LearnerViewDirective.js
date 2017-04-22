@@ -80,12 +80,12 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
-                  <select class="tie-theme-select" name="theme-select" 
+                  <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
                     <option></option>
-                  </select>     
+                  </select>
                   <button class="tie-code-reset" name="code-reset"
                       ng-click="resetCode()">
                     Reset Code
@@ -117,7 +117,7 @@ tie.directive('learnerView', [function() {
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
                     <div ng-repeat="instruction in previousInstruction track by $index">
                       <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                     <hr>
                   </div>
@@ -125,7 +125,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-instructions">
                   <div ng-repeat="instruction in instructions">
                     <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
               </div>
@@ -323,7 +323,10 @@ tie.directive('learnerView', [function() {
           white-space: -o-pre-wrap;
           white-space: -pre-wrap;
           white-space: pre-wrap;
-          word-wrap: break-word;  
+          word-wrap: break-word;
+        }
+        .tie-question-code {
+          background: #212121;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
