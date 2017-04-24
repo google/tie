@@ -80,15 +80,12 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
-<<<<<<< HEAD
                   <select class="tie-question-set-select" name="question-set-select"
                           ng-change="changeQuestionSet()" ng-model="currentQuestionSetId"
                           ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                     <option style="display: none" value="">Question Set</option>
                     <option></option>
                   </select>
-=======
->>>>>>> 5b2c57f27397893fcd26d3537207193d0e8b9790
                   <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
@@ -334,12 +331,9 @@ tie.directive('learnerView', [function() {
           white-space: -pre-wrap;
           white-space: pre-wrap;
           word-wrap: break-word;
-<<<<<<< HEAD
-=======
         }
         .tie-question-code.night-mode {
           background: #212121;
->>>>>>> 5b2c57f27397893fcd26d3537207193d0e8b9790
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
