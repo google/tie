@@ -80,12 +80,15 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
+<<<<<<< HEAD
                   <select class="tie-question-set-select" name="question-set-select"
                           ng-change="changeQuestionSet()" ng-model="currentQuestionSetId"
                           ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                     <option style="display: none" value="">Question Set</option>
                     <option></option>
                   </select>
+=======
+>>>>>>> 5b2c57f27397893fcd26d3537207193d0e8b9790
                   <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
@@ -123,7 +126,7 @@ tie.directive('learnerView', [function() {
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
                     <div ng-repeat="instruction in previousInstruction track by $index">
                       <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                     <hr>
                   </div>
@@ -131,7 +134,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-instructions">
                   <div ng-repeat="instruction in instructions">
                     <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
               </div>
@@ -331,6 +334,12 @@ tie.directive('learnerView', [function() {
           white-space: -pre-wrap;
           white-space: pre-wrap;
           word-wrap: break-word;
+<<<<<<< HEAD
+=======
+        }
+        .tie-question-code.night-mode {
+          background: #212121;
+>>>>>>> 5b2c57f27397893fcd26d3537207193d0e8b9790
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
@@ -561,6 +570,9 @@ tie.directive('learnerView', [function() {
               feedbackParagraphs.splice(syntaxErrorIndex, 1);
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
               $scope.syntaxErrorFound = true;
+            } else if (syntaxErrorIndex === null) {
+              $scope.syntaxErrorString = '';
+              $scope.syntaxErrorFound = false;
             }
             $scope.feedbackParagraphs = feedbackParagraphs;
           }
