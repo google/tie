@@ -32,7 +32,7 @@ globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
     'findFirstNonRepeatingCharacter',
     'i18n',
     'incrementDecCodedNumber',
-    'mostCommonChar',
+    'mostCommonCharacter',
     'palindrome',
     'reverseWords',
     'rle',
