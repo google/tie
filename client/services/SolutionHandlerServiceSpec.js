@@ -190,7 +190,7 @@ describe('SolutionHandlerService', function() {
 
     describe("buggyOutputTests", function() {
       it('should check both task1 and task2 to ' +
-          'verify that the leaner fails on task1', function() {
+          'verify that the learner fails on task1', function() {
         var studentCode = [
           'def mockMainFunction(input):',
           '    return True'
@@ -209,7 +209,7 @@ describe('SolutionHandlerService', function() {
       });
 
       it('should check both task1 and task2, ' +
-          'though leaner fails on task2 buggy tests, ' +
+          'though learner fails on task2 buggy tests, ' +
           'error message of task1 is displayed', function() {
         var studentCode = [
           'def mockMainFunction(input):',
