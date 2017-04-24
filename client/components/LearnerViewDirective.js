@@ -80,6 +80,12 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
+                  <select class="tie-question-set-select" name="question-set-select"
+                          ng-change="changeQuestionSet()" ng-model="currentQuestionSetId"
+                          ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                    <option style="display: none" value="">Question Set</option>
+                    <option></option>
+                  </select>
                   <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme()" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
@@ -162,8 +168,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
+          margin-left: 5px;
           margin-top: 10px;
-          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -187,7 +193,8 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-theme-select:focus {
+            .tie-run-button:focus, .tie-question-set-select,
+            .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -381,6 +388,11 @@ tie.directive('learnerView', [function() {
           border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
+        .tie-question-set-select {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
+        }
         .tie-step-container-inner {
           display: flex;
           margin-left: auto;
@@ -450,6 +462,12 @@ tie.directive('learnerView', [function() {
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
+        var questionSetIds = [
+          {questionSetId: 'strings'},
+          {questionSetId: 'all'},
+          {questionSetId: 'other'}
+        ];
+        $scope.questionSetIds = questionSetIds;
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -566,6 +584,33 @@ tie.directive('learnerView', [function() {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+        };
+
+        $scope.changeQuestionSet = function() {
+          questionSetId = '';
+          switch ($scope.currentQuestionSetId) {
+          case 'strings':
+          case 'other':
+          case 'all':
+            questionSetId = $scope.currentQuestionSetId;
+            break;
+          default:
+            return;
+          }
+          QuestionDataService.initCurrentQuestionSet(questionSetId);
+          questionSet = QuestionDataService.getCurrentQuestionSet(
+            questionSetId);
+          $scope.currentQuestionIndex = 0;
+          $scope.questionIds = questionSet.getQuestionIds();
+          $scope.questionsCompletionStatus = [];
+          $scope.loadingIndicatorIsShown = false;
+          $scope.isSyntaxErrorShown = false;
+          for (i = 0; i < $scope.questionIds.length; i++) {
+            $scope.questionsCompletionStatus.push(false);
+          }
+          $scope.autosaveTextIsDisplayed = false;
+          loadQuestion($scope.questionIds[$scope.currentQuestionIndex],
+            questionSet.getIntroductionParagraphs());
         };
 
         $scope.codeMirrorOptions = {
