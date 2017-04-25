@@ -96,25 +96,32 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'bomb',
     correctnessTests: [{
       input: [],
-      allowedOutputs: [0]
+      allowedOutputs: [0],
+      tag: 'empty boards'
     }, {
       input: [[], [], []],
-      allowedOutputs: [0]
+      allowedOutputs: [0],
+      tag: 'empty boards'
     }, {
       input: [["e", "", "e", "x", "", "e"]],
-      allowedOutputs: [2]
+      allowedOutputs: [2],
+      tag: 'single row boards'
     }, {
       input: [["e", "", "e", "", "", "e"]],
-      allowedOutputs: [3]
+      allowedOutputs: [3],
+      tag: 'single row boards'
     }, {
       input: [["e"], ["x"], [""], ["x"]],
-      allowedOutputs: [0]
+      allowedOutputs: [0],
+      tag: 'single column boards'
     }, {
       input: [["e"], ["e"], [""], ["x"]],
-      allowedOutputs: [2]
+      allowedOutputs: [2],
+      tag: 'single column boards'
     }, {
       input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
-      allowedOutputs: [4]
+      allowedOutputs: [4],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
