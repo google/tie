@@ -81,13 +81,13 @@ tie.directive('learnerView', [function() {
                     <option value="Python" selected>Python</option>
                   </select>
                   <select class="tie-question-set-select" name="question-set-select"
-                          ng-change="changeQuestionSet()" ng-model="currentQuestionSetId"
+                          ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
                           ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                     <option style="display: none" value="">Question Set</option>
                     <option></option>
                   </select>
                   <select class="tie-theme-select" name="theme-select"
-                          ng-change="changeTheme()" ng-model="theme"
+                          ng-change="changeTheme(theme)" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
                     <option></option>
@@ -564,22 +564,22 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
         };
 
-        $scope.changeTheme = function() {
-          if ($scope.theme === 'Dark') {
+        $scope.changeTheme = function(theme) {
+          if (theme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if ($scope.theme === 'Light') {
+          if (theme === 'Light') {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
         };
 
-        $scope.changeQuestionSet = function() {
-          if (ALLOWED_QUESTION_SET_IDS.indexOf($scope.questionSetId) === -1) {
+        $scope.changeQuestionSet = function(newQuestionSetId) {
+          if (ALLOWED_QUESTION_SET_IDS.indexOf(newQuestionSetId) === -1) {
             return;
           }
-          $scope.initQuestionSet($scope.questionSetId);
+          $scope.initQuestionSet(newQuestionSetId);
         };
 
         $scope.initQuestionSet = function(newQuestionSetId) {
