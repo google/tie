@@ -229,7 +229,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       {
         content: [
           'If the test case has no solution, return "". If there is not ',
-          'information to order multiple characters, return them in ',
+          'enough information to order multiple characters, return them in ',
           'standard alphabetical order.'
         ].join(''),
         type: 'text'
