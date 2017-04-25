@@ -16,12 +16,14 @@
  * @fileoverview Service for performing pre-requisite checks on Python code snippets.
  */
 
-tie.factory('PythonPreRequisiteCheckService', [
+tie.factory('PythonPrerequisiteCheckService', [
   'PYTHON_STANDARD_LIBRARIES',
-  'PreRequisiteEvalResultObjectFactory',
+  'PrerequisiteEvalResultObjectFactory',
   function(
       PYTHON_STANDARD_LIBRARIES,
-      PreRequisiteEvalResultObjectFactory) {
+      PrerequisiteEvalResultObjectFactory) {
+
+    const LEFT_TRIM_PATTERN = /^\s+/;
 
     var checkStarterCodePresent = function(starterCode, code) {
       var starterCodeLines = starterCode.split('\n');
@@ -37,7 +39,7 @@ tie.factory('PythonPreRequisiteCheckService', [
           continue;
         }
         //handle "return" statements in starter code
-        if (starterCodeLine.replace(/^\s+/,"").startsWith("return ")) {
+        if (starterCodeLine.replace(LEFT_TRIM_PATTERN,"").startsWith("return ")) {
           while (codeLineIndex < codeLines.length) {
             if (codeLines[codeLineIndex].replace(
               /^\s+/,"").startsWith("return ")) {
@@ -80,10 +82,11 @@ tie.factory('PythonPreRequisiteCheckService', [
         if (!(checkStarterCodePresent(starterCode, code))) {
           var errorMessage = ['It looks like you deleted or modified ',
             'the starter code!  Our evaluation program requires the ',
-            'function names given in the starter code.  Here\'s the '
-            ,'starter code again:'].join('');
+            'function names given in the starter code.  You can press the ',
+            '\'Reset Code\' button below to start over.  Or, you can copy ',
+            'the starter code below:'].join('');
           return Promise.resolve(
-            PreRequisiteEvalResultObjectFactory.create(
+            PrerequisiteEvalResultObjectFactory.create(
               code, errorMessage, starterCode));
         }
 
@@ -107,13 +110,13 @@ tie.factory('PythonPreRequisiteCheckService', [
             extLibsString = extLibsString.substring(0, extLibsString.length-1);
             errorMessage = libErrorMessage + extLibsString;
             return Promise.resolve(
-              PreRequisiteEvalResultObjectFactory.create(
+              PrerequisiteEvalResultObjectFactory.create(
                 code, errorMessage, null));
         }
 
         // Otherwise, code passed all pre-requisite checks
         return Promise.resolve(
-          PreRequisiteEvalResultObjectFactory.create(
+          PrerequisiteEvalResultObjectFactory.create(
           code, null, null));
       },
       checkStarterCodePresent: checkStarterCodePresent,

@@ -16,13 +16,13 @@
  * @fileoverview Unit tests for the PythonPreRequisiteCheckService.
  */
 
-describe('PythonPreRequisiteCheckService', function() {
-	var PythonPreRequisiteCheckService;
+describe('PythonPrerequisiteCheckService', function() {
+	var PythonPrerequisiteCheckService;
 
 	beforeEach(module('tie'));
 	beforeEach(inject(function($injector) {
-		PythonPreRequisiteCheckService = $injector.get(
-			'PythonPreRequisiteCheckService');
+		PythonPrerequisiteCheckService = $injector.get(
+			'PythonPrerequisiteCheckService');
 	}));
 
 	describe('checkStarterCodePresent', function() {
@@ -36,7 +36,7 @@ describe('PythonPreRequisiteCheckService', function() {
 			'\tresult = arg.rstrip()\n',
 			'\treturn result\n'].join('');
 			var starterCodePresent =
-				PythonPreRequisiteCheckService.checkStarterCodePresent(
+				PythonPrerequisiteCheckService.checkStarterCodePresent(
 					starterCode, code);
 			expect(starterCodePresent).toEqual(true);
 		});
@@ -46,7 +46,7 @@ describe('PythonPreRequisiteCheckService', function() {
 				'\tresult = arg.rstrip()\n',
 				'\treturn result\n'].join('');
 				var starterCodePresent =
-					PythonPreRequisiteCheckService.checkStarterCodePresent(
+					PythonPrerequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
 				expect(starterCodePresent).toEqual(false);
 		});
@@ -55,7 +55,7 @@ describe('PythonPreRequisiteCheckService', function() {
 				var code = ['\tresult = arg.rstrip()\n',
 				'\treturn result\n'].join('');
 				var starterCodePresent =
-					PythonPreRequisiteCheckService.checkStarterCodePresent(
+					PythonPrerequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
 				expect(starterCodePresent).toEqual(false);
 		});
@@ -65,7 +65,7 @@ describe('PythonPreRequisiteCheckService', function() {
 					'\tresult = arg.rstrip()\n',
 					'\treturn myResult\n'].join('');
 				var starterCodePresent =
-					PythonPreRequisiteCheckService.checkStarterCodePresent(
+					PythonPrerequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
 				expect(starterCodePresent).toEqual(true);
 		});
@@ -75,7 +75,7 @@ describe('PythonPreRequisiteCheckService', function() {
 					'\tresult = arg.rstrip()\n',
 					'def myFunction(arg):\n'].join('');
 				var starterCodePresent =
-					PythonPreRequisiteCheckService.checkStarterCodePresent(
+					PythonPrerequisiteCheckService.checkStarterCodePresent(
 						starterCode, code);
 				expect(starterCodePresent).toEqual(false);
 		});
@@ -87,7 +87,7 @@ describe('PythonPreRequisiteCheckService', function() {
 				'def myFunction(arg): \n',
 				'\treturn arg'].join('');
 			var codeLibs =
-				PythonPreRequisiteCheckService.getCodeLibs(code);
+				PythonPrerequisiteCheckService.getCodeLibs(code);
 			expect(codeLibs).toEqual(['numpy','pandas']);
 		});
 		it('does not capture strings with \'import\' in text', function() {
@@ -95,7 +95,7 @@ describe('PythonPreRequisiteCheckService', function() {
 				'\tresult = str(arg) + \'import this\'',
 				'\treturn result'].join('');
 			var codeLibs =
-				PythonPreRequisiteCheckService.getCodeLibs(code);
+				PythonPrerequisiteCheckService.getCodeLibs(code);
 			expect(codeLibs).toEqual([]);
 		});
 	});

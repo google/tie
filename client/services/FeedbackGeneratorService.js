@@ -221,17 +221,17 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendCodeParagraph(errorString);
         return feedback;
       },
-      getPreRequisiteFailureFeedback: function(preReqEvalResult) {
+      getPrerequisiteFailureFeedback: function(prereqEvalResult) {
         var feedback = FeedbackObjectFactory.create(false);
         var errorMessage =
-          preReqEvalResult.getPreReqErrorMessage();
+          prereqEvalResult.getPrereqErrorMessage();
         feedback.appendTextParagraph(
-          "Oops!  There is a problem with your code:");
+          "It looks like there is a problem with your code:");
         var errorParagraphs = errorMessage.split('\n');
         for (var i = 0; i < errorParagraphs.length; i++) {
           feedback.appendTextParagraph(errorParagraphs[i]);
         }
-        var starterCode = preReqEvalResult.getStarterCode();
+        var starterCode = prereqEvalResult.getStarterCode();
         if (starterCode) {
           feedback.appendCodeParagraph(starterCode);
         }

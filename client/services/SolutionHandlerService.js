@@ -19,11 +19,11 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'PreRequisiteCheckDispatcherService',
+  'FeedbackGeneratorService', 'PrerequisiteCheckDispatcherService',
   'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, PreRequisiteCheckDispatcherService,
+      FeedbackGeneratorService, PrerequisiteCheckDispatcherService,
       SnapshotObjectFactory, TranscriptService,
       CodeSubmissionObjectFactory) {
     return {
@@ -31,19 +31,19 @@ tie.factory('SolutionHandlerService', [
       processSolutionAsync: function(
           task, starterCode, studentCode, auxiliaryCode, language) {
         // First, check pre-requisites for the submitted code
-        return PreRequisiteCheckDispatcherService.checkCode(
+        return PrerequisiteCheckDispatcherService.checkCode(
           language, starterCode, studentCode
-        ).then(function(preReqEvalResult) {
-          var preReqErrorMessage =
-            preReqEvalResult.getPreReqErrorMessage();
-          if (preReqErrorMessage) {
-            var preReqFeedback =
-              FeedbackGeneratorService.getPreRequisiteFailureFeedback(
-              preReqEvalResult);
+        ).then(function(prereqEvalResult) {
+          var prereqErrorMessage =
+            prereqEvalResult.getPrereqErrorMessage();
+          if (prereqErrorMessage) {
+            var prereqFeedback =
+              FeedbackGeneratorService.getPrerequisiteFailureFeedback(
+              prereqEvalResult);
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(null, preReqEvalResult,
-                preReqFeedback));
-            return $q.resolve(preReqFeedback);
+              SnapshotObjectFactory.create(null, prereqEvalResult,
+                prereqFeedback));
+            return $q.resolve(prereqFeedback);
           }
 
           // Next, do an initial run of the code to check for syntax errors.

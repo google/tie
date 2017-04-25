@@ -17,14 +17,14 @@
  * code using the appropriate code evaluation engine.
  */
 
-tie.factory('PreRequisiteCheckDispatcherService', [
-  'PythonPreRequisiteCheckService', 'LANGUAGE_PYTHON',
-  function(PythonPreRequisiteCheckService, LANGUAGE_PYTHON) {
+tie.factory('PrerequisiteCheckDispatcherService', [
+  'PythonPrerequisiteCheckService', 'LANGUAGE_PYTHON',
+  function(PythonPrerequisiteCheckService, LANGUAGE_PYTHON) {
     return {
       // Returns a promise.
       checkCode: function(language, starterCode, code) {
         if (language === LANGUAGE_PYTHON) {
-          return PythonPreRequisiteCheckService.checkCode(starterCode, code);
+          return PythonPrerequisiteCheckService.checkCode(starterCode, code);
         } else {
           throw Error('Language not supported: ' + language);
         }
