@@ -16,11 +16,11 @@
  * @fileoverview Question data for Most Common Character.
  */
 
-globalData.questions['mostCommonCharacter'] = {  // eslint-disable-line dot-notation
+globalData.questions['findMostCommonCharacter'] = {  // eslint-disable-line dot-notation
   title: 'Most Common Character',
   starterCode: {
     python:
-`def findMostCommonChar(s):
+`def findMostCommonCharacter(s):
     return ""
 `
   },
@@ -49,10 +49,13 @@ class AuxiliaryCode(object):
           'For this problem, we\'d like you to write a method to determine ',
           'the most common character in a string. You will be given a string ',
           'of ASCII characters, and you may assume that there ',
-          'is only one most common character. ',
-          'For now, you do not have to consider spaces.'
+          'is only one most common character, ignoring spaces.'
         ].join(''),
         type: 'text'
+      },
+      {
+        content: 'Input: "doggo pupper"\nOutput: "p"',
+        type: 'code'
       },
       {
         content: [
@@ -65,12 +68,8 @@ class AuxiliaryCode(object):
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'findMostCommonChar',
+    mainFunctionName: 'findMostCommonCharacter',
     correctnessTests: [{
-      input: '',
-      allowedOutputs: [''],
-      tag: 'empty strings'
-    }, {
       input: 'apoiuytrewqsdf*&^%$#ba',
       allowedOutputs: ['a'],
       tag: 'strings with special characters'
@@ -86,7 +85,10 @@ class AuxiliaryCode(object):
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
-        "Try running your code on '1600Amphitheatre'. Do you get the result you expected?",
+        [
+          "Try running your code on '1600Amphitheatre'. ",
+          "Do you get the result you expected?"
+        ].join(''),
         "What happens if you pass in strings that contain numbers?",
         [
           "It looks like you are not handling strings properly ",
@@ -111,7 +113,7 @@ class AuxiliaryCode(object):
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'findMostCommonChar',
+    mainFunctionName: 'findMostCommonCharacter',
     correctnessTests: [{
       input: '\u0041\u0042\u0043\u0041',
       allowedOutputs: ['A'],
@@ -122,14 +124,14 @@ class AuxiliaryCode(object):
       inputDataAtom: 'abbac',
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
-      evaluationFunctionName: 'findMostCommonChar'
+      evaluationFunctionName: 'findMostCommonCharacter'
     }]
   }],
   styleTests: [{
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in a findMostCommonChar function. ',
+      'You should only be writing code in a findMostCommonCharacter function. ',
       "While decomposition is generally a good idea, you shouldn't need more than ",
       'just this function for this question.'
     ].join('')

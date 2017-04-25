@@ -63,7 +63,8 @@ describe('TaskSchemaValidationService', function() {
               expect(verifierFunction(task)).toBe(true, [
                 verifierFunctionName,
                 ' returned false, but it should ',
-                'return true.'
+                'return true for ',
+                question.getTitle()
               ].join(''));
             }
           });
