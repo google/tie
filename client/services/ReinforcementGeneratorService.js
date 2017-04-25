@@ -49,8 +49,8 @@ tie.factory('ReinforcementGeneratorService', [
         // Go through correctness tests to update reinforcement data
         var correctnessTests = splitTestsByTag(task.getCorrectnessTests());
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+        var failedCaseSeen = false;
         for (var testTag in correctnessTests) {
-          var failedCaseSeen = false;
           for (var testIdx = 0; testIdx < correctnessTests[testTag].length;
            ++testIdx) {
             var test = correctnessTests[testTag][testIdx];
