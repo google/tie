@@ -146,7 +146,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
     }, {
       input: 'dioramas is si samaroid',
       allowedOutputs: [true],
-      tag: 'strings with spaces' 
+      tag: 'strings with spaces'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',

@@ -651,7 +651,7 @@ tie.directive('learnerView', [function() {
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
-          for (var i = 0; i < $scope.questionIds.length; i++) {
+          for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
