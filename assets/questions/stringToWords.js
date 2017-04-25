@@ -70,13 +70,16 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'stringToWords',
     correctnessTests: [{
       input: 'goodneighbor:good neighbor',
-      allowedOutputs: ['good neighbor']
+      allowedOutputs: ['good neighbor'],
+      tag: 'the general case'
     }, {
       input: 'hondacivic:honda civic accord',
-      allowedOutputs: ['honda civic']
+      allowedOutputs: ['honda civic'],
+      tag: 'the general case'
     }, {
       input: 'toyotacamry:honda civic accord',
-      allowedOutputs: ['None']
+      allowedOutputs: ['None'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
@@ -111,13 +114,16 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'stringToWords',
     correctnessTests: [{
       input: 'bluehondacivic:honda civic accord blue',
-      allowedOutputs: ['blue honda civic']
+      allowedOutputs: ['blue honda civic'],
+      tag: 'the general case'
     }, {
       input: 'verygoodneighbor:very neighbor good bad',
-      allowedOutputs: ['very good neighbor']
+      allowedOutputs: ['very good neighbor'],
+      tag: 'the general case'
     }, {
       input: 'graytoyotacamry:honda civic accord gray blue',
-      allowedOutputs: ['None']
+      allowedOutputs: ['None'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [],
     performanceTests: []
