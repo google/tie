@@ -458,14 +458,15 @@ tie.directive('learnerView', [function() {
           CodeStorageService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all']
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
         var questionSetIds = [
           {questionSetId: 'strings'},
-          {questionSetId: 'all'},
-          {questionSetId: 'other'}
+          {questionSetId: 'other'},
+          {questionSetId: 'all'}
         ];
         $scope.questionSetIds = questionSetIds;
         var NEXT_QUESTION_INTRO_FEEDBACK = [
@@ -483,18 +484,6 @@ tie.directive('learnerView', [function() {
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
-        QuestionDataService.initCurrentQuestionSet(questionSetId);
-        var questionSet = QuestionDataService.getCurrentQuestionSet(
-          questionSetId);
-        $scope.currentQuestionIndex = 0;
-        $scope.questionIds = questionSet.getQuestionIds();
-        $scope.questionsCompletionStatus = [];
-        $scope.loadingIndicatorIsShown = false;
-        $scope.isSyntaxErrorShown = false;
-        for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.questionsCompletionStatus.push(false);
-        }
-        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -587,16 +576,13 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.changeQuestionSet = function() {
-          questionSetId = '';
-          switch ($scope.currentQuestionSetId) {
-          case 'strings':
-          case 'other':
-          case 'all':
-            questionSetId = $scope.currentQuestionSetId;
-            break;
-          default:
+          if (ALLOWED_QUESTION_SET_IDS.indexOf($scope.questionSetId) === -1) {
             return;
           }
+          $scope.initQuestionSet($scope.questionSetId);
+        };
+
+        $scope.initQuestionSet = function(questionSetId) {
           QuestionDataService.initCurrentQuestionSet(questionSetId);
           questionSet = QuestionDataService.getCurrentQuestionSet(
             questionSetId);
@@ -609,7 +595,8 @@ tie.directive('learnerView', [function() {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
-          loadQuestion($scope.questionIds[$scope.currentQuestionIndex],
+          loadQuestion(
+            questionSet.getFirstQuestionId(),
             questionSet.getIntroductionParagraphs());
         };
 
@@ -734,10 +721,7 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        loadQuestion(
-          questionSet.getFirstQuestionId(),
-          questionSet.getIntroductionParagraphs());
-
+        $scope.initQuestionSet(questionSetId);
       }
     ]
   };
