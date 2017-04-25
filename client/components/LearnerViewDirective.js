@@ -584,10 +584,10 @@ tie.directive('learnerView', [function() {
 
         $scope.initQuestionSet = function(newQuestionSetId) {
           QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
-          var questionSet = QuestionDataService.getCurrentQuestionSet(
+          $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
             newQuestionSetId);
           $scope.currentQuestionIndex = 0;
-          $scope.questionIds = questionSet.getQuestionIds();
+          $scope.questionIds = $scope.questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
@@ -596,8 +596,8 @@ tie.directive('learnerView', [function() {
           }
           $scope.autosaveTextIsDisplayed = false;
           loadQuestion(
-            questionSet.getFirstQuestionId(),
-            questionSet.getIntroductionParagraphs());
+            $scope.questionSet.getFirstQuestionId(),
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.codeMirrorOptions = {
@@ -656,7 +656,8 @@ tie.directive('learnerView', [function() {
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(currentQuestionId,
             $scope.code, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {
@@ -680,7 +681,8 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           CodeStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         var triggerAutosaveNotification = function(displaySeconds) {
