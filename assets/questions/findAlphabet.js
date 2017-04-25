@@ -130,7 +130,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "ab",
         "b"
       ],
-      allowedOutputs: ['ab']
+      allowedOutputs: ['ab'],
+      tag: '2 letter alphabet'
     }, {
       input: [
         "aaec",
@@ -143,7 +144,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "bcc",
         "bcd"
       ],
-      allowedOutputs: ['ecdab']
+      allowedOutputs: ['ecdab'],
+      tag: 'small alphabet'
     }, {
       input: [
         "egdi",
@@ -162,7 +164,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "idcc",
         "idh"
       ],
-      allowedOutputs: ['afchjgdeib']
+      allowedOutputs: ['afchjgdeib'],
+      tag: 'the general case'
     },
     {
       input: [
@@ -212,7 +215,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "kmrus",
         "kmrut"
       ],
-      allowedOutputs: ['ljhmezirxygadoqckfsvntwbup']
+      allowedOutputs: ['ljhmezirxygadoqckfsvntwbup'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [],
     performanceTests: []
@@ -250,7 +254,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "b",
         "a"
       ],
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'invalid alphabet'
     }, {
       input: [
         "c",
@@ -258,13 +263,15 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "b",
         "a"
       ],
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'invalid alphabet'
     }, {
       input: [
         "cab",
         "bc"
       ],
-      allowedOutputs: ['acb']
+      allowedOutputs: ['acb'],
+      tag: 'multiple possible orderings'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnNoSolution',
@@ -308,7 +315,8 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         "Aba",
         "b"
       ],
-      allowedOutputs: ['ab']
+      allowedOutputs: ['ab'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnUppercase',
