@@ -84,13 +84,11 @@ tie.directive('learnerView', [function() {
                           ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
                           ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                     <option style="display: none" value="">Question Set</option>
-                    <option></option>
                   </select>
                   <select class="tie-theme-select" name="theme-select"
                           ng-change="changeTheme(theme)" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
-                    <option></option>
                   </select>
                   <button class="tie-code-reset" name="code-reset"
                       ng-click="resetCode()">
