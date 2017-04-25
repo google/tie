@@ -30,12 +30,12 @@ globalData.questionSets['other'] = {  // eslint-disable-line dot-notation
     ].join('')
   ],
   questionIds: [
-    'bestMeetupLocation',
     'bomberman',
+    'findAlphabet',
+    'findBestMeetupLocation',
     'findFirstNonRepeatingCharacter',
-    'incrementDecCodedNumber',
-    'stringToWords',
-    'strobogrammatic',
-    'unknownAlphabet'
+    'getStrobogrammaticNumbers',
+    'incrementDecimalCodedNumber',
+    'splitStringIntoWords'
   ]
 };

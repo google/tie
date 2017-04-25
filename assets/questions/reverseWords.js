@@ -81,7 +81,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
       messages: [
-        "Try running your code on 'new code' on paper. What's the result?",
+        "Try running your code on 'river ocean' on paper. What's the result?",
         "Are you sure that you're reversing all the words?",
         [
           "It looks like you're exiting the function without adding on the ",

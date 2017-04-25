@@ -27,17 +27,18 @@ globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
     ].join('')
   ],
   questionIds: [
-    'bestMeetupLocation',
     'bomberman',
+    'checkBalancedParentheses',
+    'findAlphabet',
+    'findBestMeetupLocation',
     'findFirstNonRepeatingCharacter',
-    'i18n',
-    'incrementDecCodedNumber',
-    'mostCommonCharacter',
-    'palindrome',
+    'findMostCommonCharacter',
+    'getStrobogrammaticNumbers',
+    'incrementDecimalCodedNumber',
+    'internationalization',
+    'isPalindrome',
     'reverseWords',
-    'rle',
-    'stringToWords',
-    'strobogrammatic',
-    'unknownAlphabet'
+    'runLengthEncoding',
+    'splitStringIntoWords'
   ]
 };
