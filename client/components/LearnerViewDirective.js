@@ -461,12 +461,11 @@ tie.directive('learnerView', [function() {
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
-        var questionSetIds = [
-          {questionSetId: 'strings'},
-          {questionSetId: 'other'},
-          {questionSetId: 'all'}
-        ];
-        $scope.questionSetIds = questionSetIds;
+        $scope.questionSetIds = [];
+        ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
+          var dict = {questionSetId: id}
+          $scope.questionSetIds.push(dict);
+        });
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -562,12 +561,12 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
         };
 
-        $scope.changeTheme = function(theme) {
-          if (theme === 'Dark') {
+        $scope.changeTheme = function(newTheme) {
+          if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if (theme === 'Light') {
+          if (newTheme === 'Light') {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
