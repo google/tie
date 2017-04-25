@@ -51,14 +51,23 @@ def are_all_unique(words):
   },
   tasks: [{
     instructions: [
-      'In this question, you will implement two functions.',
-      [
-        'First, implement the abbreviate function. It takes a string as input ',
-        'and returns an abbreviation of the string of the form ',
-        '<first character><length of the middle of the string><last character> ',
-        'but only if it shortens the input. ',
-        'For example, "internationalization" should be abbreviated as "i18n".'
-      ].join('')
+      {
+        content: 'In this question, you will implement two functions.',
+        type: 'text'
+      },
+      {
+        content: [
+          'First, implement the abbreviate function. It takes a string as ',
+          'input and returns an abbreviation of the string of the form ',
+          '<first character><length of the middle of the string><last ',
+          'character> but only if it shortens the input.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: "internationalization"\nOutput: "i18n"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -127,12 +136,15 @@ def are_all_unique(words):
   },
   {
     instructions: [
-      [
-        "Implement are_all_unique, a function that takes a list of strings as ",
-        "input and returns a boolean indicating whether all the strings in ",
-        "the input are unique when abbreviated by the above abbreviate ",
-        "function."
-      ].join('')
+      {
+        content: [
+          'Implement are_all_unique, a function that takes a list of strings ',
+          'as input and returns a boolean indicating whether all the strings ',
+          'in the input are unique when abbreviated by the above abbreviate ',
+          'function.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],

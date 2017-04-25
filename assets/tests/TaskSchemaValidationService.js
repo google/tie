@@ -38,12 +38,20 @@ tie.factory('TaskSchemaValidationService', [
         var instructions = task.getInstructions();
         return instructions.length > 0;
       },
-      verifyInstructionsIsArrayOfStrings: function(task) {
+      verifyInstructionsIsAssociativeArray: function(task) {
         var instructions = task.getInstructions();
         return (angular.isArray(instructions) &&
           instructions.every(function(instruction) {
-            return angular.isString(instruction);
+            return (angular.isObject(instruction) &&
+                    angular.isString(instruction.content) &&
+                    angular.isString(instruction.type));
           }));
+      },
+      verifyInstructionTypeIsCorrect: function(task) {
+        var instructions = task.getInstructions();
+        return (instructions.every(function(instruction) {
+          return (instruction.type === 'text' || instruction.type === 'code');
+        }));
       },
       verifyMainFunctionNameIsString: function(task) {
         var mainFunctionName = task.getMainFunctionName();
