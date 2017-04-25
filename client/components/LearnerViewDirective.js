@@ -463,7 +463,7 @@ tie.directive('learnerView', [function() {
         var questionSetId = 'strings';
         $scope.questionSetIds = [];
         ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
-          var dict = {questionSetId: id}
+          var dict = {questionSetId: id};
           $scope.questionSetIds.push(dict);
         });
         var NEXT_QUESTION_INTRO_FEEDBACK = [
