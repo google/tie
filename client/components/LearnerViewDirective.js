@@ -458,7 +458,7 @@ tie.directive('learnerView', [function() {
           CodeStorageService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
-        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all']
+        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
@@ -582,16 +582,16 @@ tie.directive('learnerView', [function() {
           $scope.initQuestionSet($scope.questionSetId);
         };
 
-        $scope.initQuestionSet = function(questionSetId) {
-          QuestionDataService.initCurrentQuestionSet(questionSetId);
-          questionSet = QuestionDataService.getCurrentQuestionSet(
-            questionSetId);
+        $scope.initQuestionSet = function(newQuestionSetId) {
+          QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
+          var questionSet = QuestionDataService.getCurrentQuestionSet(
+            newQuestionSetId);
           $scope.currentQuestionIndex = 0;
           $scope.questionIds = questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
-          for (i = 0; i < $scope.questionIds.length; i++) {
+          for (var i = 0; i < $scope.questionIds.length; i++) {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
