@@ -80,11 +80,15 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
+                  <select class="tie-question-set-select" name="question-set-select"
+                          ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
+                          ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                    <option style="display: none" value="">Question Set</option>
+                  </select>
                   <select class="tie-theme-select" name="theme-select"
-                          ng-change="changeTheme()" ng-model="theme"
+                          ng-change="changeTheme(theme)" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
-                    <option></option>
                   </select>
                   <button class="tie-code-reset" name="code-reset"
                       ng-click="resetCode()">
@@ -162,8 +166,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
+          margin-left: 5px;
           margin-top: 10px;
-          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -187,7 +191,8 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-theme-select:focus {
+            .tie-run-button:focus, .tie-question-set-select,
+            .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -381,6 +386,11 @@ tie.directive('learnerView', [function() {
           border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
+        .tie-question-set-select {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
+        }
         .tie-step-container-inner {
           display: flex;
           margin-left: auto;
@@ -446,10 +456,16 @@ tie.directive('learnerView', [function() {
           CodeStorageService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
+        $scope.questionSetIds = [];
+        ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
+          var dict = {questionSetId: id};
+          $scope.questionSetIds.push(dict);
+        });
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -465,18 +481,6 @@ tie.directive('learnerView', [function() {
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
-        QuestionDataService.initCurrentQuestionSet(questionSetId);
-        var questionSet = QuestionDataService.getCurrentQuestionSet(
-          questionSetId);
-        $scope.currentQuestionIndex = 0;
-        $scope.questionIds = questionSet.getQuestionIds();
-        $scope.questionsCompletionStatus = [];
-        $scope.loadingIndicatorIsShown = false;
-        $scope.isSyntaxErrorShown = false;
-        for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.questionsCompletionStatus.push(false);
-        }
-        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -557,15 +561,40 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
         };
 
-        $scope.changeTheme = function() {
-          if ($scope.theme === 'Dark') {
+        $scope.changeTheme = function(newTheme) {
+          if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if ($scope.theme === 'Light') {
+          if (newTheme === 'Light') {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+        };
+
+        $scope.changeQuestionSet = function(newQuestionSetId) {
+          if (ALLOWED_QUESTION_SET_IDS.indexOf(newQuestionSetId) === -1) {
+            return;
+          }
+          $scope.initQuestionSet(newQuestionSetId);
+        };
+
+        $scope.initQuestionSet = function(newQuestionSetId) {
+          QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
+          $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
+            newQuestionSetId);
+          $scope.currentQuestionIndex = 0;
+          $scope.questionIds = $scope.questionSet.getQuestionIds();
+          $scope.questionsCompletionStatus = [];
+          $scope.loadingIndicatorIsShown = false;
+          $scope.isSyntaxErrorShown = false;
+          for (var i = 0; i < $scope.questionIds.length; i++) {
+            $scope.questionsCompletionStatus.push(false);
+          }
+          $scope.autosaveTextIsDisplayed = false;
+          loadQuestion(
+            $scope.questionSet.getFirstQuestionId(),
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.codeMirrorOptions = {
@@ -624,7 +653,8 @@ tie.directive('learnerView', [function() {
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(currentQuestionId,
             $scope.code, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {
@@ -648,7 +678,8 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           CodeStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         var triggerAutosaveNotification = function(displaySeconds) {
@@ -689,10 +720,7 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        loadQuestion(
-          questionSet.getFirstQuestionId(),
-          questionSet.getIntroductionParagraphs());
-
+        $scope.initQuestionSet(questionSetId);
       }
     ]
   };

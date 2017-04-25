@@ -33,8 +33,8 @@ describe('QuestionDataService', function() {
     it('should throw an error if the question set id does not exist',
     function() {
       expect(function() {
-        QuestionDataService.initCurrentQuestionSet('other');
-      }).toThrowError('Could not find question set with ID: other');
+        QuestionDataService.initCurrentQuestionSet('argleblargle');
+      }).toThrowError('Could not find question set with ID: argleblargle');
     });
   });
 
@@ -49,7 +49,7 @@ describe('QuestionDataService', function() {
     it('should throw an error if the question set id does not exist',
     function() {
       expect(function() {
-        QuestionDataService.getCurrentQuestionSet('other');
+        QuestionDataService.getCurrentQuestionSet('argleblargle');
       }).toThrowError('No question set has been initialized.');
     });
   });
