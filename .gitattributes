@@ -1,0 +1,11 @@
+* text=lf
+*.js text
+*.sh text
+*.py text
+*.md text
+*.css text
+*.html text
+*.txt text
+
+*.png binary
+*.jpg binary
