@@ -228,9 +228,9 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       },
       {
         content: [
-          'For the test case that has no solution, just return "". If ',
-          'multiple letters have the same frequency, return them in ',
-          'alphabetical order.'
+          'If the test case has no solution, return "". If there is not ',
+          'enough information to order multiple characters, return them in ',
+          'standard alphabetical order.'
         ].join(''),
         type: 'text'
       },
