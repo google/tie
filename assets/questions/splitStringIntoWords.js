@@ -122,15 +122,6 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     buggyOutputTests: [],
     // TODO(eyurko): Add performance tests.
     performanceTests: []
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in the splitStringIntoWords function. ',
-      'While decomposition is generally a good idea, you shouldn\'t need more ',
-      'than just this function for this question.'
-    ].join('')
   }]
 };
 
