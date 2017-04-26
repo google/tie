@@ -65,27 +65,25 @@ tie.factory('FeedbackGeneratorService', [
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
         TranscriptService.getTranscript().getPreviousSnapshot());
-      if (lastSnapshot !== null) {
-        if (lastSnapshot.getCodeEvalResult() !== null) {
-          // This section makes sure to provide a new hint
-          // if the student gets stuck on the same bug by checking
-          // that they've submitted new code with the same error.
-          var previousFeedback = lastSnapshot.getFeedback();
-          var previousHintIndex = previousFeedback.getHintIndex();
-          if (previousHintIndex !== null) {
-            var previousMessages = previousFeedback.getParagraphs();
-            // This could cause a problem if two different buggy outputs
-            // have the exact same hint, but that shouldn't be allowed.
-            if (previousMessages[0].getContent() ===
-                buggyMessages[previousHintIndex]) {
-              var previousCode = (
-                lastSnapshot.getCodeEvalResult().getCode());
-              if (previousCode === codeEvalResult.getCode() ||
-                  previousHintIndex === buggyMessages.length - 1) {
-                hintIndex = previousHintIndex;
-              } else {
-                hintIndex = previousHintIndex + 1;
-              }
+      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
+        // This section makes sure to provide a new hint
+        // if the student gets stuck on the same bug by checking
+        // that they've submitted new code with the same error.
+        var previousFeedback = lastSnapshot.getFeedback();
+        var previousHintIndex = previousFeedback.getHintIndex();
+        if (previousHintIndex !== null) {
+          var previousMessages = previousFeedback.getParagraphs();
+          // This could cause a problem if two different buggy outputs
+          // have the exact same hint, but that shouldn't be allowed.
+          if (previousMessages[0].getContent() ===
+              buggyMessages[previousHintIndex]) {
+            var previousCode = (
+              lastSnapshot.getCodeEvalResult().getCode());
+            if (previousCode === codeEvalResult.getCode() ||
+                previousHintIndex === buggyMessages.length - 1) {
+              hintIndex = previousHintIndex;
+            } else {
+              hintIndex = previousHintIndex + 1;
             }
           }
         }
@@ -241,24 +239,22 @@ tie.factory('FeedbackGeneratorService', [
 
         // Check first error type and generate appropriate feedback message.
         var preReqFailure = preReqFailures[0];
-        if (preReqFailure['type'] === PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
+        if (preReqFailure.get('type') === PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
           feedback.appendTextParagraph(['It looks like you deleted or ',
             ' modified the starter code!  Our evaluation program requires the ',
             'function names given in the starter code.  You can press the ',
             '\'Reset Code\' button below to start over.  Or, you can copy ',
             'the starter code below:'].join(''));
-          feedback.appendCodeParagraph(preReqFailure['starterCode']);
+          feedback.appendCodeParagraph(preReqFailure.get('starterCode'));
           return feedback;
-        }
-        else if (preReqFailure['type'] === PREREQ_CHECK_TYPE_BAD_IMPORT) {
+        } else if (preReqFailure.get('type') === PREREQ_CHECK_TYPE_BAD_IMPORT) {
           feedback.appendTextParagraph(['It looks like you are importing an ',
             'external library.  Only standard libraries are supported.  ',
             'The following libraries are not supported:\n'].join(''));
-          var badImports = preReqFailure['badImports'];
+          var badImports = preReqFailure.get('badImports');
           feedback.appendCodeParagraph(badImports.join('\n'));
           return feedback;
-        }
-        else {
+        } else {
           /* If pre-requisite check type is not handled above, generate generic
           feedback message (this should not happen). */
           feedback.appendTextParagraph(['Your code failed a pre-requisite ',
