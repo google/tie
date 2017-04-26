@@ -160,7 +160,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyCorrectnessTestsHaveTags: function(task) {
         var correctnessTests = task.getCorrectnessTests();
         return correctnessTests.every(function(test) {
-          return test.getTag() !== undefined && test.getTag().length > 0;
+          return angular.isString(test.getTag());
         });
       },
       verifyBuggyOutputTestsAreArray: function(task) {

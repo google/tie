@@ -23,11 +23,6 @@ tie.factory('ReinforcementBulletObjectFactory', [
     var ReinforcementBullet = function(passed, content) {
       this._passed = passed;
       this._content = content;
-      if (passed) {
-        this._imgName = "pass.png";
-      } else {
-        this._imgName = "fail.png";
-      }
     };
 
     // Instance methods.
@@ -40,7 +35,7 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     ReinforcementBullet.prototype.getImgName = function() {
-      return this._imgName;
+      return this._passed ? "pass.png" : "fail.png";
     };
 
     // Static class methods.
