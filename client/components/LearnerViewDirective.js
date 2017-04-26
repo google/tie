@@ -251,7 +251,7 @@ tie.directive('learnerView', [function() {
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
-        .tie-feedback-window.night-mode {
+        .tie-feedback-window-wrapper.night-mode {
           background-color: #37474F;
           color: #E0E0E0;
           font-size: 14px;
