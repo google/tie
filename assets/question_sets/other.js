@@ -37,6 +37,7 @@ globalData.questionSets['other'] = {  // eslint-disable-line dot-notation
     'getStrobogrammaticNumbers',
     'incrementDecimalCodedNumber',
     'longestSubstring',
+    'sortItinerary',
     'splitStringIntoWords'
   ]
 };
