@@ -70,14 +70,15 @@ tie.factory('TaskObjectFactory', [
     };
 
     Task.prototype.getOutputFunctionNameWithoutClass = function() {
-      if (this._outputFunctionName.indexOf(
-        CLASS_NAME_AUXILIARY_CODE) === 0) {
-        return this._outputFunctionName.substring(
-          CLASS_NAME_AUXILIARY_CODE.length + 1);
-      } else if (this._outputFunctionName.indexOf(
-        CLASS_NAME_SYSTEM_CODE) === 0) {
-        return this._outputFunctionName.substring(
-          CLASS_NAME_SYSTEM_CODE.length + 1);
+      if (this._outputFunctionName) {
+        if (this._outputFunctionName.indexOf(CLASS_NAME_AUXILIARY_CODE) === 0) {
+          return this._outputFunctionName.substring(
+            CLASS_NAME_AUXILIARY_CODE.length + 1);
+        } else if (
+            this._outputFunctionName.indexOf(CLASS_NAME_SYSTEM_CODE) === 0) {
+          return this._outputFunctionName.substring(
+            CLASS_NAME_SYSTEM_CODE.length + 1);
+        }
       }
       return this._outputFunctionName;
     };
