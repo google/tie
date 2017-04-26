@@ -554,7 +554,9 @@ tie.directive('learnerView', [function() {
           $scope.syntaxErrorFound = false;
         };
 
-        var setFeedback = function(feedback) {
+        var setFeedback = function(feedbackAndReinforcement) {
+          var feedback = feedbackAndReinforcement.feedback;
+          var reinforcementObject = feedbackAndReinforcement.reinforcement;
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
@@ -586,15 +588,15 @@ tie.directive('learnerView', [function() {
 
             // Setting reinforcement bullets
             reinforcement.clear();
-            for (var caseList in feedback.passedList) {
-              if (feedback.passedList[caseList]) {
+            for (var caseList in reinforcementObject.passedList) {
+              if (reinforcementObject.passedList[caseList]) {
                 reinforcement.appendPassedBullet("Handles " + caseList);
               } else {
                 reinforcement.appendFailedBullet("Fails " + caseList);
               }
             }
-            for (var testCase in feedback.pastFailsList) {
-              if (feedback.pastFailsList[testCase]) {
+            for (var testCase in reinforcementObject.pastFailsList) {
+              if (reinforcementObject.pastFailsList[testCase]) {
                 reinforcement.appendPassedBullet("Handles '" + testCase + "'");
               } else {
                 reinforcement.appendFailedBullet("Fails on '" + testCase + "'");

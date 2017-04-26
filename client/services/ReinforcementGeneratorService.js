@@ -21,7 +21,7 @@ tie.factory('ReinforcementGeneratorService', [
   function() {
 
     return {
-      getReinforcement: function(task, codeEvalResult, runtimeFeedback) {
+      getReinforcement: function(task, codeEvalResult) {
 
         // Initializing question reinforcement data if not done already
         if (!task.passedList) {
@@ -73,25 +73,26 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
-        runtimeFeedback.passedList = {};
+        var reinforcementObject = {};
+        reinforcementObject.passedList = {};
         for (var caseList in task.passedList) {
           if (task.passedList[caseList]) {
-            runtimeFeedback.passedList[caseList] = true;
+            reinforcementObject.passedList[caseList] = true;
           } else {
-            runtimeFeedback.passedList[caseList] = false;
+            reinforcementObject.passedList[caseList] = false;
           }
         }
 
-        runtimeFeedback.pastFailsList = {};
+        reinforcementObject.pastFailsList = {};
         for (var testCase in task.pastFailsList) {
           if (task.pastFailsList[testCase]) {
-            runtimeFeedback.pastFailsList[testCase] = true;
+            reinforcementObject.pastFailsList[testCase] = true;
           } else {
-            runtimeFeedback.pastFailsList[testCase] = false;
+            reinforcementObject.pastFailsList[testCase] = false;
           }
         }
 
-        return runtimeFeedback;
+        return reinforcementObject;
       }
     };
   }
