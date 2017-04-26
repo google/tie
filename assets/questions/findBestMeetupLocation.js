@@ -17,11 +17,11 @@
  * a Manhattan-like City.
  */
 
-globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notation
+globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-notation
   title: 'Best Meeting Location for N People in a Manhattan-like City',
   starterCode: {
     python:
-`def bestMeetupLocation(people):
+`def findBestMeetupLocation(people):
     return ""
 `
   },
@@ -46,25 +46,34 @@ globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notat
   },
   tasks: [{
     instructions: [
-      [
-        'N people live in a city with streets that form a regular 2D grid. ',
-        'They start out at different intersections and want to meet up. ',
-        'They are only able to move along the roads (no crossing blocks diagonally etc.). ',
-        'Write a function bestMeetupLocation(people) that returns a meeting place that ',
-        'minimizes the total travel distance.'
-      ].join(''),
-      [
-        'The input is a list of strings indicating the coordinates of the people in a 2D grid. ',
-        'Your function should return a string indicating the best meeting point for N people. ',
-        'For instance, the best meeting point for 3 people at ',
-        '"0, 0", "4, 2" and "2, 4" is "2, 2".'
-      ].join('')
+      {
+        content: [
+          'N people live in a city with streets that form a regular 2D grid. ',
+          'They start out at different intersections and want to meet up. ',
+          'They are only able to move orthogonally along the roads (no ',
+          'diagonal crossing). Write a function findBestMeetupLocation that ',
+          'returns a meeting place minimizing the total travel distance.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'The input is a list of strings indicating the coordinates of the ',
+          'people in a 2D grid. Your function should return a string ',
+          'indicating the best meeting point for N people.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: ["0, 0", "4, 2", "2, 4"]\nOutput: "2, 2"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'bestMeetupLocation',
+    mainFunctionName: 'findBestMeetupLocation',
     correctnessTests: [{
       input: ['0, 0', '4, 2', '10, 10'],
       allowedOutputs: ['4, 2']
@@ -92,20 +101,24 @@ globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notat
       inputDataAtom: '0, 0',
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
-      evaluationFunctionName: 'bestMeetupLocation'
+      evaluationFunctionName: 'findBestMeetupLocation'
     }]
   }, {
     instructions: [
-      [
-        'You might notice that some inputs have more than one possible "best" meeting point. ',
-        'Modify your bestMeetupLocation function to return a list of all of the best meeting points.'
-      ].join('')
+      {
+        content: [
+          'You might notice that some inputs have more than one possible ',
+          '"best" meeting point. Modify your bestMeetupLocation function to ',
+          'return a list of all of the best meeting points.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'bestMeetupLocation',
+    mainFunctionName: 'findBestMeetupLocation',
     correctnessTests: [{
       input: ['0, 0', '4, 2', '10, 10'],
       allowedOutputs: [['2, 2']]
@@ -125,9 +138,9 @@ globalData.questions['bestMeetupLocation'] = {  // eslint-disable-line dot-notat
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      'You should only be writing code in a bestMeetupLocation function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this question.'
+      'You should only be writing code in a bestMeetupLocation function. ',
+      'While decomposition is generally a good idea, you shouldn\'t need more',
+      'than just this function for this question.'
     ].join('')
   }]
 };

@@ -13,13 +13,16 @@
 // limitations under the License.
 
 /**
- * @fileoverview Data for the "strings" question set.
+ * @fileoverview Data for the set of non-string questions.
  */
 
-globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
+globalData.questionSets['other'] = {  // eslint-disable-line dot-notation
   introductionParagraphs: [
     'Greetings!',
-    'This set of questions focuses on string manipulation.',
+    [
+      'This set of questions focuses on other, not necessarily string-related ',
+      'tests. This is primarily for testing purposes, at the moment.'
+    ].join(''),
     [
       "Let's get started! You'll see the first question to your right. ",
       "Code a solution in the coding window below and hit \"Run\", and ",
@@ -27,11 +30,12 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
     ].join('')
   ],
   questionIds: [
-    'findMostCommonCharacter',
-    'reverseWords',
-    'isPalindrome',
-    'checkBalancedParentheses',
-    'internationalization',
-    'runLengthEncoding'
+    'bomberman',
+    'findAlphabet',
+    'findBestMeetupLocation',
+    'findFirstNonRepeatingCharacter',
+    'getStrobogrammaticNumbers',
+    'incrementDecimalCodedNumber',
+    'splitStringIntoWords'
   ]
 };

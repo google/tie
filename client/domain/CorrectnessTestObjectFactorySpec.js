@@ -18,6 +18,7 @@
 
 describe('CorrectnessTestObjectFactory', function() {
   var CorrectnessTestObjectFactory;
+  var MESSAGE = "hello";
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -38,6 +39,19 @@ describe('CorrectnessTestObjectFactory', function() {
     });
   });
 
+  describe('matchesOutputArray', function() {
+    it('should correctly match outputs that are arrays', function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: [['c', 'a'], ['c', 't']]
+      });
+
+      expect(correctnessTest.matchesOutput(['c', 'a'])).toBe(true);
+      expect(correctnessTest.matchesOutput(['c', 't'])).toBe(true);
+      expect(correctnessTest.matchesOutput(['a', 't'])).toBe(false);
+    });
+  });
+
   describe('getAnyAllowedOutput', function() {
     it('should correctly retrieve an allowed output', function() {
       var correctnessTest = CorrectnessTestObjectFactory.create({
@@ -48,4 +62,17 @@ describe('CorrectnessTestObjectFactory', function() {
       expect(['a', 'b']).toContain(correctnessTest.getAnyAllowedOutput());
     });
   });
+
+  describe('getMessage', function() {
+    it('should correctly get the message', function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a', 'b'],
+        message: MESSAGE
+      });
+
+      expect(correctnessTest.getMessage()).toMatch(MESSAGE);
+    });
+  });
 });
+

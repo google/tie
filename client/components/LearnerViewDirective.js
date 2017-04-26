@@ -41,8 +41,8 @@ tie.directive('learnerView', [function() {
               <div class="tie-feedback-window" ng-class="{'night-mode': isInDarkMode}">
                 <div class="tie-feedback">
                   <p ng-repeat="paragraph in feedbackParagraphs track by $index"
-                     class="tie-feedback-paragraph"
-                     ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                      class="tie-feedback-paragraph"
+                      ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                     <span ng-if="$first">{{feedbackTimestamp}}</span>
                     <span ng-if="paragraph.isTextParagraph()">
                       {{paragraph.getContent()}}
@@ -52,6 +52,17 @@ tie.directive('learnerView', [function() {
                     </span>
                   </p>
                 </div>
+                <div class="tie-feedback-syntax-error">
+                  <a href class="tie-feedback-syntax-error-link",
+                      ng-click="toggleSyntaxErrorHint()",
+                      ng-show="syntaxErrorFound">
+                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                  </a>
+                </div>
+                <br>
+                <span class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                  {{syntaxErrorString}}
+                </span>
                 <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                   <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
                   <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
@@ -69,12 +80,16 @@ tie.directive('learnerView', [function() {
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
                   </select>
-                  <select class="tie-theme-select" name="theme-select" 
-                          ng-change="changeTheme()" ng-model="theme"
+                  <select class="tie-question-set-select" name="question-set-select"
+                          ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
+                          ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                    <option style="display: none" value="">Question Set</option>
+                  </select>
+                  <select class="tie-theme-select" name="theme-select"
+                          ng-change="changeTheme(theme)" ng-model="theme"
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
-                    <option></option>
-                  </select>     
+                  </select>
                   <button class="tie-code-reset" name="code-reset"
                       ng-click="resetCode()">
                     Reset Code
@@ -104,12 +119,18 @@ tie.directive('learnerView', [function() {
                 <h3 class="tie-question-title">{{title}}</h3>
                 <div class="tie-previous-instructions">
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                    <p ng-repeat="paragraph in previousInstruction track by $index">{{paragraph}}</p>
+                    <div ng-repeat="instruction in previousInstruction track by $index">
+                      <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                      <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    </div>
                     <hr>
                   </div>
                 </div>
                 <div class="tie-instructions">
-                  <p ng-repeat="paragraph in instructions">{{paragraph}}</p>
+                  <div ng-repeat="instruction in instructions">
+                    <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                    <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,8 +166,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
+          margin-left: 5px;
           margin-top: 10px;
-          margin-left: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -170,7 +191,8 @@ tie.directive('learnerView', [function() {
           -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-theme-select:focus {
+            .tie-run-button:focus, .tie-question-set-select,
+            .tie-theme-select:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -206,6 +228,9 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
+        .tie-feedback-error-string {
+          color: #FF0000;
+        }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
           font-size: 14px;
@@ -236,6 +261,12 @@ tie.directive('learnerView', [function() {
           font-family: monospace;
           padding: 10px;
           width: 95%;
+        }
+        .tie-feedback, .tie-feedback-syntax-error {
+          display: inline-block;
+        }
+        .tie-feedback-syntax-error-link {
+          font-size: 12px;
         }
         .tie-lang-select-menu {
           float: left;
@@ -286,6 +317,21 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-question-code {
+          background: rgb(242, 242, 242);
+          border: 1px solid #ccc;
+          font-family: monospace;
+          font-size: 13px;
+          padding: 10px;
+          white-space: -moz-pre-wrap;
+          white-space: -o-pre-wrap;
+          white-space: -pre-wrap;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+        .tie-question-code.night-mode {
+          background: #212121;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
@@ -339,6 +385,11 @@ tie.directive('learnerView', [function() {
           background-color: rgb(42, 112, 232);
           border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
+        }
+        .tie-question-set-select {
+          float: left;
+          margin-left: 5px;
+          margin-top: 10px;
         }
         .tie-step-container-inner {
           display: flex;
@@ -405,10 +456,16 @@ tie.directive('learnerView', [function() {
           CodeStorageService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         var questionSetId = 'strings';
+        $scope.questionSetIds = [];
+        ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
+          var dict = {questionSetId: id};
+          $scope.questionSetIds.push(dict);
+        });
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -424,17 +481,6 @@ tie.directive('learnerView', [function() {
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
-        QuestionDataService.initCurrentQuestionSet(questionSetId);
-        var questionSet = QuestionDataService.getCurrentQuestionSet(
-          questionSetId);
-        $scope.currentQuestionIndex = 0;
-        $scope.questionIds = questionSet.getQuestionIds();
-        $scope.questionsCompletionStatus = [];
-        $scope.loadingIndicatorIsShown = false;
-        for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.questionsCompletionStatus.push(false);
-        }
-        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -465,6 +511,10 @@ tie.directive('learnerView', [function() {
           $scope.feedbackParagraphs = [];
         };
 
+        var hideSyntaxErrorLink = function() {
+          $scope.syntaxErrorFound = false;
+        };
+
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
@@ -490,22 +540,61 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
-            $scope.feedbackParagraphs = feedback.getParagraphs();
+            var feedbackParagraphs = feedback.getParagraphs();
+            // Get the index of syntax error in feedback.
+            var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            // The index must be either null (indicating no syntax error)
+            // or a positive integer.
+            if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
+              var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
+              feedbackParagraphs.splice(syntaxErrorIndex, 1);
+              $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+              $scope.syntaxErrorFound = true;
+            } else if (syntaxErrorIndex === null) {
+              $scope.syntaxErrorString = '';
+              $scope.syntaxErrorFound = false;
+            }
+            $scope.feedbackParagraphs = feedbackParagraphs;
           }
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
         };
 
-        $scope.changeTheme = function() {
-          if ($scope.theme === 'Dark') {
+        $scope.changeTheme = function(newTheme) {
+          if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if ($scope.theme === 'Light') {
+          if (newTheme === 'Light') {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+        };
+
+        $scope.changeQuestionSet = function(newQuestionSetId) {
+          if (ALLOWED_QUESTION_SET_IDS.indexOf(newQuestionSetId) === -1) {
+            return;
+          }
+          $scope.initQuestionSet(newQuestionSetId);
+        };
+
+        $scope.initQuestionSet = function(newQuestionSetId) {
+          QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
+          $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
+            newQuestionSetId);
+          $scope.currentQuestionIndex = 0;
+          $scope.questionIds = $scope.questionSet.getQuestionIds();
+          $scope.questionsCompletionStatus = [];
+          $scope.loadingIndicatorIsShown = false;
+          $scope.isSyntaxErrorShown = false;
+          for (var i = 0; i < $scope.questionIds.length; i++) {
+            $scope.questionsCompletionStatus.push(false);
+          }
+          $scope.autosaveTextIsDisplayed = false;
+          loadQuestion(
+            $scope.questionSet.getFirstQuestionId(),
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.codeMirrorOptions = {
@@ -525,6 +614,10 @@ tie.directive('learnerView', [function() {
           smartIndent: true,
           tabSize: 4,
           theme: 'default'
+        };
+
+        $scope.toggleSyntaxErrorHint = function() {
+          $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
         };
 
         $scope.showNextTask = function() {
@@ -547,6 +640,10 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before navigating to new question,
+          // disable the syntax error link and content.
+          hideSyntaxErrorLink();
+          $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
@@ -556,10 +653,12 @@ tie.directive('learnerView', [function() {
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(currentQuestionId,
             $scope.code, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {
+          hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
@@ -579,7 +678,8 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           CodeStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId, questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         var triggerAutosaveNotification = function(displaySeconds) {
@@ -620,10 +720,7 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        loadQuestion(
-          questionSet.getFirstQuestionId(),
-          questionSet.getIntroductionParagraphs());
-
+        $scope.initQuestionSet(questionSetId);
       }
     ]
   };
