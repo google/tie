@@ -506,18 +506,6 @@ tie.directive('learnerView', [function() {
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         var reinforcement = ReinforcementObjectFactory.create();
-        QuestionDataService.initCurrentQuestionSet(questionSetId);
-        var questionSet = QuestionDataService.getCurrentQuestionSet(
-          questionSetId);
-        $scope.currentQuestionIndex = 0;
-        $scope.questionIds = questionSet.getQuestionIds();
-        $scope.questionsCompletionStatus = [];
-        $scope.loadingIndicatorIsShown = false;
-        $scope.isSyntaxErrorShown = false;
-        for (var i = 0; i < $scope.questionIds.length; i++) {
-          $scope.questionsCompletionStatus.push(false);
-        }
-        $scope.autosaveTextIsDisplayed = false;
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
