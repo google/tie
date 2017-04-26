@@ -37,8 +37,10 @@ globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
     'incrementDecimalCodedNumber',
     'internationalization',
     'isPalindrome',
+    'longestSubstring',
     'reverseWords',
     'runLengthEncoding',
+    'sortItinerary',
     'splitStringIntoWords'
   ]
 };
