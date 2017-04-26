@@ -16,7 +16,7 @@
  * @fileoverview Question data for Balanced Parentheses.
  */
 
-globalData.questions['parens'] = {  // eslint-disable-line dot-notation
+globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot-notation
   title: 'Balanced Parentheses',
   starterCode: {
     python:
@@ -45,12 +45,19 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [
-      [
-        'For this question, you will implement the isBalanced function. ',
-        'It takes a string of parentheses as input and returns True if ',
-        'for every open parentheses there is a matching closing ',
-        'parentheses, and False otherwise. For example, (()) is balanced.'
-      ].join('')
+      {
+        content: [
+          'For this question, you will implement the isBalanced function. ',
+          'It takes a string of only parentheses as input and returns True if ',
+          'for every open parentheses there is a matching closing ',
+          'parentheses, and False otherwise.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: "(())"\nOutput: True',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -88,15 +95,21 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Now, double-check your code to make sure it handles unexpected cases, ',
-        'such as the empty string. Once you think that it does, submit it to ',
-        'check if you\'re correct.'
-      ].join(''),
-      [
-        "We will guarantee that you will always be passed a string, so ",
-        "don't worry about that."
-      ].join('')
+      {
+        content: [
+          'Now, double-check your code to make sure it handles unexpected ',
+          'cases, such as the empty string. Once you think that it does, ',
+          'submit it to check if you\'re correct.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          "We will guarantee that you will always be passed a string, so ",
+          "don't worry about that."
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -117,11 +130,17 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Next, modify your code to support all types of braces ',
-        '([], (), {}) and check that they are balanced against each other.'
-      ].join(''),
-      'For instance, [(){}] is balanced, but ([)] is not.'
+      {
+        content: [
+          'Next, modify your code to support all types of braces ',
+          '([], (), {}) and check that they are balanced against each other.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: '[(){}] is balanced, but ([)] is not.',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],

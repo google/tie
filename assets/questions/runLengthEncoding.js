@@ -16,7 +16,7 @@
  * @fileoverview Question data for Run-Length Encoding.
  */
 
-globalData.questions['rle'] = {  // eslint-disable-line dot-notation
+globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notation
   title: 'Run-Length Encoding',
   starterCode: {
     python:
@@ -135,12 +135,18 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
   },
   tasks: [{
     instructions: [
-      [
-        'In this question, you\'ll implement the encode function. It takes a ',
-        'string as input and returns an encoding of the string where long ',
-        'runs of characters are replaced by <# characters>x<character>. For ',
-        'example, "abcccccd" could be encoded as "ab5xcd". '
-      ].join('')
+      {
+        content: [
+          'In this question, you\'ll implement the encode function. It takes ',
+          'a string as input and returns an encoding of the string where long ',
+          'runs of characters are replaced by <# characters>x<character>.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: "abcccccd"\nOutput: "ab5xcd"',
+        type: 'code'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -172,10 +178,14 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Next, double-check your code to make sure it handles short strings. ',
-        'Ideally, these strings should be as small as possible after encoding.'
-      ].join('')
+      {
+        content: [
+          'Next, double-check your code to make sure it handles short ',
+          'strings. Ideally, these strings should be as small as possible ',
+          'after encoding.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
@@ -215,15 +225,22 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
     performanceTests: []
   }, {
     instructions: [
-      [
-        'Next, make sure that your method\'s output can accurately be decoded. ',
-        'For each <#x{c}> pair, the decode method will repeat the character c ',
-        '# times. Note that the input strings may also contain digits.'
-      ].join(''),
-      [
-        'We should be able to run "decode" on your encoded string and get the ',
-        'original string back as a result.'
-      ].join('')
+      {
+        content: [
+          'Next, make sure that your method\'s output can accurately be ',
+          'decoded. For each <#x{c}> pair, the decode method will repeat the ',
+          'character c # times. Note that the input strings may also contain ',
+          'digits.'
+        ].join(''),
+        type: 'text'
+      },
+      {
+        content: [
+          'We should be able to run "decode" on your encoded string and get ',
+          'the original string back as a result.'
+        ].join(''),
+        type: 'text'
+      }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
