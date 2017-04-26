@@ -19,10 +19,12 @@
 
 tie.factory('TaskObjectFactory', [
   'CorrectnessTestObjectFactory', 'BuggyOutputTestObjectFactory',
-  'PerformanceTestObjectFactory',
+  'PerformanceTestObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
+  'CLASS_NAME_SYSTEM_CODE',
   function(
       CorrectnessTestObjectFactory, BuggyOutputTestObjectFactory,
-      PerformanceTestObjectFactory) {
+      PerformanceTestObjectFactory, CLASS_NAME_AUXILIARY_CODE,
+      CLASS_NAME_SYSTEM_CODE) {
     var Task = function(taskDict) {
       // A list of strings (where each string corresponds to a paragraph in the
       // UI).
@@ -64,6 +66,19 @@ tie.factory('TaskObjectFactory', [
     };
 
     Task.prototype.getOutputFunctionName = function() {
+      return this._outputFunctionName;
+    };
+
+    Task.prototype.getOutputFunctionNameWithoutClass = function() {
+      if (this._outputFunctionName.startsWith(
+        CLASS_NAME_AUXILIARY_CODE)) {
+        return this._outputFunctionName.substring(
+          CLASS_NAME_AUXILIARY_CODE.length + 1);
+      } else if (this._outputFunctionName.startsWith(
+        CLASS_NAME_SYSTEM_CODE)) {
+        return this._outputFunctionName.substring(
+          CLASS_NAME_SYSTEM_CODE.length + 1);
+      }
       return this._outputFunctionName;
     };
 
