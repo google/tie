@@ -240,6 +240,15 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
           'the original string back as a result.'
         ].join(''),
         type: 'text'
+      },
+      {
+        content: [
+          'You may find that, in order to complete this task, you have to ',
+          'relax or compromise on some of the original constraints. As ',
+          'long as the input can be correctly encoded and then decoded, ',
+          'this is fine.'
+        ].join(''),
+        type: 'text'
       }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],

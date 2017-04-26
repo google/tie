@@ -37,9 +37,10 @@ tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
 // Class name for wrapping student code. Answer submissions are then run
 // using CLASS_NAME_STUDENT_CODE.function_name().
 tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
-// Class name for wrapping auxiliary code. Answer submissions are then run
-// using CLASS_NAME_STUDENT_CODE.function_name().
+// Class name for wrapping auxiliary code, primarily used for test evaluation.
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+// Class name for wrapping system code.
+tie.constant('CLASS_NAME_SYSTEM_CODE', 'AuxiliaryCode');
 
 // Imports and system-level functions that should be appended to all code.
 tie.constant('SYSTEM_CODE', {
