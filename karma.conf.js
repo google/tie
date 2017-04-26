@@ -15,6 +15,8 @@ module.exports = function(config) {
       'third_party/skulpt-0.10.0/skulpt.min.js',
       'third_party/skulpt-0.10.0/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
+      'third_party/jquery-3.2.1.min.js',
+      'third_party/jquery-ui-1.12.1/jquery-ui.min.js',
       'client/app.js',
       'client/**/*.js',
       'assets/**/*.js'
