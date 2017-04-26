@@ -20,8 +20,11 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService',
-  'CODE_EXECUTION_TIMEOUT_SECONDS', function(
-    FeedbackObjectFactory, TranscriptService, CODE_EXECUTION_TIMEOUT_SECONDS) {
+  'CODE_EXECUTION_TIMEOUT_SECONDS', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
+  'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', function(
+    FeedbackObjectFactory, TranscriptService,
+    CODE_EXECUTION_TIMEOUT_SECONDS, PREREQ_CHECK_TYPE_BAD_IMPORT,
+    PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -63,24 +66,26 @@ tie.factory('FeedbackGeneratorService', [
       var lastSnapshot = (
         TranscriptService.getTranscript().getPreviousSnapshot());
       if (lastSnapshot !== null) {
-        // This section makes sure to provide a new hint
-        // if the student gets stuck on the same bug by checking
-        // that they've submitted new code with the same error.
-        var previousFeedback = lastSnapshot.getFeedback();
-        var previousHintIndex = previousFeedback.getHintIndex();
-        if (previousHintIndex !== null) {
-          var previousMessages = previousFeedback.getParagraphs();
-          // This could cause a problem if two different buggy outputs
-          // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() ===
-              buggyMessages[previousHintIndex]) {
-            var previousCode = (
-              lastSnapshot.getCodeEvalResult().getCode());
-            if (previousCode === codeEvalResult.getCode() ||
-                previousHintIndex === buggyMessages.length - 1) {
-              hintIndex = previousHintIndex;
-            } else {
-              hintIndex = previousHintIndex + 1;
+        if (lastSnapshot.getCodeEvalResult() !== null) {
+          // This section makes sure to provide a new hint
+          // if the student gets stuck on the same bug by checking
+          // that they've submitted new code with the same error.
+          var previousFeedback = lastSnapshot.getFeedback();
+          var previousHintIndex = previousFeedback.getHintIndex();
+          if (previousHintIndex !== null) {
+            var previousMessages = previousFeedback.getParagraphs();
+            // This could cause a problem if two different buggy outputs
+            // have the exact same hint, but that shouldn't be allowed.
+            if (previousMessages[0].getContent() ===
+                buggyMessages[previousHintIndex]) {
+              var previousCode = (
+                lastSnapshot.getCodeEvalResult().getCode());
+              if (previousCode === codeEvalResult.getCode() ||
+                  previousHintIndex === buggyMessages.length - 1) {
+                hintIndex = previousHintIndex;
+              } else {
+                hintIndex = previousHintIndex + 1;
+              }
             }
           }
         }
@@ -222,22 +227,44 @@ tie.factory('FeedbackGeneratorService', [
         feedback.setSyntaxErrorIndex(feedback.getParagraphs().length - 1);
         return feedback;
       },
-      getPrerequisiteFailureFeedback: function(prereqEvalResult) {
+      getPrereqFailureFeedback: function(codePrereqCheckResult) {
         var feedback = FeedbackObjectFactory.create(false);
-        var errorMessage =
-          prereqEvalResult.getPrereqErrorMessage();
-        feedback.appendTextParagraph(
-          "It looks like there is a problem with your code:");
-        var errorParagraphs = errorMessage.split('\n');
-        for (var i = 0; i < errorParagraphs.length; i++) {
-          feedback.appendTextParagraph(errorParagraphs[i]);
+        var preReqFailures = codePrereqCheckResult.getPrereqCheckFailures();
+
+        /* This function shouldn't be invoked unless there is at least one
+        pre-requisite check failure, but the code below is provided to prevent
+        an index out of bounds error. */
+        if (preReqFailures.length === 0) {
+          feedback.appendTextParagraph("Prerequisite checks passed!");
+          return feedback;
         }
-        var starterCode = prereqEvalResult.getStarterCode();
-        if (starterCode) {
-          feedback.appendCodeParagraph(starterCode);
+
+        // Check first error type and generate appropriate feedback message.
+        var preReqFailure = preReqFailures[0];
+        if (preReqFailure['type'] === PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
+          feedback.appendTextParagraph(['It looks like you deleted or ',
+            ' modified the starter code!  Our evaluation program requires the ',
+            'function names given in the starter code.  You can press the ',
+            '\'Reset Code\' button below to start over.  Or, you can copy ',
+            'the starter code below:'].join(''));
+          feedback.appendCodeParagraph(preReqFailure['starterCode']);
+          return feedback;
         }
-        feedback.appendTextParagraph("Can you correct this issue?");
-        return feedback;
+        else if (preReqFailure['type'] === PREREQ_CHECK_TYPE_BAD_IMPORT) {
+          feedback.appendTextParagraph(['It looks like you are importing an ',
+            'external library.  Only standard libraries are supported.  ',
+            'The following libraries are not supported:\n'].join(''));
+          var badImports = preReqFailure['badImports'];
+          feedback.appendCodeParagraph(badImports.join('\n'));
+          return feedback;
+        }
+        else {
+          /* If pre-requisite check type is not handled above, generate generic
+          feedback message (this should not happen). */
+          feedback.appendTextParagraph(['Your code failed a pre-requisite ',
+            'check.'].join());
+          return feedback;
+        }
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,

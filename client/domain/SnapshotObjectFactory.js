@@ -19,28 +19,28 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    var Snapshot = function(codeEvalResult, prereqEvalResult, feedback) {
+    var Snapshot = function(codePrereqCheckResult, codeEvalResult, feedback) {
+      this._codePrereqCheckResult = codePrereqCheckResult;
       this._codeEvalResult = codeEvalResult;
-      this._prereqEvalResult = prereqEvalResult;
       this._feedback = feedback;
       this._timestamp = '';
     };
 
     // Instance methods.
+    Snapshot.prototype.getCodePrereqCheckResult = function() {
+      return this._prereqEvalResult;
+    };
+
+    Snapshot.prototype.setCodePrereqCheckResult = function(prereqEvalResult) {
+      this._prereqEvalResult = prereqEvalResult;
+    };
+
     Snapshot.prototype.getCodeEvalResult = function() {
       return this._codeEvalResult;
     };
 
     Snapshot.prototype.setCodeEvalResult = function(codeEvalResult) {
       this._codeEvalResult = codeEvalResult;
-    };
-
-    Snapshot.prototype.getPrereqEvalResult = function() {
-      return this._prereqEvalResult;
-    };
-
-    Snapshot.prototype.setPrereqEvalResult = function(prereqEvalResult) {
-      this._prereqEvalResult = prereqEvalResult;
     };
 
     Snapshot.prototype.getFeedback = function() {
@@ -52,8 +52,9 @@ tie.factory('SnapshotObjectFactory', [
     };
 
     // Static class methods.
-    Snapshot.create = function(codeEvalResult, prereqEvalResult, feedback) {
-      return new Snapshot(codeEvalResult, prereqEvalResult, feedback);
+    Snapshot.create = function(codePrereqCheckResult, codeEvalResult,
+      feedback) {
+      return new Snapshot(codePrereqCheckResult, codeEvalResult, feedback);
     };
 
     return Snapshot;

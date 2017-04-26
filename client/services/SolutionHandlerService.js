@@ -19,11 +19,12 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'PrerequisiteCheckDispatcherService',
-  'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
+  'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
+  'SnapshotObjectFactory', 'TranscriptService',
+  'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, PrerequisiteCheckDispatcherService,
+      FeedbackGeneratorService, PrereqCheckDispatcherService,
       SnapshotObjectFactory, TranscriptService,
       CodeSubmissionObjectFactory) {
     return {
@@ -31,17 +32,17 @@ tie.factory('SolutionHandlerService', [
       processSolutionAsync: function(
           task, starterCode, studentCode, auxiliaryCode, language) {
         // First, check pre-requisites for the submitted code
-        return PrerequisiteCheckDispatcherService.checkCode(
+        return PrereqCheckDispatcherService.checkCode(
           language, starterCode, studentCode
-        ).then(function(prereqEvalResult) {
-          var prereqErrorMessage =
-            prereqEvalResult.getPrereqErrorMessage();
-          if (prereqErrorMessage) {
+        ).then(function(codePrereqCheckResult) {
+          var prereqCheckFailures =
+            codePrereqCheckResult.getPrereqCheckFailures();
+          if (prereqCheckFailures.length > 0) {
             var prereqFeedback =
-              FeedbackGeneratorService.getPrerequisiteFailureFeedback(
-              prereqEvalResult);
+              FeedbackGeneratorService.getPrereqFailureFeedback(
+              codePrereqCheckResult);
             TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(null, prereqEvalResult,
+              SnapshotObjectFactory.create(codePrereqCheckResult, null,
                 prereqFeedback));
             return $q.resolve(prereqFeedback);
           }
@@ -55,7 +56,7 @@ tie.factory('SolutionHandlerService', [
               var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(rawCodeEvalResult, null,
+                SnapshotObjectFactory.create(null, rawCodeEvalResult,
                   feedback));
               return $q.resolve(feedback);
             }
@@ -78,7 +79,7 @@ tie.factory('SolutionHandlerService', [
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
                 task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(codeEvalResult, null,
+                SnapshotObjectFactory.create(null, codeEvalResult,
                   runtimeFeedback));
               return runtimeFeedback;
             });
