@@ -94,7 +94,7 @@ tie.directive('learnerView', [function() {
                       ng-click="resetCode()">
                     Reset Code
                   </button>
-                  <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                  <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                     Saving code...
                   </div>
                   <button class="tie-run-button"
@@ -140,6 +140,8 @@ tie.directive('learnerView', [function() {
       <style>
         html {
           height: 100%;
+          min-height: 622px;
+          min-width: 1331px;
         }
         body {
           background-color: rgb(242, 242, 242);
@@ -163,6 +165,9 @@ tie.directive('learnerView', [function() {
           float: left;
           margin-top: 10px;
           margin-left: 10px;
+        }
+        .tie-code-auto-save.night-mode {
+          color: #E0E0E0;
         }
         .tie-code-reset {
           float: left;
@@ -332,6 +337,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-question-code.night-mode {
           background: #212121;
+        }
+        .tie-question-code.night-mode {
+          background-color: #333;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);

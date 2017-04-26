@@ -93,14 +93,24 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     var _getCorrectnessTestFeedback = function(
-      correctnessTest, observedOutput) {
+      outputFunctionName, correctnessTest, observedOutput) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
+      // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
-      feedback.appendCodeParagraph(
-        'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
-        'Output: ' + _jsToHumanReadable(observedOutput));
-      feedback.appendTextParagraph('However, the expected output is:');
+      if (outputFunctionName) {
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          ('Output (after running ' + outputFunctionName + '): ' +
+            _jsToHumanReadable(observedOutput)));
+        feedback.appendTextParagraph(
+          'However, the expected output of ' + outputFunctionName + ' is:');
+      } else {
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          'Output: ' + _jsToHumanReadable(observedOutput));
+        feedback.appendTextParagraph('However, the expected output is:');
+      }
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
       feedback.appendTextParagraph('Could you fix this?');
@@ -187,9 +197,9 @@ tie.factory('FeedbackGeneratorService', [
           for (i = 0; i < correctnessTests.length; i++) {
             var observedOutput = observedOutputs[i];
 
-            // TODO(eyurko): Add varied statements for when code is incorrect.
             if (!correctnessTests[i].matchesOutput(observedOutput)) {
               return _getCorrectnessTestFeedback(
+                task.getOutputFunctionNameWithoutClass(),
                 correctnessTests[i], observedOutput);
             }
           }

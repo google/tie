@@ -36,6 +36,8 @@ globalData.questionSets['other'] = {  // eslint-disable-line dot-notation
     'findFirstNonRepeatingCharacter',
     'getStrobogrammaticNumbers',
     'incrementDecimalCodedNumber',
+    'longestSubstring',
+    'sortItinerary',
     'splitStringIntoWords'
   ]
 };
