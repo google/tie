@@ -40,6 +40,7 @@ globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
     'longestSubstring',
     'reverseWords',
     'runLengthEncoding',
+    'sortItinerary',
     'splitStringIntoWords'
   ]
 };
