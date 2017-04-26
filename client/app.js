@@ -33,7 +33,7 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
-tie.constant('PYTHON_STANDARD_LIBRARIES', ['collections', 'image',
+tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
   'math', 'operator', 'random', 're', 'string', 'time']);
 
 // Class name for wrapping student code. Answer submissions are then run

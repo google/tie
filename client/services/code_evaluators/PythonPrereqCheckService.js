@@ -18,53 +18,61 @@
  */
 
 tie.factory('PythonPrereqCheckService', [
-  'CodePrereqCheckResultObjectFactory',
+  'CodePrereqCheckResultObjectFactory', 'PrereqCheckFailureObjectFactory',
   'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
-  'PYTHON_STANDARD_LIBRARIES',
+  'SUPPORTED_PYTHON_LIBS',
   function(
-      CodePrereqCheckResultObjectFactory,
+      CodePrereqCheckResultObjectFactory, PrereqCheckFailureObjectFactory,
       PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
-      PYTHON_STANDARD_LIBRARIES) {
+      SUPPORTED_PYTHON_LIBS) {
 
-    var extractTopLevelFunctions = function(starterCode) {
-      var starterCodeLines = starterCode.split('\n');
-      var topLevelFunctions = [];
-      for (var i = 0; i < starterCodeLines.length; i++) {
-        var line = starterCodeLines[i].trim();
-        if (line.startsWith("def ")) {
-          topLevelFunctions.push(line);
-        }
-      }
-      return topLevelFunctions;
+    var rightTrim = function(str) {
+      //remove trailing white space at end of string
+      var RIGHT_TRIM_PATTERN = /\s+$/;
+      return str.replace(RIGHT_TRIM_PATTERN, '');
     };
 
-    var verifyTopLevelFunctionsExist = function(
-      code, expectedTopLevelFunctions) {
+    var extractTopLevelFunctionLines = function(starterCode) {
+      var starterCodeLines = starterCode.split('\n');
+      var topLevelFunctionLines = [];
+      for (var i = 0; i < starterCodeLines.length; i++) {
+        var line = rightTrim(starterCodeLines[i]);
+        if (line.startsWith("def ")) {
+          topLevelFunctionLines.push(line);
+        }
+      }
+      return topLevelFunctionLines;
+    };
+
+    var doTopLevelFunctionLinesExist = function(
+      code, expectedTopLevelFunctionLines) {
       var codeLines = code.split('\n');
       for (var i = 0; i < codeLines.length; i++) {
-        codeLines[i] = codeLines[i].trim();
+        codeLines[i] = rightTrim(codeLines[i]);
       }
-      for (var i = 0; i < expectedTopLevelFunctions.length; i++) {;
-        if (codeLines.indexOf(expectedTopLevelFunctions[i]) === -1) {
+
+      for (var i = 0; i < expectedTopLevelFunctionLines.length; i++) {;
+        if (codeLines.indexOf(expectedTopLevelFunctionLines[i]) === -1) {
           return false;
         }
       }
       return true;
     };
 
-    var checkStarterCodePresent = function(starterCode, code) {
-      var expectedTopLevelFunctions = extractTopLevelFunctions(starterCode);
-      return verifyTopLevelFunctionsExist(code, expectedTopLevelFunctions);
+    var checkStarterCodeFunctionsPresent = function(starterCode, code) {
+      var expectedTopLevelFunctionLines = extractTopLevelFunctionLines(
+        starterCode);
+      return doTopLevelFunctionLinesExist(code, expectedTopLevelFunctionLines);
     };
 
     var getImportedLibraries = function(code) {
       var codeLines = code.split('\n');
       var importedLibraries = [];
-      var importPattern = new RegExp('(^import\\ )(\\w+)($)');
+      var importPattern = new RegExp('^import\\ (\\w+)$');
       for (var i = 0; i < codeLines.length; i++) {
         var match =  importPattern.exec(codeLines[i]);
         if (match) {
-          importedLibraries.push(match[2]);
+          importedLibraries.push(match[1]);
         }
       }
       return importedLibraries;
@@ -73,7 +81,7 @@ tie.factory('PythonPrereqCheckService', [
     var getUnsupportedImports = function(importedLibraries) {
       var unsupportedImports = importedLibraries.filter(function(
         importedLibrary) {
-        return PYTHON_STANDARD_LIBRARIES.indexOf(importedLibrary) === -1;
+          return SUPPORTED_PYTHON_LIBS.indexOf(importedLibrary) === -1;
         }
       );
       return unsupportedImports;
@@ -83,10 +91,11 @@ tie.factory('PythonPrereqCheckService', [
       // Returns a promise.
       checkCode: function(starterCode, code) {
         // check that starter code is present
-        if (!(checkStarterCodePresent(starterCode, code))) {
-          var prereqCheckFailures = [{'type':
-            PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
-            'starterCode': starterCode}];
+        if (!(checkStarterCodeFunctionsPresent(starterCode, code))) {
+          var prereqCheckFailures = [];
+          prereqCheckFailures.push(
+            PrereqCheckFailureObjectFactory.create(
+              PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode));
           return Promise.resolve(
             CodePrereqCheckResultObjectFactory.create(
               prereqCheckFailures));
@@ -96,9 +105,10 @@ tie.factory('PythonPrereqCheckService', [
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
         if (unsupportedImports.length > 0) {
-          var prereqCheckFailures = [{'type':
-            PREREQ_CHECK_TYPE_BAD_IMPORT,
-            'badImports': unsupportedImports}];
+          var prereqCheckFailures = [];
+          prereqCheckFailures.push(
+            PrereqCheckFailureObjectFactory.create(
+              PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null));
             return Promise.resolve(
               CodePrereqCheckResultObjectFactory.create(
                 prereqCheckFailures));
@@ -109,11 +119,11 @@ tie.factory('PythonPrereqCheckService', [
           CodePrereqCheckResultObjectFactory.create(
           []));
       },
-      checkStarterCodePresent: checkStarterCodePresent,
-      extractTopLevelFunctions: extractTopLevelFunctions,
+      checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
+      doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
+      extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
-      getUnsupportedImports: getUnsupportedImports,
-      verifyTopLevelFunctionsExist: verifyTopLevelFunctionsExist
+      getUnsupportedImports: getUnsupportedImports
     };
   }
 ]);

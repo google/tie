@@ -20,11 +20,9 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService',
-  'CODE_EXECUTION_TIMEOUT_SECONDS', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
-  'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', function(
+  'CODE_EXECUTION_TIMEOUT_SECONDS', function(
     FeedbackObjectFactory, TranscriptService,
-    CODE_EXECUTION_TIMEOUT_SECONDS, PREREQ_CHECK_TYPE_BAD_IMPORT,
-    PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
+    CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -227,39 +225,36 @@ tie.factory('FeedbackGeneratorService', [
       },
       getPrereqFailureFeedback: function(codePrereqCheckResult) {
         var feedback = FeedbackObjectFactory.create(false);
-        var preReqFailures = codePrereqCheckResult.getPrereqCheckFailures();
+        var prereqCheckFailures =
+          codePrereqCheckResult.getPrereqCheckFailures();
 
         /* This function shouldn't be invoked unless there is at least one
-        pre-requisite check failure, but the code below is provided to prevent
-        an index out of bounds error. */
-        if (preReqFailures.length === 0) {
-          feedback.appendTextParagraph("Prerequisite checks passed!");
-          return feedback;
+        pre-requisite check failure. */
+        if (prereqCheckFailures.length === 0) {
+          throw new Error('getPrereqFailureFeedback() called with 0 failures.');
         }
 
         // Check first error type and generate appropriate feedback message.
-        var preReqFailure = preReqFailures[0];
-        if (preReqFailure.get('type') === PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
+        var preReqFailure = prereqCheckFailures[0];
+        if (preReqFailure.isMissingStarterCode()) {
           feedback.appendTextParagraph(['It looks like you deleted or ',
             ' modified the starter code!  Our evaluation program requires the ',
             'function names given in the starter code.  You can press the ',
             '\'Reset Code\' button below to start over.  Or, you can copy ',
             'the starter code below:'].join(''));
-          feedback.appendCodeParagraph(preReqFailure.get('starterCode'));
+          feedback.appendCodeParagraph(preReqFailure.getStarterCode());
           return feedback;
-        } else if (preReqFailure.get('type') === PREREQ_CHECK_TYPE_BAD_IMPORT) {
+        } else if (preReqFailure.isBadImport) {
           feedback.appendTextParagraph(['It looks like you are importing an ',
             'external library.  Only standard libraries are supported.  ',
             'The following libraries are not supported:\n'].join(''));
-          var badImports = preReqFailure.get('badImports');
+          var badImports = preReqFailure.getBadImports();
           feedback.appendCodeParagraph(badImports.join('\n'));
           return feedback;
         } else {
-          /* If pre-requisite check type is not handled above, generate generic
-          feedback message (this should not happen). */
-          feedback.appendTextParagraph(['Your code failed a pre-requisite ',
-            'check.'].join());
-          return feedback;
+          // Prereq check failure type not handled; throw an error
+          throw new Error(['Unrecognized prereq check failure type ',
+            'in getPrereqFailureFeedback().'].join());
         }
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,

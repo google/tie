@@ -28,11 +28,12 @@ tie.factory('SnapshotObjectFactory', [
 
     // Instance methods.
     Snapshot.prototype.getCodePrereqCheckResult = function() {
-      return this._prereqEvalResult;
+      return this._codePrereqCheckResult;
     };
 
-    Snapshot.prototype.setCodePrereqCheckResult = function(prereqEvalResult) {
-      this._prereqEvalResult = prereqEvalResult;
+    Snapshot.prototype.setCodePrereqCheckResult = function(
+      codePrereqCheckResult) {
+      this._codePrereqCheckResult = codePrereqCheckResult;
     };
 
     Snapshot.prototype.getCodeEvalResult = function() {
