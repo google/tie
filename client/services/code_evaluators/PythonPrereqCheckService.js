@@ -46,17 +46,14 @@ tie.factory('PythonPrereqCheckService', [
 
     var doTopLevelFunctionLinesExist = function(
       code, expectedTopLevelFunctionLines) {
-      var codeLines = code.split('\n');
-      for (var i = 0; i < codeLines.length; i++) {
-        codeLines[i] = rightTrim(codeLines[i]);
-      }
-
-      for (var i = 0; i < expectedTopLevelFunctionLines.length; i++) {;
-        if (codeLines.indexOf(expectedTopLevelFunctionLines[i]) === -1) {
-          return false;
+        var codeLines = code.split('\n');
+        for (var i = 0; i < codeLines.length; i++) {
+          codeLines[i] = rightTrim(codeLines[i]);
         }
-      }
-      return true;
+
+        return expectedTopLevelFunctionLines.every(function(expectedLine) {
+          return codeLines.indexOf(expectedLine) !== -1;
+        });
     };
 
     var checkStarterCodeFunctionsPresent = function(starterCode, code) {
