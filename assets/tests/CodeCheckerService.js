@@ -21,7 +21,7 @@ tie.factory('CodeCheckerService', [
   function() {
     // TODO(eyurko): Add check that definition occurs at line start.
     var _checkIfFunctionExistsInCode = function(functionName, code) {
-      var functionDefinition = 'def ' + functionName;
+      var functionDefinition = 'def ' + functionName + '(';
       return code.indexOf(functionDefinition) !== -1;
     };
 
