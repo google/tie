@@ -27,7 +27,7 @@ tie.factory('PythonPrereqCheckService', [
       SUPPORTED_PYTHON_LIBS) {
 
     var rightTrim = function(str) {
-      //remove trailing white space at end of string
+      // Remove trailing white space at end of string.
       var RIGHT_TRIM_PATTERN = /\s+$/;
       return str.replace(RIGHT_TRIM_PATTERN, '');
     };
@@ -37,7 +37,7 @@ tie.factory('PythonPrereqCheckService', [
       var topLevelFunctionLines = [];
       for (var i = 0; i < starterCodeLines.length; i++) {
         var line = rightTrim(starterCodeLines[i]);
-        if (line.startsWith("def ")) {
+        if (line.startsWith('def ')) {
           topLevelFunctionLines.push(line);
         }
       }
@@ -87,7 +87,7 @@ tie.factory('PythonPrereqCheckService', [
     return {
       // Returns a promise.
       checkCode: function(starterCode, code) {
-        // check that starter code is present
+        // Check that starter code is present.
         if (!(checkStarterCodeFunctionsPresent(starterCode, code))) {
           var prereqCheckFailures = [];
           prereqCheckFailures.push(
@@ -98,7 +98,7 @@ tie.factory('PythonPrereqCheckService', [
               prereqCheckFailures));
         }
 
-        // verify no unsupported libraries are imported
+        // Verify no unsupported libraries are imported.
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
         if (unsupportedImports.length > 0) {
@@ -111,7 +111,7 @@ tie.factory('PythonPrereqCheckService', [
                 prereqCheckFailures));
         }
 
-        // Otherwise, code passed all pre-requisite checks
+        // Otherwise, code passed all pre-requisite checks.
         return Promise.resolve(
           CodePrereqCheckResultObjectFactory.create(
           []));
