@@ -42,10 +42,10 @@ describe('SolutionHandlerService', function() {
         outputFunctionName: null,
         mainFunctionName: 'mockMainFunction',
         correctnessTests: [{
-          input: 'testcase_0',
+          input: 'task_1_correctness_test_1',
           allowedOutputs: [true]
         }, {
-          input: 'testcase_1',
+          input: 'task_1_correctness_test_2',
           allowedOutputs: [true]
         }],
         buggyOutputTests: [{
@@ -66,10 +66,10 @@ describe('SolutionHandlerService', function() {
         outputFunctionName: null,
         mainFunctionName: 'mockMainFunction',
         correctnessTests: [{
-          input: 'testcase_2',
+          input: 'task_2_correctness_test_1',
           allowedOutputs: [false]
         }, {
-          input: 'testcase_3',
+          input: 'task_2_correctness_test_2',
           allowedOutputs: [false]
         }],
         buggyOutputTests: [{
@@ -108,7 +108,7 @@ describe('SolutionHandlerService', function() {
           'verify that the learner has the correct answer', function() {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    if len(input) > 0 and (input[-1] == "0" or input[-1] == "1"):',
+          '    if len(input) > 0 and input[:6] == "task_1":',
           '        return True',
           '    return False'
         ].join('\n');
@@ -127,7 +127,7 @@ describe('SolutionHandlerService', function() {
           'verify that the learner fails on task1', function() {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    if len(input) > 0 and input[-1] == "0":',
+          '    if len(input) > 0 and input == "task_1_correctness_test_1":',
           '        return True',
           '    return False'
         ].join('\n');
@@ -139,7 +139,7 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[1].getContent()).toEqual(
-                "Input: \"testcase_1\"\nOutput: False");
+                "Input: \"task_1_correctness_test_2\"\nOutput: False");
           });
         }, 0);
       });
@@ -148,7 +148,7 @@ describe('SolutionHandlerService', function() {
           'verify that the learner fails on task2', function() {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    if len(input) > 0 and input[-1] == "3":',
+          '    if len(input) > 0 and input == "task_2_correctness_test_2":',
           '        return False',
           '    return True'
         ].join('\n');
@@ -160,7 +160,7 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[1].getContent()).toEqual(
-               "Input: \"testcase_2\"\nOutput: True");
+               "Input: \"task_2_correctness_test_1\"\nOutput: True");
           });
         }, 0);
       });
@@ -170,7 +170,7 @@ describe('SolutionHandlerService', function() {
           'error message of task1 is displayed', function() {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    if len(input) > 0 and (input[-1] == "0" or input[-1] == "2"):',
+          '    if len(input) > 0 and input[-1] == "1":',
           '        return False',
           '    return True'
         ].join('\n');
@@ -182,7 +182,7 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[1].getContent()).toEqual(
-                "Input: \"testcase_0\"\nOutput: False");
+                "Input: \"task_1_correctness_test_1\"\nOutput: False");
           });
         }, 0);
       });
@@ -223,7 +223,7 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[1].getContent()).toEqual(
-               "Input: \"testcase_0\"\nOutput: False");
+               "Input: \"task_1_correctness_test_1\"\nOutput: False");
           });
         }, 0);
       });

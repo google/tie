@@ -630,10 +630,7 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               // Tasks from the first to current.
-              var orderedTasks = [];
-              for (var index = 0; index <= currentTaskIndex; index++) {
-                orderedTasks = orderedTasks.concat(tasks[index]);
-              }
+              var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
               SolutionHandlerService.processSolutionAsync(
                 orderedTasks, code,
                 question.getAuxiliaryCode(language), language
