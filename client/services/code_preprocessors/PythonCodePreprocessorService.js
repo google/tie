@@ -26,7 +26,8 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
-      'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
+      'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
+    var VALID_WHITESPACE_REGEX = new RegExp('[\\s]');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
 
@@ -111,6 +112,8 @@ tie.factory('PythonCodePreprocessorService', [
         }
         var matchingString = regexResult[0];
         var functionName = regexResult[1];
+        var functionNameWithoutParen = functionName.substring(
+          0, functionName.length - 1).trim()
 
         // Do not modify inner functions.
         var matchIndex = code.indexOf(matchingString);
@@ -126,11 +129,32 @@ tie.factory('PythonCodePreprocessorService', [
         while (true) {
           var codeToAdd = '';
           lastFunctionNameLocation = code.indexOf(
-            functionName, lastFunctionNameLocation);
+            functionNameWithoutParen, lastFunctionNameLocation);
           if (lastFunctionNameLocation === -1) {
             break;
           }
           if (lastFunctionNameLocation !== functionNameStart) {
+            var whitespaceCheckLocation = (
+              lastFunctionNameLocation + functionNameWithoutParen.length);
+            // We assume we found the matched function, but we might have found
+            // a similarly-named other function / variable. User-inputted code
+            // can be ... tricky.
+            var isMatchedFunction = true;
+            // We can safely assume there's a left paren because we matched it
+            // with the regular expression.
+            while (code[whitespaceCheckLocation] != '(') {
+              var isValidWhitespace = VALID_WHITESPACE_REGEX.test(
+                code[whitespaceCheckLocation])
+              whitespaceCheckLocation++;
+              if (!isValidWhitespace) {
+                isMatchedFunction = false;
+                break;
+              }
+            }
+            if (!isMatchedFunction) {
+              lastFunctionNameLocation++;
+              continue;
+            }
             codeToAdd = functionPrefix;
             code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
               code.slice(lastFunctionNameLocation, code.length));
