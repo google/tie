@@ -18,17 +18,13 @@
  */
 
 tie.factory('QuestionObjectFactory', [
-  'TaskObjectFactory', 'StyleTestObjectFactory',
-  function(TaskObjectFactory, StyleTestObjectFactory) {
+  'TaskObjectFactory', function(TaskObjectFactory) {
     var Question = function(questionDict) {
       this._title = questionDict.title;
       this._starterCode = questionDict.starterCode;
       this._auxiliaryCode = questionDict.auxiliaryCode;
       this._tasks = questionDict.tasks.map(function(taskDict) {
         return TaskObjectFactory.create(taskDict);
-      });
-      this._styleTests = questionDict.styleTests.map(function(styleTestDict) {
-        return StyleTestObjectFactory.create(styleTestDict);
       });
     };
 
@@ -60,10 +56,6 @@ tie.factory('QuestionObjectFactory', [
 
     Question.prototype.getTasks = function() {
       return this._tasks;
-    };
-
-    Question.prototype.getStyleTests = function() {
-      return this._styleTests;
     };
 
     // Static class methods.

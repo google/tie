@@ -159,14 +159,5 @@ def are_all_unique(words):
       expectedPerformance: 'linear',
       evaluationFunctionName: 'are_all_unique'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      "You should only be writing code in an abbreviate function. While ",
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this question."
-    ].join('')
   }]
 };
