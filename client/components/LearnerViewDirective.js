@@ -64,7 +64,7 @@ tie.directive('learnerView', [function() {
                   <div ng-repeat="set in feedbackStorage">
                     <hr>
                     <span class="tie-feedback-timestamp">{{set.timestamp}}<span>
-                    <p ng-repeat="paragraph in set.feedbackParagraphs"
+                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                       <span ng-if="paragraph.isTextParagraph()">
