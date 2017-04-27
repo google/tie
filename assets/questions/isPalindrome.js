@@ -179,14 +179,5 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
       expectedPerformance: 'linear',
       evaluationFunctionName: 'isPalindrome'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      "You should only be writing code in an isPalindrome function. While ",
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this question."
-    ].join('')
   }]
 };

@@ -148,6 +148,5 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     // this requires an O(n^2) solution, so performance tests will be
     // implemented at a later date.
     performanceTests: []
-  }],
-  styleTests: []
+  }]
 };

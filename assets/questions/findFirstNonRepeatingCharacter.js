@@ -29,7 +29,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
 `class AuxiliaryCode(object):
     @classmethod
     def sortCharactersInString(cls, str):
-        sortedStr = ''.join(sorted(str))        
+        sortedStr = ''.join(sorted(str))
         uniqueChar = [a for a in sortedStr if sortedStr.count(a) == 1]
         if not uniqueChar:
             return None
@@ -130,14 +130,5 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
         evaluationFunctionName: 'findFirstNonRepeatingCharacter'
       }]
     }
-  ],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in a findFirstNonRepeatingCharacter',
-      'function. While decomposition is generally a good idea, ',
-      'you shouldn\'t need more than just this function for this question.'
-    ].join('')
-  }]
+  ]
 };
