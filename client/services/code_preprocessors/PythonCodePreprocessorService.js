@@ -99,7 +99,6 @@ tie.factory('PythonCodePreprocessorService', [
     var _addClassWrappingToHelperFunctions = function(
         code, wrapperClassName, addInstanceWrapping) {
       var functionPrefix = wrapperClassName;
-      
       if (addInstanceWrapping) {
         functionPrefix += '()';
       }
@@ -107,13 +106,11 @@ tie.factory('PythonCodePreprocessorService', [
       while (true) {
         // Returns ['matching string', 'capture group']
         var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
-        if (!regexResult) { 
-      
+        if (!regexResult) {
           return code;
         }
         var matchingString = regexResult[0];
         var functionName = regexResult[1];
-        
 
         // Do not modify inner functions.
         var matchIndex = code.indexOf(matchingString);
@@ -134,11 +131,9 @@ tie.factory('PythonCodePreprocessorService', [
             break;
           }
           if (lastFunctionNameLocation !== functionNameStart) {
-            
             codeToAdd = functionPrefix;
-            var functionAdded=codeToAdd+code.slice(lastFunctionNameLocation,functionName.length);
             code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
-            code.slice(lastFunctionNameLocation, code.length));
+              code.slice(lastFunctionNameLocation, code.length));
             // Since we're inserting text, we may need to
             // "move" up starting locations by the same amount.
             if (lastFunctionNameLocation < functionNameStart){
@@ -153,9 +148,7 @@ tie.factory('PythonCodePreprocessorService', [
           // to find the next available string.
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
-      
       }
-    
     };
 
     var _generateCorrectnessTestCode = function(
@@ -254,10 +247,10 @@ tie.factory('PythonCodePreprocessorService', [
           '    time_array = []',
           '    for input_size in [' + SMALL_INPUT_SIZE + (
             ', ' + LARGE_INPUT_SIZE + ']:'),
-          '        start = time.clock()',
+          '        start = time.time()',
           '        output = ' + qualifiedEvaluationFunctionName + (
             '(get_test_input(test_input, input_size))'),
-          '        finish = time.clock() - start',
+          '        finish = time.time() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
             ' * time_array[0]:'),
@@ -281,13 +274,12 @@ tie.factory('PythonCodePreprocessorService', [
           codeSubmission, auxiliaryCode, inputFunctionName, mainFunctionName,
           outputFunctionName, correctnessTests, buggyOutputTests,
           performanceTests) {
-            
         // Transform the student code (without changing the number of lines) to
         // put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(
           codeSubmission.getRawCode(), CLASS_NAME_STUDENT_CODE);
         codeSubmission.replace(transformedStudentCode);
-        
+
         // Prepend the class header and the system code.
         var studentCodeFirstLine = (
           'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
