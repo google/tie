@@ -93,6 +93,16 @@ tie.directive('learnerView', [function() {
                 </div>
                 </div>
               </div>
+              <select class="tie-select-menu" name="question-set-select"
+                      ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
+                      ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                <option style="display: none" value="">Question Set</option>
+              </select>
+              <select class="tie-select-menu" name="theme-select"
+                      ng-change="changeTheme(theme)" ng-model="theme"
+                      ng-options="i.themeName as i.themeName for i in themes">
+                <option style="display: none" value="">Theme</option>
+              </select>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -102,18 +112,8 @@ tie.directive('learnerView', [function() {
                       ng-change="autosave()"
                       class="tie-codemirror-container"></ui-codemirror>
                 </div>
-                <select class="tie-lang-select-menu" name="lang-select-menu">
+                <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
-                </select>
-                <select class="tie-question-set-select" name="question-set-select"
-                        ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
-                        ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
-                  <option style="display: none" value="">Question Set</option>
-                </select>
-                <select class="tie-theme-select" name="theme-select"
-                        ng-change="changeTheme(theme)" ng-model="theme"
-                        ng-options="i.themeName as i.themeName for i in themes">
-                  <option style="display: none" value="">Theme</option>
                 </select>
                 <button class="tie-code-reset" name="code-reset"
                     ng-click="resetCode()">
@@ -175,7 +175,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
-          margin-left: 5px;
           margin-top: 10px;
         }
         .tie-coding-terminal .CodeMirror {
@@ -194,13 +193,12 @@ tie.directive('learnerView', [function() {
         .tie-coding-window {
           display: flex;
         }
-        .tie-coding-terminal, .tie-question-window {
+        .tie-coding-terminal {
           background-color: rgb(255, 255, 255);
           -webkit-font-smoothing: antialiased;
         }
-        .tie-coding-terminal:focus, .tie-lang-select-menu:focus,
-            .tie-run-button:focus, .tie-question-set-select,
-            .tie-theme-select:focus {
+        .tie-coding-terminal:focus, .tie-run-button:focus, 
+            .tie-select-menu:focus {
           outline: 0;
         }
         .tie-coding-ui, .tie-question-ui {
@@ -254,10 +252,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-feedback-syntax-error-link {
           font-size: 12px;
-        }
-        .tie-lang-select-menu {
-          float: left;
-          margin-top: 10px;
         }
         .tie-lang-terminal {
           display: inline;
@@ -341,6 +335,7 @@ tie.directive('learnerView', [function() {
           padding-top: 16px;
         }
         .tie-question-window {
+          background-color: #FFFFF7;
           font-size: 14px;
           height: 508px;
           overflow: auto;
@@ -349,7 +344,7 @@ tie.directive('learnerView', [function() {
           width: 548px;
         }
         .tie-question-window.night-mode {
-          background-color: #263238;
+          background-color: #333A42;
           color: #E0E0E0;
         }
         .tie-run-button {
@@ -376,9 +371,9 @@ tie.directive('learnerView', [function() {
           border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
-        .tie-question-set-select {
+        .tie-select-menu {
           float: left;
-          margin-left: 5px;
+          margin-right: 5px;
           margin-top: 10px;
         }
         .tie-step-container-inner {
@@ -421,11 +416,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
-        }
-        .tie-theme-select {
-          float: left;
-          margin-left: 5px;
-          margin-top: 10px;
         }
         .tie-wrapper {
           height: 100%;
