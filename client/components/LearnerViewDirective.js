@@ -544,7 +544,6 @@ tie.directive('learnerView', [function() {
                 fParagraphs: feedbackParagraphs
               });
           }
-          
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
@@ -652,7 +651,6 @@ tie.directive('learnerView', [function() {
         $scope.submitCode = function(code) {
           hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
-          var additionalHeightForLoadingIndicator = 17;
           $timeout(function() {
             $timeout(function() {
               SolutionHandlerService.processSolutionAsync(
