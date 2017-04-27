@@ -39,7 +39,10 @@ tie.factory('SolutionHandlerService', [
               potentialSyntaxErrorString);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
-            return $q.resolve(feedback);
+            return {
+              feedbackObject: feedback,
+              reinforcementObject: {}
+            };
           }
 
           // Otherwise, the code doesn't have any obvious syntax errors.
@@ -65,8 +68,8 @@ tie.factory('SolutionHandlerService', [
                 codeEvalResult);
 
             return {
-              feedback: runtimeFeedback,
-              reinforcement: reinforcementObject
+              feedbackObject: runtimeFeedback,
+              reinforcementObject: reinforcementObject
             };
           });
         }).then(function(feedback) {

@@ -543,8 +543,9 @@ tie.directive('learnerView', [function() {
         };
 
         var setFeedback = function(feedbackAndReinforcement) {
-          var feedback = feedbackAndReinforcement.feedback;
-          var reinforcementObject = feedbackAndReinforcement.reinforcement;
+          var feedback = feedbackAndReinforcement.feedbackObject;
+          var reinforcementObject =
+            feedbackAndReinforcement.reinforcementObject;
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
@@ -574,24 +575,6 @@ tie.directive('learnerView', [function() {
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
 
-            // Setting reinforcement bullets
-            reinforcement.clear();
-            for (var caseList in reinforcementObject.passedList) {
-              if (reinforcementObject.passedList[caseList]) {
-                reinforcement.appendPassedBullet("Handles " + caseList);
-              } else {
-                reinforcement.appendFailedBullet("Fails " + caseList);
-              }
-            }
-            for (var testCase in reinforcementObject.pastFailsList) {
-              if (reinforcementObject.pastFailsList[testCase]) {
-                reinforcement.appendPassedBullet("Handles '" + testCase + "'");
-              } else {
-                reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
-              }
-            }
-            $scope.reinforcementBullets = reinforcement.getBullets();
-
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
             var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
@@ -605,6 +588,24 @@ tie.directive('learnerView', [function() {
             } else if (syntaxErrorIndex === null) {
               $scope.syntaxErrorString = '';
               $scope.syntaxErrorFound = false;
+
+              // Updating reinforcement bullets only if no syntax errors
+              reinforcement.clear();
+              for (var caseList in reinforcementObject.passedList) {
+                if (reinforcementObject.passedList[caseList]) {
+                  reinforcement.appendPassedBullet("Handles " + caseList);
+                } else {
+                  reinforcement.appendFailedBullet("Fails " + caseList);
+                }
+              }
+              for (var testCase in reinforcementObject.pastFailsList) {
+                if (reinforcementObject.pastFailsList[testCase]) {
+                  reinforcement.appendPassedBullet("Handles '" + testCase + "'");
+                } else {
+                  reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
+                }
+              }
+              $scope.reinforcementBullets = reinforcement.getBullets();
             }
             $scope.feedbackParagraphs = feedbackParagraphs;
           }
