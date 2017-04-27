@@ -159,7 +159,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }, {
-      buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpace',
+      buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpaces',
       messages: [
         [
           'Try running your code on \'nurses run\' on paper. Did you ',

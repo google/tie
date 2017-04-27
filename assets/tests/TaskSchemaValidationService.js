@@ -171,6 +171,14 @@ tie.factory('TaskSchemaValidationService', [
             }));
         });
       },
+      verifyAllBuggyOutputFunctionsAppearInAuxiliaryCode: function(
+        task) {
+        return task.getBuggyOutputTests().every(function(test) {
+          var buggyFunctionName = test.getBuggyFunctionName();
+          return CodeCheckerService.checkIfFunctionExistsInClass(
+            buggyFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode);
+        });
+      },
       verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
         return task.getBuggyOutputTests().every(function(test) {
           var messages = new Set();
