@@ -32,6 +32,10 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       return str(s[::-1]);
     }
     @classmethod
+    def reverseWordOrder(cls, s){
+      return s.split(' ')[::-1];
+    }
+    @classmethod
     def forgetLastWord(cls, s):
         result = ""
         reversed_word = []
