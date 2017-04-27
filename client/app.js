@@ -33,6 +33,8 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
+tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
+  'math', 'operator', 'random', 're', 'string', 'time']);
 
 // Class name for wrapping student code. Answer submissions are then run
 // using CLASS_NAME_STUDENT_CODE.function_name().
@@ -66,6 +68,10 @@ tie.constant('SYSTEM_CODE', {
     ''
   ].join('\n')
 });
+
+// Pre-requisite check error types
+tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
+tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');

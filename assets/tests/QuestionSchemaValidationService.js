@@ -64,30 +64,6 @@ tie.factory('QuestionSchemaValidationService', [
         return question.getTasks().some(function(task) {
           return task.getBuggyOutputTests().length > 0;
         });
-      },
-      verifyStyleTestsAreArray: function(question) {
-        return angular.isArray(question.getStyleTests());
-      },
-      // TODO(sll): Implement verifyEvaluationFunctionNameAppearsInAuxiliaryCode
-      // for style tests.
-      verifyStyleTestsEvaluationFunctionNameIsString: function(question) {
-        return question.getStyleTests().every(function(test) {
-          return (
-            angular.isString(test.getEvaluationFunctionName()) &&
-            test.getEvaluationFunctionName().length > 0);
-        });
-      },
-      verifyExpectedOutputIsNotUndefined: function(question) {
-        return question.getStyleTests().every(function(test) {
-          return (test.getExpectedOutput() !== undefined);
-        });
-      },
-      verifyStyleTestMessageIsNonemptyString: function(question) {
-        return question.getStyleTests().every(function(test) {
-          return (
-            angular.isString(test.getMessage()) &&
-            test.getMessage().length > 0);
-        });
       }
     };
   }

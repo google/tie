@@ -199,6 +199,5 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [],
     performanceTests: []
-  }],
-  styleTests: []
+  }]
 };

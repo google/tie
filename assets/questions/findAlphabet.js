@@ -326,14 +326,5 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     }],
     // TODO: Time complexity is O(m), which is non-linear. Fix in the future.
     performanceTests: []
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in an findAlphabet function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this question.'
-    ].join('')
   }]
 };
