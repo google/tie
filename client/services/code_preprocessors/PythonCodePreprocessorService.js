@@ -99,7 +99,7 @@ tie.factory('PythonCodePreprocessorService', [
     var _addClassWrappingToHelperFunctions = function(
         code, wrapperClassName, addInstanceWrapping) {
       var functionPrefix = wrapperClassName;
-      console.log("In _addClassWrappingToHelperFunctions\n"+code);
+      
       if (addInstanceWrapping) {
         functionPrefix += '()';
       }
@@ -108,19 +108,15 @@ tie.factory('PythonCodePreprocessorService', [
         // Returns ['matching string', 'capture group']
         var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
         if (!regexResult) { 
-          console.log("Current Code State:");
-          console.log(code);
-          console.log("Wrapping Complete");
+      
           return code;
         }
-        console.log("Processing "+JSON.stringify(regexResult));
         var matchingString = regexResult[0];
         var functionName = regexResult[1];
         
 
         // Do not modify inner functions.
         var matchIndex = code.indexOf(matchingString);
-        console.log("Matching @ "+matchIndex);
         if (matchIndex > 0 && code[matchIndex - 1] !== '\n') {
           continue;
         }
@@ -129,47 +125,35 @@ tie.factory('PythonCodePreprocessorService', [
         // the student's function definition.
         var functionNameStart = (code.indexOf(matchingString) +
           matchingString.indexOf(functionName));
-        console.log('Starting code scan for matches of '+functionName+" @ "+functionNameStart);
         var lastFunctionNameLocation = 0;
-        console.log("Scanning code for matches for maches of "+functionName);
         while (true) {
           var codeToAdd = '';
           lastFunctionNameLocation = code.indexOf(
             functionName, lastFunctionNameLocation);
-          console.log("Next match @ ",lastFunctionNameLocation);
           if (lastFunctionNameLocation === -1) {
-            console.log("Scan completed.");
             break;
           }
           if (lastFunctionNameLocation !== functionNameStart) {
-            console.log("Found helper function?");
             
             codeToAdd = functionPrefix;
             var functionAdded=codeToAdd+code.slice(lastFunctionNameLocation,functionName.length);
-            console.log("Adding "+functionAdded);
             code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
             code.slice(lastFunctionNameLocation, code.length));
-            console.log("Current Code State:");
-            console.log(code);
             // Since we're inserting text, we may need to
             // "move" up starting locations by the same amount.
             if (lastFunctionNameLocation < functionNameStart){
-              console.log("advancing function start...");
               functionNameStart += codeToAdd.length;
             }
             if (lastFunctionNameLocation <
               PYTHON_FUNCTION_DEF_REGEX.lastIndex) {
-              console.log("advancing regex...");
               PYTHON_FUNCTION_DEF_REGEX.lastIndex += codeToAdd.length;
             }
           }
           // This one needs to get moved forward at least an extra character
           // to find the next available string.
-          console.log("Advancing function name location...");
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
-        console.log("Current Code State:");
-        console.log(code);
+      
       }
     
     };
