@@ -96,21 +96,21 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
           "last reversed word."
         ].join('')
       ]
-    },{
+    }, {
       buggyFunctionName: 'AuxiliaryCode.reverseString',
       messages: [
         "Read the instructions closely. Did you overlook something important?",
         [
-          "It looks like you're reversing the entire string instead of each word. ",
+          "It looks like you're reversing the entire string instead of each word. "
         ].join('')
       ]
-    },{
+    }, {
       buggyFunctionName: 'AuxiliaryCode.reverseWordOrder',
       messages: [
         "Are you sure you're interpreting the instructions correctly?",
         [
           "It looks like you're reversing the order of the words instead of their ",
-          "contents. Is this what you were asked to do?",
+          "contents. Is this what you were asked to do?"
         ].join('')
       ]
     }],
