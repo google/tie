@@ -28,13 +28,13 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
-    def reverseString(cls, s){
-      return str(s[::-1]);
-    }
+    def reverseString(cls, s):
+      return str(s[::-1])
+    
     @classmethod
-    def reverseWordOrder(cls, s){
-      return s.split(' ')[::-1];
-    }
+    def reverseWordOrder(cls, s):
+      return s.split(' ')[::-1]
+
     @classmethod
     def forgetLastWord(cls, s):
         result = ""
