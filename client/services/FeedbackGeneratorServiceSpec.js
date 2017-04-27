@@ -319,7 +319,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -350,7 +350,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -387,7 +387,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -397,7 +397,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResultWithSameBug);
       paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithSameBug, feedback));
+        null, codeEvalResultWithSameBug, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -407,7 +407,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResultWithStillSameBug);
       paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithStillSameBug, feedback));
+        null, codeEvalResultWithStillSameBug, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -440,7 +440,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -450,7 +450,7 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getBuggyOutputTestFeedback(
           buggyOutputTest, codeEvalResultWithNewError));
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
+        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
 
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();
