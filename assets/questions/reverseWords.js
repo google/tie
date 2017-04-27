@@ -99,7 +99,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     },{
       buggyFunctionName: 'AuxiliaryCode.reverseString',
       messages: [
-        "Read the instructions closely. Did you overlook something importaint?",
+        "Read the instructions closely. Did you overlook something important?",
         [
           "It looks like you're reversing the entire string instead of each word. ",
         ].join('')
