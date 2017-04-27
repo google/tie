@@ -3,10 +3,10 @@
 *.css      text eol=lf
 *.html     text eol=lf
 *.md       text eol=lf
-*.map	   text eol=lf
+*.map      text eol=lf
 *.js       text eol=lf
 *.json     text eol=lf
-*.yml      text eol=lf
+
 
 
 # Misc files
@@ -17,5 +17,4 @@ AUTHORS      	text eol=lf
 CHANGELOG    	text eol=lf
 CONTRIBUTORS 	text eol=lf
 LICENSE      	text eol=lf
-Vagrantfile  	text eol=lf
 

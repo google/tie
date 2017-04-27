@@ -84,7 +84,7 @@ if [ ! -d "$NODE_DIR" ]; then
     else
       NODE_FILE_NAME=node-v6.9.1-linux-x86
     fi
-  elif [ ${OS}==MINGW64_NT-10.0 ]; then
+  elif [ ${OS} == MINGW64_NT-10.0 ]; then
     ON_WIN=true
     NODE_FILE_NAME=node-v6.9.1-win-x64
   fi
