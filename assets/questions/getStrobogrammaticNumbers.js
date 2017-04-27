@@ -16,11 +16,11 @@
  * @fileoverview Question data for strobogrammatic number.
  */
 
-globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
+globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line dot-notation
   title: 'Get N-Digit Strobogrammatic Numbers',
   starterCode: {
     python:
-`def strobogrammatic(num_digits):
+`def getStrobogrammaticNumbers(num_digits):
     return []
 `
   },
@@ -33,8 +33,9 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
            return [["00", "11", "69", "88", "96"]]
         if num_digits == 3:
            return  [[
-             '000', '080', '010', '101', '111', '181', '609', '619', '689',
+             '000', '010', '080', '101', '111', '181', '609', '619', '689',
              '808', '818', '906', '916', '986']]
+
     @classmethod
     def forgetToIncludeZero(cls, num_digits):
         if num_digits == 1:
@@ -45,19 +46,22 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     instructions: [
       {
         content: [
-          'Implement a function strobogrammatic which takes a number n as ',
-          'input and generates a list of n-digit numbers which look the same ',
-          'if you rotate them 180 degrees. There are only four 2-digit ',
-          'strobogrammatic numbers: [11, 69, 88, 96].'
+          'Implement a function getStrobogrammaticNumbers which takes a ',
+          'number n as input and generates a list of n-digit numbers which ',
+          'look the same if you rotate them 180 degrees.'
         ].join(''),
         type: 'text'
+      },
+      {
+        content: 'Input: 2\nOutput: ["11", "69", "88", "96"]',
+        type: 'code'
       }
     ],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Arrays'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'strobogrammatic',
+    mainFunctionName: 'getStrobogrammaticNumbers',
     correctnessTests: [{
       input: '2',
       allowedOutputs: [["11", "69", "88", "96"]]
@@ -72,7 +76,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
       messages: [
-        "Try your code for 1-digit numbers. Did you get the expected result?",
+        "Which 1-digit numbers does your function return?",
         [
           'Are you returning all appropriate numbers?',
           '0, for instance, should be included.'
@@ -94,7 +98,7 @@ globalData.questions['strobogrammatic'] = {  // eslint-disable-line dot-notation
       ]
     }],
     // Currently, the system does not support nonlinear runtime complexities.
-    // So we are omitting performance tests, for now.
+    // So we are omitting performance tests for now.
     performanceTests: []
   }],
   styleTests: []

@@ -16,7 +16,7 @@
  * @fileoverview Question data for i18n.
  */
 
-globalData.questions['i18n'] = {  // eslint-disable-line dot-notation
+globalData.questions['internationalization'] = {  // eslint-disable-line dot-notation
   title: 'Internationalization (i18n)',
   starterCode: {
     python:

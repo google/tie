@@ -20,11 +20,11 @@
 /* eslint no-magic-numbers: ["error",
                             { "ignore": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }] */
 
-globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
+globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line dot-notation
   title: 'Increment a Decimal-Coded Number',
   starterCode: {
     python:
-`def incrementDecCodedNumber(digits):
+`def increment(digits):
     return []
 `
   },
@@ -45,7 +45,7 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
         return digits_array
 
     @classmethod
-    def incrementWithoutChangeSize(cls, digits):
+    def incrementWithoutChangingSize(cls, digits):
         digits_array = [x for x in digits]
         digits_array[-1] = (digits_array[-1] + 1) % 10
         carry = (digits_array[-1] == 0)
@@ -62,19 +62,20 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     instructions: [
       {
         content: [
-          'Implement a function for increment a decimal-coded number. A ',
-          'Decimal-Coded number is a list of digits (0 - 9) which can ',
-          'represent a decimal number, such as [1,2] for 12, [3,2,4] for 324. ',
-          'Your task is to increment a given decimal-coded number and return ',
-          'the result (a list of digits).'
+          'In this problem, you\'ll write a function to increment a ',
+          'decimal-coded number, which is a list of digits (0 - 9) which ',
+          'represent a decimal number (such as [1, 2] for 12 or [3, 2, 4] for ',
+          '324). Your task is to increment a given decimal-coded number and ',
+          'return the result (a list of digits).'
         ].join(''),
         type: 'text'
       },
       {
-        content: [
-          'Input: [1,2,3,4]\nOutput: [1,2,3,5]\n',
-          'Input: [2,0,9]\nOutput: [2,1,0]'
-        ].join(''),
+        content: 'Input: [1, 2, 3, 4]\nOutput: [1, 2, 3, 5]',
+        type: 'code'
+      },
+      {
+        content: 'Input: [2, 0, 9]\nOutput: [2, 1, 0]',
         type: 'code'
       }
     ],
@@ -82,7 +83,7 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     acquiredSkills: ['Array Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
-    mainFunctionName: 'incrementDecCodedNumber',
+    mainFunctionName: 'increment',
     correctnessTests: [{
       input: [1, 2, 3, 4],
       allowedOutputs: [[1, 2, 3, 5]]
@@ -98,66 +99,39 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
     }, {
       input: [1, 9, 9],
       allowedOutputs: [[2, 0, 0]]
-    }],
-    buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',
-      messages: [
-        "Try running your code on [1,9] in your head. What's the result?.",
-        [
-          "You seem to increment the last digit only without any mathematical ",
-          "carry. Is it the correct way?"
-        ].join(''),
-        [
-          "Make sure to modify other digits when there is a carrying."
-        ].join('')
-      ]
-    }],
-    performanceTests: []
-  }, {
-    instructions: [
-      {
-        content: [
-          'Great! Now your code can handle the case that incrementing will ',
-          'cause mathematical carry. Next, check and modify your code to ',
-          'handle the input which may change the number of digits when ',
-          'incrementing.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
-    prerequisiteSkills: ['Arrays', 'Math', 'Array Manipulation'],
-    acquiredSkills: ['Array Manipulation'],
-    inputFunctionName: null,
-    outputFunctionName: null,
-    mainFunctionName: 'incrementDecCodedNumber',
-    correctnessTests: [{
-      input: [1, 2, 3, 4],
-      allowedOutputs: [[1, 2, 3, 5]]
-    }, {
-      input: [2, 0, 9],
-      allowedOutputs: [[2, 1, 0]]
-    }, {
-      input: [2, 7, 8, 9],
-      allowedOutputs: [[2, 7, 9, 0]]
-    }, {
-      input: [0],
-      allowedOutputs: [[1]]
     }, {
       input: [9],
       allowedOutputs: [[1, 0]]
     }, {
-      input: [1, 9, 9],
-      allowedOutputs: [[2, 0, 0]]
+      input: [9, 9],
+      allowedOutputs: [[1, 0, 0]]
+    }, {
+      input: [9, 9, 9],
+      allowedOutputs: [[1, 0, 0, 0]]
     }, {
       input: [9, 9, 9, 9],
       allowedOutputs: [[1, 0, 0, 0, 0]]
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.incrementWithoutChangeSize',
+      buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',
       messages: [
+        "Try running your code on [1, 9] in your head. What's the result?.",
         [
-          "Think about how your code handles edge cases. ",
-          "When incrementing [9, 9], then answer should be [1, 0, 0]."
+          "It doesn't look like you're carrying when you increment a number ",
+          "like 19 or 29."
+        ].join(''),
+        [
+          "You should also increment the next digit by 1 when incrementing a 9."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.incrementWithoutChangingSize',
+      messages: [
+        "What happens when you run your code on [9]?",
+        "Are you adding on new digits when necessary?",
+        [
+          "If you increment [9] or [9, 9], you will need to add an extra ",
+          "digit to the array and return [1, 0] or [1, 0, 0], respectively."
         ].join('')
       ]
     }],
@@ -165,14 +139,14 @@ globalData.questions['incNumber'] = {  // eslint-disable-line dot-notation
       inputDataAtom: '9',
       transformationFunctionName: 'AuxiliaryCode.createDigits',
       expectedPerformance: 'linear',
-      evaluationFunctionName: 'incrementDecCodedNumber'
+      evaluationFunctionName: 'increment'
     }]
   }],
   styleTests: [{
     evaluationFunctionName: 'allowOnlyOneFunction',
     expectedOutput: true,
     message: [
-      "You should only be writing code in an abbreviate function. While ",
+      "You should only be writing code in an increment function. While ",
       "decomposition is generally a good idea, you shouldn't need more than ",
       "just this function for this question."
     ].join('')
