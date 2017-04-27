@@ -61,10 +61,10 @@ tie.directive('learnerView', [function() {
                   </div>
                 </div>
                 <div class="tie-feedback">
-                  <div ng-repeat="set in feedbackParagraphs">
+                  <div ng-repeat="set in feedbackStorage">
                     <hr>
                     <span class="tie-feedback-timestamp">{{set.timestamp}}<span>
-                    <p ng-repeat="paragraph in set.fParagraphs"
+                    <p ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                       <span ng-if="paragraph.isTextParagraph()">
@@ -468,7 +468,7 @@ tie.directive('learnerView', [function() {
           {themeName: 'Dark'}
         ];
 
-        $scope.feedbackParagraphs = [];
+        $scope.feedbackStorage = [];
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -499,7 +499,7 @@ tie.directive('learnerView', [function() {
         };
 
         var clearFeedback = function() {
-          $scope.feedbackParagraphs = [];
+          $scope.feedbackStorage = [];
         };
 
         var hideSyntaxErrorLink = function() {
@@ -526,10 +526,10 @@ tie.directive('learnerView', [function() {
                   "Now, take a look at the instructions for the next task.");
               $scope.showNextTask();
             }
-            $scope.feedbackParagraphs.push(
+            $scope.feedbackStorage.push(
               {
                 timestamp: '[' + (new Date()).toLocaleTimeString() + ']',
-                fParagraphs: congratulatoryFeedback.getParagraphs()
+                feedbackParagraphs: congratulatoryFeedback.getParagraphs()
               });
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
@@ -546,10 +546,10 @@ tie.directive('learnerView', [function() {
               $scope.syntaxErrorString = '';
               $scope.syntaxErrorFound = false;
             }
-            $scope.feedbackParagraphs.push(
+            $scope.feedbackStorage.push(
               {
                 timestamp: '[' + (new Date()).toLocaleTimeString() + ']',
-                fParagraphs: feedbackParagraphs
+                feedbackParagraphs: feedbackParagraphs
               });
           }
           // Skulpt processing happens outside an Angular context, so
