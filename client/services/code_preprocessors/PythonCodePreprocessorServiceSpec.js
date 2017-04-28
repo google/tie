@@ -354,6 +354,43 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
+    it('should correctly add classname to multiple similarly-named functions',
+      function() {
+        var rawCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    inner_func()',
+          '    inner_funct()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def inner_funct():',
+          '    inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        var expectedCode = [
+          'def myFunc(self, ):',
+          '    a = 3',
+          '    StudentCode().inner_func()',
+          '    StudentCode().inner_funct()',
+          '',
+          'def inner_func():',
+          '    b = 6',
+          '',
+          'def inner_funct():',
+          '    StudentCode().inner_func()',
+          '    b = 6'
+        ].join('\n');
+
+        expect(
+          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+            rawCode, 'StudentCode', true)
+        ).toEqual(expectedCode);
+      }
+    );
+
     it('should correctly add our classname to multiple functions regardless ' +
       'of their position within the file',
       function() {
