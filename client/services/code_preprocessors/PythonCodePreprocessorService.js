@@ -27,7 +27,7 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
-    var VALID_WHITESPACE_REGEX = new RegExp('[\\s]');
+    var VALID_WHITESPACE_REGEX = new RegExp('\\s');
     var VARNAME_TEST_INPUTS = 'test_inputs';
     var START_INDENT = '    ';
 
@@ -111,9 +111,9 @@ tie.factory('PythonCodePreprocessorService', [
           return code;
         }
         var matchingString = regexResult[0];
-        var functionName = regexResult[1];
-        var functionNameWithoutParen = functionName.substring(
-          0, functionName.length - 1).trim()
+        var functionNameWithParen = regexResult[1];
+        var functionName = functionNameWithParen.substring(
+          0, functionNameWithParen.length - 1).trim()
 
         // Do not modify inner functions.
         var matchIndex = code.indexOf(matchingString);
@@ -124,18 +124,18 @@ tie.factory('PythonCodePreprocessorService', [
         // We should make sure that we don't append our class name to
         // the student's function definition.
         var functionNameStart = (code.indexOf(matchingString) +
-          matchingString.indexOf(functionName));
+          matchingString.indexOf(functionNameWithParen));
         var lastFunctionNameLocation = 0;
         while (true) {
           var codeToAdd = '';
           lastFunctionNameLocation = code.indexOf(
-            functionNameWithoutParen, lastFunctionNameLocation);
+            functionName, lastFunctionNameLocation);
           if (lastFunctionNameLocation === -1) {
             break;
           }
           if (lastFunctionNameLocation !== functionNameStart) {
             var whitespaceCheckLocation = (
-              lastFunctionNameLocation + functionNameWithoutParen.length);
+              lastFunctionNameLocation + functionName.length);
             // We assume we found the matched function, but we might have found
             // a similarly-named other function / variable. User-inputted code
             // can be ... tricky.
