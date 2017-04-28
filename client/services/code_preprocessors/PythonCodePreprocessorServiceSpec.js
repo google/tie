@@ -477,7 +477,7 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateCorrectnessTestCode(
-            correctnessTests, 'inputFnName', 'mainFnName', 'outputFnName')
+            correctnessTests, ['inputFnName'], ['mainFnName'], ['outputFnName'])
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -517,7 +517,7 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, null, null)
+            buggyOutputTests, [null], [null])
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -529,7 +529,7 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function(func):',
+          'def matches_buggy_function__outputFunctionName(func):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
@@ -541,14 +541,15 @@ describe('PythonCodePreprocessorService', function() {
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'task_buggy_output_test_results.append(' +
+              'matches_buggy_function__outputFunctionName(buggyFunc))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, null, 'outputFunctionName')
+            buggyOutputTests, [null], ['outputFunctionName'])
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -560,7 +561,7 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function(func):',
+          'def matches_buggy_function_inputFunctionName(func):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
@@ -572,14 +573,15 @@ describe('PythonCodePreprocessorService', function() {
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'task_buggy_output_test_results.append(' +
+              'matches_buggy_function_inputFunctionName(buggyFunc))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, 'inputFunctionName', null)
+            buggyOutputTests, ['inputFunctionName'], [null])
         ).toEqual(expectedGeneratedCode);
       }
     );
@@ -591,7 +593,7 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function(func):',
+          'def matches_buggy_function_inputFunctionName__outputFunctionName(func):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
@@ -603,14 +605,16 @@ describe('PythonCodePreprocessorService', function() {
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(matches_buggy_function(buggyFunc))',
+          'task_buggy_output_test_results.append(' +
+              'matches_buggy_function_inputFunctionName' +
+              '__outputFunctionName(buggyFunc))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
 
         expect(
           PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, 'inputFunctionName', 'outputFunctionName')
+            buggyOutputTests, ['inputFunctionName'], ['outputFunctionName'])
         ).toEqual(expectedGeneratedCode);
       }
     );

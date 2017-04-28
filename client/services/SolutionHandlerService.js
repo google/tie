@@ -53,13 +53,25 @@ tie.factory('SolutionHandlerService', [
             buggyOutputTests.push(tasks[i].getBuggyOutputTests());
             performanceTests.push(tasks[i].getPerformanceTests());
           }
+
           var lastTask = tasks[tasks.length - 1];
+          var allTasksInputFunctionNames = tasks.map(function(task) {
+            return task.getInputFunctionName();
+          });
+          var allTasksMainFunctionNames = tasks.map(function(task) {
+            return task.getMainFunctionName();
+          });
+          var allTasksOutputFunctionNames = tasks.map(function(task) {
+            return task.getOutputFunctionName();
+          });
+
           var codeSubmission = CodeSubmissionObjectFactory.create(
             studentCode.trim());
+
           CodePreprocessorDispatcherService.preprocess(
             language, codeSubmission, auxiliaryCode,
-            lastTask.getInputFunctionName(), lastTask.getMainFunctionName(),
-            lastTask.getOutputFunctionName(), correctnessTests,
+            allTasksInputFunctionNames, allTasksMainFunctionNames,
+            allTasksOutputFunctionNames, correctnessTests,
             buggyOutputTests, performanceTests);
 
           return CodeRunnerDispatcherService.runCodeAsync(
