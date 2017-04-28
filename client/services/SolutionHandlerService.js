@@ -41,7 +41,7 @@ tie.factory('SolutionHandlerService', [
               SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return {
               feedbackObject: feedback,
-              reinforcementObject: {}
+              reinforcementDict: null 
             };
           }
 
@@ -63,13 +63,13 @@ tie.factory('SolutionHandlerService', [
               task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codeEvalResult, runtimeFeedback));
-            var reinforcementObject =
+            var reinforcementDict =
               ReinforcementGeneratorService.getReinforcement(task,
                 codeEvalResult);
 
             return {
               feedbackObject: runtimeFeedback,
-              reinforcementObject: reinforcementObject
+              reinforcementDict: reinforcementDict
             };
           });
         }).then(function(feedback) {

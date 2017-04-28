@@ -31,13 +31,13 @@ tie.factory('ReinforcementGeneratorService', [
           task.pastFailsList = {};
         }
 
-        var splitTestsByTag = function(tests) {
+        var testsKeyedByTag = function(tests) {
           var splitTests = {};
           for (var i = 0; i < tests.length; ++i) {
             var test = tests[i];
             test.index = i;
             var testTag = test.getTag();
-            if (testTag in splitTests) {
+            if (splitTests.hasOwnProperty(testTag)) {
               splitTests[testTag].push(test);
             } else {
               splitTests[testTag] = [test];
@@ -46,8 +46,8 @@ tie.factory('ReinforcementGeneratorService', [
           return splitTests;
         };
 
-        // Go through correctness tests to update reinforcement data
-        var correctnessTests = splitTestsByTag(task.getCorrectnessTests());
+        // Go through correctness tests to update reinforcement data.
+        var correctnessTests = testsKeyedByTag(task.getCorrectnessTests());
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
         var failedCaseSeen = false;
         for (var testTag in correctnessTests) {
@@ -73,26 +73,26 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
-        var reinforcementObject = {};
-        reinforcementObject.passedList = {};
+        var reinforcementDict = {};
+        reinforcementDict.passedList = {};
         for (var caseList in task.passedList) {
           if (task.passedList[caseList]) {
-            reinforcementObject.passedList[caseList] = true;
+            reinforcementDict.passedList[caseList] = true;
           } else {
-            reinforcementObject.passedList[caseList] = false;
+            reinforcementDict.passedList[caseList] = false;
           }
         }
 
-        reinforcementObject.pastFailsList = {};
+        reinforcementDict.pastFailsList = {};
         for (var testCase in task.pastFailsList) {
           if (task.pastFailsList[testCase]) {
-            reinforcementObject.pastFailsList[testCase] = true;
+            reinforcementDict.pastFailsList[testCase] = true;
           } else {
-            reinforcementObject.pastFailsList[testCase] = false;
+            reinforcementDict.pastFailsList[testCase] = false;
           }
         }
 
-        return reinforcementObject;
+        return reinforcementDict;
       }
     };
   }

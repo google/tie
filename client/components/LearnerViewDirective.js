@@ -134,8 +134,8 @@ tie.directive('learnerView', [function() {
                 </div>
                 <div class="tie-reinforcement">
                   <li ng-repeat="bullet in reinforcementBullets">
-                    <img class="bullet-img" ng-src="images/{{bullet.getImgName()}}">
-                    <span class="bullet-text">{{bullet.getContent()}}</span>
+                    <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                    <span class="tie-bullet-text">{{bullet.getContent()}}</span>
                   </li>
                 </div>
               </div>
@@ -335,13 +335,13 @@ tie.directive('learnerView', [function() {
           margin-top: 1px;
           position: relative;
         }
-        .bullet-img {
-          width: 15px;
+        .tie-bullet-img {
+          bottom: 1px;
           height: 15px;
           position: absolute;
-          bottom: 1px;
+          width: 15px;
         }
-        .bullet-text {
+        .tie-bullet-text {
           padding-left: 19px;
         }
         .tie-question-code {
@@ -552,8 +552,8 @@ tie.directive('learnerView', [function() {
 
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
-          var reinforcementObject =
-            feedbackAndReinforcement.reinforcementObject;
+          var reinforcementDict =
+            feedbackAndReinforcement.reinforcementDict;
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
@@ -597,17 +597,17 @@ tie.directive('learnerView', [function() {
               $scope.syntaxErrorString = '';
               $scope.syntaxErrorFound = false;
 
-              // Updating reinforcement bullets only if no syntax errors
+              // Updating reinforcement bullets only if no syntax errors.
               reinforcement.clear();
-              for (var caseList in reinforcementObject.passedList) {
-                if (reinforcementObject.passedList[caseList]) {
+              for (var caseList in reinforcementDict.passedList) {
+                if (reinforcementDict.passedList[caseList]) {
                   reinforcement.appendPassedBullet("Handles " + caseList);
                 } else {
                   reinforcement.appendFailedBullet("Fails " + caseList);
                 }
               }
-              for (var testCase in reinforcementObject.pastFailsList) {
-                if (reinforcementObject.pastFailsList[testCase]) {
+              for (var testCase in reinforcementDict.pastFailsList) {
+                if (reinforcementDict.pastFailsList[testCase]) {
                   reinforcement.appendPassedBullet("Handles '" + testCase + "'");
                 } else {
                   reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
