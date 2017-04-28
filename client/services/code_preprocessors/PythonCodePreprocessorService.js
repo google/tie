@@ -170,15 +170,18 @@ tie.factory('PythonCodePreprocessorService', [
       // We can safely assume there's a left paren because we matched it
       // with the regular expression.
       while (code[whitespaceCheckLocation] != '(') {
-        var isValidWhitespace = VALID_WHITESPACE_REGEX.test(
-          code[whitespaceCheckLocation])
+        var isWhitespace = _isWhitespaceChar(code[whitespaceCheckLocation]);
         whitespaceCheckLocation++;
-        if (!isValidWhitespace) {
+        if (!isWhitespace) {
           return false;
         }
       }
       return true;
-    }
+    };
+
+    var _isWhitespaceChar = function(c) {
+      return VALID_WHITESPACE_REGEX.test(c);
+    };
 
     var _generateCorrectnessTestCode = function(
         correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName) {
