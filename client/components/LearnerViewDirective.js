@@ -728,8 +728,8 @@ tie.directive('learnerView', [function() {
               additionalHeightForLoadingIndicator;
             $timeout(function() {
               SolutionHandlerService.processSolutionAsync(
-                tasks[currentTaskIndex], code,
-                question.getAuxiliaryCode(language), language
+                tasks[currentTaskIndex], question.getStarterCode(language),
+                code, question.getAuxiliaryCode(language), language
                 ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);

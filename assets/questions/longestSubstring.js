@@ -87,8 +87,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     }, {
       input: 'abbba',
       allowedOutputs: ['abbba']
-    }
-    ],
+    }],
     buggyOutputTests: [
       {
         buggyFunctionName: 'AuxiliaryCode.onlyUseOneLetterInResult',
@@ -111,15 +110,5 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
       transformationFunctionName: 'System.extendString',
       expectedPerformance: 'linear',
       evaluationFunctionName: 'longestSubstring'}]
-  }
-  ],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in an longestSubstring function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this question.'
-    ].join('')
   }]
 };

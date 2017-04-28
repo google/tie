@@ -23,7 +23,7 @@ describe('QuestionSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in QuestionSchemaValidationService.
   // Update if you add new question schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 12;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 8;
   // Should contain all question IDs.
   var QUESTION_IDS = Object.keys(globalData.questions);
 

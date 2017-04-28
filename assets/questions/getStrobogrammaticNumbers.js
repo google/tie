@@ -103,7 +103,6 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     // Currently, the system does not support nonlinear runtime complexities.
     // So we are omitting performance tests for now.
     performanceTests: []
-  }],
-  styleTests: []
+  }]
 };
 

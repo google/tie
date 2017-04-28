@@ -139,15 +139,6 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     // TODO: the time complexity of the solution to this quesiton
     // is not linear. A performance test will be added later.
     performanceTests: []
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in a bestMeetupLocation function. ',
-      'While decomposition is generally a good idea, you shouldn\'t need more',
-      'than just this function for this question.'
-    ].join('')
   }]
 };
 
