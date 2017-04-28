@@ -41,7 +41,7 @@ tie.factory('SolutionHandlerService', [
               SnapshotObjectFactory.create(rawCodeEvalResult, feedback));
             return {
               feedbackObject: feedback,
-              reinforcementDict: null 
+              reinforcementDict: null
             };
           }
 
