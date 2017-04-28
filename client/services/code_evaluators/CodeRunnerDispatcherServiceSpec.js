@@ -31,6 +31,37 @@ describe('CodeRunnerDispatcherService', function() {
       };
       expect(errorFunction).toThrowError(Error);
     });
+
+    it('should throw a timeout error if passed infinitely looping code',
+      function() {
+        var code =
+        `while True:
+          print 'a'
+        `;
+
+        CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+          function(rawCodeEvalResult) {
+            expect(rawCodeEvalResult.getErrorString()).toBe(
+              'TimeLimitError: Program exceeded run time limit. on line 2')
+          });
+    });
+
+    it('should throw a timeout error if passed infinitely recursing code',
+      function() {
+        var code = [
+        'def forgetToIgnoreSpaces(string):',
+        "    return forgetToIgnoreSpaces(string + 'b')",
+        "forgetToIgnoreSpaces('a')"
+        ].join('\n');
+        CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+          function(rawCodeEvalResult) {
+            expect(rawCodeEvalResult.getErrorString()).toBe(
+              [
+                'ExternalError: RangeError: Maximum call stack size ',
+                'exceeded on line 2'
+              ].join(''));
+          });
+    });
   });
 });
 
