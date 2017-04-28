@@ -44,12 +44,15 @@ tie.factory('SolutionHandlerService', [
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codePrereqCheckResult, null,
                 prereqFeedback));
-            return $q.resolve(prereqFeedback);
+            return {
+              feedbackObject: feedback,
+              reinforcementDict: null
+            };
           }
 
           // Next, do an initial run of the code to check for syntax errors.
           return CodeRunnerDispatcherService.runCodeAsync(
-            language, codeSubmission.getPreprocessedCode()
+            language, studentCode
           ).then(function(rawCodeEvalResult) {
             var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
             if (potentialSyntaxErrorString) {
@@ -58,7 +61,10 @@ tie.factory('SolutionHandlerService', [
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, rawCodeEvalResult,
                   feedback));
-              return $q.resolve(feedback);
+              return {
+                feedbackObject: feedback,
+                reinforcementDict: null
+              };
             }
 
             // Otherwise, the code doesn't have any obvious syntax errors.
@@ -80,13 +86,14 @@ tie.factory('SolutionHandlerService', [
                 task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, codeEvalResult,
+                  runtimeFeedback));
               var reinforcementDict =
                 ReinforcementGeneratorService.getReinforcement(task,
                   codeEvalResult);
               return {
                 feedbackObject: runtimeFeedback,
                 reinforcementDict: reinforcementDict
-              };      runtimeFeedback));
+              };
             });
           }).then(function(feedback) {
             return feedback;
