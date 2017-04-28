@@ -36,6 +36,9 @@ tie.factory('ErrorTracebackObjectFactory', [
     };
 
     ErrorTraceback.prototype.getErrorString = function() {
+      if (this._errorMessage.indexOf('TimeoutError') === 0) {
+        return this._errorMessage;
+      }
       return this._errorMessage + ' on line ' + this._getFirstTracebackLine();
     };
 

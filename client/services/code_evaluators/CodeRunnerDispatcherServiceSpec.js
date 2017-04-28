@@ -34,10 +34,10 @@ describe('CodeRunnerDispatcherService', function() {
 
     it('should throw a timeout error if passed infinitely looping code',
       function() {
-        var code =
-        `while True:
-          print 'a'
-        `;
+        var code = [
+          'while True:',
+          "    print 'a'"
+        ].join('\n');
 
         CodeRunnerDispatcherService.runCodeAsync("python", code).then(
           function(rawCodeEvalResult) {
@@ -46,12 +46,12 @@ describe('CodeRunnerDispatcherService', function() {
           });
     });
 
-    it('should throw a timeout error if passed infinitely recursing code',
+    it('should throw a RangeError if passed infinitely recursing code',
       function() {
         var code = [
-        'def forgetToIgnoreSpaces(string):',
-        "    return forgetToIgnoreSpaces(string + 'b')",
-        "forgetToIgnoreSpaces('a')"
+          'def forgetToIgnoreSpaces(string):',
+          "    return forgetToIgnoreSpaces(string + 'b')",
+          "forgetToIgnoreSpaces('a')"
         ].join('\n');
         CodeRunnerDispatcherService.runCodeAsync("python", code).then(
           function(rawCodeEvalResult) {
