@@ -22,7 +22,7 @@ describe("Loading all pages", function() {
   it('should load the feedback page without errors', function() {
     browser.get('/client/app.html');
 
-    var feedbackParagraphs = element.all(by.repeater('paragraph in feedbackParagraphs track by $index'));
+    var feedbackParagraphs = element.all(by.repeater('paragraph in greetingParagraphs track by $index'));
     expect(feedbackParagraphs.count()).toEqual(3);
     expect(feedbackParagraphs.get(0).getText()).toEqual('Greetings!');
 

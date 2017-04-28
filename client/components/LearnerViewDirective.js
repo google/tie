@@ -83,7 +83,7 @@ tie.directive('learnerView', [function() {
                   </a>
                 </div>
                 <br>
-                <span class= "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
                   {{syntaxErrorString}}
                 </span>
                 <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
