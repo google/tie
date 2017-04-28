@@ -45,7 +45,7 @@ tie.factory('SolutionHandlerService', [
               SnapshotObjectFactory.create(codePrereqCheckResult, null,
                 prereqFeedback));
             return {
-              feedbackObject: feedback,
+              feedbackObject: prereqFeedback,
               reinforcementDict: null
             };
           }
