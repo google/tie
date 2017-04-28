@@ -640,10 +640,10 @@ describe('PythonCodePreprocessorService', function() {
           'def run_performance_test_from_System_extendString(test_input):',
           '    time_array = []',
           '    for input_size in [10, 100]:',
-          '        start = time.time()',
+          '        start = time.clock()',
           '        output = StudentCode().katamariDamashi(' +
               'get_test_input_from_System_extendString(test_input, input_size))',
-          '        finish = time.time() - start',
+          '        finish = time.clock() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > 30 * time_array[0]:',
           '        return "not linear"',

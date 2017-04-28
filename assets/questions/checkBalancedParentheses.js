@@ -16,7 +16,7 @@
  * @fileoverview Question data for Balanced Parentheses.
  */
 
-globalData.questions['parens'] = {  // eslint-disable-line dot-notation
+globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot-notation
   title: 'Balanced Parentheses',
   starterCode: {
     python:
@@ -48,7 +48,7 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
       {
         content: [
           'For this question, you will implement the isBalanced function. ',
-          'It takes a string of parentheses as input and returns True if ',
+          'It takes a string of only parentheses as input and returns True if ',
           'for every open parentheses there is a matching closing ',
           'parentheses, and False otherwise.'
         ].join(''),
@@ -179,14 +179,5 @@ globalData.questions['parens'] = {  // eslint-disable-line dot-notation
       expectedPerformance: 'linear',
       evaluationFunctionName: 'isBalanced'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      "You should only be writing code in an isBalanced function. While ",
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this question."
-    ].join('')
   }]
 };

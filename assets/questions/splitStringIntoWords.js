@@ -16,11 +16,11 @@
  * @fileoverview Question data for Split String into Words.
  */
 
-globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
+globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-notation
   title: 'Split String into Words',
   starterCode: {
     python:
-`def stringToWords(lst):
+`def splitStringIntoWords(string_and_set_list):
     return ""
 `
   },
@@ -45,21 +45,21 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     instructions: [
       {
         content: [
-          'For this question, you\'ll implement the stringToWords function. ',
-          'This function takes a list of two elements, the first element ',
-          'being a string of alphabetic letters with no whitespaces and the ',
-          'second element being a set of valid words represented as a ',
-          'Python set. The function should take the input string and split it ',
-          'into two space-separated words that are both in the given ',
+          'For this question, you\'ll implement the splitStringIntoWords ',
+          'function. This function takes a list of two elements, the first ',
+          'element being a string of letters with no whitespace and the ',
+          'second element being a set of valid words. The function should ',
+          'take the input string and split it ',
+          'into two words that are both in the given ',
           'set. If there is no valid solution, return \'None\'.'
         ].join(''),
         type: 'text'
       },
       {
         content: [
-          'Input: "fruitsalad"\nOutput: "fruit salad" (assuming ',
-          'fruit and salad are in the set)'
-        ].join(''),
+          'Input: ["fruitsalad", ["friend", "fruit", "banana", "salad"]]',
+          'Output: "fruit salad"'
+        ].join('\n'),
         type: 'code'
       }
     ],
@@ -67,7 +67,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     acquiredSkills: ['String Parsing'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
-    mainFunctionName: 'stringToWords',
+    mainFunctionName: 'splitStringIntoWords',
     correctnessTests: [{
       input: 'goodneighbor:good neighbor',
       allowedOutputs: ['good neighbor']
@@ -108,7 +108,7 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
     acquiredSkills: ['String Manipulation', 'Shortest Path Search'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
-    mainFunctionName: 'stringToWords',
+    mainFunctionName: 'splitStringIntoWords',
     correctnessTests: [{
       input: 'bluehondacivic:honda civic accord blue',
       allowedOutputs: ['blue honda civic']
@@ -120,16 +120,8 @@ globalData.questions['stringToWords'] = {  // eslint-disable-line dot-notation
       allowedOutputs: ['None']
     }],
     buggyOutputTests: [],
+    // TODO(eyurko): Add performance tests.
     performanceTests: []
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in the stringToWords function. While ',
-      'decomposition is generally a good idea, you shouldn\'t need more than ',
-      'just this function for this question.'
-    ].join('')
   }]
 };
 

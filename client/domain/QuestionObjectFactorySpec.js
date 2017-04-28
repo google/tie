@@ -41,8 +41,7 @@ describe('QuestionObjectFactory', function() {
         correctnessTests: [],
         buggyOutputTests: [],
         performanceTests: []
-      }],
-      styleTests: []
+      }]
     });
   }));
 

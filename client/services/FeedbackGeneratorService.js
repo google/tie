@@ -21,7 +21,8 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', function(
-    FeedbackObjectFactory, TranscriptService, CODE_EXECUTION_TIMEOUT_SECONDS) {
+    FeedbackObjectFactory, TranscriptService,
+    CODE_EXECUTION_TIMEOUT_SECONDS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -62,7 +63,7 @@ tie.factory('FeedbackGeneratorService', [
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
         TranscriptService.getTranscript().getPreviousSnapshot());
-      if (lastSnapshot !== null) {
+      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
         // This section makes sure to provide a new hint
         // if the student gets stuck on the same bug by checking
         // that they've submitted new code with the same error.
@@ -92,14 +93,24 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     var _getCorrectnessTestFeedback = function(
-      correctnessTest, observedOutput) {
+      outputFunctionName, correctnessTest, observedOutput) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
+      // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
-      feedback.appendCodeParagraph(
-        'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
-        'Output: ' + _jsToHumanReadable(observedOutput));
-      feedback.appendTextParagraph('However, the expected output is:');
+      if (outputFunctionName) {
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          ('Output (after running ' + outputFunctionName + '): ' +
+            _jsToHumanReadable(observedOutput)));
+        feedback.appendTextParagraph(
+          'However, the expected output of ' + outputFunctionName + ' is:');
+      } else {
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          'Output: ' + _jsToHumanReadable(observedOutput));
+        feedback.appendTextParagraph('However, the expected output is:');
+      }
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
       feedback.appendTextParagraph('Could you fix this?');
@@ -198,9 +209,9 @@ tie.factory('FeedbackGeneratorService', [
             for (j = 0; j < correctnessTests[i].length; j++) {
               var observedOutput = observedOutputs[i][j];
 
-              // TODO(eyurko): Add varied statements for when code is incorrect.
               if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
                 return _getCorrectnessTestFeedback(
+                  task.getOutputFunctionNameWithoutClass(),
                   correctnessTests[i][j], observedOutput);
               }
             }
@@ -231,6 +242,40 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendCodeParagraph(errorString);
         feedback.setSyntaxErrorIndex(feedback.getParagraphs().length - 1);
         return feedback;
+      },
+      getPrereqFailureFeedback: function(codePrereqCheckResult) {
+        var feedback = FeedbackObjectFactory.create(false);
+        var prereqCheckFailures =
+          codePrereqCheckResult.getPrereqCheckFailures();
+
+        /* This function shouldn't be invoked unless there is at least one
+        pre-requisite check failure. */
+        if (prereqCheckFailures.length === 0) {
+          throw new Error('getPrereqFailureFeedback() called with 0 failures.');
+        }
+
+        // Check first error type and generate appropriate feedback message.
+        var preReqFailure = prereqCheckFailures[0];
+        if (preReqFailure.isMissingStarterCode()) {
+          feedback.appendTextParagraph(['It looks like you deleted or ',
+            ' modified the starter code!  Our evaluation program requires the ',
+            'function names given in the starter code.  You can press the ',
+            '\'Reset Code\' button below to start over.  Or, you can copy ',
+            'the starter code below:'].join(''));
+          feedback.appendCodeParagraph(preReqFailure.getStarterCode());
+          return feedback;
+        } else if (preReqFailure.isBadImport) {
+          feedback.appendTextParagraph(['It looks like you are importing an ',
+            'external library.  Only standard libraries are supported.  ',
+            'The following libraries are not supported:\n'].join(''));
+          var badImports = preReqFailure.getBadImports();
+          feedback.appendCodeParagraph(badImports.join('\n'));
+          return feedback;
+        } else {
+          // Prereq check failure type not handled; throw an error
+          throw new Error(['Unrecognized prereq check failure type ',
+            'in getPrereqFailureFeedback().'].join());
+        }
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,

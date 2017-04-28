@@ -16,7 +16,7 @@
  * @fileoverview Question data for Run-Length Encoding.
  */
 
-globalData.questions['rle'] = {  // eslint-disable-line dot-notation
+globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notation
   title: 'Run-Length Encoding',
   starterCode: {
     python:
@@ -240,6 +240,15 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
           'the original string back as a result.'
         ].join(''),
         type: 'text'
+      },
+      {
+        content: [
+          'You may find that, in order to complete this task, you have to ',
+          'relax or compromise on some of the original constraints. As ',
+          'long as the input can be correctly encoded and then decoded, ',
+          'this is fine.'
+        ].join(''),
+        type: 'text'
       }
     ],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
@@ -278,14 +287,5 @@ globalData.questions['rle'] = {  // eslint-disable-line dot-notation
       expectedPerformance: 'linear',
       evaluationFunctionName: 'encode'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in an encode function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this question.'
-    ].join('')
   }]
 };

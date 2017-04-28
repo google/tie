@@ -20,7 +20,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
   title: 'Reverse Words',
   starterCode: {
     python:
-`def reverseWords(str):
+`def reverseWords(s):
     return ""
 `
   },
@@ -81,7 +81,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
       messages: [
-        "Try running your code on 'new code' on paper. What's the result?",
+        "Try running your code on 'river ocean' on paper. What's the result?",
         "Are you sure that you're reversing all the words?",
         [
           "It looks like you're exiting the function without adding on the ",
@@ -125,14 +125,5 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       expectedPerformance: 'linear',
       evaluationFunctionName: 'reverseWords'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      'You should only be writing code in a reverseWords function. While ',
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      'just this function for this question.'
-    ].join('')
   }]
 };

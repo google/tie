@@ -16,7 +16,7 @@
  * @fileoverview Question data for Is Palindrome.
  */
 
-globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
+globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
   title: 'Is Palindrome',
   starterCode: {
     python:
@@ -86,8 +86,16 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
       {
         content: [
           'A palindrome is a word, phrase, or sequence that reads the same ',
-          'backward as forward, e.g., "madam" or "nurses run".'
+          'backward as forward.'
         ].join(''),
+        type: 'text'
+      },
+      {
+        content: 'Input: "do geese see god"\nOutput: True',
+        type: 'code'
+      },
+      {
+        content: 'Input: "a dog says bork"\nOutput: False',
         type: 'code'
       },
       {
@@ -151,7 +159,7 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }, {
-      buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpace',
+      buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpaces',
       messages: [
         [
           'Try running your code on \'nurses run\' on paper. Did you ',
@@ -171,14 +179,5 @@ globalData.questions['palindrome'] = {  // eslint-disable-line dot-notation
       expectedPerformance: 'linear',
       evaluationFunctionName: 'isPalindrome'
     }]
-  }],
-  styleTests: [{
-    evaluationFunctionName: 'allowOnlyOneFunction',
-    expectedOutput: true,
-    message: [
-      "You should only be writing code in an isPalindrome function. While ",
-      "decomposition is generally a good idea, you shouldn't need more than ",
-      "just this function for this question."
-    ].join('')
   }]
 };

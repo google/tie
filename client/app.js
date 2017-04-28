@@ -33,13 +33,16 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 // Supported languages.
 tie.constant('LANGUAGE_PYTHON', 'python');
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
+tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
+  'math', 'operator', 'random', 're', 'string', 'time']);
 
 // Class name for wrapping student code. Answer submissions are then run
 // using CLASS_NAME_STUDENT_CODE.function_name().
 tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
-// Class name for wrapping auxiliary code. Answer submissions are then run
-// using CLASS_NAME_STUDENT_CODE.function_name().
+// Class name for wrapping auxiliary code, primarily used for test evaluation.
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+// Class name for wrapping system code.
+tie.constant('CLASS_NAME_SYSTEM_CODE', 'AuxiliaryCode');
 
 // Imports and system-level functions that should be appended to all code.
 tie.constant('SYSTEM_CODE', {
@@ -66,7 +69,11 @@ tie.constant('SYSTEM_CODE', {
   ].join('\n')
 });
 
-// Name of the list in which correctness test results of all tasks are stored.
+// Pre-requisite check error types
+tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
+tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
+
+// Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
 // Name of the list in which buggy output test results of all tasks are stored.
 tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');

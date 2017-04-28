@@ -113,7 +113,8 @@ describe('FeedbackGeneratorService', function() {
       });
 
       var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(correctnessTest, "output").getParagraphs();
+        ._getCorrectnessTestFeedback(
+          null, correctnessTest, "output").getParagraphs();
       expect(paragraphs.length).toEqual(5);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(
@@ -124,6 +125,35 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[2].isTextParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toBe(
         "However, the expected output is:");
+      expect(paragraphs[3].isCodeParagraph()).toBe(true);
+      expect(paragraphs[3].getContent()).toBe("\"a\"");
+      expect(paragraphs[4].isTextParagraph()).toBe(true);
+      expect(paragraphs[4].getContent()).toBe(
+        "Could you fix this?");
+    });
+
+    it([
+      'should return feedback with the output function name ',
+      'on a user function that doesn\'t pass all correctness tests'
+    ].join(''), function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a']
+      });
+
+      var paragraphs = FeedbackGeneratorService
+        ._getCorrectnessTestFeedback(
+          'flufferNutter', correctnessTest, "output").getParagraphs();
+      expect(paragraphs.length).toEqual(5);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        "Your code produced the following result:");
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe(
+        "Input: \"cat\"\nOutput (after running flufferNutter): \"output\"");
+      expect(paragraphs[2].isTextParagraph()).toBe(true);
+      expect(paragraphs[2].getContent()).toBe(
+        "However, the expected output of flufferNutter is:");
       expect(paragraphs[3].isCodeParagraph()).toBe(true);
       expect(paragraphs[3].getContent()).toBe("\"a\"");
       expect(paragraphs[4].isTextParagraph()).toBe(true);
@@ -289,7 +319,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -320,7 +350,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -357,7 +387,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -367,7 +397,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResultWithSameBug);
       paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithSameBug, feedback));
+        null, codeEvalResultWithSameBug, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -377,7 +407,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResultWithStillSameBug);
       paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithStillSameBug, feedback));
+        null, codeEvalResultWithStillSameBug, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -410,7 +440,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResult, feedback));
+        null, codeEvalResult, feedback));
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -420,7 +450,7 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getBuggyOutputTestFeedback(
           buggyOutputTest, codeEvalResultWithNewError));
       TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
+        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
 
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();

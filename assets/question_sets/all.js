@@ -13,13 +13,13 @@
 // limitations under the License.
 
 /**
- * @fileoverview Data for the "strings" question set.
+ * @fileoverview Data for the set of all current TIE questions.
  */
 
-globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
+globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
   introductionParagraphs: [
     'Greetings!',
-    'This set of questions focuses on string manipulation.',
+    'This is a set of all current questions, just for testing purposes.',
     [
       "Let's get started! You'll see the first question to your right. ",
       "Code a solution in the coding window below and hit \"Run\", and ",
@@ -27,11 +27,20 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
     ].join('')
   ],
   questionIds: [
-    'findMostCommonCharacter',
-    'reverseWords',
-    'isPalindrome',
+    'bomberman',
     'checkBalancedParentheses',
+    'findAlphabet',
+    'findBestMeetupLocation',
+    'findFirstNonRepeatingCharacter',
+    'findMostCommonCharacter',
+    'getStrobogrammaticNumbers',
+    'incrementDecimalCodedNumber',
     'internationalization',
-    'runLengthEncoding'
+    'isPalindrome',
+    'longestSubstring',
+    'reverseWords',
+    'runLengthEncoding',
+    'sortItinerary',
+    'splitStringIntoWords'
   ]
 };
