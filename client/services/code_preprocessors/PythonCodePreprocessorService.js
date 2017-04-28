@@ -137,21 +137,11 @@ tie.factory('PythonCodePreprocessorService', [
             var whitespaceCheckLocation = (
               lastFunctionNameLocation + functionName.length);
             // We assume we found the matched function, but we might have found
-            // a similarly-named other function / variable. User-inputted code
-            // can be ... tricky.
-            var isMatchedFunction = true;
-            // We can safely assume there's a left paren because we matched it
-            // with the regular expression.
-            while (code[whitespaceCheckLocation] != '(') {
-              var isValidWhitespace = VALID_WHITESPACE_REGEX.test(
-                code[whitespaceCheckLocation])
-              whitespaceCheckLocation++;
-              if (!isValidWhitespace) {
-                isMatchedFunction = false;
-                break;
-              }
-            }
-            if (!isMatchedFunction) {
+            // a similarly-named other function / variable. This means that we
+            // need to check until the parenthesis to make sure that there is
+            // only whitespace, not other text (encode  () vs. encoded ()).
+            if (!_checkMatchedFunctionForWhitespace(
+              code, whitespaceCheckLocation)) {
               lastFunctionNameLocation++;
               continue;
             }
@@ -174,6 +164,21 @@ tie.factory('PythonCodePreprocessorService', [
         }
       }
     };
+
+    var _checkMatchedFunctionForWhitespace = function(
+        code, whitespaceCheckLocation) {
+      // We can safely assume there's a left paren because we matched it
+      // with the regular expression.
+      while (code[whitespaceCheckLocation] != '(') {
+        var isValidWhitespace = VALID_WHITESPACE_REGEX.test(
+          code[whitespaceCheckLocation])
+        whitespaceCheckLocation++;
+        if (!isValidWhitespace) {
+          return false;
+        }
+      }
+      return true;
+    }
 
     var _generateCorrectnessTestCode = function(
         correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName) {
@@ -329,6 +334,7 @@ tie.factory('PythonCodePreprocessorService', [
       // service.
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
+      _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,

@@ -494,6 +494,30 @@ describe('PythonCodePreprocessorService', function() {
     );
   });
 
+  describe('_checkMatchedFunctionForWhitespace', function() {
+    it([
+      'should check code to make sure that there is only whitespace after ',
+      'the whitespaceCheckLocation'
+      ],
+      function() {
+        var code = 'encoded  ()';
+        var whitespaceCheckLocation = 'encode'.length;
+        expect(
+          PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
+              code, whitespaceCheckLocation)
+        ).toBe(false);
+
+        var code = 'encode  ()';
+        var whitespaceCheckLocation = 'encode'.length;
+
+        expect(
+          PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
+              code, whitespaceCheckLocation)
+        ).toBe(true);
+      }
+    );
+  });
+
   describe('_generateCorrectnessTestCode', function() {
     it('should add correctness test code to skeleton code',
       function() {
