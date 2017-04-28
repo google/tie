@@ -32,7 +32,7 @@ describe('CodeRunnerDispatcherService', function() {
       expect(errorFunction).toThrowError(Error);
     });
 
-    it('should throw a timeout error if passed infinitely looping code',
+    it('should throw a TimeLimitError if passed infinitely looping code',
       function() {
         var code = [
           'while True:',
@@ -42,7 +42,7 @@ describe('CodeRunnerDispatcherService', function() {
         CodeRunnerDispatcherService.runCodeAsync("python", code).then(
           function(rawCodeEvalResult) {
             expect(rawCodeEvalResult.getErrorString()).toBe(
-              'TimeLimitError: Program exceeded run time limit. on line 2')
+              'TimeLimitError: Program exceeded run time limit.')
           });
     });
 
