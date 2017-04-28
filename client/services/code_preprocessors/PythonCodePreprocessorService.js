@@ -247,10 +247,10 @@ tie.factory('PythonCodePreprocessorService', [
           '    time_array = []',
           '    for input_size in [' + SMALL_INPUT_SIZE + (
             ', ' + LARGE_INPUT_SIZE + ']:'),
-          '        start = time.time()',
+          '        start = time.clock()',
           '        output = ' + qualifiedEvaluationFunctionName + (
             '(get_test_input(test_input, input_size))'),
-          '        finish = time.time() - start',
+          '        finish = time.clock() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
             ' * time_array[0]:'),
