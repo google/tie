@@ -27,7 +27,7 @@ describe('CodeRunnerDispatcherService', function() {
   describe('pythonCodeRunnerService', function() {
     it('should throw an error if passed a non-Python language', function() {
       var errorFunction = function() {
-        CodeRunnerDispatcherService.runCodeAsync("java", "some code")
+        CodeRunnerDispatcherService.runCodeAsync("jaba", "some code")
       };
       expect(errorFunction).toThrowError(Error);
     });
