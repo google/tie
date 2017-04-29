@@ -679,9 +679,6 @@ tie.directive('learnerView', [function() {
                 orderedTasks, question.getStarterCode(language),
                 code, question.getAuxiliaryCode(language), language
               ).then(setFeedback);
-                tasks[currentTaskIndex], 
-                code, question.getAuxiliaryCode(language), language
-                ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
           storeCodeAndUpdateCachedCode(

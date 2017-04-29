@@ -21,6 +21,7 @@ describe('SolutionHandlerService', function() {
   var TaskObjectFactory;
   var orderedTasks;
   var auxiliaryCode;
+  var startCode;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -102,6 +103,13 @@ describe('SolutionHandlerService', function() {
     ].join('\n');
   });
 
+  beforeEach(function() {
+    startCode = [
+        'def mockMainFunction():',
+        '    return True'
+    ].join('\n');
+  });
+
   describe('processSolutionAsync', function() {
     describe('correctnessTests', function() {
       it('should check both task1 and task2 to ' +
@@ -115,7 +123,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(true);
@@ -134,7 +142,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -155,7 +163,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -177,7 +185,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -198,7 +206,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -218,7 +226,7 @@ describe('SolutionHandlerService', function() {
 
         setTimeout(function() {
           SolutionHandlerService.processSolutionAsync(
-            orderedTasks, studentCode,
+            orderedTasks, startCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);

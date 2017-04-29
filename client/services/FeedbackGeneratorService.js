@@ -211,7 +211,7 @@ tie.factory('FeedbackGeneratorService', [
 
               if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
                 return _getCorrectnessTestFeedback(
-                  task.getOutputFunctionNameWithoutClass(),
+                  tasks[i].getOutputFunctionNameWithoutClass(),
                   correctnessTests[i][j], observedOutput);
               }
             }
