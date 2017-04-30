@@ -513,7 +513,6 @@ tie.directive('learnerView', [function() {
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
-        var reinforcement = ReinforcementObjectFactory.create();
         var question = null;
         var tasks = null;
         var currentTaskIndex = null;
@@ -533,7 +532,7 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
-          reinforcement = ReinforcementObjectFactory.create();
+          var reinforcement = ReinforcementObjectFactory.create();
           introParagraphs.forEach(function(paragraph) {
             feedback.appendTextParagraph(paragraph);
           });
@@ -552,8 +551,10 @@ tie.directive('learnerView', [function() {
 
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
-          var reinforcementDict =
-            feedbackAndReinforcement.reinforcementDict;
+          var reinforcement = feedbackAndReinforcement.reinforcement;
+          if (reinforcement == null) {
+            reinforcement = ReinforcementObjectFactory.create();
+          }
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
@@ -568,7 +569,6 @@ tie.directive('learnerView', [function() {
               $scope.nextButtonIsShown = true;
               $scope.questionsCompletionStatus[
                 $scope.currentQuestionIndex] = true;
-              reinforcement.clear();
             } else {
               congratulatoryFeedback.clear();
               congratulatoryFeedback.appendTextParagraph(
@@ -578,8 +578,7 @@ tie.directive('learnerView', [function() {
               $scope.showNextTask();
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
-            reinforcement.clear();
-            $scope.reinforcementBullets = reinforcement.getBullets();
+            $scope.reinforcementBullets = [];
           } else {
             $scope.feedbackParagraphs = feedback.getParagraphs();
 
@@ -598,21 +597,6 @@ tie.directive('learnerView', [function() {
               $scope.syntaxErrorFound = false;
 
               // Updating reinforcement bullets only if no syntax errors.
-              reinforcement.clear();
-              for (var caseList in reinforcementDict.passedList) {
-                if (reinforcementDict.passedList[caseList]) {
-                  reinforcement.appendPassedBullet("Handles " + caseList);
-                } else {
-                  reinforcement.appendFailedBullet("Fails " + caseList);
-                }
-              }
-              for (var testCase in reinforcementDict.pastFailsList) {
-                if (reinforcementDict.pastFailsList[testCase]) {
-                  reinforcement.appendPassedBullet("Handles '" + testCase + "'");
-                } else {
-                  reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
-                }
-              }
               $scope.reinforcementBullets = reinforcement.getBullets();
             }
             $scope.feedbackParagraphs = feedbackParagraphs;

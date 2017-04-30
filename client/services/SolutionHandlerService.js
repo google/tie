@@ -43,10 +43,10 @@ tie.factory('SolutionHandlerService', [
               codePrereqCheckResult);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codePrereqCheckResult, null,
-                prereqFeedback));
+                prereqFeedback, null));
             return {
               feedbackObject: prereqFeedback,
-              reinforcementDict: null
+              reinforcement: null
             };
           }
 
@@ -60,10 +60,10 @@ tie.factory('SolutionHandlerService', [
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, rawCodeEvalResult,
-                  feedback));
+                  feedback, null));
               return {
                 feedbackObject: feedback,
-                reinforcementDict: null
+                reinforcement: null
               };
             }
 
@@ -84,15 +84,15 @@ tie.factory('SolutionHandlerService', [
             ).then(function(codeEvalResult) {
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
                 task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
-              TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(null, codeEvalResult,
-                  runtimeFeedback));
-              var reinforcementDict =
+              var reinforcement =
                 ReinforcementGeneratorService.getReinforcement(task,
                   codeEvalResult);
+              TranscriptService.recordSnapshot(
+                SnapshotObjectFactory.create(null, codeEvalResult,
+                  runtimeFeedback, reinforcement));
               return {
                 feedbackObject: runtimeFeedback,
-                reinforcementDict: reinforcementDict
+                reinforcement: reinforcement
               };
             });
           }).then(function(feedback) {

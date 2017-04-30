@@ -18,7 +18,7 @@
  */
 
 tie.factory('ReinforcementGeneratorService', [
-  function() {
+  'ReinforcementObjectFactory', function(ReinforcementObjectFactory) {
 
     return {
       getReinforcement: function(task, codeEvalResult) {
@@ -73,26 +73,24 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
-        var reinforcementDict = {};
-        reinforcementDict.passedList = {};
+        var reinforcement = ReinforcementObjectFactory.create();
         for (var caseList in task.passedList) {
           if (task.passedList[caseList]) {
-            reinforcementDict.passedList[caseList] = true;
+            reinforcement.appendPassedBullet("Handles " + caseList);
           } else {
-            reinforcementDict.passedList[caseList] = false;
+            reinforcement.appendFailedBullet("Fails " + caseList);
           }
         }
 
-        reinforcementDict.pastFailsList = {};
         for (var testCase in task.pastFailsList) {
           if (task.pastFailsList[testCase]) {
-            reinforcementDict.pastFailsList[testCase] = true;
+            reinforcement.appendPassedBullet("Handles '" + testCase + "'");
           } else {
-            reinforcementDict.pastFailsList[testCase] = false;
+            reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
           }
         }
 
-        return reinforcementDict;
+        return reinforcement;
       }
     };
   }

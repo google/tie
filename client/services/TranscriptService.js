@@ -27,6 +27,9 @@ tie.factory('TranscriptService', [
       },
       recordSnapshot: function(snapshot) {
         transcript.recordSnapshot(snapshot);
+      },
+      getPreviousSnapshot: function() {
+        transcript.getPreviousSnapshot();
       }
     };
   }
