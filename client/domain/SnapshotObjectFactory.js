@@ -24,6 +24,7 @@ tie.factory('SnapshotObjectFactory', [
       this._codePrereqCheckResult = codePrereqCheckResult;
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedback;
+      console.log(reinforcement);
       this._reinforcement = reinforcement;
       this._timestamp = '';
     };

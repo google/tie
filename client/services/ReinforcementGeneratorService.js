@@ -18,18 +18,10 @@
  */
 
 tie.factory('ReinforcementGeneratorService', [
-  'ReinforcementObjectFactory', function(ReinforcementObjectFactory) {
-
+  'ReinforcementObjectFactory', 'TranscriptService',
+  function(ReinforcementObjectFactory, TranscriptService) {
     return {
       getReinforcement: function(task, codeEvalResult) {
-
-        // Initializing question reinforcement data if not done already
-        if (!task.passedList) {
-          task.passedList = {};
-        }
-        if (!task.pastFailsList) {
-          task.pastFailsList = {};
-        }
 
         var testsKeyedByTag = function(tests) {
           var splitTests = {};
@@ -46,6 +38,27 @@ tie.factory('ReinforcementGeneratorService', [
           return splitTests;
         };
 
+        var previousSnapshot = TranscriptService.getPreviousSnapshot();
+        var previousReinforcement = null;
+        console.log(previousSnapshot);
+        if (previousSnapshot !== null) {
+          previousReinforcement = previousSnapshot.getReinforcement();
+         }
+        console.log(previousReinforcement);
+        var reinforcement = ReinforcementObjectFactory.create(task);
+        // Copy the previous reinforcement object if we are on the same task.
+        if (previousReinforcement !== null &&
+            task === previousReinforcement.getTask()) {
+          for (var tag in previousReinforcement.getPassedList()) {
+            reinforcement.addToPassedList(tag,
+              previousReinforcement.getPassedList()[tag]);
+          }
+          for (var pastCase in previousReinforcement.getPastFailsList()) {
+            reinforcement.addToPastFailsList(pastCase,
+              previousReinforcement.getPastFailsList()[pastCase]);
+          }
+        }
+
         // Go through correctness tests to update reinforcement data.
         var correctnessTests = testsKeyedByTag(task.getCorrectnessTests());
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
@@ -56,37 +69,20 @@ tie.factory('ReinforcementGeneratorService', [
             var test = correctnessTests[testTag][testIdx];
             var observedOutput = observedOutputs[test.index];
             if (test.matchesOutput(observedOutput)) {
-              if (test.getInput() in task.pastFailsList) {
-                task.pastFailsList[test.getInput()] = true;
+              if (test.getInput() in reinforcement.getPastFailsList()) {
+                reinforcement.addToPastFailsList(test.getInput(), true);
               }
             } else if (!failedCaseSeen) {
-              task.pastFailsList[test.getInput()] = false;
+              reinforcement.addToPastFailsList(test.getInput(), false);
               failedCaseSeen = true;
             }
           }
           if (failedCaseSeen) {
-            if (testTag in task.passedList) {
-              task.passedList[testTag] = false;
+            if (testTag in reinforcement.getPassedList()) {
+              reinforcement.addToPassedList(testTag, false);
             }
           } else {
-            task.passedList[testTag] = true;
-          }
-        }
-
-        var reinforcement = ReinforcementObjectFactory.create();
-        for (var caseList in task.passedList) {
-          if (task.passedList[caseList]) {
-            reinforcement.appendPassedBullet("Handles " + caseList);
-          } else {
-            reinforcement.appendFailedBullet("Fails " + caseList);
-          }
-        }
-
-        for (var testCase in task.pastFailsList) {
-          if (task.pastFailsList[testCase]) {
-            reinforcement.appendPassedBullet("Handles '" + testCase + "'");
-          } else {
-            reinforcement.appendFailedBullet("Fails on '" + testCase + "'");
+            reinforcement.addToPassedList(testTag, false);
           }
         }
 

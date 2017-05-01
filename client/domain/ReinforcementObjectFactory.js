@@ -19,32 +19,65 @@
 
 tie.factory('ReinforcementObjectFactory', [
   'ReinforcementBulletObjectFactory', function(ReinforcementBulletObjectFactory) {
-    var Reinforcement = function() {
-      this._bullets = [];
+    var Reinforcement = function(task) {
+      this._task = task;
+      this._passedList = {};
+      this._pastFailsList = {};
     };
 
     // Instance methods.
     Reinforcement.prototype.getBullets = function() {
-      return this._bullets;
+      var bullets = [];
+      for (var caseList in this._passedList) {
+        if (this._passedList[caseList]) {
+          bullets.push(
+            ReinforcementBulletObjectFactory.createPassedBullet(
+              "Handles " + caseList));
+        } else {
+          bullets.push(
+            ReinforcementBulletObjectFactory.createFailedBullet(
+              "Fails " + caseList));
+        }
+      }
+
+      for (var testCase in this._pastFailsList) {
+        if (this._pastFailsList[testCase]) {
+          bullets.push(
+            ReinforcementBulletObjectFactory.createPassedBullet(
+              "Handles '" + testCase + "'"));
+        } else {
+          bullets.push(
+            ReinforcementBulletObjectFactory.createFailedBullet(
+              "Fails on '" + testCase + "'"));
+        }
+      }
+
+      return bullets;
     };
 
-    Reinforcement.prototype.appendPassedBullet = function(content) {
-      this._bullets.push(
-        ReinforcementBulletObjectFactory.createPassedBullet(content));
+    Reinforcement.prototype.getTask = function() {
+      return this._task;
     };
 
-    Reinforcement.prototype.appendFailedBullet = function(content) {
-      this._bullets.push(
-        ReinforcementBulletObjectFactory.createFailedBullet(content));
+    Reinforcement.prototype.addToPassedList = function(key, value) {
+      this._passedList[key] = value;
     };
 
-    Reinforcement.prototype.clear = function() {
-      this._bullets = [];
+    Reinforcement.prototype.addToPastFailsList = function(key, value) {
+      this._pastFailsList[key] = value;
+    };
+
+    Reinforcement.prototype.getPassedList = function() {
+      return this._passedList;
+    };
+
+    Reinforcement.prototype.getPastFailsList = function() {
+      return this._pastFailsList;
     };
 
     // Static class methods.
-    Reinforcement.create = function(answerIsCorrect) {
-      return new Reinforcement(answerIsCorrect);
+    Reinforcement.create = function(task) {
+      return new Reinforcement(task);
     };
 
     return Reinforcement;

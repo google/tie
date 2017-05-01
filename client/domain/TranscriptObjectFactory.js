@@ -33,6 +33,7 @@ tie.factory('TranscriptObjectFactory', [
 
     Transcript.prototype.recordSnapshot = function(snapshot) {
       this._snapshots.push(snapshot);
+      console.log(snapshot);
       return this._snapshots.length;
     };
 

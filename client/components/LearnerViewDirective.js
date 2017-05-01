@@ -552,7 +552,7 @@ tie.directive('learnerView', [function() {
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
           var reinforcement = feedbackAndReinforcement.reinforcement;
-          if (reinforcement == null) {
+          if (reinforcement === null) {
             reinforcement = ReinforcementObjectFactory.create();
           }
           $scope.loadingIndicatorIsShown = false;

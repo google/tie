@@ -29,7 +29,7 @@ tie.factory('TranscriptService', [
         transcript.recordSnapshot(snapshot);
       },
       getPreviousSnapshot: function() {
-        transcript.getPreviousSnapshot();
+        return transcript.getPreviousSnapshot();
       }
     };
   }
