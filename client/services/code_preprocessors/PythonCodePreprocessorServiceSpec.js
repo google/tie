@@ -496,21 +496,31 @@ describe('PythonCodePreprocessorService', function() {
             })]
         ];
         var expectedGeneratedCode = [
-          'def matches_buggy_function(func):',
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            task_results.append(System.runTest(func, test_input))',
+          '            if inputFunctionName == None and outputFunctionName == None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName == None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName == None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
           'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc))',
+              'matches_buggy_function(buggyFunc, None, None))',
           'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc2))',
+              'matches_buggy_function(buggyFunc2, None, None))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
@@ -529,20 +539,29 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function__outputFunctionName(func):',
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            task_results.append(outputFunctionName(' +
-                'System.runTest(func, test_input)))',
+          '            if inputFunctionName == None and outputFunctionName == None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName == None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName == None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
           'task_buggy_output_test_results.append(' +
-              'matches_buggy_function__outputFunctionName(buggyFunc))',
+              'matches_buggy_function(buggyFunc, None, outputFunctionName))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
@@ -561,20 +580,29 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function_inputFunctionName(func):',
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            task_results.append(System.runTest(func, ' +
-                'inputFunctionName(test_input)))',
+          '            if inputFunctionName == None and outputFunctionName == None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName == None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName == None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
           'task_buggy_output_test_results.append(' +
-              'matches_buggy_function_inputFunctionName(buggyFunc))',
+              'matches_buggy_function(buggyFunc, inputFunctionName, None))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');
@@ -593,21 +621,29 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
-          'def matches_buggy_function_inputFunctionName__outputFunctionName(func):',
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            task_results.append(outputFunctionName(System.runTest(func, ' +
-                'inputFunctionName(test_input))))',
+          '            if inputFunctionName == None and outputFunctionName == None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName == None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName == None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
           'task_buggy_output_test_results.append(' +
-              'matches_buggy_function_inputFunctionName' +
-              '__outputFunctionName(buggyFunc))',
+              'matches_buggy_function(buggyFunc, inputFunctionName, outputFunctionName))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
         ].join('\n');

@@ -230,12 +230,6 @@ tie.factory('PythonCodePreprocessorService', [
         var inputFunctionName = allTasksInputFunctionNames[i];
         var outputFunctionName = allTasksOutputFunctionNames[i];
 
-        var matchesBuggyFunctionName = 'matches_buggy_function' +
-            (inputFunctionName == null? '' : '_' + inputFunctionName) +
-            (outputFunctionName == null? '' : '__' + outputFunctionName) ;
-
-        if (!matchesBuggyFunctionSet.has(matchesBuggyFunctionName)) {
-          matchesBuggyFunctionSet.add(matchesBuggyFunctionName);
           var testInputCode = (
             inputFunctionName ?
             inputFunctionName + '(test_input)' :
@@ -247,20 +241,28 @@ tie.factory('PythonCodePreprocessorService', [
             outputFunctionName + '(' + testRunCode + ')' : testRunCode);
 
           var fullTestCode = [
-            'def ' + matchesBuggyFunctionName + '(func):',
+            'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
             '    buggy_results = []',
             '    for task_tests in all_tasks_test_inputs:',
             '        task_results = []',
             '        for test_input in task_tests:',
-            '            task_results' +
-            '.append(' + testOutputCode + ')',
+            '            if inputFunctionName == None and outputFunctionName == None:',
+            '                task_results.append(System.runTest(func, test_input))',
+            '            elif inputFunctionName == None:',
+            '                task_results.append(' +
+            'outputFunctionName(System.runTest(func, test_input)))',
+            '            elif outputFunctionName == None:',
+            '                task_results.append(' +
+            'System.runTest(func, inputFunctionName(test_input)))',
+            '            else:',
+            '               task_results.append(' +
+            'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
             '        buggy_results.append(task_results)',
             '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
             '',
             VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
             ''
           ].join('\n');
-        }
 
         allTasksBuggyOutputTests.forEach(function(oneTaskBuggyOutputTests) {
           fullTestCode += (
@@ -270,8 +272,10 @@ tie.factory('PythonCodePreprocessorService', [
                 buggyOutputTest.getBuggyFunctionName());
             fullTestCode += (
                 VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +
-                '.append(' + matchesBuggyFunctionName + '(' +
-                qualifiedBuggyFunctionName + '))\n');
+                '.append(matches_buggy_function(' +
+                    qualifiedBuggyFunctionName + ', ' +
+                    (inputFunctionName ? inputFunctionName : 'None') + ', ' +
+                    (outputFunctionName ? outputFunctionName : 'None') + '))\n');
           });
 
           fullTestCode += (
