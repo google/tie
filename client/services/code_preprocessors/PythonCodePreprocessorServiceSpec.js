@@ -668,25 +668,26 @@ describe('PythonCodePreprocessorService', function() {
         var performanceTests = [[performanceTest]];
         var expectedGeneratedCode = [
           'performance_test_results = []',
-          'task_performance_test_results = []',
           '',
-          'def get_test_input_from_System_extendString(atom, input_size):',
-          '    return System.extendString(atom, input_size)',
+          'def get_test_input(atom, input_size, qualifiedTransformationFunctionName):',
+          '    return qualifiedTransformationFunctionName(atom, input_size)',
           '',
-          'def run_performance_test_from_System_extendString(test_input):',
+          'def run_performance_test(test_input, ' +
+              'qualifiedTransformationFunctionName, qualifiedEvaluationFunctionName):',
           '    time_array = []',
           '    for input_size in [10, 100]:',
           '        start = time.clock()',
-          '        output = StudentCode().katamariDamashi(' +
-              'get_test_input_from_System_extendString(test_input, input_size))',
+          '        output = qualifiedEvaluationFunctionName(' +
+              'get_test_input(test_input, input_size, qualifiedTransformationFunctionName))',
           '        finish = time.clock() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > 30 * time_array[0]:',
           '        return "not linear"',
           '    return "linear"',
           '',
+          'task_performance_test_results = []',
           'task_performance_test_results.append(',
-          '    run_performance_test_from_System_extendString(\'na \'))',
+          '    run_performance_test(\'na \', System.extendString, StudentCode().katamariDamashi))',
           'performance_test_results.append(task_performance_test_results)',
           ''
         ].join('\n');

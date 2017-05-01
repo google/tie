@@ -289,9 +289,31 @@ tie.factory('PythonCodePreprocessorService', [
 
     var _generatePerformanceTestCode = function(allTasksPerformanceTests) {
       var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n');
-      var performanceTestFunctionSet = new Set();
+
+      testCode += [
+        '',
+        'def get_test_input(atom, input_size, qualifiedTransformationFunctionName):',
+        '    return qualifiedTransformationFunctionName(atom, input_size)',
+        '',
+        'def run_performance_test(test_input, ' +
+            'qualifiedTransformationFunctionName, qualifiedEvaluationFunctionName):',
+        '    time_array = []',
+        '    for input_size in [' + SMALL_INPUT_SIZE + (
+          ', ' + LARGE_INPUT_SIZE + ']:'),
+        '        start = time.clock()',
+        '        output = qualifiedEvaluationFunctionName(' +
+          'get_test_input(test_input, input_size, qualifiedTransformationFunctionName))',
+        '        finish = time.clock() - start',
+        '        time_array.append(finish)',
+        '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
+          ' * time_array[0]:'),
+        '        return "not linear"',
+        '    return "linear"',
+        '',
+      ].join('\n');
+
       allTasksPerformanceTests.forEach(function(oneTaskPerformanceTests, index) {
-        testCode += (VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
+        testCode += ('\n' + VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
         oneTaskPerformanceTests.forEach(function(test) {
           var qualifiedEvaluationFunctionName = (
             CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
@@ -300,44 +322,16 @@ tie.factory('PythonCodePreprocessorService', [
           // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
           // TODO(eyurko): Use linear regression to determine if the data points
           // "look" linear, quadratic, etc, and then provide feedback accordingly.
-          if (!performanceTestFunctionSet.has(qualifiedEvaluationFunctionName)) {
-            performanceTestFunctionSet.add(qualifiedEvaluationFunctionName);
-            testCode += [
-              '',
-              'def get_test_input_from_'+
-                  qualifiedTransformationFunctionName.replace('.', '_') +
-                  '(atom, input_size):',
-              '    return ' + qualifiedTransformationFunctionName + (
-                '(atom, input_size)'),
-              '',
-              'def run_performance_test_from_'+
-                   qualifiedTransformationFunctionName.replace('.', '_') +
-                   '(test_input):',
-              '    time_array = []',
-              '    for input_size in [' + SMALL_INPUT_SIZE + (
-                ', ' + LARGE_INPUT_SIZE + ']:'),
-              '        start = time.clock()',
-              '        output = ' + qualifiedEvaluationFunctionName + (
-                '(get_test_input_from_' +
-                  qualifiedTransformationFunctionName.replace('.', '_') +
-                   '(test_input, input_size))'),
-              '        finish = time.clock() - start',
-              '        time_array.append(finish)',
-              '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
-                ' * time_array[0]:'),
-              '        return "not linear"',
-              '    return "linear"',
-              '',
-            ].join('\n');
-          }
-          testCode += '\n' + [
-          VARNAME_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
-            '    run_performance_test_from_' +
-            qualifiedTransformationFunctionName.replace('.', '_') + '(' + 
-            (_jsonVariableToPython(test.getInputDataAtom()) + '))')
+          testCode += [
+            VARNAME_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
+            '    run_performance_test(' +
+            (_jsonVariableToPython(test.getInputDataAtom()) + ', ' +
+             qualifiedTransformationFunctionName + ', ' +
+             qualifiedEvaluationFunctionName + '))'),
+            ''
           ].join('\n');
         });
-        testCode += '\n' + [
+        testCode += [
           (VARNAME_PERFORMANCE_TEST_RESULTS + '.append(' +
               VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ')'),
           ''
