@@ -63,7 +63,6 @@ tie.directive('learnerView', [function() {
                 <div class="tie-feedback">
                   <div ng-repeat="set in feedbackStorage">
                     <hr>
-                    <span class="tie-feedback-timestamp">{{set.timestamp}}<span>
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
@@ -107,6 +106,13 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
+                  <div class="tie-next-curtain-container" ng-if="nextButtonIsShown">
+                    <div class="tie-next-curtain"></div>
+                    <div class="tie-arrow-highlighter"></div>
+                    <div ng-click="showNextTask()" class="tie-next-arrow">
+                      <span class="tie-next-button-text">Next</span>
+                    </div>
+                  </div>
                   <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                       ng-model="code"
                       ng-change="autosave()"
@@ -128,14 +134,6 @@ tie.directive('learnerView', [function() {
                     ng-disabled="nextButtonIsShown">
                   Run
                 </button>
-                <div class="tie-next-curtain-container"
-                    ng-if="nextButtonIsShown">
-                  <div class="tie-next-curtain"></div>
-                  <div class="tie-arrow-highlighter"></div>
-                  <div ng-click="showNextTask()" class="tie-next-arrow">
-                    <span class="tie-next-button-text">Next</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -188,6 +186,7 @@ tie.directive('learnerView', [function() {
           display: flex;
           font-size: 13px;
           height: 528px;
+          position: relative;
           width: 662px;
         }
         .tie-coding-window {
@@ -291,10 +290,11 @@ tie.directive('learnerView', [function() {
           width: 100%;
         }
         .tie-next-curtain-container {
-          height: calc(100% - 10px);
-          position: relative;
-          top: calc(-100% + 44px);
-          z-index: 2;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          width: 100%;
+          z-index: 4;
         }
         .tie-previous-instructions {
           opacity: 0.5;
@@ -518,7 +518,6 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackStorage.push(
               {
-                timestamp: '[' + (new Date()).toLocaleTimeString() + ']',
                 feedbackParagraphs: congratulatoryFeedback.getParagraphs()
               });
           } else {
@@ -538,7 +537,6 @@ tie.directive('learnerView', [function() {
             }
             $scope.feedbackStorage.push(
               {
-                timestamp: '[' + (new Date()).toLocaleTimeString() + ']',
                 feedbackParagraphs: feedbackParagraphs
               });
           }
