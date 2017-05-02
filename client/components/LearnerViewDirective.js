@@ -80,16 +80,16 @@ tie.directive('learnerView', [function() {
                       ng-show="syntaxErrorFound">
                     {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
                   </a>
+                  <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                    {{syntaxErrorString}}
+                  </span>
+                  <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                    <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
+                    <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
+                    <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
+                  </div>
                 </div>
                 <br>
-                <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
-                  {{syntaxErrorString}}
-                </span>
-                <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                  <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
-                  <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
-                  <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
-                </div>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
