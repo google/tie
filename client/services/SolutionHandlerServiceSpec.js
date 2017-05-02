@@ -105,8 +105,8 @@ describe('SolutionHandlerService', function() {
 
   beforeEach(function() {
     startCode = [
-        'def mockMainFunction():',
-        '    return True'
+      'def mockMainFunction():',
+      '    return True'
     ].join('\n');
   });
 
