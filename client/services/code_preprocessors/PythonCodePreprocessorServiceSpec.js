@@ -501,12 +501,12 @@ describe('PythonCodePreprocessorService', function() {
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            if inputFunctionName == None and outputFunctionName == None:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName == None:',
+          '            elif inputFunctionName is None:',
           '                task_results.append(' +
           'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName == None:',
+          '            elif outputFunctionName is None:',
           '                task_results.append(' +
           'System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
@@ -544,12 +544,12 @@ describe('PythonCodePreprocessorService', function() {
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            if inputFunctionName == None and outputFunctionName == None:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName == None:',
+          '            elif inputFunctionName is None:',
           '                task_results.append(' +
           'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName == None:',
+          '            elif outputFunctionName is None:',
           '                task_results.append(' +
           'System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
@@ -585,12 +585,12 @@ describe('PythonCodePreprocessorService', function() {
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            if inputFunctionName == None and outputFunctionName == None:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName == None:',
+          '            elif inputFunctionName is None:',
           '                task_results.append(' +
           'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName == None:',
+          '            elif outputFunctionName is None:',
           '                task_results.append(' +
           'System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
@@ -626,12 +626,12 @@ describe('PythonCodePreprocessorService', function() {
           '    for task_tests in all_tasks_test_inputs:',
           '        task_results = []',
           '        for test_input in task_tests:',
-          '            if inputFunctionName == None and outputFunctionName == None:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName == None:',
+          '            elif inputFunctionName is None:',
           '                task_results.append(' +
           'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName == None:',
+          '            elif outputFunctionName is None:',
           '                task_results.append(' +
           'System.runTest(func, inputFunctionName(test_input)))',
           '            else:',

@@ -88,10 +88,7 @@ describe('SolutionHandlerService', function() {
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
     });
-  }));
 
-  // Mock auxiliary code for processing.
-  beforeEach(function() {
     auxiliaryCode = [
       'class AuxiliaryCode(object):',
       '    @classmethod',
@@ -101,14 +98,12 @@ describe('SolutionHandlerService', function() {
       '    def mockAuxiliaryCodeTwo(cls, input):',
       '        return False'
     ].join('\n');
-  });
 
-  beforeEach(function() {
     startCode = [
       'def mockMainFunction():',
       '    return True'
     ].join('\n');
-  });
+  }));
 
   describe('processSolutionAsync', function() {
     describe('correctnessTests', function() {

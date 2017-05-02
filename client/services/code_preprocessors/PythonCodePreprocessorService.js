@@ -230,39 +230,39 @@ tie.factory('PythonCodePreprocessorService', [
         var inputFunctionName = allTasksInputFunctionNames[i];
         var outputFunctionName = allTasksOutputFunctionNames[i];
 
-          var testInputCode = (
-            inputFunctionName ?
-            inputFunctionName + '(test_input)' :
-            'test_input'
-          );
-          var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
-          var testOutputCode = (
-            outputFunctionName ?
-            outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+        var testInputCode = (
+          inputFunctionName ?
+          inputFunctionName + '(test_input)' :
+          'test_input'
+        );
+        var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
+        var testOutputCode = (
+          outputFunctionName ?
+          outputFunctionName + '(' + testRunCode + ')' : testRunCode);
 
-          var fullTestCode = [
-            'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
-            '    buggy_results = []',
-            '    for task_tests in all_tasks_test_inputs:',
-            '        task_results = []',
-            '        for test_input in task_tests:',
-            '            if inputFunctionName == None and outputFunctionName == None:',
-            '                task_results.append(System.runTest(func, test_input))',
-            '            elif inputFunctionName == None:',
-            '                task_results.append(' +
-            'outputFunctionName(System.runTest(func, test_input)))',
-            '            elif outputFunctionName == None:',
-            '                task_results.append(' +
-            'System.runTest(func, inputFunctionName(test_input)))',
-            '            else:',
-            '               task_results.append(' +
-            'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
-            '        buggy_results.append(task_results)',
-            '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
-            '',
-            VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
-            ''
-          ].join('\n');
+        var fullTestCode = [
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
+          '    buggy_results = []',
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test_input in task_tests:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName is None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName is None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '        buggy_results.append(task_results)',
+          '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
+          '',
+          VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
+          ''
+        ].join('\n');
 
         allTasksBuggyOutputTests.forEach(function(oneTaskBuggyOutputTests) {
           fullTestCode += (
