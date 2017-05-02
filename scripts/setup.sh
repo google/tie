@@ -23,7 +23,7 @@ export OS=`uname`
 export MACHINE_TYPE=`uname -m`
 export TOOLS_DIR=./tools
 export NODE_DIR=$TOOLS_DIR/node-6.9.1
-if [ ${OS}==MINGW_NT-10.0 ]; then
+if [ ${OS} == "MINGW_NT-10.0" ]; then
   export NPM_CMD=$NODE_DIR/npm
 else
   export NPM_CMD=$NODE_DIR/bin/npm
