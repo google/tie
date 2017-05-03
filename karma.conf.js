@@ -28,8 +28,8 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      'client/*.js': ['coverage', '6to5'],
-      'client/**/*.js': ['coverage', '6to5'],
+      // 'client/*.js': ['coverage', '6to5'],
+      // 'client/**/*.js': ['coverage', '6to5'],
       'assets/**/*.js': ['6to5']
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
@@ -76,7 +76,7 @@ module.exports = function(config) {
     // Continuous Integration mode.
     // If true, Karma captures browsers, runs the tests and exits.
     singleRun: true,
-    // Concurrency level (how many browser should be started simultaneously).
+    // Concurrency level (how many browsers should be started simultaneously).
     concurrency: Infinity
   })
 }

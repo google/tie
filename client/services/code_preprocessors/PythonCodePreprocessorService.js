@@ -35,6 +35,7 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
       'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
+    var VALID_WHITESPACE_REGEX = new RegExp('\\s');
     var VARNAME_ALL_TASKS_TEST_INPUTS = 'all_tasks_test_inputs';
     var START_INDENT = '    ';
 
@@ -118,7 +119,9 @@ tie.factory('PythonCodePreprocessorService', [
           return code;
         }
         var matchingString = regexResult[0];
-        var functionName = regexResult[1];
+        var functionNameWithParen = regexResult[1];
+        var functionName = functionNameWithParen.substring(
+          0, functionNameWithParen.length - 1).trim()
 
         // Do not modify inner functions.
         var matchIndex = code.indexOf(matchingString);
@@ -129,7 +132,7 @@ tie.factory('PythonCodePreprocessorService', [
         // We should make sure that we don't append our class name to
         // the student's function definition.
         var functionNameStart = (code.indexOf(matchingString) +
-          matchingString.indexOf(functionName));
+          matchingString.indexOf(functionNameWithParen));
         var lastFunctionNameLocation = 0;
         while (true) {
           var codeToAdd = '';
@@ -139,6 +142,17 @@ tie.factory('PythonCodePreprocessorService', [
             break;
           }
           if (lastFunctionNameLocation !== functionNameStart) {
+            var whitespaceCheckLocation = (
+              lastFunctionNameLocation + functionName.length);
+            // We assume we found the matched function, but we might have found
+            // a similarly-named other function / variable. This means that we
+            // need to check until the parenthesis to make sure that there is
+            // only whitespace, not other text (encode  () vs. encoded ()).
+            if (!_checkMatchedFunctionForWhitespace(
+              code, whitespaceCheckLocation)) {
+              lastFunctionNameLocation++;
+              continue;
+            }
             codeToAdd = functionPrefix;
             code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
               code.slice(lastFunctionNameLocation, code.length));
@@ -157,6 +171,24 @@ tie.factory('PythonCodePreprocessorService', [
           lastFunctionNameLocation += codeToAdd.length + 1;
         }
       }
+    };
+
+    var _checkMatchedFunctionForWhitespace = function(
+        code, whitespaceCheckLocation) {
+      // We can safely assume there's a left paren because we matched it
+      // with the regular expression.
+      while (code[whitespaceCheckLocation] != '(') {
+        var isWhitespace = _isWhitespaceChar(code[whitespaceCheckLocation]);
+        whitespaceCheckLocation++;
+        if (!isWhitespace) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    var _isWhitespaceChar = function(c) {
+      return VALID_WHITESPACE_REGEX.test(c);
     };
 
     var _generateCorrectnessTestCode = function(
@@ -381,6 +413,7 @@ tie.factory('PythonCodePreprocessorService', [
       // service.
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
+      _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
