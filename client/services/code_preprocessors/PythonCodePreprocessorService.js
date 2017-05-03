@@ -20,15 +20,23 @@
 tie.factory('PythonCodePreprocessorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
+  'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
+  'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT) {
+      VARNAME_PERFORMANCE_TEST_RESULTS,
+      VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
+      VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
+      VARNAME_TASK_PERFORMANCE_TEST_RESULTS,
+      VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
-      'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
+        'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
     var VALID_WHITESPACE_REGEX = new RegExp('\\s');
-    var VARNAME_TEST_INPUTS = 'test_inputs';
+    var VARNAME_ALL_TASKS_TEST_INPUTS = 'all_tasks_test_inputs';
     var START_INDENT = '    ';
 
     var SMALL_INPUT_SIZE = 10;
@@ -184,117 +192,181 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _generateCorrectnessTestCode = function(
-        correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName) {
-      var qualifiedMainFunctionName = (
-        CLASS_NAME_STUDENT_CODE + '().' + mainFunctionName);
+        allTasksCorrectnessTests, allTasksInputFunctionNames,
+        allTasksMainFunctionNames, allTasksOutputFunctionNames) {
 
-      var pythonInputs = correctnessTests.map(function(test) {
-        return _jsonVariableToPython(test.getInput());
+      var pythonInputs = allTasksCorrectnessTests.map(function(tests) {
+        return tests.map(function(test) {
+          return _jsonVariableToPython(test.getInput());
+        });
       });
 
       var testCode = [
-        VARNAME_TEST_INPUTS + ' = [' + pythonInputs.join(', ') + ']',
+        VARNAME_ALL_TASKS_TEST_INPUTS + ' = [' + pythonInputs.map(function(tests) {
+          return '[' + tests.join(', ') + ']';
+        }).join(', ') + ']',
         '',
         VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
       ].join('\n');
-      for (var i = 0; i < correctnessTests.length; i++) {
-        var testInputCode = (
-          inputFunctionName ?
-          inputFunctionName + '(' + VARNAME_TEST_INPUTS + '[' + i + '])' :
-          VARNAME_TEST_INPUTS + '[' + i + ']'
-        );
-        var testRunCode = (
-          'System.runTest(' + qualifiedMainFunctionName + ', '
-          + testInputCode + ')'
-        );
-        var testOutputCode = (
-          outputFunctionName ?
-          outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+
+      for (var i = 0; i < allTasksCorrectnessTests.length; i++) {
+        var qualifiedMainFunctionName = (
+            CLASS_NAME_STUDENT_CODE + '().' + allTasksMainFunctionNames[i]);
+        var inputFunctionName = allTasksInputFunctionNames[i];
+        var outputFunctionName = allTasksOutputFunctionNames[i];
+
+        var oneTaskCorrectnessTests = allTasksCorrectnessTests[i];
+        testCode += (
+            '\n' +
+            VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
+
+        for (var j = 0; j < oneTaskCorrectnessTests.length; j++) {
+          var testInputCode = (
+            inputFunctionName ?
+            inputFunctionName + '(' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + '])' :
+            VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + ']'
+          );
+          var testRunCode = (
+            'System.runTest(' + qualifiedMainFunctionName + ', '
+            + testInputCode + ')'
+          );
+          var testOutputCode = (
+            outputFunctionName ?
+            outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+
+          testCode += (
+            '\n' +
+            VARNAME_TASK_CORRECTNESS_TEST_RESULTS +
+            '.append(' + testOutputCode + ')');
+        }
 
         testCode += (
           '\n' +
-          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(' + testOutputCode + ')');
+          VARNAME_CORRECTNESS_TEST_RESULTS +
+          '.append(' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ')');
       };
 
       return testCode;
     };
 
     var _generateBuggyOutputTestCode = function(
-        buggyOutputTests, inputFunctionName, outputFunctionName) {
+        allTasksBuggyOutputTests,
+        allTasksInputFunctionNames, allTasksOutputFunctionNames) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
-      var testInputCode = (
-        inputFunctionName ?
-        inputFunctionName + '(test_input)' :
-        'test_input'
-      );
-      var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
-      var testOutputCode = (
-        outputFunctionName ?
-        outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+      var matchesBuggyFunctionSet = new Set();
 
-      var fullTestCode = [
-        'def matches_buggy_function(func):',
-        '    buggy_results = []',
-        '    for test_input in test_inputs:',
-        '        buggy_results.append(' + testOutputCode + ')',
-        '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
-        '',
-        VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
-        ''
-      ].join('\n');
-      buggyOutputTests.forEach(function(buggyOutputTest) {
-        var qualifiedBuggyFunctionName = (
-          buggyOutputTest.getBuggyFunctionName());
+      for (var i = 0; i < allTasksInputFunctionNames.length; i++) {
+        var inputFunctionName = allTasksInputFunctionNames[i];
+        var outputFunctionName = allTasksOutputFunctionNames[i];
 
-        fullTestCode += (
-          VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
-          '.append(matches_buggy_function(' +
-          qualifiedBuggyFunctionName + '))\n');
-      });
+        var testInputCode = (
+          inputFunctionName ?
+          inputFunctionName + '(test_input)' :
+          'test_input'
+        );
+        var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
+        var testOutputCode = (
+          outputFunctionName ?
+          outputFunctionName + '(' + testRunCode + ')' : testRunCode);
+
+        var fullTestCode = [
+          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
+          '    buggy_results = []',
+          '    for task_tests in all_tasks_test_inputs:',
+          '        task_results = []',
+          '        for test_input in task_tests:',
+          '            if inputFunctionName is None and outputFunctionName is None:',
+          '                task_results.append(System.runTest(func, test_input))',
+          '            elif inputFunctionName is None:',
+          '                task_results.append(' +
+          'outputFunctionName(System.runTest(func, test_input)))',
+          '            elif outputFunctionName is None:',
+          '                task_results.append(' +
+          'System.runTest(func, inputFunctionName(test_input)))',
+          '            else:',
+          '               task_results.append(' +
+          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '        buggy_results.append(task_results)',
+          '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
+          '',
+          VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
+          ''
+        ].join('\n');
+
+        allTasksBuggyOutputTests.forEach(function(oneTaskBuggyOutputTests) {
+          fullTestCode += (
+              VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
+          oneTaskBuggyOutputTests.forEach(function(buggyOutputTest) {
+            var qualifiedBuggyFunctionName = (
+                buggyOutputTest.getBuggyFunctionName());
+            fullTestCode += (
+                VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +
+                '.append(matches_buggy_function(' +
+                    qualifiedBuggyFunctionName + ', ' +
+                    (inputFunctionName ? inputFunctionName : 'None') + ', ' +
+                    (outputFunctionName ? outputFunctionName : 'None') + '))\n');
+          });
+
+          fullTestCode += (
+            VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
+            '.append('+ VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +')\n');
+        });
+      }
 
       return fullTestCode;
     };
 
-    var _generatePerformanceTestCode = function(performanceTests) {
-      var testCode = '';
+    var _generatePerformanceTestCode = function(allTasksPerformanceTests) {
+      var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n');
 
-      performanceTests.forEach(function(test, index) {
-        var qualifiedEvaluationFunctionName = (
-          CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
-        var qualifiedTransformationFunctionName = (
-          test.getTransformationFunctionName());
-        // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
-        // TODO(eyurko): Use linear regression to determine if the data points
-        // "look" linear, quadratic, etc, and then provide feedback accordingly.
-        testCode = [
-          '',
-          'def get_test_input(atom, input_size):',
-          '    return ' + qualifiedTransformationFunctionName + (
-            '(atom, input_size)'),
-          '',
-          'def run_performance_test(test_input):',
-          '    time_array = []',
-          '    for input_size in [' + SMALL_INPUT_SIZE + (
-            ', ' + LARGE_INPUT_SIZE + ']:'),
-          '        start = time.clock()',
-          '        output = ' + qualifiedEvaluationFunctionName + (
-            '(get_test_input(test_input, input_size))'),
-          '        finish = time.clock() - start',
-          '        time_array.append(finish)',
-          '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
-            ' * time_array[0]:'),
-          '        return "not linear"',
-          '    return "linear"',
-          '',
-          VARNAME_PERFORMANCE_TEST_RESULTS + ' = []'
-        ].join('\n');
-        testCode += '\n' + [
-          VARNAME_PERFORMANCE_TEST_RESULTS + '.append(',
-          '    run_performance_test(' + (
-            _jsonVariableToPython(test.getInputDataAtom()) + '))')
+      testCode += [
+        '',
+        'def get_test_input(atom, input_size, qualifiedTransformationFunctionName):',
+        '    return qualifiedTransformationFunctionName(atom, input_size)',
+        '',
+        'def run_performance_test(test_input, ' +
+            'qualifiedTransformationFunctionName, qualifiedEvaluationFunctionName):',
+        '    time_array = []',
+        '    for input_size in [' + SMALL_INPUT_SIZE + (
+          ', ' + LARGE_INPUT_SIZE + ']:'),
+        '        start = time.clock()',
+        '        output = qualifiedEvaluationFunctionName(' +
+          'get_test_input(test_input, input_size, qualifiedTransformationFunctionName))',
+        '        finish = time.clock() - start',
+        '        time_array.append(finish)',
+        '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
+          ' * time_array[0]:'),
+        '        return "not linear"',
+        '    return "linear"',
+        '',
+      ].join('\n');
+
+      allTasksPerformanceTests.forEach(function(oneTaskPerformanceTests, index) {
+        testCode += ('\n' + VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
+        oneTaskPerformanceTests.forEach(function(test) {
+          var qualifiedEvaluationFunctionName = (
+            CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
+          var qualifiedTransformationFunctionName = (
+            test.getTransformationFunctionName());
+          // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
+          // TODO(eyurko): Use linear regression to determine if the data points
+          // "look" linear, quadratic, etc, and then provide feedback accordingly.
+          testCode += [
+            VARNAME_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
+            '    run_performance_test(' +
+            (_jsonVariableToPython(test.getInputDataAtom()) + ', ' +
+             qualifiedTransformationFunctionName + ', ' +
+             qualifiedEvaluationFunctionName + '))'),
+            ''
+          ].join('\n');
+        });
+        testCode += [
+          (VARNAME_PERFORMANCE_TEST_RESULTS + '.append(' +
+              VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ')'),
+          ''
         ].join('\n');
       });
 
@@ -303,9 +375,11 @@ tie.factory('PythonCodePreprocessorService', [
 
     return {
       preprocess: function(
-          codeSubmission, auxiliaryCode, inputFunctionName, mainFunctionName,
-          outputFunctionName, correctnessTests, buggyOutputTests,
-          performanceTests) {
+          codeSubmission, auxiliaryCode,
+          allTasksInputFunctionNames, allTasksMainFunctionNames,
+          allTasksOutputFunctionNames,
+          allTasksCorrectnessTests, allTasksBuggyOutputTests,
+          allTasksPerformanceTests) {
         // Transform the student code (without changing the number of lines) to
         // put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(
@@ -325,10 +399,12 @@ tie.factory('PythonCodePreprocessorService', [
         codeSubmission.append([
           auxiliaryCode,
           this._generateCorrectnessTestCode(
-            correctnessTests, inputFunctionName, mainFunctionName, outputFunctionName),
+            allTasksCorrectnessTests, allTasksInputFunctionNames,
+            allTasksMainFunctionNames, allTasksOutputFunctionNames),
           this._generateBuggyOutputTestCode(
-            buggyOutputTests, inputFunctionName, outputFunctionName),
-          this._generatePerformanceTestCode(performanceTests)
+            allTasksBuggyOutputTests, allTasksInputFunctionNames,
+            allTasksOutputFunctionNames),
+          this._generatePerformanceTestCode(allTasksPerformanceTests)
         ].join('\n\n'));
       },
 
