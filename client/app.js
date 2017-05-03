@@ -75,10 +75,22 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
-// Name of the list in which buggy output test results are stored.
+// Name of the list in which buggy output test results of all tasks are stored.
 tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
-// Name of the list in which performance test results are stored.
+// Name of the list in which performance test results of all tasks are stored.
 tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
+// Name of the list in which
+// correctness test results of one single task are stored.
+tie.constant('VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
+    'task_correctness_test_results');
+// Name of the list in which
+// buggy output test results of one single task are stored.
+tie.constant('VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
+    'task_buggy_output_test_results');
+// Name of the list in which
+// performance test results of one single task are stored.
+tie.constant('VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
+    'task_performance_test_results');
 // Name of the variable in which a copy of the most recent input is stored.
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
 // Default auto save time in seconds.
