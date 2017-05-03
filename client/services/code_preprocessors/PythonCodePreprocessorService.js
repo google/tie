@@ -34,7 +34,7 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_TASK_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
-      'def\\s+([A-Za-z_][A-Za-z_0-9]*)\\s*\\(', 'g');
+        'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
     var VALID_WHITESPACE_REGEX = new RegExp('\\s');
     var VARNAME_ALL_TASKS_TEST_INPUTS = 'all_tasks_test_inputs';
     var START_INDENT = '    ';
