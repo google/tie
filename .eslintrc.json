@@ -55,8 +55,8 @@
         "linebreak-style": "error",
         "max-depth": "error",
         "max-len": ["error", {
-            "ignoreStrings": true,
             "ignoreTemplateLiterals": true,
+            "ignoreTrailingComments": true,
             "ignoreUrls": true
         }],
         "max-nested-callbacks": "error",
