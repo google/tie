@@ -234,7 +234,7 @@ tie.directive('learnerView', [function() {
           -webkit-animation-delay: 0.2s;
         }
         .tie-feedback-error-string {
-          color: #FF0000;
+          color: #F44336;
         }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
@@ -271,7 +271,12 @@ tie.directive('learnerView', [function() {
           display: inline-block;
         }
         .tie-feedback-syntax-error-link {
+          color: #F44336;
           font-size: 12px;
+          text-decoration: none;
+        }
+        .tie-feedback-syntax-error-link:hover {
+          text-decoration: underline;
         }
         .tie-lang-select-menu {
           float: left;
