@@ -278,7 +278,6 @@ tie.directive('learnerView', [function() {
         .tie-feedback-syntax-error-link:hover {
           text-decoration: underline;
         }
-
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
