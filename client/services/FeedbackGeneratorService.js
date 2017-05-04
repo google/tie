@@ -172,7 +172,7 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
-      getFeedback: function(task, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         var errorString = codeEvalResult.getErrorString();
         if (errorString) {
           // We want to catch and handle a timeout error uniquely, rather than
@@ -182,38 +182,48 @@ tie.factory('FeedbackGeneratorService', [
             _getTimeoutErrorFeedback() :
             _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
         } else {
-          var buggyOutputTests = task.getBuggyOutputTests();
+          // Get all the tests from first task to current that need to be
+          // executed.
+          var buggyOutputTests = [];
+          var correctnessTests = [];
+          var performanceTests = [];
+          for (var i = 0; i < tasks.length; i++) {
+            buggyOutputTests.push(tasks[i].getBuggyOutputTests());
+            correctnessTests.push(tasks[i].getCorrectnessTests());
+            performanceTests.push(tasks[i].getPerformanceTests());
+          }
           var buggyOutputTestResults =
               codeEvalResult.getBuggyOutputTestResults();
-          for (var i = 0; i < buggyOutputTests.length; i++) {
-            if (buggyOutputTestResults[i]) {
-              return _getBuggyOutputTestFeedback(
-                buggyOutputTests[i], codeEvalResult);
-            }
-          }
-
-          var correctnessTests = task.getCorrectnessTests();
           var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          for (i = 0; i < correctnessTests.length; i++) {
-            var observedOutput = observedOutputs[i];
-
-            if (!correctnessTests[i].matchesOutput(observedOutput)) {
-              return _getCorrectnessTestFeedback(
-                task.getOutputFunctionNameWithoutClass(),
-                correctnessTests[i], observedOutput);
-            }
-          }
-
-          var performanceTests = task.getPerformanceTests();
           var performanceTestResults =
               codeEvalResult.getPerformanceTestResults();
-          for (i = 0; i < performanceTests.length; i++) {
-            var expectedPerformance = (
-              performanceTests[i].getExpectedPerformance());
-            var observedPerformance = performanceTestResults[i];
 
-            if (expectedPerformance !== observedPerformance) {
-              return _getPerformanceTestFeedback(expectedPerformance);
+          for (i = 0; i < tasks.length; i++) {
+            for (var j = 0; j < buggyOutputTests[i].length; j++) {
+              if (buggyOutputTestResults[i][j]) {
+                return _getBuggyOutputTestFeedback(
+                  buggyOutputTests[i][j], codeEvalResult);
+              }
+            }
+
+            for (j = 0; j < correctnessTests[i].length; j++) {
+              var observedOutput = observedOutputs[i][j];
+
+              if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
+                return _getCorrectnessTestFeedback(
+                  tasks[i].getOutputFunctionNameWithoutClass(),
+                  correctnessTests[i][j], observedOutput);
+              }
+            }
+
+            for (j = 0; j < performanceTests[i].length; j++) {
+              var expectedPerformance = (
+                performanceTests[i][j].getExpectedPerformance());
+              var observedPerformance = performanceTestResults[i][j];
+
+              if (expectedPerformance !== observedPerformance) {
+                return _getPerformanceTestFeedback(expectedPerformance);
+              }
             }
           }
 

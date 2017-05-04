@@ -649,10 +649,12 @@ tie.directive('learnerView', [function() {
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
+              // Tasks from the first to current.
+              var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
               SolutionHandlerService.processSolutionAsync(
-                tasks[currentTaskIndex], question.getStarterCode(language),
+                orderedTasks, question.getStarterCode(language),
                 code, question.getAuxiliaryCode(language), language
-                ).then(setFeedback);
+              ).then(setFeedback);
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
           storeCodeAndUpdateCachedCode(

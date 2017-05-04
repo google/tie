@@ -30,7 +30,7 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          task, starterCode, studentCode, auxiliaryCode, language) {
+          tasks, starterCode, studentCode, auxiliaryCode, language) {
         // First, check pre-requisites for the submitted code
         return PrereqCheckDispatcherService.checkCode(
           language, starterCode, studentCode
@@ -65,19 +65,38 @@ tie.factory('SolutionHandlerService', [
             // Generate a CodeSubmission object that wraps the student's code
             // into a class and appends some test code, then run the whole
             // thing.
+            var correctnessTests = [];
+            var buggyOutputTests = [];
+            var performanceTests = [];
+            for (var i = 0; i < tasks.length; i++) {
+              correctnessTests.push(tasks[i].getCorrectnessTests());
+              buggyOutputTests.push(tasks[i].getBuggyOutputTests());
+              performanceTests.push(tasks[i].getPerformanceTests());
+            }
+
+            var allTasksInputFunctionNames = tasks.map(function(task) {
+              return task.getInputFunctionName();
+            });
+            var allTasksMainFunctionNames = tasks.map(function(task) {
+              return task.getMainFunctionName();
+            });
+            var allTasksOutputFunctionNames = tasks.map(function(task) {
+              return task.getOutputFunctionName();
+            });
+
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
             CodePreprocessorDispatcherService.preprocess(
               language, codeSubmission, auxiliaryCode,
-              task.getInputFunctionName(), task.getMainFunctionName(),
-              task.getOutputFunctionName(), task.getCorrectnessTests(),
-              task.getBuggyOutputTests(), task.getPerformanceTests());
+              allTasksInputFunctionNames, allTasksMainFunctionNames,
+              allTasksOutputFunctionNames, correctnessTests,
+              buggyOutputTests, performanceTests);
 
             return CodeRunnerDispatcherService.runCodeAsync(
               language, codeSubmission.getPreprocessedCode()
             ).then(function(codeEvalResult) {
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
-                task, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
+                tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, codeEvalResult,
                   runtimeFeedback));

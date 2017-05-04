@@ -12,8 +12,8 @@ module.exports = function(config) {
       'third_party/angular-1.6.1/angular-mocks.js',
       'third_party/codemirror-5.19.0/lib/codemirror.js',
       'third_party/codemirror-5.19.0/mode/python/python.js',
-      'third_party/skulpt-0.10.0/skulpt.min.js',
-      'third_party/skulpt-0.10.0/skulpt-stdlib.js',
+      'third_party/skulpt-c14015/skulpt.min.js',
+      'third_party/skulpt-c14015/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
       'client/app.js',
       'client/**/*.js',
@@ -28,8 +28,8 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      'client/*.js': ['coverage', '6to5'],
-      'client/**/*.js': ['coverage', '6to5'],
+      // 'client/*.js': ['coverage', '6to5'],
+      // 'client/**/*.js': ['coverage', '6to5'],
       'assets/**/*.js': ['6to5']
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
@@ -76,7 +76,7 @@ module.exports = function(config) {
     // Continuous Integration mode.
     // If true, Karma captures browsers, runs the tests and exits.
     singleRun: true,
-    // Concurrency level (how many browser should be started simultaneously).
+    // Concurrency level (how many browsers should be started simultaneously).
     concurrency: Infinity
   })
 }
