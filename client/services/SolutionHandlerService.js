@@ -30,7 +30,8 @@ tie.factory('SolutionHandlerService', [
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          tasks, starterCode, studentCode, auxiliaryCode, language) {
+          tasks, starterCode, studentCode, auxiliaryCode,
+          language) {
         // First, check pre-requisites for the submitted code
         return PrereqCheckDispatcherService.checkCode(
           language, starterCode, studentCode
@@ -103,8 +104,9 @@ tie.factory('SolutionHandlerService', [
             ).then(function(codeEvalResult) {
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
                 tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
+              var currentTask = tasks[tasks.length - 1];
               var reinforcement =
-                ReinforcementGeneratorService.getReinforcement(task,
+                ReinforcementGeneratorService.getReinforcement(currentTask,
                   codeEvalResult);
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, codeEvalResult,
