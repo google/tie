@@ -66,7 +66,7 @@ tie.factory('SnapshotObjectFactory', [
     Snapshot.create = function(
       codePrereqCheckResult, codeEvalResult, feedback, reinforcement) {
       return new Snapshot(
-        codePrereqCheckResult, codeEvalResult, feedback,reinforcement);
+        codePrereqCheckResult, codeEvalResult, feedback, reinforcement);
     };
 
     return Snapshot;

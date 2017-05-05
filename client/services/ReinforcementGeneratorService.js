@@ -27,7 +27,7 @@ tie.factory('ReinforcementGeneratorService', [
           var splitTests = {};
           for (var i = 0; i < tests.length; ++i) {
             var test = tests[i];
-            test.index = i;
+            test.originalIndex = i;
             var testTag = test.getTag();
             if (splitTests.hasOwnProperty(testTag)) {
               splitTests[testTag].push(test);
@@ -40,11 +40,10 @@ tie.factory('ReinforcementGeneratorService', [
 
         var previousSnapshot = TranscriptService.getPreviousSnapshot();
         var previousReinforcement = null;
-        console.log(previousSnapshot);
         if (previousSnapshot !== null) {
           previousReinforcement = previousSnapshot.getReinforcement();
         }
-        console.log(previousReinforcement);
+
         var reinforcement = ReinforcementObjectFactory.create(task);
         // Copy the previous reinforcement object if we are on the same task.
         if (previousReinforcement !== null &&
@@ -62,27 +61,33 @@ tie.factory('ReinforcementGeneratorService', [
         // Go through correctness tests to update reinforcement data.
         var correctnessTests = testsKeyedByTag(task.getCorrectnessTests());
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-        var failedCaseSeen = false;
+        // Get results only for the last task.
+        observedOutputs = observedOutputs[observedOutputs.length - 1];
+        var failedCaseSeenOverall = false;
         for (var testTag in correctnessTests) {
+          var failedCaseSeenInTag = false;
           for (var testIdx = 0; testIdx < correctnessTests[testTag].length;
-           ++testIdx) {
+              ++testIdx) {
             var test = correctnessTests[testTag][testIdx];
-            var observedOutput = observedOutputs[test.index];
+            var observedOutput = observedOutputs[test.originalIndex];
             if (test.matchesOutput(observedOutput)) {
               if (test.getInput() in reinforcement.getPastFailsList()) {
                 reinforcement.addToPastFailsList(test.getInput(), true);
               }
-            } else if (!failedCaseSeen) {
+            } else if (!failedCaseSeenOverall) {
+              // We want to display only 1 new failed case among all tasks.
               reinforcement.addToPastFailsList(test.getInput(), false);
-              failedCaseSeen = true;
+              failedCaseSeenOverall = true;
+              failedCaseSeenInTag = true;
             }
           }
-          if (failedCaseSeen) {
+          if (failedCaseSeenInTag) {
             if (testTag in reinforcement.getPassedList()) {
               reinforcement.addToPassedList(testTag, false);
             }
           } else {
-            reinforcement.addToPassedList(testTag, false);
+            // If all cases pass in this tag.
+            reinforcement.addToPassedList(testTag, true);
           }
         }
 

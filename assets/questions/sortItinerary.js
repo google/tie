@@ -89,16 +89,20 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'sortItinerary',
     correctnessTests: [{
       input: 'LAX-JFK',
-      allowedOutputs: ['LAX-JFK']
+      allowedOutputs: ['LAX-JFK'],
+      tag: 'one ticket case'
     }, {
       input: 'JFK-ATL,LAX-JFK',
-      allowedOutputs: ['LAX-JFK,JFK-ATL']
+      allowedOutputs: ['LAX-JFK,JFK-ATL'],
+      tag: 'the general case'
     }, {
       input: 'JFK-ATL,LAX-SEA',
-      allowedOutputs: [null]
+      allowedOutputs: [null],
+      tag: 'the invalid case'
     }, {
       input: 'MUC-LHR,JFK-MUC,SFO-SJC,LHR-SFO',
-      allowedOutputs: ['JFK-MUC,MUC-LHR,LHR-SFO,SFO-SJC']
+      allowedOutputs: ['JFK-MUC,MUC-LHR,LHR-SFO,SFO-SJC'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
@@ -152,16 +156,20 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'sortItinerary',
     correctnessTests: [{
       input: 'JFK-KUL,JFK-NRT,NRT-JFK',
-      allowedOutputs: ['JFK-NRT,NRT-JFK,JFK-KUL']
+      allowedOutputs: ['JFK-NRT,NRT-JFK,JFK-KUL'],
+      tag: 'the general case'
     }, {
       input: 'JFK-SFO,JFK-ATL,SFO-ATL,ATL-JFK,ATL-SFO',
-      allowedOutputs: ['JFK-ATL,ATL-JFK,JFK-SFO,SFO-ATl,ATL-SFO']
+      allowedOutputs: ['JFK-ATL,ATL-JFK,JFK-SFO,SFO-ATl,ATL-SFO'],
+      tag: 'the hard case'
     }, {
       input: 'SEA-SJC,SEA-SFO,PIT-SEA,SFO-PIT,HOU-SEA',
-      allowedOutputs: ['HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC']
+      allowedOutputs: ['HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC'],
+      tag: 'the hardcase'
     }, {
       input: 'AXA-TIA,JFK-ANU,ANU-TIA,TIA-AXA',
-      allowedOutputs: ['JFK-ANU,ANU-TIA,TIA-AXA,AXA-TIA']
+      allowedOutputs: ['JFK-ANU,ANU-TIA,TIA-AXA,AXA-TIA'],
+      tag: 'the hard case'
     }],
     buggyOutputTests: [],
     performanceTests: []
@@ -190,12 +198,14 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'sortItinerary',
     correctnessTests: [{
       input: 'JFK-ATL,ATL-JFK,JFK-BOS,JFK-CLE,CLE-JFK',
-      allowedOutputs: ['JFK-ATL-JFK-CLE-JFK-BOS']
+      allowedOutputs: ['JFK-ATL-JFK-CLE-JFK-BOS'],
+      tag: 'the general case'
     }, {
       input: 'JFK-ATL,ORD-PHL,JFK-ORD,PHX-LAX,LAX-JFK,PHL-ATL,ATL-PHX',
       allowedOutputs: [
         'JFK-ATL,ATL-PHX,PHX-LAX,LAX-JFK,JFK-ORD,ORD-PHL,PHL-ATL'
-      ]
+      ],
+      tag: 'the hard case'
     }],
     buggyOutputTests: [],
     performanceTests: []

@@ -106,11 +106,11 @@ tie.factory('SolutionHandlerService', [
                 tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
               var currentTask = tasks[tasks.length - 1];
               var reinforcement =
-                ReinforcementGeneratorService.getReinforcement(currentTask,
-                  codeEvalResult);
+                ReinforcementGeneratorService.getReinforcement(
+                  currentTask, codeEvalResult);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(null, codeEvalResult,
-                  runtimeFeedback, reinforcement));
+                SnapshotObjectFactory.create(
+                  null, codeEvalResult, runtimeFeedback, reinforcement));
               return {
                 feedbackObject: runtimeFeedback,
                 reinforcement: reinforcement
