@@ -50,13 +50,13 @@ tie.factory('ReinforcementGeneratorService', [
         // Copy the previous reinforcement object if we are on the same task.
         if (previousReinforcement !== null &&
             task === previousReinforcement.getTask()) {
-          previousReinforcementPassedTagsList =
+          var previousReinforcementPassedTagsList =
             previousReinforcement.getPassedTagsList();
           for (var tag in previousReinforcementPassedTagsList) {
             reinforcement.addToPassedTagsList(tag,
               previousReinforcementPassedTagsList[tag]);
           }
-          previousReinforcementPastFailedList =
+          var previousReinforcementPastFailedList =
             previousReinforcement.getPastFailedCasesList();
           for (var pastCase in previousReinforcementPastFailedList) {
             reinforcement.addToPastFailedCasesList(pastCase,

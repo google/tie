@@ -18,7 +18,8 @@
  */
 
 tie.factory('ReinforcementObjectFactory', [
-  'ReinforcementBulletObjectFactory', function(ReinforcementBulletObjectFactory) {
+  'ReinforcementBulletObjectFactory', function(
+      ReinforcementBulletObjectFactory) {
     var Reinforcement = function(task) {
       this._task = task;
       this._passedTagsList = {};
@@ -76,7 +77,7 @@ tie.factory('ReinforcementObjectFactory', [
     };
 
     Reinforcement.prototype.hasPastFailedCase = function(caseInput) {
-       return (caseInput in this._pastFailedCasesList);
+      return (caseInput in this._pastFailedCasesList);
     };
 
     // Static class methods.
