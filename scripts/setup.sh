@@ -54,6 +54,7 @@ install_node_module() {
 # Set up hooks if not disabled.
 if ! [[ $* == *--disable-presubmit-checks* ]]; then
   git config core.hooksPath hooks
+  chmod u+x hooks/pre-push
 fi
 
 export -f install_node_module
