@@ -111,7 +111,6 @@ tie.factory('SolutionHandlerService', [
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, codeEvalResult,
                   runtimeFeedback, reinforcement));
-              console.log(reinforcement);
               return {
                 feedbackObject: runtimeFeedback,
                 reinforcement: reinforcement

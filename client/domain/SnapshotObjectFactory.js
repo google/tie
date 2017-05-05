@@ -24,7 +24,6 @@ tie.factory('SnapshotObjectFactory', [
       this._codePrereqCheckResult = codePrereqCheckResult;
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedback;
-      console.log(reinforcement);
       this._reinforcement = reinforcement;
       this._timestamp = '';
     };
@@ -64,9 +63,10 @@ tie.factory('SnapshotObjectFactory', [
     };
 
     // Static class methods.
-    Snapshot.create = function(codePrereqCheckResult, codeEvalResult,
-      feedback) {
-      return new Snapshot(codePrereqCheckResult, codeEvalResult, feedback);
+    Snapshot.create = function(
+      codePrereqCheckResult, codeEvalResult, feedback, reinforcement) {
+      return new Snapshot(
+        codePrereqCheckResult, codeEvalResult, feedback,reinforcement);
     };
 
     return Snapshot;

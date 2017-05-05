@@ -43,7 +43,7 @@ tie.factory('ReinforcementGeneratorService', [
         console.log(previousSnapshot);
         if (previousSnapshot !== null) {
           previousReinforcement = previousSnapshot.getReinforcement();
-         }
+        }
         console.log(previousReinforcement);
         var reinforcement = ReinforcementObjectFactory.create(task);
         // Copy the previous reinforcement object if we are on the same task.
