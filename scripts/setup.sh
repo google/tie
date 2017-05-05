@@ -54,6 +54,7 @@ install_node_module() {
 # Set up hooks if not disabled.
 if ! [[ $* == *--disable-presubmit-checks* ]]; then
   cp hooks/pre-push .git/hooks/pre-push
+  chmod g+x .git/hooks/pre-push
 fi
 
 export -f install_node_module
