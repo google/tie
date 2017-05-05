@@ -47,7 +47,7 @@ tie.factory('SolutionHandlerService', [
                 prereqFeedback, null));
             return {
               feedbackObject: prereqFeedback,
-              reinforcement: null
+              reinforcement: ReinforcementObjectFactory.create()
             };
           }
 
@@ -64,7 +64,7 @@ tie.factory('SolutionHandlerService', [
                   feedback, null));
               return {
                 feedbackObject: feedback,
-                reinforcement: null
+                reinforcement: ReinforcementObjectFactory.create()
               };
             }
 

@@ -557,9 +557,6 @@ tie.directive('learnerView', [function() {
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
           var reinforcement = feedbackAndReinforcement.reinforcement;
-          if (reinforcement === null) {
-            reinforcement = ReinforcementObjectFactory.create();
-          }
           $scope.loadingIndicatorIsShown = false;
           feedbackDiv.scrollTop = 0;
           $scope.feedbackTimestamp = (
@@ -585,8 +582,6 @@ tie.directive('learnerView', [function() {
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
             $scope.reinforcementBullets = [];
           } else {
-            $scope.feedbackParagraphs = feedback.getParagraphs();
-
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
             var syntaxErrorIndex = feedback.getSyntaxErrorIndex();

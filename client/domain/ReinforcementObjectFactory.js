@@ -21,15 +21,15 @@ tie.factory('ReinforcementObjectFactory', [
   'ReinforcementBulletObjectFactory', function(ReinforcementBulletObjectFactory) {
     var Reinforcement = function(task) {
       this._task = task;
-      this._passedList = {};
-      this._pastFailsList = {};
+      this._passedTagsList = {};
+      this._pastFailedCasesList = {};
     };
 
     // Instance methods.
     Reinforcement.prototype.getBullets = function() {
       var bullets = [];
-      for (var caseList in this._passedList) {
-        if (this._passedList[caseList]) {
+      for (var caseList in this._passedTagsList) {
+        if (this._passedTagsList[caseList]) {
           bullets.push(
             ReinforcementBulletObjectFactory.createPassedBullet(
               "Handles " + caseList));
@@ -40,8 +40,8 @@ tie.factory('ReinforcementObjectFactory', [
         }
       }
 
-      for (var testCase in this._pastFailsList) {
-        if (this._pastFailsList[testCase]) {
+      for (var testCase in this._pastFailedCasesList) {
+        if (this._pastFailedCasesList[testCase]) {
           bullets.push(
             ReinforcementBulletObjectFactory.createPassedBullet(
               "Handles '" + testCase + "'"));
@@ -59,20 +59,24 @@ tie.factory('ReinforcementObjectFactory', [
       return this._task;
     };
 
-    Reinforcement.prototype.addToPassedList = function(key, value) {
-      this._passedList[key] = value;
+    Reinforcement.prototype.addToPassedTagsList = function(key, value) {
+      this._passedTagsList[key] = value;
     };
 
-    Reinforcement.prototype.addToPastFailsList = function(key, value) {
-      this._pastFailsList[key] = value;
+    Reinforcement.prototype.addToPastFailedCasesList = function(key, value) {
+      this._pastFailedCasesList[key] = value;
     };
 
-    Reinforcement.prototype.getPassedList = function() {
-      return this._passedList;
+    Reinforcement.prototype.getPassedTagsList = function() {
+      return this._passedTagsList;
     };
 
-    Reinforcement.prototype.getPastFailsList = function() {
-      return this._pastFailsList;
+    Reinforcement.prototype.getPastFailedCasesList = function() {
+      return this._pastFailedCasesList;
+    };
+
+    Reinforcement.prototype.hasPastFailedCase = function(caseInput) {
+       return (caseInput in this._pastFailedCasesList);
     };
 
     // Static class methods.

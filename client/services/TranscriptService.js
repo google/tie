@@ -28,8 +28,8 @@ tie.factory('TranscriptService', [
       recordSnapshot: function(snapshot) {
         transcript.recordSnapshot(snapshot);
       },
-      getPreviousSnapshot: function() {
-        return transcript.getPreviousSnapshot();
+      getMostRecentSnapshot: function() {
+        return transcript.getMostRecentSnapshot();
       }
     };
   }
