@@ -88,10 +88,8 @@ tie.factory('ReinforcementGeneratorService', [
                 failedCaseSeenOverall = true;
               }
               failedCaseSeenInTag = true;
-            } else {
-              if (reinforcement.hasPastFailedCase(test.getInput())) {
-                reinforcement.updatePastFailedCases(test.getInput(), false);
-              }
+            } else if (reinforcement.hasPastFailedCase(test.getInput())) {
+              reinforcement.updatePastFailedCases(test.getInput(), false);
             }
           }
           if (failedCaseSeenInTag) {
@@ -104,7 +102,6 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
-        console.log(reinforcement);
         return reinforcement;
       }
     };

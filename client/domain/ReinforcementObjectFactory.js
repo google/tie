@@ -60,20 +60,26 @@ tie.factory('ReinforcementObjectFactory', [
       return this._task;
     };
 
-    Reinforcement.prototype.addToPassedTags = function(key, value) {
-      this._passedTags[key] = value;
+    // Add a tag to the list of tags the code passes/fails
+    Reinforcement.prototype.addToPassedTags = function(tag, passedBool) {
+      this._passedTags[tag] = passedBool;
     };
 
-    Reinforcement.prototype.updatePassedTags = function(key, value) {
-      this._passedTags[key] = value;
+    // Update the pass/fail status of a tag
+    Reinforcement.prototype.updatePassedTags = function(tag, passedBool) {
+      this._passedTags[tag] = passedBool;
     };
 
-    Reinforcement.prototype.addToPastFailedCases = function(key, value) {
-      this._pastFailedCases[key] = value;
+    // Add a test case to the list of failed test cases
+    Reinforcement.prototype.addToPastFailedCases = function(
+        caseInput, passedBool) {
+      this._pastFailedCases[caseInput] = passedBool;
     };
 
-    Reinforcement.prototype.updatePastFailedCases = function(key, value) {
-      this._pastFailedCases[key] = value;
+    // Update the status of a passed/failed test case
+    Reinforcement.prototype.updatePastFailedCases = function(
+        caseInput, passedBool) {
+      this._pastFailedCases[caseInput] = passedBool;
     };
 
     Reinforcement.prototype.getPassedTags = function() {
