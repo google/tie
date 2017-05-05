@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Copyright 2017 The TIE Authors. All Rights Reserved.
 #
@@ -18,6 +18,9 @@
 #     Not meant for manual use.
 #     Runs automatically before a git push command is executed.
 #     Behaviour can be set up using "bash scripts/setup_hooks.sh".
+
+
+exit 1
 
 # Ask user if push should continue anyway if a test fails.
 proceed_when_test_fail () {
@@ -44,8 +47,6 @@ check_test_status () {
     proceed_when_test_fail "$1"
   fi
 }
-
-exit 1
 
 echo "Running linter tests"
 bash scripts/run_linter.sh
