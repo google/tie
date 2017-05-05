@@ -9,10 +9,11 @@
     },
     "extends": "eslint:recommended",
     "globals": {
-        "angular": true,
+        "angular": false,
         "globalData": false,
         "inject": false,
         "module": false,
+        "Sk": false,
         "tie": false
     },
     "parserOptions": {
@@ -55,8 +56,8 @@
         "linebreak-style": "error",
         "max-depth": "error",
         "max-len": ["error", {
-            "ignoreStrings": true,
             "ignoreTemplateLiterals": true,
+            "ignoreTrailingComments": true,
             "ignoreUrls": true
         }],
         "max-nested-callbacks": "error",
@@ -71,7 +72,9 @@
         "no-console": ["error", {
             "allow": ["error"]
         }],
-        "no-continue": "error",
+        "no-constant-condition": ["error", {
+            "checkLoops": false
+        }],
         "no-div-regex": "error",
         "no-empty-function": "error",
         "no-empty-pattern": "error",
@@ -93,7 +96,6 @@
         "no-label-var": "error",
         "no-lone-blocks": "error",
         "no-lonely-if": "error",
-        "no-loop-func": "error",
         "no-magic-numbers": ["error", {
             "ignore": [-1, 0, 1, 2, 3, 4, 5],
             "ignoreArrayIndexes": true
@@ -149,7 +151,7 @@
         "semi": "error",
         "semi-spacing": "error",
         "sort-vars": "error",
-        "space-before-blocks": "error",
+        "space-before-blocks": ["error", "always"],
         "space-before-function-paren": ["error", "never"],
         "space-in-parens": "error",
         "space-infix-ops": "error",

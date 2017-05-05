@@ -24,5 +24,5 @@ source $(dirname $0)/setup.sh || exit 1
 # Install the following node modules if they aren't already installed.
 install_node_module eslint 3.18.0
 
-# Run eslint, passing in any arguments passed to this script.
-./node_modules/eslint/bin/eslint.js -c ./.eslintrc.json assets/**/*.js client/*.js client/**/*.js tests/*.js
+# Run eslint.
+./node_modules/eslint/bin/eslint.js -c ./.eslintrc.json assets/*/*.js client/*.js client/*/*.js client/*/*/*.js tests/*.js

@@ -41,43 +41,32 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual("'stringify'");
     });
 
-    it('should correctly convert a JSON string with escaped characters',
-      function() {
+    it('should convert a JSON string with escaped characters', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython('strin\\gify')
       ).toEqual("'strin\\\\gify'");
     });
 
-    it('should correctly convert a JSON integer to a Python integer',
-      function() {
+    it('should convert a JSON integer to a Python integer', function() {
       expect(
-        PythonCodePreprocessorService._jsonVariableToPython(12)
-      ).toEqual(12);
+        PythonCodePreprocessorService._jsonVariableToPython(2)
+      ).toEqual(2);
     });
 
-    it(
-      [
-        'should correctly convert a JSON array to a string version ',
-        'of a Python array'
-      ].join('') , function() {
+    it('should convert a JSON array to a Python array string', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(["cat", "2", "3"])
       ).toEqual("['cat', '2', '3']");
     });
 
-    it('should correctly convert a nested JSON array to a similar Python array'
-      , function() {
+    it('should correctly convert a nested JSON array', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(
           [["1", "2"], ["3", "4"], ["5", "6"]])
       ).toEqual("[['1', '2'], ['3', '4'], ['5', '6']]");
     });
 
-    it(
-      [
-        'should correctly convert a JSON boolean array to a string version ',
-        'of a Python boolean array'
-      ].join('') , function() {
+    it('should correctly convert a JSON boolean array', function() {
       expect(
         PythonCodePreprocessorService._jsonVariableToPython(
           [[true, true], [false, false], [true, false]])
@@ -88,7 +77,7 @@ describe('PythonCodePreprocessorService', function() {
       var errorMsg = "Only string, array, and boolean inputs are supported.";
       expect(function() {
         PythonCodePreprocessorService._jsonVariableToPython({
-          "foo": "val"
+          foo: "val"
         });
       }).toThrow(new Error(errorMsg));
     });
@@ -157,12 +146,12 @@ describe('PythonCodePreprocessorService', function() {
     it('should wrap functions with arguments', function() {
       var rawCode = [
         'def myFunc(c, b, x):',
-        '    a = 3',
+        '    a = 3'
       ].join('\n');
 
       var expectedTransformedCode = [
         '    def myFunc(self, c, b, x):',
-        '        a = 3',
+        '        a = 3'
       ].join('\n');
 
       expect(
@@ -175,13 +164,13 @@ describe('PythonCodePreprocessorService', function() {
       var rawCode = [
         'def myFunc(',
         '    c, b, x):',
-        '    a = 3',
+        '    a = 3'
       ].join('\n');
 
       var expectedTransformedCode = [
         '    def myFunc(self, ',
         '        c, b, x):',
-        '        a = 3',
+        '        a = 3'
       ].join('\n');
 
       expect(
@@ -204,7 +193,7 @@ describe('PythonCodePreprocessorService', function() {
         '        x = 3',
         '    ',
         '    def funcTwo(self, c):',
-        '        d = 4',
+        '        d = 4'
       ].join('\n');
 
       expect(
@@ -237,7 +226,7 @@ describe('PythonCodePreprocessorService', function() {
           '    ',
           '    ',
           '    def funcTwo(self, c):',
-          '        d = 4',
+          '        d = 4'
         ].join('\n');
 
         expect(
@@ -256,66 +245,62 @@ describe('PythonCodePreprocessorService', function() {
 
         expect(function() {
           PythonCodePreprocessorService._transformCodeToInstanceMethods(
-            rawCode, 'StudentAnswer')
+            rawCode, 'StudentAnswer');
         }).toThrow(new Error('Incomplete line: missing "(" in def statement.'));
       }
     );
   });
 
   describe('_addClassWrappingToHelperFunctions', function() {
-    it('should correctly add our classname to their helper functions',
-      function() {
-        var rawCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    inner_func()',
-          '',
-          'def inner_func():',
-          '    b = 6'
-        ].join('\n');
+    it('should correctly add classname to their helper functions', function() {
+      var rawCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    inner_func()',
+        '',
+        'def inner_func():',
+        '    b = 6'
+      ].join('\n');
 
-        var expectedCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    StudentCode().inner_func()',
-          '',
-          'def inner_func():',
-          '    b = 6'
-        ].join('\n');
+      var expectedCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    StudentCode().inner_func()',
+        '',
+        'def inner_func():',
+        '    b = 6'
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
-            rawCode, 'StudentCode', true)
-        ).toEqual(expectedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+          rawCode, 'StudentCode', true)
+      ).toEqual(expectedCode);
+    });
 
-    it('should add classname regardless of leading or trailing spaces',
-      function() {
-        var rawCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    inner_func()',
-          '',
-          'def     inner_func          ():',
-          '    b = 6'
-        ].join('\n');
+    it('should add classname regardless of adjoining spaces', function() {
+      var rawCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    inner_func()',
+        '',
+        'def     inner_func          ():',
+        '    b = 6'
+      ].join('\n');
 
-        var expectedCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    StudentCode().inner_func()',
-          '',
-          'def     inner_func          ():',
-          '    b = 6'
-        ].join('\n');
+      var expectedCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    StudentCode().inner_func()',
+        '',
+        'def     inner_func          ():',
+        '    b = 6'
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
-            rawCode, 'StudentCode', true)
-        ).toEqual(expectedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+          rawCode, 'StudentCode', true)
+      ).toEqual(expectedCode);
+    });
 
     it('should correctly add our classname to multiple functions',
       function() {
@@ -354,82 +339,77 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should correctly add classname to multiple similarly-named functions',
-      function() {
-        var rawCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    inner_func()',
-          '    inner_funct()',
-          '',
-          'def inner_func():',
-          '    b = 6',
-          '',
-          'def inner_funct():',
-          '    inner_func()',
-          '    b = 6'
-        ].join('\n');
+    it('should add classname to similarly-named functions', function() {
+      var rawCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    inner_func()',
+        '    inner_funct()',
+        '',
+        'def inner_func():',
+        '    b = 6',
+        '',
+        'def inner_funct():',
+        '    inner_func()',
+        '    b = 6'
+      ].join('\n');
 
-        var expectedCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    StudentCode().inner_func()',
-          '    StudentCode().inner_funct()',
-          '',
-          'def inner_func():',
-          '    b = 6',
-          '',
-          'def inner_funct():',
-          '    StudentCode().inner_func()',
-          '    b = 6'
-        ].join('\n');
+      var expectedCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    StudentCode().inner_func()',
+        '    StudentCode().inner_funct()',
+        '',
+        'def inner_func():',
+        '    b = 6',
+        '',
+        'def inner_funct():',
+        '    StudentCode().inner_func()',
+        '    b = 6'
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
-            rawCode, 'StudentCode', true)
-        ).toEqual(expectedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+          rawCode, 'StudentCode', true)
+      ).toEqual(expectedCode);
+    });
 
-    it('should correctly add our classname to multiple functions regardless ' +
-      'of their position within the file',
-      function() {
-        var rawCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    _inner_func()',
-          '    outer_func()',
-          '    myFunc()',
-          '',
-          'def _inner_func():',
-          '    b = 6',
-          '',
-          'def outer_func():',
-          '    _inner_func()',
-          '    b = 6'
-        ].join('\n');
+    it('should add classname to inner and outer functions', function() {
+      var rawCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    _inner_func()',
+        '    outer_func()',
+        '    myFunc()',
+        '',
+        'def _inner_func():',
+        '    b = 6',
+        '',
+        'def outer_func():',
+        '    _inner_func()',
+        '    b = 6'
+      ].join('\n');
 
-        var expectedCode = [
-          'def myFunc(self, ):',
-          '    a = 3',
-          '    StudentCode()._inner_func()',
-          '    StudentCode().outer_func()',
-          '    StudentCode().myFunc()',
-          '',
-          'def _inner_func():',
-          '    b = 6',
-          '',
-          'def outer_func():',
-          '    StudentCode()._inner_func()',
-          '    b = 6'
-        ].join('\n');
+      var expectedCode = [
+        'def myFunc(self, ):',
+        '    a = 3',
+        '    StudentCode()._inner_func()',
+        '    StudentCode().outer_func()',
+        '    StudentCode().myFunc()',
+        '',
+        'def _inner_func():',
+        '    b = 6',
+        '',
+        'def outer_func():',
+        '    StudentCode()._inner_func()',
+        '    b = 6'
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
-            rawCode, 'StudentCode', true)
-        ).toEqual(expectedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._addClassWrappingToHelperFunctions(
+          rawCode, 'StudentCode', true)
+      ).toEqual(expectedCode);
+    });
 
     it('should not append () if passed false for the addInstanceWrapping arg',
       function() {
@@ -495,103 +475,97 @@ describe('PythonCodePreprocessorService', function() {
   });
 
   describe('_checkMatchedFunctionForWhitespace', function() {
-    it([
-      'should check code to make sure that there is only whitespace after ',
-      'the whitespaceCheckLocation'
-      ],
-      function() {
-        var code = 'encoded  ()';
-        var whitespaceCheckLocation = 'encode'.length;
-        expect(
-          PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
-              code, whitespaceCheckLocation)
-        ).toBe(false);
+    it("should check there's only whitespace after given location", function() {
+      var code = 'encoded  ()';
+      var whitespaceCheckLocation = 'encode'.length;
+      expect(
+        PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
+            code, whitespaceCheckLocation)
+      ).toBe(false);
 
-        var code = 'encode  ()';
-        var whitespaceCheckLocation = 'encode'.length;
-
-        expect(
-          PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
-              code, whitespaceCheckLocation)
-        ).toBe(true);
-      }
-    );
+      code = 'encode  ()';
+      whitespaceCheckLocation = 'encode'.length;
+      expect(
+        PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
+            code, whitespaceCheckLocation)
+      ).toBe(true);
+    });
   });
 
   describe('_generateCorrectnessTestCode', function() {
-    it('should add correctness test code to skeleton code',
-      function() {
-        var correctnessTests = [[CorrectnessTestObjectFactory.create({
-          input: 'cat',
-          allowedOutputs: ['at', 'bc']
-        })]];
-        var expectedGeneratedCode = [
-          'all_tasks_test_inputs = [[\'cat\']]',
-          '',
-          'correctness_test_results = []',
-          'task_correctness_test_results = []',
-          'task_correctness_test_results.append(outputFnName(' +
-            'System.runTest(StudentCode().mainFnName, inputFnName(' +
-                'all_tasks_test_inputs[0][0]))))',
-          'correctness_test_results.append(task_correctness_test_results)'
-        ].join('\n');
+    it('should add correctness test code to skeleton code', function() {
+      var correctnessTests = [[CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['at', 'bc']
+      })]];
+      var expectedGeneratedCode = [
+        /* eslint-disable max-len */
+        'all_tasks_test_inputs = [[\'cat\']]',
+        '',
+        'correctness_test_results = []',
+        'task_correctness_test_results = []',
+        'task_correctness_test_results.append(outputFnName(System.runTest(',
+        '    StudentCode().mainFnName, inputFnName(all_tasks_test_inputs[0][0]))))',
+        'correctness_test_results.append(task_correctness_test_results)'
+        /* eslint-enable max-len */
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._generateCorrectnessTestCode(
-            correctnessTests, ['inputFnName'], ['mainFnName'], ['outputFnName'])
-        ).toEqual(expectedGeneratedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._generateCorrectnessTestCode(
+          correctnessTests, ['inputFnName'], ['mainFnName'], ['outputFnName'])
+      ).toEqual(expectedGeneratedCode);
+    });
   });
 
   describe('_generateBuggyOutputTestCode', function() {
-    it('should add correct buggy output test code to skeleton code',
-      function() {
-        var buggyOutputTests = [
-            [BuggyOutputTestObjectFactory.create({
-              buggyFunctionName: 'buggyFunc',
-              messages: ['a', 'b', 'c']
-            }), BuggyOutputTestObjectFactory.create({
-              buggyFunctionName: 'buggyFunc2',
-              messages: ['d', 'e', 'f']
-            })]
-        ];
-        var expectedGeneratedCode = [
-          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
-          '    buggy_results = []',
-          '    for task_tests in all_tasks_test_inputs:',
-          '        task_results = []',
-          '        for test_input in task_tests:',
-          '            if inputFunctionName is None and outputFunctionName is None:',
-          '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName is None:',
-          '                task_results.append(' +
-          'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName is None:',
-          '                task_results.append(' +
-          'System.runTest(func, inputFunctionName(test_input)))',
-          '            else:',
-          '               task_results.append(' +
-          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
-          '        buggy_results.append(task_results)',
-          '    return buggy_results == correctness_test_results',
-          '',
-          'buggy_output_test_results = []',
-          'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc, None, None))',
-          'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc2, None, None))',
-          'buggy_output_test_results.append(task_buggy_output_test_results)',
-          ''
-        ].join('\n');
+    it('should add buggy output test code to skeleton code', function() {
+      var buggyOutputTests = [[
+        BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc',
+          messages: ['a', 'b', 'c']
+        }),
+        BuggyOutputTestObjectFactory.create({
+          buggyFunctionName: 'buggyFunc2',
+          messages: ['d', 'e', 'f']
+        })
+      ]];
+      var expectedGeneratedCode = [
+        /* eslint-disable max-len */
+        'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
+        '    buggy_results = []',
+        '    for task_tests in all_tasks_test_inputs:',
+        '        task_results = []',
+        '        for test_input in task_tests:',
+        '            if inputFunctionName is None and outputFunctionName is None:',
+        '                task_results.append(System.runTest(func, test_input))',
+        '            elif inputFunctionName is None:',
+        '                task_results.append(outputFunctionName(',
+        '                    System.runTest(func, test_input)))',
+        '            elif outputFunctionName is None:',
+        '                task_results.append(',
+        '                    System.runTest(func, inputFunctionName(test_input)))',
+        '            else:',
+        '               task_results.append(outputFunctionName(',
+        '                   System.runTest(func, inputFunctionName(test_input))))',
+        '        buggy_results.append(task_results)',
+        '    return buggy_results == correctness_test_results',
+        '',
+        'buggy_output_test_results = []',
+        'task_buggy_output_test_results = []',
+        'task_buggy_output_test_results.append(',
+        '    matches_buggy_function(buggyFunc, None, None))',
+        'task_buggy_output_test_results.append(',
+        '    matches_buggy_function(buggyFunc2, None, None))',
+        'buggy_output_test_results.append(task_buggy_output_test_results)',
+        ''
+        /* eslint-enable max-len */
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, [null], [null])
-        ).toEqual(expectedGeneratedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._generateBuggyOutputTestCode(
+          buggyOutputTests, [null], [null])
+      ).toEqual(expectedGeneratedCode);
+    });
 
     it('should add correct buggy output test code with an output function name',
       function() {
@@ -600,6 +574,7 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
+          /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
@@ -608,23 +583,24 @@ describe('PythonCodePreprocessorService', function() {
           '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
           '            elif inputFunctionName is None:',
-          '                task_results.append(' +
-          'outputFunctionName(System.runTest(func, test_input)))',
+          '                task_results.append(outputFunctionName(',
+          '                    System.runTest(func, test_input)))',
           '            elif outputFunctionName is None:',
-          '                task_results.append(' +
-          'System.runTest(func, inputFunctionName(test_input)))',
+          '                task_results.append(',
+          '                    System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
-          '               task_results.append(' +
-          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '               task_results.append(outputFunctionName(',
+          '                   System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc, None, outputFunctionName))',
+          'task_buggy_output_test_results.append(',
+          '    matches_buggy_function(buggyFunc, None, outputFunctionName))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
+          /* eslint-enable max-len */
         ].join('\n');
 
         expect(
@@ -641,6 +617,7 @@ describe('PythonCodePreprocessorService', function() {
           messages: ['a', 'b', 'c']
         })]];
         var expectedGeneratedCode = [
+          /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
@@ -649,23 +626,24 @@ describe('PythonCodePreprocessorService', function() {
           '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
           '            elif inputFunctionName is None:',
-          '                task_results.append(' +
-          'outputFunctionName(System.runTest(func, test_input)))',
+          '                task_results.append(outputFunctionName(',
+          '                    System.runTest(func, test_input)))',
           '            elif outputFunctionName is None:',
-          '                task_results.append(' +
-          'System.runTest(func, inputFunctionName(test_input)))',
+          '                task_results.append(',
+          '                    System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
-          '               task_results.append(' +
-          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '               task_results.append(outputFunctionName(',
+          '                   System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
           'buggy_output_test_results = []',
           'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc, inputFunctionName, None))',
+          'task_buggy_output_test_results.append(',
+          '    matches_buggy_function(buggyFunc, inputFunctionName, None))',
           'buggy_output_test_results.append(task_buggy_output_test_results)',
           ''
+          /* eslint-enable max-len */
         ].join('\n');
 
         expect(
@@ -675,46 +653,46 @@ describe('PythonCodePreprocessorService', function() {
       }
     );
 
-    it('should add correct buggy output test code with both an input and output function name',
-      function() {
-        var buggyOutputTests = [[BuggyOutputTestObjectFactory.create({
-          buggyFunctionName: 'buggyFunc',
-          messages: ['a', 'b', 'c']
-        })]];
-        var expectedGeneratedCode = [
-          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
-          '    buggy_results = []',
-          '    for task_tests in all_tasks_test_inputs:',
-          '        task_results = []',
-          '        for test_input in task_tests:',
-          '            if inputFunctionName is None and outputFunctionName is None:',
-          '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName is None:',
-          '                task_results.append(' +
-          'outputFunctionName(System.runTest(func, test_input)))',
-          '            elif outputFunctionName is None:',
-          '                task_results.append(' +
-          'System.runTest(func, inputFunctionName(test_input)))',
-          '            else:',
-          '               task_results.append(' +
-          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
-          '        buggy_results.append(task_results)',
-          '    return buggy_results == correctness_test_results',
-          '',
-          'buggy_output_test_results = []',
-          'task_buggy_output_test_results = []',
-          'task_buggy_output_test_results.append(' +
-              'matches_buggy_function(buggyFunc, inputFunctionName, outputFunctionName))',
-          'buggy_output_test_results.append(task_buggy_output_test_results)',
-          ''
-        ].join('\n');
+    it('adds buggy output test code with input/output functions', function() {
+      var buggyOutputTests = [[BuggyOutputTestObjectFactory.create({
+        buggyFunctionName: 'buggyFunc',
+        messages: ['a', 'b', 'c']
+      })]];
+      var expectedGeneratedCode = [
+        /* eslint-disable max-len */
+        'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
+        '    buggy_results = []',
+        '    for task_tests in all_tasks_test_inputs:',
+        '        task_results = []',
+        '        for test_input in task_tests:',
+        '            if inputFunctionName is None and outputFunctionName is None:',
+        '                task_results.append(System.runTest(func, test_input))',
+        '            elif inputFunctionName is None:',
+        '                task_results.append(outputFunctionName(',
+        '                    System.runTest(func, test_input)))',
+        '            elif outputFunctionName is None:',
+        '                task_results.append(',
+        '                    System.runTest(func, inputFunctionName(test_input)))',
+        '            else:',
+        '               task_results.append(outputFunctionName(',
+        '                   System.runTest(func, inputFunctionName(test_input))))',
+        '        buggy_results.append(task_results)',
+        '    return buggy_results == correctness_test_results',
+        '',
+        'buggy_output_test_results = []',
+        'task_buggy_output_test_results = []',
+        'task_buggy_output_test_results.append(',
+        '    matches_buggy_function(buggyFunc, inputFunctionName, outputFunctionName))',
+        'buggy_output_test_results.append(task_buggy_output_test_results)',
+        ''
+        /* eslint-enable max-len */
+      ].join('\n');
 
-        expect(
-          PythonCodePreprocessorService._generateBuggyOutputTestCode(
-            buggyOutputTests, ['inputFunctionName'], ['outputFunctionName'])
-        ).toEqual(expectedGeneratedCode);
-      }
-    );
+      expect(
+        PythonCodePreprocessorService._generateBuggyOutputTestCode(
+          buggyOutputTests, ['inputFunctionName'], ['outputFunctionName'])
+      ).toEqual(expectedGeneratedCode);
+    });
   });
 
   describe('_generatePerformanceTestCode', function() {
@@ -728,18 +706,20 @@ describe('PythonCodePreprocessorService', function() {
         });
         var performanceTests = [[performanceTest]];
         var expectedGeneratedCode = [
+          /* eslint-disable max-len */
           'performance_test_results = []',
           '',
           'def get_test_input(atom, input_size, qualifiedTransformationFunctionName):',
           '    return qualifiedTransformationFunctionName(atom, input_size)',
           '',
-          'def run_performance_test(test_input, ' +
-              'qualifiedTransformationFunctionName, qualifiedEvaluationFunctionName):',
+          'def run_performance_test(',
+          '        test_input, qualifiedTransformationFunctionName,',
+          '        qualifiedEvaluationFunctionName):',
           '    time_array = []',
           '    for input_size in [10, 100]:',
           '        start = time.clock()',
-          '        output = qualifiedEvaluationFunctionName(' +
-              'get_test_input(test_input, input_size, qualifiedTransformationFunctionName))',
+          '        output = qualifiedEvaluationFunctionName(get_test_input(',
+          '            test_input, input_size, qualifiedTransformationFunctionName))',
           '        finish = time.clock() - start',
           '        time_array.append(finish)',
           '    if time_array[1] > 30 * time_array[0]:',
@@ -751,6 +731,7 @@ describe('PythonCodePreprocessorService', function() {
           '    run_performance_test(\'na \', System.extendString, StudentCode().katamariDamashi))',
           'performance_test_results.append(task_performance_test_results)',
           ''
+          /* eslint-enable max-len */
         ].join('\n');
 
         expect(

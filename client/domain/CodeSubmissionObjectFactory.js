@@ -34,7 +34,8 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
-    CodeSubmission.prototype.IMPORT_PATTERN = new RegExp('^\\ {4}import\\ \\w+$');
+    CodeSubmission.prototype.IMPORT_PATTERN = new RegExp(
+      '^\\ {4}import\\ \\w+$');
     CodeSubmission.prototype.TAB_LENGTH = 4;
 
     // Instance methods.
