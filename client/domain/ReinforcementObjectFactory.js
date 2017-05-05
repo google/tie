@@ -64,7 +64,15 @@ tie.factory('ReinforcementObjectFactory', [
       this._passedTags[key] = value;
     };
 
+    Reinforcement.prototype.updatePassedTags = function(key, value) {
+      this._passedTags[key] = value;
+    };
+
     Reinforcement.prototype.addToPastFailedCases = function(key, value) {
+      this._pastFailedCases[key] = value;
+    };
+
+    Reinforcement.prototype.updatePastFailedCases = function(key, value) {
       this._pastFailedCases[key] = value;
     };
 

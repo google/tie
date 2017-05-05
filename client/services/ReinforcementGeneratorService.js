@@ -79,7 +79,7 @@ tie.factory('ReinforcementGeneratorService', [
             var observedOutput = observedOutputs[test.originalIndex];
             if (test.matchesOutput(observedOutput)) {
               if (reinforcement.hasPastFailedCase(test.getInput())) {
-                reinforcement.addToPastFailedCases(test.getInput(), true);
+                reinforcement.updatePastFailedCases(test.getInput(), true);
               }
             } else if (!failedCaseSeenInTag) {
               // We want to display only 1 new failed case among all tasks.
@@ -88,11 +88,15 @@ tie.factory('ReinforcementGeneratorService', [
                 failedCaseSeenOverall = true;
               }
               failedCaseSeenInTag = true;
+            } else {
+              if (reinforcement.hasPastFailedCase(test.getInput())) {
+                reinforcement.updatePastFailedCases(test.getInput(), false);
+              }
             }
           }
           if (failedCaseSeenInTag) {
             if (testTag in reinforcement.getPassedTags()) {
-              reinforcement.addToPassedTags(testTag, false);
+              reinforcement.updatePassedTags(testTag, false);
             }
           } else {
             // If all cases pass in this tag.
@@ -100,6 +104,7 @@ tie.factory('ReinforcementGeneratorService', [
           }
         }
 
+        console.log(reinforcement);
         return reinforcement;
       }
     };
