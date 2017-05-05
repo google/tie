@@ -24,8 +24,8 @@ tie.factory('SolutionHandlerService', [
   'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, ReinforcementGeneratorService,
-      ReinforcementObjectFactory, PrereqCheckDispatcherService,
+      FeedbackGeneratorService, ReinforcementObjectFactory,
+      ReinforcementGeneratorService, PrereqCheckDispatcherService,
       SnapshotObjectFactory, TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.

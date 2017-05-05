@@ -50,17 +50,17 @@ tie.factory('ReinforcementGeneratorService', [
         // Copy the previous reinforcement object if we are on the same task.
         if (previousReinforcement !== null &&
             task === previousReinforcement.getTask()) {
-          var previousReinforcementPassedTagsList =
-            previousReinforcement.getPassedTagsList();
-          for (var tag in previousReinforcementPassedTagsList) {
-            reinforcement.addToPassedTagsList(tag,
-              previousReinforcementPassedTagsList[tag]);
+          var previousReinforcementPassedTags =
+            previousReinforcement.getPassedTags();
+          for (var tag in previousReinforcementPassedTags) {
+            reinforcement.addToPassedTags(tag,
+              previousReinforcementPassedTags[tag]);
           }
-          var previousReinforcementPastFailedList =
-            previousReinforcement.getPastFailedCasesList();
-          for (var pastCase in previousReinforcementPastFailedList) {
-            reinforcement.addToPastFailedCasesList(pastCase,
-              previousReinforcementPastFailedList[pastCase]);
+          var previousReinforcementPastFailedCases =
+            previousReinforcement.getPastFailedCases();
+          for (var pastCase in previousReinforcementPastFailedCases) {
+            reinforcement.addToPastFailedCases(pastCase,
+              previousReinforcementPastFailedCases[pastCase]);
           }
         }
 
@@ -79,24 +79,24 @@ tie.factory('ReinforcementGeneratorService', [
             var observedOutput = observedOutputs[test.originalIndex];
             if (test.matchesOutput(observedOutput)) {
               if (reinforcement.hasPastFailedCase(test.getInput())) {
-                reinforcement.addToPastFailedCasesList(test.getInput(), true);
+                reinforcement.addToPastFailedCases(test.getInput(), true);
               }
             } else if (!failedCaseSeenInTag) {
               // We want to display only 1 new failed case among all tasks.
               if (!failedCaseSeenOverall) {
-                reinforcement.addToPastFailedCasesList(test.getInput(), false);
+                reinforcement.addToPastFailedCases(test.getInput(), false);
                 failedCaseSeenOverall = true;
               }
               failedCaseSeenInTag = true;
             }
           }
           if (failedCaseSeenInTag) {
-            if (testTag in reinforcement.getPassedTagsList()) {
-              reinforcement.addToPassedTagsList(testTag, false);
+            if (testTag in reinforcement.getPassedTags()) {
+              reinforcement.addToPassedTags(testTag, false);
             }
           } else {
             // If all cases pass in this tag.
-            reinforcement.addToPassedTagsList(testTag, true);
+            reinforcement.addToPassedTags(testTag, true);
           }
         }
 
