@@ -26,109 +26,133 @@ describe('PythonPrereqCheckService', function() {
   }));
 
   describe('checkStarterCodeFunctionsPresent', function() {
-    var starterCode = ['def myFunction(arg):\n',
-      '\treturn result\n'].join('');
+    var starterCode = [
+      'def myFunction(arg):',
+      '\treturn result',
+      ''
+    ].join('\n');
 
-    it('returns true if starter code top level function lines are present',
-      function() {
-        var starterCode = ['def myFunction(arg):\n',
-        '\treturn result\n'].join('');
-        var code = ['def myFunction(arg):\n',
-        '\tresult = arg.rstrip()\n',
-        '\treturn result\n'].join('');
-        var starterCodePresent =
-          PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
-            starterCode, code);
-        expect(starterCodePresent).toEqual(true);
+    it('detects that starter code top-level function lines exist', function() {
+      var code = [
+        'def myFunction(arg):',
+        '\tresult = arg.rstrip()',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var starterCodePresent =
+        PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
+          starterCode, code);
+      expect(starterCodePresent).toEqual(true);
     });
-    it(['returns false if starter code top level function line ',
-      'is not found (modified)'].join(),
-        function() {
-          var code = ['def yourFunction(arg):\n',
-          '\tresult = arg.rstrip()\n',
-          '\treturn result\n'].join('');
-          var starterCodePresent =
-            PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
-              starterCode, code);
-          expect(starterCodePresent).toEqual(false);
+
+    it('detects modification of starter code top-level function', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '\tresult = arg.rstrip()',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var starterCodePresent =
+        PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
+          starterCode, code);
+      expect(starterCodePresent).toEqual(false);
     });
-    it(['returns false if starter code top level function line ',
-      'is not found (deleted)'].join(),
-        function() {
-          var code = ['\tresult = arg.rstrip()\n',
-          '\treturn result\n'].join('');
-          var starterCodePresent =
-            PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
-              starterCode, code);
-          expect(starterCodePresent).toEqual(false);
+
+    it('detects deletion of starter code top-level function', function() {
+      var code = [
+        '\tresult = arg.rstrip()',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var starterCodePresent =
+        PythonPrereqCheckService.checkStarterCodeFunctionsPresent(
+          starterCode, code);
+      expect(starterCodePresent).toEqual(false);
     });
   });
+
   describe('extractTopLevelFunctionLines', function() {
-    it('correctly returns lines with top level functions',
-      function() {
-        var starterCode = ['def myFunction(arg):\n',
-        '\treturn result\n',
-        'def yourFunction(arg):\n',
-        '\treturn result\n'].join('');
-        var extractedTopLevelFunctionLines =
-          PythonPrereqCheckService.extractTopLevelFunctionLines(starterCode);
-        expect(extractedTopLevelFunctionLines).toEqual(
-          ['def myFunction(arg):', 'def yourFunction(arg):']);
+    it('correctly returns lines with top level functions', function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '\treturn result',
+        'def yourFunction(arg):',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var extractedTopLevelFunctionLines =
+        PythonPrereqCheckService.extractTopLevelFunctionLines(starterCode);
+      expect(extractedTopLevelFunctionLines).toEqual(
+        ['def myFunction(arg):', 'def yourFunction(arg):']);
     });
   });
+
   describe('doTopLevelFunctionLinesExist', function() {
-    it('returns true when top level function lines exist',
-      function() {
-        var code = ['def myFunction(arg):\n',
+    it('returns true when top level function lines exist', function() {
+      var code = [
+        'def myFunction(arg):',
+        '\treturn result',
+        'def yourFunction(arg):',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
+      var topLevelFunctionLinesExist =
+        PythonPrereqCheckService.doTopLevelFunctionLinesExist(
+          code, functions);
+      expect(topLevelFunctionLinesExist).toEqual(true);
+    });
+
+    it('returns false when a top level function line is absent', function() {
+      var code = [
+        'def myFunction(arg):\n',
         '\treturn result\n',
-        'def yourFunction(arg):\n',
-        '\treturn result\n'].join('');
-        var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
-        var topLevelFunctionLinesExist =
-          PythonPrereqCheckService.doTopLevelFunctionLinesExist(
-            code, functions);
-        expect(topLevelFunctionLinesExist).toEqual(true);
+        ''
+      ].join('\n');
+      var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
+      var topLevelFunctionLinesExist =
+        PythonPrereqCheckService.doTopLevelFunctionLinesExist(
+          code, functions);
+      expect(topLevelFunctionLinesExist).toEqual(false);
     });
-    it('returns false when a top level function line does not exist',
-      function() {
-        var code = ['def myFunction(arg):\n',
-        '\treturn result\n'].join('');
-        var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
-        var topLevelFunctionLinesExist =
-          PythonPrereqCheckService.doTopLevelFunctionLinesExist(
-            code, functions);
-        expect(topLevelFunctionLinesExist).toEqual(false);
-    });
-    it(['returns true when top level function lines exist and are',
-      'out of order'].join(),
-        function() {
-          var code = ['def yourFunction(arg):\n',
-          '\treturn result\n',
-          'def myFunction(arg):\n',
-          '\treturn result\n'].join('');
-          var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
-          var topLevelFunctionLinesExist =
-          PythonPrereqCheckService.doTopLevelFunctionLinesExist(
-            code, functions);
-          expect(topLevelFunctionLinesExist).toEqual(true);
+
+    it('returns true if top level function lines are out of order', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '\treturn result',
+        'def myFunction(arg):',
+        '\treturn result',
+        ''
+      ].join('\n');
+      var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
+      var topLevelFunctionLinesExist =
+      PythonPrereqCheckService.doTopLevelFunctionLinesExist(code, functions);
+      expect(topLevelFunctionLinesExist).toEqual(true);
     });
   });
+
   describe('getImportedLibraries', function() {
     it('correctly parses import statements', function() {
-      var code = ['import numpy\n',
-        'import pandas\n', '\n',
-        'def myFunction(arg): \n',
-        '\treturn arg'].join('');
-      var codeLibs =
-        PythonPrereqCheckService.getImportedLibraries(code);
-      expect(codeLibs).toEqual(['numpy','pandas']);
+      var code = [
+        'import numpy',
+        'import pandas',
+        '',
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
+      expect(codeLibs).toEqual(['numpy', 'pandas']);
     });
+
     it('does not capture strings with \'import\' in text', function() {
-      var code = ['def myFunction(arg): \n',
+      var code = [
+        'def myFunction(arg):',
         '\tresult = str(arg) + \'import this\'',
-        '\treturn result'].join('');
-      var codeLibs =
-        PythonPrereqCheckService.getImportedLibraries(code);
+        '\treturn result',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
       expect(codeLibs).toEqual([]);
     });
   });

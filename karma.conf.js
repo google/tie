@@ -28,8 +28,12 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      // 'client/*.js': ['coverage', '6to5'],
-      // 'client/**/*.js': ['coverage', '6to5'],
+      // The 6to5 preprocessor enables tests to run on PhantomJS.
+      //
+      // NOTE TO DEVELOPERS: to enable coverage reports, add 'coverage' to the
+      // array in the values of the following keys.
+      'client/*.js': ['6to5'],
+      'client/**/*.js': ['6to5'],
       'assets/**/*.js': ['6to5']
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.

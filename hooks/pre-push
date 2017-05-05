@@ -50,7 +50,7 @@ bash scripts/run_linter.sh
 check_test_status "Linter"
 
 echo "Running karma tests"
-bash scripts/run_karma_tests.sh
+bash scripts/run_karma_tests.sh --browsers PhantomJS
 check_test_status "Karma"
 
 exit 0

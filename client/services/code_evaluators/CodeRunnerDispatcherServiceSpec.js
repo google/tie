@@ -27,40 +27,40 @@ describe('CodeRunnerDispatcherService', function() {
   describe('pythonCodeRunnerService', function() {
     it('should throw an error if passed a non-Python language', function() {
       var errorFunction = function() {
-        CodeRunnerDispatcherService.runCodeAsync("java", "some code")
+        CodeRunnerDispatcherService.runCodeAsync('java', 'some code');
       };
       expect(errorFunction).toThrowError(Error);
     });
 
-    it('should throw a TimeLimitError if passed infinitely looping code',
-      function() {
-        var code = [
-          'while True:',
-          "    print 'a'"
-        ].join('\n');
+    it('should throw TimeLimitError if passed infinite-loop code', function() {
+      var code = [
+        'while True:',
+        "    print 'a'"
+      ].join('\n');
 
-        CodeRunnerDispatcherService.runCodeAsync("python", code).then(
-          function(rawCodeEvalResult) {
-            expect(rawCodeEvalResult.getErrorString()).toBe(
-              'TimeLimitError: Program exceeded run time limit.')
-          });
+      CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+        function(rawCodeEvalResult) {
+          expect(rawCodeEvalResult.getErrorString()).toBe(
+            'TimeLimitError: Program exceeded run time limit.');
+        }
+      );
     });
 
-    it('should throw a RangeError if passed infinitely recursing code',
-      function() {
-        var code = [
-          'def forgetToIgnoreSpaces(string):',
-          "    return forgetToIgnoreSpaces(string + 'b')",
-          "forgetToIgnoreSpaces('a')"
-        ].join('\n');
-        CodeRunnerDispatcherService.runCodeAsync("python", code).then(
-          function(rawCodeEvalResult) {
-            expect(rawCodeEvalResult.getErrorString()).toBe(
-              [
-                'ExternalError: RangeError: Maximum call stack size ',
-                'exceeded on line 2'
-              ].join(''));
-          });
+    it('should throw RangeError if passed infinite-recursing code', function() {
+      var code = [
+        'def forgetToIgnoreSpaces(string):',
+        "    return forgetToIgnoreSpaces(string + 'b')",
+        "forgetToIgnoreSpaces('a')"
+      ].join('\n');
+      CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+        function(rawCodeEvalResult) {
+          expect(rawCodeEvalResult.getErrorString()).toBe(
+            [
+              'ExternalError: RangeError: Maximum call stack size ',
+              'exceeded on line 2'
+            ].join(''));
+        }
+      );
     });
   });
 });
