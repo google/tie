@@ -45,6 +45,8 @@ check_test_status () {
   fi
 }
 
+exit 1
+
 echo "Running linter tests"
 bash scripts/run_linter.sh
 check_test_status "Linter"
