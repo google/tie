@@ -77,7 +77,7 @@ describe('QuestionSchemaValidationService', function() {
       });
     });
 
-    it('should check if a question id contains only chars and digits', function() {
+    it('checks that question id contains only chars and digits', function() {
       QUESTION_IDS.forEach(function(questionId, index) {
         expect(/^\w+$/.test(QUESTION_IDS[index])).toBe(true);
       });

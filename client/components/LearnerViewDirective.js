@@ -491,7 +491,6 @@ tie.directive('learnerView', [function() {
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
-
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
@@ -567,7 +566,8 @@ tie.directive('learnerView', [function() {
               congratulatoryFeedback.appendTextParagraph(
                   "Good work! You've completed this question.");
               congratulatoryFeedback.appendTextParagraph(
-                  "Click the \"Next\" button below to proceed to the next question.");
+                  'Click the "Next" button below to proceed to the next ' +
+                  'question.');
               $scope.nextButtonIsShown = true;
               $scope.questionsCompletionStatus[
                 $scope.currentQuestionIndex] = true;

@@ -17,7 +17,7 @@
 # Usage:
 #     Not meant for manual use.
 #     Runs automatically before a git push command is executed.
-#     Behaviour can be set up using "bash scripts/setup_hooks.sh".
+#     Behaviour can be set up using "bash scripts/setup.sh".
 
 # Ask user if push should continue anyway if a test fails.
 proceed_when_test_fail () {

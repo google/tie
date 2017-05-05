@@ -26,7 +26,7 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getQuestionsIds', function() {
     it('should get question ids', function() {
-      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSetDict = {questionIds: ['q0', 'q1']};
       var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var questionIds = questionSet.getQuestionIds();
 
@@ -36,16 +36,16 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getQuestionsId', function() {
     it('should get question id index', function() {
-      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSetDict = {questionIds: ['q0', 'q1']};
       var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var questionId = questionSet.getQuestionId(1);
 
-      expect(questionId).toMatch("q1");
+      expect(questionId).toMatch('q1');
     });
 
-    it('should throw error if index passed to getQuestionId is out of bounds', function() {
+    it('should error if index passed to getQuestionId is invalid', function() {
       var errorFunction = function() {
-        var questionSetDict = {questionIds: ["q0", "q1"]};
+        var questionSetDict = {questionIds: ['q0', 'q1']};
         var questionSet = QuestionSetObjectFactory.create(questionSetDict);
         questionSet.getQuestionId(-1);
       };
@@ -56,17 +56,17 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getFirstQuestionId', function() {
     it('should get question id of first question', function() {
-      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSetDict = {questionIds: ['q0', 'q1']};
       var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var firstQuestionId = questionSet.getFirstQuestionId();
 
-      expect(firstQuestionId).toMatch("q0");
+      expect(firstQuestionId).toMatch('q0');
     });
   });
 
   describe('getNumberOfQuestions', function() {
     it('should get total number of questions', function() {
-      var questionSetDict = {questionIds: ["q0", "q1"]};
+      var questionSetDict = {questionIds: ['q0', 'q1']};
       var questionSet = QuestionSetObjectFactory.create(questionSetDict);
       var numberOfQuestions = questionSet.getNumberOfQuestions();
 
@@ -76,7 +76,7 @@ describe('QuestionSetObjectFactory', function() {
 
   describe('getIntroductionParagraphs', function() {
     it('should get introduction paragraph', function() {
-      var paragraphsDict = {introductionParagraphs: "introduction"};
+      var paragraphsDict = {introductionParagraphs: 'introduction'};
       var questionSet = QuestionSetObjectFactory.create(paragraphsDict);
       var introductionParagraphs = questionSet.getIntroductionParagraphs();
 

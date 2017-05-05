@@ -89,7 +89,10 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     {
       buggyFunctionName: 'AuxiliaryCode.allowLeadingZeroInResult',
       messages: [
-        "Try running your code on 2-digit numbers. Did you get the expected result?",
+        [
+          'Try running your code on 2-digit numbers. Did you get the expected ',
+          'result?'
+        ].join(''),
         [
           'What happens if the number has a leading zero, like 08?',
           'Should it still be included?'

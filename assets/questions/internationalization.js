@@ -114,7 +114,8 @@ def are_all_unique(words):
       ]
     },
     {
-      buggyFunctionName: 'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate',
+      buggyFunctionName: (
+        'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate'),
       messages: [
         [
           "Think about how your code handles short inputs. ",

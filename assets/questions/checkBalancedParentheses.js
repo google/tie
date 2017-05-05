@@ -190,7 +190,8 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: '()',
-      transformationFunctionName: 'AuxiliaryCode.createBalancedParenthesesString',
+      transformationFunctionName: (
+        'AuxiliaryCode.createBalancedParenthesesString'),
       expectedPerformance: 'linear',
       evaluationFunctionName: 'isBalanced'
     }]

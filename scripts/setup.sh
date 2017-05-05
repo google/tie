@@ -52,9 +52,9 @@ install_node_module() {
 }
 
 # Set up hooks if not disabled.
-if ! [[ $* == *--disable-presubmit-checks* ]]
-then
-  git config core.hooksPath "./hooks"
+if ! [[ $* == *--disable-presubmit-checks* ]]; then
+  git config core.hooksPath hooks
+  chmod u+x hooks/pre-push
 fi
 
 export -f install_node_module
@@ -92,8 +92,8 @@ if [ ! -d "$NODE_DIR" ]; then
   if [ ! -d "$TOOLS_DIR" ]; then
     mkdir tools
   fi
-  	
-  
+
+
   if $ON_WIN; then
     curl -o node-download.zip https://nodejs.org/dist/v6.9.1/$NODE_FILE_NAME.zip
     unzip node-download.zip -d $TOOLS_DIR
