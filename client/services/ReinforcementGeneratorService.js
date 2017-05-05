@@ -45,6 +45,7 @@ tie.factory('ReinforcementGeneratorService', [
         }
 
         var reinforcement = ReinforcementObjectFactory.create(task);
+
         // Copy the previous reinforcement object if we are on the same task.
         if (previousReinforcement !== null &&
             task === previousReinforcement.getTask()) {
@@ -74,10 +75,12 @@ tie.factory('ReinforcementGeneratorService', [
               if (test.getInput() in reinforcement.getPastFailsList()) {
                 reinforcement.addToPastFailsList(test.getInput(), true);
               }
-            } else if (!failedCaseSeenOverall) {
+            } else if (!failedCaseSeenInTag) {
               // We want to display only 1 new failed case among all tasks.
-              reinforcement.addToPastFailsList(test.getInput(), false);
-              failedCaseSeenOverall = true;
+              if (!failedCaseSeenOverall) {
+                reinforcement.addToPastFailsList(test.getInput(), false);
+                failedCaseSeenOverall = true;
+              }
               failedCaseSeenInTag = true;
             }
           }
