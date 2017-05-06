@@ -21,11 +21,12 @@ tie.factory('ReinforcementGeneratorService', [
   'ReinforcementObjectFactory', 'TranscriptService',
   function(ReinforcementObjectFactory, TranscriptService) {
 
-    var getTestsKeyedByTag = function(tests) {
+    var getTestsKeyedByTagAndIndexes = function(tests) {
       var splitTests = {};
+      var inputToOriginalIndex = {};
       for (var i = 0; i < tests.length; ++i) {
         var test = tests[i];
-        test.originalIndex = i;
+        inputToOriginalIndex[test.getInput()] = i;
         var testTag = test.getTag();
         if (splitTests.hasOwnProperty(testTag)) {
           splitTests[testTag].push(test);
@@ -33,7 +34,10 @@ tie.factory('ReinforcementGeneratorService', [
           splitTests[testTag] = [test];
         }
       }
-      return splitTests;
+      return {
+        splitTests: splitTests,
+        testIndexes: inputToOriginalIndex
+      };
     };
 
     return {
@@ -65,8 +69,10 @@ tie.factory('ReinforcementGeneratorService', [
         }
 
         // Go through correctness tests to update reinforcement data.
-        var correctnessTestsByTag = getTestsKeyedByTag(
+        var correctnessTestsByTagAndIndexes = getTestsKeyedByTagAndIndexes(
           task.getCorrectnessTests());
+        var correctnessTestsByTag = correctnessTestsByTagAndIndexes.splitTests;
+        var testIndexes = correctnessTestsByTagAndIndexes.testIndexes;
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
         // Get results only for the last task.
         observedOutputs = observedOutputs[observedOutputs.length - 1];
@@ -76,7 +82,7 @@ tie.factory('ReinforcementGeneratorService', [
           for (var testIdx = 0; testIdx < correctnessTestsByTag[testTag].length;
               ++testIdx) {
             var test = correctnessTestsByTag[testTag][testIdx];
-            var observedOutput = observedOutputs[test.originalIndex];
+            var observedOutput = observedOutputs[testIndexes[test.getInput()]];
             if (test.matchesOutput(observedOutput)) {
               if (reinforcement.hasPastFailedCase(test.getInput())) {
                 reinforcement.updatePastFailedCases(test.getInput(), true);
