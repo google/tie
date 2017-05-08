@@ -75,7 +75,8 @@ tie.directive('learnerView', [function() {
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                         ng-model="code"
                         ng-change="autosave()"
-                        class="tie-codemirror-container"></ui-codemirror>
+                        class="tie-codemirror-container protractor-test-code-input">
+                    </ui-codemirror>
                   </div>
                   <select class="tie-lang-select-menu" name="lang-select-menu">
                     <option value="Python" selected>Python</option>
@@ -90,14 +91,14 @@ tie.directive('learnerView', [function() {
                           ng-options="i.themeName as i.themeName for i in themes">
                     <option style="display: none" value="">Theme</option>
                   </select>
-                  <button class="tie-code-reset" name="code-reset"
+                  <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
                       ng-click="resetCode()">
                     Reset Code
                   </button>
                   <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                     Saving code...
                   </div>
-                  <button class="tie-run-button"
+                  <button class="tie-run-button protractor-test-run-code-btn"
                       ng-class="{'active': !nextButtonIsShown}"
                       ng-click="submitCode(code)"
                       ng-disabled="nextButtonIsShown">
