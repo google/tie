@@ -32,6 +32,13 @@ tie.factory('CorrectnessTestObjectFactory', [
       return this._input;
     };
 
+    CorrectnessTest.prototype.getStringifiedInput = function() {
+      if (!this._stringifiedInput) {
+        this._stringifiedInput = JSON.stringify(this._input);
+      }
+      return JSON.stringify(this._input);
+    }
+
     CorrectnessTest.prototype.matchesOutput = function(output) {
       var allowedOutputs = this._allowedOutputs;
       var target = output;
