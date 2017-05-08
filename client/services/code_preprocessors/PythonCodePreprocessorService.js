@@ -24,15 +24,13 @@ tie.factory('PythonCodePreprocessorService', [
   'VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
   'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
-  'VARNAME_MOST_RECENT_INPUT',
   function(
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
       VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_TASK_PERFORMANCE_TEST_RESULTS,
-      VARNAME_MOST_RECENT_INPUT) {
+      VARNAME_TASK_PERFORMANCE_TEST_RESULTS) {
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
         'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
     var VALID_WHITESPACE_REGEX = new RegExp('\\s');
@@ -56,12 +54,13 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return "'" + pythonStringContent + "'";
-      } else if (typeof jsonVariable == 'boolean') {
+      } else if (typeof jsonVariable === 'boolean') {
         return jsonVariable ? 'True' : 'False';
       } else if (typeof jsonVariable === 'number') {
         return parseFloat(jsonVariable);
       } else if (Array.isArray(jsonVariable)) {
-        // We have to recursively convert the array's elements to Python variables.
+        // We have to recursively convert the array's elements to Python
+        // variables.
         var pythonElements = jsonVariable.map(function(arrayElement) {
           return _jsonVariableToPython(arrayElement);
         });
@@ -78,8 +77,9 @@ tie.factory('PythonCodePreprocessorService', [
     // NOTE TO DEVELOPERS: This function must preserve the number of lines in
     // the code.
     var _transformCodeToInstanceMethods = function(code, wrapperClassName) {
-      code = _addClassWrappingToHelperFunctions(code, wrapperClassName, true);
-      var codeLines = code.trim().split('\n');
+      var wrappedCode = _addClassWrappingToHelperFunctions(
+        code, wrapperClassName, true);
+      var codeLines = wrappedCode.trim().split('\n');
       var subsequentLines = codeLines.map(function(line) {
         if (line.indexOf('def') === 0) {
           var leftParenIndex = line.indexOf('(');
@@ -112,31 +112,33 @@ tie.factory('PythonCodePreprocessorService', [
         functionPrefix += '()';
       }
       functionPrefix += '.';
+
+      var remainingCode = code;
       while (true) {
         // Returns ['matching string', 'capture group']
-        var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(code);
+        var regexResult = PYTHON_FUNCTION_DEF_REGEX.exec(remainingCode);
         if (!regexResult) {
-          return code;
+          return remainingCode;
         }
         var matchingString = regexResult[0];
         var functionNameWithParen = regexResult[1];
         var functionName = functionNameWithParen.substring(
-          0, functionNameWithParen.length - 1).trim()
+          0, functionNameWithParen.length - 1).trim();
 
         // Do not modify inner functions.
-        var matchIndex = code.indexOf(matchingString);
-        if (matchIndex > 0 && code[matchIndex - 1] !== '\n') {
+        var matchIndex = remainingCode.indexOf(matchingString);
+        if (matchIndex > 0 && remainingCode[matchIndex - 1] !== '\n') {
           continue;
         }
 
         // We should make sure that we don't append our class name to
         // the student's function definition.
-        var functionNameStart = (code.indexOf(matchingString) +
+        var functionNameStart = (remainingCode.indexOf(matchingString) +
           matchingString.indexOf(functionNameWithParen));
         var lastFunctionNameLocation = 0;
         while (true) {
           var codeToAdd = '';
-          lastFunctionNameLocation = code.indexOf(
+          lastFunctionNameLocation = remainingCode.indexOf(
             functionName, lastFunctionNameLocation);
           if (lastFunctionNameLocation === -1) {
             break;
@@ -149,16 +151,19 @@ tie.factory('PythonCodePreprocessorService', [
             // need to check until the parenthesis to make sure that there is
             // only whitespace, not other text (encode  () vs. encoded ()).
             if (!_checkMatchedFunctionForWhitespace(
-              code, whitespaceCheckLocation)) {
+              remainingCode, whitespaceCheckLocation)) {
               lastFunctionNameLocation++;
               continue;
             }
             codeToAdd = functionPrefix;
-            code = (code.slice(0, lastFunctionNameLocation) + codeToAdd +
-              code.slice(lastFunctionNameLocation, code.length));
+            remainingCode = (
+              remainingCode.slice(0, lastFunctionNameLocation) + codeToAdd +
+              remainingCode.slice(
+                lastFunctionNameLocation, remainingCode.length)
+            );
             // Since we're inserting text, we may need to
             // "move" up starting locations by the same amount.
-            if (lastFunctionNameLocation < functionNameStart){
+            if (lastFunctionNameLocation < functionNameStart) {
               functionNameStart += codeToAdd.length;
             }
             if (lastFunctionNameLocation <
@@ -174,12 +179,13 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     var _checkMatchedFunctionForWhitespace = function(
-        code, whitespaceCheckLocation) {
+        code, startingLocation) {
+      var currentLocation = startingLocation;
       // We can safely assume there's a left paren because we matched it
       // with the regular expression.
-      while (code[whitespaceCheckLocation] != '(') {
-        var isWhitespace = _isWhitespaceChar(code[whitespaceCheckLocation]);
-        whitespaceCheckLocation++;
+      while (code[currentLocation] !== '(') {
+        var isWhitespace = _isWhitespaceChar(code[currentLocation]);
+        currentLocation++;
         if (!isWhitespace) {
           return false;
         }
@@ -194,7 +200,6 @@ tie.factory('PythonCodePreprocessorService', [
     var _generateCorrectnessTestCode = function(
         allTasksCorrectnessTests, allTasksInputFunctionNames,
         allTasksMainFunctionNames, allTasksOutputFunctionNames) {
-
       var pythonInputs = allTasksCorrectnessTests.map(function(tests) {
         return tests.map(function(test) {
           return _jsonVariableToPython(test.getInput());
@@ -202,11 +207,12 @@ tie.factory('PythonCodePreprocessorService', [
       });
 
       var testCode = [
-        VARNAME_ALL_TASKS_TEST_INPUTS + ' = [' + pythonInputs.map(function(tests) {
-          return '[' + tests.join(', ') + ']';
-        }).join(', ') + ']',
+        VARNAME_ALL_TASKS_TEST_INPUTS +
+          ' = [' + pythonInputs.map(function(tests) {
+            return '[' + tests.join(', ') + ']';
+          }).join(', ') + ']',
         '',
-        VARNAME_CORRECTNESS_TEST_RESULTS + ' = []',
+        VARNAME_CORRECTNESS_TEST_RESULTS + ' = []'
       ].join('\n');
 
       for (var i = 0; i < allTasksCorrectnessTests.length; i++) {
@@ -216,20 +222,17 @@ tie.factory('PythonCodePreprocessorService', [
         var outputFunctionName = allTasksOutputFunctionNames[i];
 
         var oneTaskCorrectnessTests = allTasksCorrectnessTests[i];
-        testCode += (
-            '\n' +
-            VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
+        testCode += ('\n' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
 
         for (var j = 0; j < oneTaskCorrectnessTests.length; j++) {
           var testInputCode = (
             inputFunctionName ?
-            inputFunctionName + '(' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + '])' :
-            VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + ']'
-          );
+            (inputFunctionName + '(' + VARNAME_ALL_TASKS_TEST_INPUTS +
+             '[' + i + '][' + j + '])') :
+            VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + ']');
           var testRunCode = (
-            'System.runTest(' + qualifiedMainFunctionName + ', '
-            + testInputCode + ')'
-          );
+            'System.runTest(\n    ' + qualifiedMainFunctionName + ', ' +
+            testInputCode + ')');
           var testOutputCode = (
             outputFunctionName ?
             outputFunctionName + '(' + testRunCode + ')' : testRunCode);
@@ -244,35 +247,44 @@ tie.factory('PythonCodePreprocessorService', [
           '\n' +
           VARNAME_CORRECTNESS_TEST_RESULTS +
           '.append(' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ')');
-      };
+      }
 
       return testCode;
     };
 
+    var _generateOneTaskBuggyOutputTestCode = function(
+        oneTaskBuggyOutputTests, inputFunctionName, outputFunctionName) {
+      var code = (VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
+      oneTaskBuggyOutputTests.forEach(function(buggyOutputTest) {
+        var qualifiedBuggyFunctionName = buggyOutputTest.getBuggyFunctionName();
+        code += (
+          VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + '.append(\n' +
+          '    matches_buggy_function(' + qualifiedBuggyFunctionName + ', ' +
+          (inputFunctionName ? inputFunctionName : 'None') + ', ' +
+          (outputFunctionName ? outputFunctionName : 'None') + '))\n');
+      });
+
+      code += (
+        VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
+        '.append(' + VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ')\n');
+
+      return code;
+    };
+
     var _generateBuggyOutputTestCode = function(
-        allTasksBuggyOutputTests,
-        allTasksInputFunctionNames, allTasksOutputFunctionNames) {
+        allTasksBuggyOutputTests, allTasksInputFunctionNames,
+        allTasksOutputFunctionNames) {
       // NOTE: This must be run after the correctness tests, since it assumes
       // that the test inputs and correctness test results already exist.
       // TODO(sll): Cache the results of running the buggy code, so that they
       // don't have to be recomputed for every run.
-      var matchesBuggyFunctionSet = new Set();
 
       for (var i = 0; i < allTasksInputFunctionNames.length; i++) {
         var inputFunctionName = allTasksInputFunctionNames[i];
         var outputFunctionName = allTasksOutputFunctionNames[i];
 
-        var testInputCode = (
-          inputFunctionName ?
-          inputFunctionName + '(test_input)' :
-          'test_input'
-        );
-        var testRunCode = 'System.runTest(func, ' + testInputCode + ')';
-        var testOutputCode = (
-          outputFunctionName ?
-          outputFunctionName + '(' + testRunCode + ')' : testRunCode);
-
         var fullTestCode = [
+          /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
           '    for task_tests in all_tasks_test_inputs:',
@@ -281,38 +293,25 @@ tie.factory('PythonCodePreprocessorService', [
           '            if inputFunctionName is None and outputFunctionName is None:',
           '                task_results.append(System.runTest(func, test_input))',
           '            elif inputFunctionName is None:',
-          '                task_results.append(' +
-          'outputFunctionName(System.runTest(func, test_input)))',
+          '                task_results.append(outputFunctionName(',
+          '                    System.runTest(func, test_input)))',
           '            elif outputFunctionName is None:',
-          '                task_results.append(' +
-          'System.runTest(func, inputFunctionName(test_input)))',
+          '                task_results.append(',
+          '                    System.runTest(func, inputFunctionName(test_input)))',
           '            else:',
-          '               task_results.append(' +
-          'outputFunctionName(System.runTest(func, inputFunctionName(test_input))))',
+          '               task_results.append(outputFunctionName(',
+          '                   System.runTest(func, inputFunctionName(test_input))))',
           '        buggy_results.append(task_results)',
           '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
           '',
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
           ''
+          /* eslint-enable max-len */
         ].join('\n');
 
         allTasksBuggyOutputTests.forEach(function(oneTaskBuggyOutputTests) {
-          fullTestCode += (
-              VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
-          oneTaskBuggyOutputTests.forEach(function(buggyOutputTest) {
-            var qualifiedBuggyFunctionName = (
-                buggyOutputTest.getBuggyFunctionName());
-            fullTestCode += (
-                VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +
-                '.append(matches_buggy_function(' +
-                    qualifiedBuggyFunctionName + ', ' +
-                    (inputFunctionName ? inputFunctionName : 'None') + ', ' +
-                    (outputFunctionName ? outputFunctionName : 'None') + '))\n');
-          });
-
-          fullTestCode += (
-            VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
-            '.append('+ VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS +')\n');
+          fullTestCode += _generateOneTaskBuggyOutputTestCode(
+            oneTaskBuggyOutputTests, inputFunctionName, outputFunctionName);
         });
       }
 
@@ -323,37 +322,40 @@ tie.factory('PythonCodePreprocessorService', [
       var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n');
 
       testCode += [
+        /* eslint-disable max-len */
         '',
         'def get_test_input(atom, input_size, qualifiedTransformationFunctionName):',
         '    return qualifiedTransformationFunctionName(atom, input_size)',
         '',
-        'def run_performance_test(test_input, ' +
-            'qualifiedTransformationFunctionName, qualifiedEvaluationFunctionName):',
+        'def run_performance_test(',
+        '        test_input, qualifiedTransformationFunctionName,',
+        '        qualifiedEvaluationFunctionName):',
         '    time_array = []',
-        '    for input_size in [' + SMALL_INPUT_SIZE + (
-          ', ' + LARGE_INPUT_SIZE + ']:'),
+        '    for input_size in [' + SMALL_INPUT_SIZE + ', ' + LARGE_INPUT_SIZE + ']:',
         '        start = time.clock()',
-        '        output = qualifiedEvaluationFunctionName(' +
-          'get_test_input(test_input, input_size, qualifiedTransformationFunctionName))',
+        '        output = qualifiedEvaluationFunctionName(get_test_input(',
+        '            test_input, input_size, qualifiedTransformationFunctionName))',
         '        finish = time.clock() - start',
         '        time_array.append(finish)',
-        '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + (
-          ' * time_array[0]:'),
+        '    if time_array[1] > ' + UPPER_BOUND_RATIO_IF_LINEAR + ' * time_array[0]:',
         '        return "not linear"',
         '    return "linear"',
-        '',
+        ''
+        /* eslint-enable max-len */
       ].join('\n');
 
-      allTasksPerformanceTests.forEach(function(oneTaskPerformanceTests, index) {
-        testCode += ('\n' + VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n')
+      allTasksPerformanceTests.forEach(function(oneTaskPerformanceTests) {
+        testCode += ('\n' + VARNAME_TASK_PERFORMANCE_TEST_RESULTS + ' = []\n');
         oneTaskPerformanceTests.forEach(function(test) {
           var qualifiedEvaluationFunctionName = (
             CLASS_NAME_STUDENT_CODE + '().' + test.getEvaluationFunctionName());
           var qualifiedTransformationFunctionName = (
             test.getTransformationFunctionName());
-          // TODO(eyurko): Make this work for non-linear runtimes, such as log(n).
-          // TODO(eyurko): Use linear regression to determine if the data points
-          // "look" linear, quadratic, etc, and then provide feedback accordingly.
+          // TODO(eyurko): Make this work for non-linear runtimes, such as
+          // log(n).
+          // TODO(eyurko): Use linear regression to determine if the data
+          // points "look" linear, quadratic, etc, and then provide feedback
+          // accordingly.
           testCode += [
             VARNAME_TASK_PERFORMANCE_TEST_RESULTS + '.append(',
             '    run_performance_test(' +
@@ -390,7 +392,7 @@ tie.factory('PythonCodePreprocessorService', [
         var studentCodeFirstLine = (
           'class ' + CLASS_NAME_STUDENT_CODE + '(object):');
         codeSubmission.prepend(studentCodeFirstLine);
-        codeSubmission.prepend(SYSTEM_CODE['python']);
+        codeSubmission.prepend(SYSTEM_CODE.python);
         codeSubmission.removeImportsFromStudentCode();
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');

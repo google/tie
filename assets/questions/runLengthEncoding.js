@@ -168,7 +168,10 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
       buggyFunctionName: 'AuxiliaryCode.skipEncodingAtEndOfString',
       messages: [
         "Run your code on 'adddd' in your head. What's the result?",
-        "It looks like the issue is with the last few characters of the string.",
+        [
+          'It looks like the issue is with the last few characters of the ',
+          'string.'
+        ].join(''),
         [
           "It doesn't seem like you're encoding a run if it occurs at the end ",
           "of an input string."
@@ -272,7 +275,8 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
         ].join(''),
         [
           'So your function takes in something like "2aaaaaab7" and returns ',
-          "\"26xab7\". What will happen when that string is run through decode()?"
+          '"26xab7". What will happen when that string is run through ',
+          'decode()?'
         ].join(''),
         [
           "Even though it'll make the encoded string longer, you might want ",

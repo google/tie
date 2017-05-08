@@ -33,7 +33,8 @@ describe('FeedbackGeneratorService', function() {
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
-    CorrectnessTestObjectFactory = $injector.get('CorrectnessTestObjectFactory');
+    CorrectnessTestObjectFactory = $injector.get(
+      'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');

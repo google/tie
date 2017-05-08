@@ -25,8 +25,9 @@ describe('LearnerViewDirective', function() {
   beforeEach(module("tie"));
 
   var generateRandomChars = function(number) {
-    var generatedChars = "";
-    var possible = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var generatedChars = '';
+    var possible = (
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
 
     for (var i = 0; i < number; i++) {
       generatedChars += possible.charAt(
@@ -72,7 +73,6 @@ describe('LearnerViewDirective', function() {
   }));
 
   describe("resetCode", function() {
-
     it('should reset code to starter code', function() {
       $scope.questionIds.forEach(function(questionId, index) {
         var question = QuestionDataService.getQuestion(questionId);

@@ -18,40 +18,35 @@
 
 describe('CodePreprocessorDispatcherService', function() {
   var CodePreprocessorDispatcherService;
-  var PythonCodePreprocessorService;
   var LANGUAGE_PYTHON;
   var CodeSubmissionObjectFactory;
-
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     CodePreprocessorDispatcherService = $injector.get(
       'CodePreprocessorDispatcherService');
-    PythonCodePreprocessorService = $injector.get(
-      'PythonCodePreprocessorService');
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     CodeSubmissionObjectFactory = $injector.get('CodeSubmissionObjectFactory');
   }));
 
   describe('preprocess', function() {
-    it('should throw an error if the language passed in is not supported',
-      function() {
-      var unsupportedLanguage = "someLanguage";
+    it('should throw error if the language passed in is unknown', function() {
+      var unsupportedLanguage = 'someLanguage';
       var failingFunction = function() {
-        CodePreprocessorDispatcherService.preprocess(unsupportedLanguage,
-        '', '', '', '', '', '', '', '');
+        CodePreprocessorDispatcherService.preprocess(
+          unsupportedLanguage, '', '', '', '', '', '', '', '');
       };
-      expect(failingFunction).toThrow(new Error("Language not supported: "
-                                              + unsupportedLanguage));
+      expect(failingFunction).toThrow(new Error(
+        'Language not supported: someLanguage'));
     });
-    it('should preprocess python source code', function(){
+
+    it('should preprocess python source code', function() {
       var codeSubmission = CodeSubmissionObjectFactory.create('a = 1\nb= 2');
       var originProcessedCode = codeSubmission.getPreprocessedCode();
-      CodePreprocessorDispatcherService.preprocess(LANGUAGE_PYTHON,
-        codeSubmission, '', '', '', '', [], [], []);
+      CodePreprocessorDispatcherService.preprocess(
+        LANGUAGE_PYTHON, codeSubmission, '', '', '', '', [], [], []);
       expect(codeSubmission.getPreprocessedCode())
         .not.toEqual(originProcessedCode);
     });
   });
 });
-

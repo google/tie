@@ -27,8 +27,9 @@ describe('CodeStorageService', function() {
   var CodeStorageService;
 
   var generateRandomChars = function(number) {
-    var generatedChars = "";
-    var possible = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var generatedChars = '';
+    var possible = (
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
 
     for (var i = 0; i < number; i++) {
       generatedChars += possible.charAt(

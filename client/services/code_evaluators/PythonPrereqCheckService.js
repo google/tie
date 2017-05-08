@@ -45,15 +45,15 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     var doTopLevelFunctionLinesExist = function(
-      code, expectedTopLevelFunctionLines) {
-        var codeLines = code.split('\n');
-        for (var i = 0; i < codeLines.length; i++) {
-          codeLines[i] = rightTrim(codeLines[i]);
-        }
+        code, expectedTopLevelFunctionLines) {
+      var codeLines = code.split('\n');
+      for (var i = 0; i < codeLines.length; i++) {
+        codeLines[i] = rightTrim(codeLines[i]);
+      }
 
-        return expectedTopLevelFunctionLines.every(function(expectedLine) {
-          return codeLines.indexOf(expectedLine) !== -1;
-        });
+      return expectedTopLevelFunctionLines.every(function(expectedLine) {
+        return codeLines.indexOf(expectedLine) !== -1;
+      });
     };
 
     var checkStarterCodeFunctionsPresent = function(starterCode, code) {
@@ -67,7 +67,7 @@ tie.factory('PythonPrereqCheckService', [
       var importedLibraries = [];
       var importPattern = new RegExp('^import\\ (\\w+)$');
       for (var i = 0; i < codeLines.length; i++) {
-        var match =  importPattern.exec(codeLines[i]);
+        var match = importPattern.exec(codeLines[i]);
         if (match) {
           importedLibraries.push(match[1]);
         }
@@ -76,45 +76,37 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     var getUnsupportedImports = function(importedLibraries) {
-      var unsupportedImports = importedLibraries.filter(function(
-        importedLibrary) {
-          return SUPPORTED_PYTHON_LIBS.indexOf(importedLibrary) === -1;
-        }
-      );
-      return unsupportedImports;
+      return importedLibraries.filter(function(library) {
+        return SUPPORTED_PYTHON_LIBS.indexOf(library) === -1;
+      });
     };
 
     return {
       // Returns a promise.
       checkCode: function(starterCode, code) {
+        var prereqCheckFailures = [];
+
         // Check that starter code is present.
         if (!(checkStarterCodeFunctionsPresent(starterCode, code))) {
-          var prereqCheckFailures = [];
           prereqCheckFailures.push(
             PrereqCheckFailureObjectFactory.create(
               PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode));
           return Promise.resolve(
-            CodePrereqCheckResultObjectFactory.create(
-              prereqCheckFailures));
+            CodePrereqCheckResultObjectFactory.create(prereqCheckFailures));
         }
 
         // Verify no unsupported libraries are imported.
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
         if (unsupportedImports.length > 0) {
-          var prereqCheckFailures = [];
-          prereqCheckFailures.push(
-            PrereqCheckFailureObjectFactory.create(
-              PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null));
-            return Promise.resolve(
-              CodePrereqCheckResultObjectFactory.create(
-                prereqCheckFailures));
+          prereqCheckFailures.push(PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null));
+          return Promise.resolve(
+            CodePrereqCheckResultObjectFactory.create(prereqCheckFailures));
         }
 
         // Otherwise, code passed all pre-requisite checks.
-        return Promise.resolve(
-          CodePrereqCheckResultObjectFactory.create(
-          []));
+        return Promise.resolve(CodePrereqCheckResultObjectFactory.create([]));
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
