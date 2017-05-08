@@ -89,16 +89,17 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('_jsToHumanReadableUnknownObject', function() {
-    it('should return [UNKNOWN OBJECT] if provided input cannot be converted',
+    it('should throw an error if the provided input cannot be converted',
       function() {
         // Define and call blankFunction to pass lint test add 100% coverage
         var blankFunction = function() {
           return null;
         };
         blankFunction();
-        expect(
-          FeedbackGeneratorService._jsToHumanReadable(blankFunction)
-        ).toEqual('[UNKNOWN OBJECT]');
+        expect(function() {
+          FeedbackGeneratorService._jsToHumanReadable(blankFunction);
+        }).toThrowError(
+          'Could not make the following object human-readable: ');
       }
     );
   });
