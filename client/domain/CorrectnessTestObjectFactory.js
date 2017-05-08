@@ -37,7 +37,7 @@ tie.factory('CorrectnessTestObjectFactory', [
         this._stringifiedInput = JSON.stringify(this._input);
       }
       return JSON.stringify(this._input);
-    }
+    };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
       var allowedOutputs = this._allowedOutputs;
