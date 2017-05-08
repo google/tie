@@ -82,20 +82,25 @@ tie.factory('ReinforcementGeneratorService', [
           for (var testIdx = 0; testIdx < correctnessTestsByTag[testTag].length;
               ++testIdx) {
             var test = correctnessTestsByTag[testTag][testIdx];
-            var observedOutput = observedOutputs[testIndexes[test.getStringifiedInput()]];
+            var observedOutput =
+              observedOutputs[testIndexes[test.getStringifiedInput()]];
             if (test.matchesOutput(observedOutput)) {
               if (reinforcement.hasPastFailedCase(test.getStringifiedInput())) {
-                reinforcement.updatePastFailedCases(test.getStringifiedInput(), true);
+                reinforcement.updatePastFailedCases(
+                  test.getStringifiedInput(), true);
               }
             } else if (!failedCaseSeenInTag) {
               // We want to display only 1 new failed case among all tasks.
               if (!failedCaseSeenOverall) {
-                reinforcement.addToPastFailedCases(test.getStringifiedInput(), false);
+                reinforcement.addToPastFailedCases(
+                  test.getStringifiedInput(), false);
                 failedCaseSeenOverall = true;
               }
               failedCaseSeenInTag = true;
-            } else if (reinforcement.hasPastFailedCase(test.getStringifiedInput())) {
-              reinforcement.updatePastFailedCases(test.getStringifiedInput(), false);
+            } else if (reinforcement.hasPastFailedCase(
+                test.getStringifiedInput())) {
+              reinforcement.updatePastFailedCases(
+                test.getStringifiedInput(), false);
             }
           }
           if (failedCaseSeenInTag) {
