@@ -265,7 +265,8 @@ tie.directive('learnerView', [function() {
           background: #333;
           color: #eee;
           font-family: monospace;
-          padding: 10px;
+          font-size: 12px;
+          padding: 2px 10px;
           width: 95%;
         }
         .tie-feedback, .tie-feedback-syntax-error {
