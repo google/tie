@@ -20,6 +20,22 @@
 tie.factory('ReinforcementObjectFactory', [
   'ReinforcementBulletObjectFactory', function(
       ReinforcementBulletObjectFactory) {
+    /**
+    * The reinforcement object contains the current state of reinforcement
+    * comments about a particular task in a question.
+    * Fields:
+    *  task: The corresponding task for the reinforcement comments.
+    *  passedTags: Dictionary containing tags (test sets) that the code
+    *              passed/failed.
+    *              Key: The tag
+    *              Value: Boolean indicating whether the code passed the tag.
+    *  pastFailedCases: The list of test cases that will be displayed in the
+    *                   reinforcement comments and the corresponding pass/fail
+    *                   status.
+    *                   Key: Stringified input of test case.
+    *                   Value: Boolean indicating where the code passed the 
+    *                          test case.
+    */
     var Reinforcement = function(task) {
       this._task = task;
       this._passedTags = {};
@@ -60,26 +76,26 @@ tie.factory('ReinforcementObjectFactory', [
       return this._task;
     };
 
-    // Add a tag to the list of tags the code passes/fails
-    Reinforcement.prototype.addToPassedTags = function(tag, passedBool) {
-      this._passedTags[tag] = passedBool;
+    // Add a tag to the list of tags the code passes/fails.
+    Reinforcement.prototype.addPassedTag = function(tag, tagPassed) {
+      this._passedTags[tag] = tagPassed;
     };
 
-    // Update the pass/fail status of a tag
-    Reinforcement.prototype.updatePassedTags = function(tag, passedBool) {
-      this._passedTags[tag] = passedBool;
+    // Update the pass/fail status of a tag.
+    Reinforcement.prototype.updatePassedTag = function(tag, tagPassed) {
+      this._passedTags[tag] = tagPassed;
     };
 
-    // Add a test case to the list of failed test cases
-    Reinforcement.prototype.addToPastFailedCases = function(
-        caseInput, passedBool) {
-      this._pastFailedCases[caseInput] = passedBool;
+    // Add a test case to the list of failed test cases.
+    Reinforcement.prototype.addPastFailedCase = function(
+        stringifiedCaseInput, casePassed) {
+      this._pastFailedCases[stringifiedCaseInput] = casePassed;
     };
 
-    // Update the status of a passed/failed test case
-    Reinforcement.prototype.updatePastFailedCases = function(
-        caseInput, passedBool) {
-      this._pastFailedCases[caseInput] = passedBool;
+    // Update the status of a passed/failed test case.
+    Reinforcement.prototype.updatePastFailedCase = function(
+        stringifiedCaseInput, casePassed) {
+      this._pastFailedCases[stringifiedCaseInput] = casePassed;
     };
 
     Reinforcement.prototype.getPassedTags = function() {
@@ -90,8 +106,8 @@ tie.factory('ReinforcementObjectFactory', [
       return this._pastFailedCases;
     };
 
-    Reinforcement.prototype.hasPastFailedCase = function(caseInput) {
-      return (caseInput in this._pastFailedCases);
+    Reinforcement.prototype.hasPastFailedCase = function(stringifiedCaseInput) {
+      return this._pastFailedCases.hasOwnProperty(stringifiedCaseInput);
     };
 
     // Static class methods.

@@ -57,14 +57,14 @@ tie.factory('ReinforcementGeneratorService', [
           var previousReinforcementPassedTags =
             previousReinforcement.getPassedTags();
           for (var tag in previousReinforcementPassedTags) {
-            reinforcement.addToPassedTags(tag,
-              previousReinforcementPassedTags[tag]);
+            reinforcement.addPassedTag(
+              tag, previousReinforcementPassedTags[tag]);
           }
           var previousReinforcementPastFailedCases =
             previousReinforcement.getPastFailedCases();
           for (var pastCase in previousReinforcementPastFailedCases) {
-            reinforcement.addToPastFailedCases(pastCase,
-              previousReinforcementPastFailedCases[pastCase]);
+            reinforcement.addPastFailedCase(
+              pastCase, previousReinforcementPastFailedCases[pastCase]);
           }
         }
 
@@ -86,30 +86,30 @@ tie.factory('ReinforcementGeneratorService', [
               observedOutputs[testIndexes[test.getStringifiedInput()]];
             if (test.matchesOutput(observedOutput)) {
               if (reinforcement.hasPastFailedCase(test.getStringifiedInput())) {
-                reinforcement.updatePastFailedCases(
+                reinforcement.updatePastFailedCase(
                   test.getStringifiedInput(), true);
               }
             } else if (!failedCaseSeenInTag) {
               // We want to display only 1 new failed case among all tasks.
               if (!failedCaseSeenOverall) {
-                reinforcement.addToPastFailedCases(
+                reinforcement.addPastFailedCase(
                   test.getStringifiedInput(), false);
                 failedCaseSeenOverall = true;
               }
               failedCaseSeenInTag = true;
             } else if (reinforcement.hasPastFailedCase(
                 test.getStringifiedInput())) {
-              reinforcement.updatePastFailedCases(
+              reinforcement.updatePastFailedCase(
                 test.getStringifiedInput(), false);
             }
           }
           if (failedCaseSeenInTag) {
             if (testTag in reinforcement.getPassedTags()) {
-              reinforcement.updatePassedTags(testTag, false);
+              reinforcement.updatePassedTag(testTag, false);
             }
           } else {
             // If all cases pass in this tag.
-            reinforcement.addToPassedTags(testTag, true);
+            reinforcement.addPassedTag(testTag, true);
           }
         }
 
