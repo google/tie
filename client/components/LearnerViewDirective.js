@@ -52,17 +52,17 @@ tie.directive('learnerView', [function() {
                     </span>
                   </p>
                 </div>
-                <div class="tie-feedback-syntax-error">
-                  <a href class="tie-feedback-syntax-error-link",
-                      ng-click="toggleSyntaxErrorHint()",
-                      ng-show="syntaxErrorFound">
-                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
-                  </a>
-                </div>
+
+                <a href class="tie-feedback-syntax-error-link" ng-if="syntaxErrorString"
+                   ng-click="toggleSyntaxErrorHint()">
+                  {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                </a>
                 <br>
-                <span class = "tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                <span class="tie-feedback-syntax-error-string" ng-if="syntaxErrorString"
+                      ng-show="isSyntaxErrorShown">
                   {{syntaxErrorString}}
                 </span>
+
                 <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                   <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
                   <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
@@ -234,9 +234,6 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
-        .tie-feedback-error-string {
-          color: #F44336;
-        }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
           font-size: 14px;
@@ -268,16 +265,20 @@ tie.directive('learnerView', [function() {
           padding: 10px;
           width: 95%;
         }
-        .tie-feedback, .tie-feedback-syntax-error {
+        .tie-feedback {
           display: inline-block;
         }
         .tie-feedback-syntax-error-link {
           color: #F44336;
+          display: inline-block;
           font-size: 12px;
           text-decoration: none;
         }
         .tie-feedback-syntax-error-link:hover {
           text-decoration: underline;
+        }
+        .tie-feedback-syntax-error-string {
+          color: #F44336;
         }
         .tie-lang-select-menu {
           float: left;
@@ -505,11 +506,10 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          cachedCode =
-            CodeStorageService.loadStoredCode(questionId, language);
+          cachedCode = CodeStorageService.loadStoredCode(
+            questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = cachedCode ?
-              cachedCode : question.getStarterCode(language);
+          $scope.code = cachedCode || question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -518,6 +518,7 @@ tie.directive('learnerView', [function() {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.feedbackParagraphs = feedback.getParagraphs();
+          $scope.syntaxErrorString = '';
         };
 
         var clearFeedback = function() {
@@ -526,7 +527,7 @@ tie.directive('learnerView', [function() {
         };
 
         var hideSyntaxErrorLink = function() {
-          $scope.syntaxErrorFound = false;
+          $scope.syntaxErrorString = '';
         };
 
         var setFeedback = function(feedback) {
@@ -564,10 +565,8 @@ tie.directive('learnerView', [function() {
               var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
               feedbackParagraphs.splice(syntaxErrorIndex, 1);
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
-              $scope.syntaxErrorFound = true;
             } else if (syntaxErrorIndex === null) {
               $scope.syntaxErrorString = '';
-              $scope.syntaxErrorFound = false;
             }
             $scope.feedbackParagraphs = feedbackParagraphs;
           }
