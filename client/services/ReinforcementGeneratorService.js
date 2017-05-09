@@ -49,7 +49,7 @@ tie.factory('ReinforcementGeneratorService', [
         inputToOriginalIndex[test.getStringifiedInput()] = i;
       }
       return inputToOriginalIndex;
-    }
+    };
 
     return {
       getReinforcement: function(task, codeEvalResult) {

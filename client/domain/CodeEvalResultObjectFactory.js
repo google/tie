@@ -47,8 +47,9 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     CodeEvalResult.prototype.getLastTaskResults = function() {
-      return this._correctnessTestResults[_correctnessTestResults.length - 1];
-    }
+      return this._correctnessTestResults[
+        this._correctnessTestResults.length - 1];
+    };
 
     CodeEvalResult.prototype.getBuggyOutputTestResults = function() {
       return this._buggyOutputTestResults;
