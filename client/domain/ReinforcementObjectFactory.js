@@ -33,7 +33,7 @@ tie.factory('ReinforcementObjectFactory', [
     *                   reinforcement comments and the corresponding pass/fail
     *                   status.
     *                   Key: Stringified input of test case.
-    *                   Value: Boolean indicating where the code passed the 
+    *                   Value: Boolean indicating where the code passed the
     *                          test case.
     */
     var Reinforcement = function(task) {

@@ -21,12 +21,13 @@ tie.factory('ReinforcementGeneratorService', [
   'ReinforcementObjectFactory', 'TranscriptService',
   function(ReinforcementObjectFactory, TranscriptService) {
 
-    var getTestsKeyedByTagAndIndexes = function(tests) {
+    /**
+    * Splits correctness tests into groups based on matching tag.
+    */
+    var getTestsKeyedByTag = function(tests) {
       var splitTests = {};
-      var inputToOriginalIndex = {};
       for (var i = 0; i < tests.length; ++i) {
         var test = tests[i];
-        inputToOriginalIndex[test.getStringifiedInput()] = i;
         var testTag = test.getTag();
         if (splitTests.hasOwnProperty(testTag)) {
           splitTests[testTag].push(test);
@@ -34,11 +35,21 @@ tie.factory('ReinforcementGeneratorService', [
           splitTests[testTag] = [test];
         }
       }
-      return {
-        splitTests: splitTests,
-        testIndexes: inputToOriginalIndex
-      };
+      return splitTests;
     };
+
+    /**
+    * Creates a dict from stringified test case input to
+    * the index of the test case in the task.
+    */
+    var getTestIndexes = function(tests) {
+      var inputToOriginalIndex = {};
+      for (var i = 0; i < tests.length; ++i) {
+        var test = tests[i];
+        inputToOriginalIndex[test.getStringifiedInput()] = i;
+      }
+      return inputToOriginalIndex;
+    }
 
     return {
       getReinforcement: function(task, codeEvalResult) {
@@ -69,13 +80,10 @@ tie.factory('ReinforcementGeneratorService', [
         }
 
         // Go through correctness tests to update reinforcement data.
-        var correctnessTestsByTagAndIndexes = getTestsKeyedByTagAndIndexes(
+        var correctnessTestsByTag = getTestsKeyedByTag(
           task.getCorrectnessTests());
-        var correctnessTestsByTag = correctnessTestsByTagAndIndexes.splitTests;
-        var testIndexes = correctnessTestsByTagAndIndexes.testIndexes;
-        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-        // Get results only for the last task.
-        observedOutputs = observedOutputs[observedOutputs.length - 1];
+        var testIndexes = getTestIndexes(task.getCorrectnessTests());
+        var observedOutputs = codeEvalResult.getLastTaskResults();
         var failedCaseSeenOverall = false;
         for (var testTag in correctnessTestsByTag) {
           var failedCaseSeenInTag = false;
