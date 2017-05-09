@@ -62,7 +62,7 @@ tie.factory('FeedbackGeneratorService', [
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
-        TranscriptService.getTranscript().getPreviousSnapshot());
+        TranscriptService.getTranscript().getMostRecentSnapshot());
       if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
         // This section makes sure to provide a new hint
         // if the student gets stuck on the same bug by checking

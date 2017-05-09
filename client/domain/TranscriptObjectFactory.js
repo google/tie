@@ -24,7 +24,7 @@ tie.factory('TranscriptObjectFactory', [
     };
 
     // Instance methods.
-    Transcript.prototype.getPreviousSnapshot = function() {
+    Transcript.prototype.getMostRecentSnapshot = function() {
       if (this._snapshots.length === 0) {
         return null;
       }

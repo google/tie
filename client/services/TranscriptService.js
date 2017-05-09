@@ -27,6 +27,9 @@ tie.factory('TranscriptService', [
       },
       recordSnapshot: function(snapshot) {
         transcript.recordSnapshot(snapshot);
+      },
+      getMostRecentSnapshot: function() {
+        return transcript.getMostRecentSnapshot();
       }
     };
   }

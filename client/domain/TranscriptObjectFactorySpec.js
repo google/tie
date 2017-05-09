@@ -24,19 +24,19 @@ describe('TranscriptObjectFactory', function() {
     TranscriptObjectFactory = $injector.get('TranscriptObjectFactory');
   }));
 
-  describe('getPreviousSnapshot', function() {
+  describe('getMostRecentSnapshot', function() {
     it('should retrieve the last snapshot', function() {
       var transcript = TranscriptObjectFactory.create();
       transcript.recordSnapshot(1);
       transcript.recordSnapshot(2);
 
-      expect(transcript.getPreviousSnapshot()).toBe(2);
+      expect(transcript.getMostRecentSnapshot()).toBe(2);
     });
 
     it('should return null if there are no snapshots', function() {
       var transcript = TranscriptObjectFactory.create();
 
-      expect(transcript.getPreviousSnapshot()).toBe(null);
+      expect(transcript.getMostRecentSnapshot()).toBe(null);
     });
   });
 

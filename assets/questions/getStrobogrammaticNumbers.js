@@ -64,14 +64,17 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     mainFunctionName: 'getStrobogrammaticNumbers',
     correctnessTests: [{
       input: '2',
-      allowedOutputs: [["11", "69", "88", "96"]]
+      allowedOutputs: [["11", "69", "88", "96"]],
+      tag: 'small sized numbers'
     }, {
       input: '1',
-      allowedOutputs: [['0', '1', '8']]
+      allowedOutputs: [['0', '1', '8']],
+      tag: 'small sized numbers'
     }, {
       input: '3',
       allowedOutputs: [['101', '111', '181', '609', '619', '689',
-        '808', '818', '906', '916', '986']]
+        '808', '818', '906', '916', '986']],
+      tag: '3 digit numbers'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',

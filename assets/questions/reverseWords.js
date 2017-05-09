@@ -64,19 +64,24 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: 'moo cow bark dog',
-      allowedOutputs: ['oom woc krab god']
+      allowedOutputs: ['oom woc krab god'],
+      tag: 'the general case'
     }, {
       input: 'racecar civic kayak mom noon level',
-      allowedOutputs: ['racecar civic kayak mom noon level']
+      allowedOutputs: ['racecar civic kayak mom noon level'],
+      tag: 'the general case'
     }, {
       input: 'I',
-      allowedOutputs: ['I']
+      allowedOutputs: ['I'],
+      tag: 'short strings'
     }, {
       input: '',
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'empty strings'
     }, {
       input: 'ab',
-      allowedOutputs: ['ba']
+      allowedOutputs: ['ba'],
+      tag: 'short strings'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
@@ -107,16 +112,20 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'reverseWords',
     correctnessTests: [{
       input: '   this  is \t a    whitespace  test',
-      allowedOutputs: ['   siht  si \t a    ecapsetihw  tset']
+      allowedOutputs: ['   siht  si \t a    ecapsetihw  tset'],
+      tag: 'the general case'
     }, {
       input: '\t  ',
-      allowedOutputs: ['\t  ']
+      allowedOutputs: ['\t  '],
+      tag: 'whitespace only strings'
     }, {
       input: '123 456 789 ',
-      allowedOutputs: ['321 654 987 ']
+      allowedOutputs: ['321 654 987 '],
+      tag: 'numbers'
     }, {
       input: 'test for dashes-and others',
-      allowedOutputs: ['tset rof dna-sehsad srehto']
+      allowedOutputs: ['tset rof dna-sehsad srehto'],
+      tag: 'dashed words'
     }],
     buggyOutputTests: [],
     performanceTests: [{
