@@ -26,14 +26,15 @@ tie.factory('ReinforcementObjectFactory', [
     * Fields:
     *  task: The corresponding task for the reinforcement comments.
     *  passedTags: Dictionary containing tags (test sets) that the code
-    *              passed/failed.
+    *              passed/failed. A tag is considered "failed" if at least one
+    *              of the correctness tests corresponding to it have failed.
     *              Key: The tag
     *              Value: Boolean indicating whether the code passed the tag.
     *  pastFailedCases: The list of test cases that will be displayed in the
     *                   reinforcement comments and the corresponding pass/fail
     *                   status.
     *                   Key: Stringified input of test case.
-    *                   Value: Boolean indicating where the code passed the
+    *                   Value: Boolean indicating whether the code passed the
     *                          test case.
     */
     var Reinforcement = function(task) {
@@ -57,15 +58,15 @@ tie.factory('ReinforcementObjectFactory', [
         }
       }
 
-      for (var testCase in this._pastFailedCases) {
-        if (this._pastFailedCases[testCase]) {
+      for (var stringifiedTestCase in this._pastFailedCases) {
+        if (this._pastFailedCases[stringifiedTestCase]) {
           bullets.push(
             ReinforcementBulletObjectFactory.createPassedBullet(
-              "Handles '" + testCase + "'"));
+              "Handles '" + stringifiedTestCase + "'"));
         } else {
           bullets.push(
             ReinforcementBulletObjectFactory.createFailedBullet(
-              "Fails on '" + testCase + "'"));
+              "Fails on '" + stringifiedTestCase + "'"));
         }
       }
 
