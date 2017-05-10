@@ -132,7 +132,7 @@ tie.directive('learnerView', [function() {
                     ng-click="resetCode()">
                   Reset Code
                 </button>
-                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button protractor-test-run-code-btn"
