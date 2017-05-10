@@ -94,8 +94,7 @@ tie.directive('learnerView', [function() {
                     <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
                     <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                   </div>
-                </div>
-                <br>
+                  <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
@@ -132,7 +131,7 @@ tie.directive('learnerView', [function() {
                     ng-click="resetCode()">
                   Reset Code
                 </button>
-                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button protractor-test-run-code-btn"
