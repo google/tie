@@ -75,21 +75,27 @@ tie.directive('learnerView', [function() {
                     </p>   
                   </div>
                   <div class="tie-feedback-syntax-error">
-                  <a href class="tie-feedback-syntax-error-link",
-                      ng-click="toggleSyntaxErrorHint()",
-                      ng-show="syntaxErrorFound">
-                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
-                  </a>
-                  <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
-                    {{syntaxErrorString}}
-                  </span>
-                  <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                    <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
-                    <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
-                    <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
+                    <a href class="tie-feedback-syntax-error-link",
+                        ng-click="toggleSyntaxErrorHint()",
+                        ng-show="syntaxErrorFound">
+                      {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                    </a>
+                    <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                      {{syntaxErrorString}}
+                    </span>
+                    <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                      <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
+                      <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
+                      <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
+                    </div>
+                     <div class="tie-reinforcement">
+                      <li ng-repeat="bullet in reinforcementBullets">
+                        <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                        <span class="tie-bullet-text">{{bullet.getContent()}}</span>
+                      </li>
+                    </div>
                   </div>
-                </div>
-                <br>
+                  <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
@@ -135,12 +141,6 @@ tie.directive('learnerView', [function() {
                     ng-disabled="nextButtonIsShown">
                   Run
                 </button>
-                <div class="tie-reinforcement">
-                  <li ng-repeat="bullet in reinforcementBullets">
-                    <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
-                    <span class="tie-bullet-text">{{bullet.getContent()}}</span>
-                  </li>
-                </div>
               </div>
             </div>
           </div>
