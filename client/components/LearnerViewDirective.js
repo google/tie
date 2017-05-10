@@ -72,7 +72,7 @@ tie.directive('learnerView', [function() {
                       <span ng-if="paragraph.isCodeParagraph()">
                         <code-snippet content="paragraph.getContent()">test</code-snippet>
                       </span>
-                    </p>   
+                    </p>
                   </div>
                   <a href class="tie-feedback-syntax-error-link" ng-if="syntaxErrorString"
                     ng-click="toggleSyntaxErrorHint()">
@@ -156,6 +156,9 @@ tie.directive('learnerView', [function() {
           height: 100%;
           margin: 0px;
         }
+        div.CodeMirror span.CodeMirror-matchingbracket {
+          color: rgb(75, 206, 75);
+        }
         .tie-arrow-highlighter {
           background-color: white;
           border-radius: 100px;
@@ -200,7 +203,7 @@ tie.directive('learnerView', [function() {
           background-color: rgb(255, 255, 255);
           -webkit-font-smoothing: antialiased;
         }
-        .tie-coding-terminal:focus, .tie-run-button:focus, 
+        .tie-coding-terminal:focus, .tie-run-button:focus,
             .tie-select-menu:focus {
           outline: 0;
         }
@@ -652,6 +655,7 @@ tie.directive('learnerView', [function() {
           },
           indentUnit: 4,
           lineNumbers: true,
+          matchBrackets: true,
           mode: LANGUAGE_PYTHON,
           smartIndent: true,
           tabSize: 4,
