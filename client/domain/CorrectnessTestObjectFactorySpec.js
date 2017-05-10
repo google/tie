@@ -30,7 +30,8 @@ describe('CorrectnessTestObjectFactory', function() {
     it('should correctly match outputs', function() {
       var correctnessTest = CorrectnessTestObjectFactory.create({
         input: 'cat',
-        allowedOutputs: ['a', 'b']
+        allowedOutputs: ['a', 'b'],
+        tag: 'cats'
       });
 
       expect(correctnessTest.matchesOutput('a')).toBe(true);
@@ -56,10 +57,23 @@ describe('CorrectnessTestObjectFactory', function() {
     it('should correctly retrieve an allowed output', function() {
       var correctnessTest = CorrectnessTestObjectFactory.create({
         input: 'cat',
-        allowedOutputs: ['a', 'b']
+        allowedOutputs: ['a', 'b'],
+        tag: 'cats'
       });
 
       expect(['a', 'b']).toContain(correctnessTest.getAnyAllowedOutput());
+    });
+  });
+
+  describe('getTag', function() {
+    it('should correctly retrieve the tag of the test case', function() {
+      var correctnessTest = CorrectnessTestObjectFactory.create({
+        input: 'cat',
+        allowedOutputs: ['a', 'b'],
+        tag: 'cats'
+      });
+
+      expect(correctnessTest.getTag()).toBe('cats');
     });
   });
 
@@ -75,4 +89,3 @@ describe('CorrectnessTestObjectFactory', function() {
     });
   });
 });
-

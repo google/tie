@@ -76,22 +76,28 @@ def are_all_unique(words):
     mainFunctionName: 'abbreviate',
     correctnessTests: [{
       input: 'internationalization',
-      allowedOutputs: ['i18n']
+      allowedOutputs: ['i18n'],
+      tag: 'the general case'
     }, {
       input: 'monkey',
-      allowedOutputs: ['m4y']
+      allowedOutputs: ['m4y'],
+      tag: 'the general case'
     }, {
       input: 'friendship',
-      allowedOutputs: ['f8p']
-    }, {
-      input: 'bat',
-      allowedOutputs: ['bat']
-    }, {
-      input: 'at',
-      allowedOutputs: ['at']
+      allowedOutputs: ['f8p'],
+      tag: 'the general case'
     }, {
       input: 't',
-      allowedOutputs: ['t']
+      allowedOutputs: ['t'],
+      tag: 'short strings'
+    }, {
+      input: 'at',
+      allowedOutputs: ['at'],
+      tag: 'short strings'
+    }, {
+      input: 'bat',
+      allowedOutputs: ['bat'],
+      tag: 'short strings'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastLetter',
@@ -148,10 +154,12 @@ def are_all_unique(words):
     mainFunctionName: 'are_all_unique',
     correctnessTests: [{
       input: ['cat', 'dog', 'cart'],
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: ['clot', 'dog', 'cart'],
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }],
     buggyOutputTests: [],
     performanceTests: [{

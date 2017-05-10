@@ -83,6 +83,12 @@ tie.directive('learnerView', [function() {
                   <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
                     {{syntaxErrorString}}
                   </span>
+                  <div class="tie-reinforcement">
+                    <li ng-repeat="bullet in reinforcementBullets">
+                      <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                      <span class="tie-bullet-text">{{bullet.getContent()}}</span>
+                    </li>
+                  </div>
                   <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
                     <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
                     <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
@@ -224,6 +230,9 @@ tie.directive('learnerView', [function() {
           margin-top: 3px;
           width: 4px;
         }
+        .tie-dot-container{
+          height: 100%;
+        }
         .tie-dot.night-mode {
           background-color: #E0E0E0;
         }
@@ -236,6 +245,27 @@ tie.directive('learnerView', [function() {
         .tie-feedback-error-string {
           color: #F44336;
         }
+        .tie-feedback-window {
+          background-color: rgb(255, 255, 242);
+          font-size: 14px;
+          height: 128px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 642px;
+          -webkit-font-smoothing: antialiased;
+        }
+        .tie-feedback-window.night-mode {
+          background-color: #37474F;
+          color: #E0E0E0;
+          font-size: 14px;
+          height: 128px;
+          overflow: auto;
+          padding: 10px;
+          resize: both;
+          width: 642px;
+          -webkit-font-smoothing: antialiased;
+        }
         .tie-feedback-paragraph {
           width: 100%;
         }
@@ -243,19 +273,22 @@ tie.directive('learnerView', [function() {
           background: #333;
           color: #eee;
           font-family: monospace;
-          padding: 10px;
+          font-size: 12px;
+          padding: 2px 10px;
           width: 95%;
-        }
-        .tie-feedback-syntax-error {
-          display: inline-block;
         }
         .tie-feedback-syntax-error-link {
           color: #F44336;
+          display: inline-block;
           font-size: 12px;
           text-decoration: none;
         }
         .tie-feedback-syntax-error-link:hover {
           text-decoration: underline;
+        }
+        .tie-lang-select-menu {
+          float: left;
+          margin-top: 10px;
         }
         .tie-lang-terminal {
           display: inline;
@@ -303,6 +336,21 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-reinforcement li {
+          list-style: none;
+          margin: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+        .tie-bullet-img {
+          bottom: 1px;
+          height: 15px;
+          position: absolute;
+          width: 15px;
+        }
+        .tie-bullet-text {
+          padding-left: 19px;
         }
         .tie-question-code {
           background: rgb(242, 242, 242);
@@ -433,13 +481,15 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'CodeStorageService', 'SECONDS_TO_MILLISECONDS',
-      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'ReinforcementObjectFactory', 'CodeStorageService',
+      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          CodeStorageService, SECONDS_TO_MILLISECONDS,
-          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+          ReinforcementObjectFactory, CodeStorageService,
+          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
@@ -478,19 +528,21 @@ tie.directive('learnerView', [function() {
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          cachedCode =
-            CodeStorageService.loadStoredCode(questionId, language);
+          cachedCode = CodeStorageService.loadStoredCode(
+            questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = cachedCode ?
-              cachedCode : question.getStarterCode(language);
+          $scope.code = cachedCode || question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
+          var reinforcement = ReinforcementObjectFactory.create();
           introParagraphs.forEach(function(paragraph) {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
+          $scope.syntaxErrorString = '';
+          $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         var clearFeedback = function() {
@@ -498,10 +550,12 @@ tie.directive('learnerView', [function() {
         };
 
         var hideSyntaxErrorLink = function() {
-          $scope.syntaxErrorFound = false;
+          $scope.syntaxErrorString = '';
         };
 
-        var setFeedback = function(feedback) {
+        var setFeedback = function(feedbackAndReinforcement) {
+          var feedback = feedbackAndReinforcement.feedbackObject;
+          var reinforcement = feedbackAndReinforcement.reinforcement;
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
@@ -521,6 +575,8 @@ tie.directive('learnerView', [function() {
             } else {
               $scope.showNextTask();
             }
+            $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
+            $scope.reinforcementBullets = [];
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
@@ -531,16 +587,17 @@ tie.directive('learnerView', [function() {
               var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
               feedbackParagraphs.splice(syntaxErrorIndex, 1);
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
-              $scope.syntaxErrorFound = true;
             } else if (syntaxErrorIndex === null) {
               $scope.syntaxErrorString = '';
-              $scope.syntaxErrorFound = false;
+              // Updating reinforcement bullets only if no syntax errors.
+              $scope.reinforcementBullets = reinforcement.getBullets();
             }
             $scope.feedbackStorage.push(
               {
                 feedbackParagraphs: feedbackParagraphs
               });
           }
+
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
@@ -575,7 +632,7 @@ tie.directive('learnerView', [function() {
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
-          for (var i = 0; i < $scope.questionIds.length; i++) {
+          for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;

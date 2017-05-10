@@ -19,18 +19,19 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'SnapshotObjectFactory', 'TranscriptService',
-  'CodeSubmissionObjectFactory',
+  'FeedbackGeneratorService', 'ReinforcementObjectFactory',
+  'ReinforcementGeneratorService', 'PrereqCheckDispatcherService',
+  'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, PrereqCheckDispatcherService,
-      SnapshotObjectFactory, TranscriptService,
-      CodeSubmissionObjectFactory) {
+      FeedbackGeneratorService, ReinforcementObjectFactory,
+      ReinforcementGeneratorService, PrereqCheckDispatcherService,
+      SnapshotObjectFactory, TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          tasks, starterCode, studentCode, auxiliaryCode, language) {
+          tasks, starterCode, studentCode, auxiliaryCode,
+          language) {
         // First, check pre-requisites for the submitted code
         return PrereqCheckDispatcherService.checkCode(
           language, starterCode, studentCode
@@ -43,8 +44,11 @@ tie.factory('SolutionHandlerService', [
               codePrereqCheckResult);
             TranscriptService.recordSnapshot(
               SnapshotObjectFactory.create(codePrereqCheckResult, null,
-                prereqFeedback));
-            return $q.resolve(prereqFeedback);
+                prereqFeedback, null));
+            return {
+              feedbackObject: prereqFeedback,
+              reinforcement: ReinforcementObjectFactory.create()
+            };
           }
 
           // Next, do an initial run of the code to check for syntax errors.
@@ -57,8 +61,11 @@ tie.factory('SolutionHandlerService', [
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(
                 SnapshotObjectFactory.create(null, rawCodeEvalResult,
-                  feedback));
-              return $q.resolve(feedback);
+                  feedback, null));
+              return {
+                feedbackObject: feedback,
+                reinforcement: ReinforcementObjectFactory.create()
+              };
             }
 
             // Otherwise, the code doesn't have any obvious syntax errors.
@@ -97,10 +104,17 @@ tie.factory('SolutionHandlerService', [
             ).then(function(codeEvalResult) {
               var runtimeFeedback = FeedbackGeneratorService.getFeedback(
                 tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
+              var currentTask = tasks[tasks.length - 1];
+              var reinforcement =
+                ReinforcementGeneratorService.getReinforcement(
+                  currentTask, codeEvalResult);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(null, codeEvalResult,
-                  runtimeFeedback));
-              return runtimeFeedback;
+                SnapshotObjectFactory.create(
+                  null, codeEvalResult, runtimeFeedback, reinforcement));
+              return {
+                feedbackObject: runtimeFeedback,
+                reinforcement: reinforcement
+              };
             });
           }).then(function(feedback) {
             return feedback;

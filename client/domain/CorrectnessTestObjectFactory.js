@@ -22,13 +22,19 @@ tie.factory('CorrectnessTestObjectFactory', [
   function() {
     var CorrectnessTest = function(correctnessTestDict) {
       this._input = correctnessTestDict.input;
+      this._stringifiedInput = JSON.stringify(this._input);
       this._allowedOutputs = correctnessTestDict.allowedOutputs;
       this._message = correctnessTestDict.message;
+      this._tag = correctnessTestDict.tag;
     };
 
     // Instance methods.
     CorrectnessTest.prototype.getInput = function() {
       return this._input;
+    };
+
+    CorrectnessTest.prototype.getStringifiedInput = function() {
+      return this._stringifiedInput;
     };
 
     CorrectnessTest.prototype.matchesOutput = function(output) {
@@ -53,6 +59,10 @@ tie.factory('CorrectnessTestObjectFactory', [
 
     CorrectnessTest.prototype.getMessage = function() {
       return this._message;
+    };
+
+    CorrectnessTest.prototype.getTag = function() {
+      return this._tag;
     };
 
     // Static class methods.
