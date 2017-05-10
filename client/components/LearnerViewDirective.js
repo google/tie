@@ -509,23 +509,18 @@ tie.directive('learnerView', [function() {
               congratulatoryFeedback.appendTextParagraph(
                   "Good work! You've completed this question.");
               congratulatoryFeedback.appendTextParagraph(
-                  'Click the "Next" button below to proceed to the next ' +
-                  'question.');
+                  'Click the "Next" button to the right to proceed to the ' +
+                  'next question.');
               $scope.nextButtonIsShown = true;
               $scope.questionsCompletionStatus[
                 $scope.currentQuestionIndex] = true;
+              $scope.feedbackStorage.push(
+                {
+                  feedbackParagraphs: congratulatoryFeedback.getParagraphs()
+                });
             } else {
-              congratulatoryFeedback.clear();
-              congratulatoryFeedback.appendTextParagraph(
-                  "Good work! You've completed this task.");
-              congratulatoryFeedback.appendTextParagraph(
-                  "Now, take a look at the instructions for the next task.");
               $scope.showNextTask();
             }
-            $scope.feedbackStorage.push(
-              {
-                feedbackParagraphs: congratulatoryFeedback.getParagraphs()
-              });
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
