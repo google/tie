@@ -113,31 +113,40 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
     mainFunctionName: 'isPalindrome',
     correctnessTests: [{
       input: '',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'empty strings'
     }, {
       input: 'nurses run',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'strings with spaces'
     }, {
       input: 'a b   cba',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'strings with spaces'
     }, {
       input: 'abcdcba',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: 'abccba',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: 'abab',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }, {
       input: 'stressed desserts',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'strings with spaces'
     }, {
       input: 'dioramas is samaroid',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'strings with spaces'
     }, {
       input: 'dioramas is si samaroid',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'strings with spaces'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',

@@ -20,9 +20,10 @@
 
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService',
-  'CODE_EXECUTION_TIMEOUT_SECONDS', function(
-    FeedbackObjectFactory, TranscriptService,
-    CODE_EXECUTION_TIMEOUT_SECONDS) {
+  'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
+  function(
+      FeedbackObjectFactory, TranscriptService,
+      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -61,7 +62,7 @@ tie.factory('FeedbackGeneratorService', [
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
-        TranscriptService.getTranscript().getPreviousSnapshot());
+        TranscriptService.getTranscript().getMostRecentSnapshot());
       if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
         // This section makes sure to provide a new hint
         // if the student gets stuck on the same bug by checking
@@ -256,19 +257,26 @@ tie.factory('FeedbackGeneratorService', [
         // Check first error type and generate appropriate feedback message.
         var preReqFailure = prereqCheckFailures[0];
         if (preReqFailure.isMissingStarterCode()) {
-          feedback.appendTextParagraph(['It looks like you deleted or ',
-            ' modified the starter code!  Our evaluation program requires the ',
-            'function names given in the starter code.  You can press the ',
-            '\'Reset Code\' button below to start over.  Or, you can copy ',
-            'the starter code below:'].join(''));
+          feedback.appendTextParagraph([
+            'It looks like you deleted or modified the starter code!  Our ',
+            'evaluation program requires the function names given in the ',
+            'starter code.  You can press the \'Reset Code\' button below to ',
+            'start over.  Or, you can copy the starter code below:'
+          ].join(''));
           feedback.appendCodeParagraph(preReqFailure.getStarterCode());
           return feedback;
         } else if (preReqFailure.isBadImport) {
-          feedback.appendTextParagraph(['It looks like you are importing an ',
-            'external library.  Only standard libraries are supported.  ',
-            'The following libraries are not supported:\n'].join(''));
-          var badImports = preReqFailure.getBadImports();
-          feedback.appendCodeParagraph(badImports.join('\n'));
+          feedback.appendTextParagraph([
+            "It looks like you're importing an external library. However, the ",
+            'following libraries are not supported:\n'
+          ].join(''));
+          feedback.appendCodeParagraph(
+            preReqFailure.getBadImports().join('\n'));
+
+          feedback.appendTextParagraph(
+            'Here is a list of libraries we currently support:\n');
+          feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
+
           return feedback;
         } else {
           // Prereq check failure type not handled; throw an error

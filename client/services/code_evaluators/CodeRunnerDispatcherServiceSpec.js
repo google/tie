@@ -57,7 +57,7 @@ describe('CodeRunnerDispatcherService', function() {
           expect(rawCodeEvalResult.getErrorString()).toBe(
             [
               'ExternalError: RangeError: Maximum call stack size ',
-              'exceeded on line 2'
+              'exceeded. on line 2'
             ].join(''));
         }
       );

@@ -66,16 +66,20 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '((()))',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: '()()()()()()(()',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }, {
       input: '))))))((((((',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }, {
       input: '()()()()()()()())(',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfParentheses',
@@ -118,13 +122,16 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'empty strings'
     }, {
       input: 'xx',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'unexpected characters'
     }, {
       input: '3',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'unexpected characters'
     }],
     buggyOutputTests: [],
     performanceTests: []
@@ -149,28 +156,36 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     mainFunctionName: 'isBalanced',
     correctnessTests: [{
       input: '[(){}]',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: '(){}[]',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: '{{[[(())]]}}',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: '{}[{([{([{()}])}])}][]',
-      allowedOutputs: [true]
+      allowedOutputs: [true],
+      tag: 'the general case'
     }, {
       input: '([)]',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'balancing between different types'
     }, {
       input: '{{[[([})]]}}',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'balancing between different types'
     }, {
       input: ']{()}[',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }, {
       input: '[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}',
-      allowedOutputs: [false]
+      allowedOutputs: [false],
+      tag: 'the general case'
     }],
     buggyOutputTests: [],
     performanceTests: [{

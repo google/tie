@@ -71,13 +71,16 @@ class AuxiliaryCode(object):
     mainFunctionName: 'findMostCommonCharacter',
     correctnessTests: [{
       input: 'apoiuytrewqsdf*&^%$#ba',
-      allowedOutputs: ['a']
+      allowedOutputs: ['a'],
+      tag: 'strings with special characters'
     }, {
       input: 'aBBB4562873ba',
-      allowedOutputs: ['B']
+      allowedOutputs: ['B'],
+      tag: 'strings with numbers'
     }, {
       input: 'babaabb',
-      allowedOutputs: ['b']
+      allowedOutputs: ['b'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
@@ -113,7 +116,8 @@ class AuxiliaryCode(object):
     mainFunctionName: 'findMostCommonCharacter',
     correctnessTests: [{
       input: '\u0041\u0042\u0043\u0041',
-      allowedOutputs: ['A']
+      allowedOutputs: ['A'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [],
     performanceTests: [{
