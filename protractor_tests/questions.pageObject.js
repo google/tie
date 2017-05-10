@@ -19,7 +19,9 @@
 var QuestionsPage = function() {
   var codeInput = element(by.css('.protractor-test-code-input'));
   var feedbackParagraphs = element.all(by.repeater(
-    'paragraph in feedbackParagraphs track by $index'))
+    'paragraph in set.feedbackParagraphs'))
+  var greetingParagraphs = element.all(by.repeater(
+    'paragraph in greetingParagraphs track by $index'))
   var resetCodeBtn = element(by.css('.protractor-test-reset-code-btn'));
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
@@ -49,6 +51,14 @@ var QuestionsPage = function() {
 
   this.getFeedbackParagraphText = function(index) {
     return feedbackParagraphs.get(index).getText();
+  };
+
+  this.countGreetingParagraphs = function() {
+    return greetingParagraphs.count();
+  }
+
+  this.getGreetingParagraphText = function(index) {
+    return greetingParagraphs.get(index).getText();
   };
 };
 
