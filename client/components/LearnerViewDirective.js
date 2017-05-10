@@ -74,10 +74,8 @@ tie.directive('learnerView', [function() {
                       </span>
                     </p>   
                   </div>
-                  <div class="tie-feedback-syntax-error">
-                  <a href class="tie-feedback-syntax-error-link",
-                      ng-click="toggleSyntaxErrorHint()",
-                      ng-show="syntaxErrorFound">
+                  <a href class="tie-feedback-syntax-error-link" ng-if="syntaxErrorString"
+                    ng-click="toggleSyntaxErrorHint()">
                     {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
                   </a>
                   <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
@@ -94,7 +92,7 @@ tie.directive('learnerView', [function() {
                     <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
                     <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                   </div>
-                  <br>
+                <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
