@@ -155,14 +155,17 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     mainFunctionName: 'encode',
     correctnessTests: [{
       input: 'abcccccd',
-      allowedOutputs: ['ab5xcd']
+      allowedOutputs: ['ab5xcd'],
+      tag: 'the general case'
     }, {
       input: 'ddddddddddef',
-      allowedOutputs: ['10xdef']
+      allowedOutputs: ['10xdef'],
+      tag: 'the general case'
     },
     {
       input: 'budddddddddd',
-      allowedOutputs: ['bu10xd']
+      allowedOutputs: ['bu10xd'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.skipEncodingAtEndOfString',
@@ -197,16 +200,20 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     mainFunctionName: 'encode',
     correctnessTests: [{
       input: 'bbb',
-      allowedOutputs: ['3xb', 'bbb']
+      allowedOutputs: ['3xb', 'bbb'],
+      tag: 'the general case'
     }, {
       input: 'aa',
-      allowedOutputs: ['aa']
+      allowedOutputs: ['aa'],
+      tag: 'short strings'
     }, {
       input: 'a',
-      allowedOutputs: ['a']
+      allowedOutputs: ['a'],
+      tag: 'short strings'
     }, {
       input: '',
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'empty strings'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
@@ -261,10 +268,12 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     mainFunctionName: 'encode',
     correctnessTests: [{
       input: '5xb',
-      allowedOutputs: ['5xb']
+      allowedOutputs: ['5xb'],
+      tag: 'the general case'
     }, {
       input: '2aaaaaab7',
-      allowedOutputs: ['2aaaaaab7']
+      allowedOutputs: ['2aaaaaab7'],
+      tag: 'the general case'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',

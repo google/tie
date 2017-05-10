@@ -107,6 +107,45 @@ tie.directive('learnerView', [function() {
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
                   <div class="tie-next-curtain-container" ng-if="nextButtonIsShown">
+<!--
+              <div class="tie-coding-window">
+                <div class="tie-lang-terminal">
+                  <div class="tie-coding-terminal">
+                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                        ng-model="code"
+                        ng-change="autosave()"
+                        class="tie-codemirror-container protractor-test-code-input">
+                    </ui-codemirror>
+                  </div>
+                  <select class="tie-lang-select-menu" name="lang-select-menu">
+                    <option value="Python" selected>Python</option>
+                  </select>
+                  <select class="tie-question-set-select" name="question-set-select"
+                          ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
+                          ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
+                    <option style="display: none" value="">Question Set</option>
+                  </select>
+                  <select class="tie-theme-select" name="theme-select"
+                          ng-change="changeTheme(theme)" ng-model="theme"
+                          ng-options="i.themeName as i.themeName for i in themes">
+                    <option style="display: none" value="">Theme</option>
+                  </select>
+                  <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                      ng-click="resetCode()">
+                    Reset Code
+                  </button>
+                  <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
+                    Saving code...
+                  </div>
+                  <button class="tie-run-button protractor-test-run-code-btn"
+                      ng-class="{'active': !nextButtonIsShown}"
+                      ng-click="submitCode(code)"
+                      ng-disabled="nextButtonIsShown">
+                    Run
+                  </button>
+                  <div class="tie-next-curtain-container"
+                      ng-if="nextButtonIsShown">
+-->
                     <div class="tie-next-curtain"></div>
                     <div class="tie-arrow-highlighter"></div>
                     <div ng-click="showNextTask()" class="tie-next-arrow">
@@ -134,6 +173,12 @@ tie.directive('learnerView', [function() {
                     ng-disabled="nextButtonIsShown">
                   Run
                 </button>
+                <div class="tie-reinforcement">
+                  <li ng-repeat="bullet in reinforcementBullets">
+                    <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                    <span class="tie-bullet-text">{{bullet.getContent()}}</span>
+                  </li>
+                </div>
               </div>
             </div>
           </div>
@@ -304,6 +349,21 @@ tie.directive('learnerView', [function() {
         .tie-previous-instructions {
           opacity: 0.5;
         }
+        .tie-reinforcement li {
+          list-style: none;
+          margin: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+        .tie-bullet-img {
+          bottom: 1px;
+          height: 15px;
+          position: absolute;
+          width: 15px;
+        }
+        .tie-bullet-text {
+          padding-left: 19px;
+        }
         .tie-question-code {
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;
@@ -433,13 +493,15 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'CodeStorageService', 'SECONDS_TO_MILLISECONDS',
-      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'ReinforcementObjectFactory', 'CodeStorageService',
+      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          CodeStorageService, SECONDS_TO_MILLISECONDS,
-          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+          ReinforcementObjectFactory, CodeStorageService,
+          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
@@ -487,10 +549,12 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
+          var reinforcement = ReinforcementObjectFactory.create();
           introParagraphs.forEach(function(paragraph) {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
+          $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         var clearFeedback = function() {
@@ -501,7 +565,9 @@ tie.directive('learnerView', [function() {
           $scope.syntaxErrorFound = false;
         };
 
-        var setFeedback = function(feedback) {
+        var setFeedback = function(feedbackAndReinforcement) {
+          var feedback = feedbackAndReinforcement.feedbackObject;
+          var reinforcement = feedbackAndReinforcement.reinforcement;
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
@@ -521,6 +587,7 @@ tie.directive('learnerView', [function() {
             } else {
               $scope.showNextTask();
             }
+            $scope.reinforcementBullets = [];
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
             // Get the index of syntax error in feedback.
@@ -535,12 +602,16 @@ tie.directive('learnerView', [function() {
             } else if (syntaxErrorIndex === null) {
               $scope.syntaxErrorString = '';
               $scope.syntaxErrorFound = false;
+
+              // Updating reinforcement bullets only if no syntax errors.
+              $scope.reinforcementBullets = reinforcement.getBullets();
             }
             $scope.feedbackStorage.push(
               {
                 feedbackParagraphs: feedbackParagraphs
               });
           }
+
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
@@ -575,7 +646,7 @@ tie.directive('learnerView', [function() {
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
           $scope.isSyntaxErrorShown = false;
-          for (var i = 0; i < $scope.questionIds.length; i++) {
+          for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;

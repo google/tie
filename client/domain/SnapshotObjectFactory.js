@@ -19,10 +19,12 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    var Snapshot = function(codePrereqCheckResult, codeEvalResult, feedback) {
+    var Snapshot = function(codePrereqCheckResult, codeEvalResult, feedback,
+        reinforcement) {
       this._codePrereqCheckResult = codePrereqCheckResult;
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedback;
+      this._reinforcement = reinforcement;
       this._timestamp = '';
     };
 
@@ -52,10 +54,19 @@ tie.factory('SnapshotObjectFactory', [
       this._feedback = feedback;
     };
 
+    Snapshot.prototype.getReinforcement = function() {
+      return this._reinforcement;
+    };
+
+    Snapshot.prototype.setReinforcement = function(reinforcement) {
+      this._reinforcement = reinforcement;
+    };
+
     // Static class methods.
-    Snapshot.create = function(codePrereqCheckResult, codeEvalResult,
-      feedback) {
-      return new Snapshot(codePrereqCheckResult, codeEvalResult, feedback);
+    Snapshot.create = function(
+      codePrereqCheckResult, codeEvalResult, feedback, reinforcement) {
+      return new Snapshot(
+        codePrereqCheckResult, codeEvalResult, feedback, reinforcement);
     };
 
     return Snapshot;

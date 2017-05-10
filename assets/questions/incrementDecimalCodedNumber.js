@@ -86,31 +86,40 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
     mainFunctionName: 'increment',
     correctnessTests: [{
       input: [1, 2, 3, 4],
-      allowedOutputs: [[1, 2, 3, 5]]
+      allowedOutputs: [[1, 2, 3, 5]],
+      tag: 'the general case'
     }, {
       input: [2, 0, 9],
-      allowedOutputs: [[2, 1, 0]]
+      allowedOutputs: [[2, 1, 0]],
+      tag: 'last digit 9'
     }, {
       input: [2, 7, 8, 9],
-      allowedOutputs: [[2, 7, 9, 0]]
+      allowedOutputs: [[2, 7, 9, 0]],
+      tag: 'last digit 9'
     }, {
       input: [0],
-      allowedOutputs: [[1]]
+      allowedOutputs: [[1]],
+      tag: 'single digits'
     }, {
       input: [1, 9, 9],
-      allowedOutputs: [[2, 0, 0]]
+      allowedOutputs: [[2, 0, 0]],
+      tag: 'multiple 9s at the end'
     }, {
       input: [9],
-      allowedOutputs: [[1, 0]]
+      allowedOutputs: [[1, 0]],
+      tag: 'all 9s'
     }, {
       input: [9, 9],
-      allowedOutputs: [[1, 0, 0]]
+      allowedOutputs: [[1, 0, 0]],
+      tag: 'all 9s'
     }, {
       input: [9, 9, 9],
-      allowedOutputs: [[1, 0, 0, 0]]
+      allowedOutputs: [[1, 0, 0, 0]],
+      tag: 'all 9s'
     }, {
       input: [9, 9, 9, 9],
-      allowedOutputs: [[1, 0, 0, 0, 0]]
+      allowedOutputs: [[1, 0, 0, 0, 0]],
+      tag: 'all 9s'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',

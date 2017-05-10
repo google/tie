@@ -76,13 +76,16 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     mainFunctionName: 'findBestMeetupLocation',
     correctnessTests: [{
       input: ['0, 0', '4, 2', '10, 10'],
-      allowedOutputs: ['4, 2']
+      allowedOutputs: ['4, 2'],
+      tag: 'the general case'
     }, {
       input: ['0, 0', '5, 6', '4, 5', '20, 9'],
-      allowedOutputs: ['4, 5', '4, 6', '5, 5', '5, 6']
+      allowedOutputs: ['4, 5', '4, 6', '5, 5', '5, 6'],
+      tag: 'the general case'
     }, {
       input: [],
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'empty input'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.findAverageLocation',
@@ -121,13 +124,16 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     mainFunctionName: 'findBestMeetupLocation',
     correctnessTests: [{
       input: ['0, 0', '4, 2', '10, 10'],
-      allowedOutputs: [['2, 2']]
+      allowedOutputs: [['2, 2']],
+      tag: 'the general case'
     }, {
       input: ['0, 0', '5, 6', '4, 5', '20, 9'],
-      allowedOutputs: [['4, 5', '4, 6', '5, 5', '5, 6']]
+      allowedOutputs: [['4, 5', '4, 6', '5, 5', '5, 6']],
+      tag: 'the general case'
     }, {
       input: [],
-      allowedOutputs: ['']
+      allowedOutputs: [''],
+      tag: 'empty input'
     }],
     buggyOutputTests: [],
     // TODO: the time complexity of the solution to this quesiton

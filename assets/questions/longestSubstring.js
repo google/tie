@@ -71,22 +71,28 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     mainFunctionName: 'longestSubstring',
     correctnessTests: [{
       input: 'ababcbcbaaabbdef',
-      allowedOutputs: ['baaabb']
+      allowedOutputs: ['baaabb'],
+      tag: 'the general case'
     }, {
       input: 'abcbbcbcbb',
-      allowedOutputs: ['bcbbcbcbb']
+      allowedOutputs: ['bcbbcbcbb'],
+      tag: 'the general case'
     }, {
       input: 'bbbbbbbb',
-      allowedOutputs: ['bbbbbbbb']
+      allowedOutputs: ['bbbbbbbb'],
+      tag: 'strings with less than 2 distinct characters'
     }, {
       input: 'ab',
-      allowedOutputs: ['ab']
+      allowedOutputs: ['ab'],
+      tag: 'strings with less than 2 distinct characters'
     }, {
       input: 'cababadadad',
-      allowedOutputs: ['adadad']
+      allowedOutputs: ['adadad'],
+      tag: 'the general case'
     }, {
       input: 'abbba',
-      allowedOutputs: ['abbba']
+      allowedOutputs: ['abbba'],
+      tag: 'strings with less than 2 distinct characters'
     }],
     buggyOutputTests: [
       {

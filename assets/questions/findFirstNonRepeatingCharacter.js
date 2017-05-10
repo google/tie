@@ -65,22 +65,28 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       mainFunctionName: 'findFirstNonRepeatingCharacter',
       correctnessTests: [{
         input: 'mom',
-        allowedOutputs: ['o']
+        allowedOutputs: ['o'],
+        tag: 'the general case'
       }, {
         input: 'apple',
-        allowedOutputs: ['a']
+        allowedOutputs: ['a'],
+        tag: 'the general case'
       }, {
         input: 'wefffa',
-        allowedOutputs: ['w']
+        allowedOutputs: ['w'],
+        tag: 'the general case'
       }, {
         input: 'weffwa',
-        allowedOutputs: ['e']
+        allowedOutputs: ['e'],
+        tag: 'the general case'
       }, {
         input: '',
-        allowedOutputs: [null]
+        allowedOutputs: [null],
+        tag: 'empty strings'
       }, {
         input: 'aaaeee',
-        allowedOutputs: [null]
+        allowedOutputs: [null],
+        tag: 'no repeated characters'
       }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
@@ -111,16 +117,20 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       mainFunctionName: 'findFirstNonRepeatingCharacter',
       correctnessTests: [{
         input: 'TT AsAs',
-        allowedOutputs: [' ']
+        allowedOutputs: [' '],
+        tag: 'the general case'
       }, {
         input: 'AbCABcBb',
-        allowedOutputs: ['C']
+        allowedOutputs: ['C'],
+        tag: 'case sensitive inputs'
       }, {
         input: 'BB337 7122 ',
-        allowedOutputs: ['1']
+        allowedOutputs: ['1'],
+        tag: 'numbers'
       }, {
         input: 'test11@test',
-        allowedOutputs: ['@']
+        allowedOutputs: ['@'],
+        tag: 'special characters'
       }],
       buggyOutputTests: [],
       performanceTests: [{
