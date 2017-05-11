@@ -24,8 +24,8 @@ describe('submitting questions', function() {
     var questionsPage = new QuestionsPage();
 
     questionsPage.get();
-    expect(questionsPage.countGreetingParagraphs()).toEqual(3);
-    expect(questionsPage.getGreetingParagraphText(0)).toEqual('Greetings!');
+    expect(questionsPage.countFeedbackParagraphs()).toEqual(3);
+    expect(questionsPage.getFeedbackParagraphText(0)).toEqual('Greetings!');
   });
 
   it('should successfully submit wrong code to a task', function() {
