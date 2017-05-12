@@ -76,8 +76,8 @@ tie.factory('FeedbackGeneratorService', [
           if (previousMessages[0].getContent() ===
               buggyMessages[previousHintIndex]) {
             var previousCode = (
-              lastSnapshot.getCodeEvalResult().getCode());
-            if (previousCode === codeEvalResult.getCode() ||
+              lastSnapshot.getCodeEvalResult().getPreprocessedCode());
+            if (previousCode === codeEvalResult.getPreprocessedCode() ||
                 previousHintIndex === buggyMessages.length - 1) {
               hintIndex = previousHintIndex;
             } else {
