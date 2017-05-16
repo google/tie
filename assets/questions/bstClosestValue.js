@@ -20,21 +20,7 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
   title: 'Find Closest Value in Binary Search Tree',
   starterCode: {
     python:
-`# The tree is represented as a preorder traversal sequence of node values, 
-# in which '#' represents an empty node.
-# For example:
-# The input '2 1 # # #' represents the serialized format of a binary tree
-# using preorder order traversal, where root value is 2 and only has a left
-# child with value 1
-#
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
-def findClosestValue(input):
+`def findClosestValue(input):
     root = input[0]
     target = input[1]
 
@@ -97,9 +83,12 @@ def findClosestValue(input):
       {
         content:
         [
-          'In this question, you need to find the closest value in a non-empty binary search tree ',
-          'given the target value. The target value is given in float format. It\'s guaranteed ',
-          'that there\'s only one closest value. You will have the root TreeNode. Each TreeNode ',
+          'In this question, you need to find the closest value in a' +
+          'non-empty binary search tree ',
+          'given the target value. The target value is given in float' +
+          'format. It\'s guaranteed ',
+          'that there\'s only one closest value. You will have the root' +
+          'TreeNode. Each TreeNode ',
           'has attributes val, left and right.'
         ].join(''),
         type: 'text'
@@ -107,12 +96,38 @@ def findClosestValue(input):
       {
         content:
         [
-          'For instance, given the following tree and the target value 1.1, you should return 1.',
+          'For instance, given the following tree and the target value 1.1,' +
+          'you should return 1.',
           '  2',
           ' / \\',
           '1   3'
         ].join('\n'),
-        type: 'example'
+        type: 'code'
+      },
+      {
+        content:
+        [
+          'The tree is represented as a preorder traversal sequence of node' +
+          'values in which \'#\'',
+          'represents an empty node. For example: the input \'2 1 # # #\'' +
+          'represents the serialized',
+          'format of a binary tree using preorder order traversal, where' +
+          'root value is 2 and only has',
+          'a left child with value 1'
+        ].join('\n'),
+        type: 'text'
+      },
+      {
+        content:
+        [
+          'Definition for a binary tree node.',
+          'class TreeNode(object):',
+          '  def __init__(self, x):',
+          '    self.val = x',
+          '    self.left = None',
+          '    self.right = None'
+        ].join('\n'),
+        type: 'code'
       }
     ],
     prerequisiteSkills: ['Binary Search Tree'],
@@ -122,25 +137,31 @@ def findClosestValue(input):
     mainFunctionName: 'findClosestValue',
     correctnessTests: [{
       input: '2 1 # # 3 # #|1.1',
-      allowedOutputs: [1]
+      allowedOutputs: [1],
+      tag: 'simple BST'
     },
     {
       input: '10 3 # 6 4 # # 7 # # #|4.1',
-      allowedOutputs: [4]
+      allowedOutputs: [4],
+      tag: 'result smaller than target'
     },
     {
       input: '10 3 # # 14 # 15 14.7 # # 100 # #|14.6',
-      allowedOutputs: [14.7]
+      allowedOutputs: [14.7],
+      tag: 'result larger than target'
     },
     {
       input: '2.5 # #|3.2',
-      allowedOutputs: [2.5]
+      allowedOutputs: [2.5],
+      tag: 'BST with one node'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToUseAbsoluteDiff',
       messages: [
-        "Run your code on '2 1 # # 3 # #|2.9' in your head, what is the expected result?",
-        "It looks like the issue is how you represent the difference between values",
+        "Run your code on '2 1 # # 3 # #|2.9' in your head, what is the" +
+        "expected result?",
+        "It looks like the issue is how you represent the difference" +
+        "between values",
         [
           "Do you use the absolute difference to measure closeness?"
         ].join('')
@@ -164,19 +185,24 @@ def findClosestValue(input):
     mainFunctionName: 'findClosestValue',
     correctnessTests: [{
       input: '24 22 # # 25 # #|23.8',
-      allowedOutputs: [24]
+      allowedOutputs: [24],
+      tag: 'should return root'
     },
     {
       input: '24 22 # # 25 # #|24.1',
-      allowedOutputs: [24]
+      allowedOutputs: [24],
+      tag: 'should return root'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToCompareAll',
       messages: [
-        "Run your code on '2 1 # # 3 # #|2.1' in your head, what is the expected result?",
-        "It looks like the issue is whether or not you consider all possible candidate nodes",
+        "Run your code on '2 1 # # 3 # #|2.1' in your head, what is the" +
+        "expected result?",
+        "It looks like the issue is whether or not you consider all possible" +
+        "candidate nodes",
         [
-          "Do you compare the root node's value with the most possible value from subtree?"
+          "Do you compare the root node's value with the most possible value" +
+          "from subtree?"
         ].join('')
       ]
     }],
