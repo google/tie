@@ -26,7 +26,6 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
       "I will provide you with feedback."
     ].join('')
   ],
-<<<<<<< HEAD
   questionIds: [
     'findMostCommonCharacter',
     'reverseWords',

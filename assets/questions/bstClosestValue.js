@@ -84,11 +84,11 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
         content:
         [
           'In this question, you need to find the closest value in a' +
-          'non-empty binary search tree ',
+          ' non-empty binary search tree ',
           'given the target value. The target value is given in float' +
-          'format. It\'s guaranteed ',
+          ' format. It\'s guaranteed ',
           'that there\'s only one closest value. You will have the root' +
-          'TreeNode. Each TreeNode ',
+          ' TreeNode. Each TreeNode ',
           'has attributes val, left and right.'
         ].join(''),
         type: 'text'
@@ -97,7 +97,7 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
         content:
         [
           'For instance, given the following tree and the target value 1.1,' +
-          'you should return 1.',
+          ' you should return 1.',
           '  2',
           ' / \\',
           '1   3'
@@ -108,19 +108,18 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
         content:
         [
           'The tree is represented as a preorder traversal sequence of node' +
-          'values in which \'#\'',
+          ' values in which \'#\'',
           'represents an empty node. For example: the input \'2 1 # # #\'' +
-          'represents the serialized',
+          ' represents the serialized',
           'format of a binary tree using preorder order traversal, where' +
-          'root value is 2 and only has',
-          'a left child with value 1'
+          ' root value is 2 and only has a left child with value 1.'
         ].join('\n'),
         type: 'text'
       },
       {
         content:
         [
-          'Definition for a binary tree node.',
+          '#Definition for a binary tree node.',
           'class TreeNode(object):',
           '  def __init__(self, x):',
           '    self.val = x',
