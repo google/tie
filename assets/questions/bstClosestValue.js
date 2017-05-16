@@ -115,7 +115,6 @@ def findClosestValue(input):
         type: 'example'
       }
     ],
-    
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
@@ -155,7 +154,7 @@ def findClosestValue(input):
         [
           'Next, make sure you compare all possible candidates'
         ].join(''),
-        type:'text'
+        type: 'text'
       }
     ],
     prerequisiteSkills: ['Binary Search Tree'],
