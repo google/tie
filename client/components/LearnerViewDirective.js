@@ -116,11 +116,13 @@ tie.directive('learnerView', [function() {
                       <span class="tie-next-button-text">Next</span>
                     </div>
                   </div>
-                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                      ng-model="code"
-                      ng-change="autosave()"
-                      class="tie-codemirror-container protractor-test-code-input">
-                  </ui-codemirror>
+                  <div ng-if="codeEditorIsShown">
+                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                                   ng-model="editorContents.code"
+                                   ng-change="autosave()"
+                                   class="tie-codemirror-container protractor-test-code-input">
+                    </ui-codemirror>
+                  </div>
                 </div>
                 <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
@@ -514,7 +516,14 @@ tie.directive('learnerView', [function() {
           {themeName: 'Dark'}
         ];
 
+        $scope.codeEditorIsShown = true;
         $scope.feedbackStorage = [];
+        // We use an object here to prevent the child scope introduced by ng-if
+        // from shadowing the parent scope.
+        // See http://stackoverflow.com/a/21512751
+        $scope.editorContents = {
+          code: ''
+        };
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -532,7 +541,8 @@ tie.directive('learnerView', [function() {
           cachedCode = CodeStorageService.loadStoredCode(
             questionId, language);
           $scope.title = question.getTitle();
-          $scope.code = cachedCode || question.getStarterCode(language);
+          $scope.editorContents.code = (
+            cachedCode || question.getStarterCode(language));
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -687,21 +697,29 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          // Before navigating to new question,
-          // disable the syntax error link and content.
+          // Before navigating to new question, disable the syntax error link
+          // and content.
           hideSyntaxErrorLink();
           $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
-          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
-          CodeStorageService.storeCode(currentQuestionId,
-            $scope.code, language);
-          loadQuestion(questionId,
-            $scope.questionSet.getIntroductionParagraphs());
+          CodeStorageService.storeCode(
+            currentQuestionId, $scope.editorContents.code, language);
+          // Finally, we need to clear the undo history of the editor. This is
+          // done by removing the code editor from the DOM and putting it back
+          // again.
+          var CODEMIRROR_HIDE_TIMEOUT_MSEC = 20;
+          $scope.codeEditorIsShown = false;
+          $timeout(function() {
+            $scope.codeEditorIsShown = true;
+            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+            loadQuestion(
+              questionId, $scope.questionSet.getIntroductionParagraphs());
+          }, CODEMIRROR_HIDE_TIMEOUT_MSEC);
         };
 
         $scope.submitCode = function(code) {
@@ -741,14 +759,14 @@ tie.directive('learnerView', [function() {
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                 $scope.questionIds[$scope.currentQuestionIndex];
-              if (angular.equals(cachedCode, $scope.code)) {
+              if (angular.equals(cachedCode, $scope.editorContents.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
               } else {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
                 storeCodeAndUpdateCachedCode(
-                  currentQuestionId, $scope.code, language);
+                  currentQuestionId, $scope.editorContents.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
             }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
