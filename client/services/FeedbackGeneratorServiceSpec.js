@@ -22,7 +22,6 @@ describe('FeedbackGeneratorService', function() {
   var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
-  var SnapshotObjectFactory;
   var TracebackCoordinatesObjectFactory;
   var TranscriptService;
   var sampleErrorTraceback;
@@ -37,7 +36,6 @@ describe('FeedbackGeneratorService', function() {
       'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
-    SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
@@ -320,8 +318,7 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResult, feedback));
+      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -351,8 +348,7 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResult, feedback));
+      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -388,8 +384,7 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResult, feedback));
+      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -398,8 +393,8 @@ describe('FeedbackGeneratorService', function() {
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug);
       paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResultWithSameBug, feedback));
+      TranscriptService.recordSnapshot(
+        null, codeEvalResultWithSameBug, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -408,8 +403,8 @@ describe('FeedbackGeneratorService', function() {
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithStillSameBug);
       paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResultWithStillSameBug, feedback));
+      TranscriptService.recordSnapshot(
+        null, codeEvalResultWithStillSameBug, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -441,8 +436,7 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResult, feedback));
+      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -451,8 +445,8 @@ describe('FeedbackGeneratorService', function() {
       var unusedRuntimeErrorFeedback = (
         FeedbackGeneratorService._getBuggyOutputTestFeedback(
           buggyOutputTest, codeEvalResultWithNewError));
-      TranscriptService.recordSnapshot(SnapshotObjectFactory.create(
-        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback));
+      TranscriptService.recordSnapshot(
+        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback, null);
 
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResultWithSameBug).getParagraphs();

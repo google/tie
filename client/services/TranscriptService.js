@@ -18,14 +18,18 @@
  */
 
 tie.factory('TranscriptService', [
-  'TranscriptObjectFactory', function(TranscriptObjectFactory) {
+  'TranscriptObjectFactory', 'SnapshotObjectFactory',
+  function(TranscriptObjectFactory, SnapshotObjectFactory) {
     var transcript = TranscriptObjectFactory.create();
 
     return {
       getTranscript: function() {
         return transcript;
       },
-      recordSnapshot: function(snapshot) {
+      recordSnapshot: function(
+          prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
+        var snapshot = SnapshotObjectFactory.create(
+          prereqCheckFailure, codeEvalResult, feedback, reinforcement);
         transcript.recordSnapshot(snapshot);
       },
       getMostRecentSnapshot: function() {

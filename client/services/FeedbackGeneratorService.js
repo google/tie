@@ -243,46 +243,38 @@ tie.factory('FeedbackGeneratorService', [
         feedback.setSyntaxErrorIndex(feedback.getParagraphs().length - 1);
         return feedback;
       },
-      getPrereqFailureFeedback: function(codePrereqCheckResult) {
-        var feedback = FeedbackObjectFactory.create(false);
-        var prereqCheckFailures =
-          codePrereqCheckResult.getPrereqCheckFailures();
-
-        /* This function shouldn't be invoked unless there is at least one
-        pre-requisite check failure. */
-        if (prereqCheckFailures.length === 0) {
+      getPrereqFailureFeedback: function(prereqCheckFailure) {
+        if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
         }
 
-        // Check first error type and generate appropriate feedback message.
-        var preReqFailure = prereqCheckFailures[0];
-        if (preReqFailure.isMissingStarterCode()) {
+        var feedback = FeedbackObjectFactory.create(false);
+
+        if (prereqCheckFailure.isMissingStarterCode()) {
           feedback.appendTextParagraph([
             'It looks like you deleted or modified the starter code!  Our ',
             'evaluation program requires the function names given in the ',
-            'starter code.  You can press the \'Reset Code\' button below to ',
-            'start over.  Or, you can copy the starter code below:'
+            'starter code.  You can press the \'Reset Code\' button to start ',
+            'over.  Or, you can copy the starter code below:'
           ].join(''));
-          feedback.appendCodeParagraph(preReqFailure.getStarterCode());
-          return feedback;
-        } else if (preReqFailure.isBadImport) {
+          feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
+        } else if (prereqCheckFailure.isBadImport) {
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
           ].join(''));
           feedback.appendCodeParagraph(
-            preReqFailure.getBadImports().join('\n'));
-
+            prereqCheckFailure.getBadImports().join('\n'));
           feedback.appendTextParagraph(
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
-
-          return feedback;
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',
             'in getPrereqFailureFeedback().'].join());
         }
+
+        return feedback;
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,

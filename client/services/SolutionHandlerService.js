@@ -21,36 +21,32 @@ tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'ReinforcementObjectFactory',
   'ReinforcementGeneratorService', 'PrereqCheckDispatcherService',
-  'SnapshotObjectFactory', 'TranscriptService', 'CodeSubmissionObjectFactory',
+  'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, ReinforcementObjectFactory,
       ReinforcementGeneratorService, PrereqCheckDispatcherService,
-      SnapshotObjectFactory, TranscriptService, CodeSubmissionObjectFactory) {
+      TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
       processSolutionAsync: function(
-          tasks, starterCode, studentCode, auxiliaryCode,
-          language) {
-        // First, check pre-requisites for the submitted code
-        return PrereqCheckDispatcherService.checkCode(
-          language, starterCode, studentCode
-        ).then(function(codePrereqCheckResult) {
-          var prereqCheckFailures =
-            codePrereqCheckResult.getPrereqCheckFailures();
-          if (prereqCheckFailures.length > 0) {
-            var prereqFeedback =
-              FeedbackGeneratorService.getPrereqFailureFeedback(
-              codePrereqCheckResult);
-            TranscriptService.recordSnapshot(
-              SnapshotObjectFactory.create(codePrereqCheckResult, null,
-                prereqFeedback, null));
-            return {
-              feedbackObject: prereqFeedback,
-              reinforcement: ReinforcementObjectFactory.create()
-            };
-          }
+          tasks, starterCode, studentCode, auxiliaryCode, language) {
+        // First, check pre-requisites for the submitted code.
+        var potentialPrereqCheckFailure =
+          PrereqCheckDispatcherService.checkCode(
+            language, starterCode, studentCode);
 
+        if (potentialPrereqCheckFailure) {
+          var prereqFeedback =
+            FeedbackGeneratorService.getPrereqFailureFeedback(
+              potentialPrereqCheckFailure);
+          TranscriptService.recordSnapshot(
+            potentialPrereqCheckFailure, null, prereqFeedback, null);
+          return Promise.resolve({
+            feedbackObject: prereqFeedback,
+            reinforcement: ReinforcementObjectFactory.create()
+          });
+        } else {
           // Next, do an initial run of the code to check for syntax errors.
           return CodeRunnerDispatcherService.runCodeAsync(
             language, studentCode
@@ -60,8 +56,7 @@ tie.factory('SolutionHandlerService', [
               var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(null, rawCodeEvalResult,
-                  feedback, null));
+                null, rawCodeEvalResult, feedback, null);
               return {
                 feedbackObject: feedback,
                 reinforcement: ReinforcementObjectFactory.create()
@@ -109,8 +104,7 @@ tie.factory('SolutionHandlerService', [
                 ReinforcementGeneratorService.getReinforcement(
                   currentTask, codeEvalResult);
               TranscriptService.recordSnapshot(
-                SnapshotObjectFactory.create(
-                  null, codeEvalResult, runtimeFeedback, reinforcement));
+                null, codeEvalResult, runtimeFeedback, reinforcement);
               return {
                 feedbackObject: runtimeFeedback,
                 reinforcement: reinforcement
@@ -119,8 +113,8 @@ tie.factory('SolutionHandlerService', [
           }).then(function(feedback) {
             return feedback;
           });
-        });
+        }
       }
     };
-  }]);
-
+  }
+]);
