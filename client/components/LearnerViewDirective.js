@@ -105,6 +105,11 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
+              <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                  ng-click="resetCode()"
+                  style="float: right">
+                Reset Question
+              </button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -122,13 +127,10 @@ tie.directive('learnerView', [function() {
                       class="tie-codemirror-container protractor-test-code-input">
                   </ui-codemirror>
                 </div>
-                <select class="tie-select-menu" name="lang-select-menu">
-                  <option value="Python" selected>Python</option>
-                </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
-                    ng-click="resetCode()">
-                  Reset Code
-                </button>
+<div style="font-size: 12px;padding-top: 13px;padding-right: 7px;display: inline-block;float: left;font-weight: bold;">
+                <a target="blank_" href="docs/py-primer-dark.html" ng-if="isInDarkMode" style="color: #E0E0E0;">New to Python? Click here.</a>
+                <a target="blank_" href="docs/py-primer-light.html" ng-if="!isInDarkMode">New to Python? Click here.</a>
+</div>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
