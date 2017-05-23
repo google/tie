@@ -78,10 +78,10 @@ describe('LearnerViewDirective', function() {
         var question = QuestionDataService.getQuestion(questionId);
         var starterCode = question.getStarterCode(LANGUAGE);
         $scope.currentQuestionIndex = index;
-        $scope.code = generateRandomChars(NUM_CHARS_CODE);
-        expect(angular.equals(starterCode, $scope.code)).toBe(false);
+        $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
+        expect(starterCode).not.toEqual($scope.editorContents.code);
         $scope.resetCode();
-        expect($scope.code).toEqual(starterCode);
+        expect($scope.editorContents.code).toEqual(starterCode);
       });
     });
   });
@@ -130,8 +130,9 @@ describe('LearnerViewDirective', function() {
     // Autosave is triggered. 5 seconds later, autosave text should be
     // displayed for 1 second. Then, the autosave text should be gone but the
     // autosave is still running. At 10 seconds, cachedCode will be compared
-    // to $scope.code, since they are the same, autosave will stop. Thus, at
-    // 10.1 seconds, autosave should be canceled and autosaveOn should be false.
+    // to $scope.editorContents.code, since they are the same, autosave will
+    // stop. Thus, at 10.1 seconds, autosave should be canceled and autosaveOn
+    // should be false.
     var checkAutosaveDetail = function(questionId, starterCode) {
       expect($scope.autosaveOn).toBe(true);
       // Flush 4900 milliseconds -- time: 4.9s
@@ -176,7 +177,7 @@ describe('LearnerViewDirective', function() {
         var randomCodes;
         for (var j = 0; j < repeatTimes; j++) {
           randomCodes = generateRandomChars(NUM_CHARS_CODE);
-          $scope.code = randomCodes;
+          $scope.editorContents.code = randomCodes;
           flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
         }
         expect(CodeStorageService.loadStoredCode(
