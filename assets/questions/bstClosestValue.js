@@ -16,16 +16,13 @@
  * @fileoverview Question data for Find Closest Value in Binary Search Tree.
  */
 /* eslint no-magic-numbers: ["error", {ignore: [1,4,14.7,2.5,24]}]*/
-globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
+globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-notation
   title: 'Find Closest Value in Binary Search Tree',
   starterCode: {
     python:
 `def findClosestValue(input):
     root = input[0]
     target = input[1]
-
-    #TODO : write your code after here
-    return ""
 `
   },
   auxiliaryCode: {
@@ -38,7 +35,6 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
                     self.val = x
                     self.left = None
                     self.right = None
-
 
                 def __str__(self):
                     return self.val
@@ -57,14 +53,14 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
             return constructTree(), float(inputs[1])
 
         @classmethod
-        def failToUseAbsoluteDiff(cls, input):
+        def failToUseAbsoluteDifference(cls, input):
             root = input[0]
             target = input[1]
 
-            kid = root.left if target < root.val else root.right
-            if not kid:
+            candidate = root.left if target < root.val else root.right
+            if not candidate:
                 return root.val
-            closest = cls.failToUseAbsoluteDiff([kid,target])
+            closest = cls.failToUseAbsoluteDifference([candidate, target])
             return root.val if (root.val - target) < (closest - target) else closest
 
         @classmethod
@@ -84,13 +80,11 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
         content:
         [
           'In this question, you need to find the closest value in a' +
-          ' non-empty binary search tree ',
-          'given the target value. The target value is given in float' +
-          ' format. It\'s guaranteed ',
-          'that there\'s only one closest value. You will have the root' +
-          ' TreeNode. Each TreeNode ',
-          'has attributes val, left and right.'
-        ].join(''),
+          'non-empty binary search tree, given the target value. The ' +
+          'target value is given in float format. It\'s guaranteed ',
+          'that there\'s only one closest value. You will have the root ' +
+          'TreeNode. Each TreeNode has attributes val, left and right.'
+        ].join('\n'),
         type: 'text'
       },
       {
@@ -108,11 +102,10 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
         content:
         [
           'The tree is represented as a preorder traversal sequence of node' +
-          ' values in which \'#\'',
-          'represents an empty node. For example: the input \'2 1 # # #\'' +
-          ' represents the serialized',
-          'format of a binary tree using preorder order traversal, where' +
-          ' root value is 2 and only has a left child with value 1.'
+          ' values in which \'#\'', 'represents an empty node. For example: ' +
+          'the input \'2 1 # # #\' represents the serialized', 'format of a ' +
+          'binary tree using preorder order traversal, where root value is 2 ' +
+          'and only has a left child with value 1.'
         ].join('\n'),
         type: 'text'
       },
@@ -130,14 +123,14 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
       }
     ],
     prerequisiteSkills: ['Binary Search Tree'],
-    acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
+    acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
     correctnessTests: [{
       input: '2 1 # # 3 # #|1.1',
       allowedOutputs: [1],
-      tag: 'simple BST'
+      tag: 'the general case'
     },
     {
       input: '10 3 # 6 4 # # 7 # # #|4.1',
@@ -155,12 +148,12 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
       tag: 'BST with one node'
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.failToUseAbsoluteDiff',
+      buggyFunctionName: 'AuxiliaryCode.failToUseAbsoluteDifference',
       messages: [
-        "Run your code on '2 1 # # 3 # #|2.9' in your head, what is the" +
+        "Run your code on '2 1 # # 3 # #|2.9' in your head. What is the " +
         "expected result?",
-        "It looks like the issue is how you represent the difference" +
-        "between values",
+        "It looks like the issue is how you represent the difference " +
+        "between values.",
         [
           "Do you use the absolute difference to measure closeness?"
         ].join('')
@@ -172,13 +165,14 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
       {
         content:
         [
-          'Next, make sure you compare all possible candidates'
+          'Next, make sure you compare all possible candidates during the ' +
+          'search process.'
         ].join(''),
         type: 'text'
       }
     ],
     prerequisiteSkills: ['Binary Search Tree'],
-    acquiredSkills: ['Binary Search Tree', 'Recurssion', 'Iteration'],
+    acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
@@ -195,13 +189,13 @@ globalData.questions['bstClosestValue'] = {  // eslint-disable-line dot-notation
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToCompareAll',
       messages: [
-        "Run your code on '2 1 # # 3 # #|2.1' in your head, what is the" +
+        "Run your code on '2 1 # # 3 # #|2.1' in your head. What is the " +
         "expected result?",
-        "It looks like the issue is whether or not you consider all possible" +
-        "candidate nodes",
+        "It looks like your code doesn't correctly consider all possible " +
+        "candidate nodes.",
         [
-          "Do you compare the root node's value with the most possible value" +
-          "from subtree?"
+          "Do you compare the root node's value with the candidate selected " +
+          "from the subtree?"
         ].join('')
       ]
     }],

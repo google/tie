@@ -32,7 +32,6 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
     'isPalindrome',
     'checkBalancedParentheses',
     'internationalization',
-    'runLengthEncoding',
-    'bstClosestValue'
+    'runLengthEncoding'
   ]
 };
