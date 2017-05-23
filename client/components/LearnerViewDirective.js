@@ -72,7 +72,7 @@ tie.directive('learnerView', [function() {
                       <span ng-if="paragraph.isCodeParagraph()">
                         <code-snippet content="paragraph.getContent()">test</code-snippet>
                       </span>
-                      <span ng-if="paragraph.isErrorParagraph()" ng-model="syntaxErrorString">
+                      <span ng-if="paragraph.isErrorParagraph()">
                         <a href class="tie-feedback-syntax-error-link"
                           ng-click="showErrorString = !showErrorString">
                           {{showErrorString ? 'Hide error details' : 'Display error details'}}
@@ -544,17 +544,12 @@ tie.directive('learnerView', [function() {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
-          // $scope.syntaxErrorString = '';
           $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
         };
-
-        // var hideSyntaxErrorLink = function() {
-        //   $scope.syntaxErrorString = '';
-        // };
 
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
@@ -587,15 +582,7 @@ tie.directive('learnerView', [function() {
             // The index must be either null (indicating no syntax error)
             // or a positive integer.
             if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
-              console.log('1');
               var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
-              console.dir(syntaxErrorParagraph);
-              console.dir(feedbackParagraphs);
-              // feedbackParagraphs.splice(syntaxErrorIndex, 1);
-              // feedbackParagraphs.push(syntaxErrorParagraph.getContent());
-              console.log(feedbackParagraphs);
-              // $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
-              // console.log('syntax error string: ' + $scope.syntaxErrorString);
             } else if (syntaxErrorIndex === null) {
               // $scope.syntaxErrorString = '';
               // Updating reinforcement bullets only if no syntax errors.
@@ -697,7 +684,6 @@ tie.directive('learnerView', [function() {
         $scope.navigateToQuestion = function(index) {
           // Before navigating to new question,
           // disable the syntax error link and content.
-          //hideSyntaxErrorLink();
           $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
@@ -713,7 +699,6 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          //hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
