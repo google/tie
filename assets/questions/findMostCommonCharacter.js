@@ -43,44 +43,48 @@ class AuxiliaryCode(object):
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'For this problem, we\'d like you to write a method to determine ',
-          'the most common character in a string. You will be given a string ',
-          'of ASCII characters, and you may assume that there ',
-          'is only one most common character, ignoring spaces.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "doggo pupper"\nOutput: "p"',
-        type: 'code'
-      },
-      {
-        content: [
-          'There\'s no need to validate that you\'re always passed a string.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'For this problem, we\'d like you to write a method to determine ',
+        'the most common character in a string. You will be given a string ',
+        'of ASCII characters, and you may assume that there ',
+        'is only one most common character, ignoring spaces.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "doggo pupper"\nOutput: "p"',
+      type: 'code'
+    }, {
+      content: [
+        'There\'s no need to validate that you\'re always passed a string.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['String Manipulation', 'Arrays'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findMostCommonCharacter',
     correctnessTests: [{
-      input: 'apoiuytrewqsdf*&^%$#ba',
-      allowedOutputs: ['a'],
-      tag: 'strings with special characters'
+      input: 'cdcdc',
+      allowedOutputs: ['c'],
+      tag: 'the general case'
+    }, {
+      input: 'babaabb',
+      allowedOutputs: ['b'],
+      tag: 'the general case'
     }, {
       input: 'aBBB4562873ba',
       allowedOutputs: ['B'],
       tag: 'strings with numbers'
     }, {
-      input: 'babaabb',
-      allowedOutputs: ['b'],
-      tag: 'the general case'
+      input: 'apoiuytrewqsdf*&^%$#ba',
+      allowedOutputs: ['a'],
+      tag: 'strings with special characters'
+    }, {
+      input: 'x',
+      allowedOutputs: ['x'],
+      tag: 'small inputs'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
@@ -99,16 +103,14 @@ class AuxiliaryCode(object):
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Now, make sure that your code works for ',
-          'different string encodings. ',
-          'What if the provided string is unicode, rather than ASCII?'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Now, make sure that your code works for ',
+        'different string encodings. ',
+        'What if the provided string is unicode, rather than ASCII?'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
