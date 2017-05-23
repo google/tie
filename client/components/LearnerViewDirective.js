@@ -581,10 +581,7 @@ tie.directive('learnerView', [function() {
             var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
             // The index must be either null (indicating no syntax error)
             // or a positive integer.
-            if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
-              var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
-            } else if (syntaxErrorIndex === null) {
-              // $scope.syntaxErrorString = '';
+            if (syntaxErrorIndex === null) {
               // Updating reinforcement bullets only if no syntax errors.
               $scope.reinforcementBullets = reinforcement.getBullets();
             }
