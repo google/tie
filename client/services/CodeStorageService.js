@@ -17,23 +17,44 @@
  */
 tie.factory('CodeStorageService', [
   function() {
+    // In some browsers, localStorage is not available and its
+    // invocation throws an error.
+    var localStorageIsAvailable = false;
+    try {
+      localStorageIsAvailable = Boolean(localStorage);
+    } catch (e) {
+      localStorageIsAvailable = false;
+    }
+
     var getLocalStorageKey = function(questionId, language) {
       return questionId + ":" + language;
     };
 
     return {
       storeCode: function(questionId, code, language) {
+        if (!localStorageIsAvailable) {
+          return;
+        }
+
         var localStorageKey = getLocalStorageKey(
           questionId, language);
         localStorage.setItem(localStorageKey, code);
       },
       loadStoredCode: function(questionId, language) {
+        if (!localStorageIsAvailable) {
+          return null;
+        }
+
         var localStorageKey = getLocalStorageKey(
           questionId, language);
         var storedCode = localStorage.getItem(localStorageKey);
         return storedCode;
       },
       clearLocalStorageCode: function(questionId, language) {
+        if (!localStorageIsAvailable) {
+          return;
+        }
+
         var localStorageKey = getLocalStorageKey(
           questionId, language);
         localStorage.removeItem(localStorageKey);
