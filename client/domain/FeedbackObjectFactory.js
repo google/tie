@@ -50,6 +50,11 @@ tie.factory('FeedbackObjectFactory', [
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
+    Feedback.prototype.appendErrorParagraph = function(text) {
+      this._paragraphs.push(
+        FeedbackParagraphObjectFactory.createErrorParagraph(text));
+    };
+
     Feedback.prototype.clear = function() {
       this._paragraphs.length = 0;
     };

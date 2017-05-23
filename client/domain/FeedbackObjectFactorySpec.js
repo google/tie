@@ -45,6 +45,7 @@ describe('FeedbackObjectFactory', function() {
   describe('clearParagraphs', function() {
     it('should clear all paragraphs in the current feedback', function() {
       feedback.appendTextParagraph("text");
+      feedback.appendErrorParagraph("error");
       feedback.clear();
       expect(feedback.getParagraphs.length).toEqual(0);
     });

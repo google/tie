@@ -72,15 +72,17 @@ tie.directive('learnerView', [function() {
                       <span ng-if="paragraph.isCodeParagraph()">
                         <code-snippet content="paragraph.getContent()">test</code-snippet>
                       </span>
+                      <span ng-if="paragraph.isErrorParagraph()" ng-model="syntaxErrorString">
+                        <a href class="tie-feedback-syntax-error-link"
+                          ng-click="showErrorString = !showErrorString">
+                          {{showErrorString ? 'Hide error details' : 'Display error details'}}
+                        </a>
+                        <span class="tie-feedback-error-string", ng-show="showErrorString">
+                          {{paragraph.getContent()}}
+                        </span>
+                      </span>
                     </p>
                   </div>
-                  <a href class="tie-feedback-syntax-error-link" ng-if="syntaxErrorString"
-                    ng-click="toggleSyntaxErrorHint()">
-                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
-                  </a>
-                  <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
-                    {{syntaxErrorString}}
-                  </span>
                   <div class="tie-reinforcement">
                     <li ng-repeat="bullet in reinforcementBullets">
                       <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
@@ -542,7 +544,7 @@ tie.directive('learnerView', [function() {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
-          $scope.syntaxErrorString = '';
+          // $scope.syntaxErrorString = '';
           $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
@@ -550,9 +552,9 @@ tie.directive('learnerView', [function() {
           $scope.feedbackStorage = [];
         };
 
-        var hideSyntaxErrorLink = function() {
-          $scope.syntaxErrorString = '';
-        };
+        // var hideSyntaxErrorLink = function() {
+        //   $scope.syntaxErrorString = '';
+        // };
 
         var setFeedback = function(feedbackAndReinforcement) {
           var feedback = feedbackAndReinforcement.feedbackObject;
@@ -585,11 +587,17 @@ tie.directive('learnerView', [function() {
             // The index must be either null (indicating no syntax error)
             // or a positive integer.
             if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
+              console.log('1');
               var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
-              feedbackParagraphs.splice(syntaxErrorIndex, 1);
-              $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+              console.dir(syntaxErrorParagraph);
+              console.dir(feedbackParagraphs);
+              // feedbackParagraphs.splice(syntaxErrorIndex, 1);
+              // feedbackParagraphs.push(syntaxErrorParagraph.getContent());
+              console.log(feedbackParagraphs);
+              // $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+              // console.log('syntax error string: ' + $scope.syntaxErrorString);
             } else if (syntaxErrorIndex === null) {
-              $scope.syntaxErrorString = '';
+              // $scope.syntaxErrorString = '';
               // Updating reinforcement bullets only if no syntax errors.
               $scope.reinforcementBullets = reinforcement.getBullets();
             }
@@ -689,7 +697,7 @@ tie.directive('learnerView', [function() {
         $scope.navigateToQuestion = function(index) {
           // Before navigating to new question,
           // disable the syntax error link and content.
-          hideSyntaxErrorLink();
+          //hideSyntaxErrorLink();
           $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
@@ -705,7 +713,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.submitCode = function(code) {
-          hideSyntaxErrorLink();
+          //hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
