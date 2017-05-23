@@ -31,6 +31,9 @@ tie.factory('CodeStorageService', [
     };
 
     return {
+      isAvailable: function() {
+        return localStorageIsAvailable;
+      },
       storeCode: function(questionId, code, language) {
         if (!localStorageIsAvailable) {
           return;

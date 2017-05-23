@@ -753,6 +753,10 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.autosave = function() {
+          if (!CodeStorageService.isAvailable()) {
+            return;
+          }
+
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
             autosaveCancelPromise = $interval(function() {
