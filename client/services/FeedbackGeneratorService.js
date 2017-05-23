@@ -19,10 +19,10 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'TranscriptService',
+  'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
   function(
-      FeedbackObjectFactory, TranscriptService,
+      FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
       CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
@@ -171,69 +171,81 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    var _getFeedbackWithoutReinforcement = function(
+        tasks, codeEvalResult, rawCodeLineIndexes) {
+      var errorString = codeEvalResult.getErrorString();
+      if (errorString) {
+        // We want to catch and handle a timeout error uniquely, rather than
+        // integrate it into the existing feedback pipeline.
+        return (
+          errorString.startsWith('TimeLimitError') ?
+          _getTimeoutErrorFeedback() :
+          _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
+      } else {
+        // Get all the tests from first task to current that need to be
+        // executed.
+        var buggyOutputTests = [];
+        var correctnessTests = [];
+        var performanceTests = [];
+        for (var i = 0; i < tasks.length; i++) {
+          buggyOutputTests.push(tasks[i].getBuggyOutputTests());
+          correctnessTests.push(tasks[i].getCorrectnessTests());
+          performanceTests.push(tasks[i].getPerformanceTests());
+        }
+        var buggyOutputTestResults =
+            codeEvalResult.getBuggyOutputTestResults();
+        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+        var performanceTestResults =
+            codeEvalResult.getPerformanceTestResults();
+
+        for (i = 0; i < tasks.length; i++) {
+          for (var j = 0; j < buggyOutputTests[i].length; j++) {
+            if (buggyOutputTestResults[i][j]) {
+              return _getBuggyOutputTestFeedback(
+                buggyOutputTests[i][j], codeEvalResult);
+            }
+          }
+
+          for (j = 0; j < correctnessTests[i].length; j++) {
+            var observedOutput = observedOutputs[i][j];
+
+            if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
+              return _getCorrectnessTestFeedback(
+                tasks[i].getOutputFunctionNameWithoutClass(),
+                correctnessTests[i][j], observedOutput);
+            }
+          }
+
+          for (j = 0; j < performanceTests[i].length; j++) {
+            var expectedPerformance = (
+              performanceTests[i][j].getExpectedPerformance());
+            var observedPerformance = performanceTestResults[i][j];
+
+            if (expectedPerformance !== observedPerformance) {
+              return _getPerformanceTestFeedback(expectedPerformance);
+            }
+          }
+        }
+
+        var feedback = FeedbackObjectFactory.create(true);
+        feedback.appendTextParagraph([
+          'You\'ve completed all the tasks for this question! Click the ',
+          '"Next" button to move on to the next question.'
+        ].join(''));
+        return feedback;
+      }
+    };
+
     return {
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
-        var errorString = codeEvalResult.getErrorString();
-        if (errorString) {
-          // We want to catch and handle a timeout error uniquely, rather than
-          // integrate it into the existing feedback pipeline.
-          return (
-            errorString.startsWith('TimeLimitError') ?
-            _getTimeoutErrorFeedback() :
-            _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
-        } else {
-          // Get all the tests from first task to current that need to be
-          // executed.
-          var buggyOutputTests = [];
-          var correctnessTests = [];
-          var performanceTests = [];
-          for (var i = 0; i < tasks.length; i++) {
-            buggyOutputTests.push(tasks[i].getBuggyOutputTests());
-            correctnessTests.push(tasks[i].getCorrectnessTests());
-            performanceTests.push(tasks[i].getPerformanceTests());
-          }
-          var buggyOutputTestResults =
-              codeEvalResult.getBuggyOutputTestResults();
-          var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-          var performanceTestResults =
-              codeEvalResult.getPerformanceTestResults();
-
-          for (i = 0; i < tasks.length; i++) {
-            for (var j = 0; j < buggyOutputTests[i].length; j++) {
-              if (buggyOutputTestResults[i][j]) {
-                return _getBuggyOutputTestFeedback(
-                  buggyOutputTests[i][j], codeEvalResult);
-              }
-            }
-
-            for (j = 0; j < correctnessTests[i].length; j++) {
-              var observedOutput = observedOutputs[i][j];
-
-              if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
-                return _getCorrectnessTestFeedback(
-                  tasks[i].getOutputFunctionNameWithoutClass(),
-                  correctnessTests[i][j], observedOutput);
-              }
-            }
-
-            for (j = 0; j < performanceTests[i].length; j++) {
-              var expectedPerformance = (
-                performanceTests[i][j].getExpectedPerformance());
-              var observedPerformance = performanceTestResults[i][j];
-
-              if (expectedPerformance !== observedPerformance) {
-                return _getPerformanceTestFeedback(expectedPerformance);
-              }
-            }
-          }
-
-          var feedback = FeedbackObjectFactory.create(true);
-          feedback.appendTextParagraph([
-            'You\'ve completed all the tasks for this question! Click the ',
-            '"Next" button to move on to the next question.'
-          ].join(''));
-          return feedback;
+        var feedback = _getFeedbackWithoutReinforcement(
+          tasks, codeEvalResult, rawCodeLineIndexes);
+        if (tasks.length > 0) {
+          feedback.setReinforcement(
+            ReinforcementGeneratorService.getReinforcement(
+              tasks[tasks.length - 1], codeEvalResult));
         }
+        return feedback;
       },
       getSyntaxErrorFeedback: function(errorString) {
         var feedback = FeedbackObjectFactory.create(false);

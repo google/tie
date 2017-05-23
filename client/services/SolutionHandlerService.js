@@ -19,13 +19,11 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'FeedbackGeneratorService', 'ReinforcementObjectFactory',
-  'ReinforcementGeneratorService', 'PrereqCheckDispatcherService',
+  'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
   'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      FeedbackGeneratorService, ReinforcementObjectFactory,
-      ReinforcementGeneratorService, PrereqCheckDispatcherService,
+      FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory) {
     return {
       // Returns a promise with a Feedback object.
@@ -35,83 +33,46 @@ tie.factory('SolutionHandlerService', [
         var potentialPrereqCheckFailure =
           PrereqCheckDispatcherService.checkCode(
             language, starterCode, studentCode);
+        var feedback = null;
 
         if (potentialPrereqCheckFailure) {
-          var prereqFeedback =
-            FeedbackGeneratorService.getPrereqFailureFeedback(
-              potentialPrereqCheckFailure);
+          feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+            potentialPrereqCheckFailure);
           TranscriptService.recordSnapshot(
-            potentialPrereqCheckFailure, null, prereqFeedback, null);
-          return Promise.resolve({
-            feedbackObject: prereqFeedback,
-            reinforcement: ReinforcementObjectFactory.create()
-          });
+            potentialPrereqCheckFailure, null, feedback);
+          return Promise.resolve(feedback);
         } else {
-          // Next, do an initial run of the code to check for syntax errors.
+          // Next, run the raw code to detect syntax errors. If any exist, we
+          // return a promise with a Feedback object.
           return CodeRunnerDispatcherService.runCodeAsync(
             language, studentCode
-          ).then(function(rawCodeEvalResult) {
-            var potentialSyntaxErrorString = rawCodeEvalResult.getErrorString();
+          ).then(function(codeEvalResult) {
+            var potentialSyntaxErrorString = codeEvalResult.getErrorString();
             if (potentialSyntaxErrorString) {
-              var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+              feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
-              TranscriptService.recordSnapshot(
-                null, rawCodeEvalResult, feedback, null);
-              return {
-                feedbackObject: feedback,
-                reinforcement: ReinforcementObjectFactory.create()
-              };
+              TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
+              return feedback;
             }
 
-            // Otherwise, the code doesn't have any obvious syntax errors.
-            // Generate a CodeSubmission object that wraps the student's code
-            // into a class and appends some test code, then run the whole
-            // thing.
-            var correctnessTests = [];
-            var buggyOutputTests = [];
-            var performanceTests = [];
-            for (var i = 0; i < tasks.length; i++) {
-              correctnessTests.push(tasks[i].getCorrectnessTests());
-              buggyOutputTests.push(tasks[i].getBuggyOutputTests());
-              performanceTests.push(tasks[i].getPerformanceTests());
-            }
-
-            var allTasksInputFunctionNames = tasks.map(function(task) {
-              return task.getInputFunctionName();
-            });
-            var allTasksMainFunctionNames = tasks.map(function(task) {
-              return task.getMainFunctionName();
-            });
-            var allTasksOutputFunctionNames = tasks.map(function(task) {
-              return task.getOutputFunctionName();
-            });
-
+            // If there are no syntax errors, generate a CodeSubmission object
+            // that wraps the student's code into a class and appends some test
+            // code, then run the whole thing.
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
             CodePreprocessorDispatcherService.preprocess(
-              language, codeSubmission, auxiliaryCode,
-              allTasksInputFunctionNames, allTasksMainFunctionNames,
-              allTasksOutputFunctionNames, correctnessTests,
-              buggyOutputTests, performanceTests);
+              language, codeSubmission, auxiliaryCode, tasks);
 
             return CodeRunnerDispatcherService.runCodeAsync(
               language, codeSubmission.getPreprocessedCode()
-            ).then(function(codeEvalResult) {
-              var runtimeFeedback = FeedbackGeneratorService.getFeedback(
-                tasks, codeEvalResult, codeSubmission.getRawCodeLineIndexes());
-              var currentTask = tasks[tasks.length - 1];
-              var reinforcement =
-                ReinforcementGeneratorService.getReinforcement(
-                  currentTask, codeEvalResult);
+            ).then(function(preprocessedCodeEvalResult) {
+              feedback = FeedbackGeneratorService.getFeedback(
+                tasks, preprocessedCodeEvalResult,
+                codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
-                null, codeEvalResult, runtimeFeedback, reinforcement);
-              return {
-                feedbackObject: runtimeFeedback,
-                reinforcement: reinforcement
-              };
+                null, preprocessedCodeEvalResult, feedback);
+              return feedback;
             });
-          }).then(function(feedback) {
-            return feedback;
           });
         }
       }

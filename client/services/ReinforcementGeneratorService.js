@@ -53,18 +53,17 @@ tie.factory('ReinforcementGeneratorService', [
 
     return {
       getReinforcement: function(task, codeEvalResult) {
-
         var previousSnapshot = TranscriptService.getMostRecentSnapshot();
         var previousReinforcement = null;
-        if (previousSnapshot !== null) {
-          previousReinforcement = previousSnapshot.getReinforcement();
+        if (previousSnapshot) {
+          previousReinforcement = (
+            previousSnapshot.getFeedback().getReinforcement());
         }
 
         var reinforcement = ReinforcementObjectFactory.create(task);
 
         // Copy the previous reinforcement object if we are on the same task.
-        if (previousReinforcement !== null &&
-            task === previousReinforcement.getTask()) {
+        if (previousReinforcement && task === previousReinforcement.getTask()) {
           var previousReinforcementPassedTags =
             previousReinforcement.getPassedTags();
           for (var tag in previousReinforcementPassedTags) {
