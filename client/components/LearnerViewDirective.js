@@ -77,7 +77,7 @@ tie.directive('learnerView', [function() {
                           ng-click="showErrorString = !showErrorString">
                           {{showErrorString ? 'Hide error details' : 'Display error details'}}
                         </a>
-                        <span class="tie-feedback-error-string", ng-show="showErrorString">
+                        <span class="tie-feedback-error-string" ng-show="showErrorString">
                           {{paragraph.getContent()}}
                         </span>
                       </span>
