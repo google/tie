@@ -564,9 +564,7 @@ tie.directive('learnerView', [function() {
           $scope.syntaxErrorString = '';
         };
 
-        var setFeedback = function(feedbackAndReinforcement) {
-          var feedback = feedbackAndReinforcement.feedbackObject;
-          var reinforcement = feedbackAndReinforcement.reinforcement;
+        var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
@@ -600,13 +598,14 @@ tie.directive('learnerView', [function() {
               $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
             } else if (syntaxErrorIndex === null) {
               $scope.syntaxErrorString = '';
-              // Updating reinforcement bullets only if no syntax errors.
-              $scope.reinforcementBullets = reinforcement.getBullets();
+              // Update reinforcement bullets only if there are no syntax
+              // errors.
+              $scope.reinforcementBullets = (
+                feedback.getReinforcement().getBullets());
             }
-            $scope.feedbackStorage.push(
-              {
-                feedbackParagraphs: feedbackParagraphs
-              });
+            $scope.feedbackStorage.push({
+              feedbackParagraphs: feedbackParagraphs
+            });
           }
 
           // Skulpt processing happens outside an Angular context, so

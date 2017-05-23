@@ -44,7 +44,7 @@ describe('CodePreprocessorDispatcherService', function() {
       var codeSubmission = CodeSubmissionObjectFactory.create('a = 1\nb= 2');
       var originProcessedCode = codeSubmission.getPreprocessedCode();
       CodePreprocessorDispatcherService.preprocess(
-        LANGUAGE_PYTHON, codeSubmission, '', '', '', '', [], [], []);
+        LANGUAGE_PYTHON, codeSubmission, '', []);
       expect(codeSubmission.getPreprocessedCode())
         .not.toEqual(originProcessedCode);
     });

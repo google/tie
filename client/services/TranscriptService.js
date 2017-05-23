@@ -26,10 +26,9 @@ tie.factory('TranscriptService', [
       getTranscript: function() {
         return transcript;
       },
-      recordSnapshot: function(
-          prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
+      recordSnapshot: function(prereqCheckFailure, codeEvalResult, feedback) {
         var snapshot = SnapshotObjectFactory.create(
-          prereqCheckFailure, codeEvalResult, feedback, reinforcement);
+          prereqCheckFailure, codeEvalResult, feedback);
         transcript.recordSnapshot(snapshot);
       },
       getMostRecentSnapshot: function() {
