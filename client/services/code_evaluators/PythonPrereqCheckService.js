@@ -18,13 +18,11 @@
  */
 
 tie.factory('PythonPrereqCheckService', [
-  'CodePrereqCheckResultObjectFactory', 'PrereqCheckFailureObjectFactory',
-  'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
-  'SUPPORTED_PYTHON_LIBS',
+  'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
+  'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
   function(
-      CodePrereqCheckResultObjectFactory, PrereqCheckFailureObjectFactory,
-      PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
-      SUPPORTED_PYTHON_LIBS) {
+      PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
+      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS) {
 
     var rightTrim = function(str) {
       // Remove trailing white space at end of string.
@@ -82,31 +80,24 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     return {
-      // Returns a promise.
+      // Returns a PrereqCheckFailure object (or null if there are no failures).
       checkCode: function(starterCode, code) {
-        var prereqCheckFailures = [];
-
         // Check that starter code is present.
         if (!(checkStarterCodeFunctionsPresent(starterCode, code))) {
-          prereqCheckFailures.push(
-            PrereqCheckFailureObjectFactory.create(
-              PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode));
-          return Promise.resolve(
-            CodePrereqCheckResultObjectFactory.create(prereqCheckFailures));
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
         }
 
         // Verify no unsupported libraries are imported.
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
         if (unsupportedImports.length > 0) {
-          prereqCheckFailures.push(PrereqCheckFailureObjectFactory.create(
-            PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null));
-          return Promise.resolve(
-            CodePrereqCheckResultObjectFactory.create(prereqCheckFailures));
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
         // Otherwise, code passed all pre-requisite checks.
-        return Promise.resolve(CodePrereqCheckResultObjectFactory.create([]));
+        return null;
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,

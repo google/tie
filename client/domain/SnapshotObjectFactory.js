@@ -19,9 +19,10 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    var Snapshot = function(codePrereqCheckResult, codeEvalResult, feedback,
-        reinforcement) {
-      this._codePrereqCheckResult = codePrereqCheckResult;
+    var Snapshot = function(
+        prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
+      // Note that this may be null.
+      this._prereqCheckFailure = prereqCheckFailure;
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedback;
       this._reinforcement = reinforcement;
@@ -29,13 +30,12 @@ tie.factory('SnapshotObjectFactory', [
     };
 
     // Instance methods.
-    Snapshot.prototype.getCodePrereqCheckResult = function() {
-      return this._codePrereqCheckResult;
+    Snapshot.prototype.getPrereqCheckFailure = function() {
+      return this._prereqCheckFailure;
     };
 
-    Snapshot.prototype.setCodePrereqCheckResult = function(
-      codePrereqCheckResult) {
-      this._codePrereqCheckResult = codePrereqCheckResult;
+    Snapshot.prototype.setPrereqCheckFailure = function(prereqCheckFailure) {
+      this._prereqCheckFailure = prereqCheckFailure;
     };
 
     Snapshot.prototype.getCodeEvalResult = function() {
@@ -64,9 +64,9 @@ tie.factory('SnapshotObjectFactory', [
 
     // Static class methods.
     Snapshot.create = function(
-      codePrereqCheckResult, codeEvalResult, feedback, reinforcement) {
+        prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
       return new Snapshot(
-        codePrereqCheckResult, codeEvalResult, feedback, reinforcement);
+        prereqCheckFailure, codeEvalResult, feedback, reinforcement);
     };
 
     return Snapshot;
