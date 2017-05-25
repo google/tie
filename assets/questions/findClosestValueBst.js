@@ -68,10 +68,10 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
             root = input[0]
             target = input[1]
 
-            kid = root.left if target < root.val else root.right
-            if not kid:
+            candidate = root.left if target < root.val else root.right
+            if not candidate:
                 return root.val
-            return cls.failToCompareAll([kid,target])
+            return cls.failToCompareAll([candidate,target])
 `
   },
   tasks: [{
@@ -90,8 +90,8 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
       {
         content:
         [
-          'For instance, given the following tree and the target value 1.1,' +
-          ' you should return 1.',
+          'For instance, given the following tree and the target value 1.1, ' +
+          'you should return 1.',
           '  2',
           ' / \\',
           '1   3'
@@ -101,8 +101,8 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
       {
         content:
         [
-          'The tree is represented as a preorder traversal sequence of node' +
-          ' values in which \'#\'', 'represents an empty node. For example: ' +
+          'The tree is represented as a preorder traversal sequence of node ' +
+          'values in which \'#\'', 'represents an empty node. For example: ' +
           'the input \'2 1 # # #\' represents the serialized', 'format of a ' +
           'binary tree using preorder order traversal, where root value is 2 ' +
           'and only has a left child with value 1.'
@@ -112,7 +112,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
       {
         content:
         [
-          '#Definition for a binary tree node.',
+          '# Definition for a binary tree node.',
           'class TreeNode(object):',
           '  def __init__(self, x):',
           '    self.val = x',
