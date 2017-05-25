@@ -17,12 +17,12 @@
  */
 
 tie.factory('PythonCodeRunnerService', [
-  'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
+  '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
   'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
   'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
-      CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
+      $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT,
       CODE_EXECUTION_TIMEOUT_SECONDS) {
@@ -55,6 +55,10 @@ tie.factory('PythonCodeRunnerService', [
         return Sk.misceval.asyncToPromise(function() {
           return Sk.importMainWithBody('<stdin>', false, code, true);
         }).then(function() {
+          $http.post('/server/submit', {params: {code: code}}).then(function(
+            response) {
+            console.log(response);
+          });
           var correctnessTestResults = [];
           var buggyOutputTestResults = [];
           var performanceTestResults = [];
