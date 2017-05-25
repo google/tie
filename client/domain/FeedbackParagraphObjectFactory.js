@@ -21,7 +21,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
   function() {
     var PARAGRAPH_TYPE_TEXT = 'text';
     var PARAGRAPH_TYPE_CODE = 'code';
-    var PARAGRAPH_TYPE_ERROR = 'error';
+    var PARAGRAPH_TYPE_SYNTAX_ERROR = 'error';
 
     var FeedbackParagraph = function(type, content) {
       this._type = type;
@@ -37,8 +37,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return this._type === PARAGRAPH_TYPE_CODE;
     };
 
-    FeedbackParagraph.prototype.isErrorParagraph = function() {
-      return this._type === PARAGRAPH_TYPE_ERROR;
+    FeedbackParagraph.prototype.isSyntaxErrorParagraph = function() {
+      return this._type === PARAGRAPH_TYPE_SYNTAX_ERROR;
     };
 
     FeedbackParagraph.prototype.getContent = function() {
@@ -54,8 +54,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return new FeedbackParagraph(PARAGRAPH_TYPE_CODE, code);
     };
 
-    FeedbackParagraph.createErrorParagraph = function(error) {
-      return new FeedbackParagraph(PARAGRAPH_TYPE_ERROR, error);
+    FeedbackParagraph.createSyntaxErrorParagraph = function(error) {
+      return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
     };
 
     return FeedbackParagraph;

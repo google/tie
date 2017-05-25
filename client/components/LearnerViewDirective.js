@@ -72,7 +72,7 @@ tie.directive('learnerView', [function() {
                       <span ng-if="paragraph.isCodeParagraph()">
                         <code-snippet content="paragraph.getContent()">test</code-snippet>
                       </span>
-                      <span ng-if="paragraph.isErrorParagraph()">
+                      <span ng-if="paragraph.isSyntaxErrorParagraph()">
                         <a href class="tie-feedback-syntax-error-link"
                           ng-click="toggleSyntaxErrorHint(this)">
                           {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
@@ -579,7 +579,7 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
-              if (feedbackParagraphs[i].isErrorParagraph()) {
+              if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
                 break;
               }

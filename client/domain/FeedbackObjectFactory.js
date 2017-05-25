@@ -49,9 +49,9 @@ tie.factory('FeedbackObjectFactory', [
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
-    Feedback.prototype.appendErrorParagraph = function(text) {
+    Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
       this._paragraphs.push(
-        FeedbackParagraphObjectFactory.createErrorParagraph(text));
+        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
     };
 
     Feedback.prototype.clear = function() {
