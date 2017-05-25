@@ -577,11 +577,14 @@ tie.directive('learnerView', [function() {
             $scope.reinforcementBullets = [];
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
-            // Get the index of syntax error in feedback.
-            var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
-            // The index must be either null (indicating no syntax error)
-            // or a positive integer.
-            if (syntaxErrorIndex === null) {
+            var hasSyntaxError = false;
+            for (var i = 0; i < feedbackParagraphs.length; i++) {
+              if (feedbackParagraphs[i].isErrorParagraph()) {
+                hasSyntaxError = true;
+                break;
+              }
+            }
+            if (!hasSyntaxError) {
               // Updating reinforcement bullets only if no syntax errors.
               $scope.reinforcementBullets = reinforcement.getBullets();
             }
