@@ -74,10 +74,10 @@ tie.directive('learnerView', [function() {
                       </span>
                       <span ng-if="paragraph.isErrorParagraph()">
                         <a href class="tie-feedback-syntax-error-link"
-                          ng-click="showErrorString = !showErrorString">
-                          {{showErrorString ? 'Hide error details' : 'Display error details'}}
+                          ng-click="toggleSyntaxErrorHint(this)">
+                          {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
                         </a>
-                        <span class="tie-feedback-error-string" ng-show="showErrorString">
+                        <span class="tie-feedback-error-string" ng-show="isSyntaxErrorShown">
                           {{paragraph.getContent()}}
                         </span>
                       </span>
@@ -654,8 +654,8 @@ tie.directive('learnerView', [function() {
           theme: 'default'
         };
 
-        $scope.toggleSyntaxErrorHint = function() {
-          $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
+        $scope.toggleSyntaxErrorHint = function(error) {
+          error.isSyntaxErrorShown = !error.isSyntaxErrorShown;
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
