@@ -1,0 +1,16 @@
+runtime: python27
+api_version: 1
+threadsafe: false
+
+handlers:
+- url: /assets
+  static_dir: assets
+
+- url: /client
+  static_dir: client
+
+- url: /third_party
+  static_dir: third_party
+
+- url: /.*
+  script: main.app
