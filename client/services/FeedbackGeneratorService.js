@@ -240,7 +240,7 @@ tie.factory('FeedbackGeneratorService', [
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
-        if (tasks.length > 0) {
+        if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
           feedback.setReinforcement(
             ReinforcementGeneratorService.getReinforcement(
               tasks[tasks.length - 1], codeEvalResult));
