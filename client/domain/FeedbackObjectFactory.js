@@ -18,13 +18,15 @@
  */
 
 tie.factory('FeedbackObjectFactory', [
-  'FeedbackParagraphObjectFactory', function(FeedbackParagraphObjectFactory) {
+  'FeedbackParagraphObjectFactory', 'ReinforcementObjectFactory',
+  function(FeedbackParagraphObjectFactory, ReinforcementObjectFactory) {
     var Feedback = function(answerIsCorrect) {
       this._paragraphs = [];
       this._answerIsCorrect = answerIsCorrect;
       // This records what message was displayed with this feedback.
       // If no message was displayed, this will remain null.
       this._hintIndex = null;
+      this._reinforcement = ReinforcementObjectFactory.create();
     };
 
     // Instance methods.
@@ -64,6 +66,14 @@ tie.factory('FeedbackObjectFactory', [
 
     Feedback.prototype.setHintIndex = function(index) {
       this._hintIndex = index;
+    };
+
+    Feedback.prototype.getReinforcement = function() {
+      return this._reinforcement;
+    };
+
+    Feedback.prototype.setReinforcement = function(reinforcement) {
+      this._reinforcement = reinforcement;
     };
 
     // Static class methods.

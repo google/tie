@@ -19,14 +19,12 @@
 
 tie.factory('SnapshotObjectFactory', [
   function() {
-    var Snapshot = function(
-        prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
+    var Snapshot = function(prereqCheckFailure, codeEvalResult, feedback) {
       // Note that this may be null.
       this._prereqCheckFailure = prereqCheckFailure;
       this._codeEvalResult = codeEvalResult;
       this._feedback = feedback;
-      this._reinforcement = reinforcement;
-      this._timestamp = '';
+      this._timestamp = Date.now();
     };
 
     // Instance methods.
@@ -54,19 +52,9 @@ tie.factory('SnapshotObjectFactory', [
       this._feedback = feedback;
     };
 
-    Snapshot.prototype.getReinforcement = function() {
-      return this._reinforcement;
-    };
-
-    Snapshot.prototype.setReinforcement = function(reinforcement) {
-      this._reinforcement = reinforcement;
-    };
-
     // Static class methods.
-    Snapshot.create = function(
-        prereqCheckFailure, codeEvalResult, feedback, reinforcement) {
-      return new Snapshot(
-        prereqCheckFailure, codeEvalResult, feedback, reinforcement);
+    Snapshot.create = function(prereqCheckFailure, codeEvalResult, feedback) {
+      return new Snapshot(prereqCheckFailure, codeEvalResult, feedback);
     };
 
     return Snapshot;

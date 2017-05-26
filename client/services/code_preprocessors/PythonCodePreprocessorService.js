@@ -376,12 +376,26 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
-      preprocess: function(
-          codeSubmission, auxiliaryCode,
-          allTasksInputFunctionNames, allTasksMainFunctionNames,
-          allTasksOutputFunctionNames,
-          allTasksCorrectnessTests, allTasksBuggyOutputTests,
-          allTasksPerformanceTests) {
+      preprocess: function(codeSubmission, auxiliaryCode, tasks) {
+        var allTasksCorrectnessTests = [];
+        var allTasksBuggyOutputTests = [];
+        var allTasksPerformanceTests = [];
+        for (var i = 0; i < tasks.length; i++) {
+          allTasksCorrectnessTests.push(tasks[i].getCorrectnessTests());
+          allTasksBuggyOutputTests.push(tasks[i].getBuggyOutputTests());
+          allTasksPerformanceTests.push(tasks[i].getPerformanceTests());
+        }
+
+        var allTasksInputFunctionNames = tasks.map(function(task) {
+          return task.getInputFunctionName();
+        });
+        var allTasksMainFunctionNames = tasks.map(function(task) {
+          return task.getMainFunctionName();
+        });
+        var allTasksOutputFunctionNames = tasks.map(function(task) {
+          return task.getOutputFunctionName();
+        });
+
         // Transform the student code (without changing the number of lines) to
         // put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(
