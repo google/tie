@@ -251,8 +251,7 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendTextParagraph(
           "Looks like your code has a syntax error.");
-        feedback.appendCodeParagraph(errorString);
-        feedback.setSyntaxErrorIndex(feedback.getParagraphs().length - 1);
+        feedback.appendSyntaxErrorParagraph(errorString);
         return feedback;
       },
       getPrereqFailureFeedback: function(prereqCheckFailure) {

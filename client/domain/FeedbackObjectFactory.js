@@ -26,7 +26,6 @@ tie.factory('FeedbackObjectFactory', [
       // This records what message was displayed with this feedback.
       // If no message was displayed, this will remain null.
       this._hintIndex = null;
-      this._syntaxErrorIndex = null;
       this._reinforcement = ReinforcementObjectFactory.create();
     };
 
@@ -52,6 +51,11 @@ tie.factory('FeedbackObjectFactory', [
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
+    Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
+      this._paragraphs.push(
+        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
+    };
+
     Feedback.prototype.clear = function() {
       this._paragraphs.length = 0;
     };
@@ -62,14 +66,6 @@ tie.factory('FeedbackObjectFactory', [
 
     Feedback.prototype.setHintIndex = function(index) {
       this._hintIndex = index;
-    };
-
-    Feedback.prototype.getSyntaxErrorIndex = function() {
-      return this._syntaxErrorIndex;
-    };
-
-    Feedback.prototype.setSyntaxErrorIndex = function(index) {
-      this._syntaxErrorIndex = index;
     };
 
     Feedback.prototype.getReinforcement = function() {
