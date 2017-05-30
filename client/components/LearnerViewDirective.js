@@ -666,7 +666,6 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.toggleSyntaxErrorHint = function(error) {
-          console.log(error);
           error.isSyntaxErrorShown = !error.isSyntaxErrorShown;
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
