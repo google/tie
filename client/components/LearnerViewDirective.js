@@ -75,9 +75,9 @@ tie.directive('learnerView', [function() {
                       <span ng-if="paragraph.isSyntaxErrorParagraph()">
                         <a href class="tie-feedback-syntax-error-link"
                           ng-click="toggleSyntaxErrorHint(paragraph)">
-                          {{paragraph.isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                          {{paragraph.syntaxErrorIsShown ? 'Hide error details' : 'Display error details'}}
                         </a>
-                        <span class="tie-feedback-error-string" ng-show="paragraph.isSyntaxErrorShown">
+                        <span class="tie-feedback-error-string" ng-show="paragraph.syntaxErrorIsShown">
                           {{paragraph.getContent()}}
                         </span>
                       </span>
@@ -635,7 +635,7 @@ tie.directive('learnerView', [function() {
           $scope.questionIds = $scope.questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
-          $scope.isSyntaxErrorShown = false;
+          $scope.syntaxErrorIsShown = false;
           for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
@@ -666,7 +666,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.toggleSyntaxErrorHint = function(error) {
-          error.isSyntaxErrorShown = !error.isSyntaxErrorShown;
+          error.syntaxErrorIsShown = !error.syntaxErrorIsShown;
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
@@ -690,7 +690,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          $scope.isSyntaxErrorShown = false;
+          $scope.syntaxErrorIsShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
