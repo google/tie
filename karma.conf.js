@@ -6,7 +6,6 @@ module.exports = function(config) {
   // the added arg `--enable-coverage`. We disable it by default because it
   // interferes with the debugger during regular development.
   var preprocessorOptions = config.enableCoverage ? ['coverage'] : [];
-  console.log(preprocessorOptions);
 
   config.set({
     // Base path that will be used to resolve all patterns (eg. files, exclude).
