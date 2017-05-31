@@ -33,6 +33,7 @@ globalData.questionSets['other'] = {  // eslint-disable-line dot-notation
     'bomberman',
     'findAlphabet',
     'findBestMeetupLocation',
+    'findClosestValueBst',
     'findFirstNonRepeatingCharacter',
     'getStrobogrammaticNumbers',
     'incrementDecimalCodedNumber',

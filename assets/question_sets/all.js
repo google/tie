@@ -31,6 +31,7 @@ globalData.questionSets['all'] = {  // eslint-disable-line dot-notation
     'checkBalancedParentheses',
     'findAlphabet',
     'findBestMeetupLocation',
+    'findClosestValueBst',
     'findFirstNonRepeatingCharacter',
     'findMostCommonCharacter',
     'getStrobogrammaticNumbers',
