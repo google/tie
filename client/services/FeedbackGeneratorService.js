@@ -249,8 +249,6 @@ tie.factory('FeedbackGeneratorService', [
       },
       getSyntaxErrorFeedback: function(errorString) {
         var feedback = FeedbackObjectFactory.create(false);
-        feedback.appendTextParagraph(
-          "Looks like your code has a syntax error.");
         feedback.appendSyntaxErrorParagraph(errorString);
         return feedback;
       },
