@@ -253,12 +253,9 @@ describe('FeedbackGeneratorService', function() {
       var paragraphs = FeedbackGeneratorService
         .getSyntaxErrorFeedback('some error').getParagraphs();
 
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        "Looks like your code has a syntax error.");
-      expect(paragraphs[1].isSyntaxErrorParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe('some error');
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe('some error');
     });
   });
 

@@ -70,16 +70,12 @@ tie.directive('learnerView', [function() {
                         {{paragraph.getContent()}}
                       </span>
                       <span ng-if="paragraph.isCodeParagraph()">
-                        <code-snippet content="paragraph.getContent()">test</code-snippet>
+                        <code-snippet content="paragraph.getContent()"></code-snippet>
                       </span>
                       <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                        <a href class="tie-feedback-syntax-error-link"
-                          ng-click="toggleSyntaxErrorHint(paragraph)">
-                          {{paragraph.syntaxErrorIsShown ? 'Hide error details' : 'Display error details'}}
-                        </a>
-                        <span class="tie-feedback-error-string" ng-show="paragraph.syntaxErrorIsShown">
-                          {{paragraph.getContent()}}
-                        </span>
+                        <syntax-error-snippet content="paragraph.getContent()"
+                                              on-state-change="scrollToBottomOfFeedbackWindow()">
+                        </syntax-error-snippet>
                       </span>
                     </p>
                   </div>
@@ -289,15 +285,6 @@ tie.directive('learnerView', [function() {
           font-size: 12px;
           padding: 2px 10px;
           width: 95%;
-        }
-        .tie-feedback-syntax-error-link {
-          color: #F44336;
-          display: inline-block;
-          font-size: 12px;
-          text-decoration: none;
-        }
-        .tie-feedback-syntax-error-link:hover {
-          text-decoration: underline;
         }
         .tie-lang-select-menu {
           float: left;
@@ -616,8 +603,7 @@ tie.directive('learnerView', [function() {
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
-          // Scroll down to the bottom of the feedback window
-          questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
+          $scope.scrollToBottomOfFeedbackWindow();
         };
 
         $scope.changeTheme = function(newTheme) {
@@ -646,7 +632,6 @@ tie.directive('learnerView', [function() {
           $scope.questionIds = $scope.questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
-          $scope.syntaxErrorIsShown = false;
           for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
@@ -676,8 +661,7 @@ tie.directive('learnerView', [function() {
           theme: 'default'
         };
 
-        $scope.toggleSyntaxErrorHint = function(error) {
-          error.syntaxErrorIsShown = !error.syntaxErrorIsShown;
+        $scope.scrollToBottomOfFeedbackWindow = function() {
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
@@ -701,7 +685,6 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
-          $scope.syntaxErrorIsShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
