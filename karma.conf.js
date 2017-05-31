@@ -5,7 +5,7 @@ module.exports = function(config) {
   // NOTE TO DEVELOPERS: to enable coverage reports, call `karma start` with
   // the added arg `--enable-coverage`. We disable it by default because it
   // interferes with the debugger during regular development.
-  var preprocessorOptions = config.enableCoverage ? ['6to5', 'coverage'] : [];
+  var preprocessorOptions = config.enableCoverage ? ['coverage'] : [];
   console.log(preprocessorOptions);
 
   config.set({
