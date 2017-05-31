@@ -118,11 +118,11 @@ tie.directive('learnerView', [function() {
                       <span class="tie-next-button-text">Next</span>
                     </div>
                   </div>
-                  <div ng-if="codeEditorIsShown">
+                  <div ng-if="codeEditorIsShown" class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                                    ng-model="editorContents.code"
                                    ng-change="autosave()"
-                                   class="tie-codemirror-container protractor-test-code-input">
+                                   class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
                 </div>
