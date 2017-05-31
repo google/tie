@@ -60,8 +60,8 @@ tie.directive('learnerView', [function() {
                     <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
-                <div class="tie-feedback">
-                  <div ng-repeat="set in feedbackStorage">
+                <div>
+                  <div class="tie-feedback" ng-class="{'most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
                     <hr>
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
@@ -94,7 +94,7 @@ tie.directive('learnerView', [function() {
                     <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
                     <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                   </div>
-                <br>
+                  <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
@@ -274,6 +274,21 @@ tie.directive('learnerView', [function() {
         .tie-feedback-paragraph {
           width: 100%;
         }
+
+        .tie-feedback {
+          transition: all 200ms;
+          opacity: .4;
+        }
+
+        .tie-feedback:hover {
+          transition: all 400ms;
+          opacity: 1;
+        }
+
+        .most-recent-feedback {
+          opacity: 1;
+        }
+
         .tie-feedback-paragraph-code {
           background: #333;
           color: #eee;
