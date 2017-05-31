@@ -26,4 +26,5 @@ script:
 - bash scripts/run_linter.sh
 - bash scripts/run_e2e_tests.sh
 after_success:
+- ls -la
 - codecov --file ./karma_coverage_reports/coverage-final.json
