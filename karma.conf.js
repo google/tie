@@ -32,9 +32,9 @@ module.exports = function(config) {
       //
       // NOTE TO DEVELOPERS: to enable coverage reports, add 'coverage' to the
       // array in the values of the following keys.
-      'client/*.js': ['6to5'],
-      'client/**/*.js': ['6to5'],
-      'assets/**/*.js': ['6to5']
+      'client/*.js': ['6to5', 'coverage'],
+      'client/**/*.js': ['6to5', 'coverage'],
+      'assets/**/*.js': ['6to5', 'coverage']
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
     // Available reporters: https://npmjs.org/browse/keyword/karma-reporter.
