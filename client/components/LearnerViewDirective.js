@@ -590,11 +590,9 @@ tie.directive('learnerView', [function() {
                 break;
               }
             }
-            if (!hasSyntaxError) {
-              // Updating reinforcement bullets only if no syntax errors.
-              $scope.reinforcementBullets =
-                feedback.getReinforcement().getBullets();
-            }
+            // Updating reinforcement bullets only if no syntax errors.
+            $scope.reinforcementBullets =
+              hasSyntaxError ? [] : feedback.getReinforcement().getBullets();
             $scope.feedbackStorage.push({
               feedbackParagraphs: feedbackParagraphs
             });
