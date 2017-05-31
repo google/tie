@@ -27,4 +27,6 @@ script:
 - bash scripts/run_e2e_tests.sh
 after_success:
 - ls -la
+- cat ./karma_coverage_reports/coverage-final.json
+- codecov --help
 - codecov --file ./karma_coverage_reports/coverage-final.json
