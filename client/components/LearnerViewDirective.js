@@ -60,8 +60,8 @@ tie.directive('learnerView', [function() {
                     <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
-                <div>
-                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
+                <div class="tie-feedback">
+                  <div ng-repeat="set in feedbackStorage">
                     <hr>
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
@@ -70,15 +70,17 @@ tie.directive('learnerView', [function() {
                         {{paragraph.getContent()}}
                       </span>
                       <span ng-if="paragraph.isCodeParagraph()">
-                        <code-snippet content="paragraph.getContent()"></code-snippet>
-                      </span>
-                      <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                        <syntax-error-snippet content="paragraph.getContent()"
-                                              on-state-change="scrollToBottomOfFeedbackWindow()">
-                        </syntax-error-snippet>
+                        <code-snippet content="paragraph.getContent()">test</code-snippet>
                       </span>
                     </p>
                   </div>
+                  <a href class="tie-feedback-syntax-error-link" ng-if="syntaxErrorString"
+                    ng-click="toggleSyntaxErrorHint()">
+                    {{isSyntaxErrorShown ? 'Hide error details' : 'Display error details'}}
+                  </a>
+                  <span class="tie-feedback-error-string", ng-show="isSyntaxErrorShown">
+                    {{syntaxErrorString}}
+                  </span>
                   <div class="tie-reinforcement">
                     <li ng-repeat="bullet in reinforcementBullets">
                       <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
@@ -90,7 +92,7 @@ tie.directive('learnerView', [function() {
                     <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
                     <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
                   </div>
-                  <br>
+                <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
@@ -103,6 +105,12 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
+              <div style="font-size: 12px;padding-top: 13px;display: inline-block;float: right;font-weight: bold;">Stuck? Get a hint.</div>
+              <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                  ng-click="resetCode()"
+                  style="float: right">
+                Reset Question
+              </button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -114,27 +122,22 @@ tie.directive('learnerView', [function() {
                       <span class="tie-next-button-text">Next</span>
                     </div>
                   </div>
-                  <div ng-if="codeEditorIsShown" class="tie-codemirror-container">
-                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                                   ng-model="editorContents.code"
-                                   ng-change="autosave()"
-                                   class="protractor-test-code-input">
-                    </ui-codemirror>
-                  </div>
+                  <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                      ng-model="code"
+                      ng-change="autosave()"
+                      class="tie-codemirror-container protractor-test-code-input">
+                  </ui-codemirror>
                 </div>
-                <select class="tie-select-menu" name="lang-select-menu">
-                  <option value="Python" selected>Python</option>
-                </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
-                    ng-click="resetCode()">
-                  Reset Code
-                </button>
+<div style="font-size: 12px;padding-top: 13px;padding-right: 7px;display: inline-block;float: left;font-weight: bold;">
+                <a target="blank_" href="docs/py-primer-dark.html" ng-if="isInDarkMode" style="color: #E0E0E0;">New to Python? Click here.</a>
+                <a target="blank_" href="docs/py-primer-light.html" ng-if="!isInDarkMode">New to Python? Click here.</a>
+</div>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(editorContents.code)"
+                    ng-click="submitCode(code)"
                     ng-disabled="nextButtonIsShown">
                   Run
                 </button>
@@ -243,14 +246,6 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
-        .tie-feedback {
-          opacity: .4;
-          transition: all 200ms;
-        }
-        .tie-feedback:hover {
-          opacity: 1;
-          transition: all 400ms;
-        }
         .tie-feedback-error-string {
           color: #F44336;
         }
@@ -286,15 +281,21 @@ tie.directive('learnerView', [function() {
           padding: 2px 10px;
           width: 95%;
         }
+        .tie-feedback-syntax-error-link {
+          color: #F44336;
+          display: inline-block;
+          font-size: 12px;
+          text-decoration: none;
+        }
+        .tie-feedback-syntax-error-link:hover {
+          text-decoration: underline;
+        }
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
         }
         .tie-lang-terminal {
           display: inline;
-        }
-        .tie-most-recent-feedback {
-          opacity: 1;
         }
         .tie-next-arrow {
           border-bottom: 50px solid transparent;
@@ -516,14 +517,7 @@ tie.directive('learnerView', [function() {
           {themeName: 'Dark'}
         ];
 
-        $scope.codeEditorIsShown = true;
         $scope.feedbackStorage = [];
-        // We use an object here to prevent the child scope introduced by ng-if
-        // from shadowing the parent scope.
-        // See http://stackoverflow.com/a/21512751
-        $scope.editorContents = {
-          code: ''
-        };
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -541,8 +535,7 @@ tie.directive('learnerView', [function() {
           cachedCode = CodeStorageService.loadStoredCode(
             questionId, language);
           $scope.title = question.getTitle();
-          $scope.editorContents.code = (
-            cachedCode || question.getStarterCode(language));
+          $scope.code = cachedCode || question.getStarterCode(language);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -552,6 +545,7 @@ tie.directive('learnerView', [function() {
             feedback.appendTextParagraph(paragraph);
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
+          $scope.syntaxErrorString = '';
           $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
@@ -559,7 +553,13 @@ tie.directive('learnerView', [function() {
           $scope.feedbackStorage = [];
         };
 
-        var setFeedback = function(feedback) {
+        var hideSyntaxErrorLink = function() {
+          $scope.syntaxErrorString = '';
+        };
+
+        var setFeedback = function(feedbackAndReinforcement) {
+          var feedback = feedbackAndReinforcement.feedbackObject;
+          var reinforcement = feedbackAndReinforcement.reinforcement;
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
@@ -583,25 +583,30 @@ tie.directive('learnerView', [function() {
             $scope.reinforcementBullets = [];
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
-            var hasSyntaxError = false;
-            for (var i = 0; i < feedbackParagraphs.length; i++) {
-              if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
-                hasSyntaxError = true;
-                break;
-              }
+            // Get the index of syntax error in feedback.
+            var syntaxErrorIndex = feedback.getSyntaxErrorIndex();
+            // The index must be either null (indicating no syntax error)
+            // or a positive integer.
+            if (typeof syntaxErrorIndex === 'number' && syntaxErrorIndex > 0) {
+              var syntaxErrorParagraph = feedbackParagraphs[syntaxErrorIndex];
+              feedbackParagraphs.splice(syntaxErrorIndex, 1);
+              $scope.syntaxErrorString = syntaxErrorParagraph.getContent();
+            } else if (syntaxErrorIndex === null) {
+              $scope.syntaxErrorString = '';
+              // Updating reinforcement bullets only if no syntax errors.
+              $scope.reinforcementBullets = reinforcement.getBullets();
             }
-            // Updating reinforcement bullets only if no syntax errors.
-            $scope.reinforcementBullets =
-              hasSyntaxError ? [] : feedback.getReinforcement().getBullets();
-            $scope.feedbackStorage.push({
-              feedbackParagraphs: feedbackParagraphs
-            });
+            $scope.feedbackStorage.push(
+              {
+                feedbackParagraphs: feedbackParagraphs
+              });
           }
 
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
-          $scope.scrollToBottomOfFeedbackWindow();
+          // Scroll down to the bottom of the feedback window
+          questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
         $scope.changeTheme = function(newTheme) {
@@ -630,6 +635,7 @@ tie.directive('learnerView', [function() {
           $scope.questionIds = $scope.questionSet.getQuestionIds();
           $scope.questionsCompletionStatus = [];
           $scope.loadingIndicatorIsShown = false;
+          $scope.isSyntaxErrorShown = false;
           for (var idx = 0; idx < $scope.questionIds.length; idx++) {
             $scope.questionsCompletionStatus.push(false);
           }
@@ -659,7 +665,8 @@ tie.directive('learnerView', [function() {
           theme: 'default'
         };
 
-        $scope.scrollToBottomOfFeedbackWindow = function() {
+        $scope.toggleSyntaxErrorHint = function() {
+          $scope.isSyntaxErrorShown = !$scope.isSyntaxErrorShown;
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
@@ -683,28 +690,25 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.navigateToQuestion = function(index) {
+          // Before navigating to new question,
+          // disable the syntax error link and content.
+          hideSyntaxErrorLink();
+          $scope.isSyntaxErrorShown = false;
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
             $scope.questionIds[$scope.currentQuestionIndex];
           $scope.currentQuestionIndex = index;
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
-          CodeStorageService.storeCode(
-            currentQuestionId, $scope.editorContents.code, language);
-          // Finally, we need to clear the undo history of the editor. This is
-          // done by removing the code editor from the DOM and putting it back
-          // again.
-          var CODEMIRROR_HIDE_TIMEOUT_MSEC = 20;
-          $scope.codeEditorIsShown = false;
-          $timeout(function() {
-            $scope.codeEditorIsShown = true;
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(
-              questionId, $scope.questionSet.getIntroductionParagraphs());
-          }, CODEMIRROR_HIDE_TIMEOUT_MSEC);
+          CodeStorageService.storeCode(currentQuestionId,
+            $scope.code, language);
+          loadQuestion(questionId,
+            $scope.questionSet.getIntroductionParagraphs());
         };
 
         $scope.submitCode = function(code) {
+          hideSyntaxErrorLink();
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
@@ -735,23 +739,19 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.autosave = function() {
-          if (!CodeStorageService.isAvailable()) {
-            return;
-          }
-
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                 $scope.questionIds[$scope.currentQuestionIndex];
-              if (angular.equals(cachedCode, $scope.editorContents.code)) {
+              if (angular.equals(cachedCode, $scope.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
               } else {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
                 storeCodeAndUpdateCachedCode(
-                  currentQuestionId, $scope.editorContents.code, language);
+                  currentQuestionId, $scope.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
             }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
