@@ -61,7 +61,7 @@ tie.directive('learnerView', [function() {
                   </div>
                 </div>
                 <div>
-                  <div class="tie-feedback" ng-class="{'most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
+                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
                     <hr>
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
@@ -247,6 +247,14 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
+        .tie-feedback {
+          opacity: .4;
+          transition: all 200ms;
+        }
+        .tie-feedback:hover {
+          opacity: 1;
+          transition: all 400ms;
+        }
         .tie-feedback-error-string {
           color: #F44336;
         }
@@ -274,21 +282,6 @@ tie.directive('learnerView', [function() {
         .tie-feedback-paragraph {
           width: 100%;
         }
-
-        .tie-feedback {
-          transition: all 200ms;
-          opacity: .4;
-        }
-
-        .tie-feedback:hover {
-          transition: all 400ms;
-          opacity: 1;
-        }
-
-        .most-recent-feedback {
-          opacity: 1;
-        }
-
         .tie-feedback-paragraph-code {
           background: #333;
           color: #eee;
@@ -312,6 +305,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
+        }
+        .tie-most-recent-feedback {
+          opacity: 1;
         }
         .tie-next-arrow {
           border-bottom: 50px solid transparent;
