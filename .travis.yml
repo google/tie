@@ -4,15 +4,6 @@ addons:
       - google-chrome-stable
     sources:
       - google-chrome
-after_success:
-- codecov --file ./karma_coverage_reports/coverage-final.json; fi
-before_install:
-- export CHROME_BIN=chromium-browser
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-branches:
-  only:
-  - master
 cache:
   directories:
     - ./node_modules/
@@ -20,8 +11,20 @@ cache:
     - ./tools/
 dist: trusty
 install: true
+sudo: required
+
+branches:
+  only:
+  - master
+before_install:
+- pip install --upgrade pip
+- pip install codecov
+- export CHROME_BIN=chromium-browser
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 script:
-- bash scripts/run_karma_tests.sh --single-run
+- bash scripts/run_karma_tests.sh --single-run --enable-coverage
 - bash scripts/run_linter.sh
 - bash scripts/run_e2e_tests.sh
-sudo: required
+after_success:
+- codecov --file ./karma_coverage_reports/coverage-final.json

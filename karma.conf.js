@@ -2,6 +2,11 @@
 // Generated (and revised) on Mon Feb 13 2017 17:54:48 GMT-0800 (PST).
 
 module.exports = function(config) {
+  // NOTE TO DEVELOPERS: to enable coverage reports, call `karma start` with
+  // the added arg `--enable-coverage`. We disable it by default because it
+  // interferes with the debugger during regular development.
+  var preprocessorOptions = config.enableCoverage ? ['coverage'] : [];
+
   config.set({
     // Base path that will be used to resolve all patterns (eg. files, exclude).
     basePath: '',
@@ -28,13 +33,9 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      // The 6to5 preprocessor enables tests to run on PhantomJS.
-      //
-      // NOTE TO DEVELOPERS: to enable coverage reports, add 'coverage' to the
-      // array in the values of the following keys.
-      'client/*.js': ['6to5'],
-      'client/**/*.js': ['6to5'],
-      'assets/**/*.js': ['6to5']
+      'client/*.js': preprocessorOptions,
+      'client/**/*.js': preprocessorOptions,
+      'assets/**/*.js': preprocessorOptions
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
     // Available reporters: https://npmjs.org/browse/keyword/karma-reporter.
