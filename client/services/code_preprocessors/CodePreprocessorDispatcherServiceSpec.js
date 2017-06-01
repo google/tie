@@ -20,6 +20,7 @@ describe('CodePreprocessorDispatcherService', function() {
   var CodePreprocessorDispatcherService;
   var LANGUAGE_PYTHON;
   var CodeSubmissionObjectFactory;
+  var TaskObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -27,6 +28,7 @@ describe('CodePreprocessorDispatcherService', function() {
       'CodePreprocessorDispatcherService');
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     CodeSubmissionObjectFactory = $injector.get('CodeSubmissionObjectFactory');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
   }));
 
   describe('preprocess', function() {
@@ -43,8 +45,13 @@ describe('CodePreprocessorDispatcherService', function() {
     it('should preprocess python source code', function() {
       var codeSubmission = CodeSubmissionObjectFactory.create('a = 1\nb= 2');
       var originProcessedCode = codeSubmission.getPreprocessedCode();
+      var task = TaskObjectFactory.create({
+        correctnessTests: [],
+        buggyOutputTests: [],
+        performanceTests: []
+      });
       CodePreprocessorDispatcherService.preprocess(
-        LANGUAGE_PYTHON, codeSubmission, '', []);
+        LANGUAGE_PYTHON, codeSubmission, '', [task]);
       expect(codeSubmission.getPreprocessedCode())
         .not.toEqual(originProcessedCode);
     });
