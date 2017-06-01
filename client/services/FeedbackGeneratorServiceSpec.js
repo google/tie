@@ -201,6 +201,38 @@ describe('FeedbackGeneratorService', function() {
         'ZeroDivisionError: integer division or modulo by zero on line 5');
     });
 
+    it('should throw an error if the line number index is less than 0', function() {
+      var buggyErrorTraceback = ErrorTracebackObjectFactory.create(
+        'ZeroDivisionError: integer division or modulo by zero',
+            [TracebackCoordinatesObjectFactory.create(0, 1)]);
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+            'some code', 'some output', [], [], [], buggyErrorTraceback,
+            'testInput');
+      expect(function() {
+        FeedbackGeneratorService._getRuntimeErrorFeedback(
+          codeEvalResult, [0, 1, 2, 3, 4]
+        )}).toThrow(new Error("Line number index out of range: -1"));
+    });
+
+    it('should throw an error if the line number index is greater than the length of rawCodeLineIndexes', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], sampleErrorTraceback,
+          'testInput');
+
+      expect(function() {
+        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult, [0, 1]);
+      }).toThrow();
+    });
+
+    it('should throw an error if the line number index is equal to the length of rawCodeLineIndexes', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], sampleErrorTraceback,
+          'testInput');
+      expect(function() {
+        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult, [0, 1, 2, 3]);
+      }).toThrow();
+    });
+
     it('should adjust the line numbers correctly', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], sampleErrorTraceback,
