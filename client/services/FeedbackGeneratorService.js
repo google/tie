@@ -267,7 +267,7 @@ tie.factory('FeedbackGeneratorService', [
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
-        } else if (prereqCheckFailure.isBadImport) {
+        } else if (prereqCheckFailure.isBadImport()) {
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
