@@ -156,4 +156,20 @@ describe('PythonPrereqCheckService', function() {
       expect(codeLibs).toEqual([]);
     });
   });
+
+  describe('getUnsupportedImports', function() {
+    it('correctly returns a list of the unsupported imports', function() {
+      var code = [
+        'import numpy',
+        'import pandas',
+        '',
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
+      expect(PythonPrereqCheckService.getUnsupportedImports(codeLibs)).toEqual([
+        'numpy', 'pandas']);
+    });
+  });
 });
