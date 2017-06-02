@@ -99,4 +99,18 @@ describe('CodeSubmissionObjectFactory', function() {
         null, null, 0, 1, 2]);
     });
   });
+
+  describe('removeImportsFromStudentCode', function() {
+    it('should correctly remove imports from student code', function() {
+      var originalCode = 'line 1\nline 2\nline 3';
+      var codeSubmission = CodeSubmissionObjectFactory.create(originalCode);
+
+      expect(codeSubmission.getRawCode()).toEqual(originalCode);
+      expect(codeSubmission.getPreprocessedCode()).toEqual(
+        'line 1\nline 2\nline 3');
+      expect(codeSubmission.getRawCodeLineIndexes()).toEqual([0, 1, 2]);
+
+      codeSubmission.prepend('line -1\nline 0');
+    });
+  });
 });
