@@ -30,6 +30,13 @@ describe('SnapshotObjectFactory', function() {
     });
   }));
 
+  describe('setPrereqCheckFailure', function() {
+    it('should correctly set and get prereqCheckFailure', function() {
+      snapshot.setPrereqCheckFailure("true");
+      expect(snapshot.getPrereqCheckFailure()).toMatch("true");
+    });
+  });
+
   describe('setCodeEvalResult', function() {
     it('should correctly set and get codeEvalResult', function() {
       snapshot.setCodeEvalResult("true");
