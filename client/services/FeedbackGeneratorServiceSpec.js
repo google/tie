@@ -27,7 +27,7 @@ describe('FeedbackGeneratorService', function() {
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
-  
+
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = 'missingStarterCode';
   var PREREQ_CHECK_TYPE_BAD_IMPORT = 'badImport';
   var PREREQ_CHECK_TYPE_UNKNOWN = 'unknown';
@@ -498,14 +498,14 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
     });
   });
-  
+
   describe('getPrereqFailureFeedback', function() {
     it('should throw error if there is no prereqCheckFailure', function() {
       expect(function() {
         FeedbackGeneratorService.getPrereqFailureFeedback(null);
       }).toThrow();
     });
-    
+
     it('should return the correct info if Missing Starter Code', function() {
       var starterCode = [
         'def myFunction(arg):',
@@ -526,12 +526,11 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[1].getContent()).toEqual(starterCode);
     });
-    
+
     it('should return the correct info if using a bad import', function() {
-      
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_BAD_IMPORT, ['panda'], null);
-      
+
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -546,18 +545,16 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
         'math, operator, random, re, string, time');
     });
-    
+
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {
-        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
           PREREQ_CHECK_TYPE_UNKNOWN, null, null);
-        
-        console.log((prereqFailure.isBadImport()) || prereqFailure.isMissingStarterCode());
-        expect(function() {
-          FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
-        }).toThrow();
-      }
-    );
+
+      expect(function() {
+        FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
+      }).toThrow();
+    });
   });
 });
 
