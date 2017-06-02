@@ -162,6 +162,7 @@ describe('PythonPrereqCheckService', function() {
       var code = [
         'import numpy',
         'import pandas',
+        'import math',
         '',
         'def myFunction(arg):',
         '\treturn arg',
@@ -172,4 +173,21 @@ describe('PythonPrereqCheckService', function() {
         'numpy', 'pandas']);
     });
   });
+
+  it('correctly returns an empty list if all imports are supported',
+    function() {
+      var code = [
+        'import math',
+        'import random',
+        'import operator',
+        '',
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
+      expect(PythonPrereqCheckService.getUnsupportedImports(codeLibs))
+        .toEqual([]);
+    }
+  );
 });
