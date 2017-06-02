@@ -22,10 +22,15 @@ describe('FeedbackGeneratorService', function() {
   var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
+  var PrereqCheckFailureObjectFactory;
   var TracebackCoordinatesObjectFactory;
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
+  
+  var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = 'missingStarterCode';
+  var PREREQ_CHECK_TYPE_BAD_IMPORT = 'badImport';
+  var PREREQ_CHECK_TYPE_UNKNOWN = 'unknown';
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -36,6 +41,8 @@ describe('FeedbackGeneratorService', function() {
       'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
+    PrereqCheckFailureObjectFactory = $injector.get(
+      'PrereqCheckFailureObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
@@ -490,6 +497,67 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
     });
+  });
+  
+  describe('getPrereqFailureFeedback', function() {
+    it('should throw error if there is no prereqCheckFailure', function() {
+      expect(function() {
+        FeedbackGeneratorService.getPrereqFailureFeedback(null);
+      }).toThrow();
+    });
+    
+    it('should return the correct info if Missing Starter Code', function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        'It looks like you deleted or modified the starter code!  Our ',
+        'evaluation program requires the function names given in the ',
+        'starter code.  You can press the \'Reset Code\' button to start ',
+        'over.  Or, you can copy the starter code below:'
+      ].join(''));
+      expect(paragraphs[1].getContent()).toEqual(starterCode);
+    });
+    
+    it('should return the correct info if using a bad import', function() {
+      
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_BAD_IMPORT, ['panda'], null);
+      
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "It looks like you're importing an external library. However, the ",
+        'following libraries are not supported:\n'
+      ].join(''));
+      expect(paragraphs[1].getContent()).toEqual('panda');
+      expect(paragraphs[2].getContent()).toEqual('Here is a list of libraries' +
+        ' we currently support:\n');
+      expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
+        'math, operator, random, re, string, time');
+    });
+    
+    it('should throw an error if using an unknown PrereqCheckFailureObject' +
+      'type', function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          PREREQ_CHECK_TYPE_UNKNOWN, null, null);
+        
+        console.log((prereqFailure.isBadImport()) || prereqFailure.isMissingStarterCode());
+        expect(function() {
+          FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
+        }).toThrow();
+      }
+    );
   });
 });
 
