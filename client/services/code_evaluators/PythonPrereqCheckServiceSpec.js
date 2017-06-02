@@ -190,4 +190,41 @@ describe('PythonPrereqCheckService', function() {
         .toEqual([]);
     }
   );
+
+  describe('checkCode', function() {
+    it(['returns the correct PrereqCheckFailureObject when starter code is ',
+      'missing'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(starterCode,
+          '');
+      expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+    });
+
+    it(['returns the correct PrereqCheckFailureObject when unsupported',
+      ' libraries are imported'].join(''), function() {
+      var userCode = [
+        'import math',
+        'import random',
+        'import pandas',
+        '',
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+
+      var starterCode = [
+        'def myFunction(arg):',
+        '\treturn arg',
+        ''
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, userCode);
+      expect(prereqCheckFailure.isBadImport()).toEqual(true);
+    });
+  });
 });
