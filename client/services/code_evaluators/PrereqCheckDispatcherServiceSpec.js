@@ -43,7 +43,7 @@ describe('PrereqCheckDispatcherService', function() {
 
     it('throws an error when an unsupported language is used', function() {
       expect(function() {
-        PrereqCheckDispatcherService.checkCode('java', '', '');
+        PrereqCheckDispatcherService.checkCode('invalidLanguage', '', '');
       }).toThrow();
     });
   });

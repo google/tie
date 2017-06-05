@@ -199,10 +199,51 @@ describe('PythonPrereqCheckService', function() {
         '\treturn arg',
         ''
       ].join('\n');
-      var prereqCheckFailure = PythonPrereqCheckService.checkCode(starterCode,
-          '');
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, '');
       expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
     });
+
+    it(['returns the correct PrereqCheckFailureObject when starter code method',
+      ' name is incorrect but the arguments are correct'].join(''),
+        function() {
+          var starterCode = [
+            'def myFunction(arg):',
+            '\treturn arg',
+            ''
+          ].join('\n');
+          var code = [
+            'def myFx(arg):',
+            '\treturn arg',
+            ''
+          ].join('\n');
+
+          var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+            starterCode, code);
+          expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+        }
+    );
+
+    it(['returns the correct PrereqCheckFailureObject when starter code method',
+      ' name is correct but arguments are incorrect'].join(''),
+        function() {
+          var starterCode = [
+            'def myFunction(arg):',
+            '\treturn arg',
+            ''
+          ].join('\n');
+
+          var code = [
+            'def myFunction(arg, wrong_arg):',
+            '\treturn arg',
+            ''
+          ].join('\n');
+
+          var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+            starterCode, code);
+          expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+        }
+    );
 
     it(['returns the correct PrereqCheckFailureObject when unsupported',
       ' libraries are imported'].join(''), function() {
