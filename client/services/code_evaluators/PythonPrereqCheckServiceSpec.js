@@ -28,15 +28,15 @@ describe('PythonPrereqCheckService', function() {
   describe('checkStarterCodeFunctionsPresent', function() {
     var starterCode = [
       'def myFunction(arg):',
-      '\treturn result',
+      '    return result',
       ''
     ].join('\n');
 
     it('detects that starter code top-level function lines exist', function() {
       var code = [
         'def myFunction(arg):',
-        '\tresult = arg.rstrip()',
-        '\treturn result',
+        '    result = arg.rstrip()',
+        '    return result',
         ''
       ].join('\n');
       var starterCodePresent =
@@ -48,8 +48,8 @@ describe('PythonPrereqCheckService', function() {
     it('detects modification of starter code top-level function', function() {
       var code = [
         'def yourFunction(arg):',
-        '\tresult = arg.rstrip()',
-        '\treturn result',
+        '    result = arg.rstrip()',
+        '    return result',
         ''
       ].join('\n');
       var starterCodePresent =
@@ -60,8 +60,8 @@ describe('PythonPrereqCheckService', function() {
 
     it('detects deletion of starter code top-level function', function() {
       var code = [
-        '\tresult = arg.rstrip()',
-        '\treturn result',
+        '    result = arg.rstrip()',
+        '    return result',
         ''
       ].join('\n');
       var starterCodePresent =
@@ -75,9 +75,9 @@ describe('PythonPrereqCheckService', function() {
     it('correctly returns lines with top level functions', function() {
       var starterCode = [
         'def myFunction(arg):',
-        '\treturn result',
+        '    return result',
         'def yourFunction(arg):',
-        '\treturn result',
+        '    return result',
         ''
       ].join('\n');
       var extractedTopLevelFunctionLines =
@@ -91,9 +91,9 @@ describe('PythonPrereqCheckService', function() {
     it('returns true when top level function lines exist', function() {
       var code = [
         'def myFunction(arg):',
-        '\treturn result',
+        '    return result',
         'def yourFunction(arg):',
-        '\treturn result',
+        '    return result',
         ''
       ].join('\n');
       var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
@@ -106,7 +106,7 @@ describe('PythonPrereqCheckService', function() {
     it('returns false when a top level function line is absent', function() {
       var code = [
         'def myFunction(arg):\n',
-        '\treturn result\n',
+        '    return result\n',
         ''
       ].join('\n');
       var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
@@ -119,9 +119,9 @@ describe('PythonPrereqCheckService', function() {
     it('returns true if top level function lines are out of order', function() {
       var code = [
         'def yourFunction(arg):',
-        '\treturn result',
+        '    return result',
         'def myFunction(arg):',
-        '\treturn result',
+        '    return result',
         ''
       ].join('\n');
       var functions = ['def myFunction(arg):', 'def yourFunction(arg):'];
@@ -138,7 +138,7 @@ describe('PythonPrereqCheckService', function() {
         'import pandas',
         '',
         'def myFunction(arg):',
-        '\treturn arg',
+        '    return arg',
         ''
       ].join('\n');
       var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
@@ -148,12 +148,124 @@ describe('PythonPrereqCheckService', function() {
     it('does not capture strings with \'import\' in text', function() {
       var code = [
         'def myFunction(arg):',
-        '\tresult = str(arg) + \'import this\'',
-        '\treturn result',
+        '    result = str(arg) + \'import this\'',
+        '    return result',
         ''
       ].join('\n');
       var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
       expect(codeLibs).toEqual([]);
+    });
+  });
+
+  describe('getUnsupportedImports', function() {
+    it('correctly returns a list of the unsupported imports', function() {
+      var code = [
+        'import numpy',
+        'import pandas',
+        'import math',
+        '',
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
+      expect(PythonPrereqCheckService.getUnsupportedImports(codeLibs)).toEqual([
+        'numpy', 'pandas']);
+    });
+  });
+
+  it('correctly returns an empty list if all imports are supported',
+    function() {
+      var code = [
+        'import math',
+        'import random',
+        'import operator',
+        '',
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var codeLibs = PythonPrereqCheckService.getImportedLibraries(code);
+      expect(PythonPrereqCheckService.getUnsupportedImports(codeLibs))
+        .toEqual([]);
+    }
+  );
+
+  describe('checkCode', function() {
+    it(['returns the correct PrereqCheckFailureObject when starter code is ',
+      'missing'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, '');
+      expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+    });
+
+    it(['returns the correct PrereqCheckFailureObject when starter code method',
+      ' name is incorrect but the arguments are correct'].join(''),
+        function() {
+          var starterCode = [
+            'def myFunction(arg):',
+            '    return arg',
+            ''
+          ].join('\n');
+          var code = [
+            'def myFx(arg):',
+            '    return arg',
+            ''
+          ].join('\n');
+
+          var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+            starterCode, code);
+          expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+        }
+    );
+
+    it(['returns the correct PrereqCheckFailureObject when starter code method',
+      ' name is correct but arguments are incorrect'].join(''),
+        function() {
+          var starterCode = [
+            'def myFunction(arg):',
+            '    return arg',
+            ''
+          ].join('\n');
+
+          var code = [
+            'def myFunction(arg, wrong_arg):',
+            '    return arg',
+            ''
+          ].join('\n');
+
+          var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+            starterCode, code);
+          expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+        }
+    );
+
+    it(['returns the correct PrereqCheckFailureObject when unsupported',
+      ' libraries are imported'].join(''), function() {
+      var userCode = [
+        'import math',
+        'import random',
+        'import pandas',
+        '',
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, userCode);
+      expect(prereqCheckFailure.isBadImport()).toEqual(true);
     });
   });
 });
