@@ -30,9 +30,9 @@ describe('PrereqCheckDispatcherService', function() {
       function() {
         var code = [
           'def myFunction(arg):',
-          '\treturn result',
+          '    return result',
           'def yourFunction(arg):',
-          '\treturn result',
+          '    return result',
           ''
         ].join('\n');
         var prereqCheckResults = PrereqCheckDispatcherService.checkCode(
