@@ -22,9 +22,9 @@ describe('SolutionHandlerService', function() {
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
-  
-  var SUPPORTED_PYTHON_LIBS = ['collections', 'image','math', 'operator', 
-                               'random', 're', 'string', 'time'];
+
+  var SUPPORTED_PYTHON_LIBS = ['collections', 'image', 'math', 'operator',
+    'random', 're', 'string', 'time'];
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -59,7 +59,12 @@ describe('SolutionHandlerService', function() {
           "Mock BuggyOutputTest Message Three for task1"
         ]
       }],
-      performanceTests: []
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
     }, {
       instructions: [''],
       prerequisiteSkills: [''],
@@ -82,7 +87,12 @@ describe('SolutionHandlerService', function() {
           "Mock BuggyOutputTest Message Three for task2"
         ]
       }],
-      performanceTests: []
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
     }];
 
     orderedTasks = taskDict.map(function(task) {
@@ -225,7 +235,7 @@ describe('SolutionHandlerService', function() {
         });
       });
     });
-    
+
     describe("prereqCheckFailures", function() {
       it('should be correctly handled if missing starter code', function(done) {
         SolutionHandlerService.processSolutionAsync(
@@ -234,23 +244,23 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
-           'It looks like you deleted or modified the starter code!  Our ',
-           'evaluation program requires the function names given in the ',
-           'starter code.  You can press the \'Reset Code\' button to start ',
-           'over.  Or, you can copy the starter code below:'
+            'It looks like you deleted or modified the starter code!  Our ',
+            'evaluation program requires the function names given in the ',
+            'starter code.  You can press the \'Reset Code\' button to start ',
+            'over.  Or, you can copy the starter code below:'
           ].join(''));
           expect(feedback.getParagraphs()[1].getContent()).toEqual(starterCode);
           done();
         });
       });
-      
+
       it('should be correctly handled if has bad import', function(done) {
         var studentCode = [
           'import pandas',
           'def mockMainFunction(input):',
           '    return True'
         ].join('\n');
-        
+
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -269,14 +279,14 @@ describe('SolutionHandlerService', function() {
         });
       });
     });
-    
+
     describe('potentialSyntaxError', function() {
       it('should correctly handle a possible syntax error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
           'return True'
         ].join('\n');
-        
+
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'

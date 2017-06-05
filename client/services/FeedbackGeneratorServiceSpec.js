@@ -23,10 +23,12 @@ describe('FeedbackGeneratorService', function() {
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
   var PrereqCheckFailureObjectFactory;
+  var TaskObjectFactory;
   var TracebackCoordinatesObjectFactory;
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
+  var testTask;
 
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = 'missingStarterCode';
   var PREREQ_CHECK_TYPE_BAD_IMPORT = 'badImport';
@@ -43,16 +45,38 @@ describe('FeedbackGeneratorService', function() {
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
 
+    var taskDict = [{
+      instructions: [''],
+      prerequisiteSkills: [''],
+      acquiredSkills: [''],
+      inputFunctionName: null,
+      outputFunctionName: null,
+      mainFunctionName: 'mockMainFunction',
+      correctnessTests: [],
+      buggyOutputTests: [],
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
+    }];
+
+    testTask = taskDict.map(function(task) {
+      return TaskObjectFactory.create(task);
+    });
+
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
-      'ZeroDivisionError: integer division or modulo by zero',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+     'ZeroDivisionError: integer division or modulo by zero',
+     [TracebackCoordinatesObjectFactory.create(5, 1)]);
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
-      'TimeLimitError: Program exceeded run time limit.',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+     'TimeLimitError: Program exceeded run time limit.',
+     [TracebackCoordinatesObjectFactory.create(5, 1)]);
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -496,6 +520,24 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+    });
+  });
+
+  describe('getFeedback', function() {
+    it('should correctly return feedback if the performance does not meet ' +
+      'expecations', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], ['not linear'], null, null);
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        testTask, codeEvalResult, []);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('Your code is running more ' +
+        'slowly than expected. Can you reconfigure it such that it runs in ' +
+        'linear time?');
     });
   });
 
