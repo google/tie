@@ -51,7 +51,7 @@ describe('FeedbackObjectFactory', function() {
     });
   });
 /*
-  describe('getReinforcement', function() {
+  Describe('getReinforcement', function() {
     it('should get reinforcement for a given task', function() {
       var reinforcement = "hello world";
       feedback.setReinforcement(reinforcement);
