@@ -19,6 +19,7 @@
 describe('QuestionObjectFactory', function() {
   var QuestionObjectFactory;
   var question;
+  var questionWithNoTasks;
   var TITLE = "title";
   var STARTER_CODE = "starterCode";
   var AUXILIARY_CODE = "auxiliaryCode";
@@ -42,6 +43,12 @@ describe('QuestionObjectFactory', function() {
         buggyOutputTests: [],
         performanceTests: []
       }]
+    });
+    questionWithNoTasks = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: []
     });
   }));
 
@@ -78,13 +85,10 @@ describe('QuestionObjectFactory', function() {
       expect(question.isLastTask(2)).toBe(false);
       expect(question.isLastTask(-1)).toBe(false);
       expect(question.isLastTask(1)).toBe(true);
-      for (var i = 0; i < question.tasks; i++) {
-        if (i < (question.tasks - 1)) {
-          expect(question.isLastTask(i)).toBe(false);
-        } else {
-          expect(i).toBe(true);
-        }
-      }
+      expect(question.isLastTask(question.getTasks.length -
+        (question.getTasks.length - 1))).toBe(true);
+      expect(questionWithNoTasks.isLastTask(
+        questionWithNoTasks.getTasks.length)).toBe(false);
     });
   });
 });
