@@ -78,6 +78,13 @@ describe('QuestionObjectFactory', function() {
       expect(question.isLastTask(2)).toBe(false);
       expect(question.isLastTask(-1)).toBe(false);
       expect(question.isLastTask(1)).toBe(true);
+      for (var i = 0; i < question.tasks; i++) {
+        if (i < (question.tasks - 1)) {
+          expect(question.isLastTask(i)).toBe(false);
+        } else {
+          expect(i).toBe(true);
+        }
+      }
     });
   });
 });
