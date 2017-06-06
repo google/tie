@@ -36,6 +36,10 @@ tie.factory('TranscriptObjectFactory', [
       return this._snapshots.length;
     };
 
+    Transcript.prototype.clearSnapshots = function() {
+      this._snapshots.length = 0;
+    };
+
     // Static class methods.
     Transcript.create = function() {
       return new Transcript();
