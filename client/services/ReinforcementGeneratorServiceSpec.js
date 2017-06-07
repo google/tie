@@ -314,6 +314,7 @@ describe('ReinforcementGeneratorService', function() {
         };
 
         expect(pastFailedCases).toEqual(expectedPastFailedCases);
+
         var reinforcement = ReinforcementGeneratorService.getReinforcement(
           taskWithThreeTests[0], codeEvalResult);
         pastFailedCases = reinforcement.getPastFailedCases();
