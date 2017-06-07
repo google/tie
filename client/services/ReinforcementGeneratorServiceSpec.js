@@ -134,8 +134,9 @@ describe('ReinforcementGeneratorService', function() {
 
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
         var passedTags = feedback.getReinforcement().getPassedTags();
-        var input1 = taskWithTwoTests[0].getCorrectnessTests()[0].getStringifiedInput();
-        var input2 = taskWithTwoTests[0].getCorrectnessTests()[1].getStringifiedInput();
+        var task = taskWithTwoTests[0];
+        var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+        var input2 = task.getCorrectnessTests()[1].getStringifiedInput();
 
         expect(pastFailedCases[input1]).toEqual(false);
         expect(pastFailedCases[input2]).toEqual(undefined);
@@ -164,7 +165,8 @@ describe('ReinforcementGeneratorService', function() {
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
       var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-      var input1 = taskWithThreeTests[0].getCorrectnessTests()[0].getStringifiedInput();
+      var task = taskWithThreeTests[0];
+      var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
 
       expect(pastFailedCases[input1]).toEqual(false);
 
@@ -176,7 +178,8 @@ describe('ReinforcementGeneratorService', function() {
       pastFailedCases = reinforcement.getPastFailedCases();
 
       expect(pastFailedCases[input1]).toEqual(undefined);
-      input1 = taskWithTwoTests[0].getCorrectnessTests()[0].getStringifiedInput();
+      task = taskWithTwoTests[0];
+      input1 = task.getCorrectnessTests()[0].getStringifiedInput();
       expect(pastFailedCases[input1]).toEqual(false);
     });
 
@@ -192,9 +195,10 @@ describe('ReinforcementGeneratorService', function() {
         taskWithThreeTests[0], codeEvalResult);
 
       var pastFailedCases = reinforcement.getPastFailedCases();
-      var input1 = taskWithThreeTests[0].getCorrectnessTests()[0].getStringifiedInput();
-      var input2 = taskWithThreeTests[0].getCorrectnessTests()[1].getStringifiedInput();
-      var input3 = taskWithThreeTests[0].getCorrectnessTests()[2].getStringifiedInput();
+      var task = taskWithThreeTests[0];
+      var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+      var input2 = task.getCorrectnessTests()[1].getStringifiedInput();
+      var input3 = task.getCorrectnessTests()[2].getStringifiedInput();
 
       expect(Object.keys(pastFailedCases).length).toEqual(1);
       expect(pastFailedCases[input1]).toEqual(false);
@@ -226,9 +230,10 @@ describe('ReinforcementGeneratorService', function() {
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-        var input1 = taskWithThreeTests[0].getCorrectnessTests()[0].getStringifiedInput();
-        var input2 = taskWithThreeTests[0].getCorrectnessTests()[1].getStringifiedInput();
-        var input3 = taskWithThreeTests[0].getCorrectnessTests()[2].getStringifiedInput();
+        var task = taskWithThreeTests[0];
+        var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+        var input2 = task.getCorrectnessTests()[1].getStringifiedInput();
+        var input3 = task.getCorrectnessTests()[2].getStringifiedInput();
 
         expect(Object.keys(pastFailedCases).length).toEqual(0);
         expect(pastFailedCases[input1]).toEqual(undefined);
@@ -245,7 +250,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[false, true, true]],
           [], [], null, null);
         var reinforcement = ReinforcementGeneratorService.getReinforcement(
-          taskWithThreeTests[0], codeEvalResult);
+          task, codeEvalResult);
         pastFailedCases = reinforcement.getPastFailedCases();
 
         expect(reinforcement.getPassedTags().tag1).toEqual(false);
@@ -261,9 +266,10 @@ describe('ReinforcementGeneratorService', function() {
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-        var input1 = taskWithThreeTests[0].getCorrectnessTests()[0].getStringifiedInput();
-        var input2 = taskWithThreeTests[0].getCorrectnessTests()[1].getStringifiedInput();
-        var input3 = taskWithThreeTests[0].getCorrectnessTests()[2].getStringifiedInput();
+        var task = taskWithThreeTests[0];
+        var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+        var input2 = task.getCorrectnessTests()[1].getStringifiedInput();
+        var input3 = task.getCorrectnessTests()[2].getStringifiedInput();
 
         expect(pastFailedCases[input1]).toEqual(false);
         expect(pastFailedCases[input2]).toEqual(undefined);
@@ -314,9 +320,10 @@ describe('ReinforcementGeneratorService', function() {
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-      var input1 = taskWithThreeCases[0].getCorrectnessTests()[0].getStringifiedInput();
-      var input2 = taskWithThreeCases[0].getCorrectnessTests()[1].getStringifiedInput();
-      var input3 = taskWithThreeCases[0].getCorrectnessTests()[2].getStringifiedInput();
+      var task = taskWithThreeCases[0];
+      var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+      var input2 = task.getCorrectnessTests()[1].getStringifiedInput();
+      var input3 = task.getCorrectnessTests()[2].getStringifiedInput();
 
       expect(pastFailedCases[input1]).toEqual(false);
       expect(pastFailedCases[input2]).toEqual(undefined);
