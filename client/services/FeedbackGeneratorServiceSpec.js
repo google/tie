@@ -78,11 +78,11 @@ describe('FeedbackGeneratorService', function() {
     });
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
-     'ZeroDivisionError: integer division or modulo by zero',
-     [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      'ZeroDivisionError: integer division or modulo by zero',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
-     'TimeLimitError: Program exceeded run time limit.',
-     [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      'TimeLimitError: Program exceeded run time limit.',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -239,19 +239,19 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should throw an error if the line number index is less than 0',
-        function() {
-          var buggyErrorTraceback = ErrorTracebackObjectFactory.create(
-              'ZeroDivisionError: integer division or modulo by zero',
-              [TracebackCoordinatesObjectFactory.create(0, 1)]);
-          var codeEvalResult = CodeEvalResultObjectFactory.create(
-            'some code', 'some output', [], [], [], buggyErrorTraceback,
-            'testInput');
-          expect(function() {
-            FeedbackGeneratorService._getRuntimeErrorFeedback(
-              codeEvalResult, [0, 1, 2, 3, 4]
-            );
-          }).toThrow(new Error("Line number index out of range: -1"));
-        }
+      function() {
+        var buggyErrorTraceback = ErrorTracebackObjectFactory.create(
+            'ZeroDivisionError: integer division or modulo by zero',
+            [TracebackCoordinatesObjectFactory.create(0, 1)]);
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], buggyErrorTraceback,
+          'testInput');
+        expect(function() {
+          FeedbackGeneratorService._getRuntimeErrorFeedback(
+            codeEvalResult, [0, 1, 2, 3, 4]
+          );
+        }).toThrow(new Error("Line number index out of range: -1"));
+      }
     );
 
     it('should throw an error if the line number index is greater than the ' +
@@ -557,7 +557,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return the correct info if Missing Starter Code', function() {
       var starterCode = [
         'def myFunction(arg):',
-        '\treturn arg',
+        '    return arg',
         ''
       ].join('\n');
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
