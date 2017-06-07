@@ -30,9 +30,9 @@ describe('FeedbackGeneratorService', function() {
   var timeLimitErrorTraceback;
   var testTask;
 
-  var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = 'missingStarterCode';
-  var PREREQ_CHECK_TYPE_BAD_IMPORT = 'badImport';
-  var PREREQ_CHECK_TYPE_UNKNOWN = 'unknown';
+  var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
+  var PREREQ_CHECK_TYPE_BAD_IMPORT;
+  var PREREQ_CHECK_TYPE_UNKNOWN;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -49,6 +49,12 @@ describe('FeedbackGeneratorService', function() {
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
+
+    PREREQ_CHECK_TYPE_UNKNOWN = 'unknown';
+    PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
+      'PREREQ_CHECK_TYPE_BAD_IMPORT');
+    PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
+      'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
 
     var taskDict = [{
       instructions: [''],
