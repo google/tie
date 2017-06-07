@@ -21,7 +21,7 @@ describe('CodeEvalResultObjectFactory', function() {
   var codeEvalResult;
   var CODE = "code";
   var OUTPUT = "output";
-  var CORRECTNESS_TEST_RESULTS = ["xyz", "xyz", "xyz", "xyz", "xyz"];
+  var CORRECTNESS_TEST_RESULTS = ["abc", "def", "mno", "123", "xyz"];
   var LAST_TASK_RESULTS = "xyz";
   var BUGGY_OUTPUT_TEST_RESULTS = "buggyOutputTestResults";
   var PERFORMANCE_TEST_RESULTS = "performanceTestResults";
@@ -46,7 +46,7 @@ describe('CodeEvalResultObjectFactory', function() {
   describe('getCorrectnessTestResults', function() {
     it('should correctly get correctness test results', function() {
       expect(codeEvalResult.getCorrectnessTestResults())
-      .toEqual(CORRECTNESS_TEST_RESULTS);
+        .toEqual(CORRECTNESS_TEST_RESULTS);
     });
   });
 
