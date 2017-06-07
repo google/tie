@@ -281,7 +281,7 @@ describe('SolutionHandlerService', function() {
     });
 
     describe('potentialSyntaxError', function() {
-      it('should correctly handle a possible syntax error', function(done) {
+      it('should correctly handle a syntax error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
           'return True'

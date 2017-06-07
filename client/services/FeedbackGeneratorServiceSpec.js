@@ -525,7 +525,7 @@ describe('FeedbackGeneratorService', function() {
 
   describe('getFeedback', function() {
     it('should correctly return feedback if the performance does not meet ' +
-      'expecations', function() {
+      'expectations', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], ['not linear'], null, null);
 
