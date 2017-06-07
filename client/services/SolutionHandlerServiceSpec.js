@@ -23,8 +23,7 @@ describe('SolutionHandlerService', function() {
   var auxiliaryCode;
   var starterCode;
 
-  var SUPPORTED_PYTHON_LIBS = ['collections', 'image', 'math', 'operator',
-    'random', 're', 'string', 'time'];
+  var SUPPORTED_PYTHON_LIBS;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -36,6 +35,7 @@ describe('SolutionHandlerService', function() {
   beforeEach(inject(function($injector) {
     TaskObjectFactory = $injector.get(
       'TaskObjectFactory');
+    SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
 
     var taskDict = [{
       instructions: [''],
