@@ -32,7 +32,6 @@ describe('FeedbackGeneratorService', function() {
 
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
-  var PREREQ_CHECK_TYPE_UNKNOWN;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -50,7 +49,6 @@ describe('FeedbackGeneratorService', function() {
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
 
-    PREREQ_CHECK_TYPE_UNKNOWN = 'unknown';
     PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
@@ -597,7 +595,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-          PREREQ_CHECK_TYPE_UNKNOWN, null, null);
+          'unknown', null, null);
 
       expect(function() {
         FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
