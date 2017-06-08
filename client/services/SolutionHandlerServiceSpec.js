@@ -222,5 +222,28 @@ describe('SolutionHandlerService', function() {
         });
       });
     });
+
+    describe('processSolutionAsync', function() {
+      it('should return a feedback if there is an infinite loop',
+        function(done) {
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return mockMainFunction(input)'
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode,
+            auxiliaryCode, 'python'
+          ).then(function(feedback) {
+            expect(feedback.isAnswerCorrect()).toEqual(false);
+            expect(feedback.getParagraphs()[0].getContent()).toEqual([
+              "Looks like your code is hitting an infinite recursive loop.",
+              "Check to see that your recursive calls terminate."
+            ].join(' '));
+            done();
+          });
+        }
+      );
+    });
   });
 });

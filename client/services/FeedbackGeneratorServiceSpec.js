@@ -26,7 +26,6 @@ describe('FeedbackGeneratorService', function() {
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
-  var infiniteLoopTraceback;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -43,10 +42,6 @@ describe('FeedbackGeneratorService', function() {
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
-
-    infiniteLoopTraceback = ErrorTracebackObjectFactory.create(
-      'ExternalError: RangeError: Maximum call stack size exceeded',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
 
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
