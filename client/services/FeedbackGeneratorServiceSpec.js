@@ -43,7 +43,6 @@ describe('FeedbackGeneratorService', function() {
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
-
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
       'TimeLimitError: Program exceeded run time limit.',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
