@@ -26,6 +26,7 @@ describe('FeedbackGeneratorService', function() {
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
+  var infiniteLoopTraceback;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -43,6 +44,11 @@ describe('FeedbackGeneratorService', function() {
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
+
+    infiniteLoopTraceback = ErrorTracebackObjectFactory.create(
+      'ExternalError: RangeError: Maximum call stack size exceeded',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
       'TimeLimitError: Program exceeded run time limit.',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
@@ -178,6 +184,22 @@ describe('FeedbackGeneratorService', function() {
         'reconfigure it such that it runs in linear time?'
       ].join(''));
 
+    });
+  });
+
+  describe('_getInfiniteLoopFeedback', function() {
+    it('should return an error if an infinite loop is detected', function() {
+      var paragraphs = FeedbackGeneratorService
+        ._getInfiniteLoopFeedback().getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        [
+          'Looks like your code is hitting an infinite recursive loop.',
+          'Check to see that your recursive calls terminate.'
+        ].join(' ')
+      );
     });
   });
 
