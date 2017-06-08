@@ -23,6 +23,8 @@ describe('SolutionHandlerService', function() {
   var auxiliaryCode;
   var starterCode;
 
+  var SUPPORTED_PYTHON_LIBS;
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     SolutionHandlerService = $injector.get(
@@ -33,6 +35,7 @@ describe('SolutionHandlerService', function() {
   beforeEach(inject(function($injector) {
     TaskObjectFactory = $injector.get(
       'TaskObjectFactory');
+    SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
 
     var taskDict = [{
       instructions: [''],
@@ -56,7 +59,12 @@ describe('SolutionHandlerService', function() {
           "Mock BuggyOutputTest Message Three for task1"
         ]
       }],
-      performanceTests: []
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
     }, {
       instructions: [''],
       prerequisiteSkills: [''],
@@ -79,7 +87,12 @@ describe('SolutionHandlerService', function() {
           "Mock BuggyOutputTest Message Three for task2"
         ]
       }],
-      performanceTests: []
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
     }];
 
     orderedTasks = taskDict.map(function(task) {
@@ -223,7 +236,7 @@ describe('SolutionHandlerService', function() {
       });
     });
 
-    describe('potentialPrereqCheckFailure', function() {
+    describe("prereqCheckFailures", function() {
       it('should return the correct feedback if there is code in global scope',
         function(done) {
           var studentCode = [
@@ -245,13 +258,29 @@ describe('SolutionHandlerService', function() {
           });
         }
       );
-    });
 
-    describe('should return the correct feedback if', function() {
-      it('there is an infinite loop', function(done) {
+      it('should be correctly handled if missing starter code', function(done) {
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, '',
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.isAnswerCorrect()).toEqual(false);
+          expect(feedback.getParagraphs()[0].getContent()).toEqual([
+            'It looks like you deleted or modified the starter code!  Our ',
+            'evaluation program requires the function names given in the ',
+            'starter code.  You can press the \'Reset Code\' button to start ',
+            'over.  Or, you can copy the starter code below:'
+          ].join(''));
+          expect(feedback.getParagraphs()[1].getContent()).toEqual(starterCode);
+          done();
+        });
+      });
+
+      it('should be correctly handled if has bad import', function(done) {
         var studentCode = [
+          'import pandas',
           'def mockMainFunction(input):',
-          '    return mockMainFunction(input)'
+          '    return True'
         ].join('\n');
 
         SolutionHandlerService.processSolutionAsync(
@@ -260,9 +289,74 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
+            "It looks like you're importing an external library. However, the ",
+            'following libraries are not supported:\n'
+          ].join(''));
+          expect(feedback.getParagraphs()[1].getContent()).toEqual('pandas');
+          expect(feedback.getParagraphs()[2].getContent()).toEqual(
+            'Here is a list of libraries we currently support:\n');
+          expect(feedback.getParagraphs()[3].getContent()).toEqual(
+            SUPPORTED_PYTHON_LIBS.join(', '));
+          done();
+        });
+      });
+    });
+
+    describe('potentialSyntaxError', function() {
+      it('should correctly handle a syntax error', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return True -'
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.isAnswerCorrect()).toEqual(false);
+          expect(feedback.getParagraphs()[0].getContent().startsWith(
+            'SyntaxError:')).toEqual(true);
+          done();
+        });
+      });
+    });
+
+    describe('should return the correct feedback if', function() {
+      it('there is an infinite loop', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return mockMainFunction(input)',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toEqual([
             "Looks like your code is hitting an infinite recursive loop.",
             "Check to see that your recursive calls terminate."
           ].join(' '));
+          done();
+        });
+      });
+
+      it('there is a runtime error', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print(greeting)',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()
+            .startsWith(
+              'Looks like your code had a runtime error when ' +
+              'evaluating the input ')
+          ).toBe(true);
           done();
         });
       });
