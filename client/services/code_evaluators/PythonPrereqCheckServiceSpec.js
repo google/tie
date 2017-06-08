@@ -240,20 +240,20 @@ describe('PythonPrereqCheckService', function() {
 
     it(['does not return a PrereqCheckFailure Object if the user ' +
       'uses two-space tabs instead of 4'].join(''), function() {
-        var starterCode = [
-          'def myFunction(arg):',
-          '    return arg',
-          ''
-        ].join('\n');
-        var code = [
-          'def myFunction(arg):',
-          '  return arg',
-          ''
-        ].join('\n');
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '  return arg',
+        ''
+      ].join('\n');
 
-        var prereqCheckFailure = PythonPrereqCheckService.checkCode(
-          starterCode, code);
-        expect(prereqCheckFailure).toBe(null);
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure).toBe(null);
     });
 
     it(['returns the correct PrereqCheckFailureObject when starter code method',
