@@ -219,7 +219,7 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
     });
 
-    it(['returns the correctPrereqCheckFailureObject when there is code in ' +
+    it(['returns the correct PrereqCheckFailureObject when there is code in ' +
       'the global scope'].join(''), function() {
       var starterCode = [
         'def myFunction(arg):',
@@ -236,6 +236,24 @@ describe('PythonPrereqCheckService', function() {
       var prereqCheckFailure = PythonPrereqCheckService.checkCode(
         starterCode, code);
       expect(prereqCheckFailure.hasGlobalCode()).toEqual(true);
+    });
+
+    it(['does not return a PrereqCheckFailure Object if the user ' +
+      'uses two-space tabs instead of 4'].join(''), function() {
+        var starterCode = [
+          'def myFunction(arg):',
+          '    return arg',
+          ''
+        ].join('\n');
+        var code = [
+          'def myFunction(arg):',
+          '  return arg',
+          ''
+        ].join('\n');
+
+        var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+          starterCode, code);
+        expect(prereqCheckFailure).toBe(null);
     });
 
     it(['returns the correct PrereqCheckFailureObject when starter code method',
