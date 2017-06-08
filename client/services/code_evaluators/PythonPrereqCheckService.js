@@ -20,14 +20,28 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
-      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS) {
+      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
+      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
 
     var rightTrim = function(str) {
       // Remove trailing white space at end of string.
       var RIGHT_TRIM_PATTERN = /\s+$/;
       return str.replace(RIGHT_TRIM_PATTERN, '');
+    };
+
+    var checkGlobalCallsPresent = function(code) {
+      var codeLines = code.split('\n');
+      for (var i = 0; i < codeLines.length; i++) {
+        var line = rightTrim(codeLines[i]);
+        if (line.search(/((^\s\s\s\s)+(\w|\s)*)|(^def)|(^import)/) === -1 &&
+          line !== '') {
+          return true;
+        }
+      }
+      return false;
     };
 
     var extractTopLevelFunctionLines = function(starterCode) {
@@ -88,6 +102,11 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
         }
 
+        if (checkGlobalCallsPresent(code)) {
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_GLOBAL_CODE, null, starterCode);
+        }
+
         // Verify no unsupported libraries are imported.
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
@@ -100,6 +119,7 @@ tie.factory('PythonPrereqCheckService', [
         return null;
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
+      checkGlobalCallsPresent: checkGlobalCallsPresent,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,

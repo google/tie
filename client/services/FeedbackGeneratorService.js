@@ -280,7 +280,7 @@ tie.factory('FeedbackGeneratorService', [
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
-        } else if (prereqCheckFailure.isBadImport) {
+        } else if (prereqCheckFailure.isBadImport()) {
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
@@ -290,6 +290,11 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
+        } else if (prereqCheckFailure.hasGlobalCode()) {
+          feedback.appendTextParagraph([
+            'Please keep your code within the existing predefined functions',
+            '-- we cannot process code in the global scope.'
+          ].join(' '));
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',

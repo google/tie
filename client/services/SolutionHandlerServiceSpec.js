@@ -223,12 +223,13 @@ describe('SolutionHandlerService', function() {
       });
     });
 
-    describe('processSolutionAsync', function() {
-      it('should return a feedback if there is an infinite loop',
+    describe('potentialPrereqCheckFailure', function() {
+      it('should return the correct feedback if there is code in global scope',
         function(done) {
           var studentCode = [
             'def mockMainFunction(input):',
-            '    return mockMainFunction(input)'
+            '    return input',
+            'mockMainFunction("input")'
           ].join('\n');
 
           SolutionHandlerService.processSolutionAsync(
@@ -237,13 +238,34 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[0].getContent()).toEqual([
-              "Looks like your code is hitting an infinite recursive loop.",
-              "Check to see that your recursive calls terminate."
+              'Please keep your code within the existing predefined functions',
+              '-- we cannot process code in the global scope.'
             ].join(' '));
             done();
           });
         }
       );
+    });
+
+    describe('should return the correct feedback if', function() {
+      it('there is an infinite loop', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return mockMainFunction(input)'
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.isAnswerCorrect()).toEqual(false);
+          expect(feedback.getParagraphs()[0].getContent()).toEqual([
+            "Looks like your code is hitting an infinite recursive loop.",
+            "Check to see that your recursive calls terminate."
+          ].join(' '));
+          done();
+        });
+      });
     });
   });
 });
