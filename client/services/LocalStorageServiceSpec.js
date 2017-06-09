@@ -62,75 +62,143 @@ describe('LocalStorageService', function() {
     localStorage.clear();
   });
 
-  describe('storeCode', function() {
-    it('should store code to browser', function() {
-      expect(localStorage.length).toEqual(0);
-      sampleQuestionIds.forEach(function(questionId, index) {
-        LocalStorageService.storeCode(questionId,
-          sampleQuestionCodes[index], LANGUAGE);
-        var key = questionId + ":" + LANGUAGE;
-        expect(localStorage.getItem(key)).toEqual(
-          sampleQuestionCodes[index]);
+  describe('CodeStorage', function() {
+    describe('storeCode', function() {
+      it('should store code to browser', function() {
+        expect(localStorage.length).toEqual(0);
+        sampleQuestionIds.forEach(function(questionId, index) {
+          LocalStorageService.storeCode(questionId,
+            sampleQuestionCodes[index], LANGUAGE);
+          var key = questionId + ":" + LANGUAGE;
+          expect(localStorage.getItem(key)).toEqual(
+            sampleQuestionCodes[index]);
+        });
+      });
+    });
+
+    describe('loadStoredCode', function() {
+      it('should retrieve stored code from browser', function() {
+        expect(localStorage.length).toEqual(0);
+        sampleQuestionIds.forEach(function(questionId, index) {
+          var key = questionId + ":" + LANGUAGE;
+          localStorage.setItem(key, sampleQuestionCodes[index]);
+          expect(LocalStorageService.loadStoredCode(questionId,
+            LANGUAGE)).toEqual(sampleQuestionCodes[index]);
+        });
+      });
+
+      it('should fail to retrieve code and return null', function() {
+        expect(localStorage.length).toEqual(0);
+        sampleQuestionIds.forEach(function(questionId) {
+          expect(LocalStorageService.loadStoredCode(questionId,
+            FAILED_LANGUAGE)).toEqual(null);
+        });
+      });
+    });
+
+    describe('storeAndLoadCode', function() {
+      it('should store and load stored code from browser', function() {
+        expect(localStorage.length).toEqual(0);
+        sampleQuestionIds.forEach(function(questionId, index) {
+          LocalStorageService.storeCode(questionId,
+            sampleQuestionCodes[index], LANGUAGE);
+          expect(LocalStorageService.loadStoredCode(questionId,
+            LANGUAGE)).toEqual(sampleQuestionCodes[index]);
+        });
+      });
+    });
+
+    describe('verifyLocalStorageKey', function() {
+      it('should verify composed keys match localStorage keys', function() {
+        expect(localStorage.length).toEqual(0);
+        sampleQuestionIds.forEach(function(questionId, index) {
+          LocalStorageService.storeCode(questionId,
+            sampleQuestionCodes[index], LANGUAGE);
+          var key = questionId + ':' + LANGUAGE;
+          expect(localStorage.getItem(key)).toEqual(
+            sampleQuestionCodes[index]);
+        });
+      });
+    });
+
+    describe('clearLocalStorageCode', function() {
+      it('should remove code from localStorage', function() {
+        sampleQuestionIds.forEach(function(questionId, index) {
+          var key = questionId + ':' + LANGUAGE;
+          localStorage.setItem(key, sampleQuestionCodes[index]);
+          expect(localStorage.getItem(key)).toEqual(
+            sampleQuestionCodes[index]);
+          LocalStorageService.clearLocalStorageCode(questionId, LANGUAGE);
+          expect(localStorage.getItem(key)).toEqual(null);
+        });
       });
     });
   });
 
-  describe('loadStoredCode', function() {
-    it('should retrieve stored code from browser', function() {
-      expect(localStorage.length).toEqual(0);
-      sampleQuestionIds.forEach(function(questionId, index) {
-        var key = questionId + ":" + LANGUAGE;
-        localStorage.setItem(key, sampleQuestionCodes[index]);
-        expect(LocalStorageService.loadStoredCode(questionId,
-          LANGUAGE)).toEqual(sampleQuestionCodes[index]);
+  describe('FeedbackStorage', function() {
+    var feedbackStorage = [];
+
+    beforeEach(inject(function($injector) {
+      FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+      var feedbackObject = FeedbackObjectFactory.create(false);
+
+      feedbackObject.appendTextParagraph('text1');
+      feedbackObject.appendCodeParagraph('code1');
+      var feedbackSet1 = {
+        feedbackParagraphs: feedbackObject.getParagraphs()
+      }
+      feedbackStorage.push(feedbackSet1);
+
+      feedbackObject.clear();
+      feedbackObject.appendTextParagraph('text2');
+      feedbackObject.appendCodeParagraph('code2');
+      feedbackObject.appendSyntaxErrorParagraph('error');
+      var feedbackSet2 = {
+        feedbackParagraphs: feedbackObject.getParagraphs()
+      }
+      feedbackStorage.push(feedbackSet2); 
+    }));
+
+    describe('storeFeedback', function() {
+      it('should store feedback as a JSON object to browser', function() {
+        expect(localStorage.length).toEqual(0);
+        LocalStorageService.storeFeedback('testquestionid',
+          feedbackStorage, LANGUAGE);
+        var key = "testquestionid:feedback:" + LANGUAGE;
+        expect(localStorage.getItem(key)).toEqual(
+          angular.toJson(feedbackStorage));
       });
     });
 
-    it('should fail to retrieve code and return null', function() {
-      expect(localStorage.length).toEqual(0);
-      sampleQuestionIds.forEach(function(questionId) {
-        expect(LocalStorageService.loadStoredCode(questionId,
+    describe('loadFeedback', function() {
+      it('should load feedback as an array of objects', function() {
+        expect(localStorage.length).toEqual(0);
+        var key = "testquestionid:feedback:" + LANGUAGE;
+        localStorage.setItem(key, angular.toJson(feedbackStorage));
+        expect(angular.equals(
+          LocalStorageService.loadStoredFeedback(
+            'testquestionid', LANGUAGE),feedbackStorage)
+        ).toEqual(true);
+      });
+
+      it('should fail to retrieve feedback and return null', function() {
+        expect(localStorage.length).toEqual(0);
+        expect(LocalStorageService.loadStoredFeedback("testquestionid",
           FAILED_LANGUAGE)).toEqual(null);
       });
     });
-  });
 
-  describe('storeAndLoadCode', function() {
-    it('should store and load stored code from browser', function() {
-      expect(localStorage.length).toEqual(0);
-      sampleQuestionIds.forEach(function(questionId, index) {
-        LocalStorageService.storeCode(questionId,
-          sampleQuestionCodes[index], LANGUAGE);
-        expect(LocalStorageService.loadStoredCode(questionId,
-          LANGUAGE)).toEqual(sampleQuestionCodes[index]);
-      });
-    });
-  });
-
-  describe('verifyLocalStorageKey', function() {
-    it('should verify composed keys match localStorage keys', function() {
-      expect(localStorage.length).toEqual(0);
-      sampleQuestionIds.forEach(function(questionId, index) {
-        LocalStorageService.storeCode(questionId,
-          sampleQuestionCodes[index], LANGUAGE);
-        var key = questionId + ':' + LANGUAGE;
+    describe('clearLocalStorageFeedback', function() {
+      it('should clear feedback from localStorage', function() {
+        var key = "testquestionid:feedback:" + LANGUAGE;
+        localStorage.setItem(key, angular.toJson(feedbackStorage));
         expect(localStorage.getItem(key)).toEqual(
-          sampleQuestionCodes[index]);
-      });
-    });
-  });
-
-  describe('clearLocalStorageCode', function() {
-    it('should remove code from localStorage', function() {
-      sampleQuestionIds.forEach(function(questionId, index) {
-        var key = questionId + ':' + LANGUAGE;
-        localStorage.setItem(key, sampleQuestionCodes[index]);
-        expect(localStorage.getItem(key)).toEqual(
-          sampleQuestionCodes[index]);
-        LocalStorageService.clearLocalStorageCode(questionId, LANGUAGE);
+          angular.toJson(feedbackStorage));
+        LocalStorageService.clearLocalStorageFeedback(
+          "testquestionid", LANGUAGE);
         expect(localStorage.getItem(key)).toEqual(null);
-      });
-    });
+      })
+    })
   });
 });
 

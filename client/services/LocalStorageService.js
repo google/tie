@@ -78,6 +78,9 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         var storedFeedback = localStorage.getItem(localStorageKey);
+        if (storedFeedback == null) {
+          return null;
+        }
         try {
           var storedFeedbackStorage = [];
           var feedbackParagraphs = [];
