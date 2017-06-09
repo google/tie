@@ -32,6 +32,7 @@ describe('FeedbackGeneratorService', function() {
 
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
+  var PREREQ_CHECK_TYPE_GLOBAL_CODE;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -53,6 +54,8 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
       'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
+    PREREQ_CHECK_TYPE_GLOBAL_CODE = $injector.get(
+      'PREREQ_CHECK_TYPE_GLOBAL_CODE');
 
     var taskDict = [{
       instructions: [''],
@@ -213,6 +216,22 @@ describe('FeedbackGeneratorService', function() {
         'reconfigure it such that it runs in linear time?'
       ].join(''));
 
+    });
+  });
+
+  describe('_getInfiniteLoopFeedback', function() {
+    it('should return an error if an infinite loop is detected', function() {
+      var paragraphs = FeedbackGeneratorService
+        ._getInfiniteLoopFeedback().getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        [
+          'Looks like your code is hitting an infinite recursive loop.',
+          'Check to see that your recursive calls terminate.'
+        ].join(' ')
+      );
     });
   });
 
@@ -591,6 +610,22 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
         'math, operator, random, re, string, time');
     });
+
+    it('should return the correct info if it has code in the global scope',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          PREREQ_CHECK_TYPE_GLOBAL_CODE, null, null);
+
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+          prereqFailure);
+        expect(feedback.isAnswerCorrect()).toEqual(false);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          'Please keep your code within the existing predefined functions',
+          '-- we cannot process code in the global scope.'
+        ].join(' '));
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+      });
 
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {

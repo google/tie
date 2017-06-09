@@ -171,16 +171,29 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    var _getInfiniteLoopFeedback = function() {
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph([
+        "Looks like your code is hitting an infinite recursive loop.",
+        "Check to see that your recursive calls terminate."
+      ].join(' '));
+      return feedback;
+    };
+
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
-        return (
-          errorString.startsWith('TimeLimitError') ?
-          _getTimeoutErrorFeedback() :
-          _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
+        if (errorString.startsWith('TimeLimitError')) {
+          return _getTimeoutErrorFeedback();
+        } else if (errorString.startsWith(
+          'ExternalError: RangeError')) {
+          return _getInfiniteLoopFeedback();
+        } else {
+          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+        }
       } else {
         // Get all the tests from first task to current that need to be
         // executed.
@@ -277,6 +290,11 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
+        } else if (prereqCheckFailure.hasGlobalCode()) {
+          feedback.appendTextParagraph([
+            'Please keep your code within the existing predefined functions',
+            '-- we cannot process code in the global scope.'
+          ].join(' '));
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',
@@ -288,6 +306,7 @@ tie.factory('FeedbackGeneratorService', [
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
+      _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable
