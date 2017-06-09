@@ -78,39 +78,35 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         var storedFeedback = localStorage.getItem(localStorageKey);
-        if (storedFeedback == null) {
+        if (storedFeedback === null) {
           return null;
         }
-        // try {
-          var storedFeedbackStorage = [];
-          var feedbackParagraphs = [];
+        var storedFeedbackStorage = [];
+        var feedbackParagraphs = [];
 
-          rawFeedback = JSON.parse(storedFeedback);
-          for(var i = 0; i < rawFeedback.length; i++){
-            for(var j = 0; j < rawFeedback[i].feedbackParagraphs.length; j++) {
-              if(rawFeedback[i].feedbackParagraphs[j]._type === "text") {
-                feedbackParagraphs.push(
-                  FeedbackParagraphObjectFactory.createTextParagraph(
-                    rawFeedback[i].feedbackParagraphs[j]._content));
-              } else if (rawFeedback[i].feedbackParagraphs[j]._type === "code") {
-                feedbackParagraphs.push(
-                  FeedbackParagraphObjectFactory.createCodeParagraph(
-                    rawFeedback[i].feedbackParagraphs[j]._content));
-              } else if (rawFeedback[i].feedbackParagraphs[j]._type === "error") {
-                feedbackParagraphs.push(
-                  FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(
-                    rawFeedback[i].feedbackParagraphs[j]._content));
-              }
+        var rawFeedback = JSON.parse(storedFeedback);
+        for (var i = 0; i < rawFeedback.length; i++) {
+          for (var j = 0; j < rawFeedback[i].feedbackParagraphs.length; j++) {
+            if (rawFeedback[i].feedbackParagraphs[j]._type === "text") {
+              feedbackParagraphs.push(
+                FeedbackParagraphObjectFactory.createTextParagraph(
+                  rawFeedback[i].feedbackParagraphs[j]._content));
+            } else if (rawFeedback[i].feedbackParagraphs[j]._type === "code") {
+              feedbackParagraphs.push(
+                FeedbackParagraphObjectFactory.createCodeParagraph(
+                  rawFeedback[i].feedbackParagraphs[j]._content));
+            } else if (rawFeedback[i].feedbackParagraphs[j]._type === "error") {
+              feedbackParagraphs.push(
+                FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(
+                  rawFeedback[i].feedbackParagraphs[j]._content));
             }
-            storedFeedbackStorage.push({
-              feedbackParagraphs: feedbackParagraphs
-            });
-            feedbackParagraphs = [];
           }
-          return storedFeedbackStorage;
-        // } catch (e) {
-          // console.log(e.message);
-        // }
+          storedFeedbackStorage.push({
+            feedbackParagraphs: feedbackParagraphs
+          });
+          feedbackParagraphs = [];
+        }
+        return storedFeedbackStorage;
       },
       clearLocalStorageFeedback: function(questionId, language) {
         if (!localStorageIsAvailable) {
@@ -119,7 +115,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         localStorage.removeItem(localStorageKey);
-      },
+      }
     };
   }
 ]);

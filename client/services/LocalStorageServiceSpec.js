@@ -139,14 +139,14 @@ describe('LocalStorageService', function() {
     var feedbackStorage = [];
 
     beforeEach(inject(function($injector) {
-      FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+      var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
       var feedbackObject = FeedbackObjectFactory.create(false);
 
       feedbackObject.appendTextParagraph('text1');
       feedbackObject.appendCodeParagraph('code1');
       var feedbackSet1 = {
         feedbackParagraphs: feedbackObject.getParagraphs()
-      }
+      };
       feedbackStorage.push(feedbackSet1);
 
       feedbackObject.clear();
@@ -155,7 +155,7 @@ describe('LocalStorageService', function() {
       feedbackObject.appendSyntaxErrorParagraph('error');
       var feedbackSet2 = {
         feedbackParagraphs: feedbackObject.getParagraphs()
-      }
+      };
       feedbackStorage.push(feedbackSet2);
     }));
 
@@ -177,7 +177,7 @@ describe('LocalStorageService', function() {
         localStorage.setItem(key, angular.toJson(feedbackStorage));
         expect(angular.equals(
           LocalStorageService.loadStoredFeedback(
-            'testquestionid', LANGUAGE),feedbackStorage)
+            'testquestionid', LANGUAGE), feedbackStorage)
         ).toEqual(true);
       });
 
@@ -197,8 +197,8 @@ describe('LocalStorageService', function() {
         LocalStorageService.clearLocalStorageFeedback(
           "testquestionid", LANGUAGE);
         expect(localStorage.getItem(key)).toEqual(null);
-      })
-    })
+      });
+    });
   });
 });
 
