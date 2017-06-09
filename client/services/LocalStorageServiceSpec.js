@@ -136,6 +136,7 @@ describe('LocalStorageService', function() {
   });
 
   describe('FeedbackStorage', function() {
+    var QUESTION_ID = 'questionid';
     var feedbackStorage = [];
 
     beforeEach(inject(function($injector) {
@@ -162,9 +163,9 @@ describe('LocalStorageService', function() {
     describe('storeFeedback', function() {
       it('should store feedback as a JSON object to browser', function() {
         expect(localStorage.length).toEqual(0);
-        LocalStorageService.storeFeedback('testquestionid',
+        LocalStorageService.storeFeedback(QUESTION_ID,
           feedbackStorage, LANGUAGE);
-        var key = "testquestionid:feedback:" + LANGUAGE;
+        var key = QUESTION_ID + ":feedback:" + LANGUAGE;
         expect(localStorage.getItem(key)).toEqual(
           angular.toJson(feedbackStorage));
       });
@@ -173,29 +174,28 @@ describe('LocalStorageService', function() {
     describe('loadFeedback', function() {
       it('should load feedback as an array of objects', function() {
         expect(localStorage.length).toEqual(0);
-        var key = "testquestionid:feedback:" + LANGUAGE;
+        var key = QUESTION_ID + ":feedback:" + LANGUAGE;
         localStorage.setItem(key, angular.toJson(feedbackStorage));
         expect(angular.equals(
           LocalStorageService.loadStoredFeedback(
-            'testquestionid', LANGUAGE), feedbackStorage)
+            QUESTION_ID, LANGUAGE), feedbackStorage)
         ).toEqual(true);
       });
 
       it('should fail to retrieve feedback and return null', function() {
         expect(localStorage.length).toEqual(0);
-        expect(LocalStorageService.loadStoredFeedback("testquestionid",
+        expect(LocalStorageService.loadStoredFeedback(QUESTION_ID,
           FAILED_LANGUAGE)).toEqual(null);
       });
     });
 
     describe('clearLocalStorageFeedback', function() {
       it('should clear feedback from localStorage', function() {
-        var key = "testquestionid:feedback:" + LANGUAGE;
+        var key = QUESTION_ID + ":feedback:" + LANGUAGE;
         localStorage.setItem(key, angular.toJson(feedbackStorage));
         expect(localStorage.getItem(key)).toEqual(
           angular.toJson(feedbackStorage));
-        LocalStorageService.clearLocalStorageFeedback(
-          "testquestionid", LANGUAGE);
+        LocalStorageService.clearLocalStorageFeedback(QUESTION_ID, LANGUAGE);
         expect(localStorage.getItem(key)).toEqual(null);
       });
     });
