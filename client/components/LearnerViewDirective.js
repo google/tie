@@ -533,7 +533,6 @@ tie.directive('learnerView', [function() {
         };
         var autosaveCancelPromise;
         var cachedCode;
-        var cachedFeedback;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
         var question = null;
         var tasks = null;
@@ -548,12 +547,11 @@ tie.directive('learnerView', [function() {
           currentTaskIndex = 0;
           cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
-          cachedFeedback = LocalStorageService.loadStoredFeedback(
-            questionId, language);
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          $scope.feedbackStorage = cachedFeedback || [];
+          $scope.feedbackStorage = LocalStorageService.loadStoredFeedback(
+            questionId, language) || [];
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -613,7 +611,7 @@ tie.directive('learnerView', [function() {
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
-          storeFeedbackAndUpdateCachedFeedback(
+          storeFeedback(
             $scope.questionIds[$scope.currentQuestionIndex],
             $scope.feedbackStorage,
             language);
@@ -778,14 +776,12 @@ tie.directive('learnerView', [function() {
           $interval.cancel(autosaveCancelPromise);
         };
 
-        var storeCodeAndUpdateCachedCode = function(
-          questionId, code, lang) {
+        var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
           LocalStorageService.storeCode(questionId, code, lang);
           cachedCode = code;
         };
 
-        var storeFeedbackAndUpdateCachedFeedback = function(
-          questionId, feedback, lang) {
+        var storeFeedback = function(questionId, feedback, lang) {
           LocalStorageService.storeFeedback(questionId, feedback, lang);
           cachedFeedback = feedback;
         };
