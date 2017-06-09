@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for the CodeStorageService.
+ * @fileoverview Unit tests for the LocalStorageService.
  * Please be aware, the hash key format is {{questionId}}:{{language}}
  */
 
-describe('CodeStorageService', function() {
+describe('LocalStorageService', function() {
   var LANGUAGE = 'python';
   var FAILED_LANGUAGE = 'java';
   var NUM_CHARS_QUESTION_ID = 10;
   var NUM_CHARS_CODE = 10;
   var NUM_QUESTIONS = 5;
 
-  var CodeStorageService;
+  var LocalStorageService;
 
   var generateRandomChars = function(number) {
     var generatedChars = '';
@@ -44,7 +44,7 @@ describe('CodeStorageService', function() {
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     localStorage.clear();
-    CodeStorageService = $injector.get('CodeStorageService');
+    LocalStorageService = $injector.get('LocalStorageService');
 
     for (var i = 0; i < NUM_QUESTIONS; i++) {
       // Generate random question Id with
@@ -66,7 +66,7 @@ describe('CodeStorageService', function() {
     it('should store code to browser', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
-        CodeStorageService.storeCode(questionId,
+        LocalStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
         var key = questionId + ":" + LANGUAGE;
         expect(localStorage.getItem(key)).toEqual(
@@ -81,7 +81,7 @@ describe('CodeStorageService', function() {
       sampleQuestionIds.forEach(function(questionId, index) {
         var key = questionId + ":" + LANGUAGE;
         localStorage.setItem(key, sampleQuestionCodes[index]);
-        expect(CodeStorageService.loadStoredCode(questionId,
+        expect(LocalStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
@@ -89,7 +89,7 @@ describe('CodeStorageService', function() {
     it('should fail to retrieve code and return null', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId) {
-        expect(CodeStorageService.loadStoredCode(questionId,
+        expect(LocalStorageService.loadStoredCode(questionId,
           FAILED_LANGUAGE)).toEqual(null);
       });
     });
@@ -99,9 +99,9 @@ describe('CodeStorageService', function() {
     it('should store and load stored code from browser', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
-        CodeStorageService.storeCode(questionId,
+        LocalStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
-        expect(CodeStorageService.loadStoredCode(questionId,
+        expect(LocalStorageService.loadStoredCode(questionId,
           LANGUAGE)).toEqual(sampleQuestionCodes[index]);
       });
     });
@@ -111,7 +111,7 @@ describe('CodeStorageService', function() {
     it('should verify composed keys match localStorage keys', function() {
       expect(localStorage.length).toEqual(0);
       sampleQuestionIds.forEach(function(questionId, index) {
-        CodeStorageService.storeCode(questionId,
+        LocalStorageService.storeCode(questionId,
           sampleQuestionCodes[index], LANGUAGE);
         var key = questionId + ':' + LANGUAGE;
         expect(localStorage.getItem(key)).toEqual(
@@ -127,7 +127,7 @@ describe('CodeStorageService', function() {
         localStorage.setItem(key, sampleQuestionCodes[index]);
         expect(localStorage.getItem(key)).toEqual(
           sampleQuestionCodes[index]);
-        CodeStorageService.clearLocalStorageCode(questionId, LANGUAGE);
+        LocalStorageService.clearLocalStorageCode(questionId, LANGUAGE);
         expect(localStorage.getItem(key)).toEqual(null);
       });
     });
