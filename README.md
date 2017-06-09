@@ -15,6 +15,8 @@ Open the file `client/app.html` in a browser.
 
 Run `bash scripts/run_karma_tests.sh` to run the Karma tests.
 
+If you're interested in learning more about getting started developing TIE, please see our [Development Manual](DevDoc.md).
+
 ## Disclaimer
 
 This is not an official Google product.

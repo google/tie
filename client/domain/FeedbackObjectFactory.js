@@ -20,29 +20,81 @@
 tie.factory('FeedbackObjectFactory', [
   'FeedbackParagraphObjectFactory', 'ReinforcementObjectFactory',
   function(FeedbackParagraphObjectFactory, ReinforcementObjectFactory) {
+    /**
+     * Constructor for Feedback
+     *
+     * @param {boolean} answerIsCorrect indicates whether student's answer
+     *    is correct or not
+     * @constructor
+     */
     var Feedback = function(answerIsCorrect) {
+      /**
+       * List of FeedbackParagraph objects associated with this feedback.
+       *
+       * @type {Array}
+       * @private
+       */
       this._paragraphs = [];
+
+      /**
+       * @type {boolean}
+       * @private
+       */
       this._answerIsCorrect = answerIsCorrect;
-      // This records what message was displayed with this feedback.
-      // If no message was displayed, this will remain null.
+
+      /**
+       * Records what message was displayed with this feedback. If not message
+       * is displayed, then remains null.
+       *
+       * @type {string}
+       * @private
+       */
       this._hintIndex = null;
+
+      /**
+       * @type {Reinforcement}
+       * @private
+       */
       this._reinforcement = ReinforcementObjectFactory.create();
     };
 
     // Instance methods.
+    /**
+     * A getter for the _paragraphs property.
+     * Should return an Array of FeedbackParagraph objects.
+     *
+     * @returns {Array}
+     */
     Feedback.prototype.getParagraphs = function() {
       return this._paragraphs;
     };
 
+    /**
+     * A getter for _answerIsCorrect property.
+     * Should return a boolean indicating if the student's submission is correct
+     * or not.
+     *
+     * @returns {boolean}
+     */
     Feedback.prototype.isAnswerCorrect = function() {
       return this._answerIsCorrect;
     };
 
+    /**
+     * Appends a FeedbackParagraph is of type text to the _paragraphs Array.
+     *
+     * @param {string} text string to be inserted in text paragraph
+     */
     Feedback.prototype.appendTextParagraph = function(text) {
       this._paragraphs.push(
         FeedbackParagraphObjectFactory.createTextParagraph(text));
     };
 
+    /**
+     * Appends a FeedbackParagraph of type code to the _paragraphs Array
+     *
+     * @param {string} code string of code to be inserted into code paragraph
+     */
     Feedback.prototype.appendCodeParagraph = function(code) {
       if (this._paragraphs.length === 0) {
         throw Error('The first feedback paragraph should be a text paragraph.');
@@ -51,15 +103,28 @@ tie.factory('FeedbackObjectFactory', [
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
+    /**
+     * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
+     * Array
+     *
+     * @param {string} text string describing the syntax error
+     */
     Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
       this._paragraphs.push(
         FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
     };
 
+    /**
+     * Clears all FeedbackParagraph objects from the _paragraphs property.
+     */
     Feedback.prototype.clear = function() {
       this._paragraphs.length = 0;
     };
 
+    /**
+     *
+     * @returns {*|string}
+     */
     Feedback.prototype.getHintIndex = function() {
       return this._hintIndex;
     };

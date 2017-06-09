@@ -19,39 +19,99 @@
 
 tie.factory('CodeSubmissionObjectFactory', [
   function() {
+    /**
+     * Constructor for CodeSubmission object.
+     *
+     * @param {string} rawCode contains the unprocessed code being submitted.
+     * @constructor
+     */
     var CodeSubmission = function(rawCode) {
+      /**
+       * @type {string}
+       * @private
+       */
       this._rawCode = rawCode.trim();
+
+      /**
+       * @type {Array}
+       * @private
+       */
       this._preprocessedCodeLines = rawCode.trim().split('\n');
-      // An array that contains an entry for each line of the preprocessed code
-      // that stores which line of the raw code it is mapped to. Preprocessed
-      // lines that do not map to raw code lines have the corresponding entry
-      // being null. Note that all entries here are zero-indexed, so a
-      // transformation is needed in order to map them to human-readable
-      // 1-indexed line numbers.
+
+      /**
+       * An array that contains an entry for each line of the preprocessed code
+       * that stores which line of the raw code it is mapped to. Preprocessed
+       * lines that do not map to raw code lines have the corresponding entry
+       * being null. Note that all entries here are zero-indexed, so a
+       * transformation is needed in order to map them to human-readable
+       * 1-indexed line numbers.
+       *
+       * @type {Array}
+       * @private
+       * */
       this._rawCodeLineIndexes = [];
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         this._rawCodeLineIndexes.push(i);
       }
     };
 
+    /**
+     * @const IMPORT_PATTERN holds the RegEx used to determine if there is an
+     * import statement
+     *
+     * @type {RegExp}
+     */
     CodeSubmission.prototype.IMPORT_PATTERN = new RegExp(
       '^\\ {4}import\\ \\w+$');
+    /**
+     * @const TAB_Length holds the number of spaces that a tab will be converted
+     * to
+     *
+     * @type {number}
+     */
     CodeSubmission.prototype.TAB_LENGTH = 4;
 
     // Instance methods.
+    /**
+     * A getter for the _rawCode property.
+     * The function should return a string with the raw (unprocessed) code that
+     * the user submitted.
+     *
+     * @returns {string} rawCode
+     */
     CodeSubmission.prototype.getRawCode = function() {
       return this._rawCode;
     };
 
+    /**
+     * Returns the list of preprocessedCodeLines joined together to be one
+     * multi-line string.
+     *
+     * @returns {string}
+     */
     CodeSubmission.prototype.getPreprocessedCode = function() {
       return this._preprocessedCodeLines.join('\n');
     };
 
+    /**
+     * A getter for the _rawCodeLineIndexes property.
+     * This function should return an array of numbers detailing the indexes
+     * for the raw code.
+     *
+     * @returns {Array}
+     */
     CodeSubmission.prototype.getRawCodeLineIndexes = function() {
       return this._rawCodeLineIndexes;
     };
 
-    // Replaces the entire code. The line numbers should not change.
+    /**
+     * Replaces the entirety of the code in the _preprocessedCodeLines property
+     * with those of the replacementCode param.
+     *
+     * @param replacementCode   should be an Array of strings that is
+     *    the same length as that of the Array in
+     *    _preprocessedCodeLines
+     */
     CodeSubmission.prototype.replace = function(replacementCode) {
       var replacementCodeLines = replacementCode.split('\n');
       if (replacementCodeLines.length !== this._preprocessedCodeLines.length) {
@@ -60,6 +120,13 @@ tie.factory('CodeSubmissionObjectFactory', [
       this._preprocessedCodeLines = replacementCodeLines;
     };
 
+    /**
+     * Splits and appends the string in the codeToAppend param to the Array in
+     * _preprocessedCodeLines property.
+     *
+     * @param codeToAppend    should be a string with the code to
+     *    attach to the end of _preprocessedCodeLines
+     */
     CodeSubmission.prototype.append = function(codeToAppend) {
       var codeToAppendLines = codeToAppend.split('\n');
       this._preprocessedCodeLines = this._preprocessedCodeLines.concat(
@@ -69,6 +136,13 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
+    /**
+     * Splits and prepends the string in the codeToPrepend param to the Array in
+     * _preprocessedCodeLines property.
+     *
+     * @param codeToPrepend   should be a string with the code to
+     *    attach to the beginning of _preprocessedCodeLines
+     */
     CodeSubmission.prototype.prepend = function(codeToPrepend) {
       var codeToPrependLines = codeToPrepend.split('\n');
       this._preprocessedCodeLines = codeToPrependLines.concat(
@@ -78,8 +152,10 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
-    // Move all global imports in student code out of StudentCode
-    // class
+    /**
+     * Moves all of the global imports in the submitted code out of the
+     * StudentCode class.
+     */
     CodeSubmission.prototype.removeImportsFromStudentCode = function() {
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
@@ -96,6 +172,12 @@ tie.factory('CodeSubmissionObjectFactory', [
     };
 
     // Static class methods.
+    /**
+     * Returns a CodeSubmission object built from the rawCode param
+     *
+     * @param rawCode     should be a string with the unprocessed student code
+     * @returns {CodeSubmission}
+     */
     CodeSubmission.create = function(rawCode) {
       return new CodeSubmission(rawCode);
     };
