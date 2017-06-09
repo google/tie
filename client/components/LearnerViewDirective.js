@@ -521,7 +521,7 @@ tie.directive('learnerView', [function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           LocalStorageService.clearLocalStorageFeedback(questionId, language);
           clearFeedback();
-        }
+        };
 
         $scope.codeEditorIsShown = true;
         $scope.feedbackStorage = [];
@@ -783,7 +783,6 @@ tie.directive('learnerView', [function() {
 
         var storeFeedback = function(questionId, feedback, lang) {
           LocalStorageService.storeFeedback(questionId, feedback, lang);
-          cachedFeedback = feedback;
         };
 
         $scope.initQuestionSet(questionSetId);

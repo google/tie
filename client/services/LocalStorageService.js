@@ -32,7 +32,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
 
     var getLocalStorageKeyForFeedback = function(questionId, language) {
       return questionId + ":feedback:" + language;
-    }
+    };
 
     return {
       isAvailable: function() {
@@ -81,7 +81,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedFeedback == null) {
           return null;
         }
-        try {
+        // try {
           var storedFeedbackStorage = [];
           var feedbackParagraphs = [];
 
@@ -108,9 +108,9 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
             feedbackParagraphs = [];
           }
           return storedFeedbackStorage;
-        } catch (e) {
+        // } catch (e) {
           // console.log(e.message);
-        }
+        // }
       },
       clearLocalStorageFeedback: function(questionId, language) {
         if (!localStorageIsAvailable) {

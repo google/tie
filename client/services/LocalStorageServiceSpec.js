@@ -156,7 +156,7 @@ describe('LocalStorageService', function() {
       var feedbackSet2 = {
         feedbackParagraphs: feedbackObject.getParagraphs()
       }
-      feedbackStorage.push(feedbackSet2); 
+      feedbackStorage.push(feedbackSet2);
     }));
 
     describe('storeFeedback', function() {
