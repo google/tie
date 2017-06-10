@@ -103,7 +103,7 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
-              <button ng-click="resetFeedback()">RESET FEEDBACK</button>
+              <button class="tie-reset-button" ng-click="resetFeedback()">Reset Feedback</button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -126,7 +126,7 @@ tie.directive('learnerView', [function() {
                 <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                <button class="tie-reset-button protractor-test-reset-code-btn" name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
@@ -179,7 +179,7 @@ tie.directive('learnerView', [function() {
         .tie-code-auto-save.night-mode {
           color: #E0E0E0;
         }
-        .tie-code-reset {
+        .tie-reset-button {
           float: left;
           margin-top: 10px;
         }
@@ -566,6 +566,7 @@ tie.directive('learnerView', [function() {
 
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
+          $scope.reinforcementBullets = [];
         };
 
         var setFeedback = function(feedback) {
