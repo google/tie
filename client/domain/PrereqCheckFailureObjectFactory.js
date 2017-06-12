@@ -127,6 +127,7 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      *
      * @returns {Array}
      */
+
     PrereqCheckFailure.prototype.getBadImports = function() {
       return this._badImports;
     };
