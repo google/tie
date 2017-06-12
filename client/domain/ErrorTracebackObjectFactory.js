@@ -21,6 +21,11 @@ tie.factory('ErrorTracebackObjectFactory', [
   'TracebackCoordinatesObjectFactory',
   function(TracebackCoordinatesObjectFactory) {
     /**
+     * ErrorTraceback objects are encapsulate the error message and traceback
+     * coordinates for a given Error in a student's submission.
+     */
+
+    /**
      * Constructor for ErrorTraceback
      *
      * @param {string} errorMessage string describing the error

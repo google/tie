@@ -21,6 +21,12 @@ tie.factory('FeedbackObjectFactory', [
   'FeedbackParagraphObjectFactory', 'ReinforcementObjectFactory',
   function(FeedbackParagraphObjectFactory, ReinforcementObjectFactory) {
     /**
+     * Feedback objects contain encapsulate all of the information
+     * - including personalized feedback and Reinforcement - that are used to
+     * provide constructive feedback to the user.
+     */
+
+    /**
      * Constructor for Feedback
      *
      * @param {boolean} answerIsCorrect indicates whether student's answer
@@ -43,10 +49,10 @@ tie.factory('FeedbackObjectFactory', [
       this._answerIsCorrect = answerIsCorrect;
 
       /**
-       * Records what message was displayed with this feedback. If not message
-       * is displayed, then remains null.
+       * Records index of what message was displayed with this feedback.
+       * If no message is displayed, then remains null.
        *
-       * @type {string}
+       * @type {number}
        * @private
        */
       this._hintIndex = null;
@@ -122,26 +128,53 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
+     * A getter for the _hintIndex property.
+     * This function should return a number that indicates the index of the
+     * hint given for this feedback (if one is given).
      *
-     * @returns {*|string}
+     * @returns {*|number}
      */
     Feedback.prototype.getHintIndex = function() {
       return this._hintIndex;
     };
 
+    /**
+     * A setter for the _hintIndex property.
+     *
+     * @param {number} index
+     */
     Feedback.prototype.setHintIndex = function(index) {
       this._hintIndex = index;
     };
 
+    /**
+     * A getter for the _reinforcement property.
+     * This function should return the Reinforcement object associated with
+     * this feedback.
+     *
+     * @returns {Reinforcement}
+     */
     Feedback.prototype.getReinforcement = function() {
       return this._reinforcement;
     };
 
+    /**
+     * A setter for the _reinforcement property.
+     *
+     * @param {Reinforcement} reinforcement
+     */
     Feedback.prototype.setReinforcement = function(reinforcement) {
       this._reinforcement = reinforcement;
     };
 
     // Static class methods.
+    /**
+     * Returns a Feedback object based on the param passed in.
+     *
+     * @param {boolean} answerIsCorrect indicates if the student's answer is
+     *    correct or not.
+     * @returns {Feedback}
+     */
     Feedback.create = function(answerIsCorrect) {
       return new Feedback(answerIsCorrect);
     };

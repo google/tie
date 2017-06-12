@@ -19,7 +19,11 @@
 
 tie.factory('CodeEvalResultObjectFactory', [
   function() {
-    // Constructor
+    /**
+     * CodeEvalResult stores all of the results for each test and any related
+     * errors associated with a given code submission.
+     */
+
     /**
      * Constructor for CodeEvalResult
      *

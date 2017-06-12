@@ -20,6 +20,12 @@
 tie.factory('BuggyOutputTestObjectFactory', [
   function() {
     /**
+     * BuggyOutputTest is used to store all of the information needed to
+     * complete one test meant to see if the student's code took into
+     * consideration a common bug.
+     */
+
+    /**
      * Constructor for BuggyOutputTest
      *
      * @param {dict} buggyOutputTestDict contains all the properties needed to

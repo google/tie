@@ -21,6 +21,11 @@
 tie.factory('CorrectnessTestObjectFactory', [
   function() {
     /**
+     * CorrectnessTest objects have all of the information necessary to
+     * successfully test the correctness of a student's code submission.
+     */
+
+    /**
      * Constructor for CorrectnessTest
      *
      * @param {dict} correctnessTestDict contains all the properties needed to

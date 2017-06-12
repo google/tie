@@ -20,6 +20,12 @@
 tie.factory('CodeSubmissionObjectFactory', [
   function() {
     /**
+     * CodeSubmission objects are used to store all of the related information
+     * with a student's code submission without testing or running the code
+     * itself.
+     */
+
+    /**
      * Constructor for CodeSubmission object.
      *
      * @param {string} rawCode contains the unprocessed code being submitted.
