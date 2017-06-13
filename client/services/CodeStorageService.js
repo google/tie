@@ -16,10 +16,8 @@
  *    localStorage.
  */
 
-
 tie.factory('CodeStorageService', [
   function() {
-
     // In some browsers, localStorage is not available and its
     // invocation throws an error.
     var localStorageIsAvailable = false;
