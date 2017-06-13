@@ -20,11 +20,6 @@
 tie.factory('PrereqCheckDispatcherService', [
   'PythonPrereqCheckService', 'LANGUAGE_PYTHON',
   function(PythonPrereqCheckService, LANGUAGE_PYTHON) {
-    /**
-     * PrereqCheckDispatcherService calls the correct Prerequisite Check
-     * service depending on the language that the user submits in.
-     */
-
     return {
       /**
        * Calls the correct prereq check service for the language passed into

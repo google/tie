@@ -26,11 +26,6 @@ tie.factory('PythonPrereqCheckService', [
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
       PREREQ_CHECK_TYPE_GLOBAL_CODE) {
     /**
-     * PythonPrereqCheckService checks Python code to ensure that there aren't
-     * any preliminary prerequisite conditions that are failing.
-     */
-
-    /**
      * Removes trailing white space that may be at the end of a string.
      *
      * @param {string} str
