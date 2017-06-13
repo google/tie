@@ -36,7 +36,7 @@ tie.factory('PythonPrereqCheckService', [
       var codeLines = code.split('\n');
       for (var i = 0; i < codeLines.length; i++) {
         var line = rightTrim(codeLines[i]);
-        
+
         var VALID_LINE_PATTERN = /(^\s+)|(^def)|(^import)/;
         if (line.search(VALID_LINE_PATTERN) === -1 && line !== '') {
 
