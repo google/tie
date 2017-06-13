@@ -11,12 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+/**
+ * @fileoverview A service that saves student code to the browser's
+ *    localStorage.
+ */
+
 
 tie.factory('CodeStorageService', [
   function() {
-    /**
-     * A service that saves student code to the browser's localStorage.
-     */
 
     // In some browsers, localStorage is not available and its
     // invocation throws an error.

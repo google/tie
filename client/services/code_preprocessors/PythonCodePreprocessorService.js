@@ -32,11 +32,6 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_TASK_PERFORMANCE_TEST_RESULTS) {
     /**
-     * PythonCodePreprocessorService runs a series of utility functions to
-     * make the user's Python code submission completely executable.
-     */
-
-    /**
      * Used to determine the definition of a function
      * @type {RegExp}
      * @constant

@@ -20,12 +20,6 @@
 tie.factory('CodeRunnerDispatcherService', [
   'PythonCodeRunnerService', 'LANGUAGE_PYTHON',
   function(PythonCodeRunnerService, LANGUAGE_PYTHON) {
-    /**
-     * CodeRunnerDispatcherService runs the code with the correct
-     * code runner service depending on the language that is being
-     * submitted by the user.
-     */
-
     return {
       /**
        * Asynchronously runs the code in the correct corresponding language
