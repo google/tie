@@ -77,7 +77,7 @@ tie.factory('PythonPrereqCheckService', [
      * Checks if the code submission has any function signatures that are
      * different or missing from the expected function signatures.
      *
-     * @param {string] code
+     * @param {string} code
      * @param {string} expectedTopLevelFunctionLines
      */
     var doTopLevelFunctionLinesExist = function(

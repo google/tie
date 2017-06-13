@@ -40,7 +40,7 @@ tie.factory('TranscriptService', [
        * Records a transcript to this service's transcript object.
        *
        * @param {PrereqCheckFailure} prereqCheckFailure
-       * @param {CodeEvalResult] codeEvalResult
+       * @param {CodeEvalResult} codeEvalResult
        * @param {Feedback} feedback
        */
       recordSnapshot: function(prereqCheckFailure, codeEvalResult, feedback) {
