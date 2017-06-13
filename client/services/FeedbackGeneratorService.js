@@ -174,8 +174,6 @@ tie.factory('FeedbackGeneratorService', [
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
       var errorString = codeEvalResult.getErrorString();
-      //console.log("errorString");
-      //console.log(errorString);
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.

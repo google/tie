@@ -83,11 +83,6 @@ tie.factory('CodeSubmissionObjectFactory', [
     CodeSubmission.prototype.removeImportsFromStudentCode = function() {
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
-        //console.log("this.IMPORT_PATTERN");
-        //console.log(this.IMPORT_PATTERN);
-        //console.log("this._preprocessedCodeLines[i]");
-        console.log(this._preprocessedCodeLines[i]);
-        //console.log(this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i]));
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
           var importLine = this._preprocessedCodeLines[i].slice(0);
           this._preprocessedCodeLines.splice(i, 1);
