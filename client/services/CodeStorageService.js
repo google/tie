@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
- * A service that saves student code to the browser's localStorage.
- */
 tie.factory('CodeStorageService', [
   function() {
+    /**
+     * A service that saves student code to the browser's localStorage.
+     */
+
     // In some browsers, localStorage is not available and its
     // invocation throws an error.
     var localStorageIsAvailable = false;
@@ -26,14 +27,35 @@ tie.factory('CodeStorageService', [
       localStorageIsAvailable = false;
     }
 
+    /**
+     * Returns the local storage key for a given question.
+     *
+     * @param {string} questionId
+     * @param {string} language
+     * @returns {string}
+     */
     var getLocalStorageKey = function(questionId, language) {
       return questionId + ":" + language;
     };
 
     return {
+      /**
+       * Checks if the local storage is available.
+       *
+       * @returns {boolean}
+       */
       isAvailable: function() {
         return localStorageIsAvailable;
       },
+
+      /**
+       * Stores the code into local storage - so long as local storage is
+       * available.
+       *
+       * @param {string} questionId
+       * @param {string} code
+       * @param {string} language
+       */
       storeCode: function(questionId, code, language) {
         if (!localStorageIsAvailable) {
           return;
@@ -43,6 +65,15 @@ tie.factory('CodeStorageService', [
           questionId, language);
         localStorage.setItem(localStorageKey, code);
       },
+
+      /**
+       * Loads the code from local storage if local storage is available.
+       * If local storage is not available, then it returns null.
+       *
+       * @param {string} questionId
+       * @param {string} language
+       * @returns {string|null}
+       */
       loadStoredCode: function(questionId, language) {
         if (!localStorageIsAvailable) {
           return null;
@@ -53,6 +84,14 @@ tie.factory('CodeStorageService', [
         var storedCode = localStorage.getItem(localStorageKey);
         return storedCode;
       },
+
+      /**
+       * Clears the local storage such that there is no longer any code
+       * stored there.
+       *
+       * @param {string} questionId
+       * @param {string} language
+       */
       clearLocalStorageCode: function(questionId, language) {
         if (!localStorageIsAvailable) {
           return;

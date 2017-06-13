@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
+/**
  * @fileoverview Service that maintains a local transcript of the
  * problem-solving session.
  */
@@ -20,17 +20,40 @@
 tie.factory('TranscriptService', [
   'TranscriptObjectFactory', 'SnapshotObjectFactory',
   function(TranscriptObjectFactory, SnapshotObjectFactory) {
+    /**
+     * Global object to keep track of snapshots in this task.
+     * @type {Transcript}
+     */
     var transcript = TranscriptObjectFactory.create();
 
     return {
+      /**
+       * A getter for the transcript property.
+       *
+       * @returns {Transcript}
+       */
       getTranscript: function() {
         return transcript;
       },
+
+      /**
+       * Records a transcript to this service's transcript object.
+       *
+       * @param {PrereqCheckFailure} prereqCheckFailure
+       * @param {CodeEvalResult] codeEvalResult
+       * @param {Feedback} feedback
+       */
       recordSnapshot: function(prereqCheckFailure, codeEvalResult, feedback) {
         var snapshot = SnapshotObjectFactory.create(
           prereqCheckFailure, codeEvalResult, feedback);
         transcript.recordSnapshot(snapshot);
       },
+
+      /**
+       * Returns this transcript's most recent snapshot
+       *
+       * @returns {Snapshot}
+       */
       getMostRecentSnapshot: function() {
         return transcript.getMostRecentSnapshot();
       }

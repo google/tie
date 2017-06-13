@@ -20,6 +20,11 @@
 tie.factory('CodePreprocessorDispatcherService', [
   'PythonCodePreprocessorService', 'LANGUAGE_PYTHON',
   function(PythonCodePreprocessorService, LANGUAGE_PYTHON) {
+    /**
+     * CodePreprocesserDispatcherService determines and runs the correct
+     * preprocessor service according to the language that the user utilized
+     * in their submission.
+     */
     return {
       preprocess: function(language, codeSubmission, auxiliaryCode, tasks) {
         if (language === LANGUAGE_PYTHON) {

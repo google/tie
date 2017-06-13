@@ -26,19 +26,40 @@ tie.factory('PythonCodeRunnerService', [
       VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT,
       CODE_EXECUTION_TIMEOUT_SECONDS) {
+    /** @type {number} @const */
     var SECONDS_TO_MILLISECONDS = 1000;
+    /**
+     * The output from running the code as strings with each
+     * line taking one entry.
+     *
+     * @type {number}
+     * */
     var outputLines = [];
 
+    /**
+     * Removes all entries from the outputLines array.
+     */
     var clearOutput = function() {
       outputLines.length = 0;
     };
 
+    /**
+     * Adds the given line to the outputLines array.
+     *
+     * @param {string} line
+     */
     var addOutputLine = function(line) {
       outputLines.push(line);
     };
 
     return {
-      // Returns a promise.
+      /**
+       * Asynchronously runs the Python code against the given tests for that
+       * task.
+       *
+       * @param {string} code
+       * @returns {Promise}
+       */
       runCodeAsync: function(code) {
         clearOutput();
         Sk.configure({
