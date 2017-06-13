@@ -174,6 +174,8 @@ tie.factory('FeedbackGeneratorService', [
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
       var errorString = codeEvalResult.getErrorString();
+      //console.log("errorString");
+      //console.log(errorString);
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
@@ -267,7 +269,7 @@ tie.factory('FeedbackGeneratorService', [
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
-        } else if (prereqCheckFailure.isBadImport) {
+        } else if (prereqCheckFailure.isBadImport()) {
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
