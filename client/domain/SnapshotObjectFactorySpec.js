@@ -25,10 +25,18 @@ describe('SnapshotObjectFactory', function() {
     SnapshotObjectFactory = $injector.get(
       'SnapshotObjectFactory');
     snapshot = SnapshotObjectFactory.create({
+      prereqCheckFailure: null,
       codeEvalResult: null,
       feedback: null
     });
   }));
+
+  describe('getPrereqCheckFailure', function() {
+    it('should correctly set and get prereqCheckFailure', function() {
+      snapshot.setPrereqCheckFailure("true");
+      expect(snapshot.getPrereqCheckFailure()).toMatch("true");
+    });
+  });
 
   describe('setCodeEvalResult', function() {
     it('should correctly set and get codeEvalResult', function() {
