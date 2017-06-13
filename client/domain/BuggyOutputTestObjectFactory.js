@@ -28,7 +28,7 @@ tie.factory('BuggyOutputTestObjectFactory', [
     /**
      * Constructor for BuggyOutputTest
      *
-     * @param {dict} buggyOutputTestDict contains all the properties needed to
+     * @param {dict} buggyOutputTestDict Contains all the properties needed to
      *    make a BuggyOutputTest
      * @constructor
      */
@@ -61,7 +61,7 @@ tie.factory('BuggyOutputTestObjectFactory', [
      * Returns the list of messages that a buggy function has
      *    attached to it
      *
-     * @returns {Array}   should be array of strings
+     * @returns {Array} Should be array of strings
      */
     BuggyOutputTest.prototype.getMessages = function() {
       return this._messages;

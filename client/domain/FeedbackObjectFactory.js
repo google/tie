@@ -89,7 +89,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Appends a FeedbackParagraph of type text to the _paragraphs Array.
      *
-     * @param {string} text string to be inserted in text paragraph
+     * @param {string} text String to be inserted in text paragraph
      */
     Feedback.prototype.appendTextParagraph = function(text) {
       this._paragraphs.push(
@@ -99,7 +99,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Appends a FeedbackParagraph of type code to the _paragraphs Array
      *
-     * @param {string} code string of code to be inserted into code paragraph
+     * @param {string} code String of code to be inserted into code paragraph
      */
     Feedback.prototype.appendCodeParagraph = function(code) {
       if (this._paragraphs.length === 0) {
@@ -113,7 +113,7 @@ tie.factory('FeedbackObjectFactory', [
      * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
      * Array
      *
-     * @param {string} text string describing the syntax error
+     * @param {string} text String describing the syntax error
      */
     Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
       this._paragraphs.push(
@@ -171,7 +171,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Returns a Feedback object based on the param passed in.
      *
-     * @param {boolean} answerIsCorrect indicates if the student's answer is
+     * @param {boolean} answerIsCorrect Indicates if the student's answer is
      *    correct or not.
      * @returns {Feedback}
      */
