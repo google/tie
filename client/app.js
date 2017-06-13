@@ -72,6 +72,7 @@ tie.constant('SYSTEM_CODE', {
 // Pre-requisite check error types
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
+tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
