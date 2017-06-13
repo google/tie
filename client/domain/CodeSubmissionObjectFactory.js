@@ -90,8 +90,7 @@ tie.factory('CodeSubmissionObjectFactory', [
     };
 
     /**
-     * Returns the list of preprocessedCodeLines joined together to be one
-     * multi-line string.
+     * Returns a string made of the combined list of preprocessedCodeLines.
      *
      * @returns {string}
      */
@@ -114,9 +113,8 @@ tie.factory('CodeSubmissionObjectFactory', [
      * Replaces the entirety of the code in the _preprocessedCodeLines property
      * with those of the replacementCode param.
      *
-     * @param replacementCode   should be an Array of strings that is
-     *    the same length as that of the Array in
-     *    _preprocessedCodeLines
+     * @param replacementCode Should be an Array of strings that is the same
+     *    length as that of the Array in _preprocessedCodeLines
      */
     CodeSubmission.prototype.replace = function(replacementCode) {
       var replacementCodeLines = replacementCode.split('\n');
@@ -130,7 +128,7 @@ tie.factory('CodeSubmissionObjectFactory', [
      * Splits and appends the string in the codeToAppend param to the Array in
      * _preprocessedCodeLines property.
      *
-     * @param codeToAppend    should be a string with the code to
+     * @param codeToAppend Should be a string with the code to
      *    attach to the end of _preprocessedCodeLines
      */
     CodeSubmission.prototype.append = function(codeToAppend) {
@@ -146,7 +144,7 @@ tie.factory('CodeSubmissionObjectFactory', [
      * Splits and prepends the string in the codeToPrepend param to the Array in
      * _preprocessedCodeLines property.
      *
-     * @param codeToPrepend   should be a string with the code to
+     * @param codeToPrepend Should be a string with the code to
      *    attach to the beginning of _preprocessedCodeLines
      */
     CodeSubmission.prototype.prepend = function(codeToPrepend) {
@@ -181,7 +179,7 @@ tie.factory('CodeSubmissionObjectFactory', [
     /**
      * Returns a CodeSubmission object built from the rawCode param
      *
-     * @param rawCode     should be a string with the unprocessed student code
+     * @param rawCode Should be a string with the unprocessed student code
      * @returns {CodeSubmission}
      */
     CodeSubmission.create = function(rawCode) {

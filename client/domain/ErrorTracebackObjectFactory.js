@@ -30,8 +30,7 @@ tie.factory('ErrorTracebackObjectFactory', [
      *
      * @param {string} errorMessage string describing the error
      * @param {Array} tracebackCoordinates Array of ErrorTracebackCoordinates
-     *    objects describing the sources of
-     *    each error
+     *    objects describing the sources of each error
      * @constructor
      */
     var ErrorTraceback = function(errorMessage, tracebackCoordinates) {
@@ -45,7 +44,7 @@ tie.factory('ErrorTracebackObjectFactory', [
       this._errorMessage = errorMessage;
 
       /**
-       * // A list of ErrorTracebackCoordinates objects. Each object contains a
+       * A list of ErrorTracebackCoordinates objects. Each object contains a
        * lineNumber and columnNumber (both 1-indexed), representing the
        * locations described in the error trace.
        *

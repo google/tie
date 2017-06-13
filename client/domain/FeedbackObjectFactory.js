@@ -87,7 +87,7 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * Appends a FeedbackParagraph is of type text to the _paragraphs Array.
+     * Appends a FeedbackParagraph of type text to the _paragraphs Array.
      *
      * @param {string} text string to be inserted in text paragraph
      */

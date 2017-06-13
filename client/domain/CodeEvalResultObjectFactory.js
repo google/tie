@@ -27,14 +27,14 @@ tie.factory('CodeEvalResultObjectFactory', [
     /**
      * Constructor for CodeEvalResult
      *
-     * @param {string} preprocessedCode    Unprocessed student code
-     * @param {string} output     output of student code
-     * @param {Array} correctnessTestResults    results of Correctness tests
-     * @param {Array} buggyOutputTestResults    results of Buggy Output tests
-     * @param {Array} performanceTestResults    results of Performance tests
-     * @param {ErrorTraceback} errorTraceback   traceback of error (if there is
+     * @param {string} preprocessedCode Unprocessed student code
+     * @param {string} output Output of student code
+     * @param {Array} correctnessTestResults Results of Correctness tests
+     * @param {Array} buggyOutputTestResults Results of Buggy Output tests
+     * @param {Array} performanceTestResults Results of Performance tests
+     * @param {ErrorTraceback} errorTraceback Traceback of error (if there is
      *    one)
-     * @param {string} errorInput    input that caused error (if there is one)
+     * @param {string} errorInput Input that caused error (if there is one)
      * @constructor
      */
     var CodeEvalResult = function(
@@ -132,8 +132,7 @@ tie.factory('CodeEvalResultObjectFactory', [
 
     /**
      * A getter for the _buggyOutputTestResults
-     * property. The function should return a list of Objects where results
-     * are stored for the buggy output tests.
+     * property. The function should return a list of buggy output test results.
      *
      * @returns {Array}
      */
@@ -183,13 +182,13 @@ tie.factory('CodeEvalResultObjectFactory', [
      * This method creates and returns a CodeEvalResult object from the params
      * specified.
      *
-     * @param {string} preprocessedCode preprocessed submitted code
-     * @param {string} output output from the code
-     * @param {Array} correctnessTestResults  correctness test results
-     * @param {Array} buggyOutputTestResults  buggy test results
-     * @param {Array} performanceTestResults  performance test results
-     * @param {ErrorTraceback} errorTraceback the traceback of the error
-     * @param {string} errorInput  the input that caused the error
+     * @param {string} preprocessedCode Preprocessed submitted code
+     * @param {string} output Output from the code
+     * @param {Array} correctnessTestResults Correctness test results
+     * @param {Array} buggyOutputTestResults Buggy test results
+     * @param {Array} performanceTestResults Performance test results
+     * @param {ErrorTraceback} errorTraceback Traceback of the error
+     * @param {string} errorInput Input that caused the error
      * @returns {CodeEvalResult}
      */
     CodeEvalResult.create = function(
