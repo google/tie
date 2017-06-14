@@ -493,17 +493,59 @@ tie.directive('learnerView', [function() {
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+        /**
+         * Number of milliseconds for TIE to wait for system to process code
+         * submission.
+         *
+         * @type {number}
+         * @constant
+         */
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+
+        /**
+         * Array of strings containing the ids of the allowed question sets.
+         *
+         * @type {Array}
+         * @constant
+         */
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
+
+        /**
+         * Sets a local variable language to the value of the constant
+         * LANGUAGE_PYTHON.
+         *
+         * @type: {string}
+         */
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
+        /**
+         * String of the id of the current question set of that in the user is
+         * working in.
+         *
+         * @type {string}
+         */
         var questionSetId = 'strings';
+
+        /**
+         * Array of strings identifying the Ids of the accepted question sets
+         * used in TIE.
+         *
+         * @type {Array}
+         */
         $scope.questionSetIds = [];
+        // sets $scope.questionSetIds to the values in ALLOWED_QUESTION_SET_IDS
         ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
           var dict = {questionSetId: id};
           $scope.questionSetIds.push(dict);
         });
+
+        /**
+         * String of the initial question intro feedback which is used to
+         * retrieve the next question when needed.
+         *
+         * @type {string}
+         */
         var NEXT_QUESTION_INTRO_FEEDBACK = [
           [
             'Take a look at the next question to the right, and code your ',
@@ -511,28 +553,105 @@ tie.directive('learnerView', [function() {
           ].join('\n')
         ];
 
+        /**
+         * Defines the accepted UI Themes for the editor.
+         *
+         * @type {Array}
+         */
         $scope.themes = [
           {themeName: 'Light'},
           {themeName: 'Dark'}
         ];
 
+        /**
+         * Defines if the code's editor is rendered in the UI.
+         *
+         * @type {boolean}
+         */
         $scope.codeEditorIsShown = true;
+
+        /**
+         * Location where the feedback for the current question is stored.
+         *
+         * @type {Array}
+         */
         $scope.feedbackStorage = [];
-        // We use an object here to prevent the child scope introduced by ng-if
-        // from shadowing the parent scope.
-        // See http://stackoverflow.com/a/21512751
+
+        /**
+         * We use an object here to prevent the child scope introduced by ng-if
+         * from shadowing the parent scope.
+         *
+         * See http://stackoverflow.com/a/21512751
+         * .
+         * @type {{code: string}}
+         */
         $scope.editorContents = {
           code: ''
         };
+
+        /**
+         * Is used to store the Autosave promise such that it can later be
+         * cancelled.
+         *
+         * @type {Promise}
+         */
         var autosaveCancelPromise;
+
+        /**
+         * String to store the code being cached.
+         *
+         * @type {string}
+         */
         var cachedCode;
+
+        /**
+         * Stores the feedback to be shown when the user completes the entire
+         * question set.
+         *
+         * @type {Feedback}
+         */
         var congratulatoryFeedback = FeedbackObjectFactory.create();
+
+        /**
+         * Stores the current question that the user is working on.
+         *
+         * @type {Question|*}
+         */
         var question = null;
+
+        /**
+         * Array of Task objects that stores the tasks that the user must
+         * complete for the current question.
+         *
+         * @type {Array}
+         */
         var tasks = null;
+
+        /**
+         * Stores the index of the task that the user is currently trying to
+         * complete.
+         *
+         * @type {number}
+         */
         var currentTaskIndex = null;
+
+        /**
+         * Stores the `div` node from the DOM where the question instructions
+         * and feedback will be rendered.
+         *
+         * @type {DOM}
+         */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
+        /**
+         * Initializes the appropriate values in $scope for the question
+         * instructions, stored code, starter code, feedback, and greetings.
+         *
+         * @param {string} questionId ID of question whose data will be loaded
+         * @param {Array} introParagraphs Array of Strings as introduction to
+         *     question
+         */
         var loadQuestion = function(questionId, introParagraphs) {
           clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
@@ -555,10 +674,19 @@ tie.directive('learnerView', [function() {
           $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
+        /**
+         * Sets the feedbackStorage property in the scope to be an empty array.
+         */
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
         };
 
+        /**
+         * Sets the feedbackStorage property to the appropriate text according
+         * to the feedback passed into the function.
+         *
+         * @param {Feedback} feedback
+         */
         var setFeedback = function(feedback) {
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
@@ -604,6 +732,11 @@ tie.directive('learnerView', [function() {
           $scope.scrollToBottomOfFeedbackWindow();
         };
 
+        /**
+         * Sets the UI theme to the theme passed in as a parameter.
+         *
+         * @param {string} newTheme
+         */
         $scope.changeTheme = function(newTheme) {
           if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
@@ -615,6 +748,11 @@ tie.directive('learnerView', [function() {
           }
         };
 
+        /**
+         * Sets the current question set to the one with the given questionId.
+         *
+         * @param {string} newQuestionSetId
+         */
         $scope.changeQuestionSet = function(newQuestionSetId) {
           if (ALLOWED_QUESTION_SET_IDS.indexOf(newQuestionSetId) === -1) {
             return;
@@ -622,6 +760,12 @@ tie.directive('learnerView', [function() {
           $scope.initQuestionSet(newQuestionSetId);
         };
 
+        /**
+         * Initializes the questionSet property of $scope to be a new question
+         * set with the id given in newQuestionSetId.
+         *
+         * @param {string} newQuestionSetId
+         */
         $scope.initQuestionSet = function(newQuestionSetId) {
           QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
           $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
@@ -639,6 +783,13 @@ tie.directive('learnerView', [function() {
             $scope.questionSet.getIntroductionParagraphs());
         };
 
+        /**
+         * Sets the options that are needed to run codeMirror correctly.
+         *
+         * @type {{autofocus: boolean, extraKeys: {Tab: Tab},
+         *    indentUnit: number, lineNumbers: boolean, matchBrackets: boolean,
+         *    mode: *, smartIndent: boolean, tabSize: number, theme: string}}
+         */
         $scope.codeMirrorOptions = {
           autofocus: true,
           extraKeys: {
@@ -659,10 +810,19 @@ tie.directive('learnerView', [function() {
           theme: 'default'
         };
 
+        /**
+         * Sets the question window to scroll to the bottom.
+         */
         $scope.scrollToBottomOfFeedbackWindow = function() {
           questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
         };
 
+        /**
+         * Changes the UI to show the next task and its instructions for the
+         * given question. If the user just finished the last task, then
+         * it renders the next question. If the user just completed the last
+         * question, then the user sees a congratulatory alert.
+         */
         $scope.showNextTask = function() {
           if (question.isLastTask(currentTaskIndex)) {
             $scope.currentQuestionIndex++;
@@ -682,6 +842,11 @@ tie.directive('learnerView', [function() {
           }
         };
 
+        /**
+         * Changes the UI to show the question which is at the given index.
+         *
+         * @param {number} index
+         */
         $scope.navigateToQuestion = function(index) {
           // Before the questionId is changed, save it for later use.
           var currentQuestionId =
@@ -704,6 +869,11 @@ tie.directive('learnerView', [function() {
           }, CODEMIRROR_HIDE_TIMEOUT_MSEC);
         };
 
+        /**
+         * Calls the processes necessary to start the code submission process.
+         *
+         * @param {string} code
+         */
         $scope.submitCode = function(code) {
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
@@ -720,6 +890,10 @@ tie.directive('learnerView', [function() {
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
         };
 
+        /**
+         * Clears the cached code stored in local storage and resets the
+         * question to its original state.
+         */
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           CodeStorageService.clearLocalStorageCode(questionId, language);
@@ -727,6 +901,12 @@ tie.directive('learnerView', [function() {
             $scope.questionSet.getIntroductionParagraphs());
         };
 
+        /**
+         * Displays a notification for the given number of seconds to let the ]
+         * user know their code has been autosaved.
+         *
+         * @param {number} displaySeconds
+         */
         var triggerAutosaveNotification = function(displaySeconds) {
           $scope.autosaveTextIsDisplayed = true;
           $timeout(function() {
@@ -734,6 +914,10 @@ tie.directive('learnerView', [function() {
           }, displaySeconds * SECONDS_TO_MILLISECONDS);
         };
 
+        /**
+         * If autosave is on, this function automatically saves the user's code
+         * to the browser's local storage.
+         */
         $scope.autosave = function() {
           if (!CodeStorageService.isAvailable()) {
             return;
@@ -758,11 +942,21 @@ tie.directive('learnerView', [function() {
           }
         };
 
+        /**
+         * Sets the system to not automatically save user code.
+         */
         var stopAutosave = function() {
           $scope.autosaveOn = false;
           $interval.cancel(autosaveCancelPromise);
         };
 
+        /**
+         * Stores the user's code to local storage and the cachedCode variable.
+         *
+         * @param {string} questionId
+         * @param {string} code
+         * @param {string} lang
+         */
         var storeCodeAndUpdateCachedCode = function(
           questionId, code, lang) {
           CodeStorageService.storeCode(questionId, code, lang);
