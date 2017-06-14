@@ -532,7 +532,7 @@ tie.directive('learnerView', [function() {
           code: ''
         };
 
-        $scope.isBrowserOnly = SERVER_URL !== null;
+        $scope.isBrowserOnly = !SERVER_URL;
 
         var autosaveCancelPromise;
         var cachedCode;
