@@ -82,11 +82,10 @@ describe('QuestionObjectFactory', function() {
       'should return true if the provided index is ',
       'the index of the last task'
     ].join(''), function() {
-      console.log()
       expect(question.isLastTask(2)).toBe(false);
       expect(question.isLastTask(-1)).toBe(false);
       expect(question.isLastTask(1)).toBe(true);
-      expect(questionWithNoTasks.isLastTask(questionWithNoTasks.tasks)).toBe(false);
+      expect(questionWithNoTasks.isLastTask(1)).toBe(false);
     });
   });
 });
