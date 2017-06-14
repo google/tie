@@ -48,7 +48,7 @@ describe('QuestionObjectFactory', function() {
       title: TITLE,
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
-      tasks: null
+      tasks: []
     });
   }));
 
@@ -86,7 +86,7 @@ describe('QuestionObjectFactory', function() {
       expect(question.isLastTask(2)).toBe(false);
       expect(question.isLastTask(-1)).toBe(false);
       expect(question.isLastTask(1)).toBe(true);
-      expect(questionWithNoTasks.isLastTask(1)).toBe(false);
+      expect(questionWithNoTasks.isLastTask(questionWithNoTasks.tasks)).toBe(false);
     });
   });
 });
