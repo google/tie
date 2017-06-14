@@ -534,7 +534,7 @@ tie.directive('learnerView', [function() {
          * @type {Array}
          */
         $scope.questionSetIds = [];
-        // sets $scope.questionSetIds to the values in ALLOWED_QUESTION_SET_IDS
+        // Sets $scope.questionSetIds to the values in ALLOWED_QUESTION_SET_IDS
         ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
           var dict = {questionSetId: id};
           $scope.questionSetIds.push(dict);
