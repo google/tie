@@ -92,6 +92,13 @@ tie.directive('learnerView', [function() {
                   </div>
                   <br>
                 </div>
+                <div class="tie-privacy-notice" ng-show="isBrowserOnly">
+                  <p>
+                    <b>Privacy Notice:</b> Your code is only stored on your 
+                    browser's local storage. In other words, we <em>do not</em> 
+                    store your code on any of our servers or databases.
+                  </p>
+                </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
                       ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
@@ -486,13 +493,13 @@ tie.directive('learnerView', [function() {
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'CodeStorageService',
       'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
@@ -524,6 +531,9 @@ tie.directive('learnerView', [function() {
         $scope.editorContents = {
           code: ''
         };
+
+        $scope.isBrowserOnly = SERVER_URL !== null;
+
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
