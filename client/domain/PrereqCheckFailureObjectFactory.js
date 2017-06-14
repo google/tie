@@ -19,8 +19,10 @@
 
 tie.factory('PrereqCheckFailureObjectFactory', [
   'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
   function(
-      PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE) {
+      PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
+      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
 
     var PrereqCheckFailure = function(type, badImports, starterCode) {
       this._type = type;
@@ -43,6 +45,10 @@ tie.factory('PrereqCheckFailureObjectFactory', [
 
     PrereqCheckFailure.prototype.isMissingStarterCode = function() {
       return (this._type === PREREQ_CHECK_TYPE_MISSING_STARTER_CODE);
+    };
+
+    PrereqCheckFailure.prototype.hasGlobalCode = function() {
+      return (this._type === PREREQ_CHECK_TYPE_GLOBAL_CODE);
     };
 
     PrereqCheckFailure.prototype.getBadImports = function() {

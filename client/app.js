@@ -72,6 +72,7 @@ tie.constant('SYSTEM_CODE', {
 // Pre-requisite check error types
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
+tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
@@ -99,3 +100,7 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
 tie.constant('SECONDS_TO_MILLISECONDS', SECONDS_TO_MILLISECONDS);
 // "Saving code..." will last for 1 second and disappear.
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
+
+// The server URL to call for code execution. If null, the Skulpt library
+// is used for frontend code execution.
+tie.constant('SERVER_URL', null);
