@@ -100,6 +100,7 @@ tie.factory('TaskSchemaValidationService', [
        * Task are all of type 'text' or 'code.'
        *
        * @param {Task} task
+       * @returns {boolean}
        */
       verifyInstructionTypeIsCorrect: function(task) {
         var instructions = task.getInstructions();
@@ -188,7 +189,7 @@ tie.factory('TaskSchemaValidationService', [
        * same Task's auxiliary code.
        *
        * @param task
-       * @returns {boolean|*}
+       * @returns {boolean}
        */
       verifyOutputFunctionNameAppearsInAuxiliaryCodeIfNotNull: function(
         task) {
@@ -316,7 +317,7 @@ tie.factory('TaskSchemaValidationService', [
        * outputs.
        *
        * @param {Task} task
-       * @returns boolean: {boolean}
+       * @returns {boolean}
        */
       verifyCorrectnessTestsHaveNoUndefinedOutputs: function(task) {
         var correctnessTests = task.getCorrectnessTests();
@@ -331,7 +332,7 @@ tie.factory('TaskSchemaValidationService', [
        * Checks that the correctnessTests property for a given Task has tags.
        *
        * @param {TasK} task
-       * @returns {boolean}.
+       * @returns {boolean}
        */
       verifyCorrectnessTestsHaveTags: function(task) {
         var correctnessTests = task.getCorrectnessTests();
