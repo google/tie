@@ -17,26 +17,69 @@
  */
 
 var QuestionsPage = function() {
+  /**
+   * DOM element where the code is input
+   *
+   * @type {DOM Element}
+   */
   var codeInput = element(by.css('.protractor-test-code-input'));
+
+  /**
+   * Set of all of the feedback paragraphs rendered in the DOM.
+   *
+   * @type {Array}
+   */
   var feedbackParagraphs = element.all(by.repeater(
-    'paragraph in set.feedbackParagraphs'))
+    'paragraph in set.feedbackParagraphs'));
+
+  /**
+   * Set of all of the greeting paragraphs rendered in the DOM.
+   *
+   * @type {Array}
+   */
   var greetingParagraphs = element.all(by.repeater(
-    'paragraph in greetingParagraphs track by $index'))
+    'paragraph in greetingParagraphs track by $index'));
+
+  /**
+   * DOM element where the reset code button is.
+   *
+   * @type {DOM Element}
+   */
   var resetCodeBtn = element(by.css('.protractor-test-reset-code-btn'));
+
+  /**
+   * DOM element where the run code button is.
+   *
+   * @type {DOM Element}
+   */
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
+  /**
+   * Retrieves the TIE homepage
+   */
   this.get = function() {
     browser.get('/client/app.html');
   };
 
+  /**
+   * Simulates clicking on the reset code button to initiate resetting the code.
+   */
   this.resetCode = function() {
     resetCodeBtn.click();
   };
 
+  /**
+   * Simulates clicking on the run code button to initiate running the code.
+   */
   this.runCode = function() {
     runCodeBtn.click();
   };
 
+  /**
+   * Simulates adding the given code string to the code editor.
+   *
+   * @param codeString
+   */
   this.submitCode = function(codeString) {
     browser.executeScript([
       "var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror;",
@@ -45,18 +88,42 @@ var QuestionsPage = function() {
     this.runCode();
   };
 
+  /**
+   * Returns the number of feedback paragraphs rendered in the DOM.
+   *
+   * @returns {number}
+   */
   this.countFeedbackParagraphs = function() {
     return feedbackParagraphs.count();
   };
 
+  /**
+   * Returns the content of the feedback paragraph at the given index in the
+   * feedback paragraph array.
+   *
+   * @param {number} index
+   * @returns {string}
+   */
   this.getFeedbackParagraphText = function(index) {
     return feedbackParagraphs.get(index).getText();
   };
 
+  /**
+   * Returns the number of greeting paragraphs rendered in the DOM.
+   *
+   * @returns {number}
+   */
   this.countGreetingParagraphs = function() {
     return greetingParagraphs.count();
   }
 
+  /**
+   * Returns the content of the greeting paragraph at the given index in the
+   * greeting paragraph array.
+   *
+   * @param {number} index
+   * @returns {string}
+   */
   this.getGreetingParagraphText = function(index) {
     return greetingParagraphs.get(index).getText();
   };
