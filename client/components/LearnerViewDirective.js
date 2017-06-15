@@ -510,6 +510,9 @@ tie.directive('learnerView', [function() {
           padding: 5px;
           line-height: 25px;
         }
+        .tie-options-row a:hover {
+          text-decoration: underline;
+        }
       </style>
     `,
     controller: [
