@@ -514,6 +514,7 @@ tie.directive('learnerView', [function() {
           color: #5A5A5A;
           display: block;
           padding: 10px;
+          font-size: 14px;
         }
         
         .tie-footer a:hover {
