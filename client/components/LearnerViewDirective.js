@@ -92,13 +92,6 @@ tie.directive('learnerView', [function() {
                   </div>
                   <br>
                 </div>
-                <div class="tie-privacy-notice" ng-show="isBrowserOnly">
-                  <p>
-                    <b>Privacy Notice:</b> Your code is only stored on your 
-                    browser's local storage. In other words, we <em>do not</em> 
-                    store your code on any of our servers or databases.
-                  </p>
-                </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
                       ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
@@ -149,6 +142,15 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
         </div>
+        <div class="tie-footer">
+          <ul>
+            <li class="about-tie button">
+              <a href="https://github.com/google/tie">About TIE</a>
+            </li>
+            <li class="privacy button" ng-click="onPrivacyClick()">
+              <a href="#">Privacy</a>
+            </li>
+          </ul>
       </div>
       <style>
         html {
@@ -486,6 +488,35 @@ tie.directive('learnerView', [function() {
         .tie-wrapper.night-mode {
           background-color: #212121;
         }
+        
+        .tie-footer {
+          background-color: #d5d5d5;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+        }
+        
+        .tie-footer ul {
+          list-style-type: none;
+          margin: 0;
+        }
+        
+        .tie-footer li {
+          float: left;
+          padding: 0;
+        }
+        
+        .tie-footer a {
+          text-decoration: none;
+          color: #5A5A5A;
+          display: block;
+          padding: 10px;
+        }
+        
+        .tie-footer li:hover {
+          background-color: #969696;
+        }
       </style>
     `,
     controller: [
@@ -532,8 +563,6 @@ tie.directive('learnerView', [function() {
           code: ''
         };
 
-        $scope.isBrowserOnly = !SERVER_URL;
-
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -542,6 +571,21 @@ tie.directive('learnerView', [function() {
         var currentTaskIndex = null;
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
+        $scope.onPrivacyClick = function() {
+          var isBrowserOnly = !SERVER_URL;
+          if (isBrowserOnly) {
+            alert(["Privacy Notice:\n\n",
+                "This version of the TIE application stores information, ",
+                "including your code, in your browser's local storage and ",
+                "does not transmit data to any server."].join(''));
+          } else {
+            alert(["Privacy Notice:\n\n",
+                "This version of the TIE application transmits data to ",
+                "our servers in order to provide you with a better coding ",
+                "experience."].join(''));
+          }
+        };
 
         var loadQuestion = function(questionId, introParagraphs) {
           clearFeedback();
