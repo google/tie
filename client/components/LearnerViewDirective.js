@@ -490,11 +490,13 @@ tie.directive('learnerView', [function() {
         }
         
         .tie-footer {
-          background-color: #d5d5d5;
+          background-color: #dcdcdc;
           position: absolute;
           bottom: 0;
           left: 0;
           width: 100%;
+          border-top: 1px solid #c7c7c7;
+          line-height: 25px;
         }
         
         .tie-footer ul {
@@ -514,8 +516,8 @@ tie.directive('learnerView', [function() {
           padding: 10px;
         }
         
-        .tie-footer li:hover {
-          background-color: #969696;
+        .tie-footer a:hover {
+          text-decoration: underline;
         }
       </style>
     `,
