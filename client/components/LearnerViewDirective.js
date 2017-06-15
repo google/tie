@@ -576,14 +576,14 @@ tie.directive('learnerView', [function() {
           var isBrowserOnly = !SERVER_URL;
           if (isBrowserOnly) {
             alert(["Privacy Notice:\n\n",
-                "This version of the TIE application stores information, ",
-                "including your code, in your browser's local storage and ",
-                "does not transmit data to any server."].join(''));
+              "This version of the TIE application stores information, ",
+              "including your code, in your browser's local storage and ",
+              "does not transmit data to any server."].join(''));
           } else {
             alert(["Privacy Notice:\n\n",
-                "This version of the TIE application transmits data to ",
-                "our servers in order to provide you with a better coding ",
-                "experience."].join(''));
+              "This version of the TIE application transmits data to ",
+              "our servers in order to provide you with a better coding ",
+              "experience."].join(''));
           }
         };
 
