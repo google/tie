@@ -140,18 +140,18 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
+            <div class="tie-options-row">
+              <ul>
+                <li class="about-tie button">
+                  <a href="https://github.com/google/tie">About TIE</a>
+                </li>
+                <li class="privacy button" ng-click="onPrivacyClick()">
+                  <a href="#">Privacy</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="tie-footer">
-          <ul>
-            <li class="about-tie button">
-              <a href="https://github.com/google/tie">About TIE</a>
-            </li>
-            <li class="privacy button" ng-click="onPrivacyClick()">
-              <a href="#">Privacy</a>
-            </li>
-          </ul>
-      </div>
       <style>
         html {
           height: 100%;
@@ -488,37 +488,27 @@ tie.directive('learnerView', [function() {
         .tie-wrapper.night-mode {
           background-color: #212121;
         }
-        
-        .tie-footer {
-          background-color: #dcdcdc;
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          border-top: 1px solid #c7c7c7;
-          line-height: 25px;
-        }
-        
-        .tie-footer ul {
+        .tie-options-row ul {
           list-style-type: none;
           margin: 0;
-        }
-        
-        .tie-footer li {
-          float: left;
           padding: 0;
+          font-size: 13px;
         }
-        
-        .tie-footer a {
+        .tie-options-row li {
+          margin: 5px;
+        }
+        .about-tie.button {
+          float: left;
+        }
+        .privacy.button {
+          float: right;
+        }
+        .tie-options-row a {
           text-decoration: none;
-          color: #5A5A5A;
+          color: #696969;
           display: block;
-          padding: 10px;
-          font-size: 14px;
-        }
-        
-        .tie-footer a:hover {
-          text-decoration: underline;
+          padding: 5px;
+          line-height: 25px;
         }
       </style>
     `,
