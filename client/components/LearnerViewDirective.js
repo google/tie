@@ -152,6 +152,7 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
         </div>
+      </div>
       <style>
         html {
           height: 100%;
@@ -168,9 +169,15 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
-        .tie-arrow-highlighter {
-          background-color: white;
-          border-radius: 100px;
+        .about-tie.button {   
+          float: left;        
+        }                     
+        .privacy.button {     
+          float: right;       
+        }                     
+        .tie-arrow-highlighter {   
+          background-color: white; 
+          border-radius: 100px;    
           box-shadow: 0px 0px 42px 67px white;
           height: 50px;
           left: calc(50% - 25px);
@@ -346,30 +353,54 @@ tie.directive('learnerView', [function() {
           width: 100%;
           z-index: 4;
         }
-        .tie-previous-instructions {
-          opacity: 0.5;
+        .tie-options-row ul {         
+          list-style-type: none;      
+          margin: 0;                  
+          padding: 0;                 
+          font-size: 11px;            
+        }                             
+        .tie-options-row li {         
+          margin: 5px;                
+        }                             
+        
+        
+        
+        
+        
+        
+        .tie-options-row a {          
+          text-decoration: none;      
+          color: #696969;             
+          display: block;             
+          padding: 5px;               
+          line-height: 25px;          
+        }                             
+        .tie-options-row a:hover {    
+          text-decoration: underline; 
         }
-        .tie-reinforcement li {
-          list-style: none;
-          margin: 0;
-          margin-top: 1px;
-          position: relative;
-        }
-        .tie-bullet-img {
-          bottom: 1px;
-          height: 15px;
-          position: absolute;
-          width: 15px;
-        }
-        .tie-bullet-text {
-          padding-left: 19px;
-        }
-        .tie-question-code {
+        .tie-previous-instructions {     
+          opacity: 0.5;                  
+        }                                
+        .tie-reinforcement li {          
+          list-style: none;              
+          margin: 0;                     
+          margin-top: 1px;               
+          position: relative;            
+        }                                
+        .tie-bullet-img {                
+          bottom: 1px;                   
+          height: 15px;                  
+          position: absolute;            
+          width: 15px;                   
+        }                                
+        .tie-bullet-text {               
+          padding-left: 19px;            
+        }                                
+        .tie-question-code {             
           background: rgb(242, 242, 242);
-          border: 1px solid #ccc;
-          font-family: monospace;
-          font-size: 13px;
-          padding: 10px;
+          border: 1px solid #ccc;        
+          font-family: monospace;        
+          font-size: 13px;               
           white-space: -moz-pre-wrap;
           white-space: -o-pre-wrap;
           white-space: -pre-wrap;
@@ -487,31 +518,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-wrapper.night-mode {
           background-color: #212121;
-        }
-        .tie-options-row ul {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-          font-size: 11px;
-        }
-        .tie-options-row li {
-          margin: 5px;
-        }
-        .about-tie.button {
-          float: left;
-        }
-        .privacy.button {
-          float: right;
-        }
-        .tie-options-row a {
-          text-decoration: none;
-          color: #696969;
-          display: block;
-          padding: 5px;
-          line-height: 25px;
-        }
-        .tie-options-row a:hover {
-          text-decoration: underline;
         }
       </style>
     `,
