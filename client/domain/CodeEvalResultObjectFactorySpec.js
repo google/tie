@@ -20,11 +20,10 @@ describe('CodeEvalResultObjectFactory', function() {
   var CodeEvalResultObjectFactory;
   var codeEvalResult;
   var CODE = "code";
-  var OUTPUT = "output";
-  var CORRECTNESS_TEST_RESULTS = ["xyz", "xyz", "xyz", "xyz", "xyz"];
-  var LAST_TASK_RESULTS = "xyz";
-  var BUGGY_OUTPUT_TEST_RESULTS = "buggyOutputTestResults";
-  var PERFORMANCE_TEST_RESULTS = "performanceTestResults";
+  var OUTPUT = "";
+  var CORRECTNESS_TEST_RESULTS = [[true, true], [false, false]];
+  var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
+  var PERFORMANCE_TEST_RESULTS = [[], []];
   var ERROR_STRING = null;
   var ERROR_INPUT = "errorInput";
 
@@ -46,28 +45,28 @@ describe('CodeEvalResultObjectFactory', function() {
   describe('getCorrectnessTestResults', function() {
     it('should correctly get correctness test results', function() {
       expect(codeEvalResult.getCorrectnessTestResults())
-      .toEqual(CORRECTNESS_TEST_RESULTS);
+        .toEqual(CORRECTNESS_TEST_RESULTS);
     });
   });
 
   describe('getLastTaskResults', function() {
     it('should correctly get last task results', function() {
       expect(codeEvalResult.getLastTaskResults())
-      .toMatch(LAST_TASK_RESULTS);
+        .toEqual([false, false]);
     });
   });
 
   describe('getBuggyOutputTestResults', function() {
     it('should correctly get buggy output test results', function() {
       expect(codeEvalResult.getBuggyOutputTestResults())
-      .toMatch(BUGGY_OUTPUT_TEST_RESULTS);
+      .toEqual(BUGGY_OUTPUT_TEST_RESULTS);
     });
   });
 
   describe('getPerformanceTestResults', function() {
     it('should correctly get performance test results', function() {
       expect(codeEvalResult.getPerformanceTestResults())
-      .toMatch(PERFORMANCE_TEST_RESULTS);
+      .toEqual(PERFORMANCE_TEST_RESULTS);
     });
   });
 
