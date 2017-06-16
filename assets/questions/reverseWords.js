@@ -39,6 +39,10 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
             else:
                 reversed_word.append(c)
         return result
+
+    @classmethod
+    def reverseString(cls, s):
+        return s[::-1]
 `
   },
   tasks: [{
@@ -91,6 +95,14 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         [
           "It looks like you're exiting the function without adding on the ",
           "last reversed word."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.reverseString',
+      messages: [
+        [
+          "Please re-read the question. You need to reverse each word ",
+          "in turn; that's different from reversing the entire string."
         ].join('')
       ]
     }],
