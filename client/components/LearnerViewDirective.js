@@ -354,20 +354,20 @@ tie.directive('learnerView', [function() {
           z-index: 4;
         }
         .tie-options-row a {     
-          text-decoration: none; 
           color: #696969;        
           display: block;        
+          line-height: 25px;
           padding: 5px;          
-          line-height: 25px;     
+          text-decoration: none; 
         }                        
         .tie-options-row li { 
           margin: 5px;        
         }                     
-        .tie-options-row ul {         
+        .tie-options-row ul {
+          font-size: 11px;            
           list-style-type: none;      
           margin: 0;                  
           padding: 0;                 
-          font-size: 11px;            
         }                             
         .tie-options-row a:hover {    
           text-decoration: underline; 
