@@ -172,31 +172,27 @@ tie.directive('learnerView', [function() {
         .tie-button {
           background-color: #9e9e9e;
           border-radius: 4px;
-          display: block;
-          padding: 4px;
-          color: white;
-          padding-left: 10px;
-          padding-right: 10px;
-          cursor: pointer;
-          height: 24px;
           border-style: none;
+          color:white;
+          cursor: pointer;
+          display: block;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 12px;
+          height: 24px;
+          padding: 1px 6px;
+          width: 100px;
         }
-        
         .tie-button:hover {
-          border: 1px solid #716f6f;
           background-color: #7b7b7b;
+          border: 1px solid #716f6f;
         }
-        
         .tie-button.blue {
           background-color: rgb(66, 133, 244);
         }
-        
         .tie-button.blue:hover {
           background-color: rgb(50, 120, 240);
-          /*border: 0.2px solid rgb(42, 112, 232);*/
+          border: 1px solid rgb(42, 112, 232);
         }
-        
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           float: left;
@@ -433,11 +429,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           margin-top: 10px;
           position: relative;
-          width: 100px;
-          padding: 1px 6px;
         }
         .tie-run-button:hover {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
@@ -448,17 +441,20 @@ tie.directive('learnerView', [function() {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
+          background-color: #e0e0e0;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
           float: left;
+          height: 24px;
           margin-right: 5px;
           margin-top: 10px;
-          background-color: #e0e0e0;
-          border-style: none;
-          padding: 5px 10px;
-          border-radius: 4px;
+          min-width: 100px;
+          padding: 1px 6px;
         }
         .tie-select-menu:hover {
           background-color: #c5c5c5;
-          border: 1px solid #929292;
+          box-shadow: inset 0 0 0 1px #c1c1c1;
         }
         .tie-step-container-inner {
           display: flex;
