@@ -34,8 +34,8 @@ tie.factory('SolutionHandlerService', [
        * @param {string} starterCode Code given at the beginning before user
        *    adds their own code.
        * @param {string} studentCode Code that the user submitted
-       * @param {string} auxiliaryCode Code thqt the user does not write but
-       *    is needed to for the code to pass the given tests.
+       * @param {string} auxiliaryCode Code that the user does not write but
+       *    is needed to pass the given tests.
        * @param {string} language Language that the code is written in.
        * @returns {*}
        */

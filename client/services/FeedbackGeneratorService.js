@@ -123,6 +123,7 @@ tie.factory('FeedbackGeneratorService', [
      *    name for the function needed to process/format the user's output.
      * @param {CorrectnessTest} correctnessTest
      * @param {*} observedOutput Actual output for running user's code.
+     * @returns {Feedback}
      * @private
      */
     var _getCorrectnessTestFeedback = function(
@@ -154,6 +155,7 @@ tie.factory('FeedbackGeneratorService', [
      * Returns the Feedback related to a failing performance test.
      *
      * @param {string} expectedPerformance
+     * @returns {Feedback}
      * @private
      */
     var _getPerformanceTestFeedback = function(expectedPerformance) {

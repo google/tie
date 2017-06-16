@@ -79,6 +79,7 @@ tie.factory('PythonPrereqCheckService', [
      *
      * @param {string} code
      * @param {string} expectedTopLevelFunctionLines
+     * @returns {boolean}
      */
     var doTopLevelFunctionLinesExist = function(
         code, expectedTopLevelFunctionLines) {
@@ -96,8 +97,9 @@ tie.factory('PythonPrereqCheckService', [
      * Checks if the code given at the beginning - before the user began making
      * changes - is still present and unaltered.
      *
-     * @param starterCode
-     * @param code
+     * @param {string} starterCode
+     * @param {string} code
+     * @returns {boolean}
      */
     var checkStarterCodeFunctionsPresent = function(starterCode, code) {
       var expectedTopLevelFunctionLines = extractTopLevelFunctionLines(
@@ -131,6 +133,7 @@ tie.factory('PythonPrereqCheckService', [
      * system.
      *
      * @param {Array} importedLibraries
+     * @returns {Array}
      */
     var getUnsupportedImports = function(importedLibraries) {
       return importedLibraries.filter(function(library) {
