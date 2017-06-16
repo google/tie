@@ -353,27 +353,21 @@ tie.directive('learnerView', [function() {
           width: 100%;
           z-index: 4;
         }
+        .tie-options-row a {     
+          text-decoration: none; 
+          color: #696969;        
+          display: block;        
+          padding: 5px;          
+          line-height: 25px;     
+        }                        
+        .tie-options-row li { 
+          margin: 5px;        
+        }                     
         .tie-options-row ul {         
           list-style-type: none;      
           margin: 0;                  
           padding: 0;                 
           font-size: 11px;            
-        }                             
-        .tie-options-row li {         
-          margin: 5px;                
-        }                             
-        
-        
-        
-        
-        
-        
-        .tie-options-row a {          
-          text-decoration: none;      
-          color: #696969;             
-          display: block;             
-          padding: 5px;               
-          line-height: 25px;          
         }                             
         .tie-options-row a:hover {    
           text-decoration: underline; 
