@@ -51,9 +51,8 @@ describe('CodeEvalResultObjectFactory', function() {
 
   describe('getLastTaskResults', function() {
     it('should correctly get last task results', function() {
-      var LAST_TASK_RESULTS = [false, false];
       expect(codeEvalResult.getLastTaskResults())
-        .toEqual(LAST_TASK_RESULTS);
+        .toEqual([false, false]);
     });
   });
 
