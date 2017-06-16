@@ -33,10 +33,6 @@ tie.factory('PrereqCheckFailureObjectFactory', [
       return this._type;
     };
 
-    PrereqCheckFailure.prototype.setType = function(type) {
-      this._type = type;
-    };
-
     PrereqCheckFailure.prototype.isBadImport = function() {
       return (this._type === PREREQ_CHECK_TYPE_BAD_IMPORT);
     };
@@ -49,16 +45,8 @@ tie.factory('PrereqCheckFailureObjectFactory', [
       return this._badImports;
     };
 
-    PrereqCheckFailure.prototype.setBadImports = function(badImports) {
-      this._badImports = badImports;
-    };
-
     PrereqCheckFailure.prototype.getStarterCode = function() {
       return this._starterCode;
-    };
-
-    PrereqCheckFailure.prototype.setStarterCode = function(starterCode) {
-      this._starterCode = starterCode;
     };
 
     // Static class methods.

@@ -265,7 +265,11 @@ describe('PythonPrereqCheckService', function() {
 
       var prereqCheckFailure = PythonPrereqCheckService.checkCode(
         starterCode, userCode);
+
       expect(prereqCheckFailure.isBadImport()).toEqual(true);
+      expect(prereqCheckFailure.getType()).toEqual("badImport");
+      expect(prereqCheckFailure.getBadImports()).toEqual(["pandas"]);
+      expect(prereqCheckFailure.getStarterCode()).toEqual(null);
     });
   });
 });
