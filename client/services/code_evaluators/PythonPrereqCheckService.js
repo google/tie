@@ -29,6 +29,7 @@ tie.factory('PythonPrereqCheckService', [
      * Removes trailing white space that may be at the end of a string.
      *
      * @param {string} str
+     * @returns {string}
      */
     var rightTrim = function(str) {
       var RIGHT_TRIM_PATTERN = /\s+$/;
