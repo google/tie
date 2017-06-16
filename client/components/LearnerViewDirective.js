@@ -394,7 +394,8 @@ tie.directive('learnerView', [function() {
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;        
           font-family: monospace;        
-          font-size: 13px;               
+          font-size: 13px;
+          padding: 10px;
           white-space: -moz-pre-wrap;
           white-space: -o-pre-wrap;
           white-space: -pre-wrap;
@@ -558,7 +559,6 @@ tie.directive('learnerView', [function() {
         $scope.editorContents = {
           code: ''
         };
-
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
