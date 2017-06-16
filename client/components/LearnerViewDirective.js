@@ -392,8 +392,8 @@ tie.directive('learnerView', [function() {
         }                                
         .tie-question-code {             
           background: rgb(242, 242, 242);
-          border: 1px solid #ccc;        
-          font-family: monospace;        
+          border: 1px solid #ccc;
+          font-family: monospace;
           font-size: 13px;
           padding: 10px;
           white-space: -moz-pre-wrap;
