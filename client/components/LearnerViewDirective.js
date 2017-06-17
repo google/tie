@@ -103,6 +103,10 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
+              <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                ng-click="resetCode()">
+                Start Over
+              </button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -125,10 +129,6 @@ tie.directive('learnerView', [function() {
                 <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
-                    ng-click="resetCode()">
-                  Reset Code
-                </button>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
@@ -178,9 +178,22 @@ tie.directive('learnerView', [function() {
         .tie-code-auto-save.night-mode {
           color: #E0E0E0;
         }
+        .tie-code-reset:hover {
+          background-color: #F44336;
+        }
         .tie-code-reset {
-          float: left;
+          background-color: #EF5350;
+          border-radius: 4px;
+          border-style: none;
+          color: white;
+          cursor: pointer;
+          float: right;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
           margin-top: 10px;
+          position: relative;
+          width: 100px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
