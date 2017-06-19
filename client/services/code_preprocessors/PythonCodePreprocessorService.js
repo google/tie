@@ -31,18 +31,67 @@ tie.factory('PythonCodePreprocessorService', [
       VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
       VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_TASK_PERFORMANCE_TEST_RESULTS) {
+    /**
+     * Used to determine the definition of a function
+     * @type {RegExp}
+     * @constant
+     **/
     var PYTHON_FUNCTION_DEF_REGEX = new RegExp(
         'def\\s+([A-Za-z_][A-Za-z_0-9]*\\s*\\()', 'g');
+
+    /**
+     * Used to recognize a valid whitespace.
+     * @type {RegExp}
+     * @constant
+     */
     var VALID_WHITESPACE_REGEX = new RegExp('\\s');
+
+    /**
+     * Used to name and correctly retrieve the test inputs.
+     * @type {string}
+     * @constant
+     */
     var VARNAME_ALL_TASKS_TEST_INPUTS = 'all_tasks_test_inputs';
+
+    /**
+     * Used to recognize indentation for the Python code.
+     * @type {string}
+     * @constant
+     */
     var START_INDENT = '    ';
 
+    /**
+     * Used to recognize the size of a small input.
+     *
+     * @type {number}
+     * @constant
+     */
     var SMALL_INPUT_SIZE = 10;
+
+    /**
+     * Used to recognize the size of a large input.
+     *
+     * @type {number}
+     * @constant
+     */
     var LARGE_INPUT_SIZE = 100;
+
+    /**
+     * Used to recognize the upperbound for the ratio between large and small
+     * input sizes to determine if the code submission is linear or nonlinear.
+     * @type {number}
+     * @constant
+     */
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
+    /**
+     * This function converts a JSON variable to a Python variable.
+     *
+     * @param {*} jsonVariable
+     * @returns {*}
+     * @private
+     */
     var _jsonVariableToPython = function(jsonVariable) {
-      // Converts a JSON variable to a Python variable.
       if (typeof jsonVariable === 'string') {
         var pythonStringContent = '';
         for (var i = 0; i < jsonVariable.length; i++) {
@@ -70,12 +119,19 @@ tie.factory('PythonCodePreprocessorService', [
       }
     };
 
-    // Transforms a bunch of functions into a bunch of instance methods, and
-    // indents them. This results in code that looks like a class, except that
-    // it does not have the class name header.
-    //
-    // NOTE TO DEVELOPERS: This function must preserve the number of lines in
-    // the code.
+
+    /**
+     * Transforms a bunch of functions into a bunch of instance methods, and
+     * indents them. This results in code that looks like a class, except that
+     * it does not have the class name header.
+     *
+     * *NOTE TO DEVELOPERS:* This function must preserve the number of lines in
+     * the code.
+     *
+     * @param {string} code
+     * @param {string} wrapperClassName
+     * @private
+     */
     var _transformCodeToInstanceMethods = function(code, wrapperClassName) {
       var wrappedCode = _addClassWrappingToHelperFunctions(
         code, wrapperClassName, true);
@@ -98,13 +154,21 @@ tie.factory('PythonCodePreprocessorService', [
       return subsequentLines.join('\n');
     };
 
-    // Adds support for helper functions in student code by
-    // dynamically inserting the specified class name into their code
-    // during the preprocessing phase, allowing it to run normally without
-    // any indication on the student side that this is happening.
-    //
-    // NOTE TO DEVELOPERS: This function must preserve the number of lines in
-    // the code.
+
+    /**
+     * Adds support for helper functions in student code by
+     * dynamically inserting the specified class name into their code
+     * during the preprocessing phase, allowing it to run normally without
+     * any indication on the student side that this is happening.
+     *
+     * *NOTE TO DEVELOPERS:* This function must preserve the number of lines in
+     * the code.
+     *
+     * @param {string} code
+     * @param {string} wrapperClassName
+     * @param {boolean} addInstanceWrapping
+     * @private
+     */
     var _addClassWrappingToHelperFunctions = function(
         code, wrapperClassName, addInstanceWrapping) {
       var functionPrefix = wrapperClassName;
@@ -178,6 +242,14 @@ tie.factory('PythonCodePreprocessorService', [
       }
     };
 
+    /**
+     * Checks if the function that has been matched has any whitespace.
+     *
+     * @param {string} code
+     * @param {string} startingLocation
+     * @returns {boolean}
+     * @private
+     */
     var _checkMatchedFunctionForWhitespace = function(
         code, startingLocation) {
       var currentLocation = startingLocation;
@@ -193,10 +265,27 @@ tie.factory('PythonCodePreprocessorService', [
       return true;
     };
 
+    /**
+     * Checks if the given string is a valid whitespace character.
+     *
+     * @param {string} c
+     * @returns {boolean}
+     * @private
+     */
     var _isWhitespaceChar = function(c) {
       return VALID_WHITESPACE_REGEX.test(c);
     };
 
+    /**
+     * Creates and returns the code necessary to run all correctness tests.
+     *
+     * @param {Array} allTasksCorrectnessTests
+     * @param {Array} allTasksInputFunctionNames
+     * @param {Array} allTasksMainFunctionNames
+     * @param {Array} allTasksOutputFunctionNames
+     * @returns {string}
+     * @private
+     */
     var _generateCorrectnessTestCode = function(
         allTasksCorrectnessTests, allTasksInputFunctionNames,
         allTasksMainFunctionNames, allTasksOutputFunctionNames) {
@@ -252,6 +341,15 @@ tie.factory('PythonCodePreprocessorService', [
       return testCode;
     };
 
+    /**
+     * Creates the code necessary to run one task for a Buggy output test.
+     *
+     * @param {Array} oneTaskBuggyOutputTests
+     * @param {string} inputFunctionName
+     * @param {string} outputFunctionName
+     * @returns {string}
+     * @private
+     */
     var _generateOneTaskBuggyOutputTestCode = function(
         oneTaskBuggyOutputTests, inputFunctionName, outputFunctionName) {
       var code = (VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
@@ -271,6 +369,15 @@ tie.factory('PythonCodePreprocessorService', [
       return code;
     };
 
+    /**
+     * Creates the code necessary to run all Buggy Output tests.
+     *
+     * @param {Array} allTasksBuggyOutputTests
+     * @param {Array} allTasksInputFunctionNames
+     * @param {Array} allTasksOutputFunctionNames
+     * @returns {string}
+     * @private
+     */
     var _generateBuggyOutputTestCode = function(
         allTasksBuggyOutputTests, allTasksInputFunctionNames,
         allTasksOutputFunctionNames) {
@@ -318,6 +425,14 @@ tie.factory('PythonCodePreprocessorService', [
       return fullTestCode;
     };
 
+    /**
+     * Creates all of the code necessary to run performance tests on the user
+     * submission.
+     *
+     * @param {Array} allTasksPerformanceTests
+     * @returns {string}
+     * @private
+     */
     var _generatePerformanceTestCode = function(allTasksPerformanceTests) {
       var testCode = (VARNAME_PERFORMANCE_TEST_RESULTS + ' = []\n');
 
@@ -376,6 +491,13 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     return {
+      /**
+       * Runs a series of necessary tasks to ensure that submission and its
+       * tests are executable and ready to run.
+       * @param codeSubmission
+       * @param auxiliaryCode
+       * @param tasks
+       */
       preprocess: function(codeSubmission, auxiliaryCode, tasks) {
         var allTasksCorrectnessTests = [];
         var allTasksBuggyOutputTests = [];

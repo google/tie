@@ -71,6 +71,21 @@ describe('PythonPrereqCheckService', function() {
     });
   });
 
+  describe('checkGlobalCallsPresent', function() {
+    it('correctly returns true if there is code in the global scope',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return arg',
+          'myFunction("arg")',
+          ''
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkGlobalCallsPresent(code))
+          .toBe(true);
+      }
+     );
+  });
+
   describe('extractTopLevelFunctionLines', function() {
     it('correctly returns lines with top level functions', function() {
       var starterCode = [
@@ -202,6 +217,43 @@ describe('PythonPrereqCheckService', function() {
       var prereqCheckFailure = PythonPrereqCheckService.checkCode(
         starterCode, '');
       expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
+    });
+
+    it(['returns the correct PrereqCheckFailureObject when there is code in ' +
+      'the global scope'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '    return arg',
+        'myFunction("arg")',
+        ''
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.hasGlobalCode()).toEqual(true);
+    });
+
+    it(['does not return a PrereqCheckFailure Object if the user ' +
+      'uses two-space tabs instead of 4'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '  return arg',
+        ''
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure).toBe(null);
     });
 
     it(['returns the correct PrereqCheckFailureObject when starter code method',
