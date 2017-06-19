@@ -20,9 +20,16 @@
 tie.factory('QuestionDataService', [
   'QuestionObjectFactory', 'QuestionSetObjectFactory',
   function(QuestionObjectFactory, QuestionSetObjectFactory) {
+    /** @type {null|QuestionSet} */
     var currentQuestionSet = null;
 
     return {
+      /**
+       * Initiatlizes the currentQuestionSet property to contain the QuestionSet
+       * the user is currently using.
+       *
+       * @param {string} questionSetId
+       */
       initCurrentQuestionSet: function(questionSetId) {
         if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
           throw Error('Could not find question set with ID: ' + questionSetId);
@@ -30,12 +37,26 @@ tie.factory('QuestionDataService', [
         currentQuestionSet = QuestionSetObjectFactory.create(
           globalData.questionSets[questionSetId]);
       },
+      /**
+       * A getter for the currentQuestionSet property. Returns null if property
+       * is not initialized yet.
+       *
+       * @returns {null|QuestionSet}
+       */
       getCurrentQuestionSet: function() {
         if (!currentQuestionSet) {
           throw Error('No question set has been initialized.');
         }
         return currentQuestionSet;
       },
+      /**
+       * Returns the Question in the QuestionSet with the given question ID.
+       * If the questionId does not correspond to a Question in the QuestionSet,
+       * then function throws an Error.
+       *
+       * @param {string} questionId
+       * @returns {Question}
+       */
       getQuestion: function(questionId) {
         if (!currentQuestionSet.hasQuestionId(questionId)) {
           throw Error(

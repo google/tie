@@ -27,6 +27,11 @@ describe('FeedbackGeneratorService', function() {
   var TranscriptService;
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
+  var testTask;
+
+  var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
+  var PREREQ_CHECK_TYPE_BAD_IMPORT;
+  var PREREQ_CHECK_TYPE_GLOBAL_CODE;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -41,6 +46,34 @@ describe('FeedbackGeneratorService', function() {
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
+
+    PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
+      'PREREQ_CHECK_TYPE_BAD_IMPORT');
+    PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
+      'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
+    PREREQ_CHECK_TYPE_GLOBAL_CODE = $injector.get(
+      'PREREQ_CHECK_TYPE_GLOBAL_CODE');
+
+    var taskDict = [{
+      instructions: [''],
+      prerequisiteSkills: [''],
+      acquiredSkills: [''],
+      inputFunctionName: null,
+      outputFunctionName: null,
+      mainFunctionName: 'mockMainFunction',
+      correctnessTests: [],
+      buggyOutputTests: [],
+      performanceTests: [{
+        inputDataAtom: 'meow ',
+        transformationFunctionName: 'System.extendString',
+        expectedPerformance: 'linear',
+        evaluationFunctionName: 'mockMainFunction'
+      }]
+    }];
+
+    testTask = taskDict.map(function(task) {
+      return TaskObjectFactory.create(task);
+    });
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
@@ -183,6 +216,22 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
+  describe('_getInfiniteLoopFeedback', function() {
+    it('should return an error if an infinite loop is detected', function() {
+      var paragraphs = FeedbackGeneratorService
+        ._getInfiniteLoopFeedback().getParagraphs();
+
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+        [
+          'Looks like your code is hitting an infinite recursive loop.',
+          'Check to see that your recursive calls terminate.'
+        ].join(' ')
+      );
+    });
+  });
+
   describe('_getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
@@ -201,6 +250,44 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on line 5');
+    });
+
+    it('should throw an error if the line number index is less than 0',
+      function() {
+        var buggyErrorTraceback = ErrorTracebackObjectFactory.create(
+            'ZeroDivisionError: integer division or modulo by zero',
+            [TracebackCoordinatesObjectFactory.create(0, 1)]);
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], buggyErrorTraceback,
+          'testInput');
+        expect(function() {
+          FeedbackGeneratorService._getRuntimeErrorFeedback(
+            codeEvalResult, [0, 1, 2, 3, 4]
+          );
+        }).toThrow(new Error("Line number index out of range: -1"));
+      }
+    );
+
+    it('should throw an error if the line number index is greater than the ' +
+        'length of rawCodeLineIndexes', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], sampleErrorTraceback,
+          'testInput');
+
+      expect(function() {
+        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult, [0]);
+      }).toThrow();
+    });
+
+    it('should throw an error if the line number index is equal to the ' +
+        'length of rawCodeLineIndexes', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'some output', [], [], [], sampleErrorTraceback,
+          'testInput');
+      expect(function() {
+        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult,
+            [0, 1, 2, 3]);
+      }).toThrow();
     });
 
     it('should adjust the line numbers correctly', function() {
@@ -456,6 +543,98 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+    });
+  });
+
+  describe('getFeedback', function() {
+    it('should correctly return feedback if the performance does not meet ' +
+      'expectations', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], ['not linear'], null, null);
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        testTask, codeEvalResult, []);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('Your code is running more ' +
+        'slowly than expected. Can you reconfigure it such that it runs in ' +
+        'linear time?');
+    });
+  });
+
+  describe('getPrereqFailureFeedback', function() {
+    it('should throw error if there is no prereqCheckFailure', function() {
+      expect(function() {
+        FeedbackGeneratorService.getPrereqFailureFeedback(null);
+      }).toThrow();
+    });
+
+    it('should return the correct info if Missing Starter Code', function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        'It looks like you deleted or modified the starter code!  Our ',
+        'evaluation program requires the function names given in the ',
+        'starter code.  You can press the \'Reset Code\' button to start ',
+        'over.  Or, you can copy the starter code below:'
+      ].join(''));
+      expect(paragraphs[1].getContent()).toEqual(starterCode);
+    });
+
+    it('should return the correct info if using a bad import', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_BAD_IMPORT, ['panda'], null);
+
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "It looks like you're importing an external library. However, the ",
+        'following libraries are not supported:\n'
+      ].join(''));
+      expect(paragraphs[1].getContent()).toEqual('panda');
+      expect(paragraphs[2].getContent()).toEqual('Here is a list of libraries' +
+        ' we currently support:\n');
+      expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
+        'math, operator, random, re, string, time');
+    });
+
+    it('should return the correct info if it has code in the global scope',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          PREREQ_CHECK_TYPE_GLOBAL_CODE, null, null);
+
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+          prereqFailure);
+        expect(feedback.isAnswerCorrect()).toEqual(false);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          'Please keep your code within the existing predefined functions',
+          '-- we cannot process code in the global scope.'
+        ].join(' '));
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+      });
+
+    it('should throw an error if using an unknown PrereqCheckFailureObject' +
+      'type', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          'unknown', null, null);
+
+      expect(function() {
+        FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
+      }).toThrow();
     });
   });
 });

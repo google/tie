@@ -20,10 +20,12 @@
 tie.factory('ReinforcementGeneratorService', [
   'ReinforcementObjectFactory', 'TranscriptService',
   function(ReinforcementObjectFactory, TranscriptService) {
-
     /**
-    * Splits correctness tests into groups based on matching tag.
-    */
+     * Splits correctness tests into groups based on matching tag.
+     *
+     * @param {Array} tests
+     * @returns {dict}
+     */
     var getTestsKeyedByTag = function(tests) {
       var splitTests = {};
       for (var i = 0; i < tests.length; ++i) {
@@ -39,9 +41,12 @@ tie.factory('ReinforcementGeneratorService', [
     };
 
     /**
-    * Creates a dict from stringified test case input to
-    * the index of the test case in the task.
-    */
+     * Creates a dict from stringified test case input to
+     * the index of the test case in the task.
+     *
+     * @param {Array} tests
+     * @returns {dict}
+     */
     var getTestIndexes = function(tests) {
       var inputToOriginalIndex = {};
       for (var i = 0; i < tests.length; ++i) {
@@ -52,6 +57,14 @@ tie.factory('ReinforcementGeneratorService', [
     };
 
     return {
+      /**
+       * Returns a Reinforcement object that's associated with the code
+       * submission's results.
+       *
+       * @param {Task} task
+       * @param {CodeEvalResult} codeEvalResult
+       * @returns {Reinforcement}
+       */
       getReinforcement: function(task, codeEvalResult) {
         var previousSnapshot = TranscriptService.getMostRecentSnapshot();
         var previousReinforcement = null;

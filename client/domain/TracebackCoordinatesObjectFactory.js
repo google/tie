@@ -19,18 +19,60 @@
 
 tie.factory('TracebackCoordinatesObjectFactory', [
   function() {
+    /**
+     * TracebackCoordinates objects represent the coordinates (line number,
+     * column number) for a singular traceback for an error. Multiple of
+     * these may be present for an ErrorTraceback object.
+     */
+
+    /**
+     * Constructor for TracebackCoordinates
+     *
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @constructor
+     */
     var TracebackCoordinates = function(lineNumber, columnNumber) {
-      // These are both 1-indexed.
+      /**
+       * A number that corresponds with the line number for this traceback's
+       * coordinates.
+       * Note: This is 1-indexed.
+       *
+       * @type {number}
+       * @private
+       */
       this._lineNumber = lineNumber;
+
+      /**
+       * A number that corresponds with the column number for this traceback's
+       * coordinates.
+       * Note: This is 1=indexed.
+       *
+       * @type {number}
+       * @private
+       */
       this._columnNumber = columnNumber;
     };
 
     // Instance methods.
+    /**
+     * A getter for the _lineNumber property.
+     *
+     * @returns {number}
+     */
     TracebackCoordinates.prototype.getLineNumber = function() {
       return this._lineNumber;
     };
 
     // Static class methods.
+    /**
+     * Returns a TracebackCoordinates object based on the lineNumber and
+     * columnNumber passed in as params.
+     *
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @returns {TracebackCoordinates}
+     */
     TracebackCoordinates.create = function(lineNumber, columnNumber) {
       return new TracebackCoordinates(lineNumber, columnNumber);
     };
