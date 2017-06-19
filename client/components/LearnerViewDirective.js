@@ -132,7 +132,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button blue protractor-test-run-code-btn"
+                <button class="tie-run-button tie-button tie-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
@@ -185,11 +185,11 @@ tie.directive('learnerView', [function() {
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
-        .tie-button.blue {
+        .tie-button.tie-blue {
           background-color: rgb(66, 133, 244);
           color: #ffffff;
         }
-        .tie-button.blue:hover {
+        .tie-button.tie-blue:hover {
           background-color: rgb(50, 120, 240);
           border: 1px solid rgb(42, 112, 232);
         }
