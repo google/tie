@@ -170,10 +170,10 @@ tie.directive('learnerView', [function() {
           width: 50px;
         }
         .tie-button {
-          background-color: #9e9e9e;
+          background-color: #ffffff;
           border-radius: 4px;
           border-style: none;
-          color:white;
+          color: black;
           cursor: pointer;
           display: block;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -183,11 +183,12 @@ tie.directive('learnerView', [function() {
           width: 100px;
         }
         .tie-button:hover {
-          background-color: #7b7b7b;
-          border: 1px solid #716f6f;
+          background-color: #e4e3e3;
+          border: 1px solid #cccccc;
         }
         .tie-button.blue {
           background-color: rgb(66, 133, 244);
+          color: #ffffff;
         }
         .tie-button.blue:hover {
           background-color: rgb(50, 120, 240);
@@ -441,7 +442,7 @@ tie.directive('learnerView', [function() {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
-          background-color: #e0e0e0;
+          background-color: #ffffff;
           border: 1px solid transparent;
           border-radius: 4px;
           cursor: pointer;
@@ -453,8 +454,8 @@ tie.directive('learnerView', [function() {
           padding: 1px 6px;
         }
         .tie-select-menu:hover {
-          background-color: #c5c5c5;
-          box-shadow: inset 0 0 0 1px #c1c1c1;
+          background-color: #e6e6e6;
+          box-shadow: inset 0 0 0 1px #e0e0e0;
         }
         .tie-step-container-inner {
           display: flex;
