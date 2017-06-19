@@ -183,8 +183,7 @@ tie.directive('learnerView', [function() {
           width: 100px;
         }
         .tie-button:hover {
-          background-color: #e4e3e3;
-          border: 1px solid #cccccc;
+          border: 1px solid #e4e4e4;
         }
         .tie-button.blue {
           background-color: rgb(66, 133, 244);
@@ -454,8 +453,7 @@ tie.directive('learnerView', [function() {
           padding: 1px 6px;
         }
         .tie-select-menu:hover {
-          background-color: #e6e6e6;
-          box-shadow: inset 0 0 0 1px #e0e0e0;
+          border-color: #e4e4e4;
         }
         .tie-step-container-inner {
           display: flex;
