@@ -22,6 +22,7 @@ describe('FeedbackGeneratorService', function() {
   var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
+  var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var TaskObjectFactory;
   var TracebackCoordinatesObjectFactory;
@@ -43,6 +44,7 @@ describe('FeedbackGeneratorService', function() {
       'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
+    ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
