@@ -13,7 +13,12 @@ Open the file `client/app.html` in a browser.
 
 ## Developer setup
 
-Run `bash scripts/run_karma_tests.sh` to run the Karma tests.
+To run the Karma tests, run the following command in your terminal:  
+
+`bash scripts/run_karma_tests.sh`
+
+If you're interested in learning more about getting started developing TIE, please see our 
+[Development Manual](DevDoc.md).
 
 ## Disclaimer
 

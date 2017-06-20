@@ -26,7 +26,19 @@ tie.factory('SolutionHandlerService', [
       FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory) {
     return {
-      // Returns a promise with a Feedback object.
+      /**
+       * Asynchronously returns a Promise with a Feedback object associated
+       * with the code submission and the test results.
+       *
+       * @param {Array} tasks
+       * @param {string} starterCode Code given at the beginning before user
+       *    adds their own code.
+       * @param {string} studentCode Code that the user submitted
+       * @param {string} auxiliaryCode Code that the user does not write but
+       *    is needed to pass the given tests.
+       * @param {string} language Language that the code is written in.
+       * @returns {*}
+       */
       processSolutionAsync: function(
           tasks, starterCode, studentCode, auxiliaryCode, language) {
         // First, check pre-requisites for the submitted code.
