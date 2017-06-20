@@ -37,13 +37,13 @@ describe('SnapshotObjectFactory', function() {
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
     prereqCheckFailure = PrereqCheckFailureObjectFactory.create(
-      "missingStarterCode", null, "def myFunction(arg): return arg"
+      'missingStarterCode', null, 'def myFunction(arg): return arg'
     );
     CodeEvalResultObjectFactory = $injector.get(
       'CodeEvalResultObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(
-      "code", "", [[true, true], [false, false]], [[false], [false]],
-      [[], []], null, "errorInput"
+      'code', '', [[true, true], [false, false]], [[false], [false]],
+      [[], []], null, 'errorInput'
     );
     FeedbackObjectFactory = $injector.get(
       'FeedbackObjectFactory');
@@ -55,7 +55,7 @@ describe('SnapshotObjectFactory', function() {
       snapshot.setPrereqCheckFailure(prereqCheckFailure);
       expect(snapshot.getPrereqCheckFailure()).toEqual(
         PrereqCheckFailureObjectFactory.create(
-          "missingStarterCode", null, "def myFunction(arg): return arg"
+          'missingStarterCode', null, 'def myFunction(arg): return arg'
       ));
     });
   });
@@ -65,8 +65,8 @@ describe('SnapshotObjectFactory', function() {
       snapshot.setCodeEvalResult(codeEvalResult);
       expect(snapshot.getCodeEvalResult()).toEqual(
         CodeEvalResultObjectFactory.create(
-          "code", "", [[true, true], [false, false]], [[false], [false]],
-          [[], []], null, "errorInput"
+          'code', '', [[true, true], [false, false]], [[false], [false]],
+          [[], []], null, 'errorInput'
         ));
     });
   });
