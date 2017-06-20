@@ -141,6 +141,16 @@ tie.directive('learnerView', [function() {
               </div>
             </div>
           </div>
+          <a href="#" ng-click="showExampleModal()">Show Example Modal</a>
+        </div>
+      </div>
+      <div class="tie-modal" ng-show="modalIsDisplayed" ng-click="closeModal()">
+        <div class="tie-modal-content" ng-click="$event.stopPropagation();">
+          <h1 class="tie-modal-title">{{modalTitle}}</h1>
+          <p class="tie-modal-description">{{modalDescription}}</p>
+          <button class="tie-button tie-blue tie-modal-button" ng-click="closeModal()">
+            <span>OK</span>
+          </button>
         </div>
       </div>
       <style>
@@ -316,6 +326,38 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
+        }
+        .tie-modal {
+          background-color: rgb(0, 0, 0);
+          background-color: rgba(0, 0, 0, 0.4);
+          height: 100%;
+          left: 0;
+          overflow: auto;
+          position: fixed;
+          top: 0;
+          width: 100%;
+          z-index: 4;
+        }
+        .tie-modal-button {
+          margin-left: auto;
+          margin-right: 20px;
+        }
+        .tie-modal-content {
+          background-color: white;
+          border: 1px solid #969696;
+          box-shadow: 0px 5px 20px 2px #797979;
+          margin: 15% auto;
+          padding: 20px;
+          width: 50%;
+          z-index: 5;
+        }
+        .tie-modal-content p {
+          font-size: 16px;
+          color: #7b7b7b;
+        }
+        .tie-modal-title {
+          font-size: 24px;
+          font-weight: 600;
         }
         .tie-most-recent-feedback {
           opacity: 1;
@@ -547,6 +589,13 @@ tie.directive('learnerView', [function() {
         $scope.editorContents = {
           code: ''
         };
+        /**
+         * Determines if the modal component will be displayed on the screen.
+         *
+         * @type {boolean}
+         */
+        $scope.modalIsDisplayed = false;
+
         var autosaveCancelPromise;
         var cachedCode;
         var congratulatoryFeedback = FeedbackObjectFactory.create();
@@ -627,6 +676,28 @@ tie.directive('learnerView', [function() {
           $scope.scrollToBottomOfFeedbackWindow();
         };
 
+        /**
+         * Displays the modal with example text.
+         */
+        $scope.showExampleModal = function() {
+          $scope.modalTitle = "Hello";
+          $scope.modalDescription = "Test test test";
+          $scope.modalIsDisplayed = true;
+        };
+
+        /**
+         * Displays the modal with given title and description.
+         *
+         * @param {string} title Title string for the given modal
+         * @param {string} description String that will be displayed under the
+         *    title in the modal.
+         */
+        $scope.showModal = function(title, description) {
+          $scope.modalTitle = title;
+          $scope.modalDescription = description;
+          $scope.modalIsDisplayed = true;
+        };
+
         $scope.changeTheme = function(newTheme) {
           if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
@@ -643,6 +714,13 @@ tie.directive('learnerView', [function() {
             return;
           }
           $scope.initQuestionSet(newQuestionSetId);
+        };
+
+        /**
+         * Closes the modal.
+         */
+        $scope.closeModal = function() {
+          $scope.modalIsDisplayed = false;
         };
 
         $scope.initQuestionSet = function(newQuestionSetId) {
