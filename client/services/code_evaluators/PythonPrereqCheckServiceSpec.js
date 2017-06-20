@@ -319,8 +319,8 @@ describe('PythonPrereqCheckService', function() {
         starterCode, userCode);
 
       expect(prereqCheckFailure.isBadImport()).toEqual(true);
-      expect(prereqCheckFailure.getType()).toEqual("badImport");
-      expect(prereqCheckFailure.getBadImports()).toEqual(["pandas"]);
+      expect(prereqCheckFailure.getType()).toEqual('badImport');
+      expect(prereqCheckFailure.getBadImports()).toEqual(['pandas']);
       expect(prereqCheckFailure.getStarterCode()).toEqual(null);
     });
   });
