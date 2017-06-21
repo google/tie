@@ -85,8 +85,7 @@ describe('QuestionObjectFactory', function() {
       expect(question.isLastTask(2)).toBe(false);
       expect(question.isLastTask(-1)).toBe(false);
       expect(question.isLastTask(1)).toBe(true);
-      expect(questionWithNoTasks.isLastTask(
-        questionWithNoTasks.getTasks.length)).toBe(false);
+      expect(questionWithNoTasks.isLastTask(1)).toBe(false);
     });
   });
 });
