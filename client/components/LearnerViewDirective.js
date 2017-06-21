@@ -125,14 +125,14 @@ tie.directive('learnerView', [function() {
                 <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button protractor-test-run-code-btn"
+                <button class="tie-run-button tie-button tie-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
@@ -168,6 +168,30 @@ tie.directive('learnerView', [function() {
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-button {
+          background-color: #ffffff;
+          border-radius: 4px;
+          border-style: none;
+          color: black;
+          cursor: pointer;
+          display: block;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          padding: 1px 6px;
+          width: 100px;
+        }
+        .tie-button:hover {
+          border: 1px solid #e4e4e4;
+        }
+        .tie-button.tie-blue {
+          background-color: rgb(66, 133, 244);
+          color: #ffffff;
+        }
+        .tie-button.tie-blue:hover {
+          background-color: rgb(50, 120, 240);
+          border: 1px solid rgb(42, 112, 232);
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -404,23 +428,12 @@ tie.directive('learnerView', [function() {
           color: #E0E0E0;
         }
         .tie-run-button {
-          background-color: rgb(66, 133, 244);
-          border-radius: 4px;
-          border-style: none;
-          color: white;
-          cursor: pointer;
           float: right;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 12px;
-          height: 24px;
           margin-top: 10px;
           position: relative;
-          width: 100px;
         }
         .tie-run-button:hover {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-          background-color: rgb(50, 120, 240);
-          border: 1px solid rgb(42, 112, 232);
         }
         .tie-run-button:active {
           background-color: rgb(42, 112, 232);
@@ -428,9 +441,19 @@ tie.directive('learnerView', [function() {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
+          background-color: #ffffff;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
           float: left;
+          height: 24px;
           margin-right: 5px;
           margin-top: 10px;
+          min-width: 100px;
+          padding: 1px 6px;
+        }
+        .tie-select-menu:hover {
+          border-color: #e4e4e4;
         }
         .tie-step-container-inner {
           display: flex;
