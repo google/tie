@@ -32,21 +32,22 @@ describe('CodeRunnerDispatcherService', function() {
       expect(errorFunction).toThrowError(Error);
     });
 
-    it('should throw TimeLimitError if passed infinite-loop code', function() {
+    it('should throw TimeLimitError given infinite-loop code', function(done) {
       var code = [
         'while True:',
         "    print 'a'"
       ].join('\n');
 
-      CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+      CodeRunnerDispatcherService.runCodeAsync('python', code).then(
         function(rawCodeEvalResult) {
           expect(rawCodeEvalResult.getErrorString()).toBe(
             'TimeLimitError: Program exceeded run time limit.');
+          done();
         }
       );
     });
 
-    it('should throw RangeError if passed infinite-recursing code', function() {
+    it('should throw RangeError given infinite-recurse code', function(done) {
       var code = [
         'def forgetToIgnoreSpaces(string):',
         "    return forgetToIgnoreSpaces(string + 'b')",
@@ -54,11 +55,11 @@ describe('CodeRunnerDispatcherService', function() {
       ].join('\n');
       CodeRunnerDispatcherService.runCodeAsync("python", code).then(
         function(rawCodeEvalResult) {
-          expect(rawCodeEvalResult.getErrorString()).toBe(
-            [
-              'ExternalError: RangeError: Maximum call stack size ',
-              'exceeded on line 2'
-            ].join(''));
+          expect(rawCodeEvalResult.getErrorString()).toBe([
+            'ExternalError: RangeError: Maximum call stack size ',
+            'exceeded on line 2'
+          ].join(''));
+          done();
         }
       );
     });

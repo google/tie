@@ -19,21 +19,62 @@
 
 tie.factory('BuggyOutputTestObjectFactory', [
   function() {
+    /**
+     * BuggyOutputTest is used to store all of the information needed to
+     * complete one test meant to see if the student's code took into
+     * consideration a common bug.
+     */
+
+    /**
+     * Constructor for BuggyOutputTest
+     *
+     * @param {dict} buggyOutputTestDict Contains all the properties needed to
+     *    make a BuggyOutputTest
+     * @constructor
+     */
     var BuggyOutputTest = function(buggyOutputTestDict) {
+      /**
+       * @type {string}
+       * @private
+       */
       this._buggyFunctionName = buggyOutputTestDict.buggyFunctionName;
+
+      /**
+       * @type {Array}
+       * @private
+       */
       this._messages = buggyOutputTestDict.messages;
     };
 
     // Instance methods.
+
+    /**
+     * Returns the name of the buggy function.
+     *
+     * @returns {string}
+     */
     BuggyOutputTest.prototype.getBuggyFunctionName = function() {
       return this._buggyFunctionName;
     };
 
+    /**
+     * Returns the list of messages that a buggy function has
+     *    attached to it
+     *
+     * @returns {Array} Should be array of strings
+     */
     BuggyOutputTest.prototype.getMessages = function() {
       return this._messages;
     };
 
     // Static class methods.
+    /**
+     * Returns a BuggyOutputTest object from the dictionary specified in
+     * the parameter
+     *
+     * @param {dict} buggyOutputTestDict
+     * @returns {BuggyOutputTest}
+     */
     BuggyOutputTest.create = function(buggyOutputTestDict) {
       return new BuggyOutputTest(buggyOutputTestDict);
     };

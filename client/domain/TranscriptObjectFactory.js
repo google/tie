@@ -19,11 +19,34 @@
 
 tie.factory('TranscriptObjectFactory', [
   function() {
+    /**
+     * Transcript objects are used to store the snapshots associated with a
+     * task that can then be used to track the student's progress/status.
+     */
+
+    /**
+     * Constructor for Transcript.
+     *
+     * @constructor
+     */
     var Transcript = function() {
+      /**
+       * An array of snapshots that are attached to this Transcript.
+       *
+       * @type {Array}
+       * @private
+       */
       this._snapshots = [];
     };
 
     // Instance methods.
+    /**
+     * This function returns the Snapshot object that occurred most recently.
+     * Since these snapshots are saved chronologically, this is always the
+     * last snapshot in the array.
+     *
+     * @returns {Snapshot}
+     */
     Transcript.prototype.getMostRecentSnapshot = function() {
       if (this._snapshots.length === 0) {
         return null;
@@ -31,12 +54,24 @@ tie.factory('TranscriptObjectFactory', [
       return this._snapshots[this._snapshots.length - 1];
     };
 
+    /**
+     * This function appends a snapshot to the _snapshots Array and subsequently
+     * returns the length of the Array.
+     *
+     * @param {Snapshot} snapshot
+     * @returns {Number}
+     */
     Transcript.prototype.recordSnapshot = function(snapshot) {
       this._snapshots.push(snapshot);
       return this._snapshots.length;
     };
 
     // Static class methods.
+    /**
+     * Returns a new Transcript object.
+     *
+     * @returns {Transcript}
+     */
     Transcript.create = function() {
       return new Transcript();
     };

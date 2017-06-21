@@ -27,6 +27,21 @@ tie.factory('FeedbackGeneratorService', [
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
+    /**
+     * Converts a Javascript variable to a human-readable element.
+     * If the variable is a string, then it returns a string without the
+     * formatting symbols.
+     * If the variable is a number or boolean, then it returns a string
+     * version of the variable.
+     * If the variable is an Array, then it returns an Array with human readable
+     * versions of each element.
+     * If the variable is an object, then it returns a dictionary with human
+     * readable versions of each key and their respective value.
+     *
+     * @param {*} jsVariable
+     * @returns {*}
+     * @private
+     */
     var _jsToHumanReadable = function(jsVariable) {
       if (jsVariable === null || jsVariable === undefined) {
         return 'None';
@@ -58,6 +73,14 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
+    /**
+     * Returns the feedback created as a result of a failing buggy output test.
+     *
+     * @param {BuggyOutputTest} failingTest
+     * @param {CodeEvalResult} codeEvalResult
+     * @returns {Feedback}
+     * @private
+     */
     var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
@@ -92,6 +115,17 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    /**
+     * Returns the Feedback object created as a result of a specified
+     * correctness test.
+     *
+     * @param {string|null} outputFunctionName If needed, is string of the
+     *    name for the function needed to process/format the user's output.
+     * @param {CorrectnessTest} correctnessTest
+     * @param {*} observedOutput Actual output for running user's code.
+     * @returns {Feedback}
+     * @private
+     */
     var _getCorrectnessTestFeedback = function(
       outputFunctionName, correctnessTest, observedOutput) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
@@ -117,6 +151,13 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    /**
+     * Returns the Feedback related to a failing performance test.
+     *
+     * @param {string} expectedPerformance
+     * @returns {Feedback}
+     * @private
+     */
     var _getPerformanceTestFeedback = function(expectedPerformance) {
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph([
@@ -128,6 +169,17 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    /**
+     * Returns the Feedback object associated with a runtime error when running
+     * the user code.
+     *
+     * @param {CodeEvalResult} codeEvalResult Results of running tests on
+     *    user's submission.
+     * @param {Array} rawCodeLineIndexes Should be an array of numbers
+     *    corresponding to the line numbers for the user's submission.
+     * @returns {Feedback}
+     * @private
+     */
     var _getRuntimeErrorFeedback = function(
         codeEvalResult, rawCodeLineIndexes) {
       var errorInput = codeEvalResult.getErrorInput();
@@ -160,6 +212,12 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    /**
+     * Returns the Feedback object associated with a timeout error.
+     *
+     * @returns {Feedback}
+     * @private
+     */
     var _getTimeoutErrorFeedback = function() {
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph([
@@ -171,16 +229,47 @@ tie.factory('FeedbackGeneratorService', [
       return feedback;
     };
 
+    /**
+     * Returns the Feedback object associated with an Infinite Loop error.
+     *
+     * @returns {Feedback}
+     * @private
+     */
+    var _getInfiniteLoopFeedback = function() {
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph([
+        "Looks like your code is hitting an infinite recursive loop.",
+        "Check to see that your recursive calls terminate."
+      ].join(' '));
+      return feedback;
+    };
+
+    /**
+     * Returns the Feedback object associated with a given user submission
+     * not including the reinforcement.
+     *
+     * @param {Array} tasks Tasks associated with the problem that include
+     *    the tests the user's code must pass.
+     * @param {CodeEvalResult} codeEvalResult Test results for this submission
+     * @param {Array} rawCodeLineIndexes The code line numbers for the user's
+     *    submission. Should be an array of numbers.
+     * @returns {Feedback}
+     * @private
+     */
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
-        return (
-          errorString.startsWith('TimeLimitError') ?
-          _getTimeoutErrorFeedback() :
-          _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes));
+        if (errorString.startsWith('TimeLimitError')) {
+          return _getTimeoutErrorFeedback();
+        } else if (errorString.startsWith(
+          'ExternalError: RangeError')) {
+          return _getInfiniteLoopFeedback();
+        } else {
+          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+        }
       } else {
         // Get all the tests from first task to current that need to be
         // executed.
@@ -237,6 +326,17 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     return {
+      /**
+       * Returns the Feedback and Reinforcement associated with a user's
+       * code submission and their test results.
+       *
+       * @param {Array} tasks Tasks associated with the problem that include
+       *    the tests the user's code must pass.
+       * @param {CodeEvalResult} codeEvalResult Test results for this submission
+       * @param {Array} rawCodeLineIndexes The code line numbers for the user's
+       *    submission. Should be an array of numbers.
+       * @returns {Feedback}
+       */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
@@ -277,6 +377,11 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
+        } else if (prereqCheckFailure.hasGlobalCode()) {
+          feedback.appendTextParagraph([
+            'Please keep your code within the existing predefined functions',
+            '-- we cannot process code in the global scope.'
+          ].join(' '));
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',
@@ -288,6 +393,7 @@ tie.factory('FeedbackGeneratorService', [
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
+      _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable

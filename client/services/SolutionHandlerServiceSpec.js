@@ -237,6 +237,28 @@ describe('SolutionHandlerService', function() {
     });
 
     describe("prereqCheckFailures", function() {
+      it('should return the correct feedback if there is code in global scope',
+        function(done) {
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return input',
+            'mockMainFunction("input")'
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode,
+            auxiliaryCode, 'python'
+          ).then(function(feedback) {
+            expect(feedback.isAnswerCorrect()).toEqual(false);
+            expect(feedback.getParagraphs()[0].getContent()).toEqual([
+              'Please keep your code within the existing predefined functions',
+              '-- we cannot process code in the global scope.'
+            ].join(' '));
+            done();
+          });
+        }
+      );
+
       it('should be correctly handled if missing starter code', function(done) {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, '',
@@ -284,7 +306,7 @@ describe('SolutionHandlerService', function() {
       it('should correctly handle a syntax error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
-          'return True'
+          '    return True -'
         ].join('\n');
 
         SolutionHandlerService.processSolutionAsync(
@@ -294,6 +316,47 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent().startsWith(
             'SyntaxError:')).toEqual(true);
+          done();
+        });
+      });
+    });
+
+    describe('should return the correct feedback if', function() {
+      it('there is an infinite loop', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return mockMainFunction(input)',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toEqual([
+            "Looks like your code is hitting an infinite recursive loop.",
+            "Check to see that your recursive calls terminate."
+          ].join(' '));
+          done();
+        });
+      });
+
+      it('there is a runtime error', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print(greeting)',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()
+            .startsWith(
+              'Looks like your code had a runtime error when ' +
+              'evaluating the input ')
+          ).toBe(true);
           done();
         });
       });

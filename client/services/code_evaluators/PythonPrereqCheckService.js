@@ -20,16 +20,48 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
-      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS) {
-
+      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
+      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
+    /**
+     * Removes trailing white space that may be at the end of a string.
+     *
+     * @param {string} str
+     * @returns {string}
+     */
     var rightTrim = function(str) {
-      // Remove trailing white space at end of string.
       var RIGHT_TRIM_PATTERN = /\s+$/;
       return str.replace(RIGHT_TRIM_PATTERN, '');
     };
 
+    /**
+     * Checks the code submission to ensure that there is no code declared in
+     * the global scope outside of the given functions.
+     *
+     * @param {string} code
+     * @returns {boolean}
+     */
+    var checkGlobalCallsPresent = function(code) {
+      var codeLines = code.split('\n');
+      for (var i = 0; i < codeLines.length; i++) {
+        var line = rightTrim(codeLines[i]);
+        var VALID_LINE_PATTERN = /(^\s+)|(^def)|(^import)/;
+        if (line.search(VALID_LINE_PATTERN) === -1 && line !== '') {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Returns an array with the signatures of the functions that are declared
+     * on the global scope.
+     *
+     * @param {string} starterCode
+     * @returns {Array}
+     */
     var extractTopLevelFunctionLines = function(starterCode) {
       var starterCodeLines = starterCode.split('\n');
       var topLevelFunctionLines = [];
@@ -42,6 +74,14 @@ tie.factory('PythonPrereqCheckService', [
       return topLevelFunctionLines;
     };
 
+    /**
+     * Checks if the code submission has any function signatures that are
+     * different or missing from the expected function signatures.
+     *
+     * @param {string} code
+     * @param {string} expectedTopLevelFunctionLines
+     * @returns {boolean}
+     */
     var doTopLevelFunctionLinesExist = function(
         code, expectedTopLevelFunctionLines) {
       var codeLines = code.split('\n');
@@ -54,12 +94,27 @@ tie.factory('PythonPrereqCheckService', [
       });
     };
 
+    /**
+     * Checks if the code given at the beginning - before the user began making
+     * changes - is still present and unaltered.
+     *
+     * @param {string} starterCode
+     * @param {string} code
+     * @returns {boolean}
+     */
     var checkStarterCodeFunctionsPresent = function(starterCode, code) {
       var expectedTopLevelFunctionLines = extractTopLevelFunctionLines(
         starterCode);
       return doTopLevelFunctionLinesExist(code, expectedTopLevelFunctionLines);
     };
 
+    /**
+     * Returns an array of strings each containing the name of a library the
+     * user tried to import in their code submission.
+     *
+     * @param {string} code
+     * @returns {Array}
+     */
     var getImportedLibraries = function(code) {
       var codeLines = code.split('\n');
       var importedLibraries = [];
@@ -73,6 +128,14 @@ tie.factory('PythonPrereqCheckService', [
       return importedLibraries;
     };
 
+    /**
+     * Returns an array of strings each containing the name of a library the
+     * user tried to import in their submission but is not supported in the TIE
+     * system.
+     *
+     * @param {Array} importedLibraries
+     * @returns {Array}
+     */
     var getUnsupportedImports = function(importedLibraries) {
       return importedLibraries.filter(function(library) {
         return SUPPORTED_PYTHON_LIBS.indexOf(library) === -1;
@@ -80,12 +143,25 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     return {
-      // Returns a PrereqCheckFailure object (or null if there are no failures).
+      /**
+       * Checks if the code does not meet any prerequisite conditions and, if
+       * so, returns the appropriate PythonPrereqCheckFailure object. Otherwise,
+       * returns null if there are no failures.
+       *
+       * @param {string} starterCode
+       * @param {string} code
+       * @returns {PythonPrereqCheckFailure}
+       */
       checkCode: function(starterCode, code) {
         // Check that starter code is present.
         if (!(checkStarterCodeFunctionsPresent(starterCode, code))) {
           return PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
+        }
+
+        if (checkGlobalCallsPresent(code)) {
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_GLOBAL_CODE, null, starterCode);
         }
 
         // Verify no unsupported libraries are imported.
@@ -100,6 +176,7 @@ tie.factory('PythonPrereqCheckService', [
         return null;
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
+      checkGlobalCallsPresent: checkGlobalCallsPresent,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
