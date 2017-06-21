@@ -164,7 +164,7 @@ tie.factory('CodeSubmissionObjectFactory', [
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
-          var importLine = this._preprocessedCodeLines[i].slice(0);
+          var importLine = this._preprocessedCodeLines[i];
           this._preprocessedCodeLines.splice(i, 1);
           this._preprocessedCodeLines.splice(insertPos, 0, importLine);
           this._rawCodeLineIndexes.splice(i, 1);
