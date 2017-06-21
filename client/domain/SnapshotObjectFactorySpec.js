@@ -19,6 +19,12 @@
 describe('SnapshotObjectFactory', function() {
   var SnapshotObjectFactory;
   var snapshot;
+  var PrereqCheckFailureObjectFactory;
+  var prereqCheckFailure;
+  var CodeEvalResultObjectFactory;
+  var codeEvalResult;
+  var FeedbackObjectFactory;
+  var feedback;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -29,27 +35,48 @@ describe('SnapshotObjectFactory', function() {
       codeEvalResult: null,
       feedback: null
     });
+    PrereqCheckFailureObjectFactory = $injector.get(
+      'PrereqCheckFailureObjectFactory');
+    prereqCheckFailure = PrereqCheckFailureObjectFactory.create(
+      'missingStarterCode', null, 'def myFunction(arg): return arg'
+    );
+    CodeEvalResultObjectFactory = $injector.get(
+      'CodeEvalResultObjectFactory');
+    codeEvalResult = CodeEvalResultObjectFactory.create(
+      'code', '', [[true, true], [false, false]], [[false], [false]],
+      [[], []], null, 'errorInput'
+    );
+    FeedbackObjectFactory = $injector.get(
+      'FeedbackObjectFactory');
+    feedback = FeedbackObjectFactory.create(true);
   }));
 
-  describe('getPrereqCheckFailure', function() {
+  describe('setPrereqCheckFailure', function() {
     it('should correctly set and get prereqCheckFailure', function() {
-      snapshot.setPrereqCheckFailure("true");
-      expect(snapshot.getPrereqCheckFailure()).toMatch("true");
+      snapshot.setPrereqCheckFailure(prereqCheckFailure);
+      expect(snapshot.getPrereqCheckFailure()).toEqual(
+        PrereqCheckFailureObjectFactory.create(
+          'missingStarterCode', null, 'def myFunction(arg): return arg'
+      ));
     });
   });
 
   describe('setCodeEvalResult', function() {
     it('should correctly set and get codeEvalResult', function() {
-      snapshot.setCodeEvalResult("true");
-      expect(snapshot.getCodeEvalResult()).toMatch("true");
+      snapshot.setCodeEvalResult(codeEvalResult);
+      expect(snapshot.getCodeEvalResult()).toEqual(
+        CodeEvalResultObjectFactory.create(
+          'code', '', [[true, true], [false, false]], [[false], [false]],
+          [[], []], null, 'errorInput'
+        ));
     });
   });
 
   describe('setFeedback', function() {
     it('should correctly set and get feedback', function() {
-      snapshot.setFeedback("good");
-      expect(snapshot.getFeedback()).toMatch("good");
+      snapshot.setFeedback(feedback);
+      expect(snapshot.getFeedback()).toEqual(FeedbackObjectFactory
+        .create(true));
     });
   });
 });
-
