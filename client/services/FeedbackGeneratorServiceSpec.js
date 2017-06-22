@@ -339,8 +339,8 @@ describe('FeedbackGeneratorService', function() {
 
   describe('_generateRuntimeFeedback', function() {
     it([
-        'should return the correct feedback string if the code throws an ',
-        'IndentationError'
+      'should return the correct feedback string if the code throws an ',
+      'IndentationError'
     ].join(''), function() {
       var errorString = "IndentationError: ...";
       var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
@@ -356,8 +356,8 @@ describe('FeedbackGeneratorService', function() {
       'TypeError where the user tries to assign items in a string without ',
       'splice'].join(''),
       function() {
-        var errorString = "TypeError: 'str' does not support item "
-            + "assignment";
+        var errorString = "TypeError: 'str' does not support item " +
+            "assignment";
         var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
             errorString);
         expect(feedbackString).toEqual(
@@ -372,15 +372,15 @@ describe('FeedbackGeneratorService', function() {
     it(['should return the correct feedback string if the user tries to ',
       'implicitly convert a non-string object to a string'].join(''),
       function() {
-        var errorString = "TypeError: cannot concatenate 'str' and 'int'"
-            + "objects";
+        var errorString = "TypeError: cannot concatenate 'str' and 'int'" +
+            "objects";
         var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
             errorString);
         expect(feedbackString).toEqual(
           ["Did you remember to explicitly convert all objects to strings",
             " when necessary (like when you're concatenating a string)? Make ",
-            "sure everything that isn't a string gets converted using the str() ",
-            "method or by using a formatted string."].join("")
+            "sure everything that isn't a string gets converted using the ",
+            "str() method or by using a formatted string."].join("")
         );
       }
     );
@@ -391,22 +391,22 @@ describe('FeedbackGeneratorService', function() {
       var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
           errorString);
       expect(feedbackString).toEqual([
-          "It looks like " + "hello" + " isn't a declared variable. ",
-          "Did you make sure to spell it correctly? And is it correctly ",
-          "initialized?"].join('')
+        "It looks like hello isn't a declared variable. ",
+        "Did you make sure to spell it correctly? And is it correctly ",
+        "initialized?"].join('')
       );
     });
 
     it(['should return the correct feedback string if the code throws an ',
       'AttributeError'].join(''), function() {
-      var errorString = "AttributeError: 'str' object has no attribute "
-          + "'lowerr'";
+      var errorString = "AttributeError: 'str' object has no attribute " +
+          "'lowerr'";
       var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
           errorString);
       expect(feedbackString).toEqual(
           ["str doesn't have a property or method named ",
-          "lowerr" + ". Double check to make sure everything is spelled ",
-          "correctly."].join("")
+            "lowerr. Double check to make sure everything is spelled ",
+            "correctly."].join("")
       );
     });
 
@@ -416,10 +416,10 @@ describe('FeedbackGeneratorService', function() {
       var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
           errorString);
       expect(feedbackString).toEqual(
-          ["It looks like you're trying to access an index that is out ",
-          "of the bounds for the list. Double check that your loops and ",
-          "assignments don't try to retrieve from indexes below 0 or above ",
-          "the length of the string."].join('')
+            ["It looks like you're trying to access an index that is out ",
+              "of the bounds for the list. Double check that your loops and ",
+              "assignments don't try to retrieve from indexes below 0 or above",
+              " the length of the string."].join('')
       );
     });
 
@@ -429,10 +429,10 @@ describe('FeedbackGeneratorService', function() {
       var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
           errorString);
       expect(feedbackString).toEqual(
-          ["The key " + "key" + " is not in the dictionary you're ",
-          "trying to retrieve from. Double check to make sure everything is ",
-          "spelled correctly and that you haven't forgotten to add any ",
-          "key-value pairs."].join('')
+              ["The key key is not in the dictionary you're trying to ",
+                "retrieve from. Double check to make sure everything is ",
+                "spelled correctly and that you haven't forgotten to add any ",
+                "key-value pairs."].join('')
       );
     });
 
