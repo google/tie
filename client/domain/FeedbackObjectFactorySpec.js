@@ -50,6 +50,4 @@ describe('FeedbackObjectFactory', function() {
       expect(feedback.getParagraphs.length).toEqual(0);
     });
   });
-
-
 });
