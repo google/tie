@@ -50,16 +50,6 @@ describe('FeedbackObjectFactory', function() {
       expect(feedback.getParagraphs.length).toEqual(0);
     });
   });
-/*
-  describe('getReinforcement', function() {
-    it('should get reinforcement for a given task', function() {
-      var reinforcement = "hello world";
-      feedback.setReinforcement(reinforcement);
-      expect(feedback.getReinforcement.getTask).toEqual(reinforcement);
-    });
-  });
-*/
 
 
 });
-
