@@ -353,10 +353,8 @@ describe('SolutionHandlerService', function() {
           auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(feedback.getParagraphs()[0].getContent()
-            .startsWith(
-              'Looks like your code had a runtime error when ' +
-              'evaluating the input ')
-          ).toBe(true);
+            .startsWith('It looks like greeting isn\'t a declared variable.')
+            ).toBe(true);
           done();
         });
       });

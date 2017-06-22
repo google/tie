@@ -337,6 +337,114 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
+  describe('_generateRuntimeFeedback', function() {
+    it([
+        'should return the correct feedback string if the code throws an ',
+        'IndentationError'
+    ].join(''), function() {
+      var errorString = "IndentationError: ...";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual(
+          ['It looks like your code has some inconsistencies with ',
+            'indentation. Double check that you indent after every statement ',
+            'that ends with a ":" and un-indent when necessary.'].join('')
+      );
+    });
+
+    it(['should return the correct feedback string if the code throws a ',
+      'TypeError where the user tries to assign items in a string without ',
+      'splice'].join(''),
+      function() {
+        var errorString = "TypeError: 'str' does not support item "
+            + "assignment";
+        var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+            errorString);
+        expect(feedbackString).toEqual(
+          ["Unfortunately Python doesn't support directly assigning ",
+            "characters in a string. If you need to do so, try splicing the ",
+            "string and reassigning the characters that way. If you need a ",
+            "refresher on splicing, check out the primer."].join('')
+        );
+      }
+    );
+
+    it(['should return the correct feedback string if the user tries to ',
+      'implicitly convert a non-string object to a string'].join(''),
+      function() {
+        var errorString = "TypeError: cannot concatenate 'str' and 'int'"
+            + "objects";
+        var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+            errorString);
+        expect(feedbackString).toEqual(
+          ["Did you remember to explicitly convert all objects to strings",
+            " when necessary (like when you're concatenating a string)? Make ",
+            "sure everything that isn't a string gets converted using the str() ",
+            "method or by using a formatted string."].join("")
+        );
+      }
+    );
+
+    it(['should return the correct feedback string if the code submission ',
+      'throws a NameError'].join(''), function() {
+      var errorString = "NameError: name 'hello' is not defined";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual([
+          "It looks like " + "hello" + " isn't a declared variable. ",
+          "Did you make sure to spell it correctly? And is it correctly ",
+          "initialized?"].join('')
+      );
+    });
+
+    it(['should return the correct feedback string if the code throws an ',
+      'AttributeError'].join(''), function() {
+      var errorString = "AttributeError: 'str' object has no attribute "
+          + "'lowerr'";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual(
+          ["str doesn't have a property or method named ",
+          "lowerr" + ". Double check to make sure everything is spelled ",
+          "correctly."].join("")
+      );
+    });
+
+    it(['should return the correct feedback string if the code throws an ',
+      'IndexError where index is out of list bounds'].join(''), function() {
+      var errorString = "IndexError: list index out of range";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual(
+          ["It looks like you're trying to access an index that is out ",
+          "of the bounds for the list. Double check that your loops and ",
+          "assignments don't try to retrieve from indexes below 0 or above ",
+          "the length of the string."].join('')
+      );
+    });
+
+    it(['should return the correct feedback string if the code throws a ',
+      'KeyError'].join(''), function() {
+      var errorString = "KeyError: key on line 1";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual(
+          ["The key " + "key" + " is not in the dictionary you're ",
+          "trying to retrieve from. Double check to make sure everything is ",
+          "spelled correctly and that you haven't forgotten to add any ",
+          "key-value pairs."].join('')
+      );
+    });
+
+    it(['should return an empty string if it doesn\'t recognize the given ',
+      'error'], function() {
+      var errorString = "not known error";
+      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
+          errorString);
+      expect(feedbackString).toEqual('');
+    });
+  });
+
   describe('_getSyntaxErrorFeedback', function() {
     it([
       'should return feedback if a syntax / compiler error is ',
