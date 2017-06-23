@@ -23,7 +23,7 @@ tie.directive('printFeedbackSnippet', [function() {
     scope: {
       getLogOutput: '&content'
     },
-    template:`
+    template: `
       <p class="tie-feedback-paragraph">
         We noticed that you used a print statement in your latest code submission.
         This is a gentle reminder that while this is a valid debugging method,
