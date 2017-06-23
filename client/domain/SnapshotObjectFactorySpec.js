@@ -31,7 +31,6 @@ describe('SnapshotObjectFactory', function() {
     SnapshotObjectFactory = $injector.get(
       'SnapshotObjectFactory');
     snapshot = SnapshotObjectFactory.create({
-      prereqCheckFailure: null,
       codeEvalResult: null,
       feedback: null
     });
