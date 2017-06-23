@@ -22,6 +22,7 @@ describe('FeedbackGeneratorService', function() {
   var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
+  var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var TaskObjectFactory;
   var TracebackCoordinatesObjectFactory;
@@ -44,6 +45,7 @@ describe('FeedbackGeneratorService', function() {
       'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
+    ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
@@ -409,6 +411,9 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTest, codeEvalResult);
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
+
+      expect(feedback.getReinforcement()).toEqual(ReinforcementObjectFactory
+        .create());
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
