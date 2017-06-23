@@ -42,21 +42,21 @@ tie.directive('printFeedbackSnippet', [function() {
       <style>
         .tie-feedback-toggle {
           background-color: #eee;
+          border: none;
           color: #444;
           cursor: pointer;
+          outline: none;
           padding: 18px;
           width: 100%;
           text-align: left;
-          border: none;
-          outline: none;
           transition: 0.4s;
         }
         .tie-feedback-toggle:hover, .tie-feedback-toggle.active {
           background-color: #ddd;
         }
         .tie-code-panel {
-          padding: 5px;
           background-color: #333;
+          padding: 5px;
         }
       </style>
     `,
