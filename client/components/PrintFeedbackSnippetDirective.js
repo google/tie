@@ -21,7 +21,7 @@ tie.directive('printFeedbackSnippet', [function() {
   return {
     restrict: 'E',
     scope: {
-      getLogOutput: '&content'
+      getLogOutput: '&logOutput'
     },
     template: `
       <p class="tie-feedback-paragraph">
