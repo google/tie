@@ -66,6 +66,9 @@ tie.directive('learnerView', [function() {
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                      <span ng-if="paragraph.isPrintFeedback()">
+                        <print-feedback-snippet logOutput="paragraph.getContent()"></print-feedback-snippet>
+                      </span>
                       <span ng-if="paragraph.isTextParagraph()">
                         {{paragraph.getContent()}}
                       </span>
