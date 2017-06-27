@@ -68,7 +68,7 @@ tie.factory('CodeSubmissionObjectFactory', [
      * @type {RegExp}
      */
     CodeSubmission.prototype.IMPORT_PATTERN = new RegExp(
-      '^\\ {0}import\\ \\w+$');
+      '^import\\ \\w+$');
     /**
      * @const TAB_Length holds the number of spaces that a tab will be converted
      * to
