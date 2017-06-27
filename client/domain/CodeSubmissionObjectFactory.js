@@ -68,7 +68,7 @@ tie.factory('CodeSubmissionObjectFactory', [
      * @type {RegExp}
      */
     CodeSubmission.prototype.IMPORT_PATTERN = new RegExp(
-      '^\\ {4}import\\ \\w+$');
+      '^import\\ \\w+$');
     /**
      * @const TAB_Length holds the number of spaces that a tab will be converted
      * to
@@ -164,8 +164,7 @@ tie.factory('CodeSubmissionObjectFactory', [
       var insertPos = 0;
       for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
         if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
-          var importLine = this._preprocessedCodeLines[i].slice(
-              this.TAB_LENGTH);
+          var importLine = this._preprocessedCodeLines[i];
           this._preprocessedCodeLines.splice(i, 1);
           this._preprocessedCodeLines.splice(insertPos, 0, importLine);
           this._rawCodeLineIndexes.splice(i, 1);
