@@ -101,6 +101,11 @@ class AuxiliaryCode(object):
         ].join('')
       ]
     }],
-    performanceTests: []
+    performanceTests: [{
+      inputDataAtom: 'abbac',
+      transformationFunctionName: 'System.extendString',
+      expectedPerformance: 'linear',
+      evaluationFunctionName: 'findMostCommonCharacter'
+    }]
   }]
 };

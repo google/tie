@@ -101,8 +101,9 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       buggyFunctionName: 'AuxiliaryCode.reverseString',
       messages: [
         [
-          "Please re-read the question. You need to reverse each word ",
-          "in turn; that's different from reversing the entire string."
+          "Whoops! It looks like you're reversing the entire string, but you ",
+          "should only be reversing each word in turn, not their ordering. ",
+          "Please check the given example, and try again."
         ].join('')
       ]
     }],
