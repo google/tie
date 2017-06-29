@@ -156,25 +156,6 @@ tie.factory('CodeSubmissionObjectFactory', [
       }
     };
 
-    /**
-     * Moves all of the global imports in the submitted code out of the
-     * StudentCode class.
-     */
-    CodeSubmission.prototype.removeImportsFromStudentCode = function() {
-      var insertPos = 0;
-      for (var i = 0; i < this._preprocessedCodeLines.length; i++) {
-        if (this.IMPORT_PATTERN.test(this._preprocessedCodeLines[i])) {
-          var importLine = this._preprocessedCodeLines[i].slice(
-              this.TAB_LENGTH);
-          this._preprocessedCodeLines.splice(i, 1);
-          this._preprocessedCodeLines.splice(insertPos, 0, importLine);
-          this._rawCodeLineIndexes.splice(i, 1);
-          this._rawCodeLineIndexes.splice(insertPos, 0, importLine);
-          insertPos++;
-        }
-      }
-    };
-
     // Static class methods.
     /**
      * Returns a CodeSubmission object built from the rawCode param
