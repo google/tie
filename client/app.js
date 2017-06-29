@@ -45,7 +45,7 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
 
 // Supported languages.
 /**
- * Used to tell whenever the language the user's code is in is Python.
+ * Used to tell whenever the language the user's code is in Python.
  *
  * @type {string}
  * @constant

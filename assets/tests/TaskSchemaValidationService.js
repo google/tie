@@ -97,7 +97,7 @@ tie.factory('TaskSchemaValidationService', [
 
       /**
        * Checks that each element of the instructions property for a given
-       * Task are all of type 'text' or 'code.'
+       * Task is all of type 'text' or 'code.'
        *
        * @param {Task} task
        * @returns {boolean}
@@ -202,7 +202,7 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
-       * Checks that the auxiliary code contains a a class definition.
+       * Checks that the auxiliary code contains a class definition.
        *
        * @returns {boolean}
        */
@@ -331,7 +331,7 @@ tie.factory('TaskSchemaValidationService', [
       /**
        * Checks that the correctnessTests property for a given Task has tags.
        *
-       * @param {TasK} task
+       * @param {Task} task
        * @returns {boolean}
        */
       verifyCorrectnessTestsHaveTags: function(task) {
@@ -413,7 +413,7 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
-       * Checks that the Performance TEsts property of a given Task has an
+       * Checks that the Performance Tests property of a given Task has an
        * input data atom string.
        *
        * @param {Array} task

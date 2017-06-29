@@ -902,7 +902,7 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Displays a notification for the given number of seconds to let the ]
+         * Displays a notification for the given number of seconds to let the
          * user know their code has been autosaved.
          *
          * @param {number} displaySeconds
