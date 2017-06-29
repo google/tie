@@ -142,10 +142,10 @@ tie.directive('learnerView', [function() {
             </div>
             <div class="tie-options-row">
               <ul>
-                <li class="about-tie button">
+                <li class="tie-about-button">
                   <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
                 </li>
-                <li class="privacy button" ng-click="onPrivacyClick()">
+                <li class="tie-privacy-button" ng-click="onPrivacyClick()">
                   <a href="#">Privacy</a>
                 </li>
               </ul>
@@ -169,11 +169,8 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
-        .about-tie.button {   
+        .tie-about-button {   
           float: left;        
-        }                     
-        .privacy.button {     
-          float: right;       
         }                     
         .tie-arrow-highlighter {   
           background-color: white; 
@@ -374,7 +371,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {     
           opacity: 0.5;                  
-        }                                
+        }
+        .tie-privacy-button {     
+          float: right;           
+        }                         
         .tie-reinforcement li {          
           list-style: none;              
           margin: 0;                     
