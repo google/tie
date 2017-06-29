@@ -97,7 +97,7 @@ tie.factory('TaskSchemaValidationService', [
 
       /**
        * Checks that each element of the instructions property for a given
-       * Task is all of type 'text' or 'code.'
+       * Task is of type 'text' or 'code.'
        *
        * @param {Task} task
        * @returns {boolean}
