@@ -141,7 +141,6 @@ tie.directive('learnerView', [function() {
               </div>
             </div>
           </div>
-          <a href="#" ng-click="showExampleModal()">Show Example Modal</a>
         </div>
       </div>
       <modal></modal>
