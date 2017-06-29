@@ -146,7 +146,7 @@ tie.directive('learnerView', [function() {
       <modal></modal>
       <style>
         html {
-          height: 100%;                                                            
+          height: 100%;
           min-height: 622px;
           min-width: 1331px;
         }
