@@ -586,6 +586,19 @@ tie.directive('learnerView', [function() {
          * @type {boolean}
          */
         $scope.modalIsDisplayed = false;
+        /**
+         * Determines what will be shown as the title of the modal.
+         *
+         * @type {string}
+         */
+        $scope.modalTitle = "";
+
+        /**
+         * Determines what will be shown as the description for the modal.
+         *
+         * @type {string}
+         */
+        $scope.modalDescription = "";
 
         var autosaveCancelPromise;
         var cachedCode;

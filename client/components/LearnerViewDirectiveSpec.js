@@ -86,6 +86,33 @@ describe('LearnerViewDirective', function() {
     });
   });
 
+  describe('showModal', function() {
+    it('should set the modalIsDisplayed variable correctly', function() {
+      expect($scope.modalIsDisplayed).toBe(false);
+      $scope.showModal('test', 'test test');
+      expect($scope.modalIsDisplayed).toBe(true);
+    });
+
+    it('should set the modalTitle and modalDescription variables correctly',
+      function() {
+        expect($scope.modalTitle).toEqual("");
+        expect($scope.modalDescription).toEqual("");
+        $scope.showModal('test', 'test test');
+        expect($scope.modalTitle).toEqual('test');
+        expect($scope.modalDescription).toEqual('test test');
+      }
+    );
+  });
+
+  describe('closeModal', function() {
+    it('should set the modalIsDisplayed variable correctly', function() {
+      $scope.showModal('test', 'test test');
+      expect($scope.modalIsDisplayed).toBe(true);
+      $scope.closeModal();
+      expect($scope.modalIsDisplayed).toBe(false);
+    });
+  });
+
   describe("autosave", function() {
     var $interval;
     var $timeout;
