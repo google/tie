@@ -28,6 +28,14 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     python:
 `class AuxiliaryCode(object):
     @classmethod
+    def reverseString(cls, s):
+      return str(s[::-1])
+    
+    @classmethod
+    def reverseWordOrder(cls, s):
+      return s.split(' ')[::-1]
+
+    @classmethod
     def forgetLastWord(cls, s):
         result = ""
         reversed_word = []
@@ -91,6 +99,23 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         [
           "It looks like you're exiting the function without adding on the ",
           "last reversed word."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.reverseString',
+      messages: [
+        "Read the instructions closely. Did you overlook something important?",
+        [
+          "It looks like you're reversing the entire string instead of each word. "
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.reverseWordOrder',
+      messages: [
+        "Are you sure you're interpreting the instructions correctly?",
+        [
+          "It looks like you're reversing the order of the words instead of their ",
+          "contents. Is this what you were asked to do?"
         ].join('')
       ]
     }],
