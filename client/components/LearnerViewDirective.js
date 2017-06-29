@@ -144,18 +144,10 @@ tie.directive('learnerView', [function() {
           <a href="#" ng-click="showExampleModal()">Show Example Modal</a>
         </div>
       </div>
-      <div class="tie-modal" ng-show="modalIsDisplayed" ng-click="closeModal()">
-        <div class="tie-modal-content" ng-click="$event.stopPropagation();">
-          <h1 class="tie-modal-title">{{modalTitle}}</h1>
-          <p class="tie-modal-description">{{modalDescription}}</p>
-          <button class="tie-button tie-blue tie-modal-button" ng-click="closeModal()">
-            <span>OK</span>
-          </button>
-        </div>
-      </div>
+      <modal></modal>
       <style>
         html {
-          height: 100%;
+          height: 100%;                                                            
           min-height: 622px;
           min-width: 1331px;
         }
@@ -680,9 +672,7 @@ tie.directive('learnerView', [function() {
          * Displays the modal with example text.
          */
         $scope.showExampleModal = function() {
-          $scope.modalTitle = "Hello";
-          $scope.modalDescription = "Test test test";
-          $scope.modalIsDisplayed = true;
+          $scope.showModal("Hello", "Test test test");
         };
 
         /**
