@@ -142,6 +142,7 @@ tie.directive('learnerView', [function() {
             </div>
           </div>
         </div>
+        <a href="#" ng-click="showExampleModal()">Show Example Modal</a>
       </div>
       <modal></modal>
       <style>
@@ -317,38 +318,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
-        }
-        .tie-modal {
-          background-color: rgb(0, 0, 0);
-          background-color: rgba(0, 0, 0, 0.4);
-          height: 100%;
-          left: 0;
-          overflow: auto;
-          position: fixed;
-          top: 0;
-          width: 100%;
-          z-index: 4;
-        }
-        .tie-modal-button {
-          margin-left: auto;
-          margin-right: 20px;
-        }
-        .tie-modal-content {
-          background-color: white;
-          border: 1px solid #969696;
-          box-shadow: 0px 5px 20px 2px #797979;
-          margin: 15% auto;
-          padding: 20px;
-          width: 50%;
-          z-index: 5;
-        }
-        .tie-modal-content p {
-          font-size: 16px;
-          color: #7b7b7b;
-        }
-        .tie-modal-title {
-          font-size: 24px;
-          font-weight: 600;
         }
         .tie-most-recent-feedback {
           opacity: 1;
