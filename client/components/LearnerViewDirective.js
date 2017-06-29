@@ -140,6 +140,16 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
+            <div class="tie-options-row">
+              <ul>
+                <li class="tie-about-button">
+                  <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
+                </li>
+                <li class="tie-privacy-button" ng-click="onPrivacyClick()">
+                  <a href="#">Privacy</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -159,9 +169,12 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
-        .tie-arrow-highlighter {
-          background-color: white;
-          border-radius: 100px;
+        .tie-about-button {   
+          float: left;        
+        }                     
+        .tie-arrow-highlighter {   
+          background-color: white; 
+          border-radius: 100px;    
           box-shadow: 0px 0px 42px 67px white;
           height: 50px;
           left: calc(50% - 25px);
@@ -361,25 +374,47 @@ tie.directive('learnerView', [function() {
           width: 100%;
           z-index: 4;
         }
-        .tie-previous-instructions {
-          opacity: 0.5;
+        .tie-options-row a {     
+          color: #696969;        
+          display: block;        
+          line-height: 25px;
+          padding: 5px;          
+          text-decoration: none; 
+        }                        
+        .tie-options-row li { 
+          margin: 5px;        
+        }                     
+        .tie-options-row ul {
+          font-size: 11px;            
+          list-style-type: none;      
+          margin: 0;                  
+          padding: 0;                 
+        }                             
+        .tie-options-row a:hover {    
+          text-decoration: underline; 
         }
-        .tie-reinforcement li {
-          list-style: none;
-          margin: 0;
-          margin-top: 1px;
-          position: relative;
+        .tie-previous-instructions {     
+          opacity: 0.5;                  
         }
-        .tie-bullet-img {
-          bottom: 1px;
-          height: 15px;
-          position: absolute;
-          width: 15px;
-        }
-        .tie-bullet-text {
-          padding-left: 19px;
-        }
-        .tie-question-code {
+        .tie-privacy-button {     
+          float: right;           
+        }                         
+        .tie-reinforcement li {          
+          list-style: none;              
+          margin: 0;                     
+          margin-top: 1px;               
+          position: relative;            
+        }                                
+        .tie-bullet-img {                
+          bottom: 1px;                   
+          height: 15px;                  
+          position: absolute;            
+          width: 15px;                   
+        }                                
+        .tie-bullet-text {               
+          padding-left: 19px;            
+        }                                
+        .tie-question-code {             
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;
           font-family: monospace;
@@ -509,13 +544,13 @@ tie.directive('learnerView', [function() {
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'CodeStorageService',
       'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
         var language = LANGUAGE_PYTHON;
@@ -555,6 +590,21 @@ tie.directive('learnerView', [function() {
         var currentTaskIndex = null;
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
+        $scope.onPrivacyClick = function() {
+          var isBrowserOnly = !SERVER_URL;
+          if (isBrowserOnly) {
+            alert(["Privacy Notice:\n\n",
+              "This version of the TIE application stores information, ",
+              "including your code, in your browser's local storage and ",
+              "does not transmit data to any server."].join(''));
+          } else {
+            alert(["Privacy Notice:\n\n",
+              "This version of the TIE application transmits data to ",
+              "our servers in order to provide you with a better coding ",
+              "experience."].join(''));
+          }
+        };
 
         var loadQuestion = function(questionId, introParagraphs) {
           clearFeedback();
