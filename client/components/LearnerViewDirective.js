@@ -617,13 +617,13 @@ tie.directive('learnerView', [function() {
           if (isBrowserOnly) {
             $scope.showModal("Privacy Notice:",
               ["This version of the TIE application stores information, ",
-              "including your code, in your browser's local storage and ",
-              "does not transmit data to any server."].join(''));
+                "including your code, in your browser's local storage and ",
+                "does not transmit data to any server."].join(''));
           } else {
             $scope.showModal("Privacy Notice:",
               ["This version of the TIE application transmits data to ",
-              "our servers in order to provide you with a better coding ",
-              "experience."].join(''));
+                "our servers in order to provide you with a better coding ",
+                "experience."].join(''));
           }
         };
 
