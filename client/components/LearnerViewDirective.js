@@ -125,20 +125,30 @@ tie.directive('learnerView', [function() {
                 <select class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button class="tie-code-reset protractor-test-reset-code-btn" name="code-reset"
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button protractor-test-run-code-btn"
+                <button class="tie-run-button tie-button tie-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
                   Run
                 </button>
               </div>
+            </div>
+            <div class="tie-options-row">
+              <ul>
+                <li class="tie-about-button">
+                  <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
+                </li>
+                <li class="tie-privacy-button" ng-click="onPrivacyClick()">
+                  <a href="#">Privacy</a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -159,15 +169,42 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
-        .tie-arrow-highlighter {
-          background-color: white;
-          border-radius: 100px;
+        .tie-about-button {   
+          float: left;        
+        }                     
+        .tie-arrow-highlighter {   
+          background-color: white; 
+          border-radius: 100px;    
           box-shadow: 0px 0px 42px 67px white;
           height: 50px;
           left: calc(50% - 25px);
           position: absolute;
           top: calc(50% - 25px);
           width: 50px;
+        }
+        .tie-button {
+          background-color: #ffffff;
+          border-radius: 4px;
+          border-style: none;
+          color: black;
+          cursor: pointer;
+          display: block;
+          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 12px;
+          height: 24px;
+          padding: 1px 6px;
+          width: 100px;
+        }
+        .tie-button:hover {
+          border: 1px solid #e4e4e4;
+        }
+        .tie-button.tie-blue {
+          background-color: rgb(66, 133, 244);
+          color: #ffffff;
+        }
+        .tie-button.tie-blue:hover {
+          background-color: rgb(50, 120, 240);
+          border: 1px solid rgb(42, 112, 232);
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -337,25 +374,47 @@ tie.directive('learnerView', [function() {
           width: 100%;
           z-index: 4;
         }
-        .tie-previous-instructions {
-          opacity: 0.5;
+        .tie-options-row a {     
+          color: #696969;        
+          display: block;        
+          line-height: 25px;
+          padding: 5px;          
+          text-decoration: none; 
+        }                        
+        .tie-options-row li { 
+          margin: 5px;        
+        }                     
+        .tie-options-row ul {
+          font-size: 11px;            
+          list-style-type: none;      
+          margin: 0;                  
+          padding: 0;                 
+        }                             
+        .tie-options-row a:hover {    
+          text-decoration: underline; 
         }
-        .tie-reinforcement li {
-          list-style: none;
-          margin: 0;
-          margin-top: 1px;
-          position: relative;
+        .tie-previous-instructions {     
+          opacity: 0.5;                  
         }
-        .tie-bullet-img {
-          bottom: 1px;
-          height: 15px;
-          position: absolute;
-          width: 15px;
-        }
-        .tie-bullet-text {
-          padding-left: 19px;
-        }
-        .tie-question-code {
+        .tie-privacy-button {     
+          float: right;           
+        }                         
+        .tie-reinforcement li {          
+          list-style: none;              
+          margin: 0;                     
+          margin-top: 1px;               
+          position: relative;            
+        }                                
+        .tie-bullet-img {                
+          bottom: 1px;                   
+          height: 15px;                  
+          position: absolute;            
+          width: 15px;                   
+        }                                
+        .tie-bullet-text {               
+          padding-left: 19px;            
+        }                                
+        .tie-question-code {             
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;
           font-family: monospace;
@@ -404,23 +463,12 @@ tie.directive('learnerView', [function() {
           color: #E0E0E0;
         }
         .tie-run-button {
-          background-color: rgb(66, 133, 244);
-          border-radius: 4px;
-          border-style: none;
-          color: white;
-          cursor: pointer;
           float: right;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 12px;
-          height: 24px;
           margin-top: 10px;
           position: relative;
-          width: 100px;
         }
         .tie-run-button:hover {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-          background-color: rgb(50, 120, 240);
-          border: 1px solid rgb(42, 112, 232);
         }
         .tie-run-button:active {
           background-color: rgb(42, 112, 232);
@@ -428,9 +476,19 @@ tie.directive('learnerView', [function() {
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
+          background-color: #ffffff;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
           float: left;
+          height: 24px;
           margin-right: 5px;
           margin-top: 10px;
+          min-width: 100px;
+          padding: 1px 6px;
+        }
+        .tie-select-menu:hover {
+          border-color: #e4e4e4;
         }
         .tie-step-container-inner {
           display: flex;
@@ -486,12 +544,13 @@ tie.directive('learnerView', [function() {
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'CodeStorageService',
       'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+<<<<<<< HEAD
           DISPLAY_AUTOSAVE_TEXT_SECONDS) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
@@ -500,6 +559,9 @@ tie.directive('learnerView', [function() {
          * @type {number}
          * @constant
          */
+=======
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+>>>>>>> origin/master
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
 
         /**
@@ -643,6 +705,24 @@ tie.directive('learnerView', [function() {
          */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+        /**
+         * Checks if the system is in browser only mode and changes the privacy
+         * notice message accordingly.
+         */
+        $scope.onPrivacyClick = function() {
+          var isBrowserOnly = !SERVER_URL;
+          if (isBrowserOnly) {
+            alert(["Privacy Notice:\n\n",
+              "This version of the TIE application stores information, ",
+              "including your code, in your browser's local storage and ",
+              "does not transmit data to any server."].join(''));
+          } else {
+            alert(["Privacy Notice:\n\n",
+              "This version of the TIE application transmits data to ",
+              "our servers in order to provide you with a better coding ",
+              "experience."].join(''));
+          }
+        };
 
         /**
          * Initializes the appropriate values in $scope for the question

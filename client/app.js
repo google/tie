@@ -226,3 +226,7 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
  * @constant
  */
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
+
+// The server URL to call for code execution. If null, the Skulpt library
+// is used for frontend code execution.
+tie.constant('SERVER_URL', null);

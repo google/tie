@@ -21,6 +21,15 @@ tie.factory('PrereqCheckDispatcherService', [
   'PythonPrereqCheckService', 'LANGUAGE_PYTHON',
   function(PythonPrereqCheckService, LANGUAGE_PYTHON) {
     return {
+      /**
+       * Calls the correct prereq check service for the language passed into
+       * the function through the language parameter.
+       *
+       * @param {string} language
+       * @param {string} starterCode
+       * @param {string} code
+       * @returns {PrereqCheckFailure}
+       */
       // Returns a PrereqCheckFailure object (or null if there are no failures).
       checkCode: function(language, starterCode, code) {
         if (language === LANGUAGE_PYTHON) {
