@@ -19,11 +19,16 @@
 tie.directive('modal', [function() {
   return {
     restrict: 'E',
+    scope: {
+      show: '=',
+      title: '@title',
+      description: '@description'
+    },
     template: `
-      <div class="tie-modal" ng-show="modalIsDisplayed" ng-click="closeModal()">       
+      <div class="tie-modal" ng-show="show" ng-click="closeModal()">       
         <div class="tie-modal-content" ng-click="$event.stopPropagation();">           
-          <h1 class="tie-modal-title">{{modalTitle}}</h1>                              
-          <p class="tie-modal-description">{{modalDescription}}</p>                    
+          <h1 class="tie-modal-title">{{title}}</h1>                              
+          <p class="tie-modal-description">{{description}}</p>                    
           <button class="tie-button tie-blue tie-modal-button" ng-click="closeModal()">
             <span>OK</span>                                                            
           </button>                                                                    
@@ -63,6 +68,11 @@ tie.directive('modal', [function() {
           font-weight: 600;                        
         }                                          
       </style>
-    `
+    `,
+    link: function(scope) {
+      scope.closeModal = function() {
+        scope.show = false;
+      };
+    }
   };
 }]);

@@ -143,7 +143,7 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
-      <modal></modal>
+      <modal show='modalIsDisplayed' title='{{ modalTitle }}' description='{{ modalDescription }}'></modal>
       <style>
         html {
           height: 100%;
