@@ -221,18 +221,19 @@ describe('LearnerViewDirective', function() {
   describe("onPrivacyClick", function() {
     it(['should change the modalTitle and modalDescription correctly if in',
       'browser-only form'].join(" "), function() {
-        expect($scope.modalTitle).toEqual("");
-        expect($scope.modalDescription).toEqual("");
+      expect($scope.modalTitle).toEqual("");
+      expect($scope.modalDescription).toEqual("");
 
-        $scope.onPrivacyClick();
+      $scope.onPrivacyClick();
 
-        expect($scope.modalTitle).toEqual("Privacy Notice:");
-        expect($scope.modalDescription).toEqual(
-          ["This version of the TIE application stores information, ",
+      expect($scope.modalTitle).toEqual("Privacy Notice:");
+      expect($scope.modalDescription).toEqual(
+          [
+            "This version of the TIE application stores information, ",
             "including your code, in your browser's local storage and ",
-            "does not transmit data to any server."].join(""));
-      }
-    );
+            "does not transmit data to any server."
+          ].join(""));
+    });
 
     it('should display the modal', function() {
       expect($scope.modalIsDisplayed).toBe(false);
