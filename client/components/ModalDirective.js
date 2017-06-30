@@ -70,6 +70,9 @@ tie.directive('modal', [function() {
       </style>
     `,
     link: function(scope) {
+      /**
+       * Sets the scope variable `show` to false to hide modal.
+       */
       scope.closeModal = function() {
         scope.show = false;
       };
