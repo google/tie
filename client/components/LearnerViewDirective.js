@@ -550,8 +550,7 @@ tie.directive('learnerView', [function() {
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-<<<<<<< HEAD
-          DISPLAY_AUTOSAVE_TEXT_SECONDS) {
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -559,9 +558,6 @@ tie.directive('learnerView', [function() {
          * @type {number}
          * @constant
          */
-=======
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
->>>>>>> origin/master
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
 
         /**
