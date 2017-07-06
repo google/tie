@@ -97,7 +97,7 @@ tie.factory('PythonPrereqCheckService', [
        * @constant
        */
       var JAVA_COMMENT_SYNTAX_REGEX = new RegExp(
-          '//(\\s*|\\w*)*\\n|/\\*(\\s*|\\w*)*\\*/');
+          '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/');
 
       /**
        * Used to recognize if the user is trying to use a do-while loop - which
