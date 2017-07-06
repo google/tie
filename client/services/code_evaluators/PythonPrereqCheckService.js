@@ -20,11 +20,29 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF','PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_PUSH,
+      PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE,
+      PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT,
+      PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE,
+      PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH,
+      PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT,
+      PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP) {
 
     /**
      * Checks if the given code uses any syntax that isn't valid in Python
@@ -33,43 +51,43 @@ tie.factory('PythonPrereqCheckService', [
      * @param {string}
      * @constant
      */
-    var checkForWrongLanguageSyntax = function(code) {
+    var getWrongLanguageType = function(code) {
       /**
-       * Used to recognize when the user tries to use a '++' operator to increment
-       * a number - which is not valid in Python.
+       * Used to recognize when the user tries to use a '++' operator to
+       * increment a number - which is not valid in Python.
        *
        * @type {RegExp}
        * @constant
        */
-      var JAVA_INCREMENT_OPERATOR_REGEX = new RegExp('\+\+');
+      var JAVA_INCREMENT_OPERATOR_REGEX = new RegExp('\\+\\+');
 
       /**
-       * Used to recognize when the user tries to use a '--' operator to decrement
-       * a number - which is not valid in Python.
+       * Used to recognize when the user tries to use a '--' operator to
+       * decrement a number - which is not valid in Python.
        *
        * @type {RegExp}
        * @constant
        */
-      var JAVA_DECREMENT_OPERATOR_REGEX = new RegExp('\-\-');
+      var JAVA_DECREMENT_OPERATOR_REGEX = new RegExp('\\-\\-');
 
       /**
-       * Used to recognize when the user tries to use the `push` method to append
-       * an element to an array (which isn't valid in Python) rather than the
-       * `append` method.
+       * Used to recognize when the user tries to use the `push` method to
+       * append an element to an array (which isn't valid in Python) rather than
+       * the `append` method.
        *
        * @type {RegExp}
        * @constant
        */
-      var PUSH_METHOD_REGEX = new RegExp('.push\(');
+      var PUSH_METHOD_REGEX = new RegExp('.push\\(');
 
       /**
-       * Used to recognize when the user tries to use the catch statement - which
-       * isn't valid in Python - instead of the except statement.
+       * Used to recognize when the user tries to use the catch statement -
+       * which isn't valid in Python - instead of the except statement.
        *
        * @type {RegExp}
        * @constant
        */
-      var CATCH_STATEMENT_REGEX = new RegExp('\bcatch\b');
+      var CATCH_STATEMENT_REGEX = new RegExp('\\bcatch\\b');
 
       /**
        * Used to recognize if someone is trying to use the Java/C/C++ comment
@@ -79,7 +97,7 @@ tie.factory('PythonPrereqCheckService', [
        * @constant
        */
       var JAVA_COMMENT_SYNTAX_REGEX = new RegExp(
-          '\/\/(\s*|\w*)*\n|\/\*(\s*|\w*)*\*\/');
+          '//(\\s*|\\w*)*\\n|/\\*(\\s*|\\w*)*\\*/');
 
       /**
        * Used to recognize if the user is trying to use a do-while loop - which
@@ -89,7 +107,7 @@ tie.factory('PythonPrereqCheckService', [
        * @constant
        */
       var DO_WHILE_LOOP_REGEX = new RegExp(
-          'do\s*{(\w|\s|[;])*}\s*while\s*\((\w|\s)*\)|\bdo\b');
+          'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo\\b');
 
       /**
        * Used to recognize if the user is trying to use an else if statement -
@@ -98,7 +116,7 @@ tie.factory('PythonPrereqCheckService', [
        * @type {RegExp}
        * @constant
        */
-      var ELSE_IF_STATEMENT_REGEX = new RegExp('\belse\s*if\b');
+      var ELSE_IF_STATEMENT_REGEX = new RegExp('\\belse\\s*if\\b');
 
       /**
        * Used to recognize if the user is trying to use a switch statement -
@@ -108,7 +126,8 @@ tie.factory('PythonPrereqCheckService', [
        * @constant
        */
       var SWITCH_STATEMENT_REGEX = new RegExp(
-          '\bswitch\b\s*\((\w|\s)*\)\s*[{|:]?\s*((\bcase\b)|(\bdefault\b))');
+          '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase\\b)|(\\b' +
+          'default\\b))');
 
       /**
        * Used to recognize if user is trying to import a package using the C/C++
@@ -117,7 +136,7 @@ tie.factory('PythonPrereqCheckService', [
        * @type {RegExp}
        * @constant
        */
-      var C_IMPORT_SYNTAX_REGEX = new RegExp('#include\s+<\w+>');
+      var C_IMPORT_SYNTAX_REGEX = new RegExp('#include\\s+<\\w+>');
 
       /**
        * Used to recognize if the user is trying to use '!' as a NOT operator -
@@ -126,7 +145,7 @@ tie.factory('PythonPrereqCheckService', [
        * @type {RegExp}
        * @constant
        */
-      var INVALID_NOT_OPERATOR_REGEX = new RegExp('![^=]\w*');
+      var INVALID_NOT_OPERATOR_REGEX = new RegExp('![^=]\\w*');
 
       /**
        * Used to recognize if the user is trying to use '||' as an OR operator -
@@ -135,11 +154,11 @@ tie.factory('PythonPrereqCheckService', [
        * @type {RegExp}
        * @constant
        */
-      var INVALID_OR_OPERATOR_REGEX = new RegExp('\|\|');
+      var INVALID_OR_OPERATOR_REGEX = new RegExp('\\|\\|');
 
       /**
-       * Used to recognize if the user is trying to use '&&' as an AND operator -
-       * which is not valid in Python.
+       * Used to recognize if the user is trying to use '&&' as an AND operator
+       * - which is not valid in Python.
        *
        * @type {RegExp}
        * @constant
@@ -148,52 +167,54 @@ tie.factory('PythonPrereqCheckService', [
 
       if (code !== '') {
         if (code.search(JAVA_INCREMENT_OPERATOR_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP;
         }
 
         if (code.search(JAVA_DECREMENT_OPERATOR_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP;
         }
 
         if (code.search(JAVA_COMMENT_SYNTAX_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT;
         }
 
         if (code.search(SWITCH_STATEMENT_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH;
         }
 
         if (code.search(ELSE_IF_STATEMENT_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF;
         }
 
         if (code.search(PUSH_METHOD_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_PUSH;
         }
 
         if (code.search(CATCH_STATEMENT_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE;
         }
 
         if (code.search(DO_WHILE_LOOP_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE;
         }
 
         if (code.search(C_IMPORT_SYNTAX_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT;
         }
 
         if (code.search(INVALID_AND_OPERATOR_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP;
         }
 
         if (code.search(INVALID_NOT_OPERATOR_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP;
         }
 
         if (code.search(INVALID_OR_OPERATOR_REGEX) !== -1) {
-
+          return PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
         }
+
+        return '';
       }
     };
 
@@ -344,6 +365,12 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
+        var wrongLangType = getWrongLanguageType(code);
+        if (wrongLangType !== '') {
+          return PrereqCheckFailureObjectFactory.create(
+              wrongLangType, null, null);
+        }
+
         // Otherwise, code passed all pre-requisite checks.
         return null;
       },
@@ -352,7 +379,8 @@ tie.factory('PythonPrereqCheckService', [
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
-      getUnsupportedImports: getUnsupportedImports
+      getUnsupportedImports: getUnsupportedImports,
+      getWrongLanguageType: getWrongLanguageType
     };
   }
 ]);
