@@ -510,6 +510,24 @@ describe('PythonPrereqCheckService', function() {
         }
     );
 
+    it(['returns the correct PrereqCheckFailureObject when there is a ',
+      'wrong language error'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '    return arg ++',
+        ''
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.usesWrongLangIncrementOp()).toEqual(true);
+    });
+    
     it(['returns the correct PrereqCheckFailureObject when starter code method',
       ' name is correct but arguments are incorrect'].join(''),
         function() {
