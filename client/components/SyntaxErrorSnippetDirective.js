@@ -67,16 +67,33 @@ tie.directive('syntaxErrorSnippet', [function() {
     `,
     controller: [
       '$scope', function($scope) {
+        /**
+         * Array of strings used to represent the code snippet lines to be
+         * presented in the UI.
+         *
+         * @type {Array}
+         */
         $scope.snippetLines = [];
+
+        /**
+         * Represents whether a syntax error is being shown or not.
+         *
+         * @type {boolean}
+         */
         $scope.syntaxErrorIsShown = false;
 
+        /**
+         * Used to switch between states of when a syntax error is being shown
+         * or not.
+         */
         $scope.toggleSyntaxErrorHint = function() {
           $scope.syntaxErrorIsShown = !$scope.syntaxErrorIsShown;
           $scope.onStateChange();
         };
 
-        // This is needed in order to change the code snippet shown when the
-        // feedback changes.
+        /**
+         * Used to change the code snippet shown when the feedback changes.
+         */
         $scope.$watch($scope.getContent, function(newValue) {
           // Replace spaces by non-breaking spaces so that multiple spaces do
           // not get collapsed into a single one.

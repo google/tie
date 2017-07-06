@@ -27,32 +27,79 @@ tie.factory('QuestionSchemaValidationService', [
     // the language specified.
 
     return {
+      /**
+       * Checks that a given question's title is of type string.
+       *
+       * @param {Question} question
+       */
       verifyTitleIsString: function(question) {
         return angular.isString(question.getTitle());
       },
+
+      /**
+       * Checks that a given question's title is not empty.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyTitleIsNotEmpty: function(question) {
         return question.getTitle().length > 0;
       },
+
+      /**
+       * Checks that the given starter code for a question is a string.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyStarterCodeIsString: function(question) {
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
           return angular.isString(question.getStarterCode(language));
         });
       },
+
+      /**
+       * Checks that the given starter code for a question is not empty.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyStarterCodeIsNotEmpty: function(question) {
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
           return question.getStarterCode(language).length > 0;
         });
       },
+
+      /**
+       * Checks that the given auxiliary code for a question is a string.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyAuxiliaryCodeIsString: function(question) {
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
           return angular.isString(question.getAuxiliaryCode(language));
         });
       },
+
+      /**
+       * Checks that the given auxiliary code for a question is not empty.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyAuxiliaryCodeIsNotEmpty: function(question) {
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
           return question.getAuxiliaryCode(language).length > 0;
         });
       },
+
+      /**
+       * Checks that the given Question has at least one task in its schema.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyAtLeastOneTaskExists: function(question) {
         // Note that individual task verification is tested separately in
         // TaskSchemaValidationServiceSpec.js.
@@ -60,6 +107,13 @@ tie.factory('QuestionSchemaValidationService', [
           angular.isArray(question.getTasks()) &&
           question.getTasks().length > 0);
       },
+
+      /**
+       * Checks that the given Question has at least one Buggy Output Test in
+       * its schema.
+       * @param {Question} question
+       * @returns {boolean}
+       */
       verifyAtLeastOneBuggyOutputTestExists: function(question) {
         return question.getTasks().some(function(task) {
           return task.getBuggyOutputTests().length > 0;
