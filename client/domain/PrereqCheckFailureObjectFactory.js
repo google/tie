@@ -19,10 +19,28 @@
 
 tie.factory('PrereqCheckFailureObjectFactory', [
   'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF','PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP',
   function(
       PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_PUSH,
+      PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE,
+      PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT,
+      PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE,
+      PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH,
+      PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT,
+      PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP,
+      PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP) {
     /**
      * PrereqCheckFailure encapsulates all of the data necessary to represent
      * one prerequisite check failure that a student's code submission can
@@ -118,6 +136,146 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      */
     PrereqCheckFailure.prototype.hasGlobalCode = function() {
       return (this._type === PREREQ_CHECK_TYPE_GLOBAL_CODE);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing the increment
+     * operator from another language that isn't valid in the submission's
+     * current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    invalid increment operator"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangIncrementOp = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing the decrement
+     * operator from another language that isn't valid in the submission's
+     * current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    invalid decrement operator"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangDecrementOp = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing the push()
+     * method (which is valid in Java/C/C++) rather than the append() method
+     * (which is valid in Python) to render code invalid in the submission's
+     * current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    push method"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangPushMethod = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_PUSH);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing a catch statement
+     * (vs. an except statement) where it is not valid in the submission's
+     * current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    catch statement"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangCatchStatement = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing the Java/C-like
+     * comment syntax when it is not valid in the submission's current language
+     * (i.e. in Python).
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    Java comment syntax"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangJavaComment = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing a do-while loop
+     * when it is not valid in the submission's current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    do-while loop"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangDoWhile = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing an else-if
+     * statement when it is not valid in the submission's current language
+     * (i.e. Python).
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    else if"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangElseIf = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing a switch
+     * statement when it is not valid in the submission's current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    switch"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangSwitch = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing a C-like
+     * import statement syntax when it's not valid in the submission's
+     * current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    C import"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangCImport = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing an invalid
+     * NOT operator syntax for the submission's current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    invalid not operator"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangNotOp = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing an invalid
+     * AND operator syntax for the submission's current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    invalid and operator"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangAndOp = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP);
+    };
+
+    /**
+     * Checks to see if the error is due to the user utilizing an invalid OR
+     * operator syntax for the submission's current language.
+     *
+     * @returns {boolean} Indicates if this failure is of type "wrong language -
+     *    invalid or operator"
+     */
+    PrereqCheckFailure.prototype.usesWrongLangOrOp = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP);
     };
 
     /**
