@@ -26,7 +26,7 @@ tie.factory('PythonPrereqCheckService', [
   'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE',
   'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT',
   'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF','PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH',
+  'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF', 'PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH',
   'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT',
   'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP',
   'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP',
@@ -49,7 +49,7 @@ tie.factory('PythonPrereqCheckService', [
      * but is specific to languages like C/C++ and Java.
      *
      * @param {string}
-     * @constant
+     * @returns {string}
      */
     var getWrongLanguageType = function(code) {
       /**
@@ -213,9 +213,8 @@ tie.factory('PythonPrereqCheckService', [
         if (code.search(INVALID_OR_OPERATOR_REGEX) !== -1) {
           return PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
         }
-
-        return '';
       }
+      return '';
     };
 
     /**
