@@ -13,10 +13,10 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for SnapshotObject domain objects.
+ * @fileoverview Unit tests for ReinforcementBulletObjectFactory domain objects.
  */
 
-describe('SnapshotObjectFactory', function() {
+describe('ReinforcementBulletObjectFactory', function() {
   var ReinforcementBulletObjectFactory;
 
   beforeEach(module('tie'));
