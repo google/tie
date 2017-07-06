@@ -101,27 +101,6 @@ class AuxiliaryCode(object):
         ].join('')
       ]
     }],
-    performanceTests: []
-  }, {
-    instructions: [{
-      content: [
-        'Now, make sure that your code works for ',
-        'different string encodings. ',
-        'What if the provided string is unicode, rather than ASCII?'
-      ].join(''),
-      type: 'text'
-    }],
-    prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunctionName: null,
-    outputFunctionName: null,
-    mainFunctionName: 'findMostCommonCharacter',
-    correctnessTests: [{
-      input: '\u0041\u0042\u0043\u0041',
-      allowedOutputs: ['A'],
-      tag: 'the general case'
-    }],
-    buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'abbac',
       transformationFunctionName: 'System.extendString',
