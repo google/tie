@@ -73,6 +73,22 @@ tie.constant('SYSTEM_CODE', {
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
+tie.constant(
+    'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP', 'wrongLangIncrementOp');
+tie.constant(
+    'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP', 'wrongLangDecrementOp');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_PUSH', 'wrongLangPushMethod');
+tie.constant(
+    'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE', 'wrongLangCatchStatement');
+tie.constant(
+    'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT', 'wrongLangJavaComment');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE', 'wrongLangDoWhile');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF', 'wrongLangElseIf');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH', 'wrongLangSwitch');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT', 'wrongLangCImport');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'wrongLangNotOp');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP', 'wrongLangAndOp');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP', 'wrongLangOrOp');
 
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
