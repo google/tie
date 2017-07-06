@@ -22,36 +22,40 @@ describe('SnapshotObjectFactory', function() {
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     ReinforcementBulletObjectFactory = $injector.get(
-      'ReinforcementBulletObjectFactory');             
+      'ReinforcementBulletObjectFactory');
   }));
 
   describe('createPassedBullet', function() {
     it('should correctly create a passed bullet', function() {
       var passedBullet;
-      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet('passed_bullet_content');
+      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet(
+        'passed_bullet_content');
       expect(passedBullet.isPassedBullet()).toEqual(true);
       expect(passedBullet.getContent()).toEqual('passed_bullet_content');
-    })
+    });
   });
 
   describe('createFailedBullet', function() {
     it('should correctly create a failed bullet', function() {
       var failedBullet;
-      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet('failed_bullet_content');
+      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet(
+        'failed_bullet_content');
       expect(failedBullet.isPassedBullet()).toEqual(false);
       expect(failedBullet.getContent()).toEqual('failed_bullet_content');
-    })
+    });
   });
 
   describe('getImgName', function() {
     it('should correctly get image name', function() {
       var passedBullet;
-      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet('passed_bullet_content');
+      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet(
+        'passed_bullet_content');
       expect(passedBullet.getImgName()).toEqual('pass.png');
 
       var failedBullet;
-      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet('failed_bullet_content');
+      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet(
+        'failed_bullet_content');
       expect(failedBullet.getImgName()).toEqual('fail.png');
-    })
+    });
   });
 });
