@@ -34,6 +34,18 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_PUSH;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP;
+  var PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -58,6 +70,30 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
     PREREQ_CHECK_TYPE_GLOBAL_CODE = $injector.get(
       'PREREQ_CHECK_TYPE_GLOBAL_CODE');
+    PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP');
+    PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP');
+    PREREQ_CHECK_TYPE_WRONG_LANG_PUSH = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH');
+    PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE');
+    PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT');
+    PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE');
+    PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF');
+    PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH');
+    PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT');
+    PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP');
+    PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP');
+    PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP');
 
     var taskDict = [{
       instructions: [''],
@@ -632,10 +668,186 @@ describe('FeedbackGeneratorService', function() {
         expect(paragraphs[0].isTextParagraph()).toBe(true);
       });
 
+    it('should throw an error if it uses the increment operator for the wrong'
+        + 'language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Hmm... It looks like you're trying to use '++' to increment a ",
+        "number, but unfortunately, this isn't valid in Python. Try ",
+        "using '+= 1' instead."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses the decrement operator for the wrong'
+        + 'language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Hmm... It looks like you're trying to use '--' to decrement a ",
+        "number, but unfortunately, this isn't valid in Python. Try ",
+        "using '-= 1' instead."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses the push method instead of append',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          PREREQ_CHECK_TYPE_WRONG_LANG_PUSH, null, null);
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+          prereqFailure);
+        expect(feedback.isAnswerCorrect()).toEqual(false);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          "It seems like you're using a `push` method to add an element ",
+          "to an array, which is valid in Java, but the Python equivalent ",
+          "called `append`."
+        ].join(''));
+      }
+    );
+
+    it('should throw an error if it uses a catch statement in the wrong '
+        + 'language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Are you trying to use a `catch` statement to catch an ",
+        "Exception? In Python, we use `except` instead."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses a Java/C-like comment syntax '
+        + 'in the wrong language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Hmmm... It seems like you're using the Java syntax to write ",
+        "comments. Make sure you're using the '#' character on lines ",
+        "you want to comment out."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses a do-while loop in a language '
+        + 'that doesn\'t support such loops', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Unfortunately, Python doesn't support do-while statements. ",
+        "Perhaps try using a flag or different condition instead?"
+      ].join(''));
+    });
+
+    it('should throw an error if it uses an else-if statement in a language '
+        + 'that doesn\'t support it', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Make sure to double check that you're using `elif` instead of ",
+        "`else if` for your if-else statements."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses a switch statement in a language '
+        + 'that does not support it', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Sad to say but Python doesn't support switch statements. We ",
+        "just have to stick to good old if-else statements instead."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses a C-style import in a language '
+        + 'that does not support it', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "It looks like you're using a C-like syntax to try and import ",
+        "packages. In Python, your imports should be in the format: "
+      ].join(''));
+      expect(paragraphs[1].getContent()).toEqual(
+          "import [insert package name here]");
+    });
+
+    it('should throw an error if it uses a NOT operator that is not valid '
+        + 'in the current language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Are you making sure to use the right OR operator? In Python, ",
+        "it's just `or`."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses an OR operator that is not valid '
+        + 'in the current language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Hmmm... It seems like you're trying to use the OR operator ",
+        "syntax from Java. Be sure you're using the Python appropriate ",
+        "operator - `or`."
+      ].join(''));
+    });
+
+    it('should throw an error if it uses an AND operator that is not valid '
+        + 'in the current language', function() {
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP, null, null);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      expect(feedback.isAnswerCorrect()).toEqual(false);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs[0].getContent()).toEqual([
+        "Triple check you're using the right AND operator. For Python, ",
+        "the AND operator is simply `and`."
+      ].join(''));
+    });
+
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-          'unknown', null, null);
+        'unknown', null, null);
 
       expect(function() {
         FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);

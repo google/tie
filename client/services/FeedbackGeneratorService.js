@@ -444,7 +444,7 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph([
             "Triple check you're using the right AND operator. For Python, ",
             "the AND operator is simply `and`."
-          ]);
+          ].join(''));
         } else if (prereqCheckFailure.usesWrongLangOrOp()) {
           feedback.appendTextParagraph([
             "Hmmm... It seems like you're trying to use the OR operator ",
