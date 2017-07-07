@@ -103,6 +103,7 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
+              <button class="tie-button" ng-click="resetFeedback()">Clear Feedback</button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -192,6 +193,7 @@ tie.directive('learnerView', [function() {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 12px;
           height: 24px;
+          margin-top: 10px;
           padding: 1px 6px;
           width: 100px;
         }
@@ -217,7 +219,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-reset {
           float: left;
-          margin-top: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -464,7 +465,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-top: 10px;
           position: relative;
         }
         .tie-run-button:hover {
@@ -815,6 +815,16 @@ tie.directive('learnerView', [function() {
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
+        };
+
+        /**
+         * Resets the feedback window and clears the local storage of the
+         * feedback for the given question.
+         */
+        $scope.resetFeedback = function() {
+          FeedbackStorageService.clearLocalStorageFeedback(
+            $scope.questionIds[$scope.currentQuestionIndex], language);
+          clearFeedback();
         };
 
         /**
