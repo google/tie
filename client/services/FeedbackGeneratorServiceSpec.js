@@ -668,8 +668,8 @@ describe('FeedbackGeneratorService', function() {
         expect(paragraphs[0].isTextParagraph()).toBe(true);
       });
 
-    it('should throw an error if it uses the increment operator for the wrong'
-        + 'language', function() {
+    it('should throw an error if it uses the increment operator for the wrong' +
+        'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -683,8 +683,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses the decrement operator for the wrong'
-        + 'language', function() {
+    it('should throw an error if it uses the decrement operator for the wrong' +
+        'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -714,8 +714,8 @@ describe('FeedbackGeneratorService', function() {
       }
     );
 
-    it('should throw an error if it uses a catch statement in the wrong '
-        + 'language', function() {
+    it('should throw an error if it uses a catch statement in the wrong ' +
+        'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -728,8 +728,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses a Java/C-like comment syntax '
-        + 'in the wrong language', function() {
+    it('should throw an error if it uses a Java/C-like comment syntax ' +
+        'in the wrong language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -743,8 +743,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses a do-while loop in a language '
-        + 'that doesn\'t support such loops', function() {
+    it('should throw an error if it uses a do-while loop in a language ' +
+        'that doesn\'t support such loops', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -757,8 +757,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses an else-if statement in a language '
-        + 'that doesn\'t support it', function() {
+    it('should throw an error if it uses an else-if statement in a language ' +
+        'that doesn\'t support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -771,8 +771,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses a switch statement in a language '
-        + 'that does not support it', function() {
+    it('should throw an error if it uses a switch statement in a language ' +
+        'that does not support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -785,8 +785,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses a C-style import in a language '
-        + 'that does not support it', function() {
+    it('should throw an error if it uses a C-style import in a language ' +
+        'that does not support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -801,8 +801,8 @@ describe('FeedbackGeneratorService', function() {
           "import [insert package name here]");
     });
 
-    it('should throw an error if it uses a NOT operator that is not valid '
-        + 'in the current language', function() {
+    it('should throw an error if it uses a NOT operator that is not valid ' +
+        'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -815,8 +815,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses an OR operator that is not valid '
-        + 'in the current language', function() {
+    it('should throw an error if it uses an OR operator that is not valid ' +
+        'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -830,8 +830,8 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
     });
 
-    it('should throw an error if it uses an AND operator that is not valid '
-        + 'in the current language', function() {
+    it('should throw an error if it uses an AND operator that is not valid ' +
+        'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP, null, null);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(

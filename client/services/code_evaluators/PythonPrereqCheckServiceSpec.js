@@ -245,8 +245,8 @@ describe('PythonPrereqCheckService', function() {
   );
 
   describe('getWrongLanguageType', function() {
-    it('correctly returns an empty string if there are no wrong language '
-        + 'errors', function() {
+    it('correctly returns an empty string if there are no wrong language ' +
+        'errors', function() {
       var code = [
         'def myFunction(arg):',
         '    return arg',
@@ -257,8 +257,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual('');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP when '
-        + 'the submission has `++` in it', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP when ' +
+        'the submission has `++` in it', function() {
       var code = [
         'def myFunction(arg):',
         '    return arg++',
@@ -270,8 +270,8 @@ describe('PythonPrereqCheckService', function() {
         PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP when '
-        + 'the submission has `--` in it', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP when ' +
+        'the submission has `--` in it', function() {
       var code = [
         'def myFunction(arg):',
         '    return arg--',
@@ -283,8 +283,8 @@ describe('PythonPrereqCheckService', function() {
         PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when '
-        + 'the submission uses Java\'s single line comment syntax', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when ' +
+        'the submission uses Java\'s single line comment syntax', function() {
       var code = [
         'def myFunction(arg):',
         '    // Java comment',
@@ -296,8 +296,8 @@ describe('PythonPrereqCheckService', function() {
         PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when '
-        + 'the submission uses Java\'s multi-line comment syntax', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when ' +
+        'the submission uses Java\'s multi-line comment syntax', function() {
       var code = [
         'def myFunction(arg):',
         '    /*',
@@ -311,8 +311,8 @@ describe('PythonPrereqCheckService', function() {
         PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH when the '
-        + 'submission includes a switch statement', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH when the ' +
+        'submission includes a switch statement', function() {
       var code = [
         'def myFunction(arg):',
         '    switch (arg):',
@@ -326,8 +326,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF when the '
-        + 'submission includes an else if statement', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF when the ' +
+        'submission includes an else if statement', function() {
       var code = [
         'def myFunction(arg):',
         '    if arg > 0',
@@ -341,8 +341,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_PUSH when the '
-        + 'submission includes using the push method', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_PUSH when the ' +
+        'submission includes using the push method', function() {
       var code = [
         'def myFunction(arg):',
         '    arg.push(10)',
@@ -354,8 +354,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_PUSH);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE when the '
-        + 'submission includes a catch statement', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE when the ' +
+        'submission includes a catch statement', function() {
       var code = [
         'def myFunction(arg):',
         '    try:',
@@ -370,8 +370,8 @@ describe('PythonPrereqCheckService', function() {
         PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE when the '
-        + 'submission has a do-while loop', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE when the ' +
+        'submission has a do-while loop', function() {
       var code = [
         'def myFunction(arg):',
         '    do:',
@@ -384,8 +384,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT when the '
-        + 'submission uses a C-style import syntax', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT when the ' +
+        'submission uses a C-style import syntax', function() {
       var code = [
         '#include <pandas>',
         '',
@@ -398,8 +398,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP when the '
-        + 'submission uses an invalid AND operator', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP when the ' +
+        'submission uses an invalid AND operator', function() {
       var code = [
         'def myFunction(arg):',
         '    if arg > 20 && arg < 25:',
@@ -412,8 +412,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP when the '
-        + 'submission uses an invalid OR operator', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP when the ' +
+        'submission uses an invalid OR operator', function() {
       var code = [
         'def myFunction(arg):',
         '    if arg > 20 || arg > 25:',
@@ -426,8 +426,8 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP);
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP when the '
-        + 'submission uses an invalid NOT operator', function() {
+    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP when the ' +
+        'submission uses an invalid NOT operator', function() {
       var code = [
         'def myFunction(arg):',
         '    if !arg:',
@@ -527,7 +527,7 @@ describe('PythonPrereqCheckService', function() {
         starterCode, code);
       expect(prereqCheckFailure.usesWrongLangIncrementOp()).toEqual(true);
     });
-    
+
     it(['returns the correct PrereqCheckFailureObject when starter code method',
       ' name is correct but arguments are incorrect'].join(''),
         function() {
