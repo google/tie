@@ -543,14 +543,14 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'CodeStorageService',
-      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
+      'FeedbackStorageService', 'SECONDS_TO_MILLISECONDS',
+      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
-          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+          FeedbackStorageService, SECONDS_TO_MILLISECONDS,
+          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -748,6 +748,15 @@ tie.directive('learnerView', [function() {
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
           $scope.reinforcementBullets = reinforcement.getBullets();
+          var storedFeedbackParagraphs =
+            FeedbackStorageService.loadStoredFeedback(questionId, language);
+          if (storedFeedbackParagraphs !== null) {
+            for (var i = 0; i < storedFeedbackParagraphs.length; i ++) {
+              $scope.feedbackStorage.push({
+                feedbackParagraphs: storedFeedbackParagraphs[i]
+              });
+            }
+          }
         };
 
         /**
@@ -900,6 +909,9 @@ tie.directive('learnerView', [function() {
          * question, then the user sees a congratulatory alert.
          */
         $scope.showNextTask = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          FeedbackStorageService.storeFeedback(
+            questionId, $scope.feedbackStorage, language);
           if (question.isLastTask(currentTaskIndex)) {
             $scope.currentQuestionIndex++;
             if ($scope.currentQuestionIndex >= $scope.questionIds.length) {
@@ -907,7 +919,6 @@ tie.directive('learnerView', [function() {
               alert('Congratulations, you have finished!');
               return;
             }
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
             loadQuestion(questionId, NEXT_QUESTION_INTRO_FEEDBACK);
           } else {
             currentTaskIndex++;
@@ -932,6 +943,9 @@ tie.directive('learnerView', [function() {
           // their own code back if they click on the current question.
           CodeStorageService.storeCode(
             currentQuestionId, $scope.editorContents.code, language);
+
+          FeedbackStorageService.storeFeedback(
+            currentQuestionId, $scope.feedbackStorage, language);
           // Finally, we need to clear the undo history of the editor. This is
           // done by removing the code editor from the DOM and putting it back
           // again.
@@ -964,6 +978,9 @@ tie.directive('learnerView', [function() {
           }, 0);
           storeCodeAndUpdateCachedCode(
             $scope.questionIds[$scope.currentQuestionIndex], code, language);
+          FeedbackStorageService.storeFeedback(
+            $scope.questionIds[$scope.currentQuestionIndex],
+            $scope.feedbackStorage, language);
         };
 
         /**
@@ -1001,9 +1018,9 @@ tie.directive('learnerView', [function() {
 
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
-            autosaveCancelPromise = $interval(function() {
+            autosaveCancelPromise = $interval(function () {
               var currentQuestionId =
-                $scope.questionIds[$scope.currentQuestionIndex];
+                  $scope.questionIds[$scope.currentQuestionIndex];
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
@@ -1011,7 +1028,9 @@ tie.directive('learnerView', [function() {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
                 storeCodeAndUpdateCachedCode(
-                  currentQuestionId, $scope.editorContents.code, language);
+                    currentQuestionId, $scope.editorContents.code, language);
+                FeedbackStorageService.storeFeedback(
+                    currentQuestionId, $scope.feedbackStorage, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
             }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
