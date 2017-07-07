@@ -810,8 +810,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Are you making sure to use the right OR operator? In Python, ",
-        "it's just `or`."
+        "Are you making sure to use the right NOT operator? In Python, ",
+        "it's just `not`."
       ].join(''));
     });
 

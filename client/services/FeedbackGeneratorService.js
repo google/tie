@@ -437,8 +437,8 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendCodeParagraph("import [insert package name here]");
         } else if (prereqCheckFailure.usesWrongLangNotOp()) {
           feedback.appendTextParagraph([
-            "Are you making sure to use the right OR operator? In Python, ",
-            "it's just `or`."
+            "Are you making sure to use the right NOT operator? In Python, ",
+            "it's just `not`."
           ].join(''));
         } else if (prereqCheckFailure.usesWrongLangAndOp()) {
           feedback.appendTextParagraph([
