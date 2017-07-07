@@ -1,0 +1,95 @@
+// Copyright 2017 The TIE Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Unit tests for ReinforcementObjectFactory domain objects.
+ */
+
+describe('ReinforcementObjectFactory', function() {
+  var CorrectnessTestObjectFactory;
+  var ReinforcementObjectFactory;
+  var reinforcement;
+  var ReinforcementBulletObjectFactory;
+  var TaskObjectFactory;
+  var task;
+
+  beforeEach(module('tie'));
+  beforeEach(inject(function($injector) {
+    CorrectnessTestObjectFactory = $injector.get(
+      'CorrectnessTestObjectFactory');
+    ReinforcementObjectFactory = $injector.get(
+      'ReinforcementObjectFactory');
+    ReinforcementBulletObjectFactory = $injector.get(
+      'ReinforcementBulletObjectFactory');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
+
+    var input = '';
+    var stringifiedInput = '';
+    var allowedOutput = [];
+    var message = '';
+    var tag = '';
+    var correctnessTestsDict = {
+      input,
+      stringifiedInput,
+      allowedOutput,
+      message,
+      tag
+    };
+    var instructions = [''];
+    var prerequisiteSkills = [''];
+    var acquiredSkills = [''];
+    var inputFunctionName = null;
+    var outputFunctionName = null;
+    var mainFunctionName = '';
+    var correctnessTests = [CorrectnessTestObjectFactory
+    .create(correctnessTestsDict)];
+    var buggyOutputTests = [];
+    var performanceTests = [];
+    var taskDict = {
+      instructions,
+      prerequisiteSkills,
+      acquiredSkills,
+      inputFunctionName,
+      outputFunctionName,
+      mainFunctionName,
+      correctnessTests,
+      buggyOutputTests,
+      performanceTests
+    };
+
+    task = TaskObjectFactory.create(taskDict);
+    reinforcement = ReinforcementObjectFactory.create(task);
+  }));
+
+  describe('getBullets', function() {
+    it('should correctly get bullets', function() {
+      reinforcement.addPassedTag('handled_passed_tag', true);
+      reinforcement.addPassedTag('failed_passed_tag', false);
+      reinforcement.addPastFailedCase('handled_past_failed_case', true);
+      reinforcement.addPastFailedCase('failed_past_failed_case', false);
+      var bullet1 = ReinforcementBulletObjectFactory.createPassedBullet(
+        'Handles handled_passed_tag');
+      var bullet2 = ReinforcementBulletObjectFactory.createFailedBullet(
+        'Fails failed_passed_tag');
+      var bullet3 = ReinforcementBulletObjectFactory.createPassedBullet(
+        'Handles \'handled_past_failed_case\'');
+      var bullet4 = ReinforcementBulletObjectFactory.createFailedBullet(
+        'Fails on \'failed_past_failed_case\'');
+      expect(reinforcement.getBullets()).toEqual([
+        bullet1, bullet2, bullet3, bullet4
+      ]);
+    });
+  });
+
+});
