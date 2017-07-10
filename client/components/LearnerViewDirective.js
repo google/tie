@@ -104,8 +104,8 @@ tie.directive('learnerView', [function() {
                 <option style="display: none" value="">Theme</option>
               </select>
               <button class="tie-feedback-reset tie-button" name="feedback-reset"
-                      ng-click="resetFeedback()">
-                  Reset Feedback
+                  ng-click="resetFeedback()">
+                Reset Feedback
               </button>
             </div>
             <div class="tie-coding-ui">
@@ -734,7 +734,6 @@ tie.directive('learnerView', [function() {
          *     question
          */
         var loadQuestion = function(questionId, introParagraphs) {
-          clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
