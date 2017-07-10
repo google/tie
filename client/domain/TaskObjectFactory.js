@@ -20,11 +20,9 @@
 tie.factory('TaskObjectFactory', [
   'CorrectnessTestObjectFactory', 'BuggyOutputTestObjectFactory',
   'PerformanceTestObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
-  'CLASS_NAME_SYSTEM_CODE',
   function(
       CorrectnessTestObjectFactory, BuggyOutputTestObjectFactory,
-      PerformanceTestObjectFactory, CLASS_NAME_AUXILIARY_CODE,
-      CLASS_NAME_SYSTEM_CODE) {
+      PerformanceTestObjectFactory, CLASS_NAME_AUXILIARY_CODE) {
     /**
      * Task objects represent a single task for the user to complete for a
      * question. This includes all of the information, skills, and testing
@@ -182,10 +180,6 @@ tie.factory('TaskObjectFactory', [
         if (this._outputFunctionName.indexOf(CLASS_NAME_AUXILIARY_CODE) === 0) {
           return this._outputFunctionName.substring(
             CLASS_NAME_AUXILIARY_CODE.length + 1);
-        } else if (
-            this._outputFunctionName.indexOf(CLASS_NAME_SYSTEM_CODE) === 0) {
-          return this._outputFunctionName.substring(
-            CLASS_NAME_SYSTEM_CODE.length + 1);
         }
       }
       return this._outputFunctionName;
