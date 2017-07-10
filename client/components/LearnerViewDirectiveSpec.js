@@ -47,7 +47,8 @@ describe('LearnerViewDirective', function() {
   var AUTOSAVE_REPEAT_RANGE = 20;
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _FeedbackParagraphObjectFactory_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_,
+    _FeedbackParagraphObjectFactory_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope

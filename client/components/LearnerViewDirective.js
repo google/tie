@@ -759,7 +759,7 @@ tie.directive('learnerView', [function() {
           // TODO(talee): Clear local storage feedback once localStorage
           // is implemented
           clearFeedback();
-        }
+        };
 
         /**
          * Sets the feedbackStorage property in the scope to be an empty array.
