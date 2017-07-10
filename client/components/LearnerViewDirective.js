@@ -1033,7 +1033,7 @@ tie.directive('learnerView', [function() {
             $scope.autosaveOn = true;
             autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
-                  $scope.questionIds[$scope.currentQuestionIndex];
+                $scope.questionIds[$scope.currentQuestionIndex];
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
