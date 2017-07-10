@@ -330,6 +330,39 @@ describe('PythonPrereqCheckService', function() {
         }
     );
 
+    it(['returns the correct PrereqCheckFailureObject when there is invalid',
+      ' System call'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg'
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '    return System.runTest(StudentCode, myFunction, 0)'
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.hasInvalidSystemCall()).toEqual(true);
+    });
+
+    it(['returns the correct PrereqCheckFailureObject when there is an invalid',
+      ' AuxiliaryCode call'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg'
+      ].join('\n');
+
+      var code = [
+        'def myFunction(arg):',
+        '    return AuxiliaryCode.matchParentheses(arg)'
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.hasInvalidAuxiliaryCodeCall()).toEqual(true);
+    });
+
     it(['returns the correct PrereqCheckFailureObject when unsupported',
       ' libraries are imported'].join(''), function() {
       var userCode = [
