@@ -86,6 +86,42 @@ describe('LearnerViewDirective', function() {
     });
   });
 
+  describe('resetFeedback', function() {
+    var FeedbackParagraphObjectFactory;
+    var FeedbackStorageService;
+
+    beforeEach(inject(function(_FeedbackParagraphObjectFactory_,
+      _FeedbackStorageService_) {
+      FeedbackParagraphObjectFactory = _FeedbackParagraphObjectFactory_;
+      FeedbackStorageService = _FeedbackStorageService_;
+    }));
+
+    it('should reset the feedback state', function() {
+      $scope.questionIds.forEach(function(questionId, index) {
+        $scope.currentQuestionIndex = index;
+        var sampleFeedbackParagraph =
+          FeedbackParagraphObjectFactory.createTextParagraph("test");
+        $scope.feedbackStorage.push({
+          feedbackParagraphs: [sampleFeedbackParagraph]
+        });
+        FeedbackStorageService.storeFeedback(questionId, $scope.feedbackStorage,
+          LANGUAGE);
+        var storedFeedback = FeedbackStorageService.loadStoredFeedback(
+          questionId, LANGUAGE);
+        expect(storedFeedback[0][0].isTextParagraph()).toBe(true);
+        expect(storedFeedback[0][0].getContent()).toEqual('test');
+
+        expect($scope.feedbackStorage.length).toEqual(1);
+
+        $scope.resetFeedback();
+
+        expect(FeedbackStorageService.loadStoredFeedback(questionId, LANGUAGE))
+            .toBeNull();
+        expect($scope.feedbackStorage.length).toEqual(0);
+      });
+    });
+  });
+
   describe("autosave", function() {
     var $interval;
     var $timeout;
