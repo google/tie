@@ -20,11 +20,16 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL) {
+    var AUXILIARYCODE_CALL = 'auxiliaryCode';
+    var SYSTEM_CALL = 'system';
+
     /**
      * Removes trailing white space that may be at the end of a string.
      *
@@ -142,6 +147,27 @@ tie.factory('PythonPrereqCheckService', [
       });
     };
 
+    /**
+     * Returns whether the user tries to call the System or AuxiliaryCode
+     * classes/methods. Will return the string 'system' if a System method is
+     * called, 'auxiliaryCode' if an AuxiliaryCode method is called, or null
+     * if neither classes' methods are called.
+     *
+     * @param {string} code
+     * @returns {string}
+     */
+    var checkInvalidSystemClassCalls = function(code) {
+      var auxiliaryClassRegEx = new RegExp('\\bAuxiliaryCode\\b');
+      var systemClassRegEx = new RegExp('\\bSystem\\b');
+      if (auxiliaryClassRegEx.exec(code)) {
+        return AUXILIARYCODE_CALL;
+      } else if (systemClassRegEx.exec(code)) {
+        return SYSTEM_CALL;
+      } else {
+        return null;
+      }
+    };
+
     return {
       /**
        * Checks if the code does not meet any prerequisite conditions and, if
@@ -150,7 +176,7 @@ tie.factory('PythonPrereqCheckService', [
        *
        * @param {string} starterCode
        * @param {string} code
-       * @returns {PythonPrereqCheckFailure}
+       * @returns {PrereqCheckFailure}
        */
       checkCode: function(starterCode, code) {
         // Check that starter code is present.
@@ -162,6 +188,14 @@ tie.factory('PythonPrereqCheckService', [
         if (checkGlobalCallsPresent(code)) {
           return PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_GLOBAL_CODE, null, starterCode);
+        }
+
+        if (checkInvalidSystemClassCalls(code) === SYSTEM_CALL) {
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL, null, null);
+        } else if (checkInvalidSystemClassCalls(code) === AUXILIARYCODE_CALL) {
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
         }
 
         // Verify no unsupported libraries are imported.
@@ -177,6 +211,7 @@ tie.factory('PythonPrereqCheckService', [
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
       checkGlobalCallsPresent: checkGlobalCallsPresent,
+      checkInvalidSystemClassCalls: checkInvalidSystemClassCalls,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,

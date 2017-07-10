@@ -382,6 +382,26 @@ tie.factory('FeedbackGeneratorService', [
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
+        } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
+          feedback.appendTextParagraph([
+            'Looks like your code had a runtime error. Here is the error ',
+            'message: '
+          ].join(''));
+          feedback.appendCodeParagraph([
+            'ForbiddenNamespaceError: It looks like you\'re trying to call ',
+            'the AuxiliaryCode class or its methods, which is forbidden. ',
+            'Please resubmit without using this class.'
+          ].join(''));
+        } else if (prereqCheckFailure.hasInvalidSystemCall()) {
+          feedback.appendTextParagraph([
+            'Looks like your code had a runtime error. Here is the error ',
+            'message: '
+          ].join(''));
+          feedback.appendCodeParagraph([
+            'ForbiddenNamespaceError: It looks you\'re using the System class ',
+            'or its methods, which is forbidden. Please resubmit without ',
+            'using this class.'
+          ].join(''));
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',

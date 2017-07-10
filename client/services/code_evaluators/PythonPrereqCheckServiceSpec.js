@@ -206,6 +206,39 @@ describe('PythonPrereqCheckService', function() {
     }
   );
 
+  describe('checkInvalidSystemClassCalls', function() {
+    describe('returns the correct string when', function() {
+      it('the user tries to use the System class\'s methods', function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return System.runTest(StudentCode, myFunction, 0)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
+          .toEqual('system');
+      });
+
+      it('the user tries to use AuxiliaryCode class\'s methods', function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return AuxiliaryCode.matchParentheses(arg)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
+          .toEqual('auxiliaryCode');
+      });
+    });
+
+    it('returns null when there are no invalid System or AuxiliaryCode calls',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
+          .toBeNull();
+      }
+    );
+  });
+
   describe('checkCode', function() {
     it(['returns the correct PrereqCheckFailureObject when starter code is ',
       'missing'].join(''), function() {
