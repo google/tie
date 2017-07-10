@@ -59,14 +59,13 @@ tie.factory('FeedbackStorageService', [
        * @param {string} language
        */
       storeFeedback: function(questionId, cachedFeedback, language) {
-        console.log('feedback stored');
         if (!localStorageIsAvailable) {
           return;
         }
 
         var localStorageKey = getLocalStorageKey(questionId, language);
         var feedbackParagraphs = [];
-        for (var i = 0; i < cachedFeedback.length; i ++) {
+        for (var i = 0; i < cachedFeedback.length; i++) {
           feedbackParagraphs.push(cachedFeedback[i].feedbackParagraphs);
         }
         localStorage.setItem(
@@ -91,7 +90,7 @@ tie.factory('FeedbackStorageService', [
         if (storedFeedback) {
           var unparsedParagraphs = JSON.parse(storedFeedback);
           var parsedParagraphs = [];
-          for (var i = 0; i < unparsedParagraphs.length; i ++) {
+          for (var i = 0; i < unparsedParagraphs.length; i++) {
             var paragraphSet = [];
             for (var j = 0; j < unparsedParagraphs[i].length; j++) {
               var paragraph;

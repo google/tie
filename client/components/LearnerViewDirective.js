@@ -751,7 +751,7 @@ tie.directive('learnerView', [function() {
           var storedFeedbackParagraphs =
             FeedbackStorageService.loadStoredFeedback(questionId, language);
           if (storedFeedbackParagraphs !== null) {
-            for (var i = 0; i < storedFeedbackParagraphs.length; i ++) {
+            for (var i = 0; i < storedFeedbackParagraphs.length; i++) {
               $scope.feedbackStorage.push({
                 feedbackParagraphs: storedFeedbackParagraphs[i]
               });
@@ -809,6 +809,9 @@ tie.directive('learnerView', [function() {
             $scope.feedbackStorage.push({
               feedbackParagraphs: feedbackParagraphs
             });
+            FeedbackStorageService.storeFeedback(
+              $scope.questionIds[$scope.currentQuestionIndex],
+              $scope.feedbackStorage, language);
           }
 
           // Skulpt processing happens outside an Angular context, so
@@ -1028,7 +1031,7 @@ tie.directive('learnerView', [function() {
 
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
-            autosaveCancelPromise = $interval(function () {
+            autosaveCancelPromise = $interval(function() {
               var currentQuestionId =
                   $scope.questionIds[$scope.currentQuestionIndex];
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
