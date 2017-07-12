@@ -734,6 +734,7 @@ tie.directive('learnerView', [function() {
          *     question
          */
         var loadQuestion = function(questionId, introParagraphs) {
+          clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
