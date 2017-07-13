@@ -21,12 +21,12 @@ tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
   'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
-  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'SYSTEM_AUXILIARY_CLASSES',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
       PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
-      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL) {
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, SYSTEM_AUXILIARY_CLASSES) {
     var AUXILIARYCODE_CALL = 'auxiliaryCode';
     var SYSTEM_CALL = 'system';
 
@@ -154,11 +154,13 @@ tie.factory('PythonPrereqCheckService', [
      * if neither classes' methods are called.
      *
      * @param {string} code
-     * @returns {string}
+     * @returns {string | null}
      */
     var checkInvalidSystemClassCalls = function(code) {
-      var auxiliaryClassRegEx = new RegExp('\\bAuxiliaryCode\\b');
-      var systemClassRegEx = new RegExp('\\bSystem\\b');
+      var systemClassName = SYSTEM_AUXILIARY_CLASSES.python.systemClass;
+      var auxiliaryClassName = SYSTEM_AUXILIARY_CLASSES.python.auxiliaryClass;
+      var auxiliaryClassRegEx = new RegExp('\\b' + auxiliaryClassName + '\\b');
+      var systemClassRegEx = new RegExp('\\b' + systemClassName + '\\b');
       if (auxiliaryClassRegEx.exec(code)) {
         return AUXILIARYCODE_CALL;
       } else if (systemClassRegEx.exec(code)) {

@@ -122,6 +122,20 @@ tie.constant('SYSTEM_CODE', {
   ].join('\n')
 });
 
+/**
+ * Provides class names for system and auxiliary code according to the language
+ * that is being used.
+ *
+ * @type {{}}
+ * @constant
+ */
+tie.constant('SYSTEM_AUXILIARY_CLASSES', {
+  python: {
+    systemClass: 'System',
+    auxiliaryClass: 'AuxiliaryCode'
+  }
+});
+
 // Pre-requisite check error types
 /**
  * Pre-requisite check error type for when starter code is missing or altered.
