@@ -53,7 +53,7 @@ describe('ReinforcementObjectFactory', function() {
     var outputFunctionName = null;
     var mainFunctionName = '';
     var correctnessTests = [CorrectnessTestObjectFactory
-    .create(correctnessTestsDict)];
+      .create(correctnessTestsDict)];
     var buggyOutputTests = [];
     var performanceTests = [];
     var taskDict = {
