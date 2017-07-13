@@ -103,6 +103,10 @@ tie.directive('learnerView', [function() {
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
+              <button class="tie-feedback-reset tie-button" name="feedback-reset"
+                  ng-click="resetFeedback()">
+                Reset Feedback
+              </button>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -189,9 +193,11 @@ tie.directive('learnerView', [function() {
           color: black;
           cursor: pointer;
           display: block;
+          float: left;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 12px;
           height: 24px;
+          margin-top: 10px;
           padding: 1px 6px;
           width: 100px;
         }
@@ -214,10 +220,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-auto-save.night-mode {
           color: #E0E0E0;
-        }
-        .tie-code-reset {
-          float: left;
-          margin-top: 10px;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -290,6 +292,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-feedback-error-string {
           color: #F44336;
+        }
+        .tie-feedback-reset {
+          width: 120px;
         }
         .tie-feedback-window {
           background-color: rgb(255, 255, 242);
@@ -748,6 +753,12 @@ tie.directive('learnerView', [function() {
           });
           $scope.greetingParagraphs = feedback.getParagraphs();
           $scope.reinforcementBullets = reinforcement.getBullets();
+        };
+
+        $scope.resetFeedback = function() {
+          // TODO(talee): Clear local storage feedback once localStorage
+          // is implemented
+          clearFeedback();
         };
 
         /**

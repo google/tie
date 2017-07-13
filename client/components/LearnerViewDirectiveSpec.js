@@ -21,6 +21,7 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var QuestionDataService;
+  var FeedbackParagraphObjectFactory;
 
   beforeEach(module("tie"));
 
@@ -46,7 +47,8 @@ describe('LearnerViewDirective', function() {
   var AUTOSAVE_REPEAT_RANGE = 20;
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_,
+    _FeedbackParagraphObjectFactory_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -61,6 +63,7 @@ describe('LearnerViewDirective', function() {
     $scope.$digest();
 
     QuestionDataService = _QuestionDataService_;
+    FeedbackParagraphObjectFactory = _FeedbackParagraphObjectFactory_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
@@ -72,7 +75,7 @@ describe('LearnerViewDirective', function() {
 
   }));
 
-  describe("resetCode", function() {
+  describe("reset", function() {
     it('should reset code to starter code', function() {
       $scope.questionIds.forEach(function(questionId, index) {
         var question = QuestionDataService.getQuestion(questionId);
@@ -83,6 +86,15 @@ describe('LearnerViewDirective', function() {
         $scope.resetCode();
         expect($scope.editorContents.code).toEqual(starterCode);
       });
+    });
+
+    it('should reset feedback window', function() {
+      var feedbackP = FeedbackParagraphObjectFactory.createTextParagraph("Hi");
+      $scope.feedbackStorage.push({
+        feedbackParagraphs: [feedbackP]
+      });
+      $scope.resetFeedback();
+      expect($scope.feedbackStorage).toEqual([]);
     });
   });
 
