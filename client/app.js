@@ -90,6 +90,39 @@ tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'wrongLangNotOp');
 tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP', 'wrongLangAndOp');
 tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP', 'wrongLangOrOp');
 
+// Dictionary for all information related to Wrong Language Detection
+var wrongLangDict = {
+  python: {
+    incrementOp: {
+      regExString: '\\+\\+',
+      feedbackParagraphs: [
+        [{
+          _type: 'text',
+          _content: [
+              "Hmm... It looks like you're trying to use '++' to increment a ",
+              "number, but unfortunately, this isn't valid in Python. Try ",
+              "using '+= 1' instead."
+            ].join('')
+        }]
+      ]
+    },
+    decrementOp: {
+      regExString: '\\-\\-',
+      feedbackParagraphs: [
+        [{
+          _type: 'text',
+          _content: [
+            "Hmm... It looks like you're trying to use '--' to decrement a ",
+            "number, but unfortunately, this isn't valid in Python. Try ",
+            "using '-= 1' instead."
+          ].join('')
+        }]
+      ]
+    },
+
+  }
+}
+
 // Name of the list in which correctness test results are stored.
 tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
 // Name of the list in which buggy output test results of all tasks are stored.
