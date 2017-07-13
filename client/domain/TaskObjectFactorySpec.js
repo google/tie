@@ -20,29 +20,23 @@ describe('TaskObjectFactory', function() {
   var QuestionObjectFactory;
   var question;
 
-  var TITLE = 'title';
-  var STARTER_CODE = 'starterCode';
-  var AUXILIARY_CODE = 'auxiliaryCode';
-  var OUTPUT_FUNCTION_NAME_1 =
-  'AuxiliaryCode_AuxiliaryCodeOutputFunctionNameWithoutClass';
-  var OUTPUT_FUNCTION_NAME_2 = 'System_SystemOutputFunctionNameWithoutClass';
-
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     QuestionObjectFactory = $injector.get("QuestionObjectFactory");
 
     question = QuestionObjectFactory.create({
-      title: TITLE,
-      starterCode: STARTER_CODE,
-      auxiliaryCode: AUXILIARY_CODE,
+      title: 'title',
+      starterCode: 'starterCode',
+      auxiliaryCode: 'auxiliaryCode',
       tasks: [{
-        outputFunctionName: OUTPUT_FUNCTION_NAME_1,
+        outputFunctionName:
+          'AuxiliaryCode_AuxiliaryCodeOutputFunctionNameWithoutClass',
         correctnessTests: [],
         buggyOutputTests: [],
         performanceTests: []
       },
       {
-        outputFunctionName: OUTPUT_FUNCTION_NAME_2,
+        outputFunctionName: 'System_SystemOutputFunctionNameWithoutClass',
         correctnessTests: [],
         buggyOutputTests: [],
         performanceTests: []
@@ -55,11 +49,11 @@ describe('TaskObjectFactory', function() {
     it('should properly get OutputFunctionName without the class name',
       function() {
         expect(question.getTasks()[0].getOutputFunctionNameWithoutClass())
-        .toEqual(
-          'AuxiliaryCodeOutputFunctionNameWithoutClass');
+          .toEqual(
+            'AuxiliaryCodeOutputFunctionNameWithoutClass');
         expect(question.getTasks()[1].getOutputFunctionNameWithoutClass())
-        .toEqual(
-          'SystemOutputFunctionNameWithoutClass');
+          .toEqual(
+            'SystemOutputFunctionNameWithoutClass');
       });
   });
 });
