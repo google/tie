@@ -27,16 +27,15 @@ describe('TaskObjectFactory', function() {
     question = QuestionObjectFactory.create({
       title: 'title',
       starterCode: 'starterCode',
-      auxiliaryCode: 'auxiliaryCode',
       tasks: [{
         outputFunctionName:
-          'AuxiliaryCode_AuxiliaryCodeOutputFunctionNameWithoutClass',
+          'AuxiliaryCode.lettersOnly',
         correctnessTests: [],
         buggyOutputTests: [],
         performanceTests: []
       },
       {
-        outputFunctionName: 'System_SystemOutputFunctionNameWithoutClass',
+        outputFunctionName: 'System.extendString',
         correctnessTests: [],
         buggyOutputTests: [],
         performanceTests: []
@@ -49,11 +48,9 @@ describe('TaskObjectFactory', function() {
     it('should properly get OutputFunctionName without the class name',
       function() {
         expect(question.getTasks()[0].getOutputFunctionNameWithoutClass())
-          .toEqual(
-            'AuxiliaryCodeOutputFunctionNameWithoutClass');
+          .toEqual('lettersOnly');
         expect(question.getTasks()[1].getOutputFunctionNameWithoutClass())
-          .toEqual(
-            'SystemOutputFunctionNameWithoutClass');
+          .toEqual('extendString');
       });
   });
 });
