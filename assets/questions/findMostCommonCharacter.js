@@ -101,7 +101,7 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Note that the characters in the input strings may not always be ',
-          'letters...'
+          'letters.'
         ].join(''),
         [
           "Try figuring out what your code would return if the string ",
@@ -119,7 +119,7 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Note that the characters in the input strings may not always be ',
-          'letters or numbers...'
+          'letters or numbers.'
         ].join(''),
         [
           'FYI, the characters in the input strings could also be symbols, ',
