@@ -20,29 +20,13 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF', 'PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP',
-  'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
+  'WRONG_LANGUAGE_ERRORS',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP,
-      PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP,
-      PREREQ_CHECK_TYPE_WRONG_LANG_PUSH,
-      PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE,
-      PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT,
-      PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE,
-      PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH,
-      PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT,
-      PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP,
-      PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP) {
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
+      WRONG_LANGUAGE_ERRORS) {
 
     /**
      * Checks if the given code uses any syntax that isn't valid in Python
@@ -52,167 +36,12 @@ tie.factory('PythonPrereqCheckService', [
      * @returns {string}
      */
     var getWrongLanguageType = function(code) {
-      /**
-       * Used to recognize when the user tries to use a '++' operator to
-       * increment a number - which is not valid in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var JAVA_INCREMENT_OPERATOR_REGEX = new RegExp('\\+\\+');
-
-      /**
-       * Used to recognize when the user tries to use a '--' operator to
-       * decrement a number - which is not valid in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var JAVA_DECREMENT_OPERATOR_REGEX = new RegExp('\\-\\-');
-
-      /**
-       * Used to recognize when the user tries to use the `push` method to
-       * append an element to an array (which isn't valid in Python) rather than
-       * the `append` method.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var PUSH_METHOD_REGEX = new RegExp('.push\\(');
-
-      /**
-       * Used to recognize when the user tries to use the catch statement -
-       * which isn't valid in Python - instead of the except statement.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var CATCH_STATEMENT_REGEX = new RegExp('\\bcatch\\b');
-
-      /**
-       * Used to recognize if someone is trying to use the Java/C/C++ comment
-       * syntax instead of the Python comment syntax.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var JAVA_COMMENT_SYNTAX_REGEX = new RegExp(
-          '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/');
-
-      /**
-       * Used to recognize if the user is trying to use a do-while loop - which
-       * is not supported in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var DO_WHILE_LOOP_REGEX = new RegExp(
-          'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo\\b');
-
-      /**
-       * Used to recognize if the user is trying to use an else if statement -
-       * which is not supported in Python - rather than an `elif` statement.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var ELSE_IF_STATEMENT_REGEX = new RegExp('\\belse\\s*if\\b');
-
-      /**
-       * Used to recognize if the user is trying to use a switch statement -
-       * which is not supported in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var SWITCH_STATEMENT_REGEX = new RegExp(
-          '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase\\b)|(\\b' +
-          'default\\b))');
-
-      /**
-       * Used to recognize if user is trying to import a package using the C/C++
-       * syntax.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var C_IMPORT_SYNTAX_REGEX = new RegExp('#include\\s+<\\w+>');
-
-      /**
-       * Used to recognize if the user is trying to use '!' as a NOT operator -
-       * which, with the exception of the `!=` operator, is invalid in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var INVALID_NOT_OPERATOR_REGEX = new RegExp('![^=]\\w*');
-
-      /**
-       * Used to recognize if the user is trying to use '||' as an OR operator -
-       * which is not valid in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var INVALID_OR_OPERATOR_REGEX = new RegExp('\\|\\|');
-
-      /**
-       * Used to recognize if the user is trying to use '&&' as an AND operator
-       * - which is not valid in Python.
-       *
-       * @type {RegExp}
-       * @constant
-       */
-      var INVALID_AND_OPERATOR_REGEX = new RegExp('&&');
-
       if (code !== '') {
-        if (code.search(JAVA_INCREMENT_OPERATOR_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP;
-        }
-
-        if (code.search(JAVA_DECREMENT_OPERATOR_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP;
-        }
-
-        if (code.search(JAVA_COMMENT_SYNTAX_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT;
-        }
-
-        if (code.search(SWITCH_STATEMENT_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH;
-        }
-
-        if (code.search(ELSE_IF_STATEMENT_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF;
-        }
-
-        if (code.search(PUSH_METHOD_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_PUSH;
-        }
-
-        if (code.search(CATCH_STATEMENT_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE;
-        }
-
-        if (code.search(DO_WHILE_LOOP_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE;
-        }
-
-        if (code.search(C_IMPORT_SYNTAX_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT;
-        }
-
-        if (code.search(INVALID_AND_OPERATOR_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP;
-        }
-
-        if (code.search(INVALID_NOT_OPERATOR_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP;
-        }
-
-        if (code.search(INVALID_OR_OPERATOR_REGEX) !== -1) {
-          return PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
-        }
+        WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
+          if (code.search(new RegExp(error.regExString)) !== -1) {
+            return PREREQ_CHECK_TYPE_WRONG_LANG;
+          }
+        })
       }
       return '';
     };

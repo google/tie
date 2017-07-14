@@ -73,22 +73,7 @@ tie.constant('SYSTEM_CODE', {
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
-tie.constant(
-    'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP', 'wrongLangIncrementOp');
-tie.constant(
-    'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP', 'wrongLangDecrementOp');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_PUSH', 'wrongLangPushMethod');
-tie.constant(
-    'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE', 'wrongLangCatchStatement');
-tie.constant(
-    'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT', 'wrongLangJavaComment');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE', 'wrongLangDoWhile');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF', 'wrongLangElseIf');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH', 'wrongLangSwitch');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT', 'wrongLangCImport');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP', 'wrongLangNotOp');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP', 'wrongLangAndOp');
-tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP', 'wrongLangOrOp');
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG', 'wrongLang');
 
 /**
  * Dictionary of wrong language detection errors and their related information
@@ -96,8 +81,9 @@ tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP', 'wrongLangOrOp');
  * @type {{}}
  */
 tie.constant('WRONG_LANGUAGE_ERRORS', {
-  python: {
-    incrementOp: {
+  python: [
+    {
+      // Used Increment Operator
       regExString: '\\+\\+',
       feedbackParagraphs: [
         [{
@@ -110,7 +96,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    decrementOp: {
+    {
+      // Used Decrement Operator
       regExString: '\\-\\-',
       feedbackParagraphs: [
         [{
@@ -123,7 +110,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    pushMethod: {
+    {
+      // Used `push` instead of `append`
       regexString: '.push\\(',
       feedbackParagraphs: [
         [{
@@ -136,7 +124,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    catchStatement: {
+    {
+      // Used the catch statement
       regexString: '\\bcatch\\b',
       feedbackParagraphs: [
         [{
@@ -148,8 +137,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    javaComment: {
-      regexString: '',
+    {
+      // Used the Java comment syntax
+      regexString: '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -161,8 +151,10 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    doWhile: {
-      regexString: '',
+    {
+      // Used a do-while loop
+      regexString: 'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo' +
+        '\\b',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -173,8 +165,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    elseIf: {
-      regexString: '',
+    {
+      // Used else if instead of elif
+      regexString: '\\belse\\s*if\\b',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -185,8 +178,10 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    switch: {
-      regexString: '',
+    {
+      // Used a switch statement
+      regexString: '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase' +
+        '\\b)|(\\bdefault\\b))',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -197,8 +192,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    cImport: {
-      regexString: '',
+    {
+      // Used the C-like import syntax
+      regexString: '#include\\s+<\\w+>',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -212,8 +208,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    notOperator: {
-      regexString: '',
+    {
+      // Used the Java/C not operator
+      regexString: '[^=]\\w*',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -224,8 +221,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    andOperator: {
-      regexString: '',
+    {
+      // Used the Java/C and operator
+      regexString: '&&',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -236,8 +234,9 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     },
-    orOperator: {
-      regexString: '',
+    {
+      // Used the Java/C or operator
+      regexString: '\\|\\|',
       feedbackParagraphs: [
         [{
           _type: 'text',
@@ -249,7 +248,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }]
       ]
     }
-  }
+  ]
 };
 
 
