@@ -36,10 +36,17 @@ tie.directive('codeSnippet', [function() {
     `,
     controller: [
       '$scope', function($scope) {
+        /**
+         * Array of strings that represents the lines in the code snippets that
+         * need to be shown.
+         *
+         * @type {Array}
+         */
         $scope.snippetLines = [];
 
-        // This is needed in order to change the code snippet shown when the
-        // feedback changes.
+        /**
+         * Used to change the code snippet whenever the feedback changes.
+         */
         $scope.$watch($scope.getContent, function(newValue) {
           // Replace spaces by non-breaking spaces so that multiple spaces do
           // not get collapsed into a single one.

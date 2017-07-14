@@ -26,39 +26,37 @@ globalData.questions['findMostCommonCharacter'] = {  // eslint-disable-line dot-
   },
   auxiliaryCode: {
     python:
-`from collections import Counter
+`import collections
 
 class AuxiliaryCode(object):
     @classmethod
-    def lettersOnly(cls, word):
-      if word == "":
-        return ""
-      word = [w for w in word if w.isalpha()]
-      counter = Counter(word)
-      result = word[0]
-      for w in counter:
-        if counter[w] > counter[result]:
-          result = w
-      return w
+    def lettersOnly(cls, s):
+      alpha_chars = [c for c in s if c.isalpha()]
+      return collections.Counter(alpha_chars).most_common(1)[0][0]
+
+    @classmethod
+    def lettersAndNumbersOnly(cls, s):
+      alphanum_chars = [c for c in s if (c.isalpha() or c.isdigit())]
+      return collections.Counter(alphanum_chars).most_common(1)[0][0]
+
+    @classmethod
+    def includeSpaces(cls, s):
+      counter = collections.Counter(s)
+      return counter.most_common(1)[0][0]
 `
   },
   tasks: [{
     instructions: [{
       content: [
-        'For this problem, we\'d like you to write a method to determine ',
-        'the most common character in a string. You will be given a string ',
-        'of ASCII characters, and you may assume that there ',
-        'is only one most common character, ignoring spaces.'
+        'In this problem, we\'d like you to write a function that determines ',
+        'the most common character in an ASCII string (ignoring spaces). You ',
+        'may assume that the input string contains only one most common ',
+        'character.'
       ].join(''),
       type: 'text'
     }, {
       content: 'Input: "doggo pupper"\nOutput: "p"',
       type: 'code'
-    }, {
-      content: [
-        'There\'s no need to validate that you\'re always passed a string.'
-      ].join(''),
-      type: 'text'
     }],
     prerequisiteSkills: ['String Manipulation', 'Arrays'],
     acquiredSkills: ['String Manipulation'],
@@ -74,54 +72,82 @@ class AuxiliaryCode(object):
       allowedOutputs: ['b'],
       tag: 'the general case'
     }, {
-      input: 'aBBB4562873ba',
-      allowedOutputs: ['B'],
+      input: 'BBBbbbBBBaaaaaaa',
+      allowedOutputs: ['a'],
+      tag: 'mixed-case strings'
+    }, {
+      input: 'Add: 22+22=44',
+      allowedOutputs: ['2'],
       tag: 'strings with numbers'
     }, {
-      input: 'apoiuytrewqsdf*&^%$#ba',
-      allowedOutputs: ['a'],
+      input: 'save 200%!!!',
+      allowedOutputs: ['!'],
       tag: 'strings with special characters'
     }, {
       input: 'x',
       allowedOutputs: ['x'],
       tag: 'small inputs'
+    }, {
+      input: 'some string with many spaces',
+      allowedOutputs: ['s'],
+      tag: 'strings with many spaces'
+    }, {
+      input: 'a b c d e f f',
+      allowedOutputs: ['f'],
+      tag: 'strings with many spaces'
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
       messages: [
         [
-          "Try running your code on '1600Amphitheatre'. ",
-          "Do you get the result you expected?"
+          'Note that the characters in the input strings may not always be ',
+          'letters.'
         ].join(''),
-        "What happens if you pass in strings that contain numbers?",
+        [
+          "Try figuring out what your code would return if the string ",
+          "'160000Amphitheatre' is passed in. Does it give the correct answer?"
+        ].join(''),
+        "What happens if you pass in strings that contain only numbers?",
         [
           "It looks like you are not handling strings properly ",
           "if they contain digits or special characters, ",
           "such as '0123456789' or '~?!@#$%'."
         ].join('')
       ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.lettersAndNumbersOnly',
+      messages: [
+        [
+          'Note that the characters in the input strings may not always be ',
+          'letters or numbers.'
+        ].join(''),
+        [
+          'FYI, the characters in the input strings could also be symbols, ',
+          'like ! and $.'
+        ].join(''),
+        [
+          'What happens if you pass in a string that contains only ',
+          'exclamation marks?'
+        ].join(''),
+        [
+          "It looks like you are not handling strings properly ",
+          "if they contain special characters, such as '~?!@#$%'."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.includeSpaces',
+      messages: [
+        [
+          'What happens if your function is given a string that has lots of ',
+          'spaces in it? Remember that the question asks to ignore spaces.'
+        ].join(''),
+        [
+          "For an input like 'a string with many spaces', your code ",
+          "returns a space as the answer. But the question asks you to ",
+          "ignore spaces."
+        ].join('')
+      ]
     }],
-    performanceTests: []
-  }, {
-    instructions: [{
-      content: [
-        'Now, make sure that your code works for ',
-        'different string encodings. ',
-        'What if the provided string is unicode, rather than ASCII?'
-      ].join(''),
-      type: 'text'
-    }],
-    prerequisiteSkills: ['Arrays', 'Strings', 'Hash Maps'],
-    acquiredSkills: ['String Manipulation'],
-    inputFunctionName: null,
-    outputFunctionName: null,
-    mainFunctionName: 'findMostCommonCharacter',
-    correctnessTests: [{
-      input: '\u0041\u0042\u0043\u0041',
-      allowedOutputs: ['A'],
-      tag: 'the general case'
-    }],
-    buggyOutputTests: [],
     performanceTests: [{
       inputDataAtom: 'abbac',
       transformationFunctionName: 'System.extendString',
