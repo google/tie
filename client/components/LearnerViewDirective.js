@@ -169,12 +169,12 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
-        .tie-about-button {   
-          float: left;        
-        }                     
-        .tie-arrow-highlighter {   
-          background-color: white; 
-          border-radius: 100px;    
+        .tie-about-button {
+          float: left;
+        }
+        .tie-arrow-highlighter {
+          background-color: white;
+          border-radius: 100px;
           box-shadow: 0px 0px 42px 67px white;
           height: 50px;
           left: calc(50% - 25px);
@@ -374,47 +374,47 @@ tie.directive('learnerView', [function() {
           width: 100%;
           z-index: 4;
         }
-        .tie-options-row a {     
-          color: #696969;        
-          display: block;        
+        .tie-options-row a {
+          color: #696969;
+          display: block;
           line-height: 25px;
-          padding: 5px;          
-          text-decoration: none; 
-        }                        
-        .tie-options-row li { 
-          margin: 5px;        
-        }                     
+          padding: 5px;
+          text-decoration: none;
+        }
+        .tie-options-row li {
+          margin: 5px;
+        }
         .tie-options-row ul {
-          font-size: 11px;            
-          list-style-type: none;      
-          margin: 0;                  
-          padding: 0;                 
-        }                             
-        .tie-options-row a:hover {    
-          text-decoration: underline; 
+          font-size: 11px;
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
         }
-        .tie-previous-instructions {     
-          opacity: 0.5;                  
+        .tie-options-row a:hover {
+          text-decoration: underline;
         }
-        .tie-privacy-button {     
-          float: right;           
-        }                         
-        .tie-reinforcement li {          
-          list-style: none;              
-          margin: 0;                     
-          margin-top: 1px;               
-          position: relative;            
-        }                                
-        .tie-bullet-img {                
-          bottom: 1px;                   
-          height: 15px;                  
-          position: absolute;            
-          width: 15px;                   
-        }                                
-        .tie-bullet-text {               
-          padding-left: 19px;            
-        }                                
-        .tie-question-code {             
+        .tie-previous-instructions {
+          opacity: 0.5;
+        }
+        .tie-privacy-button {
+          float: right;
+        }
+        .tie-reinforcement li {
+          list-style: none;
+          margin: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+        .tie-bullet-img {
+          bottom: 1px;
+          height: 15px;
+          position: absolute;
+          width: 15px;
+        }
+        .tie-bullet-text {
+          padding-left: 19px;
+        }
+        .tie-question-code {
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;
           font-family: monospace;
@@ -599,19 +599,6 @@ tie.directive('learnerView', [function() {
         });
 
         /**
-         * String of the initial question intro feedback which is used to
-         * retrieve the next question when needed.
-         *
-         * @type {string}
-         */
-        var NEXT_QUESTION_INTRO_FEEDBACK = [
-          [
-            'Take a look at the next question to the right, and code your ',
-            'answer below.'
-          ].join('\n')
-        ];
-
-        /**
          * Defines the accepted UI Themes for the editor.
          *
          * @type {Array}
@@ -725,10 +712,8 @@ tie.directive('learnerView', [function() {
          * instructions, stored code, starter code, feedback, and greetings.
          *
          * @param {string} questionId ID of question whose data will be loaded
-         * @param {Array} introParagraphs Array of Strings as introduction to
-         *     question
          */
-        var loadQuestion = function(questionId, introParagraphs) {
+        var loadQuestion = function(questionId) {
           clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
@@ -743,9 +728,6 @@ tie.directive('learnerView', [function() {
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
           var reinforcement = ReinforcementObjectFactory.create();
-          introParagraphs.forEach(function(paragraph) {
-            feedback.appendTextParagraph(paragraph);
-          });
           $scope.greetingParagraphs = feedback.getParagraphs();
           $scope.reinforcementBullets = reinforcement.getBullets();
         };
@@ -854,9 +836,7 @@ tie.directive('learnerView', [function() {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
-          loadQuestion(
-            $scope.questionSet.getFirstQuestionId(),
-            $scope.questionSet.getIntroductionParagraphs());
+          loadQuestion($scope.questionSet.getFirstQuestionId());
         };
 
         /**
@@ -908,7 +888,7 @@ tie.directive('learnerView', [function() {
               return;
             }
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId, NEXT_QUESTION_INTRO_FEEDBACK);
+            loadQuestion(questionId);
           } else {
             currentTaskIndex++;
             $scope.previousInstructions.push($scope.instructions);
@@ -940,8 +920,7 @@ tie.directive('learnerView', [function() {
           $timeout(function() {
             $scope.codeEditorIsShown = true;
             var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(
-              questionId, $scope.questionSet.getIntroductionParagraphs());
+            loadQuestion(questionId);
           }, CODEMIRROR_HIDE_TIMEOUT_MSEC);
         };
 
@@ -973,8 +952,7 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           CodeStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId,
-            $scope.questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId);
         };
 
         /**

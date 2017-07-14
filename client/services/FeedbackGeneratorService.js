@@ -201,6 +201,9 @@ tie.factory('FeedbackGeneratorService', [
           }
 
           if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+            console.error(
+              'Runtime error on line ' + preprocessedCodeLineIndex +
+              ' in the preprocessed code');
             return 'a line in the test code';
           } else {
             return 'line ' + (
