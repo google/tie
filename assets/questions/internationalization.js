@@ -42,6 +42,12 @@ def are_all_unique(words):
         return ""
 
     @classmethod
+    def abbreviateLazily(cls, word):
+        if word:
+            return "%s%d%s" % (word[0], len(word[1:-1]), word[-1])
+        return ""
+
+    @classmethod
     def createListOfUniqueStrings(cls, atom, size):
         result = []
         for i in range(size):
@@ -118,13 +124,31 @@ def are_all_unique(words):
         'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate'),
       messages: [
         [
-          "Think about how your code handles short inputs. ",
-          "'c1t' is not an abbreviation for 'cat'."
+          "It looks like you're using the string's length minus two in the ",
+          "middle. This approach works in most cases, but can you think of ",
+          "any cases in which it doesn't give the right output?"
         ].join(''),
         [
+          "Your code abbreviates 'cat' as 'c1t' -- but this does not make ",
+          "the word shorter, right?"
+        ].join(''),
+        [
+          "For short strings, you're actually ending up with a negative ",
+          "number in the middle. You don't need to abbreviate strings with ",
+          "length <= 3."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.abbreviateLazily',
+      messages: [
+        [
           "It looks like you're using the string's length minus two in the ",
-          "middle, which is usually fine, but can you think of any issues ",
-          "that might present?"
+          "middle. This approach works in most cases, but can you think of ",
+          "any cases in which it doesn't give the right output?"
+        ].join(''),
+        [
+          "Your code abbreviates 'cat' as 'c1t' -- but this does not make ",
+          "the word shorter, right?"
         ].join(''),
         [
           "For short strings, you're actually ending up with a negative ",
