@@ -21,9 +21,11 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
+  'RUNTIME_ERROR_FEEDBACK_MESSAGES',
   function(
       FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
-      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS) {
+      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
+      RUNTIME_ERROR_FEEDBACK_MESSAGES) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -226,53 +228,14 @@ tie.factory('FeedbackGeneratorService', [
      * @returns {string} Text to be appended to feedback.
      */
     var _generateRuntimeFeedback = function(errorString) {
-      var found = [];
-      if (errorString.startsWith("IndentationError: ")) {
-        return ['It looks like your code has some inconsistencies with ',
-          'indentation. Double check that you indent after every statement ',
-          'that ends with a ":" and un-indent when necessary.'].join('');
-      } else if (errorString.startsWith("TypeError: 'str' does not support" +
-          " item assignment")) {
-        return ["Unfortunately Python doesn't support directly assigning ",
-          "characters in a string. If you need to do so, try splicing the ",
-          "string and reassigning the characters that way. If you need a ",
-          "refresher on splicing, check out the primer."].join('');
-      } else if (errorString.startsWith('TypeError: ') &&
-          errorString.includes("cannot concatenate 'str' and") &&
-          errorString.includes("objects")) {
-        return ["Did you remember to explicitly convert all objects to strings",
-          " when necessary (like when you're concatenating a string)? Make ",
-          "sure everything that isn't a string gets converted using the str() ",
-          "method or by using a formatted string."].join("");
-      } else if (errorString.startsWith('NameError: ')) {
-        var nameErrorRegEx = /NameError:\sname\s'(\w+)'\sis\snot\sdefined/;
-        found = errorString.match(nameErrorRegEx);
-        return ["It looks like " + found[1] + " isn't a declared variable. ",
-          "Did you make sure to spell it correctly? And is it correctly ",
-          "initialized?"].join('');
-      } else if (errorString.startsWith('AttributeError: ')) {
-        var attributeErrorRegEx =
-          /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'(\w+)'/;
-        found = errorString.match(attributeErrorRegEx);
-        return [found[1] + " doesn't have a property or method named ",
-          found[2] + ". Double check to make sure everything is spelled ",
-          "correctly."].join("");
-      } else if (errorString.startsWith(
-          "IndexError: list index out of range")) {
-        return ["It looks like you're trying to access an index that is out ",
-          "of the bounds for the list. Double check that your loops and ",
-          "assignments don't try to retrieve from indexes below 0 or above ",
-          "the length of the string."].join('');
-      } else if (errorString.startsWith('KeyError: ')) {
-        var keyErrorRegEx = /KeyError:\s(\w+)\s/;
-        found = errorString.match(keyErrorRegEx);
-        return ["The key " + found[1] + " is not in the dictionary you're ",
-          "trying to retrieve from. Double check to make sure everything is ",
-          "spelled correctly and that you haven't forgotten to add any ",
-          "key-value pairs."].join('');
-      } else {
-        return '';
-      }
+      var result = '';
+      RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(check) {
+        if (check.checker(errorString)) {
+          result = check.generateMessage(errorString);
+        }
+      });
+
+      return result;
     };
 
     /**
