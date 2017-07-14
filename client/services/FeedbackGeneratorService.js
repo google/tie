@@ -21,9 +21,11 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
+  'WRONG_LANGUAGE_ERRORS',
   function(
       FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
-      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS) {
+      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
+      WRONG_LANGUAGE_ERRORS) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -359,8 +361,6 @@ tie.factory('FeedbackGeneratorService', [
 
         var feedback = FeedbackObjectFactory.create(false);
 
-        // TODO: Have to update this feedback to take language into account in
-        // future.
         if (prereqCheckFailure.isMissingStarterCode()) {
           feedback.appendTextParagraph([
             'It looks like you deleted or modified the starter code!  Our ',
@@ -384,73 +384,20 @@ tie.factory('FeedbackGeneratorService', [
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
-        } else if (prereqCheckFailure.usesWrongLangIncrementOp()) {
-          feedback.appendTextParagraph([
-            "Hmm... It looks like you're trying to use '++' to increment a ",
-            "number, but unfortunately, this isn't valid in Python. Try ",
-            "using '+= 1' instead."
-          ].join(''));
-
-        } else if (prereqCheckFailure.usesWrongLangDecrementOp()) {
-          feedback.appendTextParagraph([
-            "Hmm... It looks like you're trying to use '--' to decrement a ",
-            "number, but unfortunately, this isn't valid in Python. Try ",
-            "using '-= 1' instead."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangPushMethod()) {
-          feedback.appendTextParagraph([
-            "It seems like you're using a `push` method to add an element ",
-            "to an array, which is valid in Java, but the Python equivalent ",
-            "called `append`."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangCatchStatement()) {
-          feedback.appendTextParagraph([
-            "Are you trying to use a `catch` statement to catch an ",
-            "Exception? In Python, we use `except` instead."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangJavaComment()) {
-          feedback.appendTextParagraph([
-            "Hmmm... It seems like you're using the Java syntax to write ",
-            "comments. Make sure you're using the '#' character on lines ",
-            "you want to comment out."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangDoWhile()) {
-          feedback.appendTextParagraph([
-            "Unfortunately, Python doesn't support do-while statements. ",
-            "Perhaps try using a flag or different condition instead?"
-          ].join(""));
-        } else if (prereqCheckFailure.usesWrongLangElseIf()) {
-          feedback.appendTextParagraph([
-            "Make sure to double check that you're using `elif` instead of ",
-            "`else if` for your if-else statements."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangSwitch()) {
-          feedback.appendTextParagraph([
-            "Sad to say but Python doesn't support switch statements. We ",
-            "just have to stick to good old if-else statements instead."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangCImport()) {
-          feedback.appendTextParagraph([
-            "It looks like you're using a C-like syntax to try and import ",
-            "packages. In Python, your imports should be in the format: "
-          ].join(''));
-          feedback.appendCodeParagraph("import [insert package name here]");
-        } else if (prereqCheckFailure.usesWrongLangNotOp()) {
-          feedback.appendTextParagraph([
-            "Are you making sure to use the right NOT operator? In Python, ",
-            "it's just `not`."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangAndOp()) {
-          feedback.appendTextParagraph([
-            "Triple check you're using the right AND operator. For Python, ",
-            "the AND operator is simply `and`."
-          ].join(''));
-        } else if (prereqCheckFailure.usesWrongLangOrOp()) {
-          feedback.appendTextParagraph([
-            "Hmmm... It seems like you're trying to use the OR operator ",
-            "syntax from Java. Be sure you're using the Python appropriate ",
-            "operator - `or`."
-          ].join(''));
+        } else if (prereqCheckFailure.hasWrongLanguage()) {
+          WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
+            if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
+              error.feedbackParagraphs.forEach(function(json) {
+                if (json._type === 'text') {
+                  feedback.appendTextParagraph(json._content);
+                } else if (json._type === 'code') {
+                  feedback.appendCodeParagraph(json._content);
+                } else {
+                  feedback.appendSyntaxErrorParagraph(json._content);
+                }
+              });
+            }
+          });
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',

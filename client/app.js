@@ -84,119 +84,128 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
   python: [
     {
       // Used Increment Operator
+      errorName: 'incrementOp',
       regExString: '\\+\\+',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
-              "Hmm... It looks like you're trying to use '++' to increment a ",
-              "number, but unfortunately, this isn't valid in Python. Try ",
-              "using '+= 1' instead."
-            ].join('')
-        }]
+            "Hmm... It looks like you're trying to use '++' to increment a ",
+            "number, but unfortunately, this isn't valid in Python. Try ",
+            "using '+= 1' instead."
+          ].join('')
+        }
       ]
     },
     {
       // Used Decrement Operator
+      errorName: 'decrementOp',
       regExString: '\\-\\-',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Hmm... It looks like you're trying to use '--' to decrement a ",
             "number, but unfortunately, this isn't valid in Python. Try ",
             "using '-= 1' instead."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used `push` instead of `append`
-      regexString: '.push\\(',
+      errorName: 'push',
+      regExString: '.push\\(',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "It seems like you're using a `push` method to add an element ",
             "to an array, which is valid in Java, but the Python equivalent ",
             "called `append`."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used the catch statement
-      regexString: '\\bcatch\\b',
+      errorName: 'catch',
+      regExString: '\\bcatch\\b',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Are you trying to use a `catch` statement to catch an ",
             "Exception? In Python, we use `except` instead."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used the Java comment syntax
-      regexString: '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
+      errorName: 'javaComment',
+      regExString: '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Hmmm... It seems like you're using the Java syntax to write ",
             "comments. Make sure you're using the '#' character on lines ",
             "you want to comment out."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used a do-while loop
-      regexString: 'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo' +
+      errorName: 'doWhile',
+      regExString: 'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo' +
         '\\b',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Unfortunately, Python doesn't support do-while statements. ",
             "Perhaps try using a flag or different condition instead?"
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used else if instead of elif
-      regexString: '\\belse\\s*if\\b',
+      errorName: 'elseIf',
+      regExString: '\\belse\\s*if\\b',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Make sure to double check that you're using `elif` instead of ",
             "`else if` for your if-else statements."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used a switch statement
-      regexString: '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase' +
+      errorName: 'switch',
+      regExString: '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase' +
         '\\b)|(\\bdefault\\b))',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Sad to say but Python doesn't support switch statements. We ",
             "just have to stick to good old if-else statements instead."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used the C-like import syntax
-      regexString: '#include\\s+<\\w+>',
+      errorName: 'cImport',
+      regExString: '#include\\s+<\\w+>',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "It looks like you're using a C-like syntax to try and import ",
@@ -205,51 +214,54 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         }, {
           _type: 'code',
           _content: 'import [insert package name here]'
-        }]
+        }
       ]
     },
     {
       // Used the Java/C not operator
-      regexString: '[^=]\\w*',
+      errorName: 'notOp',
+      regExString: '![^=]\\w*',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Are you making sure to use the right NOT operator? In Python, ",
             "it's just `not`."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used the Java/C and operator
-      regexString: '&&',
+      errorName: 'andOp',
+      regExString: '&&',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Triple check you're using the right AND operator. For Python, ",
             "the AND operator is simply `and`."
           ].join('')
-        }]
+        }
       ]
     },
     {
       // Used the Java/C or operator
-      regexString: '\\|\\|',
+      errorName: 'orOp',
+      regExString: '\\|\\|',
       feedbackParagraphs: [
-        [{
+        {
           _type: 'text',
           _content: [
             "Hmmm... It seems like you're trying to use the OR operator ",
             "syntax from Java. Be sure you're using the Python appropriate ",
             "operator - `or`."
           ].join('')
-        }]
+        }
       ]
     }
   ]
-};
+});
 
 
 // Name of the list in which correctness test results are stored.

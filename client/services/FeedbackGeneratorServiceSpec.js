@@ -34,18 +34,7 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_PUSH;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
+  var PREREQ_CHECK_TYPE_WRONG_LANG;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -70,30 +59,8 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
     PREREQ_CHECK_TYPE_GLOBAL_CODE = $injector.get(
       'PREREQ_CHECK_TYPE_GLOBAL_CODE');
-    PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_PUSH = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH');
-    PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE');
-    PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT');
-    PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE');
-    PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF');
-    PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH');
-    PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT');
-    PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP');
+    PREREQ_CHECK_TYPE_WRONG_LANG = $injector.get(
+      'PREREQ_CHECK_TYPE_WRONG_LANG');
 
     var taskDict = [{
       instructions: [''],
@@ -671,7 +638,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses the increment operator for the wrong' +
         'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'incrementOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -686,7 +653,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses the decrement operator for the wrong' +
         'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'decrementOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -701,7 +668,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses the push method instead of append',
       function() {
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
-          PREREQ_CHECK_TYPE_WRONG_LANG_PUSH, null, null);
+          PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'push');
         var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
           prereqFailure);
         expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -717,7 +684,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a catch statement in the wrong ' +
         'language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'catch');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -731,7 +698,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a Java/C-like comment syntax ' +
         'in the wrong language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'javaComment');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -746,7 +713,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a do-while loop in a language ' +
         'that doesn\'t support such loops', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'doWhile');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -760,7 +727,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses an else-if statement in a language ' +
         'that doesn\'t support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'elseIf');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -774,7 +741,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a switch statement in a language ' +
         'that does not support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'switch');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -788,7 +755,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a C-style import in a language ' +
         'that does not support it', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'cImport');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -804,7 +771,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses a NOT operator that is not valid ' +
         'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'notOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -818,7 +785,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses an OR operator that is not valid ' +
         'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'orOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);
@@ -833,7 +800,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if it uses an AND operator that is not valid ' +
         'in the current language', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
-        PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP, null, null);
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'andOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
         prereqFailure);
       expect(feedback.isAnswerCorrect()).toEqual(false);

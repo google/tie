@@ -19,48 +19,10 @@
 describe('PythonPrereqCheckService', function() {
   var PythonPrereqCheckService;
 
-  var PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_PUSH;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP;
-  var PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP;
-
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     PythonPrereqCheckService = $injector.get(
       'PythonPrereqCheckService');
-
-    PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_PUSH = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_PUSH');
-    PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE');
-    PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT');
-    PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE');
-    PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF');
-    PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH');
-    PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT');
-    PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP');
-    PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP = $injector.get(
-      'PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP');
   }));
 
   describe('checkStarterCodeFunctionsPresent', function() {
@@ -244,59 +206,59 @@ describe('PythonPrereqCheckService', function() {
     }
   );
 
-  describe('getWrongLanguageType', function() {
-    it('correctly returns an empty string if there are no wrong language ' +
-        'errors', function() {
-      var code = [
-        'def myFunction(arg):',
-        '    return arg',
-        ''
-      ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual('');
-    });
+  describe('detectAndGetWrongLangType', function() {
+    it('correctly returns null if there are no wrong language errors',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return arg',
+          ''
+        ].join('\n');
+        var prereqFailureType =
+          PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+        expect(prereqFailureType).toBeNull();
+      }
+    );
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP when ' +
-        'the submission has `++` in it', function() {
+    it('correctly returns "incrementOp" when the submission has `++` ' +
+      'in it', function() {
       var code = [
         'def myFunction(arg):',
         '    return arg++',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
       expect(prereqFailureType).toEqual(
-        PREREQ_CHECK_TYPE_WRONG_LANG_INCREMENT_OP);
+        "incrementOp");
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP when ' +
-        'the submission has `--` in it', function() {
+    it('correctly returns "decrementOp" when ' +
+      'the submission has `--` in it', function() {
       var code = [
         'def myFunction(arg):',
         '    return arg--',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
       expect(prereqFailureType).toEqual(
-        PREREQ_CHECK_TYPE_WRONG_LANG_DECREMENT_OP);
+        "decrementOp");
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when ' +
+    it('correctly returns "javaComment" when ' +
         'the submission uses Java\'s single line comment syntax', function() {
       var code = [
         'def myFunction(arg):',
         '    // Java comment',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(
-        PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('javaComment');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT when ' +
+    it('correctly returns "javaComment" when ' +
         'the submission uses Java\'s multi-line comment syntax', function() {
       var code = [
         'def myFunction(arg):',
@@ -305,13 +267,12 @@ describe('PythonPrereqCheckService', function() {
         '    */',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(
-        PREREQ_CHECK_TYPE_WRONG_LANG_JAVA_COMMENT);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('javaComment');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH when the ' +
+    it('correctly returns "switch" when the ' +
         'submission includes a switch statement', function() {
       var code = [
         'def myFunction(arg):',
@@ -321,12 +282,12 @@ describe('PythonPrereqCheckService', function() {
         '    return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_SWITCH);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('switch');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF when the ' +
+    it('correctly returns "elseIf" when the ' +
         'submission includes an else if statement', function() {
       var code = [
         'def myFunction(arg):',
@@ -336,12 +297,12 @@ describe('PythonPrereqCheckService', function() {
         '        return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_ELSE_IF);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('elseIf');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_PUSH when the ' +
+    it('correctly returns "push" when the ' +
         'submission includes using the push method', function() {
       var code = [
         'def myFunction(arg):',
@@ -349,12 +310,12 @@ describe('PythonPrereqCheckService', function() {
         '    return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_PUSH);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('push');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE when the ' +
+    it('correctly returns "catch" when the ' +
         'submission includes a catch statement', function() {
       var code = [
         'def myFunction(arg):',
@@ -364,13 +325,12 @@ describe('PythonPrereqCheckService', function() {
         '        throw Error()',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(
-        PREREQ_CHECK_TYPE_WRONG_LANG_CATCH_STATE);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('catch');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE when the ' +
+    it('correctly returns "doWhile" when the ' +
         'submission has a do-while loop', function() {
       var code = [
         'def myFunction(arg):',
@@ -379,12 +339,12 @@ describe('PythonPrereqCheckService', function() {
         '    while(true)',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_DO_WHILE);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('doWhile');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT when the ' +
+    it('correctly returns "cImport" when the ' +
         'submission uses a C-style import syntax', function() {
       var code = [
         '#include <pandas>',
@@ -393,12 +353,12 @@ describe('PythonPrereqCheckService', function() {
         '    return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_C_IMPORT);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('cImport');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP when the ' +
+    it('correctly returns "andOp" when the ' +
         'submission uses an invalid AND operator', function() {
       var code = [
         'def myFunction(arg):',
@@ -407,12 +367,12 @@ describe('PythonPrereqCheckService', function() {
         '    return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_AND_OP);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('andOp');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP when the ' +
+    it('correctly returns "orOp" when the ' +
         'submission uses an invalid OR operator', function() {
       var code = [
         'def myFunction(arg):',
@@ -421,12 +381,12 @@ describe('PythonPrereqCheckService', function() {
         '    return arg + 1',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_OR_OP);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('orOp');
     });
 
-    it('correctly returns PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP when the ' +
+    it('correctly returns "notOp" when the ' +
         'submission uses an invalid NOT operator', function() {
       var code = [
         'def myFunction(arg):',
@@ -434,9 +394,9 @@ describe('PythonPrereqCheckService', function() {
         '        return arg',
         ''
       ].join('\n');
-      var prereqFailureType = PythonPrereqCheckService.getWrongLanguageType(
-        code);
-      expect(prereqFailureType).toEqual(PREREQ_CHECK_TYPE_WRONG_LANG_NOT_OP);
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual('notOp');
     });
   });
 
@@ -525,7 +485,7 @@ describe('PythonPrereqCheckService', function() {
 
       var prereqCheckFailure = PythonPrereqCheckService.checkCode(
         starterCode, code);
-      expect(prereqCheckFailure.usesWrongLangIncrementOp()).toEqual(true);
+      expect(prereqCheckFailure.hasWrongLanguage()).toEqual(true);
     });
 
     it(['returns the correct PrereqCheckFailureObject when starter code method',

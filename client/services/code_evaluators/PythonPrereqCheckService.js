@@ -27,23 +27,25 @@ tie.factory('PythonPrereqCheckService', [
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
       PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
       WRONG_LANGUAGE_ERRORS) {
-
     /**
      * Checks if the given code uses any syntax that isn't valid in Python
      * but is specific to languages like C/C++ and Java.
      *
      * @param {string}
-     * @returns {string}
+     * @returns {string | null} If there is wrong language syntax detected,
+     *    will return the name of the error as referenced in
+     *    WRONG_LANGUAGE_ERRORS.
      */
-    var getWrongLanguageType = function(code) {
+    var detectAndGetWrongLanguageType = function(code) {
+      var errorName = null;
       if (code !== '') {
         WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
           if (code.search(new RegExp(error.regExString)) !== -1) {
-            return PREREQ_CHECK_TYPE_WRONG_LANG;
+            errorName = error.errorName;
           }
-        })
+        });
       }
-      return '';
+      return errorName;
     };
 
     /**
@@ -193,10 +195,10 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
-        var wrongLangType = getWrongLanguageType(code);
-        if (wrongLangType !== '') {
+        var wrongLangName = detectAndGetWrongLanguageType(code);
+        if (wrongLangName !== null) {
           return PrereqCheckFailureObjectFactory.create(
-              wrongLangType, null, null);
+              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangName);
         }
 
         // Otherwise, code passed all pre-requisite checks.
@@ -208,7 +210,7 @@ tie.factory('PythonPrereqCheckService', [
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
       getUnsupportedImports: getUnsupportedImports,
-      getWrongLanguageType: getWrongLanguageType
+      detectAndGetWrongLanguageType: detectAndGetWrongLanguageType
     };
   }
 ]);
