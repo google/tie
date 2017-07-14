@@ -35,7 +35,7 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
 
-  var LANGUAGE = 'python';
+  var LANGUAGE_PYTHON;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -60,6 +60,8 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE');
     PREREQ_CHECK_TYPE_GLOBAL_CODE = $injector.get(
       'PREREQ_CHECK_TYPE_GLOBAL_CODE');
+
+    LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
 
     var taskDict = [{
       instructions: [''],
@@ -230,12 +232,10 @@ describe('FeedbackGeneratorService', function() {
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        [
-          'Looks like your code is hitting an infinite recursive loop.',
-          'Check to see that your recursive calls terminate.'
-        ].join(' ')
-      );
+      expect(paragraphs[0].getContent()).toBe([
+        'Looks like your code is hitting an infinite recursive loop.',
+        'Check to see that your recursive calls terminate.'
+      ].join(' '));
     });
   });
 
@@ -349,7 +349,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "IndentationError: ...";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ['It looks like your code has some inconsistencies with ',
             'indentation. Double check that you indent after every statement ',
@@ -365,7 +365,7 @@ describe('FeedbackGeneratorService', function() {
             "assignment";
         var feedbackString =
             FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-              errorString, LANGUAGE);
+              errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
           ["Unfortunately Python doesn't support directly assigning ",
             "characters in a string. If you need to do so, try splicing the ",
@@ -382,7 +382,7 @@ describe('FeedbackGeneratorService', function() {
             "objects";
         var feedbackString =
             FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-              errorString, LANGUAGE);
+              errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
           ["Did you remember to explicitly convert all objects to strings",
             " when necessary (like when you're concatenating a string)? Make ",
@@ -397,7 +397,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "NameError: name 'hello' is not defined";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual([
         "It looks like hello isn't a declared variable. ",
         "Did you make sure to spell it correctly? And is it correctly ",
@@ -411,7 +411,7 @@ describe('FeedbackGeneratorService', function() {
           "'lowerr'";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ["str doesn't have a property or method named ",
             "lowerr. Double check to make sure everything is spelled ",
@@ -424,7 +424,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "IndexError: list index out of range";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
             ["It looks like you're trying to access an index that is out ",
               "of the bounds for the list. Double check that your loops and ",
@@ -438,7 +438,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "KeyError: key on line 1";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
               ["The key key is not in the dictionary you're trying to ",
                 "retrieve from. Double check to make sure everything is ",
@@ -452,7 +452,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "not known error";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
-            errorString, LANGUAGE);
+            errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toBeNull();
     });
   });
@@ -748,7 +748,8 @@ describe('FeedbackGeneratorService', function() {
           '-- we cannot process code in the global scope.'
         ].join(' '));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
-      });
+      }
+    );
 
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {

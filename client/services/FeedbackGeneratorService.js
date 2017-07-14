@@ -21,11 +21,11 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
-  'RUNTIME_ERROR_FEEDBACK_MESSAGES',
+  'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'LANGUAGE_PYTHON',
   function(
       FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
       CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
-      RUNTIME_ERROR_FEEDBACK_MESSAGES) {
+      RUNTIME_ERROR_FEEDBACK_MESSAGES, LANGUAGE_PYTHON) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -210,7 +210,7 @@ tie.factory('FeedbackGeneratorService', [
 
       // TODO: Will need to adjust depending on the language
       var feedbackString = _getHumanReadableRuntimeFeedback(
-          fixedErrorString, 'python');
+          fixedErrorString, LANGUAGE_PYTHON);
       if (feedbackString === null) {
         feedback.appendTextParagraph(
             "Looks like your code had a runtime error" + inputClause +
@@ -232,13 +232,11 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getHumanReadableRuntimeFeedback = function(errorString, language) {
       var result = null;
-      if (language === 'python') {
-        RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(check) {
-          if (check.checker(errorString)) {
-            result = check.generateMessage(errorString);
-          }
-        });
-      }
+      RUNTIME_ERROR_FEEDBACK_MESSAGES[language].forEach(function(check) {
+        if (check.checker(errorString)) {
+          result = check.generateMessage(errorString);
+        }
+      });
       return result;
     };
 
