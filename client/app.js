@@ -75,6 +75,10 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
 
 // Dictionary of the customized runtime error feedback messages
+// - `checker` function checks to see if the error matches with the type of
+// feedback message
+// - `generateMessage` function returns the appropriate feedback message for the
+// given error
 tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
   python: [
     {
