@@ -155,94 +155,92 @@ tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
     given error
  **/
 tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
-  python: [
-    {
-      // Error when user indents lines incorrectly
-      checker: function(errorString) {
-        return errorString.startsWith("IndentationError: ");
-      },
-      generateMessage: function() {
-        return ['It looks like your code has some inconsistencies with ',
-          'indentation. Double check that you indent after every statement ',
-          'that ends with a ":" and un-indent when necessary.'].join('');
-      }
-    }, {
-      // Type Error where user tries to assign an item directly in a string
-      checker: function(errorString) {
-        return errorString.startsWith("TypeError: 'str' does not support" +
-            " item assignment");
-      },
-      generateMessage: function() {
-        return ["Unfortunately Python doesn't support directly assigning ",
-          "characters in a string. If you need to do so, try splicing the ",
-          "string and reassigning the characters that way. If you need a ",
-          "refresher on splicing, check out the primer."].join('');
-      }
-    }, {
-      // Error where user tries to concatenate a string with a non-string
-      checker: function(errorString) {
-        return (errorString.startsWith('TypeError: ') &&
-        errorString.includes("cannot concatenate 'str' and") &&
-        errorString.includes("objects"));
-      },
-      generateMessage: function() {
-        return ["Did you remember to explicitly convert all objects to strings",
-          " when necessary (like when you're concatenating a string)? Make ",
-          "sure everything that isn't a string gets converted using the str() ",
-          "method or by using a formatted string."].join("");
-      }
-    }, {
-      // Error when user tries to use a variable name that is not defined
-      checker: function(errorString) {
-        return errorString.startsWith('NameError: ');
-      },
-      generateMessage: function(errorString) {
-        var nameErrorRegEx = /NameError:\sname\s'(\w+)'\sis\snot\sdefined/;
-        var found = errorString.match(nameErrorRegEx);
-        return ["It looks like " + found[1] + " isn't a declared variable. ",
-          "Did you make sure to spell it correctly? And is it correctly ",
-          "initialized?"].join('');
-      }
-    }, {
-      // Error when user tries to use a property/method that isn't defined
-      checker: function(errorString) {
-        return errorString.startsWith('AttributeError: ');
-      },
-      generateMessage: function(errorString) {
-        var attributeErrorRegEx =
-            /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'(\w+)'/;
-        var found = errorString.match(attributeErrorRegEx);
-        return [found[1] + " doesn't have a property or method named ",
-          found[2] + ". Double check to make sure everything is spelled ",
-          "correctly."].join("");
-      }
-    }, {
-      // Error when user tries to access an index that is out of range
-      checker: function(errorString) {
-        return errorString.startsWith(
-            "IndexError: list index out of range");
-      },
-      generateMessage: function() {
-        return ["It looks like you're trying to access an index that is out ",
-          "of the bounds for the list. Double check that your loops and ",
-          "assignments don't try to retrieve from indexes below 0 or above ",
-          "the length of the string."].join('');
-      }
-    }, {
-      // Error when user tries to access a key that isn't defined in a dict
-      checker: function(errorString) {
-        return errorString.startsWith('KeyError: ');
-      },
-      generateMessage: function(errorString) {
-        var keyErrorRegEx = /KeyError:\s(\w+)\s/;
-        var found = errorString.match(keyErrorRegEx);
-        return ["The key " + found[1] + " is not in the dictionary you're ",
-          "trying to retrieve from. Double check to make sure everything is ",
-          "spelled correctly and that you haven't forgotten to add any ",
-          "key-value pairs."].join('');
-      }
+  python: [{
+    // Error when user indents lines incorrectly
+    checker: function(errorString) {
+      return errorString.startsWith("IndentationError: ");
+    },
+    generateMessage: function() {
+      return ['It looks like your code has some inconsistencies with ',
+        'indentation. Double check that you indent after every statement ',
+        'that ends with a ":" and un-indent when necessary.'].join('');
     }
-  ]
+  }, {
+    // Type Error where user tries to assign an item directly in a string
+    checker: function(errorString) {
+      return errorString.startsWith("TypeError: 'str' does not support" +
+          " item assignment");
+    },
+    generateMessage: function() {
+      return ["Unfortunately Python doesn't support directly assigning ",
+        "characters in a string. If you need to do so, try splicing the ",
+        "string and reassigning the characters that way. If you need a ",
+        "refresher on splicing, check out the primer."].join('');
+    }
+  }, {
+    // Error where user tries to concatenate a string with a non-string
+    checker: function(errorString) {
+      return (errorString.startsWith('TypeError: ') &&
+      errorString.includes("cannot concatenate 'str' and") &&
+      errorString.includes("objects"));
+    },
+    generateMessage: function() {
+      return ["Did you remember to explicitly convert all objects to strings ",
+        "when necessary (like when you're concatenating a string)? Make ",
+        "sure everything that isn't a string gets converted using the str() ",
+        "method or by using a formatted string."].join("");
+    }
+  }, {
+    // Error when user tries to use a variable name that is not defined
+    checker: function(errorString) {
+      return errorString.startsWith('NameError: ');
+    },
+    generateMessage: function(errorString) {
+      var nameErrorRegEx = /NameError:\sname\s'(\w+)'\sis\snot\sdefined/;
+      var found = errorString.match(nameErrorRegEx);
+      return ["It looks like " + found[1] + " isn't a declared variable. ",
+        "Did you make sure to spell it correctly? And is it correctly ",
+        "initialized?"].join('');
+    }
+  }, {
+    // Error when user tries to use a property/method that isn't defined
+    checker: function(errorString) {
+      return errorString.startsWith('AttributeError: ');
+    },
+    generateMessage: function(errorString) {
+      var attributeErrorRegEx =
+          /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'(\w+)'/;
+      var found = errorString.match(attributeErrorRegEx);
+      return [found[1] + " doesn't have a property or method named ",
+        found[2] + ". Double check to make sure everything is spelled ",
+        "correctly."].join("");
+    }
+  }, {
+    // Error when user tries to access an index that is out of range
+    checker: function(errorString) {
+      return errorString.startsWith(
+          "IndexError: list index out of range");
+    },
+    generateMessage: function() {
+      return ["It looks like you're trying to access an index that is out ",
+        "of the bounds for the list. Double check that your loops and ",
+        "assignments don't try to retrieve from indexes below 0 or above ",
+        "the length of the string."].join('');
+    }
+  }, {
+    // Error when user tries to access a key that isn't defined in a dict
+    checker: function(errorString) {
+      return errorString.startsWith('KeyError: ');
+    },
+    generateMessage: function(errorString) {
+      var keyErrorRegEx = /KeyError:\s(\w+)\s/;
+      var found = errorString.match(keyErrorRegEx);
+      return ["The key " + found[1] + " is not in the dictionary you're ",
+        "trying to retrieve from. Double check to make sure everything is ",
+        "spelled correctly and that you haven't forgotten to add any ",
+        "key-value pairs."].join('');
+    }
+  }]
 });
 
 /**

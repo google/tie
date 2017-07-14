@@ -208,8 +208,10 @@ tie.factory('FeedbackGeneratorService', [
         }
       );
 
-      var feedbackString = _generateRuntimeFeedback(fixedErrorString);
-      if (feedbackString === "") {
+      // TODO: Will need to adjust depending on the language
+      var feedbackString = _getHumanReadableRuntimeFeedback(
+          fixedErrorString, 'python');
+      if (feedbackString === null) {
         feedback.appendTextParagraph(
             "Looks like your code had a runtime error" + inputClause +
             ". Here's the trace:");
@@ -225,17 +227,18 @@ tie.factory('FeedbackGeneratorService', [
      * informative feedback to be appended to the overall submission feedback.
      *
      * @param {string} errorString
-     * @returns {string} Text to be appended to feedback.
+     * @param {string} language
+     * @returns {string | null} Text to be appended to feedback.
      */
-    var _generateRuntimeFeedback = function(errorString) {
-      var result = '';
-      // TODO: Will need to adjust depending on the language
-      RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(check) {
-        if (check.checker(errorString)) {
-          result = check.generateMessage(errorString);
-        }
-      });
-
+    var _getHumanReadableRuntimeFeedback = function(errorString, language) {
+      var result = null;
+      if (language === 'python') {
+        RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(check) {
+          if (check.checker(errorString)) {
+            result = check.generateMessage(errorString);
+          }
+        });
+      }
       return result;
     };
 
@@ -422,7 +425,7 @@ tie.factory('FeedbackGeneratorService', [
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
-      _generateRuntimeFeedback: _generateRuntimeFeedback,
+      _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable
     };

@@ -35,6 +35,8 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
 
+  var LANGUAGE = 'python';
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     BuggyOutputTestObjectFactory = $injector.get(
@@ -339,14 +341,15 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_generateRuntimeFeedback', function() {
+  describe('_getHumanReadableRuntimeFeedback', function() {
     it([
       'should return the correct feedback string if the code throws an ',
       'IndentationError'
     ].join(''), function() {
       var errorString = "IndentationError: ...";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
       expect(feedbackString).toEqual(
           ['It looks like your code has some inconsistencies with ',
             'indentation. Double check that you indent after every statement ',
@@ -360,8 +363,9 @@ describe('FeedbackGeneratorService', function() {
       function() {
         var errorString = "TypeError: 'str' does not support item " +
             "assignment";
-        var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-            errorString);
+        var feedbackString =
+            FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+              errorString, LANGUAGE);
         expect(feedbackString).toEqual(
           ["Unfortunately Python doesn't support directly assigning ",
             "characters in a string. If you need to do so, try splicing the ",
@@ -376,8 +380,9 @@ describe('FeedbackGeneratorService', function() {
       function() {
         var errorString = "TypeError: cannot concatenate 'str' and 'int'" +
             "objects";
-        var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-            errorString);
+        var feedbackString =
+            FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+              errorString, LANGUAGE);
         expect(feedbackString).toEqual(
           ["Did you remember to explicitly convert all objects to strings",
             " when necessary (like when you're concatenating a string)? Make ",
@@ -390,8 +395,9 @@ describe('FeedbackGeneratorService', function() {
     it(['should return the correct feedback string if the code submission ',
       'throws a NameError'].join(''), function() {
       var errorString = "NameError: name 'hello' is not defined";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
       expect(feedbackString).toEqual([
         "It looks like hello isn't a declared variable. ",
         "Did you make sure to spell it correctly? And is it correctly ",
@@ -403,8 +409,9 @@ describe('FeedbackGeneratorService', function() {
       'AttributeError'].join(''), function() {
       var errorString = "AttributeError: 'str' object has no attribute " +
           "'lowerr'";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
       expect(feedbackString).toEqual(
           ["str doesn't have a property or method named ",
             "lowerr. Double check to make sure everything is spelled ",
@@ -415,8 +422,9 @@ describe('FeedbackGeneratorService', function() {
     it(['should return the correct feedback string if the code throws an ',
       'IndexError where index is out of list bounds'].join(''), function() {
       var errorString = "IndexError: list index out of range";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
       expect(feedbackString).toEqual(
             ["It looks like you're trying to access an index that is out ",
               "of the bounds for the list. Double check that your loops and ",
@@ -428,8 +436,9 @@ describe('FeedbackGeneratorService', function() {
     it(['should return the correct feedback string if the code throws a ',
       'KeyError'].join(''), function() {
       var errorString = "KeyError: key on line 1";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
       expect(feedbackString).toEqual(
               ["The key key is not in the dictionary you're trying to ",
                 "retrieve from. Double check to make sure everything is ",
@@ -438,12 +447,13 @@ describe('FeedbackGeneratorService', function() {
       );
     });
 
-    it(['should return an empty string if it doesn\'t recognize the given ',
+    it(['should return a null if it doesn\'t recognize the given ',
       'error'], function() {
       var errorString = "not known error";
-      var feedbackString = FeedbackGeneratorService._generateRuntimeFeedback(
-          errorString);
-      expect(feedbackString).toEqual('');
+      var feedbackString =
+          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            errorString, LANGUAGE);
+      expect(feedbackString).toBeNull();
     });
   });
 

@@ -352,9 +352,10 @@ describe('SolutionHandlerService', function() {
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
-          expect(feedback.getParagraphs()[0].getContent()
-            .startsWith('It looks like greeting isn\'t a declared variable.')
-            ).toBe(true);
+          expect(
+            feedback.getParagraphs()[0].getContent().startsWith(
+                'It looks like greeting isn\'t a declared variable.')
+          ).toBe(true);
           done();
         });
       });
