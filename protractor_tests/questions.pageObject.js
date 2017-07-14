@@ -107,26 +107,6 @@ var QuestionsPage = function() {
   this.getFeedbackParagraphText = function(index) {
     return feedbackParagraphs.get(index).getText();
   };
-
-  /**
-   * Returns the number of greeting paragraphs rendered in the DOM.
-   *
-   * @returns {number}
-   */
-  this.countGreetingParagraphs = function() {
-    return greetingParagraphs.count();
-  }
-
-  /**
-   * Returns the content of the greeting paragraph at the given index in the
-   * greeting paragraph array.
-   *
-   * @param {number} index
-   * @returns {string}
-   */
-  this.getGreetingParagraphText = function(index) {
-    return greetingParagraphs.get(index).getText();
-  };
 };
 
 module.exports = QuestionsPage;
