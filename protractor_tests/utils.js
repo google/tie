@@ -16,9 +16,27 @@
  * @fileoverview Functional components for end-to-end tests with protractor.
  */
 
+/**
+ * Defines the number of logs that the log can hold.
+ *
+ * @type {number}
+ */
 var CONSOLE_LOG_THRESHOLD = 900;
+/**
+ * Array defining which errors one can ignore printing in the console
+ * automatically. Will be concatenated with errors to ignore that will be
+ * passed in.
+ *
+ * @type {Array}
+ */
 var CONSOLE_ERRORS_TO_IGNORE = [];
 
+/**
+ * Manages the logs made in the browser's console to then select which ones
+ * to push to the console and which ones can be ignored.
+ *
+ * @param {Array} errorsToIgnore
+ */
 var checkForConsoleErrors = function(errorsToIgnore) {
   var irrelevantErrors = errorsToIgnore.concat(CONSOLE_ERRORS_TO_IGNORE);
   browser.manage().logs().get('browser').then(function(browserLogs) {
