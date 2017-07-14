@@ -208,7 +208,7 @@ tie.factory('FeedbackGeneratorService', [
         }
       );
 
-      // TODO: Will need to adjust depending on the language
+      // TODO(dianakc): Will need to adjust according to programming language
       var feedbackString = _getHumanReadableRuntimeFeedback(
           fixedErrorString, LANGUAGE_PYTHON);
       if (feedbackString === null) {
