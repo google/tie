@@ -20,14 +20,6 @@ var QuestionsPage = require('./questions.pageObject.js');
 var utils = require('./utils.js');
 
 describe('submitting questions', function() {
-  it('should show an introductory feedback message', function() {
-    var questionsPage = new QuestionsPage();
-
-    questionsPage.get();
-    expect(questionsPage.countGreetingParagraphs()).toEqual(3);
-    expect(questionsPage.getGreetingParagraphText(0)).toEqual('Greetings!');
-  });
-
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
 

@@ -21,9 +21,11 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
+  'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'LANGUAGE_PYTHON',
   function(
       FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
-      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS) {
+      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
+      RUNTIME_ERROR_FEEDBACK_MESSAGES, LANGUAGE_PYTHON) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -186,9 +188,6 @@ tie.factory('FeedbackGeneratorService', [
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
       var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(
-        "Looks like your code had a runtime error" + inputClause +
-        ". Here's the trace:");
 
       var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
@@ -201,6 +200,9 @@ tie.factory('FeedbackGeneratorService', [
           }
 
           if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+            console.error(
+              'Runtime error on line ' + preprocessedCodeLineIndex +
+              ' in the preprocessed code');
             return 'a line in the test code';
           } else {
             return 'line ' + (
@@ -208,8 +210,37 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
       );
-      feedback.appendCodeParagraph(fixedErrorString);
+
+      // TODO(dianakc): Will need to adjust according to programming language
+      var feedbackString = _getHumanReadableRuntimeFeedback(
+          fixedErrorString, LANGUAGE_PYTHON);
+      if (feedbackString === null) {
+        feedback.appendTextParagraph(
+            "Looks like your code had a runtime error" + inputClause +
+            ". Here's the trace:");
+        feedback.appendCodeParagraph(fixedErrorString);
+      } else {
+        feedback.appendTextParagraph(feedbackString);
+      }
       return feedback;
+    };
+
+    /**
+     * Based on passed in error string, will generate the appropriate,
+     * informative feedback to be appended to the overall submission feedback.
+     *
+     * @param {string} errorString
+     * @param {string} language
+     * @returns {string | null} Text to be appended to feedback.
+     */
+    var _getHumanReadableRuntimeFeedback = function(errorString, language) {
+      var result = null;
+      RUNTIME_ERROR_FEEDBACK_MESSAGES[language].forEach(function(check) {
+        if (check.checker(errorString)) {
+          result = check.generateMessage(errorString);
+        }
+      });
+      return result;
     };
 
     /**
@@ -395,6 +426,7 @@ tie.factory('FeedbackGeneratorService', [
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
+      _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable
     };
