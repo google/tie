@@ -288,7 +288,7 @@ describe('PythonPrereqCheckService', function() {
     });
 
     it('correctly returns "elseIf" when the ' +
-        'submission includes an else if statement', function() {
+      'submission includes an else if statement', function() {
       var code = [
         'def myFunction(arg):',
         '    if arg > 0',
@@ -400,6 +400,54 @@ describe('PythonPrereqCheckService', function() {
     });
   });
 
+  describe('hasInvalidSystemClassCalls', function() {
+    it('returns true when the user tries to use the System class\'s methods',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return System.runTest(StudentCode, myFunction, 0)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidSystemClassCalls(code))
+            .toBe(true);
+      }
+    );
+
+    it('returns false when the user doesn\'t use a System class or method,',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidSystemClassCalls(code))
+            .toBe(false);
+      }
+    );
+  });
+
+  describe('hasInvalidAuxiliaryClassCalls', function() {
+    it('returns true when the user tries to use AuxiliaryCode class or methods',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return AuxiliaryCode.matchParentheses(arg)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidAuxiliaryClassCalls(code))
+          .toBe(true);
+      }
+    );
+
+    it('returns false when there are no AuxiliaryCode calls',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidAuxiliaryClassCalls(code))
+          .toBe(false);
+      }
+    );
+  });
+
   describe('checkCode', function() {
     it(['returns the correct PrereqCheckFailureObject when starter code is ',
       'missing'].join(''), function() {
@@ -508,6 +556,39 @@ describe('PythonPrereqCheckService', function() {
           expect(prereqCheckFailure.isMissingStarterCode()).toEqual(true);
         }
     );
+
+    it(['returns the correct PrereqCheckFailureObject when there is invalid',
+      ' System call'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg'
+      ].join('\n');
+      var code = [
+        'def myFunction(arg):',
+        '    return System.runTest(StudentCode, myFunction, 0)'
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.hasInvalidSystemCall()).toEqual(true);
+    });
+
+    it(['returns the correct PrereqCheckFailureObject when there is an invalid',
+      ' AuxiliaryCode call'].join(''), function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg'
+      ].join('\n');
+
+      var code = [
+        'def myFunction(arg):',
+        '    return AuxiliaryCode.matchParentheses(arg)'
+      ].join('\n');
+
+      var prereqCheckFailure = PythonPrereqCheckService.checkCode(
+        starterCode, code);
+      expect(prereqCheckFailure.hasInvalidAuxiliaryCodeCall()).toEqual(true);
+    });
 
     it(['returns the correct PrereqCheckFailureObject when unsupported',
       ' libraries are imported'].join(''), function() {

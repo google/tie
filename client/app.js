@@ -84,13 +84,15 @@ tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
  * @constant
  */
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+
 /**
  * Class name for wrapping system code.
  *
  * @type {string}
  * @constant
  */
-tie.constant('CLASS_NAME_SYSTEM_CODE', 'AuxiliaryCode');
+tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
+
 
 /**
  * Imports and system-level functions that should be appended to all code.
@@ -336,6 +338,25 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
   ]
 });
 
+
+/**
+ * Pre-requisite check error type to see if the user tried to use any methods
+ * from System in their code submission.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL', 'invalidSystem');
+
+/**
+ * Pre-requisite check error type to see if the user tried to use an
+ * AuxiliaryCode method in their code submission.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant(
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'invalidAuxiliaryCode');
 
 /**
   Dictionary of the customized runtime error feedback messages

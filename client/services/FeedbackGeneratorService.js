@@ -22,10 +22,12 @@ tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
   function(
       FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
       CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
-      RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON) {
+      RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
+      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -427,6 +429,26 @@ tie.factory('FeedbackGeneratorService', [
               });
             }
           });
+        } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
+          feedback.appendTextParagraph([
+            'Looks like your code had a runtime error. Here is the error ',
+            'message: '
+          ].join(''));
+          feedback.appendCodeParagraph([
+            'ForbiddenNamespaceError: It looks like you\'re trying to call ',
+            'the ' + CLASS_NAME_AUXILIARY_CODE + ' class or its methods, ',
+            'which is forbidden. Please resubmit without using this class.'
+          ].join(''));
+        } else if (prereqCheckFailure.hasInvalidSystemCall()) {
+          feedback.appendTextParagraph([
+            'Looks like your code had a runtime error. Here is the error ',
+            'message: '
+          ].join(''));
+          feedback.appendCodeParagraph([
+            'ForbiddenNamespaceError: It looks you\'re using the ' +
+            CLASS_NAME_SYSTEM_CODE + ' class or its methods, which is ',
+            'forbidden. Please resubmit without using this class.'
+          ].join(''));
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',

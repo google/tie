@@ -35,6 +35,8 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
   var PREREQ_CHECK_TYPE_WRONG_LANG;
+  var PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL;
+  var PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL;
 
   var LANGUAGE_PYTHON;
 
@@ -63,6 +65,10 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_GLOBAL_CODE');
     PREREQ_CHECK_TYPE_WRONG_LANG = $injector.get(
       'PREREQ_CHECK_TYPE_WRONG_LANG');
+    PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL = $injector.get(
+      'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL');
+    PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL = $injector.get(
+      'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL');
 
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
 
@@ -929,6 +935,49 @@ describe('FeedbackGeneratorService', function() {
         "the AND operator is simply `and`."
       ].join(''));
     });
+
+    it('should return the correct info if it has an invalid AuxiliaryCode call',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+          PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+            prereqFailure);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          'Looks like your code had a runtime error. Here is the error',
+          'message: '
+        ].join(' '));
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toEqual([
+          'ForbiddenNamespaceError: It looks like you\'re trying to call ',
+          'the AuxiliaryCode class or its methods, which is forbidden. ',
+          'Please resubmit without using this class.'
+        ].join(''));
+        expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      }
+    );
+
+    it('should return the correct info if it has an invalid System call',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL, null, null);
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+            prereqFailure);
+        expect(feedback.isAnswerCorrect()).toEqual(false);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          'Looks like your code had a runtime error. Here is the error',
+          'message: '
+        ].join(' '));
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toEqual([
+          'ForbiddenNamespaceError: It looks you\'re using the System class ',
+          'or its methods, which is forbidden. Please resubmit without ',
+          'using this class.'
+        ].join(''));
+        expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      }
+    );
 
     it('should throw an error if using an unknown PrereqCheckFailureObject' +
       'type', function() {
