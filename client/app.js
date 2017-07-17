@@ -84,13 +84,15 @@ tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
  * @constant
  */
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+
 /**
  * Class name for wrapping system code.
  *
  * @type {string}
  * @constant
  */
-tie.constant('CLASS_NAME_SYSTEM_CODE', 'AuxiliaryCode');
+tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
+
 
 /**
  * Imports and system-level functions that should be appended to all code.
