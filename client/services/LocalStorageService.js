@@ -38,6 +38,13 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
       return questionId + ":" + language + ":code";
     };
 
+    /**
+     * Returns the local storage key for the feedback.
+     *
+     * @param {string} questionId
+     * @param {string} language
+     * @returns {string}
+     */
     var getLocalStorageKeyForFeedback = function(questionId, language) {
       return questionId + ":" + language + ":feedback";
     }
@@ -117,6 +124,14 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         localStorage.setItem(localStorageKey, angular.toJson(feedback));
       },
 
+      /**
+       * Loads the feedback and parses it into JSON, and the reconstructs
+       * the feedback paragraphs fron the JSON object
+       *
+       * @param {string} questionId
+       * @param {string} language
+       * @returns {Object} 
+       */
       loadStoredFeedback: function(questionId, language) {
         if (!localStorageIsAvailable) {
           return null;
@@ -136,7 +151,9 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
             FeedbackParagraphObjectFactory.createFromJson(
               rawFeedback.feedbackParagraphs[i]));
         }
-        return {feedbackParagraphs: reconstructedFeedback};
+        return {
+          feedbackParagraphs: reconstructedFeedback
+        };
       },
 
       clearLocalStorageFeedback: function(questionId, language) {
