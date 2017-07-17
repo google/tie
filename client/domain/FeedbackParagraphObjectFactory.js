@@ -140,6 +140,16 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
     };
 
+    FeedbackParagraph.createFromJson = function(json) {
+      if (json._type === "text") {
+        return(this.createTextParagraph(json._content));
+      } else if (json._type === "code") {
+        return(this.createCodeParagraph(json._content));
+      } else if (json._type === "error") {
+        return(this.createSyntaxErrorParagraph(json._content));
+      }
+    }
+
     return FeedbackParagraph;
   }
 ]);

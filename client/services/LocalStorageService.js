@@ -16,8 +16,8 @@
  *    localStorage.
  */
 
-tie.factory('CodeStorageService', [
-  function() {
+tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
+  function(FeedbackParagraphObjectFactory) {
     // In some browsers, localStorage is not available and its
     // invocation throws an error.
     var localStorageIsAvailable = false;
@@ -34,9 +34,13 @@ tie.factory('CodeStorageService', [
      * @param {string} language
      * @returns {string}
      */
-    var getLocalStorageKey = function(questionId, language) {
-      return questionId + ":" + language;
+    var getLocalStorageKeyForCode = function(questionId, language) {
+      return questionId + ":" + language + ":code";
     };
+
+    var getLocalStorageKeyForFeedback = function(questionId, language) {
+      return questionId + ":" + language + ":feedback";
+    }
 
     return {
       /**
@@ -61,7 +65,7 @@ tie.factory('CodeStorageService', [
           return;
         }
 
-        var localStorageKey = getLocalStorageKey(
+        var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
         localStorage.setItem(localStorageKey, code);
       },
@@ -79,7 +83,7 @@ tie.factory('CodeStorageService', [
           return null;
         }
 
-        var localStorageKey = getLocalStorageKey(
+        var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
         var storedCode = localStorage.getItem(localStorageKey);
         return storedCode;
@@ -97,7 +101,49 @@ tie.factory('CodeStorageService', [
           return;
         }
 
-        var localStorageKey = getLocalStorageKey(
+        var localStorageKey = getLocalStorageKeyForCode(
+          questionId, language);
+        localStorage.removeItem(localStorageKey);
+      },
+
+      storeFeedback: function(questionId, feedback, language) {
+        if (!localStorageIsAvailable) {
+          return;
+        }
+
+        var localStorageKey = getLocalStorageKeyForFeedback(
+          questionId, language);
+        console.log(angular.toJson(feedback));
+        localStorage.setItem(localStorageKey, angular.toJson(feedback));
+      },
+
+      loadStoredFeedback: function(questionId, language) {
+        if (!localStorageIsAvailable) {
+          return null;
+        }
+
+        var localStorageKey = getLocalStorageKeyForFeedback(
+          questionId, language);
+        var storedFeedback = localStorage.getItem(localStorageKey);
+        if (storedFeedback === null) {
+          return null;
+        }
+
+        var reconstructedFeedback = [];
+        var rawFeedback = JSON.parse(storedFeedback);
+        for (var i = 0; i < rawFeedback.feedbackParagraphs.length; i++) {
+          reconstructedFeedback.push(
+            FeedbackParagraphObjectFactory.createFromJson(
+              rawFeedback.feedbackParagraphs[i]));
+        }
+        return {feedbackParagraphs: reconstructedFeedback};
+      },
+
+      clearLocalStorageFeedback: function(questionId, language) {
+        if (!localStorageIsAvailable) {
+          return;
+        }
+        var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         localStorage.removeItem(localStorageKey);
       }
