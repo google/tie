@@ -21,15 +21,14 @@ tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
   'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
-  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'SYSTEM_AUXILIARY_CLASSES',
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'CLASS_NAME_AUXILIARY_CODE',
+  'CLASS_NAME_SYSTEM_CODE',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
       PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
-      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, SYSTEM_AUXILIARY_CLASSES) {
-    var AUXILIARYCODE_CALL = 'auxiliaryCode';
-    var SYSTEM_CALL = 'system';
-
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
+      CLASS_NAME_SYSTEM_CODE) {
     /**
      * Removes trailing white space that may be at the end of a string.
      *
@@ -148,26 +147,30 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     /**
-     * Returns whether the user tries to call the System or AuxiliaryCode
-     * classes/methods. Will return the string 'system' if a System method is
-     * called, 'auxiliaryCode' if an AuxiliaryCode method is called, or null
-     * if neither classes' methods are called.
+     * Returns whether the user tries to call the System class or its methods
+     * in the given code.
      *
      * @param {string} code
-     * @returns {string | null}
+     * @returns {boolean}
      */
-    var checkInvalidSystemClassCalls = function(code) {
-      var systemClassName = SYSTEM_AUXILIARY_CLASSES.python.systemClass;
-      var auxiliaryClassName = SYSTEM_AUXILIARY_CLASSES.python.auxiliaryClass;
-      var auxiliaryClassRegEx = new RegExp('\\b' + auxiliaryClassName + '\\b');
-      var systemClassRegEx = new RegExp('\\b' + systemClassName + '\\b');
-      if (auxiliaryClassRegEx.exec(code)) {
-        return AUXILIARYCODE_CALL;
-      } else if (systemClassRegEx.exec(code)) {
-        return SYSTEM_CALL;
-      } else {
-        return null;
-      }
+    var hasInvalidSystemClassCalls = function(code) {
+      var systemClassRegEx = new RegExp('\\b' + CLASS_NAME_SYSTEM_CODE + '\\b');
+
+      return (systemClassRegEx.exec(code) !== null);
+    };
+
+    /**
+     * Returns whether the user tries to call the AuxiliaryCode class or its
+     * methods in the given code.
+     *
+     * @param {string} code
+     * @returns {boolean}
+     */
+    var hasInvalidAuxiliaryClassCalls = function(code) {
+      var auxiliaryClassRegEx = new RegExp('\\b' + CLASS_NAME_AUXILIARY_CODE +
+        '\\b');
+
+      return (auxiliaryClassRegEx.exec(code) !== null);
     };
 
     return {
@@ -192,10 +195,12 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_GLOBAL_CODE, null, starterCode);
         }
 
-        if (checkInvalidSystemClassCalls(code) === SYSTEM_CALL) {
+        if (hasInvalidSystemClassCalls(code)) {
           return PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL, null, null);
-        } else if (checkInvalidSystemClassCalls(code) === AUXILIARYCODE_CALL) {
+        }
+
+        if (hasInvalidAuxiliaryClassCalls(code)) {
           return PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
         }
@@ -213,11 +218,12 @@ tie.factory('PythonPrereqCheckService', [
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
       checkGlobalCallsPresent: checkGlobalCallsPresent,
-      checkInvalidSystemClassCalls: checkInvalidSystemClassCalls,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
-      getUnsupportedImports: getUnsupportedImports
+      getUnsupportedImports: getUnsupportedImports,
+      hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
+      hasInvalidSystemClassCalls: hasInvalidSystemClassCalls
     };
   }
 ]);

@@ -206,35 +206,50 @@ describe('PythonPrereqCheckService', function() {
     }
   );
 
-  describe('checkInvalidSystemClassCalls', function() {
-    describe('returns the correct string when', function() {
-      it('the user tries to use the System class\'s methods', function() {
+  describe('hasInvalidSystemClassCalls', function() {
+    it('returns true when the user tries to use the System class\'s methods',
+      function() {
         var code = [
           'def myFunction(arg):',
           '    return System.runTest(StudentCode, myFunction, 0)'
         ].join('\n');
-        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
-          .toEqual('system');
-      });
+        expect(PythonPrereqCheckService.hasInvalidSystemClassCalls(code))
+            .toBe(true);
+      }
+    );
 
-      it('the user tries to use AuxiliaryCode class\'s methods', function() {
-        var code = [
-          'def myFunction(arg):',
-          '    return AuxiliaryCode.matchParentheses(arg)'
-        ].join('\n');
-        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
-          .toEqual('auxiliaryCode');
-      });
-    });
-
-    it('returns null when there are no invalid System or AuxiliaryCode calls',
+    it('returns false when the user doesn\'t use a System class or method,',
       function() {
         var code = [
           'def myFunction(arg)',
           '    return arg'
         ].join('\n');
-        expect(PythonPrereqCheckService.checkInvalidSystemClassCalls(code))
-          .toBeNull();
+        expect(PythonPrereqCheckService.hasInvalidSystemClassCalls(code))
+            .toBe(false);
+      }
+    );
+  });
+
+  describe('hasInvalidAuxiliaryClassCalls', function() {
+    it('returns true when the user tries to use AuxiliaryCode class or methods',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return AuxiliaryCode.matchParentheses(arg)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidAuxiliaryClassCalls(code))
+          .toBe(true);
+      }
+    );
+
+    it('returns false when there are no AuxiliaryCode calls',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidAuxiliaryClassCalls(code))
+          .toBe(false);
       }
     );
   });
