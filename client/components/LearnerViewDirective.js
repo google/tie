@@ -121,7 +121,7 @@ tie.directive('learnerView', [function() {
                                    class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
-                  <div ng-if="!codeEditorIsShown" class="tie-codemirror-placeholder">
+                  <div ng-if="!codeEditorIsShown" class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions" 
                                    ng-model="editorContents.code"
                                    class="protractor-test-code-input">
@@ -230,9 +230,6 @@ tie.directive('learnerView', [function() {
           height: 100%;
         }
         .tie-codemirror-container {
-          width: 100%;
-        }
-        .tie-codemirror-placeholder {
           width: 100%;
         }
         .tie-coding-terminal {
