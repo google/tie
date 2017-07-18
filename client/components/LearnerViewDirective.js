@@ -94,11 +94,13 @@ tie.directive('learnerView', [function() {
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
+                      ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
                       ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                 <option style="display: none" value="">Question Set</option>
               </select>
               <select class="tie-select-menu" name="theme-select"
+                      ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeTheme(theme)" ng-model="theme"
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
@@ -122,10 +124,11 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select class="tie-select-menu" name="lang-select-menu">
+                <select class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
                   <option value="Python" selected>Python</option>
                 </select>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
+                    ng-class="{'night-mode': isInDarkMode}"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
@@ -140,7 +143,7 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
-            <div class="tie-options-row">
+            <div class="tie-options-row" ng-class="{'night-mode': isInDarkMode}">
               <ul>
                 <li class="tie-about-button">
                   <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
@@ -168,17 +171,6 @@ tie.directive('learnerView', [function() {
         }
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
-        }
-        .night-mode .tie-code-reset {
-          background-color: #333a42;
-          color: white;
-        }
-        .night-mode .tie-options-row a {
-          color: #E0E0E0;
-        }
-        .night-mode .tie-select-menu {
-          background-color: #333a42;
-          color: white;
         }
         .tie-about-button {
           float: left;
@@ -229,6 +221,10 @@ tie.directive('learnerView', [function() {
         .tie-code-reset {
           float: left;
           margin-top: 10px;
+        }
+        .tie-code-reset.night-mode {
+          background-color: #333a42;
+          color: white;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -392,6 +388,9 @@ tie.directive('learnerView', [function() {
           padding: 5px;
           text-decoration: none;
         }
+        .tie-options-row.night-mode a {
+          color: #E0E0E0;
+        }
         .tie-options-row li {
           margin: 5px;
         }
@@ -500,6 +499,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-select-menu:hover {
           border-color: #e4e4e4;
+        }
+        .tie-select-menu.night-mode {
+          background-color: #333a42;
+          color: white;
         }
         .tie-step-container-inner {
           display: flex;
