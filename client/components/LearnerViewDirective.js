@@ -169,6 +169,14 @@ tie.directive('learnerView', [function() {
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
+        .night-mode .tie-code-reset {
+          background-color: #333a42;
+          color: white;
+        }
+        .night-mode .tie-select-menu {
+          background-color: #333a42;
+          color: white;
+        }
         .tie-about-button {
           float: left;
         }
