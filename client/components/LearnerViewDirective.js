@@ -173,6 +173,9 @@ tie.directive('learnerView', [function() {
           background-color: #333a42;
           color: white;
         }
+        .night-mode .tie-options-row a {
+          color: #E0E0E0;
+        }
         .night-mode .tie-select-menu {
           background-color: #333a42;
           color: white;
