@@ -47,6 +47,13 @@ tie.factory('FeedbackParagraphObjectFactory', [
     var PARAGRAPH_TYPE_SYNTAX_ERROR = 'error';
 
     /**
+     * Indicates print feedback error type of Feedback paragraph.
+     * @const
+     * @type {string}
+     */
+    var PARAGRAPH_TYPE_PRINT_FEEDBACK = 'printFeedback';
+
+    /**
      * Constructor for FeedbackParagraph
      *
      * @param {string} type Indicates what type of Feedback Paragraph this
@@ -101,6 +108,14 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
+     * Checks if the Paragraph has the output for the user's print statements.
+     * @returns {boolean}
+     */
+    FeedbackParagraph.prototype.isPrintFeedback = function() {
+      return this._type === PARAGRAPH_TYPE_PRINT_FEEDBACK;
+    };
+
+    /**
      * A getter for the _content property.
      *
      * @returns {string}
@@ -138,6 +153,19 @@ tie.factory('FeedbackParagraphObjectFactory', [
      */
     FeedbackParagraph.createSyntaxErrorParagraph = function(error) {
       return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
+    };
+
+    /**
+     * Returns a FeedbackParagraph with the output for feedback when a user
+     * has print statements in their code submission.
+     *
+     * @param {string} consoleOutput Logs in the console due to user's print
+     *    statements
+     * @returns {FeedbackParagraph}
+     */
+    FeedbackParagraph.createPrintFeedbackParagraph = function(consoleOutput) {
+      return new FeedbackParagraph(
+          PARAGRAPH_TYPE_PRINT_FEEDBACK, consoleOutput);
     };
 
     return FeedbackParagraph;
