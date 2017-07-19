@@ -230,7 +230,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
     },
     generateMessage: function(errorString) {
       var attributeErrorRegEx =
-          /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'(\w+)'/;
+          /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'((\w|\W)+)'/;
       var found = errorString.match(attributeErrorRegEx);
       return [found[1] + " doesn't have a property or method named ",
         found[2] + ". Double check to make sure everything is spelled ",
