@@ -141,7 +141,8 @@ tie.factory('ReinforcementObjectFactory', [
      */
     Reinforcement.prototype.addPastFailedCase = function(
         stringifiedCaseInput, casePassed) {
-      this._pastFailedCases[stringifiedCaseInput] = casePassed;
+      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
+      this._pastFailedCases[formattedInput] = casePassed;
     };
 
     /**
@@ -153,7 +154,8 @@ tie.factory('ReinforcementObjectFactory', [
      */
     Reinforcement.prototype.updatePastFailedCase = function(
         stringifiedCaseInput, casePassed) {
-      this._pastFailedCases[stringifiedCaseInput] = casePassed;
+      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
+      this._pastFailedCases[formattedInput] = casePassed;
     };
 
     /**
@@ -182,7 +184,8 @@ tie.factory('ReinforcementObjectFactory', [
      * @returns {boolean}
      */
     Reinforcement.prototype.hasPastFailedCase = function(stringifiedCaseInput) {
-      return this._pastFailedCases.hasOwnProperty(stringifiedCaseInput);
+      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
+      return this._pastFailedCases.hasOwnProperty(formattedInput);
     };
 
     // Static class methods.
