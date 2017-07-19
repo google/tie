@@ -35,4 +35,36 @@ describe('submitting questions', function() {
   afterEach(function() {
     utils.checkForConsoleErrors([]);
   });
+
+  it('should successfully display reinforcement input', function() {
+    var questionsPage = new QuestionsPage();
+
+    questionsPage.get();
+    questionsPage.resetCode();
+
+    var code = [
+      'def findMostCommonCharacter(s):',
+      '    counter = 0',
+      '    maxCount = -1',
+      '    letter = s[0]',
+      '    for i in range(len(s)):',
+      '        if counter == 0:',
+      '            counter = 1',
+      '        elif s[i-1] == s[i]:',
+      '            counter += 1',
+      '        else:',
+      '            counter = 0',
+      '        if counter > maxCount:',
+      '            maxCount = counter',
+      '            letter = s[i]',
+      '    return letter',
+      ''
+    ].join('\\u000A');
+
+    questionsPage.submitCode(code);
+
+    expect(questionsPage.countReinforcementBullets()).toEqual(6);
+    expect(questionsPage.getReinforcementBulletText(5)).toEqual(
+      'Fails on \'"a    b c    d e f f"\'');
+  });
 });
