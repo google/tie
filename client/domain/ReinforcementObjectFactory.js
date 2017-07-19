@@ -64,6 +64,17 @@ tie.factory('ReinforcementObjectFactory', [
       this._pastFailedCases = {};
     };
 
+    /**
+     * Helper function that replaces spaces in string so that it will preserve
+     * any extra, consecutive space characters in Reinforcement bullet.
+     *
+     * @param {string} stringifiedInput
+     * @returns {string}
+     */
+    var formatInput = function(stringifiedInput) {
+      return stringifiedInput.replace(/ /g, '\u00A0');
+    };
+
     // Instance methods.
     /**
      * This function creates an array of ReinforcementBullet objects
@@ -141,8 +152,7 @@ tie.factory('ReinforcementObjectFactory', [
      */
     Reinforcement.prototype.addPastFailedCase = function(
         stringifiedCaseInput, casePassed) {
-      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
-      this._pastFailedCases[formattedInput] = casePassed;
+      this._pastFailedCases[formatInput(stringifiedCaseInput)] = casePassed;
     };
 
     /**
@@ -154,8 +164,7 @@ tie.factory('ReinforcementObjectFactory', [
      */
     Reinforcement.prototype.updatePastFailedCase = function(
         stringifiedCaseInput, casePassed) {
-      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
-      this._pastFailedCases[formattedInput] = casePassed;
+      this._pastFailedCases[formatInput(stringifiedCaseInput)] = casePassed;
     };
 
     /**
@@ -184,8 +193,8 @@ tie.factory('ReinforcementObjectFactory', [
      * @returns {boolean}
      */
     Reinforcement.prototype.hasPastFailedCase = function(stringifiedCaseInput) {
-      var formattedInput = stringifiedCaseInput.replace(/ /g, '\u00A0');
-      return this._pastFailedCases.hasOwnProperty(formattedInput);
+      return this._pastFailedCases.hasOwnProperty(
+        formatInput(stringifiedCaseInput));
     };
 
     // Static class methods.
