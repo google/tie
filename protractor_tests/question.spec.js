@@ -59,7 +59,7 @@ describe('submitting questions', function() {
       '            letter = s[i]',
       '    return letter',
       ''
-    ].join('\\u000A');
+    ].join('\\n');
 
     questionsPage.submitCode(code);
 
