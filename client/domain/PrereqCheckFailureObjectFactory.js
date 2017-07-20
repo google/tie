@@ -241,14 +241,14 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      *    unsupported libraries the user tried to import
      * @param {string} starterCode Should have the original code and function
      *    headers the user is given before they begin adding their own code.
-     * @param {string} wrongLangName Name of the error that corresponds to the
-     *    error information in WRONG_LANGUAGE_ERRORS
+     * @param {string} wrongLangErrorName Name of the error that corresponds to
+     *    the error information in WRONG_LANGUAGE_ERRORS
      * @returns {PrereqCheckFailure}
      */
     PrereqCheckFailure.create = function(
-        type, badImports, starterCode, wrongLangName) {
-      var name = (typeof wrongLangName === 'undefined') ? null : wrongLangName;
-      return new PrereqCheckFailure(type, badImports, starterCode, name);
+        type, badImports, starterCode, wrongLangErrorName) {
+      var errorName = wrongLangErrorName || null;
+      return new PrereqCheckFailure(type, badImports, starterCode, errorName);
     };
 
     return PrereqCheckFailure;

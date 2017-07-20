@@ -418,13 +418,13 @@ tie.factory('FeedbackGeneratorService', [
         } else if (prereqCheckFailure.hasWrongLanguage()) {
           WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
             if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
-              error.feedbackParagraphs.forEach(function(json) {
-                if (json._type === 'text') {
-                  feedback.appendTextParagraph(json._content);
-                } else if (json._type === 'code') {
-                  feedback.appendCodeParagraph(json._content);
+              error.feedbackParagraphs.forEach(function(paragraph) {
+                if (paragraph.type === 'text') {
+                  feedback.appendTextParagraph(paragraph.content);
+                } else if (paragraph.type === 'code') {
+                  feedback.appendCodeParagraph(paragraph.content);
                 } else {
-                  feedback.appendSyntaxErrorParagraph(json._content);
+                  feedback.appendSyntaxErrorParagraph(paragraph.content);
                 }
               });
             }

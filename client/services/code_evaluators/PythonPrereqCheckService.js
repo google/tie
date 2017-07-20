@@ -44,8 +44,7 @@ tie.factory('PythonPrereqCheckService', [
       var errorName = null;
       if (code !== '') {
         WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
-          if (code.search(new RegExp(error.regExString)) !== -1 &&
-            errorName === null) {
+          if (!errorName && code.search(new RegExp(error.regExString)) !== -1) {
             errorName = error.errorName;
           }
         });
