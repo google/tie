@@ -269,8 +269,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         {
           _type: 'text',
           _content: [
-            "Sad to say but Python doesn't support switch statements. We ",
-            "just have to stick to good old if-else statements instead."
+            "Oops, Python doesn't support switch statements. You'll ",
+            "just have to use if-else statements instead."
           ].join('')
         }
       ]

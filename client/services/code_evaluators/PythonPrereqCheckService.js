@@ -44,7 +44,8 @@ tie.factory('PythonPrereqCheckService', [
       var errorName = null;
       if (code !== '') {
         WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
-          if (code.search(new RegExp(error.regExString)) !== -1) {
+          if (code.search(new RegExp(error.regExString)) !== -1 &&
+            errorName === null) {
             errorName = error.errorName;
           }
         });
@@ -236,10 +237,10 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
-        var wrongLangName = detectAndGetWrongLanguageType(code);
-        if (wrongLangName !== null) {
+        var wrongLangErrorName = detectAndGetWrongLanguageType(code);
+        if (wrongLangErrorName !== null) {
           return PrereqCheckFailureObjectFactory.create(
-              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangName);
+              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangErrorName);
         }
 
         // Otherwise, code passed all pre-requisite checks.

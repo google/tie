@@ -872,8 +872,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Sad to say but Python doesn't support switch statements. We ",
-        "just have to stick to good old if-else statements instead."
+        "Oops, Python doesn't support switch statements. You'll ",
+        "just have to use if-else statements instead."
       ].join(''));
     });
 
