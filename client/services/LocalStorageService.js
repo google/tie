@@ -17,7 +17,8 @@
  */
 
 tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
-  function(FeedbackParagraphObjectFactory) {
+  'ReinforcementBulletObjectFactory',
+  function(FeedbackParagraphObjectFactory, ReinforcementBulletObjectFactory) {
     // In some browsers, localStorage is not available and its
     // invocation throws an error.
     var localStorageIsAvailable = false;
@@ -72,6 +73,10 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
           return;
         }
 
+        // Add version to the code, currently only 1
+        // TODO(talee): Add in check for the correct version number
+        code = "1:" + code;
+
         var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
         localStorage.setItem(localStorageKey, code);
@@ -93,6 +98,13 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
         var storedCode = localStorage.getItem(localStorageKey);
+
+        if (storedCode === null) {
+          return null;
+        }
+        // TODO(talee): Check versioning when we start having different versions
+        storedCode = storedCode.substring(storedCode.indexOf(':') + 1);
+
         return storedCode;
       },
 
@@ -113,20 +125,23 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         localStorage.removeItem(localStorageKey);
       },
 
-      storeFeedback: function(questionId, feedback, language) {
+      storeFeedback: function(questionId, feedback, reinforcement, language) {
         if (!localStorageIsAvailable) {
           return;
         }
 
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
-        console.log(angular.toJson(feedback));
-        localStorage.setItem(localStorageKey, angular.toJson(feedback));
+        var feedbackWithReinforcement = {};
+        feedbackWithReinforcement['feedbackParagraphs'] = feedback;
+        feedbackWithReinforcement['reinforcementBullets'] = reinforcement;
+      
+        localStorage.setItem(localStorageKey, angular.toJson(feedbackWithReinforcement));
       },
 
       /**
        * Loads the feedback and parses it into JSON, and the reconstructs
-       * the feedback paragraphs fron the JSON object
+       * the feedback paragraphs & reinforcement bullets fron the JSON object
        *
        * @param {string} questionId
        * @param {string} language
@@ -143,16 +158,29 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedFeedback === null) {
           return null;
         }
+        console.log(storedFeedback);  
+        var rawFeedback = JSON.parse(storedFeedback);
 
         var reconstructedFeedback = [];
-        var rawFeedback = JSON.parse(storedFeedback);
         for (var i = 0; i < rawFeedback.feedbackParagraphs.length; i++) {
           reconstructedFeedback.push(
             FeedbackParagraphObjectFactory.createFromJson(
               rawFeedback.feedbackParagraphs[i]));
         }
+        var reconstructedReinforcement = [];
+        if (rawFeedback.reinforcementBullets) {
+          for (var i = 0; i < rawFeedback.reinforcementBullets.length; i++) {
+            reconstructedReinforcement.push(
+              ReinforcementBulletObjectFactory.createFromJson(
+                rawFeedback.reinforcementBullets[i]));
+          }
+        }
+
+        console.log(reconstructedFeedback);
+        console.log(reconstructedReinforcement);
         return {
-          feedbackParagraphs: reconstructedFeedback
+          feedbackParagraphs: reconstructedFeedback,
+          reinforcementBullets: reconstructedReinforcement
         };
       },
 

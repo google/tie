@@ -102,6 +102,14 @@ tie.factory('ReinforcementBulletObjectFactory', [
       return new ReinforcementBullet(false, content);
     };
 
+    ReinforcementBullet.createFromJson = function(json) {
+      if (json._passed) {
+        return this.createPassedBullet(json._content);
+      } else {
+        return this.createFailedBullet(json._content);
+      }
+    }
+
     return ReinforcementBullet;
   }
 ]);

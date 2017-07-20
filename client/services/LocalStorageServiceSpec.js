@@ -23,6 +23,7 @@ describe('LocalStorageService', function() {
   var NUM_CHARS_QUESTION_ID = 10;
   var NUM_CHARS_CODE = 10;
   var NUM_QUESTIONS = 5;
+  var VERSION = '1';
 
   var LocalStorageService;
 
@@ -70,7 +71,7 @@ describe('LocalStorageService', function() {
           LocalStorageService.storeCode(questionId,
             sampleQuestionCodes[index], LANGUAGE);
           var key = questionId + ":" + LANGUAGE + ":code";
-          expect(localStorage.getItem(key)).toEqual(
+          expect(localStorage.getItem(key)).toEqual(VERSION + ":" +
             sampleQuestionCodes[index]);
         });
       });
@@ -81,7 +82,7 @@ describe('LocalStorageService', function() {
         expect(localStorage.length).toEqual(0);
         sampleQuestionIds.forEach(function(questionId, index) {
           var key = questionId + ":" + LANGUAGE + ":code";
-          localStorage.setItem(key, sampleQuestionCodes[index]);
+          localStorage.setItem(key, VERSION + ":" + sampleQuestionCodes[index]);
           expect(LocalStorageService.loadStoredCode(questionId,
             LANGUAGE)).toEqual(sampleQuestionCodes[index]);
         });
@@ -115,7 +116,7 @@ describe('LocalStorageService', function() {
           LocalStorageService.storeCode(questionId,
             sampleQuestionCodes[index], LANGUAGE);
           var key = questionId + ':' + LANGUAGE + ":code";
-          expect(localStorage.getItem(key)).toEqual(
+          expect(localStorage.getItem(key)).toEqual(VERSION + ":" +
             sampleQuestionCodes[index]);
         });
       });

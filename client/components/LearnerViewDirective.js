@@ -726,24 +726,34 @@ tie.directive('learnerView', [function() {
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          console.log("in learnerview");
-          console.log(LocalStorageService.loadStoredFeedback(questionId, language));
+          var reinforcement = ReinforcementObjectFactory.create();
+          $scope.reinforcementBullets = reinforcement.getBullets();
+          $scope.feedbackStorage = [];
           var loadedFeedback = LocalStorageService.loadStoredFeedback(
             questionId, language);
+          console.log(loadedFeedback);
           if (loadedFeedback) {
-            $scope.feedbackStorage = [loadedFeedback];
-          } else {
-            $scope.feedbackStorage = [];
+            $scope.feedbackStorage = loadedFeedback.feedbackStorage ? 
+              [loadedFeedback.feedbackStorage] : [];
+            $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ? 
+              loadedFeedback.reinforcementBullets : [];
           }
+
+          console.log($scope.reinforcementBullets);
+          // if (loadedFeedback) {
+          //   $scope.feedbackStorage = [loadedFeedback];
+          // } else {
+          //   $scope.feedbackStorage = [];
+          // }
+          $scope.feedbackStorage = loadedFeedback ? [loadedFeedback] : [];
           // $scope.feedbackStorage.push(LocalStorageService.loadStoredFeedback(
           //   questionId, language));
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
-          var reinforcement = ReinforcementObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
-          $scope.reinforcementBullets = reinforcement.getBullets();
+          // $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         /**
@@ -809,11 +819,9 @@ tie.directive('learnerView', [function() {
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
-          // Only storing the most recent feedback
-          storeFeedback(
-            $scope.questionIds[$scope.currentQuestionIndex],
-            $scope.feedbackStorage[$scope.feedbackStorage.length-1],
-            language);
+
+          // Only storing the most recent feedback and reinforcement bullets
+          storeFeedback();
         };
 
         /**
@@ -1043,8 +1051,14 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        var storeFeedback = function(questionId, feedback, lang) {
-          LocalStorageService.storeFeedback(questionId, feedback, lang);
+        var storeFeedback = function() {
+          var latestFeedback = 
+            $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
+          LocalStorageService.storeFeedback(
+            $scope.questionIds[$scope.currentQuestionIndex],
+            latestFeedback.feedbackParagraphs,
+            $scope.reinforcementBullets,
+            language);
         }
 
         $scope.initQuestionSet(questionSetId);
