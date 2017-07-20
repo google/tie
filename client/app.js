@@ -148,7 +148,41 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
+/**
+ * Pre-requisite check error type for when the user tries to utilize code with
+ * syntax commonly used in another language that isn't valid in the current
+ * language.
+ *
+ * @type {string}
+ * @constant
+ */
 tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG', 'wrongLang');
+
+/**
+ * FeedbackParagraph type that will be rendered to look like a normal text
+ * paragraph.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_TEXT', 'text');
+
+/**
+ * FeedbackParagraph type that will render text to look like code.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_CODE', 'code');
+
+/**
+ * FeedbackParagraph type that will render text to bring attention to a syntax
+ * error.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 
 /**
  * Dictionary of wrong language detection errors and their related information
