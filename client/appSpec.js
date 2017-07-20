@@ -20,6 +20,7 @@ describe('app.js', function() {
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
   var PARAGRAPH_TYPE_SYNTAX_ERROR;
+  var RUNTIME_ERROR_FEEDBACK_MESSAGES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -27,6 +28,8 @@ describe('app.js', function() {
     PARAGRAPH_TYPE_TEXT = $injector.get('PARAGRAPH_TYPE_TEXT');
     PARAGRAPH_TYPE_CODE = $injector.get('PARAGRAPH_TYPE_CODE');
     PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
+    RUNTIME_ERROR_FEEDBACK_MESSAGES = $injector.get(
+      'RUNTIME_ERROR_FEEDBACK_MESSAGES');
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
@@ -46,6 +49,17 @@ describe('app.js', function() {
 
           expect(typeof paragraph.content).toEqual('string');
         });
+      });
+    });
+  });
+
+  describe('RUNTIME_ERROR_FEEDBACK_MESSAGES', function() {
+    it('should have a valid and consistent internal structure', function() {
+      RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
+        expect(error.checker('test')).toBe(false);
+        expect(typeof error.generateMessage(['NameError: name \'key\' is not ',
+          'defined KeyError: key AttributeError: \'key\' object has no ',
+          'attribute \'length\''].join(''))).toEqual('string');
       });
     });
   });
