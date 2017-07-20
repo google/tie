@@ -138,37 +138,44 @@ describe('LocalStorageService', function() {
 
   describe('FeedbackStorage', function() {
     var QUESTION_ID = 'questionid';
-    var feedbackStorage = [];
+    var feedbackSet1 = [];
+    var reinforcementBullets = [];
+    var feedbackToStore = {};
 
     beforeEach(inject(function($injector) {
       var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-      var feedbackObject = FeedbackObjectFactory.create(false);
+      var ReinforcementBulletObjectFactory = 
+        $injector.get('ReinforcementBulletObjectFactory');
 
+      var feedbackObject = FeedbackObjectFactory.create(false);
       feedbackObject.appendTextParagraph('text1');
       feedbackObject.appendCodeParagraph('code1');
-      var feedbackSet1 = {
-        feedbackParagraphs: feedbackObject.getParagraphs()
-      };
-      feedbackStorage.push(feedbackSet1);
+      feedbackSet1 = feedbackObject.getParagraphs();
 
-      feedbackObject.clear();
-      feedbackObject.appendTextParagraph('text2');
-      feedbackObject.appendCodeParagraph('code2');
-      feedbackObject.appendSyntaxErrorParagraph('error');
-      var feedbackSet2 = {
-        feedbackParagraphs: feedbackObject.getParagraphs()
+      var bullet1 = ReinforcementBulletObjectFactory.createPassedBullet(
+        'passes on abcd');
+      var bullet2 = ReinforcementBulletObjectFactory.createFailedBullet(
+        'fails on something else');
+
+      reinforcementBullets = [bullet1, bullet2];
+
+      feedbackToStore = {
+        feedbackParagraphs: feedbackSet1,
+        reinforcementBullets: reinforcementBullets
       };
-      feedbackStorage.push(feedbackSet2);
     }));
 
     describe('storeFeedback', function() {
-      it('should store feedback as a JSON object to browser', function() {
+      it([
+        'should store feedback and reinforcement bullets ',
+        'as a JSON object to browser'
+      ].join(''), function() {
         expect(localStorage.length).toEqual(0);
         LocalStorageService.storeFeedback(QUESTION_ID,
-          feedbackStorage[1], LANGUAGE);
+          feedbackSet1, reinforcementBullets, LANGUAGE);
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
         expect(localStorage.getItem(key)).toEqual(
-          angular.toJson(feedbackStorage[1]));
+          angular.toJson(feedbackToStore));
       });
     });
 
@@ -176,10 +183,10 @@ describe('LocalStorageService', function() {
       it('should load feedback as an object', function() {
         expect(localStorage.length).toEqual(0);
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
-        localStorage.setItem(key, angular.toJson(feedbackStorage[1]));
+        localStorage.setItem(key, angular.toJson(feedbackToStore));
         expect(angular.equals(
           LocalStorageService.loadStoredFeedback(
-            QUESTION_ID, LANGUAGE), feedbackStorage[1])
+            QUESTION_ID, LANGUAGE), feedbackToStore)
         ).toEqual(true);
       });
 
@@ -193,9 +200,9 @@ describe('LocalStorageService', function() {
     describe('clearLocalStorageFeedback', function() {
       it('should clear feedback from localStorage', function() {
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
-        localStorage.setItem(key, angular.toJson(feedbackStorage));
+        localStorage.setItem(key, angular.toJson(feedbackToStore));
         expect(localStorage.getItem(key)).toEqual(
-          angular.toJson(feedbackStorage));
+          angular.toJson(feedbackToStore));
         LocalStorageService.clearLocalStorageFeedback(QUESTION_ID, LANGUAGE);
         expect(localStorage.getItem(key)).toEqual(null);
       });
