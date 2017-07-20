@@ -55,6 +55,14 @@ var QuestionsPage = function() {
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
   /**
+   * Set of all Reinforcement bullets rendered in the DOM.
+   *
+   * @type {Array}
+   */
+  var reinforcementBullets = element.all(by.repeater(
+    'bullet in reinforcementBullets'));
+
+  /**
    * Retrieves the TIE homepage
    */
   this.get = function() {
@@ -78,7 +86,7 @@ var QuestionsPage = function() {
   /**
    * Simulates adding the given code string to the code editor.
    *
-   * @param codeString
+   * @param {string} codeString
    */
   this.submitCode = function(codeString) {
     browser.executeScript([
@@ -106,6 +114,26 @@ var QuestionsPage = function() {
    */
   this.getFeedbackParagraphText = function(index) {
     return feedbackParagraphs.get(index).getText();
+  };
+
+  /**
+   * Returns the number of Reinforcement bullets rendered in the DOM.
+   *
+   * @returns {number}
+   */
+  this.countReinforcementBullets = function() {
+    return reinforcementBullets.count();
+  };
+
+  /**
+   * Returns the content of the reinforcement bullet at the given index in the
+   * Reinforcement bullet array.
+   *
+   * @param {number} index
+   * @returns {string}
+   */
+  this.getReinforcementBulletText = function(index) {
+    return reinforcementBullets.get(index).getText();
   };
 };
 
