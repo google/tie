@@ -425,7 +425,7 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendTextParagraph(paragraph.content);
                 } else if (paragraph.type === PARAGRAPH_TYPE_CODE) {
                   feedback.appendCodeParagraph(paragraph.content);
-                } else {
+                } else if (paragraph.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
                   feedback.appendSyntaxErrorParagraph(paragraph.content);
                 }
               });
