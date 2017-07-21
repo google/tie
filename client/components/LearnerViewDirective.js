@@ -531,6 +531,11 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
+        .tie-syntax-error-line {
+          background: #FBC2C4 !important;
+          color: #8a1f11 !important;
+          text-decoration: underline;
+        }
         .tie-wrapper {
           height: 100%;
         }
@@ -541,13 +546,13 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
-      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'ErrorTracebackObjectFactory', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'CodeStorageService',
       'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
-          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
+          QuestionDataService, LANGUAGE_PYTHON, ErrorTracebackObjectFactory, FeedbackObjectFactory,
           ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
@@ -733,6 +738,18 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+          * Underlines syntax errors in the coding UI
+          *
+          * @param {number} lineNumber
+          */ 
+        var underlineLine = function(lineNumber) {
+          var actualLineNumber = lineNumber - 1;
+          var codeLines = document.querySelectorAll('.CodeMirror-line');
+          codeLines[actualLineNumber].className += 'tie-syntax-error-line';
+          codeLines[actualLineNumber].firstChild.className += ' tie-syntax-error-line';
+        }
+
+        /**
          * Sets the feedbackStorage property in the scope to be an empty array.
          */
         var clearFeedback = function() {
@@ -773,6 +790,9 @@ tie.directive('learnerView', [function() {
             for (var i = 0; i < feedbackParagraphs.length; i++) {
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
+                var errorContentArray = feedbackParagraphs[i].getContent().split(' ');
+                var syntaxErrorLineNumber = errorContentArray[errorContentArray.length - 1];
+                underlineLine(parseInt(syntaxErrorLineNumber));
                 break;
               }
             }
