@@ -136,7 +136,8 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         feedbackWithReinforcement['feedbackParagraphs'] = feedback;
         feedbackWithReinforcement['reinforcementBullets'] = reinforcement;
       
-        localStorage.setItem(localStorageKey, angular.toJson(feedbackWithReinforcement));
+        localStorage.setItem(localStorageKey, 
+          angular.toJson(feedbackWithReinforcement));
       },
 
       /**
@@ -176,8 +177,6 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
           }
         }
 
-        console.log(reconstructedFeedback);
-        console.log(reconstructedReinforcement);
         return {
           feedbackParagraphs: reconstructedFeedback,
           reinforcementBullets: reconstructedReinforcement

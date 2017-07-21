@@ -738,22 +738,12 @@ tie.directive('learnerView', [function() {
             $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ? 
               loadedFeedback.reinforcementBullets : [];
           }
-
-          console.log($scope.reinforcementBullets);
-          // if (loadedFeedback) {
-          //   $scope.feedbackStorage = [loadedFeedback];
-          // } else {
-          //   $scope.feedbackStorage = [];
-          // }
           $scope.feedbackStorage = loadedFeedback ? [loadedFeedback] : [];
-          // $scope.feedbackStorage.push(LocalStorageService.loadStoredFeedback(
-          //   questionId, language));
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
-          // $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         /**
@@ -1059,7 +1049,7 @@ tie.directive('learnerView', [function() {
             latestFeedback.feedbackParagraphs,
             $scope.reinforcementBullets,
             language);
-        }
+        };
 
         $scope.initQuestionSet(questionSetId);
       }
