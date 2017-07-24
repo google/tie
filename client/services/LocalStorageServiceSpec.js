@@ -144,7 +144,7 @@ describe('LocalStorageService', function() {
 
     beforeEach(inject(function($injector) {
       var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-      var ReinforcementBulletObjectFactory = 
+      var ReinforcementBulletObjectFactory =
         $injector.get('ReinforcementBulletObjectFactory');
 
       var feedbackObject = FeedbackObjectFactory.create(false);

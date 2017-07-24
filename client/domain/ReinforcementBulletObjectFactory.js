@@ -108,7 +108,7 @@ tie.factory('ReinforcementBulletObjectFactory', [
       } else {
         return this.createFailedBullet(json._content);
       }
-    }
+    };
 
     return ReinforcementBullet;
   }

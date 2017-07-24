@@ -731,11 +731,10 @@ tie.directive('learnerView', [function() {
           $scope.feedbackStorage = [];
           var loadedFeedback = LocalStorageService.loadStoredFeedback(
             questionId, language);
-          console.log(loadedFeedback);
           if (loadedFeedback) {
-            $scope.feedbackStorage = loadedFeedback.feedbackStorage ? 
+            $scope.feedbackStorage = loadedFeedback.feedbackStorage ?
               [loadedFeedback.feedbackStorage] : [];
-            $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ? 
+            $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ?
               loadedFeedback.reinforcementBullets : [];
           }
           $scope.feedbackStorage = loadedFeedback ? [loadedFeedback] : [];
@@ -754,10 +753,10 @@ tie.directive('learnerView', [function() {
           $scope.reinforcementBullets = [];
         };
 
-         $scope.resetFeedback = function() {
-           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-           LocalStorageService.clearLocalStorageFeedback(questionId, language);
-           clearFeedback();
+        $scope.resetFeedback = function() {
+          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
+          LocalStorageService.clearLocalStorageFeedback(questionId, language);
+          clearFeedback();
         };
 
         /**
@@ -1042,7 +1041,7 @@ tie.directive('learnerView', [function() {
         };
 
         var storeFeedback = function() {
-          var latestFeedback = 
+          var latestFeedback =
             $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
           LocalStorageService.storeFeedback(
             $scope.questionIds[$scope.currentQuestionIndex],

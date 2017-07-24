@@ -48,7 +48,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
      */
     var getLocalStorageKeyForFeedback = function(questionId, language) {
       return questionId + ":" + language + ":feedback";
-    }
+    };
 
     return {
       /**
@@ -75,11 +75,11 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
 
         // Add version to the code, currently only 1
         // TODO(talee): Add in check for the correct version number
-        code = "1:" + code;
+        var codeWithVersion = "1:" + code;
 
         var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
-        localStorage.setItem(localStorageKey, code);
+        localStorage.setItem(localStorageKey, codeWithVersion);
       },
 
       /**
@@ -133,10 +133,10 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         var feedbackWithReinforcement = {};
-        feedbackWithReinforcement['feedbackParagraphs'] = feedback;
-        feedbackWithReinforcement['reinforcementBullets'] = reinforcement;
-      
-        localStorage.setItem(localStorageKey, 
+        feedbackWithReinforcement.feedbackParagraphs = feedback;
+        feedbackWithReinforcement.reinforcementBullets = reinforcement;
+
+        localStorage.setItem(localStorageKey,
           angular.toJson(feedbackWithReinforcement));
       },
 
@@ -146,7 +146,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
        *
        * @param {string} questionId
        * @param {string} language
-       * @returns {Object} 
+       * @returns {Object}
        */
       loadStoredFeedback: function(questionId, language) {
         if (!localStorageIsAvailable) {
@@ -159,7 +159,6 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedFeedback === null) {
           return null;
         }
-        console.log(storedFeedback);  
         var rawFeedback = JSON.parse(storedFeedback);
 
         var reconstructedFeedback = [];
@@ -170,10 +169,10 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         }
         var reconstructedReinforcement = [];
         if (rawFeedback.reinforcementBullets) {
-          for (var i = 0; i < rawFeedback.reinforcementBullets.length; i++) {
+          for (var j = 0; j < rawFeedback.reinforcementBullets.length; j++) {
             reconstructedReinforcement.push(
               ReinforcementBulletObjectFactory.createFromJson(
-                rawFeedback.reinforcementBullets[i]));
+                rawFeedback.reinforcementBullets[j]));
           }
         }
 

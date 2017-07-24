@@ -142,13 +142,13 @@ tie.factory('FeedbackParagraphObjectFactory', [
 
     FeedbackParagraph.createFromJson = function(json) {
       if (json._type === "text") {
-        return(this.createTextParagraph(json._content));
+        return (this.createTextParagraph(json._content));
       } else if (json._type === "code") {
-        return(this.createCodeParagraph(json._content));
+        return (this.createCodeParagraph(json._content));
       } else if (json._type === "error") {
-        return(this.createSyntaxErrorParagraph(json._content));
+        return (this.createSyntaxErrorParagraph(json._content));
       }
-    }
+    };
 
     return FeedbackParagraph;
   }
