@@ -148,6 +148,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
       } else if (json._type === "error") {
         return (this.createSyntaxErrorParagraph(json._content));
       }
+      return null;
     };
 
     return FeedbackParagraph;
