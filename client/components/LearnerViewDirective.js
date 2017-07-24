@@ -742,7 +742,7 @@ tie.directive('learnerView', [function() {
           * @param {number} lineNumber
           */
         var highlightLine = function(lineNumber) {
-          var actualLineNumber = lineNumber;
+          var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
           codeLines[actualLineNumber].className += ' tie-syntax-error-line';
           codeLines[actualLineNumber].firstChild.className +=
