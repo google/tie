@@ -534,7 +534,6 @@ tie.directive('learnerView', [function() {
         .tie-syntax-error-line {
           background: #FBC2C4 !important;
           color: #8a1f11 !important;
-          text-decoration: underline;
         }
         .tie-wrapper {
           height: 100%;
@@ -546,14 +545,14 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
-      'QuestionDataService', 'LANGUAGE_PYTHON', 'ErrorTracebackObjectFactory', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', 'CodeStorageService',
-      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'ErrorTracebackObjectFactory',
+      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
+      'CodeStorageService', 'SECONDS_TO_MILLISECONDS',
+      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
-          QuestionDataService, LANGUAGE_PYTHON, ErrorTracebackObjectFactory, FeedbackObjectFactory,
-          ReinforcementObjectFactory, CodeStorageService,
+          QuestionDataService, LANGUAGE_PYTHON, ErrorTracebackObjectFactory,
+          FeedbackObjectFactory, ReinforcementObjectFactory, CodeStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
@@ -738,16 +737,28 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-          * Underlines syntax errors in the coding UI
+          * Highlights syntax errors in the coding UI
           *
           * @param {number} lineNumber
-          */ 
-        var underlineLine = function(lineNumber) {
-          var actualLineNumber = lineNumber - 1;
+          */
+        var highlightLine = function(lineNumber) {
+          var actualLineNumber = lineNumber;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          codeLines[actualLineNumber].className += 'tie-syntax-error-line';
-          codeLines[actualLineNumber].firstChild.className += ' tie-syntax-error-line';
-        }
+          codeLines[actualLineNumber].className += ' tie-syntax-error-line';
+          codeLines[actualLineNumber].firstChild.className +=
+            ' tie-syntax-error-line';
+        };
+
+        /**
+          * Clears highlight from syntax errors in the coding UI
+          */
+        var clearHighlight = function() {
+          var codeLines = document.querySelectorAll('.tie-syntax-error-line');
+          for (var i = 0; i < codeLines.length; i++) {
+            codeLines[i].className = 'CodeMirror-line';
+            codeLines[i].firstChild.className = 'CodeMirror-line';
+          }
+        };
 
         /**
          * Sets the feedbackStorage property in the scope to be an empty array.
@@ -790,10 +801,15 @@ tie.directive('learnerView', [function() {
             for (var i = 0; i < feedbackParagraphs.length; i++) {
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
-                var errorContentArray = feedbackParagraphs[i].getContent().split(' ');
-                var syntaxErrorLineNumber = errorContentArray[errorContentArray.length - 1];
-                underlineLine(parseInt(syntaxErrorLineNumber));
+                clearHighlight();
+                var errorContentArray = feedbackParagraphs[i].getContent()
+                  .split(' ');
+                var syntaxErrorLineNumber = errorContentArray[errorContentArray
+                  .length - 1];
+                highlightLine(parseInt(syntaxErrorLineNumber, 10));
                 break;
+              } else {
+                clearHighlight();
               }
             }
             // Updating reinforcement bullets only if no syntax errors.
