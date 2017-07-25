@@ -750,8 +750,6 @@ tie.directive('learnerView', [function() {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
           codeLines[actualLineNumber].className += ' tie-syntax-error-line';
-          codeLines[actualLineNumber].firstChild.className +=
-            ' tie-syntax-error-line';
         };
 
         /**
@@ -761,7 +759,6 @@ tie.directive('learnerView', [function() {
           var codeLines = document.querySelectorAll('.tie-syntax-error-line');
           for (var i = 0; i < codeLines.length; i++) {
             codeLines[i].className = 'CodeMirror-line';
-            codeLines[i].firstChild.className = 'CodeMirror-line';
           }
         };
 
