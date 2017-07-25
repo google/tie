@@ -812,7 +812,8 @@ tie.directive('learnerView', [function() {
                   .length - 1];
                 highlightLine(parseInt(syntaxErrorLineNumber, 10));
                 break;
-              }             }
+              }
+            }
             // Updating reinforcement bullets only if no syntax errors.
             $scope.reinforcementBullets =
               hasSyntaxError ? [] : feedback.getReinforcement().getBullets();
