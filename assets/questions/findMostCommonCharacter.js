@@ -92,7 +92,7 @@ class AuxiliaryCode(object):
       allowedOutputs: ['s'],
       tag: 'strings with many spaces'
     }, {
-      input: 'a b c d e f f',
+      input: 'a    b c    d e f f',
       allowedOutputs: ['f'],
       tag: 'strings with many spaces'
     }],
