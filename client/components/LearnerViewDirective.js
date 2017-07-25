@@ -803,19 +803,16 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
+              clearHighlight();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
-                clearHighlight();
                 var errorContentArray = feedbackParagraphs[i].getContent()
                   .split(' ');
                 var syntaxErrorLineNumber = errorContentArray[errorContentArray
                   .length - 1];
                 highlightLine(parseInt(syntaxErrorLineNumber, 10));
                 break;
-              } else {
-                clearHighlight();
-              }
-            }
+              }             }
             // Updating reinforcement bullets only if no syntax errors.
             $scope.reinforcementBullets =
               hasSyntaxError ? [] : feedback.getReinforcement().getBullets();
