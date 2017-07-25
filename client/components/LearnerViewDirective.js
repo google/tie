@@ -531,9 +531,14 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
-        .tie-syntax-error-line {
-          background: #FBC2C4 !important;
-          color: #8a1f11 !important;
+        .CodeMirror-line.tie-syntax-error-line {
+          background: #FBC2C4;
+          color: #8a1f11;
+          
+        }
+        .CodeMirror-line.tie-syntax-error-line.night-mode {
+          background: #004582;
+          color: #00305B;
         }
         .tie-wrapper {
           height: 100%;
