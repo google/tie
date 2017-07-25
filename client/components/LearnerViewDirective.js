@@ -746,7 +746,12 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          codeLines[actualLineNumber].className += ' tie-syntax-error-line';
+          if ($scope.isInDarkMode === true) {
+            codeLines[actualLineNumber].className +=
+              ' tie-syntax-error-line night-mode';
+          } else {
+            codeLines[actualLineNumber].className += ' tie-syntax-error-line';
+          }
         };
 
         /**
