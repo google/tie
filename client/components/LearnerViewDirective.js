@@ -551,15 +551,15 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'ErrorTracebackObjectFactory',
-      'FeedbackObjectFactory', 'ReinforcementObjectFactory', 'CodeStorageService',
-      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
+      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
+      'CodeStorageService', 'SECONDS_TO_MILLISECONDS',
+      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, ErrorTracebackObjectFactory,
-          FeedbackObjectFactory, ReinforcementObjectFactory, CodeStorageService,
-          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+          FeedbackObjectFactory, ReinforcementObjectFactory,
+          CodeStorageService, SECONDS_TO_MILLISECONDS,
+          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
