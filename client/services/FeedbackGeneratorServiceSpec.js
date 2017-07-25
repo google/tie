@@ -248,6 +248,17 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
+  describe('_getUnfamiliarLanguageFeedback', function() {
+    it('should return the string for the text feedback', function() {
+      var feedbackString = FeedbackGeneratorService.
+        _getUnfamiliarLanguageFeedback();
+      expect(feedbackString).toEqual([
+        "Seems like you're having some trouble with this language. Why ",
+        "don't you take a look at the primer?"
+      ].join(''));
+    });
+  });
+
   describe('_getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(

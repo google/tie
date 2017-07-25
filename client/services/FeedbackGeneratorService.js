@@ -30,6 +30,33 @@ tie.factory('FeedbackGeneratorService', [
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR) {
+    /**
+     *
+     */
+    var UNFAMILIARITY_THRESHOLD = 5;
+
+    var consecutiveSyntaxErrorCounter = 0;
+    var consecutiveSameErrorCounter = 0;
+    var consecutiveWrongLanguageCounter = 0;
+    var previousErrorString = '';
+
+    /**
+     *
+     */
+    var _resetCounters = function(currentCtr) {
+      var notResetCtr = currentCtr || '';
+      if (notResetCtr !== 'consecutiveSyntaxErrorCounter') {
+        consecutiveSyntaxErrorCounter = 0;  
+      }
+      if (notResetCtr !== 'consecutiveSameErrorCounter') {
+        consecutiveSameErrorCounter = 0;  
+        previousErrorString = '';
+      }
+      if (notResetCtr !== 'consecutiveWrongLanguageCounter') {
+        consecutiveWrongLanguageCounter = 0;
+      }
+    }
+
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -280,6 +307,16 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     *
+     */
+    var _getUnfamiliarLanguageFeedback = function() {
+      return [
+        "Seems like you're having some trouble with this language. Why ",
+        "don't you take a look at the primer?"
+      ].join('');
+    }
+
+    /**
      * Returns the Feedback object associated with a given user submission
      * not including the reinforcement.
      *
@@ -372,7 +409,13 @@ tie.factory('FeedbackGeneratorService', [
        *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) { 
+        _resetCounters('consecutiveSameErrorCounter');
+        
+        if (previousErrorString === codeEvalResult.getErrorString()){
+          consecutiveSameErrorCounter++;
+        }
+
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
         if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
@@ -380,14 +423,34 @@ tie.factory('FeedbackGeneratorService', [
             ReinforcementGeneratorService.getReinforcement(
               tasks[tasks.length - 1], codeEvalResult));
         }
+        if (consecutiveSameErrorCounter === UNFAMILIARITY_THRESHOLD) {
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          consecutiveSameErrorCounter = 0;
+        }
+        previousErrorString = codeEvalResult.getErrorString();
         return feedback;
       },
       getSyntaxErrorFeedback: function(errorString) {
+        _resetCounters('consecutiveSyntaxErrorCounter');
+
+        consecutiveSyntaxErrorCounter++;
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
+        if (consecutiveSyntaxErrorCounter === UNFAMILIARITY_THRESHOLD) {
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          consecutiveSyntaxErrorCounter = 0;
+        }
         return feedback;
       },
       getPrereqFailureFeedback: function(prereqCheckFailure) {
+        _resetCounters('consecutiveWrongLanguageCounter');
+
+        if (prereqCheckFailure.hasWrongLanguage()) {
+          consecutiveWrongLanguageCounter++;
+        }
+        else {
+          consecutiveWrongLanguageCounter = 0;
+        }
         if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
         }
@@ -457,16 +520,23 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
+        if (consecutiveWrongLanguageCounter === UNFAMILIARITY_THRESHOLD) {
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          consecutiveWrongLanguageCounter = 0;
+        }
+
         return feedback;
       },
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
+      _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
-      _jsToHumanReadable: _jsToHumanReadable
+      _jsToHumanReadable: _jsToHumanReadable,
+      _resetCounters: _resetCounters
     };
   }
 ]);
