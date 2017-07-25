@@ -102,6 +102,9 @@ tie.factory('ReinforcementBulletObjectFactory', [
       return new ReinforcementBullet(false, content);
     };
 
+    /**
+     * Returns a ReinforcementBullet object from a json object
+     */
     ReinforcementBullet.createFromJson = function(json) {
       if (json._passed) {
         return this.createPassedBullet(json._content);

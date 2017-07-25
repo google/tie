@@ -129,10 +129,6 @@ tie.directive('learnerView', [function() {
                     ng-click="resetCode()">
                   Reset Code
                 </button>
-                <button class="tie-code-reset tie-button" name="code-reset"
-                    ng-click="resetFeedback()">
-                  Reset feedback
-                </button>
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
@@ -732,12 +728,12 @@ tie.directive('learnerView', [function() {
           var loadedFeedback = LocalStorageService.loadStoredFeedback(
             questionId, language);
           if (loadedFeedback) {
-            $scope.feedbackStorage = loadedFeedback.feedbackStorage ?
-              [loadedFeedback.feedbackStorage] : [];
+            $scope.feedbackStorage.push({
+              feedbackParagraphs: loadedFeedback.feedbackParagraphs
+            });
             $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ?
               loadedFeedback.reinforcementBullets : [];
           }
-          $scope.feedbackStorage = loadedFeedback ? [loadedFeedback] : [];
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -751,12 +747,6 @@ tie.directive('learnerView', [function() {
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
           $scope.reinforcementBullets = [];
-        };
-
-        $scope.resetFeedback = function() {
-          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-          LocalStorageService.clearLocalStorageFeedback(questionId, language);
-          clearFeedback();
         };
 
         /**
@@ -809,7 +799,7 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
 
-          // Only storing the most recent feedback and reinforcement bullets
+          // Store the most recent feedback and reinforcement bullets
           storeFeedback();
         };
 
@@ -975,8 +965,7 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
           LocalStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId,
-            $scope.questionSet.getIntroductionParagraphs());
+          loadQuestion(questionId);
         };
 
         /**

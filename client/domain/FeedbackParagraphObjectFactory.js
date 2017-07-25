@@ -140,6 +140,9 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
     };
 
+    /**
+     * Returns a FeedbackParagraph created from a json object
+     */
     FeedbackParagraph.createFromJson = function(json) {
       if (json._type === "text") {
         return (this.createTextParagraph(json._content));
