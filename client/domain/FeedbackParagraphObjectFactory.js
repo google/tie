@@ -18,33 +18,14 @@
  */
 
 tie.factory('FeedbackParagraphObjectFactory', [
-  function() {
+  'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
+  function(PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_CODE,
+    PARAGRAPH_TYPE_SYNTAX_ERROR) {
     /**
      * FeedbackParagraph objects have all of the information necessary
      * to represent one paragraph of feedback (code-, text-, or error-based) in
      * the UI.
      */
-
-    /**
-     * Indicates text type of Feedback Paragraph
-     * @const
-     * @type {string}
-     */
-    var PARAGRAPH_TYPE_TEXT = 'text';
-
-    /**
-     * Indicates code type of Feedback Paragraph
-     * @const
-     * @type {string}
-     */
-    var PARAGRAPH_TYPE_CODE = 'code';
-
-    /**
-     * Indicates syntax error type of Feedback paragraph
-     * @const
-     * @type {string}
-     */
-    var PARAGRAPH_TYPE_SYNTAX_ERROR = 'error';
 
     /**
      * Constructor for FeedbackParagraph

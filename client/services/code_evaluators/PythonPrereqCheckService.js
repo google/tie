@@ -20,15 +20,38 @@
 tie.factory('PythonPrereqCheckService', [
   'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
+  'WRONG_LANGUAGE_ERRORS', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
   'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_SYSTEM_CODE',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
+      WRONG_LANGUAGE_ERRORS, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
       PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_SYSTEM_CODE) {
+    /**
+     * Checks if the given code uses any syntax that isn't valid in Python
+     * but is specific to languages like C/C++ and Java.
+     *
+     * @param {string}
+     * @returns {string | null} If there is wrong language syntax detected,
+     *    will return the name of the error as referenced in
+     *    WRONG_LANGUAGE_ERRORS.
+     */
+    var detectAndGetWrongLanguageType = function(code) {
+      var errorName = null;
+      if (code !== '') {
+        WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
+          if (!errorName && code.search(new RegExp(error.regExString)) !== -1) {
+            errorName = error.errorName;
+          }
+        });
+      }
+      return errorName;
+    };
+
     /**
      * Removes trailing white space that may be at the end of a string.
      *
@@ -213,11 +236,18 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
+        var wrongLangErrorName = detectAndGetWrongLanguageType(code);
+        if (wrongLangErrorName !== null) {
+          return PrereqCheckFailureObjectFactory.create(
+              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangErrorName);
+        }
+
         // Otherwise, code passed all pre-requisite checks.
         return null;
       },
       checkStarterCodeFunctionsPresent: checkStarterCodeFunctionsPresent,
       checkGlobalCallsPresent: checkGlobalCallsPresent,
+      detectAndGetWrongLanguageType: detectAndGetWrongLanguageType,
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
