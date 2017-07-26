@@ -46,16 +46,16 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function(currentCtr) {
       var notResetCtr = currentCtr || '';
       if (notResetCtr !== 'consecutiveSyntaxErrorCounter') {
-        consecutiveSyntaxErrorCounter = 0;  
+        consecutiveSyntaxErrorCounter = 0;
       }
       if (notResetCtr !== 'consecutiveSameErrorCounter') {
-        consecutiveSameErrorCounter = 0;  
+        consecutiveSameErrorCounter = 0;
         previousErrorString = '';
       }
       if (notResetCtr !== 'consecutiveWrongLanguageCounter') {
         consecutiveWrongLanguageCounter = 0;
       }
-    }
+    };
 
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
@@ -314,7 +314,7 @@ tie.factory('FeedbackGeneratorService', [
         "Seems like you're having some trouble with this language. Why ",
         "don't you take a look at the primer?"
       ].join('');
-    }
+    };
 
     /**
      * Returns the Feedback object associated with a given user submission
@@ -409,10 +409,10 @@ tie.factory('FeedbackGeneratorService', [
        *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) { 
+      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         _resetCounters('consecutiveSameErrorCounter');
-        
-        if (previousErrorString === codeEvalResult.getErrorString()){
+
+        if (previousErrorString === codeEvalResult.getErrorString()) {
           consecutiveSameErrorCounter++;
         }
 
@@ -447,8 +447,7 @@ tie.factory('FeedbackGeneratorService', [
 
         if (prereqCheckFailure.hasWrongLanguage()) {
           consecutiveWrongLanguageCounter++;
-        }
-        else {
+        } else {
           consecutiveWrongLanguageCounter = 0;
         }
         if (!prereqCheckFailure) {

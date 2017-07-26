@@ -250,8 +250,8 @@ describe('FeedbackGeneratorService', function() {
 
   describe('_getUnfamiliarLanguageFeedback', function() {
     it('should return the string for the text feedback', function() {
-      var feedbackString = FeedbackGeneratorService.
-        _getUnfamiliarLanguageFeedback();
+      var feedbackString = FeedbackGeneratorService
+        ._getUnfamiliarLanguageFeedback();
       expect(feedbackString).toEqual([
         "Seems like you're having some trouble with this language. Why ",
         "don't you take a look at the primer?"
