@@ -745,8 +745,8 @@ tie.directive('learnerView', [function() {
             $scope.feedbackStorage.push({
               feedbackParagraphs: loadedFeedback.feedbackParagraphs
             });
-            $scope.reinforcementBullets = loadedFeedback.reinforcementBullets ?
-              loadedFeedback.reinforcementBullets : [];
+            $scope.reinforcementBullets =
+              loadedFeedback.reinforcementBullets || [];
           }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
@@ -814,7 +814,7 @@ tie.directive('learnerView', [function() {
           $scope.scrollToBottomOfFeedbackWindow();
 
           // Store the most recent feedback and reinforcement bullets
-          storeFeedback();
+          storeLatestFeedback();
         };
 
         /**
@@ -1043,7 +1043,10 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        var storeFeedback = function() {
+        /**
+         * Stores the user's latest feedback to local storage
+         */
+        var storeLatestFeedback = function() {
           var latestFeedback =
             $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
           LocalStorageService.storeFeedback(

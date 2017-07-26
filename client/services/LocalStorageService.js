@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /**
- * @fileoverview A service that saves student code to the browser's
- *    localStorage.
+ * @fileoverview A service that saves student code, feedback, and progress
+ *    to the browser's localStorage.
  */
 
 tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
@@ -73,8 +73,12 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
           return;
         }
 
-        // Add version to the code, currently only 1
-        // TODO(talee): Add in check for the correct version number
+        /**
+         * TODO(talee): If we start updating the question, then need to add a
+         * a way to track which version the question is on, and to check if the
+         * code that was saved was for a previous version, and if so, to let
+         * the user know the question has changed.
+         */
         var codeWithVersion = "1:" + code;
 
         var localStorageKey = getLocalStorageKeyForCode(
@@ -97,13 +101,14 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
 
         var localStorageKey = getLocalStorageKeyForCode(
           questionId, language);
-        var storedCode = localStorage.getItem(localStorageKey);
+        var storedCodeWithVersion = localStorage.getItem(localStorageKey);
 
-        if (storedCode === null) {
+        if (storedCodeWithVersion === null) {
           return null;
         }
         // TODO(talee): Check versioning when we start having different versions
-        storedCode = storedCode.substring(storedCode.indexOf(':') + 1);
+        storedCode = storedCodeWithVersion.substring(
+          storedCodeWithVersion.indexOf(':') + 1);
 
         return storedCode;
       },
