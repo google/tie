@@ -148,6 +148,14 @@
         "quote-props": ["error", "as-needed"],
         "radix": "error",
         "require-await": "error",
+        "require-jsdoc": ["error", {
+          "require": {
+            "FunctionDeclaration": true,
+            "MethodDefinition": true,
+            "ClassDeclaration": true,
+            "ArrowFunctionExpression": true
+          }
+        }],
         "semi": "error",
         "semi-spacing": "error",
         "sort-vars": "error",
