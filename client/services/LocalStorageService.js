@@ -107,7 +107,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
           return null;
         }
         // TODO(talee): Check versioning when we start having different versions
-        storedCode = storedCodeWithVersion.substring(
+        var storedCode = storedCodeWithVersion.substring(
           storedCodeWithVersion.indexOf(':') + 1);
 
         return storedCode;
