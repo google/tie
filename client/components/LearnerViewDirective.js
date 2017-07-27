@@ -760,8 +760,8 @@ tie.directive('learnerView', [function() {
         var clearHighlight = function() {
           var codeLines = document.querySelectorAll('.tie-syntax-error-line');
           for (var i = 0; i < codeLines.length; i++) {
-            codeLines[i].className = codeLines[i].className.slice(0, codeLines[i]
-              .className.search(' tie-syntax-error-line'));
+            codeLines[i].className = codeLines[i].className.slice(0,
+              codeLines[i].className.search(' tie-syntax-error-line'));
           }
         };
 
