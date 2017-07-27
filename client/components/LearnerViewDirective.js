@@ -746,11 +746,10 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          if ($scope.isInDarkMode === true) {
-            codeLines[actualLineNumber].className +=
-              ' tie-syntax-error-line night-mode';
+          if ($scope.isInDarkMode) {
+            codeLines[actualLineNumber].classList.add('tie-syntax-error-line', 'night-mode');
           } else {
-            codeLines[actualLineNumber].className += ' tie-syntax-error-line';
+            codeLines[actualLineNumber].classList.add('tie-syntax-error-line');
           }
         };
 
@@ -760,8 +759,7 @@ tie.directive('learnerView', [function() {
         var clearHighlight = function() {
           var codeLines = document.querySelectorAll('.tie-syntax-error-line');
           for (var i = 0; i < codeLines.length; i++) {
-            codeLines[i].className = codeLines[i].className.slice(0,
-              codeLines[i].className.search(' tie-syntax-error-line'));
+            codeLines[i].classList.remove('tie-syntax-error-line');
           }
         };
 
