@@ -122,15 +122,15 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Returns a FeedbackParagraph created from a json object
+     * Returns a FeedbackParagraph created from an object.
      */
-    FeedbackParagraph.createFromJson = function(json) {
-      if (json._type === PARAGRAPH_TYPE_TEXT) {
-        return (this.createTextParagraph(json._content));
-      } else if (json._type === PARAGRAPH_TYPE_CODE) {
-        return (this.createCodeParagraph(json._content));
-      } else if (json._type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
-        return (this.createSyntaxErrorParagraph(json._content));
+    FeedbackParagraph.fromDict = function(dict) {
+      if (dict._type === PARAGRAPH_TYPE_TEXT) {
+        return (this.createTextParagraph(dict._content));
+      } else if (dict._type === PARAGRAPH_TYPE_CODE) {
+        return (this.createCodeParagraph(dict._content));
+      } else if (dict._type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
+        return (this.createSyntaxErrorParagraph(dict._content));
       }
       return null;
     };

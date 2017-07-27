@@ -103,13 +103,13 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     /**
-     * Returns a ReinforcementBullet object from a json object
+     * Returns a ReinforcementBullet object from a dict created from a json
      */
-    ReinforcementBullet.createFromJson = function(json) {
-      if (json._passed) {
-        return this.createPassedBullet(json._content);
+    ReinforcementBullet.fromDict = function(dict) {
+      if (dict._passed) {
+        return this.createPassedBullet(dict._content);
       } else {
-        return this.createFailedBullet(json._content);
+        return this.createFailedBullet(dict._content);
       }
     };
 

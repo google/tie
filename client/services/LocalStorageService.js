@@ -146,7 +146,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
       },
 
       /**
-       * Loads the feedback and parses it into JSON, and the reconstructs
+       * Loads the feedback and parses it into JSON, and then reconstructs
        * the feedback paragraphs & reinforcement bullets fron the JSON object
        *
        * @param {string} questionId
@@ -164,20 +164,24 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedFeedback === null) {
           return null;
         }
-        var rawFeedback = JSON.parse(storedFeedback);
+        var rawFeedback = angular.fromJson(storedFeedback);
 
         var reconstructedFeedback = [];
         for (var i = 0; i < rawFeedback.feedbackParagraphs.length; i++) {
-          reconstructedFeedback.push(
-            FeedbackParagraphObjectFactory.createFromJson(
-              rawFeedback.feedbackParagraphs[i]));
+          reconstructedFeedback = rawFeedback.feedbackParagraphs.map(
+            function(paragraph) {
+              return FeedbackParagraphObjectFactory.fromDict(paragraph);
+            }
+          );
         }
         var reconstructedReinforcement = [];
         if (rawFeedback.reinforcementBullets) {
           for (var j = 0; j < rawFeedback.reinforcementBullets.length; j++) {
-            reconstructedReinforcement.push(
-              ReinforcementBulletObjectFactory.createFromJson(
-                rawFeedback.reinforcementBullets[j]));
+            reconstructedReinforcement = rawFeedback.reinforcementBullets.map(
+              function(bullets) {
+                return ReinforcementBulletObjectFactory.fromDict(bullets);
+              }
+            );
           }
         }
 
