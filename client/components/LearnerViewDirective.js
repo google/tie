@@ -747,7 +747,8 @@ tie.directive('learnerView', [function() {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
           if ($scope.isInDarkMode) {
-            codeLines[actualLineNumber].classList.add('tie-syntax-error-line', 'night-mode');
+            codeLines[actualLineNumber].classList.add('tie-syntax-error-line',
+              'night-mode');
           } else {
             codeLines[actualLineNumber].classList.add('tie-syntax-error-line');
           }
