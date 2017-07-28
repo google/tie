@@ -58,4 +58,18 @@ describe('ReinforcementBulletObjectFactory', function() {
       expect(failedBullet.getImgName()).toEqual('fail.png');
     });
   });
+
+  describe('createBulletFromDict', function() {
+    it('should correctly return bullets from a dict version', function() {
+      var dictBullet = {
+        _passed: true,
+        _content: 'this is some good content'
+      };
+      var passedBullet;
+      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet(
+        'this is some good content');
+      expect(ReinforcementBulletObjectFactory.fromDict(dictBullet))
+        .toEqual(passedBullet);
+    });
+  });
 });

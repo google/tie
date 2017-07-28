@@ -104,6 +104,9 @@ tie.factory('ReinforcementBulletObjectFactory', [
 
     /**
      * Returns a ReinforcementBullet object from a dict created from a json
+     *
+     * @param {Object} dict Object parsed from json
+     * @returns {ReinforcementBullet}
      */
     ReinforcementBullet.fromDict = function(dict) {
       if (dict._passed) {

@@ -130,6 +130,15 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         localStorage.removeItem(localStorageKey);
       },
 
+      /**
+       * Takes the paragraphs and reinforcement bullets and creates an object
+       * that is then converted to json and stored.
+
+       * @param {string} questionId
+       * @param {Array} feedback
+       * @param {Array} reinforcement
+       * @param {string} language
+       */
       storeFeedback: function(questionId, feedback, reinforcement, language) {
         if (!localStorageIsAvailable) {
           return;

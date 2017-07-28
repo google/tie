@@ -123,6 +123,9 @@ tie.factory('FeedbackParagraphObjectFactory', [
 
     /**
      * Returns a FeedbackParagraph created from an object.
+     *
+     * @param {Object} dict Object parsed from json
+     * @returns {FeedbackParagraph}
      */
     FeedbackParagraph.fromDict = function(dict) {
       if (dict._type === PARAGRAPH_TYPE_TEXT) {
