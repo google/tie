@@ -257,6 +257,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on line 5');
+      expect(paragraphs[1].getErrorLineNumber()).toEqual(5);
     });
 
     it('should throw an error if the line number index is less than 0',

@@ -801,11 +801,7 @@ tie.directive('learnerView', [function() {
               clearHighlight();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
-                var errorContentArray = feedbackParagraphs[i].getContent()
-                  .split(' ');
-                var syntaxErrorLineNumber =
-                  errorContentArray[errorContentArray.length - 1];
-                highlightLine(parseInt(syntaxErrorLineNumber, 10));
+                highlightLine(feedbackParagraphs[i].getErrorLineNumber());
                 break;
               }
             }
