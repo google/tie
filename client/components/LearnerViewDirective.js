@@ -534,7 +534,7 @@ tie.directive('learnerView', [function() {
         .CodeMirror-line.tie-syntax-error-line {
           background: #FBC2C4;
         }
-        .CodeMirror-line.tie-syntax-error-line.night-mode {
+        .tie-wrapper.night-mode .CodeMirror-line.tie-syntax-error-line {
           background: #004582;
         }
         .tie-wrapper {
@@ -746,12 +746,7 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          if ($scope.isInDarkMode) {
-            codeLines[actualLineNumber].classList.add('tie-syntax-error-line',
-              'night-mode');
-          } else {
-            codeLines[actualLineNumber].classList.add('tie-syntax-error-line');
-          }
+          codeLines[actualLineNumber].classList.add('tie-syntax-error-line');
         };
 
         /**
@@ -808,8 +803,8 @@ tie.directive('learnerView', [function() {
                 hasSyntaxError = true;
                 var errorContentArray = feedbackParagraphs[i].getContent()
                   .split(' ');
-                var syntaxErrorLineNumber = errorContentArray[errorContentArray
-                  .length - 1];
+                var syntaxErrorLineNumber =
+                  errorContentArray[errorContentArray.length - 1];
                 highlightLine(parseInt(syntaxErrorLineNumber, 10));
                 break;
               }
