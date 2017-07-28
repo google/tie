@@ -30,29 +30,61 @@ tie.factory('FeedbackGeneratorService', [
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR) {
+
     /**
+     * Global constant to act as the threshhold before prompting the user
+     * to look at the language primer.
      *
+     * @type {number}
      */
     var UNFAMILIARITY_THRESHOLD = 5;
 
+    /**
+     * Global number to keep track of consecutive syntax errors.
+     *
+     * @type {number}
+     */
     var consecutiveSyntaxErrorCounter = 0;
+
+    /**
+     * Global number to keep track of consecutive same errors.
+     *
+     * @type {number}
+     */
     var consecutiveSameErrorCounter = 0;
+
+    /**
+     * Global number to keep track of consecutive uses of the wrong language.
+     *
+     * @type {number}
+     */
     var consecutiveWrongLanguageCounter = 0;
+
+    /**
+     * Global string to store the previous error string.
+     *
+     * @type {string}
+     */
     var previousErrorString = '';
 
     /**
+     * Resets all but one specific counter or all counters, depending on the 
+     * parameter.
      *
+     * @param {string} currentCtr
+     * @private
      */
     var _resetCounters = function(currentCtr) {
+      // If the parameter is null, reset all counters.
       var notResetCtr = currentCtr || '';
-      if (notResetCtr !== 'consecutiveSyntaxErrorCounter') {
+      if (notResetCtr !== 'consecutiveSyntaxError') {
         consecutiveSyntaxErrorCounter = 0;
       }
-      if (notResetCtr !== 'consecutiveSameErrorCounter') {
+      if (notResetCtr !== 'consecutiveSameError') {
         consecutiveSameErrorCounter = 0;
         previousErrorString = '';
       }
-      if (notResetCtr !== 'consecutiveWrongLanguageCounter') {
+      if (notResetCtr !== 'consecutiveWrongLanguage') {
         consecutiveWrongLanguageCounter = 0;
       }
     };
@@ -307,12 +339,17 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns a string when it is detected that the user is unfamiliar
+     * with the programming language.
      *
+     * @returns {String}
+     * @private
      */
     var _getUnfamiliarLanguageFeedback = function() {
       return [
         "Seems like you're having some trouble with this language. Why ",
-        "don't you take a look at the primer?"
+        "don't you take a look at the New to Python button at the bottom",
+        "of the screen?"
       ].join('');
     };
 
@@ -410,8 +447,11 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
-        _resetCounters('consecutiveSameErrorCounter');
+        // Reset all counters but consecutiveSameErrorCounter.
+        _resetCounters('consecutiveSameError');
 
+        // If the user recieves the same error message increment the same error
+        // counter.
         if (previousErrorString === codeEvalResult.getErrorString()) {
           consecutiveSameErrorCounter++;
         }
@@ -423,6 +463,9 @@ tie.factory('FeedbackGeneratorService', [
             ReinforcementGeneratorService.getReinforcement(
               tasks[tasks.length - 1], codeEvalResult));
         }
+
+        // If the same error counter reaches the threshold, prompt the user to
+        // look at the primer.
         if (consecutiveSameErrorCounter === UNFAMILIARITY_THRESHOLD) {
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
           consecutiveSameErrorCounter = 0;
@@ -431,11 +474,17 @@ tie.factory('FeedbackGeneratorService', [
         return feedback;
       },
       getSyntaxErrorFeedback: function(errorString) {
-        _resetCounters('consecutiveSyntaxErrorCounter');
+        // Reset all counters but consecutivesyntaxErrorCounter.
+        _resetCounters('consecutiveSyntaxError');
 
+        // If the user recieves another syntax error, increment the syntax
+        // error counter.
         consecutiveSyntaxErrorCounter++;
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
+
+        // If the syntax error reaches the threshold, prompt the user to
+        // look at the primer.
         if (consecutiveSyntaxErrorCounter === UNFAMILIARITY_THRESHOLD) {
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
           consecutiveSyntaxErrorCounter = 0;
@@ -443,7 +492,7 @@ tie.factory('FeedbackGeneratorService', [
         return feedback;
       },
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters('consecutiveWrongLanguageCounter');
+        _resetCounters('consecutiveWrongLanguage');
 
         if (prereqCheckFailure.hasWrongLanguage()) {
           consecutiveWrongLanguageCounter++;
@@ -519,6 +568,8 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
+        // If the wrong language counter reaches the threshold, prompt the user
+        // to look at the primer.
         if (consecutiveWrongLanguageCounter === UNFAMILIARITY_THRESHOLD) {
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
           consecutiveWrongLanguageCounter = 0;
