@@ -68,8 +68,8 @@ tie.factory('FeedbackGeneratorService', [
     var previousErrorString = '';
 
     /**
-     * Resets all but one specific counter or all counters, depending on the 
-     * parameter.
+     * Resets all but one specific counter or all counters, depending on
+     * the parameter.
      *
      * @param {string} currentCtr
      * @private
