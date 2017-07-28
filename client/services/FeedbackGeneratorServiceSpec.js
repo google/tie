@@ -254,7 +254,8 @@ describe('FeedbackGeneratorService', function() {
         ._getUnfamiliarLanguageFeedback();
       expect(feedbackString).toEqual([
         "Seems like you're having some trouble with this language. Why ",
-        "don't you take a look at the primer?"
+        "don't you take a look at the New to Python button at the bottom ",
+        "of the screen?"
       ].join(''));
     });
   });

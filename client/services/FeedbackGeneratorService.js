@@ -348,7 +348,7 @@ tie.factory('FeedbackGeneratorService', [
     var _getUnfamiliarLanguageFeedback = function() {
       return [
         "Seems like you're having some trouble with this language. Why ",
-        "don't you take a look at the New to Python button at the bottom",
+        "don't you take a look at the New to Python button at the bottom ",
         "of the screen?"
       ].join('');
     };
