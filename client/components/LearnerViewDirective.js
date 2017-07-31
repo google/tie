@@ -750,9 +750,9 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-          * Clears highlight from syntax errors in the coding UI
+          * Clears all highlight from syntax errors in the coding UI
           */
-        var clearHighlight = function() {
+        var clearAllHighlight = function() {
           var codeLines = document.querySelectorAll('.tie-syntax-error-line');
           for (var i = 0; i < codeLines.length; i++) {
             codeLines[i].classList.remove('tie-syntax-error-line');
@@ -798,7 +798,7 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
-              clearHighlight();
+              clearAllHighlight();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
                 highlightLine(feedbackParagraphs[i].getErrorLineNumber());
