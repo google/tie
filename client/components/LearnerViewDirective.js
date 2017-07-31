@@ -535,7 +535,7 @@ tie.directive('learnerView', [function() {
           background: #FBC2C4;
         }
         .tie-wrapper.night-mode .CodeMirror-line.tie-syntax-error-line {
-          background: #004582;
+          background: #891111;
         }
         .tie-wrapper {
           height: 100%;
