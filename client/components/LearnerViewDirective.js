@@ -813,7 +813,7 @@ tie.directive('learnerView', [function() {
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
 
-          // Store the most recent feedback and reinforcement bullets
+          // Store the most recent feedback and reinforcement bullets.
           storeLatestFeedback();
         };
 
@@ -1044,7 +1044,7 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Stores the user's latest feedback to local storage
+         * Stores the user's latest feedback to local storage.
          */
         var storeLatestFeedback = function() {
           var latestFeedback =

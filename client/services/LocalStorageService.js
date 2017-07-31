@@ -74,7 +74,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         }
 
         /**
-         * TODO(talee): If we start updating the question, then need to add a
+         * TODO(talee): If we start updating the question, then we need to add a
          * a way to track which version the question is on, and to check if the
          * code that was saved was for a previous version, and if so, to let
          * the user know the question has changed.
@@ -106,7 +106,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedCodeWithVersion === null) {
           return null;
         }
-        // TODO(talee): Check versioning when we start having different versions
+        // TODO(talee): Check version when we start having different ones.
         var storedCode = storedCodeWithVersion.substring(
           storedCodeWithVersion.indexOf(':') + 1);
 
@@ -176,22 +176,18 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var rawFeedback = angular.fromJson(storedFeedback);
 
         var reconstructedFeedback = [];
-        for (var i = 0; i < rawFeedback.feedbackParagraphs.length; i++) {
-          reconstructedFeedback = rawFeedback.feedbackParagraphs.map(
-            function(paragraph) {
-              return FeedbackParagraphObjectFactory.fromDict(paragraph);
-            }
-          );
-        }
+        reconstructedFeedback = rawFeedback.feedbackParagraphs.map(
+          function(paragraph) {
+            return FeedbackParagraphObjectFactory.fromDict(paragraph);
+          }
+        );
         var reconstructedReinforcement = [];
         if (rawFeedback.reinforcementBullets) {
-          for (var j = 0; j < rawFeedback.reinforcementBullets.length; j++) {
-            reconstructedReinforcement = rawFeedback.reinforcementBullets.map(
-              function(bullets) {
-                return ReinforcementBulletObjectFactory.fromDict(bullets);
-              }
-            );
-          }
+          reconstructedReinforcement = rawFeedback.reinforcementBullets.map(
+            function(bullets) {
+              return ReinforcementBulletObjectFactory.fromDict(bullets);
+            }
+          );
         }
 
         return {
