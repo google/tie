@@ -589,7 +589,7 @@ tie.directive('learnerView', [function() {
          * @type: {string}
          */
         var language = LANGUAGE_PYTHON;
-        
+
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         /**
@@ -762,7 +762,7 @@ tie.directive('learnerView', [function() {
           * Clears all highlight from syntax errors in the coding UI
           */
         var clearAllHighlight = function() {
-          var codeLines = document.querySelectorAll('.'+SYNTAX_ERROR);
+          var codeLines = document.querySelectorAll('.' + SYNTAX_ERROR);
           for (var i = 0; i < codeLines.length; i++) {
             codeLines[i].classList.remove(SYNTAX_ERROR);
           }
