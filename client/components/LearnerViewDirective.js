@@ -575,12 +575,21 @@ tie.directive('learnerView', [function() {
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
 
         /**
+         * Name of the class for styling highlighted syntax errors.
+         *
+         * @type {string}
+         * @constant
+         */
+        var SYNTAX_ERROR = 'tie-syntax-error-line';
+
+        /**
          * Sets a local variable language to the value of the constant
          * LANGUAGE_PYTHON.
          *
          * @type: {string}
          */
         var language = LANGUAGE_PYTHON;
+        
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         /**
@@ -746,16 +755,16 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          codeLines[actualLineNumber].classList.add('tie-syntax-error-line');
+          codeLines[actualLineNumber].classList.add(SYNTAX_ERROR);
         };
 
         /**
           * Clears all highlight from syntax errors in the coding UI
           */
         var clearAllHighlight = function() {
-          var codeLines = document.querySelectorAll('.tie-syntax-error-line');
+          var codeLines = document.querySelectorAll('.'+SYNTAX_ERROR);
           for (var i = 0; i < codeLines.length; i++) {
-            codeLines[i].classList.remove('tie-syntax-error-line');
+            codeLines[i].classList.remove(SYNTAX_ERROR);
           }
         };
 
