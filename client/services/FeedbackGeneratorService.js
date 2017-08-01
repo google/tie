@@ -76,15 +76,15 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _resetCounters = function(currentCtr) {
       // If the parameter is null, reset all counters.
-      var notResetCtr = currentCtr || '';
-      if (notResetCtr !== 'consecutiveSyntaxError') {
+      var counterNotToReset = currentCtr || '';
+      if (counterNotToReset !== 'consecutiveSyntaxError') {
         consecutiveSyntaxErrorCounter = 0;
       }
-      if (notResetCtr !== 'consecutiveSameError') {
+      if (counterNotToReset !== 'consecutiveSameError') {
         consecutiveSameErrorCounter = 0;
         previousErrorString = '';
       }
-      if (notResetCtr !== 'consecutiveWrongLanguage') {
+      if (counterNotToReset !== 'consecutiveWrongLanguage') {
         consecutiveWrongLanguageCounter = 0;
       }
     };
