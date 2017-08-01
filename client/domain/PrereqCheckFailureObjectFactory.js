@@ -19,10 +19,14 @@
 
 tie.factory('PrereqCheckFailureObjectFactory', [
   'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE',
+  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
+  'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
   function(
       PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE) {
+      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
+      PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL) {
     /**
      * PrereqCheckFailure encapsulates all of the data necessary to represent
      * one prerequisite check failure that a student's code submission can
@@ -39,9 +43,13 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      * @param {string} starterCode String of the starter code the user is given.
      *    Only necessary for prereq check failures where the code is missing or
      *    has altered the original function headers.
+     * @param {string | null} wrongLangKey Indicates the key from the
+     *    WRONG_LANGUAGE_ERRORS that correlates to the error that triggered this
+     *    prereq failure
      * @constructor
      */
-    var PrereqCheckFailure = function(type, badImports, starterCode) {
+    var PrereqCheckFailure = function(
+        type, badImports, starterCode, wrongLangKey) {
       /**
        * Indicates what type of failure occurred.
        *
@@ -66,6 +74,16 @@ tie.factory('PrereqCheckFailureObjectFactory', [
        * @private
        */
       this._starterCode = starterCode;
+
+      /**
+       * String standing for key in WRONG_LANGUAGE_ERRORS that correlates to
+       * error that triggered.
+       * Should be null if error type is not 'wrong language.'
+       *
+       * @type {string | null}
+       * @private
+       */
+      this._wrongLangKey = wrongLangKey;
     };
 
     // Instance methods.
@@ -87,6 +105,27 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      */
     PrereqCheckFailure.prototype.setType = function(type) {
       this._type = type;
+    };
+    /**
+     * Checks to see if the error is due to the user trying to utilize the
+     * System class/method in their submission.
+     *
+     * @returns {boolean} Indicates if this failure is of type "invalid system
+     * call"
+     */
+    PrereqCheckFailure.prototype.hasInvalidSystemCall = function() {
+      return (this._type === PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL);
+    };
+
+    /**
+     * Checks to see if the error is due to the user trying to utilize the
+     * AuxiliaryCode class/method in their submission.
+     *
+     * @returns {boolean} Indicates if this failure is of type "invalid
+     * auxiliarycode call"
+     */
+    PrereqCheckFailure.prototype.hasInvalidAuxiliaryCodeCall = function() {
+      return (this._type === PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL);
     };
 
     /**
@@ -118,6 +157,16 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      */
     PrereqCheckFailure.prototype.hasGlobalCode = function() {
       return (this._type === PREREQ_CHECK_TYPE_GLOBAL_CODE);
+    };
+
+    /**
+     * Checks to see if error is due to wrong language syntax being detected in
+     * code.
+     *
+     * @returns {boolean} Indicates if failure is of type "wrong lang"
+     */
+    PrereqCheckFailure.prototype.hasWrongLanguage = function() {
+      return (this._type === PREREQ_CHECK_TYPE_WRONG_LANG);
     };
 
     /**
@@ -163,6 +212,24 @@ tie.factory('PrereqCheckFailureObjectFactory', [
       this._starterCode = starterCode;
     };
 
+    /**
+     * A getter for the _wrongLangKey property.
+     *
+     * @returns {string}
+     */
+    PrereqCheckFailure.prototype.getWrongLangKey = function() {
+      return this._wrongLangKey;
+    };
+
+    /**
+     * A setter for the _wrongLangKey property.
+     *
+     * @param {string} newKey The key to set the _wrongLangKey property to.
+     */
+    PrereqCheckFailure.prototype.setWrongLangKey = function(newKey) {
+      this._wrongLangKey = newKey;
+    };
+
     // Static class methods.
     /**
      * Returns a PrereqCheckFailure object with the properties given in the
@@ -174,10 +241,14 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      *    unsupported libraries the user tried to import
      * @param {string} starterCode Should have the original code and function
      *    headers the user is given before they begin adding their own code.
+     * @param {string} wrongLangErrorName Name of the error that corresponds to
+     *    the error information in WRONG_LANGUAGE_ERRORS
      * @returns {PrereqCheckFailure}
      */
-    PrereqCheckFailure.create = function(type, badImports, starterCode) {
-      return new PrereqCheckFailure(type, badImports, starterCode);
+    PrereqCheckFailure.create = function(
+        type, badImports, starterCode, wrongLangErrorName) {
+      var errorName = wrongLangErrorName || null;
+      return new PrereqCheckFailure(type, badImports, starterCode, errorName);
     };
 
     return PrereqCheckFailure;

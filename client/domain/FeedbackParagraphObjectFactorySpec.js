@@ -13,18 +13,44 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for FeedbackParagraphObject domain objects.
+ * @fileoverview Unit tests for FeedbackParagraphObjectFactory domain objects.
  */
 
 describe('FeedbackParagraphObjectFactory', function() {
   var FeedbackParagraphObjectFactory;
+  var textDict;
+  var errorDict;
+  var codeDict;
+  var textParagraph;
+  var errorParagraph;
+  var codeParagraph;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     FeedbackParagraphObjectFactory = $injector.get(
       'FeedbackParagraphObjectFactory');
-  }));
+    
+    textDict = {
+      type: 'text',
+      content: 'FeedbackParagraphObject text content'
+    };
+    errorDict = {
+      type: 'error',
+      content: 'FeedbackParagraphObject error content'
+    };
+    codeDict = {
+      type: 'code',
+      content: 'FeedbackParagraphObject code content'
+    };
 
+    textParagraph = FeedbackParagraphObjectFactory
+      .createTextParagraph('FeedbackParagraphObject text content');
+    errorParagraph = FeedbackParagraphObjectFactory
+      .createSyntaxErrorParagraph('FeedbackParagraphObject error content');
+    codeParagraph = FeedbackParagraphObjectFactory
+      .createCodeParagraph('FeedbackParagraphObject code content');
+  }));
+  
   describe('getErrorLineNumber', function() {
     it('should return the line number where the syntax error occurs',
       function() {
@@ -48,5 +74,36 @@ describe('FeedbackParagraphObjectFactory', function() {
           codeFeedbackParagraph.getErrorLineNumber();
         }).toThrowError('Incorrect feedback paragraph type.');
       });
+
+  describe('fromDict', function() {
+    it('should return FeedbackParagraphObjects from a dict', function() {
+
+      expect(FeedbackParagraphObjectFactory.fromDict(textDict))
+        .toEqual(textParagraph);
+      expect(FeedbackParagraphObjectFactory.fromDict(errorDict))
+        .toEqual(errorParagraph);
+      expect(FeedbackParagraphObjectFactory.fromDict(codeDict))
+        .toEqual(codeParagraph);
+    });
+
+    it('should return null if the dict has undefined type', function() {
+      var undefinedDict = {
+        type: 'newtype',
+        content: 'new content'
+      };
+      expect(FeedbackParagraphObjectFactory.fromDict(undefinedDict))
+        .toEqual(null);
+    });
+  });
+
+  describe('toDict', function() {
+    it('should convert a FeedbackParagraphObjectFactory to a dict', function() {
+      expect(FeedbackParagraphObjectFactory.toDict(textParagraph))
+        .toEqual(textDict);
+      expect(FeedbackParagraphObjectFactory.toDict(errorParagraph))
+        .toEqual(errorDict);
+      expect(FeedbackParagraphObjectFactory.toDict(codeParagraph))
+        .toEqual(codeDict);
+    });
   });
 });

@@ -58,4 +58,33 @@ describe('ReinforcementBulletObjectFactory', function() {
       expect(failedBullet.getImgName()).toEqual('fail.png');
     });
   });
+
+  describe('createBulletFromDict', function() {
+    it('should correctly return bullets from a dict version', function() {
+      var dictBullet = {
+        passed: true,
+        content: 'this is some good content'
+      };
+      var passedBullet;
+      passedBullet = ReinforcementBulletObjectFactory.createPassedBullet(
+        'this is some good content');
+      expect(ReinforcementBulletObjectFactory.fromDict(dictBullet))
+        .toEqual(passedBullet);
+    });
+  });
+
+  describe('createDictFromBullet', function() {
+    it('should correctly return a dict from an object version', function() {
+      var dictBullet = {
+        passed: false,
+        content: 'this is some bad content'
+      };
+      var failedBullet;
+      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet(
+        'this is some bad content');
+      expect(dictBullet)
+        .toEqual(ReinforcementBulletObjectFactory.toDict(failedBullet));
+    });
+  });
+
 });

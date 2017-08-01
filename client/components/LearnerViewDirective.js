@@ -61,9 +61,9 @@ tie.directive('learnerView', [function() {
                   </div>
                 </div>
                 <div>
-                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
+                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage track by $index">
                     <hr>
-                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
+                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                       <span ng-if="paragraph.isTextParagraph()">
@@ -94,11 +94,13 @@ tie.directive('learnerView', [function() {
                 </div>
               </div>
               <select class="tie-select-menu" name="question-set-select"
+                      ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
                       ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
                 <option style="display: none" value="">Question Set</option>
               </select>
               <select class="tie-select-menu" name="theme-select"
+                      ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeTheme(theme)" ng-model="theme"
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
@@ -122,10 +124,11 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select class="tie-select-menu" name="lang-select-menu">
+                <select class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
                   <option value="Python" selected>Python</option>
                 </select>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
+                    ng-class="{'night-mode': isInDarkMode}"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
@@ -140,7 +143,7 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
-            <div class="tie-options-row">
+            <div class="tie-options-row" ng-class="{'night-mode': isInDarkMode}">
               <ul>
                 <li class="tie-about-button">
                   <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
@@ -218,6 +221,10 @@ tie.directive('learnerView', [function() {
         .tie-code-reset {
           float: left;
           margin-top: 10px;
+        }
+        .tie-code-reset.night-mode {
+          background-color: #333a42;
+          color: white;
         }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
@@ -381,6 +388,9 @@ tie.directive('learnerView', [function() {
           padding: 5px;
           text-decoration: none;
         }
+        .tie-options-row.night-mode a {
+          color: #E0E0E0;
+        }
         .tie-options-row li {
           margin: 5px;
         }
@@ -489,6 +499,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-select-menu:hover {
           border-color: #e4e4e4;
+        }
+        .tie-select-menu.night-mode {
+          background-color: #333a42;
+          color: white;
         }
         .tie-step-container-inner {
           display: flex;
@@ -729,22 +743,32 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         var loadQuestion = function(questionId) {
-          clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          cachedCode = CodeStorageService.loadStoredCode(
+          cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
+          var reinforcement = ReinforcementObjectFactory.create();
+          $scope.reinforcementBullets = reinforcement.getBullets();
+          $scope.feedbackStorage = [];
+          var loadedFeedback =
+            LocalStorageService.loadLatestFeedbackAndReinforcement(
+              questionId, language);
+          if (loadedFeedback) {
+            $scope.feedbackStorage.push({
+              feedbackParagraphs: loadedFeedback.feedbackParagraphs
+            });
+            $scope.reinforcementBullets =
+              loadedFeedback.reinforcementBullets || [];
+          }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
-          var reinforcement = ReinforcementObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
-          $scope.reinforcementBullets = reinforcement.getBullets();
         };
 
         /**
@@ -773,6 +797,7 @@ tie.directive('learnerView', [function() {
          */
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
+          $scope.reinforcementBullets = [];
         };
 
         /**
@@ -826,6 +851,9 @@ tie.directive('learnerView', [function() {
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
+
+          // Store the most recent feedback and reinforcement bullets.
+          storeLatestFeedback();
         };
 
         /**
@@ -948,7 +976,7 @@ tie.directive('learnerView', [function() {
           $scope.currentQuestionIndex = index;
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
-          CodeStorageService.storeCode(
+          LocalStorageService.storeCode(
             currentQuestionId, $scope.editorContents.code, language);
           // Finally, we need to clear the undo history of the editor. This is
           // done by removing the code editor from the DOM and putting it back
@@ -989,7 +1017,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-          CodeStorageService.clearLocalStorageCode(questionId, language);
+          LocalStorageService.clearLocalStorageCode(questionId, language);
           loadQuestion(questionId);
         };
 
@@ -1011,7 +1039,7 @@ tie.directive('learnerView', [function() {
          * to the browser's local storage.
          */
         $scope.autosave = function() {
-          if (!CodeStorageService.isAvailable()) {
+          if (!LocalStorageService.isAvailable()) {
             return;
           }
 
@@ -1049,10 +1077,22 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          * @param {string} lang
          */
-        var storeCodeAndUpdateCachedCode = function(
-          questionId, code, lang) {
-          CodeStorageService.storeCode(questionId, code, lang);
+        var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
+          LocalStorageService.storeCode(questionId, code, lang);
           cachedCode = code;
+        };
+
+        /**
+         * Stores the user's latest feedback to local storage.
+         */
+        var storeLatestFeedback = function() {
+          var latestFeedback =
+            $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
+          LocalStorageService.storeLatestFeedbackAndReinforcement(
+            $scope.questionIds[$scope.currentQuestionIndex],
+            latestFeedback.feedbackParagraphs,
+            $scope.reinforcementBullets,
+            language);
         };
 
         $scope.initQuestionSet(questionSetId);
