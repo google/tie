@@ -545,6 +545,12 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
+        .CodeMirror-line.tie-syntax-error-line {
+          background: #FBC2C4;
+        }
+        .tie-wrapper.night-mode .CodeMirror-line.tie-syntax-error-line {
+          background: #891111;
+        }
         .tie-wrapper {
           height: 100%;
         }
@@ -555,16 +561,16 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
-      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', 'LocalStorageService',
-      'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
+      'QuestionDataService', 'LANGUAGE_PYTHON', 'ErrorTracebackObjectFactory',
+      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
+      'CodeStorageService', 'SECONDS_TO_MILLISECONDS',
+      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
-          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, LocalStorageService,
-          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+          QuestionDataService, LANGUAGE_PYTHON, ErrorTracebackObjectFactory,
+          FeedbackObjectFactory, ReinforcementObjectFactory,
+          CodeStorageService, SECONDS_TO_MILLISECONDS,
+          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -583,12 +589,21 @@ tie.directive('learnerView', [function() {
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
 
         /**
+         * Name of the class for styling highlighted syntax errors.
+         *
+         * @type {string}
+         * @constant
+         */
+        var SYNTAX_ERROR = 'tie-syntax-error-line';
+
+        /**
          * Sets a local variable language to the value of the constant
          * LANGUAGE_PYTHON.
          *
          * @type: {string}
          */
         var language = LANGUAGE_PYTHON;
+
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         /**
@@ -757,6 +772,27 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+          * Highlights syntax errors in the coding UI
+          *
+          * @param {number} lineNumber
+          */
+        var highlightLine = function(lineNumber) {
+          var actualLineNumber = lineNumber - 1;
+          var codeLines = document.querySelectorAll('.CodeMirror-line');
+          codeLines[actualLineNumber].classList.add(SYNTAX_ERROR);
+        };
+
+        /**
+          * Clears all highlight from syntax errors in the coding UI
+          */
+        var clearAllHighlight = function() {
+          var codeLines = document.querySelectorAll('.' + SYNTAX_ERROR);
+          for (var i = 0; i < codeLines.length; i++) {
+            codeLines[i].classList.remove(SYNTAX_ERROR);
+          }
+        };
+
+        /**
          * Sets the feedbackStorage property in the scope to be an empty array.
          */
         var clearFeedback = function() {
@@ -796,8 +832,10 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
+              clearAllHighlight();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
+                highlightLine(feedbackParagraphs[i].getErrorLineNumber());
                 break;
               }
             }

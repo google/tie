@@ -472,11 +472,14 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var paragraphs = FeedbackGeneratorService
-        .getSyntaxErrorFeedback('some error').getParagraphs();
+        .getSyntaxErrorFeedback('SyntaxError: bad input on line 4')
+        .getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe('some error');
+      expect(paragraphs[0].getContent()).toBe(
+        'SyntaxError: bad input on line 4');
+      expect(paragraphs[0].getErrorLineNumber()).toEqual(4);
     });
   });
 

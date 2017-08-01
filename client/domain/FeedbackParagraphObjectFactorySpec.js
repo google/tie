@@ -25,12 +25,11 @@ describe('FeedbackParagraphObjectFactory', function() {
   var errorParagraph;
   var codeParagraph;
 
-
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     FeedbackParagraphObjectFactory = $injector.get(
       'FeedbackParagraphObjectFactory');
-
+    
     textDict = {
       type: 'text',
       content: 'FeedbackParagraphObject text content'
@@ -50,8 +49,31 @@ describe('FeedbackParagraphObjectFactory', function() {
       .createSyntaxErrorParagraph('FeedbackParagraphObject error content');
     codeParagraph = FeedbackParagraphObjectFactory
       .createCodeParagraph('FeedbackParagraphObject code content');
-
   }));
+  
+  describe('getErrorLineNumber', function() {
+    it('should return the line number where the syntax error occurs',
+      function() {
+        var syntaxErrorFeedbackParagraph = FeedbackParagraphObjectFactory
+          .createSyntaxErrorParagraph('SyntaxError: bad input on line 2');
+        expect(syntaxErrorFeedbackParagraph.getErrorLineNumber()).toEqual(2);
+      });
+
+    it('should throw an error if the paragraph is not a syntax error',
+      function() {
+        var textFeedbackParagraph = FeedbackParagraphObjectFactory
+          .createTextParagraph('Could you fix this?');
+        expect(function() {
+          textFeedbackParagraph.getErrorLineNumber();
+        }).toThrowError('Incorrect feedback paragraph type.');
+
+        var codeFeedbackParagraph = FeedbackParagraphObjectFactory
+          .createCodeParagraph(
+            'ZeroDivisionError: integer division or modulo by zero on line 5');
+        expect(function() {
+          codeFeedbackParagraph.getErrorLineNumber();
+        }).toThrowError('Incorrect feedback paragraph type.');
+      });
 
   describe('fromDict', function() {
     it('should return FeedbackParagraphObjects from a dict', function() {
