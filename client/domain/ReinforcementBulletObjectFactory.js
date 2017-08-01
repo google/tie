@@ -103,10 +103,10 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     /**
-     * Returns a ReinforcementBullet object from a dict.
+     * Returns a ReinforcementBulletObject from a dict.
      *
-     * @param {Object} dict Object
-     * { passed: _______________, content:________________}
+     * @param {Object} dict representing a ReinforcementBullet, which has
+     *    the properties 'passed' and 'content'.
      * @returns {ReinforcementBullet}
      */
     ReinforcementBullet.fromDict = function(dict) {
@@ -118,17 +118,18 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     /**
-     * Returns a dict with both the pass/fail status and content of
-     * the reinforcement bullets.
+     * Returns a dict from a ReinforcementBulletObject.
+     *
      * @param {ReinforcementBullet}
-     * @returns {Object} dict Object 
+     * @returns {Object} dict representing a ReinforcementBullet, which has
+     *    the properties 'passed' and 'content'.
      */
     ReinforcementBullet.toDict = function(reinforcementBullet) {
       return {
-        'passed': reinforcementBullet.isPassedBullet(),
-        'content': reinforcementBullet.getContent()
-      }
-    }
+        passed: reinforcementBullet.isPassedBullet(),
+        content: reinforcementBullet.getContent()
+      };
+    };
 
     return ReinforcementBullet;
   }

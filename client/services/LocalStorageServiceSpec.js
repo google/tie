@@ -146,7 +146,7 @@ describe('LocalStorageService', function() {
 
     beforeEach(inject(function($injector) {
       var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-      FeedbackParagraphObjectFactory = 
+      var FeedbackParagraphObjectFactory =
         $injector.get('FeedbackParagraphObjectFactory');
       var ReinforcementBulletObjectFactory =
         $injector.get('ReinforcementBulletObjectFactory');
@@ -186,7 +186,8 @@ describe('LocalStorageService', function() {
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
         var fromJsonObject = angular.fromJson(localStorage.getItem(key));
         expect(fromJsonObject.feedbackParagraphs).toEqual(feedbackSet1Dict);
-        expect(fromJsonObject.reinforcementBullets).toEqual(reinforcementBulletsDict);
+        expect(fromJsonObject.reinforcementBullets)
+          .toEqual(reinforcementBulletsDict);
       });
     });
 
@@ -195,11 +196,11 @@ describe('LocalStorageService', function() {
         expect(localStorage.length).toEqual(0);
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
         localStorage.setItem(key, angular.toJson(feedbackToStore));
-        expect(LocalStorageService.loadStoredFeedback(
-            QUESTION_ID, LANGUAGE)).toEqual({
-          feedbackParagraphs: feedbackSet1,
-          reinforcementBullets: reinforcementBullets
-        });
+        expect(LocalStorageService.loadStoredFeedback(QUESTION_ID, LANGUAGE))
+          .toEqual({
+            feedbackParagraphs: feedbackSet1,
+            reinforcementBullets: reinforcementBullets
+          });
       });
 
       it('should fail to retrieve feedback and return null', function() {

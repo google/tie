@@ -149,12 +149,16 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
           questionId, language);
         var feedbackWithReinforcement = {};
 
-        feedbackWithReinforcement.feedbackParagraphs = feedback.map(function(paragraph) {
-          return FeedbackParagraphObjectFactory.toDict(paragraph);
-        });
-        feedbackWithReinforcement.reinforcementBullets = reinforcement.map(function(bullet) {
-          return ReinforcementBulletObjectFactory.toDict(bullet);
-        });
+        feedbackWithReinforcement.feedbackParagraphs = feedback.map(
+          function(paragraph) {
+            return FeedbackParagraphObjectFactory.toDict(paragraph);
+          }
+        );
+        feedbackWithReinforcement.reinforcementBullets = reinforcement.map(
+          function(bullet) {
+            return ReinforcementBulletObjectFactory.toDict(bullet);
+          }
+        );
 
         localStorage.setItem(localStorageKey,
           angular.toJson(feedbackWithReinforcement));
