@@ -63,7 +63,7 @@ tie.directive('learnerView', [function() {
                 <div>
                   <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage track by $index">
                     <hr>
-                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
+                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                       <span ng-if="paragraph.isTextParagraph()">
@@ -1049,7 +1049,7 @@ tie.directive('learnerView', [function() {
         var storeLatestFeedback = function() {
           var latestFeedback =
             $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
-          LocalStorageService.storeFeedback(
+          LocalStorageService.storeLatestFeedbackAndReinforcement(
             $scope.questionIds[$scope.currentQuestionIndex],
             latestFeedback.feedbackParagraphs,
             $scope.reinforcementBullets,

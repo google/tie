@@ -18,34 +18,43 @@
 
 describe('FeedbackParagraphObjectFactory', function() {
   var FeedbackParagraphObjectFactory;
+  var textDict;
+  var errorDict;
+  var codeDict;
+  var textParagraph;
+  var errorParagraph;
+  var codeParagraph;
+
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     FeedbackParagraphObjectFactory = $injector.get(
       'FeedbackParagraphObjectFactory');
+
+    textDict = {
+      type: 'text',
+      content: 'FeedbackParagraphObject text content'
+    };
+    errorDict = {
+      type: 'error',
+      content: 'FeedbackParagraphObject error content'
+    };
+    codeDict = {
+      type: 'code',
+      content: 'FeedbackParagraphObject code content'
+    };
+
+    textParagraph = FeedbackParagraphObjectFactory
+      .createTextParagraph('FeedbackParagraphObject text content');
+    errorParagraph = FeedbackParagraphObjectFactory
+      .createSyntaxErrorParagraph('FeedbackParagraphObject error content');
+    codeParagraph = FeedbackParagraphObjectFactory
+      .createCodeParagraph('FeedbackParagraphObject code content');
+
   }));
 
-  describe('createFeedbackParagraphObjectFromDict', function() {
+  describe('fromDict', function() {
     it('should return FeedbackParagraphObjects from a dict', function() {
-      var textDict = {
-        _type: 'text',
-        _content: 'FeedbackParagraphObject text content'
-      };
-      var errorDict = {
-        _type: 'error',
-        _content: 'FeedbackParagraphObject error content'
-      };
-      var codeDict = {
-        _type: 'code',
-        _content: 'FeedbackParagraphObject code content'
-      };
-
-      var textParagraph = FeedbackParagraphObjectFactory
-        .createTextParagraph('FeedbackParagraphObject text content');
-      var errorParagraph = FeedbackParagraphObjectFactory
-        .createSyntaxErrorParagraph('FeedbackParagraphObject error content');
-      var codeParagraph = FeedbackParagraphObjectFactory
-        .createCodeParagraph('FeedbackParagraphObject code content');
 
       expect(FeedbackParagraphObjectFactory.fromDict(textDict))
         .toEqual(textParagraph);
@@ -57,11 +66,22 @@ describe('FeedbackParagraphObjectFactory', function() {
 
     it('should return null if the dict has undefined type', function() {
       var undefinedDict = {
-        _type: 'newtype',
-        _content: 'new content'
+        type: 'newtype',
+        content: 'new content'
       };
       expect(FeedbackParagraphObjectFactory.fromDict(undefinedDict))
         .toEqual(null);
+    });
+  });
+
+  describe('toDict', function() {
+    it('should convert a FeedbackParagraphObjectFactory to a dict', function() {
+      expect(FeedbackParagraphObjectFactory.toDict(textParagraph))
+        .toEqual(textDict);
+      expect(FeedbackParagraphObjectFactory.toDict(errorParagraph))
+        .toEqual(errorDict);
+      expect(FeedbackParagraphObjectFactory.toDict(codeParagraph))
+        .toEqual(codeDict);
     });
   });
 });

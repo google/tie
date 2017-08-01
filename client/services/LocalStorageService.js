@@ -131,15 +131,16 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
       },
 
       /**
-       * Takes the paragraphs and reinforcement bullets and creates an object
-       * that is then converted to json and stored.
-
+       * Takes the paragraphs and reinforcement bullets, converts them to
+       * dicts, and then parses the combined object into JSON for storage.
+       *
        * @param {string} questionId
        * @param {Array} feedback
        * @param {Array} reinforcement
        * @param {string} language
        */
-      storeFeedback: function(questionId, feedback, reinforcement, language) {
+      storeLatestFeedbackAndReinforcement: function(
+          questionId, feedback, reinforcement, language) {
         if (!localStorageIsAvailable) {
           return;
         }
@@ -147,8 +148,13 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
         var feedbackWithReinforcement = {};
-        feedbackWithReinforcement.feedbackParagraphs = feedback;
-        feedbackWithReinforcement.reinforcementBullets = reinforcement;
+
+        feedbackWithReinforcement.feedbackParagraphs = feedback.map(function(paragraph) {
+          return FeedbackParagraphObjectFactory.toDict(paragraph);
+        });
+        feedbackWithReinforcement.reinforcementBullets = reinforcement.map(function(bullet) {
+          return ReinforcementBulletObjectFactory.toDict(bullet);
+        });
 
         localStorage.setItem(localStorageKey,
           angular.toJson(feedbackWithReinforcement));

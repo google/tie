@@ -122,20 +122,45 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Returns a FeedbackParagraph created from an object.
+     * Returns a FeedbackParagraph created from a dict. Each dict should have
+     * a type, and the content of that paragraph.
      *
      * @param {Object} dict Object parsed from json
      * @returns {FeedbackParagraph}
      */
     FeedbackParagraph.fromDict = function(dict) {
-      if (dict._type === PARAGRAPH_TYPE_TEXT) {
-        return (this.createTextParagraph(dict._content));
-      } else if (dict._type === PARAGRAPH_TYPE_CODE) {
-        return (this.createCodeParagraph(dict._content));
-      } else if (dict._type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
-        return (this.createSyntaxErrorParagraph(dict._content));
+      if (dict.type === PARAGRAPH_TYPE_TEXT) {
+        return (this.createTextParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_CODE) {
+        return (this.createCodeParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
+        return (this.createSyntaxErrorParagraph(dict.content));
       }
       return null;
+    };
+
+    /**
+     * Returns a dict created from a FeedbackParagraphObject.
+     *
+     * @param {FeedbackParagraph}
+     * @returns {Object} dict Object created from the feedbackParagraph
+     */
+    FeedbackParagraph.toDict = function(feedbackParagraph) {
+      var feedbackParagraphDict = {};
+      if (feedbackParagraph.isTextParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_TEXT;
+      } else if (feedbackParagraph.isCodeParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
+      } else if (feedbackParagraph.isSyntaxErrorParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
+      } else {
+        // If undefined type, return null.
+        return null;
+      }
+
+      feedbackParagraphDict.content = feedbackParagraph.getContent();
+
+      return feedbackParagraphDict;
     };
 
     return FeedbackParagraph;

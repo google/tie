@@ -62,8 +62,8 @@ describe('ReinforcementBulletObjectFactory', function() {
   describe('createBulletFromDict', function() {
     it('should correctly return bullets from a dict version', function() {
       var dictBullet = {
-        _passed: true,
-        _content: 'this is some good content'
+        passed: true,
+        content: 'this is some good content'
       };
       var passedBullet;
       passedBullet = ReinforcementBulletObjectFactory.createPassedBullet(
@@ -72,4 +72,19 @@ describe('ReinforcementBulletObjectFactory', function() {
         .toEqual(passedBullet);
     });
   });
+
+  describe('createDictFromBullet', function() {
+    it('should correctly return a dict from an object version', function() {
+      var dictBullet = {
+        passed: false,
+        content: 'this is some bad content'
+      };
+      var failedBullet;
+      failedBullet = ReinforcementBulletObjectFactory.createFailedBullet(
+        'this is some bad content');
+      expect(dictBullet)
+        .toEqual(ReinforcementBulletObjectFactory.toDict(failedBullet));
+    });
+  });
+
 });
