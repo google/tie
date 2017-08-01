@@ -739,8 +739,9 @@ tie.directive('learnerView', [function() {
           var reinforcement = ReinforcementObjectFactory.create();
           $scope.reinforcementBullets = reinforcement.getBullets();
           $scope.feedbackStorage = [];
-          var loadedFeedback = LocalStorageService.loadStoredFeedback(
-            questionId, language);
+          var loadedFeedback =
+            LocalStorageService.loadLatestFeedbackAndReinforcement(
+              questionId, language);
           if (loadedFeedback) {
             $scope.feedbackStorage.push({
               feedbackParagraphs: loadedFeedback.feedbackParagraphs

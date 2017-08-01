@@ -122,10 +122,10 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Returns a FeedbackParagraph created from a dict. Each dict should have
-     * a type, and the content of that paragraph.
+     * Returns a FeedbackParagraph created from a dict.
      *
-     * @param {Object} dict Object parsed from json
+     * @param {Object} dict that should have a type, and the content
+     *    of a FeedbackParagraphObject.
      * @returns {FeedbackParagraph}
      */
     FeedbackParagraph.fromDict = function(dict) {
@@ -143,7 +143,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
      * Returns a dict created from a FeedbackParagraphObject.
      *
      * @param {FeedbackParagraph}
-     * @returns {Object} dict Object created from the feedbackParagraph
+     * @returns {Object} dict that should have a type, and the content
+     *    of a FeedbackParagraphObject.
      */
     FeedbackParagraph.toDict = function(feedbackParagraph) {
       var feedbackParagraphDict = {};
@@ -159,7 +160,6 @@ tie.factory('FeedbackParagraphObjectFactory', [
       }
 
       feedbackParagraphDict.content = feedbackParagraph.getContent();
-
       return feedbackParagraphDict;
     };
 

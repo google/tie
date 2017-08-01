@@ -172,7 +172,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
        * @param {string} language
        * @returns {Object}
        */
-      loadStoredFeedback: function(questionId, language) {
+      loadLatestFeedbackAndReinforcement: function(questionId, language) {
         if (!localStorageIsAvailable) {
           return null;
         }

@@ -196,8 +196,8 @@ describe('LocalStorageService', function() {
         expect(localStorage.length).toEqual(0);
         var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
         localStorage.setItem(key, angular.toJson(feedbackToStore));
-        expect(LocalStorageService.loadStoredFeedback(QUESTION_ID, LANGUAGE))
-          .toEqual({
+        expect(LocalStorageService.loadLatestFeedbackAndReinforcement(
+          QUESTION_ID, LANGUAGE)).toEqual({
             feedbackParagraphs: feedbackSet1,
             reinforcementBullets: reinforcementBullets
           });
@@ -205,8 +205,8 @@ describe('LocalStorageService', function() {
 
       it('should fail to retrieve feedback and return null', function() {
         expect(localStorage.length).toEqual(0);
-        expect(LocalStorageService.loadStoredFeedback(QUESTION_ID,
-          FAILED_LANGUAGE)).toEqual(null);
+        expect(LocalStorageService.loadLatestFeedbackAndReinforcement(
+          QUESTION_ID, FAILED_LANGUAGE)).toEqual(null);
       });
     });
 
