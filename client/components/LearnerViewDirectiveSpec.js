@@ -89,11 +89,11 @@ describe('LearnerViewDirective', function() {
   describe("autosave", function() {
     var $interval;
     var $timeout;
-    var CodeStorageService;
-    beforeEach(inject(function(_$interval_, _$timeout_, _CodeStorageService_) {
+    var LocalStorageService;
+    beforeEach(inject(function(_$interval_, _$timeout_, _LocalStorageService_) {
       $interval = _$interval_;
       $timeout = _$timeout_;
-      CodeStorageService = _CodeStorageService_;
+      LocalStorageService = _LocalStorageService_;
       localStorage.clear();
     }));
 
@@ -118,11 +118,11 @@ describe('LearnerViewDirective', function() {
         var starterCode = question.getStarterCode(LANGUAGE);
         // There should be no code stored in localStorage
         // before autosave is triggered.
-        expect(CodeStorageService.loadStoredCode(
+        expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(null);
         $scope.autosave();
         checkAutosaveDetail(questionId, starterCode);
-        expect(CodeStorageService.loadStoredCode(
+        expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(starterCode);
       }
     });
@@ -139,11 +139,11 @@ describe('LearnerViewDirective', function() {
       expect($scope.autosaveTextIsDisplayed).toBe(false);
       flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS - DELTA_MILLISECONDS);
       expect($scope.autosaveOn).toBe(true);
-      expect(CodeStorageService.loadStoredCode(
+      expect(LocalStorageService.loadStoredCode(
         questionId, LANGUAGE)).toEqual(null);
       // Flush 200 milliseconds -- time: 5.1s
       flushIntervalAndTimeout(2 * DELTA_MILLISECONDS);
-      expect(CodeStorageService.loadStoredCode(
+      expect(LocalStorageService.loadStoredCode(
         questionId, LANGUAGE)).toEqual(starterCode);
       expect($scope.autosaveOn).toBe(true);
       expect($scope.autosaveTextIsDisplayed).toBe(true);
@@ -171,7 +171,7 @@ describe('LearnerViewDirective', function() {
         var questionId = $scope.questionIds[i];
         // There should be no code stored in local storage
         // before autosave is triggerred.
-        expect(CodeStorageService.loadStoredCode(
+        expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(null);
         $scope.autosave();
         var randomCodes;
@@ -180,12 +180,12 @@ describe('LearnerViewDirective', function() {
           $scope.editorContents.code = randomCodes;
           flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
         }
-        expect(CodeStorageService.loadStoredCode(
+        expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(randomCodes);
         flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
         expect($scope.autosaveTextIsDisplayed).toBe(false);
         expect($scope.autosaveOn).toBe(false);
-        expect(CodeStorageService.loadStoredCode(
+        expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(randomCodes);
       }
     });
