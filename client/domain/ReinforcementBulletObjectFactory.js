@@ -103,9 +103,10 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     /**
-     * Returns a ReinforcementBullet object from a dict created from a json.
+     * Returns a ReinforcementBullet object from a dict.
      *
-     * @param {Object} dict Object parsed from json
+     * @param {Object} dict Object
+     * { passed: _______________, content:________________}
      * @returns {ReinforcementBullet}
      */
     ReinforcementBullet.fromDict = function(dict) {
@@ -117,10 +118,10 @@ tie.factory('ReinforcementBulletObjectFactory', [
     };
 
     /**
-     * Returns a dict with both the type and content of the reinforcement bullets.
-     *
+     * Returns a dict with both the pass/fail status and content of
+     * the reinforcement bullets.
      * @param {ReinforcementBullet}
-     * @returns {Object} dict Object parsed from json
+     * @returns {Object} dict Object 
      */
     ReinforcementBullet.toDict = function(reinforcementBullet) {
       return {
