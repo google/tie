@@ -115,12 +115,11 @@ tie.factory('FeedbackParagraphObjectFactory', [
      * @returns {number}
      */
     FeedbackParagraph.prototype.getErrorLineNumber = function() {
-      if (this.isSyntaxErrorParagraph()){
+      if (this.isSyntaxErrorParagraph()) {
         var errorContentArray = this.getContent().split(' ');
         return parseInt(errorContentArray[errorContentArray.length - 1], 10);
-      }
-      else {
-        return 'Incorrect error type.';
+      } else {
+        throw new Error('Incorrect feedback paragraph type.');
       }
     };
 
