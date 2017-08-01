@@ -115,8 +115,13 @@ tie.factory('FeedbackParagraphObjectFactory', [
      * @returns {number}
      */
     FeedbackParagraph.prototype.getErrorLineNumber = function() {
-      var errorContentArray = this.getContent().split(' ');
-      return parseInt(errorContentArray[errorContentArray.length - 1], 10);
+      if (this.isSyntaxErrorParagraph()){
+        var errorContentArray = this.getContent().split(' ');
+        return parseInt(errorContentArray[errorContentArray.length - 1], 10);
+      }
+      else {
+        return 'Incorrect error type.';
+      }
     };
 
     // Static class methods.

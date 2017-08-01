@@ -257,7 +257,6 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on line 5');
-      expect(paragraphs[1].getErrorLineNumber()).toEqual(5);
     });
 
     it('should throw an error if the line number index is less than 0',
@@ -339,6 +338,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on a line ' +
         'in the test code');
+      expect(paragraphs[1].getErrorLineNumber()).toBe('Incorrect error type.');
     });
   });
 
@@ -464,11 +464,12 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var paragraphs = FeedbackGeneratorService
-        .getSyntaxErrorFeedback('some error').getParagraphs();
+        .getSyntaxErrorFeedback('SyntaxError: bad input on line 4').getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe('some error');
+      expect(paragraphs[0].getContent()).toBe('SyntaxError: bad input on line 4');
+      expect(paragraphs[0].getErrorLineNumber()).toEqual(4);
     });
   });
 
