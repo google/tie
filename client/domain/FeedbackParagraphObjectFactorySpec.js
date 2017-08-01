@@ -33,8 +33,8 @@ describe('FeedbackParagraphObjectFactory', function() {
         expect(syntaxErrorFeedbackParagraph.getErrorLineNumber()).toEqual(2);
       });
 
-    it('should throw an error if it is used with a non-syntax error feedback',
-      'paragraph', function() {
+    it('should throw an error if the paragraph is not a syntax error',
+      function() {
         var textFeedbackParagraph = FeedbackParagraphObjectFactory
           .createTextParagraph('Could you fix this?');
         expect(function() {
