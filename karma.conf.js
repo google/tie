@@ -33,8 +33,8 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      'client/*.js': preprocessorOptions,
       'client/**/*.js': preprocessorOptions,
+      'client/**/**/*.js': preprocessorOptions,
       'assets/**/*.js': preprocessorOptions
     },
     // Test results reporter to use. Possible values: 'dots', 'progress'.
