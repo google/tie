@@ -175,10 +175,9 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.appendFeedback = function(feedbackToAppend) {
       var paragraphsToAppend = feedbackToAppend.getParagraphs();
-      var feedbackObject = this;
       paragraphsToAppend.forEach(function(paragraph) {
-        feedbackObject._paragraphs.push(paragraph);
-      });
+        this._paragraphs.push(paragraph);
+      }.bind(this));
     };
 
     // Static class methods.
