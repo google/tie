@@ -290,7 +290,7 @@ describe('FeedbackGeneratorService', function() {
   describe('_getInfiniteLoopFeedback', function() {
     it('should return an error if an infinite loop is detected', function() {
       var paragraphs = FeedbackGeneratorService
-        ._getInfiniteLoopFeedback(null).getParagraphs();
+        ._getInfiniteLoopFeedback().getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
