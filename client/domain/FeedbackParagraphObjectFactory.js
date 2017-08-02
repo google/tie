@@ -90,6 +90,20 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return this._content;
     };
 
+    /**
+     * A getter for the line number where the error occurs.
+     *
+     * @returns {number}
+     */
+    FeedbackParagraph.prototype.getErrorLineNumber = function() {
+      if (this.isSyntaxErrorParagraph()) {
+        var errorContentArray = this.getContent().split(' ');
+        return parseInt(errorContentArray[errorContentArray.length - 1], 10);
+      } else {
+        throw new Error('Incorrect feedback paragraph type.');
+      }
+    };
+
     // Static class methods.
     /**
      * Returns a text-based FeedbackParagraph with the given text inside it.
