@@ -883,13 +883,13 @@ describe('FeedbackGeneratorService', function() {
         ].join('\n');
 
         var codeEvalResult = CodeEvalResultObjectFactory.create(
-          code, 'output', [], [], [['linear']], null, null);
+          code, 'output', [], [], [['not linear']], null, null);
 
         var feedback = FeedbackGeneratorService.getFeedback(
           testTask, codeEvalResult, []);
 
         var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs.length).toEqual(2);
         expect(paragraphs[0].isTextParagraph()).toBe(true);
         expect(paragraphs[0].getContent()).toEqual([
           'We noticed that you\'re using a print statement within your code. ',
