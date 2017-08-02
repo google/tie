@@ -33,23 +33,24 @@ describe('FeedbackParagraphObjectFactory', function() {
 
     textDict = {
       type: 'text',
-      content: 'FeedbackParagraphObject text content'
+      content: 'Could you fix this?'
     };
     errorDict = {
       type: 'error',
-      content: 'FeedbackParagraphObject error content'
+      content: 'SyntaxError: bad input on line 2'
     };
     codeDict = {
       type: 'code',
-      content: 'FeedbackParagraphObject code content'
+      content: 'ZeroDivisionError: integer division or modulo by zero on line 5'
     };
 
     textParagraph = FeedbackParagraphObjectFactory
-      .createTextParagraph('FeedbackParagraphObject text content');
+      .createTextParagraph('Could you fix this?');
     errorParagraph = FeedbackParagraphObjectFactory
-      .createSyntaxErrorParagraph('FeedbackParagraphObject error content');
+      .createSyntaxErrorParagraph('SyntaxError: bad input on line 2');
     codeParagraph = FeedbackParagraphObjectFactory
-      .createCodeParagraph('FeedbackParagraphObject code content');
+      .createCodeParagraph(
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
 
   }));
 
@@ -83,5 +84,23 @@ describe('FeedbackParagraphObjectFactory', function() {
       expect(FeedbackParagraphObjectFactory.toDict(codeParagraph))
         .toEqual(codeDict);
     });
+  });
+
+  describe('getErrorLineNumber', function() {
+    it('should return the line number where the syntax error occurs',
+      function() {
+        expect(errorParagraph.getErrorLineNumber()).toEqual(2);
+      });
+
+    it('should throw an error if the paragraph is not a syntax error',
+      function() {
+        expect(function() {
+          textParagraph.getErrorLineNumber();
+        }).toThrowError('Incorrect feedback paragraph type.');
+
+        expect(function() {
+          codeParagraph.getErrorLineNumber();
+        }).toThrowError('Incorrect feedback paragraph type.');
+      });
   });
 });
