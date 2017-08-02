@@ -694,6 +694,32 @@ describe('FeedbackGeneratorService', function() {
         'slowly than expected. Can you reconfigure it such that it runs in ' +
         'linear time?');
     });
+
+    it('should correctly return feedback if print statements are detected',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    print arg',
+          ''
+        ].join('\n');
+
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          code, 'output', [], [], [['linear']], null, null);
+
+        var feedback = FeedbackGeneratorService.getFeedback(
+          testTask, codeEvalResult, []);
+
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toEqual([
+          'We noticed that you\'re using a print statement within your code. ',
+          'Since you will not be able to use such statements in a technical ',
+          'interview, TIE does not support this feature. We encourage you to ',
+          'instead step through your code by hand.'
+        ].join(''));
+      }
+    );
   });
 
   describe('getPrereqFailureFeedback', function() {

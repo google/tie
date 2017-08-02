@@ -84,10 +84,13 @@ tie.factory('FeedbackGeneratorService', [
      *
      * @param {BuggyOutputTest} failingTest
      * @param {CodeEvalResult} codeEvalResult
+     * @param {Feedback} oldFeedback Feedback object to append feedback to. If
+     *    not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
-    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
+    var _getBuggyOutputTestFeedback = function(
+        failingTest, codeEvalResult, oldFeedback) {
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
@@ -115,7 +118,7 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
       }
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(buggyMessages[hintIndex]);
       feedback.setHintIndex(hintIndex);
       return feedback;
@@ -129,13 +132,15 @@ tie.factory('FeedbackGeneratorService', [
      *    name for the function needed to process/format the user's output.
      * @param {CorrectnessTest} correctnessTest
      * @param {*} observedOutput Actual output for running user's code.
+     * @param {Feedback} oldFeedback Feedback object to append feedback to. If
+     *    not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
     var _getCorrectnessTestFeedback = function(
-      outputFunctionName, correctnessTest, observedOutput) {
+      outputFunctionName, correctnessTest, observedOutput, oldFeedback) {
       var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
       // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
       if (outputFunctionName) {
@@ -161,11 +166,14 @@ tie.factory('FeedbackGeneratorService', [
      * Returns the Feedback related to a failing performance test.
      *
      * @param {string} expectedPerformance
+     * @param {Feedback} oldFeedback Feedback object to append Performance
+     *    feedback to. If not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
-    var _getPerformanceTestFeedback = function(expectedPerformance) {
-      var feedback = FeedbackObjectFactory.create(false);
+    var _getPerformanceTestFeedback = function(
+        expectedPerformance, oldFeedback) {
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph([
         'Your code is running more slowly than expected. Can you ',
         'reconfigure it such that it runs in ',
@@ -183,15 +191,18 @@ tie.factory('FeedbackGeneratorService', [
      *    user's submission.
      * @param {Array} rawCodeLineIndexes Should be an array of numbers
      *    corresponding to the line numbers for the user's submission.
+     * @param {Feedback} oldFeedback Feedback object to append RuntimeError
+     *    feedback to. If not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
     var _getRuntimeErrorFeedback = function(
-        codeEvalResult, rawCodeLineIndexes) {
+        codeEvalResult, rawCodeLineIndexes, oldFeedback) {
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-      var feedback = FeedbackObjectFactory.create(false);
+
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
 
       var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
@@ -250,11 +261,13 @@ tie.factory('FeedbackGeneratorService', [
     /**
      * Returns the Feedback object associated with a timeout error.
      *
+     * @param {Feedback} oldFeedback Feedback object to append Timeout Error
+     *    feedback to. If not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
-    var _getTimeoutErrorFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(false);
+    var _getTimeoutErrorFeedback = function(oldFeedback) {
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph([
         "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
@@ -267,6 +280,8 @@ tie.factory('FeedbackGeneratorService', [
     /**
      * Returns the Feedback object associated with an Infinite Loop error.
      *
+     * @param {Feedback} oldFeedback Feedback object to append feedback to. If
+     *    not defined, will create a new Feedback object.
      * @returns {Feedback}
      * @private
      */
@@ -277,6 +292,35 @@ tie.factory('FeedbackGeneratorService', [
         "Check to see that your recursive calls terminate."
       ].join(' '));
       return feedback;
+    };
+
+    /**
+     * Returns boolean indicating if there are print statements found in
+     * the given code.
+     *
+     * @param {string} code User's submitted code
+     * @returns {boolean} Indicates if there are print statements in code or not
+     */
+    var _hasPrintStatement = function(code) {
+      var printRegEx = /\bprint\b/;
+      return code.search(printRegEx) !== -1;
+    };
+
+    /**
+     * Appends a text feedback paragraph warning against use of print statements
+     * to the given Feedback object and returns the new Feedback object.
+     *
+     * @param {Feedback} feedback
+     * @returns {Feedback}
+     */
+    var _appendPrintFeedback = function(feedback) {
+      feedback.appendTextParagraph([
+        'We noticed that you\'re using a print statement within your code. ',
+        'Since you will not be able to use such statements in a technical ',
+        'interview, TIE does not support this feature. We encourage you to ',
+        'instead step through your code by hand.'
+      ].join(''));
+      return feedback
     };
 
     /**
@@ -306,6 +350,16 @@ tie.factory('FeedbackGeneratorService', [
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         }
       } else {
+        debugger;
+        var feedback = null;
+        // Use RegEx to find if user has print statements and add a special
+        // feedback warning explaining we don't support print statements.
+        var code = codeEvalResult.getPreprocessedCode();
+        if (_hasPrintStatement(code)) {
+          feedback = FeedbackObjectFactory.create(false);
+          _appendPrintFeedback(feedback);
+        }
+
         // Get all the tests from first task to current that need to be
         // executed.
         var buggyOutputTests = [];
@@ -326,7 +380,7 @@ tie.factory('FeedbackGeneratorService', [
           for (var j = 0; j < buggyOutputTests[i].length; j++) {
             if (buggyOutputTestResults[i][j]) {
               return _getBuggyOutputTestFeedback(
-                buggyOutputTests[i][j], codeEvalResult);
+                buggyOutputTests[i][j], codeEvalResult, feedback);
             }
           }
 
@@ -336,7 +390,7 @@ tie.factory('FeedbackGeneratorService', [
             if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
               return _getCorrectnessTestFeedback(
                 tasks[i].getOutputFunctionNameWithoutClass(),
-                correctnessTests[i][j], observedOutput);
+                correctnessTests[i][j], observedOutput, feedback);
             }
           }
 
@@ -346,12 +400,15 @@ tie.factory('FeedbackGeneratorService', [
             var observedPerformance = performanceTestResults[i][j];
 
             if (expectedPerformance !== observedPerformance) {
-              return _getPerformanceTestFeedback(expectedPerformance);
+              return _getPerformanceTestFeedback(expectedPerformance, feedback);
             }
           }
         }
+        if (feedback) {
+          return feedback;
+        }
 
-        var feedback = FeedbackObjectFactory.create(true);
+        feedback = FeedbackObjectFactory.create(true);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
           '"Next" button to move on to the next question.'
@@ -459,6 +516,7 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
+      _appendPrintFeedback: _appendPrintFeedback,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
@@ -466,6 +524,7 @@ tie.factory('FeedbackGeneratorService', [
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
+      _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable
     };
   }
