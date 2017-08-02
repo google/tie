@@ -86,6 +86,33 @@ describe('LearnerViewDirective', function() {
     });
   });
 
+  describe('showModal', function() {
+    it('should set the modalIsDisplayed variable correctly', function() {
+      expect($scope.modalIsDisplayed).toBe(false);
+      $scope.showModal('test', 'test test');
+      expect($scope.modalIsDisplayed).toBe(true);
+    });
+
+    it('should set the modalTitle and modalDescription variables correctly',
+      function() {
+        expect($scope.modalTitle).toEqual("");
+        expect($scope.modalDescription).toEqual("");
+        $scope.showModal('test', 'test test');
+        expect($scope.modalTitle).toEqual('test');
+        expect($scope.modalDescription).toEqual('test test');
+      }
+    );
+  });
+
+  describe('closeModal', function() {
+    it('should set the modalIsDisplayed variable correctly', function() {
+      $scope.showModal('test', 'test test');
+      expect($scope.modalIsDisplayed).toBe(true);
+      $scope.closeModal();
+      expect($scope.modalIsDisplayed).toBe(false);
+    });
+  });
+
   describe("autosave", function() {
     var $interval;
     var $timeout;
@@ -188,6 +215,30 @@ describe('LearnerViewDirective', function() {
         expect(LocalStorageService.loadStoredCode(
           questionId, LANGUAGE)).toEqual(randomCodes);
       }
+    });
+  });
+
+  describe("onPrivacyClick", function() {
+    it(['should change the modalTitle and modalDescription correctly if in',
+      'browser-only form'].join(" "), function() {
+      expect($scope.modalTitle).toEqual("");
+      expect($scope.modalDescription).toEqual("");
+
+      $scope.onPrivacyClick();
+
+      expect($scope.modalTitle).toEqual("Privacy Notice:");
+      expect($scope.modalDescription).toEqual(
+          [
+            "This version of the TIE application stores information, ",
+            "including your code, in your browser's local storage and ",
+            "does not transmit data to any server."
+          ].join(""));
+    });
+
+    it('should display the modal', function() {
+      expect($scope.modalIsDisplayed).toBe(false);
+      $scope.onPrivacyClick();
+      expect($scope.modalIsDisplayed).toBe(true);
     });
   });
 

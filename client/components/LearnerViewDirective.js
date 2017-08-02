@@ -156,6 +156,7 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
+      <modal show='modalIsDisplayed' title='{{ modalTitle }}' description='{{ modalDescription }}'></modal>
       <style>
         html {
           height: 100%;
@@ -663,6 +664,26 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Determines if the modal component will be displayed on the screen.
+         *
+         * @type {boolean}
+         */
+        $scope.modalIsDisplayed = false;
+        /**
+         * Determines what will be shown as the title of the modal.
+         *
+         * @type {string}
+         */
+        $scope.modalTitle = "";
+
+        /**
+         * Determines what will be shown as the description for the modal.
+         *
+         * @type {string}
+         */
+        $scope.modalDescription = "";
+
+        /**
          * Is used to store the Autosave promise such that it can later be
          * cancelled.
          *
@@ -723,15 +744,15 @@ tie.directive('learnerView', [function() {
         $scope.onPrivacyClick = function() {
           var isBrowserOnly = !SERVER_URL;
           if (isBrowserOnly) {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application stores information, ",
-              "including your code, in your browser's local storage and ",
-              "does not transmit data to any server."].join(''));
+            $scope.showModal("Privacy Notice:",
+              ["This version of the TIE application stores information, ",
+                "including your code, in your browser's local storage and ",
+                "does not transmit data to any server."].join(''));
           } else {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application transmits data to ",
-              "our servers in order to provide you with a better coding ",
-              "experience."].join(''));
+            $scope.showModal("Privacy Notice:",
+              ["This version of the TIE application transmits data to ",
+                "our servers in order to provide you with a better coding ",
+                "experience."].join(''));
           }
         };
 
@@ -857,6 +878,26 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Displays the modal with example text.
+         */
+        $scope.showExampleModal = function() {
+          $scope.showModal("Hello", "Test test test");
+        };
+
+        /**
+         * Displays the modal with given title and description.
+         *
+         * @param {string} title Title string for the given modal
+         * @param {string} description String that will be displayed under the
+         *    title in the modal.
+         */
+        $scope.showModal = function(title, description) {
+          $scope.modalTitle = title;
+          $scope.modalDescription = description;
+          $scope.modalIsDisplayed = true;
+        };
+
+        /**
          * Sets the UI theme to the theme passed in as a parameter.
          *
          * @param {string} newTheme
@@ -882,6 +923,13 @@ tie.directive('learnerView', [function() {
             return;
           }
           $scope.initQuestionSet(newQuestionSetId);
+        };
+
+        /**
+         * Closes the modal.
+         */
+        $scope.closeModal = function() {
+          $scope.modalIsDisplayed = false;
         };
 
         /**
