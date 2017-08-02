@@ -167,6 +167,20 @@ tie.factory('FeedbackObjectFactory', [
       this._reinforcement = reinforcement;
     };
 
+    /**
+     * Appends the feedback paragraphs in the given Feedback object to the
+     * current feedback.
+     *
+     * @param {Feedback} feedbackToAppend
+     */
+    Feedback.prototype.appendFeedback = function(feedbackToAppend) {
+      var paragraphsToAppend = feedbackToAppend.getParagraphs();
+      var feedbackObject = this;
+      paragraphsToAppend.forEach(function(paragraph) {
+        feedbackObject._paragraphs.push(paragraph);
+      });
+    };
+
     // Static class methods.
     /**
      * Returns a Feedback object based on the param passed in.
