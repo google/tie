@@ -87,8 +87,7 @@ tie.factory('FeedbackGeneratorService', [
      * @returns {Feedback}
      * @private
      */
-    var _getBuggyOutputTestFeedback = function(
-        failingTest, codeEvalResult) {
+    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
       var hintIndex = 0;
       var buggyMessages = failingTest.getMessages();
       var lastSnapshot = (
