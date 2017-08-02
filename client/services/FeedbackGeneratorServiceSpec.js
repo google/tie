@@ -218,35 +218,37 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly append feedback if feedback object is passed in',
       function() {
-      var correctnessTest = CorrectnessTestObjectFactory.create({
-        input: 'cat',
-        allowedOutputs:['a']
-      });
+        var correctnessTest = CorrectnessTestObjectFactory.create({
+          input: 'cat',
+          allowedOutputs: ['a']
+        });
 
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph('test');
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph('test');
 
-      var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(
-          'flufferNutter', correctnessTest, 'output', feedback).getParagraphs();
-      expect(paragraphs.length).toEqual(6);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe('test');
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe(
-          "Your code produced the following result:");
-      expect(paragraphs[2].isCodeParagraph()).toBe(true);
-      expect(paragraphs[2].getContent()).toBe(
-          "Input: \"cat\"\nOutput (after running flufferNutter): \"output\"");
-      expect(paragraphs[3].isTextParagraph()).toBe(true);
-      expect(paragraphs[3].getContent()).toBe(
-          "However, the expected output of flufferNutter is:");
-      expect(paragraphs[4].isCodeParagraph()).toBe(true);
-      expect(paragraphs[4].getContent()).toBe("\"a\"");
-      expect(paragraphs[5].isTextParagraph()).toBe(true);
-      expect(paragraphs[5].getContent()).toBe(
-          "Could you fix this?");
-    });
+        var paragraphs = FeedbackGeneratorService
+          ._getCorrectnessTestFeedback(
+            'flufferNutter', correctnessTest, 'output', feedback)
+            .getParagraphs();
+        expect(paragraphs.length).toEqual(6);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe('test');
+        expect(paragraphs[1].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toBe(
+            "Your code produced the following result:");
+        expect(paragraphs[2].isCodeParagraph()).toBe(true);
+        expect(paragraphs[2].getContent()).toBe(
+            "Input: \"cat\"\nOutput (after running flufferNutter): \"output\"");
+        expect(paragraphs[3].isTextParagraph()).toBe(true);
+        expect(paragraphs[3].getContent()).toBe(
+            "However, the expected output of flufferNutter is:");
+        expect(paragraphs[4].isCodeParagraph()).toBe(true);
+        expect(paragraphs[4].getContent()).toBe("\"a\"");
+        expect(paragraphs[5].isTextParagraph()).toBe(true);
+        expect(paragraphs[5].getContent()).toBe(
+              "Could you fix this?");
+      }
+    );
   });
 
   describe('_getPerformanceTestFeedback', function() {
@@ -268,20 +270,21 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly append feedback if a feedback object is passed in',
       function() {
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph('test');
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph('test');
 
-      var performanceParagraphs = FeedbackGeneratorService
-        ._getPerformanceTestFeedback("linear", feedback).getParagraphs();
-      expect(performanceParagraphs.length).toEqual(2);
-      expect(performanceParagraphs[0].isTextParagraph()).toBe(true);
-      expect(performanceParagraphs[0].getContent()).toBe('test');
-      expect(performanceParagraphs[1].isTextParagraph()).toBe(true);
-      expect(performanceParagraphs[1].getContent()).toBe([
-        'Your code is running more slowly than expected. Can you ',
-        'reconfigure it such that it runs in linear time?'
-      ].join(''));
-    });
+        var performanceParagraphs = FeedbackGeneratorService
+          ._getPerformanceTestFeedback("linear", feedback).getParagraphs();
+        expect(performanceParagraphs.length).toEqual(2);
+        expect(performanceParagraphs[0].isTextParagraph()).toBe(true);
+        expect(performanceParagraphs[0].getContent()).toBe('test');
+        expect(performanceParagraphs[1].isTextParagraph()).toBe(true);
+        expect(performanceParagraphs[1].getContent()).toBe([
+          'Your code is running more slowly than expected. Can you ',
+          'reconfigure it such that it runs in linear time?'
+        ].join(''));
+      }
+    );
   });
 
   describe('_getInfiniteLoopFeedback', function() {
@@ -299,21 +302,22 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly append feedback if feedback object is passed in',
       function() {
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph('test');
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph('test');
 
-      var paragraphs = FeedbackGeneratorService._getInfiniteLoopFeedback(
-        feedback).getParagraphs();
+        var paragraphs = FeedbackGeneratorService._getInfiniteLoopFeedback(
+          feedback).getParagraphs();
 
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('test');
-       expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe([
-        'Looks like your code is hitting an infinite recursive loop.',
-        'Check to see that your recursive calls terminate.'
-      ].join(' '));
-    })
+        expect(paragraphs.length).toEqual(2);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toEqual('test');
+        expect(paragraphs[1].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toBe([
+          'Looks like your code is hitting an infinite recursive loop.',
+          'Check to see that your recursive calls terminate.'
+        ].join(' '));
+      }
+    );
   });
 
   describe('_getRuntimeErrorFeedback', function() {
@@ -417,8 +421,8 @@ describe('FeedbackGeneratorService', function() {
         'in the test code');
     });
 
-    it('should correctly append error feedback if a feedback object is passed '
-      + 'in', function() {
+    it('should correctly append error feedback if a feedback object is passed' +
+      ' in', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
@@ -426,15 +430,16 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph('test');
       var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
-        codeEvalResult, [0, null, null, null, null], feedback).getParagraphs();
+        codeEvalResult, [0, null, null, null, null], feedback)
+        .getParagraphs();
 
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe('test');
       expect(paragraphs[1].isTextParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe([
-        'Looks like your code had a runtime error when evaluating the input ' +
-        '"testInput". Here\'s the trace:'
+        'Looks like your code had a runtime error when evaluating the input' +
+        ' "testInput". Here\'s the trace:'
       ].join(''));
       expect(paragraphs[2].isCodeParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toBe(
@@ -594,21 +599,22 @@ describe('FeedbackGeneratorService', function() {
 
     it('should append feedback if a feedback object parameter is passed in',
       function() {
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph('test');
-      var paragraphs = FeedbackGeneratorService._getTimeoutErrorFeedback(
-        feedback).getParagraphs();
+        var feedback = FeedbackObjectFactory.create(false);
+        feedback.appendTextParagraph('test');
+        var paragraphs = FeedbackGeneratorService._getTimeoutErrorFeedback(
+          feedback).getParagraphs();
 
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe('test');
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe([
-        "Your program's exceeded the time limit (",
-        "3 seconds) we've set. Can you try to make it run ",
-        "more efficiently?"
-      ].join(''));
-    })
+        expect(paragraphs.length).toEqual(2);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe('test');
+        expect(paragraphs[1].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toBe([
+          "Your program's exceeded the time limit (",
+          "3 seconds) we've set. Can you try to make it run ",
+          "more efficiently?"
+        ].join(''));
+      }
+    );
   });
 
   describe('_getBuggyOutputTestFeedback', function() {
@@ -790,23 +796,24 @@ describe('FeedbackGeneratorService', function() {
 
     it('should append test feedback if an old Feedback object is passed in',
       function() {
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, null);
-      var oldFeedback = FeedbackObjectFactory.create(false);
-      oldFeedback.appendTextParagraph('test');
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResult, oldFeedback);
-      var paragraphs = feedback.getParagraphs();
+        var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+          buggyOutputTestDict);
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code', 'same output', [], [true], [], null, null);
+        var oldFeedback = FeedbackObjectFactory.create(false);
+        oldFeedback.appendTextParagraph('test');
+        var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, codeEvalResult, oldFeedback);
+        var paragraphs = feedback.getParagraphs();
 
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('test');
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toEqual(
-        buggyOutputTestDict.messages[0]);
-    });
+        expect(paragraphs.length).toEqual(2);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toEqual('test');
+        expect(paragraphs[1].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toEqual(
+          buggyOutputTestDict.messages[0]);
+      }
+    );
   });
 
   describe('_hasPrintStatement', function() {
