@@ -285,8 +285,8 @@ tie.factory('FeedbackGeneratorService', [
      * @returns {Feedback}
      * @private
      */
-    var _getInfiniteLoopFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(false);
+    var _getInfiniteLoopFeedback = function(oldFeedback) {
+      var feedback = oldFeedback || FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph([
         "Looks like your code is hitting an infinite recursive loop.",
         "Check to see that your recursive calls terminate."
