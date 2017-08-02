@@ -452,10 +452,6 @@ tie.factory('FeedbackGeneratorService', [
 
         // If the user recieves the same error message increment the same error
         // counter.
-        console.log("previousErrorString");
-        console.log(previousErrorString);
-        console.log("codeEvalResult.getErrorString()");
-        console.log(codeEvalResult.getErrorString());
         if (previousErrorString === codeEvalResult.getErrorString()) {
           consecutiveSameErrorCounter++;
         }
