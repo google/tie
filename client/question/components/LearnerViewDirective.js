@@ -81,7 +81,7 @@ tie.directive('learnerView', [function() {
                   </div>
                   <div class="tie-reinforcement">
                     <li ng-repeat="bullet in reinforcementBullets">
-                      <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                      <img class="tie-bullet-img" ng-src="../images/{{bullet.getImgName()}}">
                       <span class="tie-bullet-text">{{bullet.getContent()}}</span>
                     </li>
                   </div>

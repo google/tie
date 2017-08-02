@@ -20,8 +20,8 @@ module.exports = function(config) {
       'third_party/skulpt-c14015/skulpt.min.js',
       'third_party/skulpt-c14015/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
-      'client/app.js',
-      'client/**/*.js',
+      'client/question/question.js',
+      'client/**/**/*.js',
       'assets/**/*.js'
     ],
     '6to5Preprocessor': {
