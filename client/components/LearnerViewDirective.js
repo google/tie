@@ -123,6 +123,12 @@ tie.directive('learnerView', [function() {
                                    class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
+                  <div ng-if="!codeEditorIsShown" class="tie-codemirror-container">
+                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions" 
+                                   ng-model="editorContents.code"
+                                   class="protractor-test-code-input">
+                    </ui-codemirror>
+                  </div>
                 </div>
                 <select class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
                   <option value="Python" selected>Python</option>
