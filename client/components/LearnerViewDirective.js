@@ -785,7 +785,8 @@ tie.directive('learnerView', [function() {
          * Clears all highlight from syntax errors in the coding UI
          */
         var clearAllHighlights = function() {
-          var codeLines = document.querySelectorAll('.' + CSS_CLASS_SYNTAX_ERROR);
+          var codeLines = document.querySelectorAll('.' +
+            CSS_CLASS_SYNTAX_ERROR);
           for (var i = 0; i < codeLines.length; i++) {
             codeLines[i].classList.remove(CSS_CLASS_SYNTAX_ERROR);
           }
