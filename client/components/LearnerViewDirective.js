@@ -594,7 +594,7 @@ tie.directive('learnerView', [function() {
          * @type {string}
          * @constant
          */
-        var SYNTAX_ERROR = 'tie-syntax-error-line';
+        var CSS_CLASS_SYNTAX_ERROR = 'tie-syntax-error-line';
 
         /**
          * Sets a local variable language to the value of the constant
@@ -778,16 +778,16 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          codeLines[actualLineNumber].classList.add(SYNTAX_ERROR);
+          codeLines[actualLineNumber].classList.add(CSS_CLASS_SYNTAX_ERROR);
         };
 
         /**
          * Clears all highlight from syntax errors in the coding UI
          */
         var clearAllHighlights = function() {
-          var codeLines = document.querySelectorAll('.' + SYNTAX_ERROR);
+          var codeLines = document.querySelectorAll('.' + CSS_CLASS_SYNTAX_ERROR);
           for (var i = 0; i < codeLines.length; i++) {
-            codeLines[i].classList.remove(SYNTAX_ERROR);
+            codeLines[i].classList.remove(CSS_CLASS_SYNTAX_ERROR);
           }
         };
 
