@@ -320,7 +320,7 @@ tie.factory('FeedbackGeneratorService', [
         'interview, TIE does not support this feature. We encourage you to ',
         'instead step through your code by hand.'
       ].join(''));
-      return feedback
+      return feedback;
     };
 
     /**
@@ -350,7 +350,6 @@ tie.factory('FeedbackGeneratorService', [
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         }
       } else {
-        debugger;
         var feedback = null;
         // Use RegEx to find if user has print statements and add a special
         // feedback warning explaining we don't support print statements.
