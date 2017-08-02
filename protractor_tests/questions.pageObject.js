@@ -66,7 +66,7 @@ var QuestionsPage = function() {
    * Retrieves the TIE homepage
    */
   this.get = function() {
-    browser.get('/client/app.html');
+    browser.get('/client/question/question.html');
   };
 
   /**
