@@ -192,7 +192,6 @@ tie.factory('FeedbackGeneratorService', [
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-
       var feedback = FeedbackObjectFactory.create(false);
 
       var fixedErrorString = codeEvalResult.getErrorString().replace(
