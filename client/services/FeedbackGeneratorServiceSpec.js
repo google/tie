@@ -40,6 +40,8 @@ describe('FeedbackGeneratorService', function() {
 
   var LANGUAGE_PYTHON;
 
+  var PYTHON_PRIMER_BUTTON_NAME;
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     BuggyOutputTestObjectFactory = $injector.get(
@@ -71,6 +73,8 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL');
 
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
+
+    PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
 
     var taskDict = [{
       instructions: [''],
@@ -254,8 +258,8 @@ describe('FeedbackGeneratorService', function() {
         ._getUnfamiliarLanguageFeedback();
       expect(feedbackString).toEqual([
         "Seems like you're having some trouble with this language. Why ",
-        "don't you take a look at the New to Python button at the bottom ",
-        "of the screen?"
+        "don't you take a look at the page linked through the '",
+        PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
       ].join(''));
     });
   });

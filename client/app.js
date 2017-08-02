@@ -93,6 +93,14 @@ tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
  */
 tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
 
+/**
+ * Name of button that will direct users to Python language primer.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
+
 
 /**
  * Imports and system-level functions that should be appended to all code.
