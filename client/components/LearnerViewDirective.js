@@ -25,7 +25,7 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-step-container-outer">
-              <div class="tie-step-container-inner">
+              <div class="tie-step-container-inner" ng-style="{'margin-right':'calc(-1*(100% / ' + questionIds.length + ' - 35px))'}">
                 <div class="tie-step-item"
                     ng-repeat="questionId in questionIds track by $index"
                     ng-click="navigateToQuestion($index)">
@@ -506,8 +506,8 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-container-inner {
           display: flex;
-          margin-left: auto;
-          margin-right: auto;
+          flex-grow: 1;
+          margin-left: 8px;
           text-align: center;
         }
         .tie-step-container-outer {
@@ -525,6 +525,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-step-item {
           display: flex;
+          flex-grow: 1;
         }
         .tie-step-item > .tie-step-active {
           background-color: rgb(42, 128, 255);
@@ -536,7 +537,7 @@ tie.directive('learnerView', [function() {
           margin-left: 8px;
           margin-right: 8px;
           margin-top: auto;
-          width: 128px;
+          width: calc(100% - 35px);
         }
         .tie-step-checkmark, .tie-step-text {
           font-size: 14px;
