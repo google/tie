@@ -13,9 +13,9 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for app.js file
+ * @fileoverview Unit tests for question.js file
  */
-describe('app.js', function() {
+describe('question.js', function() {
   var WRONG_LANGUAGE_ERRORS;
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
