@@ -348,18 +348,23 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Returns a string when it is detected that the user is unfamiliar
-     * with the programming language.
+     * Returns a string of the feedback to be returned when it is detected that
+     * the user is unfamiliar with the given programming language.
      *
+     * @param {string} language
      * @returns {String}
      * @private
      */
-    var _getUnfamiliarLanguageFeedback = function() {
-      return [
-        "Seems like you're having some trouble with this language. Why ",
-        "don't you take a look at the page linked through the '",
-        PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
-      ].join('');
+    var _getUnfamiliarLanguageFeedback = function(language) {
+      if (language === LANGUAGE_PYTHON) {
+        return [
+          "Seems like you're having some trouble with this language. Why ",
+          "don't you take a look at the page linked through the '",
+          PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
+        ].join('');
+      } else {
+        return '';
+      }
     };
 
     /**
@@ -477,7 +482,8 @@ tie.factory('FeedbackGeneratorService', [
         // If the same error counter reaches the threshold, prompt the user to
         // look at the primer.
         if (consecutiveSameRuntimeErrorCounter === UNFAMILIARITY_THRESHOLD) {
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
+            LANGUAGE_PYTHON));
           // Once the user has been prompted, we reset the counter so
           // that we make sure not to continue to prompt and, thereby,
           // annoy them.
@@ -505,7 +511,8 @@ tie.factory('FeedbackGeneratorService', [
         // If the syntax error reaches the threshold, prompt the user to
         // look at the primer.
         if (consecutiveSyntaxErrorCounter === UNFAMILIARITY_THRESHOLD) {
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
+            LANGUAGE_PYTHON));
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
@@ -600,7 +607,8 @@ tie.factory('FeedbackGeneratorService', [
         // If the wrong language counter reaches the threshold, prompt the user
         // to look at the primer.
         if (consecutiveWrongLanguageErrorCounter === UNFAMILIARITY_THRESHOLD) {
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback());
+          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
+            LANGUAGE_PYTHON));
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
