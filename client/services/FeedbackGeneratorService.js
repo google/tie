@@ -45,7 +45,8 @@ tie.factory('FeedbackGeneratorService', [
     var UNFAMILIARITY_THRESHOLD = 5;
 
     /**
-     * Counter to keep track of language unfamiliarity errors.
+     * Counter to keep track of language unfamiliarity errors which include
+     * syntax errors and wrong language errors.
      *
      * @type {number}
      */
