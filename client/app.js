@@ -126,8 +126,8 @@ tie.constant('EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'consecutiveSameError');
 /**
  * Constant to represent the consecutiveWrongLanguageCounter option for the
  * resetCounters function in FeedbackGeneratorService. Is to be passed into the
- * resetCounters function as a parameter when we want to reset all counters except the
- * consecutiveWrongLanguageErrorCounter.
+ * resetCounters function as a parameter when we want to reset all counters
+ * except the consecutiveWrongLanguageErrorCounter.
  *
  * @type {string}
  * @constant
