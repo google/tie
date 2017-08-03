@@ -24,14 +24,18 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME',
+  'PYTHON_PRIMER_BUTTON_NAME', 'EXCLUDE_CONSECUTIVE_SYNTAX_ERROR',
+  'EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR',
+  'EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME) {
+    PYTHON_PRIMER_BUTTON_NAME, EXCLUDE_CONSECUTIVE_SYNTAX_ERROR,
+    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR,
+    EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
 
     /**
      * Constant for the number of times that a user can make a mistake (i.e.
@@ -64,39 +68,6 @@ tie.factory('FeedbackGeneratorService', [
     var consecutiveWrongLanguageErrorCounter = 0;
 
     /**
-     * Constant to represent the consecutiveSyntaxErrorCounter option for the
-     * resetCounters function. Is to be passed into the resetCounters function
-     * as a parameter when we want to reset all counters except the
-     * consecutiveSyntaxErrorCounter.
-     *
-     * @type {string}
-     * @constant
-     */
-    var CONSECUTIVE_SYNTAX_ERROR = 'consecutiveSyntaxError';
-
-    /**
-     * Constant to represent the consecutiveSameRuntimeErrorCounter option for
-     * the resetCounters function. Is to be passed into the resetCounters
-     * function as a parameter when we want to reset all counters except the
-     * consecutiveSameRuntimeErrorCounter.
-     *
-     * @type {string}
-     * @constant
-     */
-    var CONSECUTIVE_SAME_RUNTIME_ERROR = 'consecutiveSameError';
-
-    /**
-     * Constant to represent the consecutiveWrongLanguageCounter option for the
-     * resetCounters function. Is to be passed into the resetCounters function
-     * as a parameter when we want to reset all counters except the
-     * consecutiveWrongLanguageErrorCounter.
-     *
-     * @type {string}
-     * @constant
-     */
-    var CONSECUTIVE_WRONG_LANGUAGE_ERROR = 'consecutiveWrongLanguageError';
-
-    /**
      * Variable to store the error string immediately before the current error.
      * Will be used to see if the user is receiving the same exact error
      * consecutively, a possible indication of language unfamiliarity.
@@ -115,14 +86,14 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function(currentCounter) {
       // If the parameter is null, reset all counters.
       var counterNotToReset = currentCounter || '';
-      if (counterNotToReset !== CONSECUTIVE_SYNTAX_ERROR) {
+      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_SYNTAX_ERROR) {
         consecutiveSyntaxErrorCounter = 0;
       }
-      if (counterNotToReset !== CONSECUTIVE_SAME_RUNTIME_ERROR) {
+      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR) {
         consecutiveSameRuntimeErrorCounter = 0;
         previousErrorString = '';
       }
-      if (counterNotToReset !== CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
+      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
         consecutiveWrongLanguageErrorCounter = 0;
       }
     };
@@ -486,7 +457,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // Reset all counters but consecutiveSameRuntimeErrorCounter.
-        _resetCounters(CONSECUTIVE_SAME_RUNTIME_ERROR);
+        _resetCounters(EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR);
 
         // If the user receives the same error message increment the same error
         // counter.
@@ -523,7 +494,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getSyntaxErrorFeedback: function(errorString) {
         // Reset all counters but consecutiveSyntaxErrorCounter.
-        _resetCounters(CONSECUTIVE_SYNTAX_ERROR);
+        _resetCounters(EXCLUDE_CONSECUTIVE_SYNTAX_ERROR);
 
         // If the user receives another syntax error, increment the syntax
         // error counter.
@@ -550,7 +521,7 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters(CONSECUTIVE_WRONG_LANGUAGE_ERROR);
+        _resetCounters(EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR);
 
         if (prereqCheckFailure.hasWrongLanguage()) {
           consecutiveWrongLanguageErrorCounter++;

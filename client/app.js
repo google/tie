@@ -101,6 +101,39 @@ tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
  */
 tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
 
+/**
+ * Constant to represent the consecutiveSyntaxErrorCounter option for the
+ * resetCounters function in FeedbackGeneratorService. Is to be passed into the
+ * resetCounters function as a parameter when we want to reset all counters
+ * except the consecutiveSyntaxErrorCounter.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('EXCLUDE_CONSECUTIVE_SYNTAX_ERROR', 'consecutiveSyntaxError');
+
+/**
+ * Constant to represent the consecutiveSameRuntimeErrorCounter option for
+ * the resetCounters function in FeedbackGeneratorService. Is to be passed into
+ * the resetCounters function as a parameter when we want to reset all counters
+ * except the consecutiveSameRuntimeErrorCounter.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'consecutiveSameError');
+
+/**
+ * Constant to represent the consecutiveWrongLanguageCounter option for the
+ * resetCounters function in FeedbackGeneratorService. Is to be passed into the
+ * resetCounters function as a parameter when we want to reset all counters except the
+ * consecutiveWrongLanguageErrorCounter.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant(
+  'EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR', 'consecutiveWrongLanguageError');
 
 /**
  * Imports and system-level functions that should be appended to all code.
