@@ -64,6 +64,39 @@ tie.factory('FeedbackGeneratorService', [
     var consecutiveWrongLanguageErrorCounter = 0;
 
     /**
+     * Constant to represent the consecutiveSyntaxErrorCounter option for the
+     * resetCounters function. Is to be passed into the resetCounters function
+     * as a parameter when we want to reset all counters except the
+     * consecutiveSyntaxErrorCounter.
+     *
+     * @type {string}
+     * @constant
+     */
+    var CONSECUTIVE_SYNTAX_ERROR = 'consecutiveSyntaxError';
+
+    /**
+     * Constant to represent the consecutiveSameRuntimeErrorCounter option for
+     * the resetCounters function. Is to be passed into the resetCounters
+     * function as a parameter when we want to reset all counters except the
+     * consecutiveSameRuntimeErrorCounter.
+     *
+     * @type {string}
+     * @constant
+     */
+    var CONSECUTIVE_SAME_RUNTIME_ERROR = 'consecutiveSameError';
+
+    /**
+     * Constant to represent the consecutiveWrongLanguageCounter option for the
+     * resetCounters function. Is to be passed into the resetCounters function
+     * as a parameter when we want to reset all counters except the
+     * consecutiveWrongLanguageErrorCounter.
+     *
+     * @type {string}
+     * @constant
+     */
+    var CONSECUTIVE_WRONG_LANGUAGE_ERROR = 'consecutiveWrongLanguageError';
+
+    /**
      * Variable to store the error string immediately before the current error.
      * Will be used to see if the user is receiving the same exact error
      * consecutively, a possible indication of language unfamiliarity.
@@ -82,14 +115,14 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function(currentCounter) {
       // If the parameter is null, reset all counters.
       var counterNotToReset = currentCounter || '';
-      if (counterNotToReset !== 'consecutiveSyntaxError') {
+      if (counterNotToReset !== CONSECUTIVE_SYNTAX_ERROR) {
         consecutiveSyntaxErrorCounter = 0;
       }
-      if (counterNotToReset !== 'consecutiveSameRuntimeError') {
+      if (counterNotToReset !== CONSECUTIVE_SAME_RUNTIME_ERROR) {
         consecutiveSameRuntimeErrorCounter = 0;
         previousErrorString = '';
       }
-      if (counterNotToReset !== 'consecutiveWrongLanguage') {
+      if (counterNotToReset !== CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
         consecutiveWrongLanguageErrorCounter = 0;
       }
     };
@@ -453,7 +486,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // Reset all counters but consecutiveSameRuntimeErrorCounter.
-        _resetCounters('consecutiveSameRuntimeError');
+        _resetCounters(CONSECUTIVE_SAME_RUNTIME_ERROR);
 
         // If the user receives the same error message increment the same error
         // counter.
@@ -490,7 +523,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getSyntaxErrorFeedback: function(errorString) {
         // Reset all counters but consecutiveSyntaxErrorCounter.
-        _resetCounters('consecutiveSyntaxError');
+        _resetCounters(CONSECUTIVE_SYNTAX_ERROR);
 
         // If the user receives another syntax error, increment the syntax
         // error counter.
@@ -517,7 +550,7 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters('consecutiveWrongLanguage');
+        _resetCounters(CONSECUTIVE_WRONG_LANGUAGE_ERROR);
 
         if (prereqCheckFailure.hasWrongLanguage()) {
           consecutiveWrongLanguageErrorCounter++;
