@@ -24,18 +24,16 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME', 'EXCLUDE_CONSECUTIVE_SYNTAX_ERROR',
+  'PYTHON_PRIMER_BUTTON_NAME', 'EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
   'EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR',
-  'EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME, EXCLUDE_CONSECUTIVE_SYNTAX_ERROR,
-    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR,
-    EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
+    PYTHON_PRIMER_BUTTON_NAME, EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR,
+    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR) {
 
     /**
      * Constant for the number of times that a user can make a mistake (i.e.
@@ -47,11 +45,11 @@ tie.factory('FeedbackGeneratorService', [
     var UNFAMILIARITY_THRESHOLD = 5;
 
     /**
-     * Counter to keep track of consecutive syntax errors.
+     * Counter to keep track of language unfamiliarity errors.
      *
      * @type {number}
      */
-    var consecutiveSyntaxErrorCounter = 0;
+    var consecutiveLanguageUnfamiliarityCounter = 0;
 
     /**
      * Counter to keep track of consecutive same errors.
@@ -59,13 +57,6 @@ tie.factory('FeedbackGeneratorService', [
      * @type {number}
      */
     var consecutiveSameRuntimeErrorCounter = 0;
-
-    /**
-     * Counter to keep track of consecutive uses of the wrong language.
-     *
-     * @type {number}
-     */
-    var consecutiveWrongLanguageErrorCounter = 0;
 
     /**
      * Variable to store the error string immediately before the current error.
@@ -86,15 +77,12 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function(currentCounter) {
       // If the parameter is null, reset all counters.
       var counterNotToReset = currentCounter || '';
-      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_SYNTAX_ERROR) {
-        consecutiveSyntaxErrorCounter = 0;
+      if (counterNotToReset !== EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR) {
+        consecutiveLanguageUnfamiliarityCounter = 0;
       }
       if (counterNotToReset !== EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR) {
         consecutiveSameRuntimeErrorCounter = 0;
         previousErrorString = '';
-      }
-      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR) {
-        consecutiveWrongLanguageErrorCounter = 0;
       }
     };
 
@@ -500,25 +488,25 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getSyntaxErrorFeedback: function(errorString) {
-        // Reset all counters but consecutiveSyntaxErrorCounter.
-        _resetCounters(EXCLUDE_CONSECUTIVE_SYNTAX_ERROR);
+        // Reset all counters but consecutiveLanguageUnfamiliarityCounter.
+        _resetCounters(EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR);
 
-        // If the user receives another syntax error, increment the syntax
-        // error counter.
-        consecutiveSyntaxErrorCounter++;
+        // If the user receives another syntax error, increment the 
+        // language unfamiliarity error counter.
+        consecutiveLanguageUnfamiliarityCounter++;
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
         // If the syntax error reaches the threshold, prompt the user to
         // look at the primer.
-        if (consecutiveSyntaxErrorCounter === UNFAMILIARITY_THRESHOLD) {
+        if (consecutiveLanguageUnfamiliarityCounter === UNFAMILIARITY_THRESHOLD) {
           // TODO(dianakc, eledavi): Will have to adjust according to language
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
             LANGUAGE_PYTHON));
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
-          consecutiveSyntaxErrorCounter = 0;
+          consecutiveLanguageUnfamiliarityCounter = 0;
         }
         return feedback;
       },
@@ -530,12 +518,12 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters(EXCLUDE_CONSECUTIVE_WRONG_LANGUAGE_ERROR);
+        _resetCounters(EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR);
 
         if (prereqCheckFailure.hasWrongLanguage()) {
-          consecutiveWrongLanguageErrorCounter++;
+          consecutiveLanguageUnfamiliarityCounter++;
         } else {
-          consecutiveWrongLanguageErrorCounter = 0;
+          consecutiveLanguageUnfamiliarityCounter = 0;
         }
         if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
@@ -608,14 +596,14 @@ tie.factory('FeedbackGeneratorService', [
 
         // If the wrong language counter reaches the threshold, prompt the user
         // to look at the primer.
-        if (consecutiveWrongLanguageErrorCounter === UNFAMILIARITY_THRESHOLD) {
+        if (consecutiveLanguageUnfamiliarityCounter === UNFAMILIARITY_THRESHOLD) {
           // TODO(dianakc, eledavi): Will have to adjust according to language
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
             LANGUAGE_PYTHON));
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
-          consecutiveWrongLanguageErrorCounter = 0;
+          consecutiveLanguageUnfamiliarityCounter = 0;
         }
 
         return feedback;
