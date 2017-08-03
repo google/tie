@@ -491,7 +491,7 @@ tie.factory('FeedbackGeneratorService', [
         // Reset all counters but consecutiveLanguageUnfamiliarityCounter.
         _resetCounters(EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR);
 
-        // If the user receives another syntax error, increment the 
+        // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         consecutiveLanguageUnfamiliarityCounter++;
         var feedback = FeedbackObjectFactory.create(false);
@@ -499,7 +499,8 @@ tie.factory('FeedbackGeneratorService', [
 
         // If the syntax error reaches the threshold, prompt the user to
         // look at the primer.
-        if (consecutiveLanguageUnfamiliarityCounter === UNFAMILIARITY_THRESHOLD) {
+        if (consecutiveLanguageUnfamiliarityCounter ===
+          UNFAMILIARITY_THRESHOLD) {
           // TODO(dianakc, eledavi): Will have to adjust according to language
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
             LANGUAGE_PYTHON));
@@ -596,7 +597,8 @@ tie.factory('FeedbackGeneratorService', [
 
         // If the wrong language counter reaches the threshold, prompt the user
         // to look at the primer.
-        if (consecutiveLanguageUnfamiliarityCounter === UNFAMILIARITY_THRESHOLD) {
+        if (consecutiveLanguageUnfamiliarityCounter ===
+          UNFAMILIARITY_THRESHOLD) {
           // TODO(dianakc, eledavi): Will have to adjust according to language
           feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
             LANGUAGE_PYTHON));

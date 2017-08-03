@@ -102,7 +102,8 @@ tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
 tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
 
 /**
- * Constant to represent the consecutiveLanguageUnfamiliarityCounter option for the
+ * Constant to represent the consecutiveLanguageUnfamiliarityCounter option
+ * for the
  *
  * resetCounters function in FeedbackGeneratorService. Is to be passed into the
  * resetCounters function as a parameter when we want to reset all counters
@@ -111,7 +112,8 @@ tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
  * @type {string}
  * @constant
  */
-tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR', 'consecutiveLanguageUnfamiliarityCounter');
+tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
+  'consecutiveLanguageUnfamiliarityCounter');
 
 /**
  * Constant to represent the consecutiveSameRuntimeErrorCounter option for
