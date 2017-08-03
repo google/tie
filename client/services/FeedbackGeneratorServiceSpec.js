@@ -473,7 +473,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it(['should return a null if it doesn\'t recognize the given ',
-      'error'], function() {
+      'error'].join(''), function() {
       var errorString = "not known error";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
