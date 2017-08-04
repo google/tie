@@ -3,34 +3,34 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <link rel="stylesheet" href="../third_party/codemirror-5.19.0/lib/codemirror.css">
-    <link rel="stylesheet" href="../third_party/codemirror-5.19.0/lib/material.css">
-    <script src="../third_party/angular-1.6.1/angular.min.js"></script>
-    <script src="../third_party/codemirror-5.19.0/lib/codemirror.js"></script>
-    <script src="../third_party/codemirror-5.19.0/mode/python/python.js"></script>
-    <script src="../third_party/codemirror-5.19.0/addon/edit/matchbrackets.js"></script>
-    <script src="../third_party/ui-codemirror-0.3.0/ui-codemirror.min.js"></script>
-    <script src="app.js"></script>
+    <link rel="stylesheet" href="../../third_party/codemirror-5.19.0/lib/codemirror.css">
+    <link rel="stylesheet" href="../../third_party/codemirror-5.19.0/lib/material.css">
+    <script src="../../third_party/angular-1.6.1/angular.min.js"></script>
+    <script src="../../third_party/codemirror-5.19.0/lib/codemirror.js"></script>
+    <script src="../../third_party/codemirror-5.19.0/mode/python/python.js"></script>
+    <script src="../../third_party/codemirror-5.19.0/addon/edit/matchbrackets.js"></script>
+    <script src="../../third_party/ui-codemirror-0.3.0/ui-codemirror.min.js"></script>
+    <script src="question.js"></script>
     <script src="serverUrl.js"></script>
-    <script src="../assets/questions/bomberman.js"></script>
-    <script src="../assets/questions/checkBalancedParentheses.js"></script>
-    <script src="../assets/questions/findAlphabet.js"></script>
-    <script src="../assets/questions/findBestMeetupLocation.js"></script>
-    <script src="../assets/questions/findClosestValueBst.js"></script>
-    <script src="../assets/questions/findFirstNonRepeatingCharacter.js"></script>
-    <script src="../assets/questions/findMostCommonCharacter.js"></script>
-    <script src="../assets/questions/getStrobogrammaticNumbers.js"></script>
-    <script src="../assets/questions/incrementDecimalCodedNumber.js"></script>
-    <script src="../assets/questions/internationalization.js"></script>
-    <script src="../assets/questions/isPalindrome.js"></script>
-    <script src="../assets/questions/longestSubstring.js"></script>
-    <script src="../assets/questions/reverseWords.js"></script>
-    <script src="../assets/questions/runLengthEncoding.js"></script>
-    <script src="../assets/questions/sortItinerary.js"></script>
-    <script src="../assets/questions/splitStringIntoWords.js"></script>
-    <script src="../assets/question_sets/all.js"></script>
-    <script src="../assets/question_sets/other.js"></script>
-    <script src="../assets/question_sets/strings.js"></script>
+    <script src="../../assets/questions/bomberman.js"></script>
+    <script src="../../assets/questions/checkBalancedParentheses.js"></script>
+    <script src="../../assets/questions/findAlphabet.js"></script>
+    <script src="../../assets/questions/findBestMeetupLocation.js"></script>
+    <script src="../../assets/questions/findClosestValueBst.js"></script>
+    <script src="../../assets/questions/findFirstNonRepeatingCharacter.js"></script>
+    <script src="../../assets/questions/findMostCommonCharacter.js"></script>
+    <script src="../../assets/questions/getStrobogrammaticNumbers.js"></script>
+    <script src="../../assets/questions/incrementDecimalCodedNumber.js"></script>
+    <script src="../../assets/questions/internationalization.js"></script>
+    <script src="../../assets/questions/isPalindrome.js"></script>
+    <script src="../../assets/questions/longestSubstring.js"></script>
+    <script src="../../assets/questions/reverseWords.js"></script>
+    <script src="../../assets/questions/runLengthEncoding.js"></script>
+    <script src="../../assets/questions/sortItinerary.js"></script>
+    <script src="../../assets/questions/splitStringIntoWords.js"></script>
+    <script src="../../assets/question_sets/all.js"></script>
+    <script src="../../assets/question_sets/other.js"></script>
+    <script src="../../assets/question_sets/strings.js"></script>
     <script src="components/CodeSnippetDirective.js"></script>
     <script src="components/LearnerViewDirective.js"></script>
     <script src="components/SyntaxErrorSnippetDirective.js"></script>
@@ -51,7 +51,7 @@
     <script src="domain/TaskObjectFactory.js"></script>
     <script src="domain/TracebackCoordinatesObjectFactory.js"></script>
     <script src="domain/TranscriptObjectFactory.js"></script>
-    <script src="services/CodeStorageService.js"></script>
+    <script src="services/LocalStorageService.js"></script>
     <script src="services/FeedbackGeneratorService.js"></script>
     <script src="services/QuestionDataService.js"></script>
     <script src="services/SolutionHandlerService.js"></script>
@@ -68,7 +68,7 @@
     <learner-view></learner-view>
 
     <!-- Only import Skulpt if there is no server specified. -->
-    <script ng-if="!SERVER_URL" src="../third_party/skulpt-c14015/skulpt.min.js"></script>
-    <script ng-if="!SERVER_URL" src="../third_party/skulpt-c14015/skulpt-stdlib.js"></script>
+    <script ng-if="!SERVER_URL" src="../../third_party/skulpt-c14015/skulpt.min.js"></script>
+    <script ng-if="!SERVER_URL" src="../../third_party/skulpt-c14015/skulpt-stdlib.js"></script>
   </body>
 </html>

@@ -9,7 +9,7 @@ fleshed out more as development continues.
 
 ## User setup
 
-Open the file `client/app.html` in a browser.
+Open the file `client/question/question.html` in a browser.
 
 ## Developer setup
 

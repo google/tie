@@ -102,6 +102,35 @@ tie.factory('ReinforcementBulletObjectFactory', [
       return new ReinforcementBullet(false, content);
     };
 
+    /**
+     * Returns a ReinforcementBulletObject from a dict.
+     *
+     * @param {Object} dict representing a ReinforcementBullet, which has
+     *    the properties 'passed' and 'content'.
+     * @returns {ReinforcementBullet}
+     */
+    ReinforcementBullet.fromDict = function(dict) {
+      if (dict.passed) {
+        return this.createPassedBullet(dict.content);
+      } else {
+        return this.createFailedBullet(dict.content);
+      }
+    };
+
+    /**
+     * Returns a dict from a ReinforcementBulletObject.
+     *
+     * @param {ReinforcementBullet}
+     * @returns {Object} dict representing a ReinforcementBullet, which has
+     *    the properties 'passed' and 'content'.
+     */
+    ReinforcementBullet.toDict = function(reinforcementBullet) {
+      return {
+        passed: reinforcementBullet.isPassedBullet(),
+        content: reinforcementBullet.getContent()
+      };
+    };
+
     return ReinforcementBullet;
   }
 ]);

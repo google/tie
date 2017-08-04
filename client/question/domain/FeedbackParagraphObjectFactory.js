@@ -90,6 +90,20 @@ tie.factory('FeedbackParagraphObjectFactory', [
       return this._content;
     };
 
+    /**
+     * A getter for the line number where the error occurs.
+     *
+     * @returns {number}
+     */
+    FeedbackParagraph.prototype.getErrorLineNumber = function() {
+      if (this.isSyntaxErrorParagraph()) {
+        var errorContentArray = this.getContent().split(' ');
+        return parseInt(errorContentArray[errorContentArray.length - 1], 10);
+      } else {
+        throw new Error('Incorrect feedback paragraph type.');
+      }
+    };
+
     // Static class methods.
     /**
      * Returns a text-based FeedbackParagraph with the given text inside it.
@@ -119,6 +133,48 @@ tie.factory('FeedbackParagraphObjectFactory', [
      */
     FeedbackParagraph.createSyntaxErrorParagraph = function(error) {
       return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
+    };
+
+    /**
+     * Returns a FeedbackParagraph created from a dict.
+     *
+     * @param {Object} dict that should have a type, and the content
+     *    of a FeedbackParagraphObject.
+     * @returns {FeedbackParagraph}
+     */
+    FeedbackParagraph.fromDict = function(dict) {
+      if (dict.type === PARAGRAPH_TYPE_TEXT) {
+        return (this.createTextParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_CODE) {
+        return (this.createCodeParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
+        return (this.createSyntaxErrorParagraph(dict.content));
+      }
+      return null;
+    };
+
+    /**
+     * Returns a dict created from a FeedbackParagraphObject.
+     *
+     * @param {FeedbackParagraph}
+     * @returns {Object} dict that should have a type, and the content
+     *    of a FeedbackParagraphObject.
+     */
+    FeedbackParagraph.toDict = function(feedbackParagraph) {
+      var feedbackParagraphDict = {};
+      if (feedbackParagraph.isTextParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_TEXT;
+      } else if (feedbackParagraph.isCodeParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
+      } else if (feedbackParagraph.isSyntaxErrorParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
+      } else {
+        // If undefined type, return null.
+        return null;
+      }
+
+      feedbackParagraphDict.content = feedbackParagraph.getContent();
+      return feedbackParagraphDict;
     };
 
     return FeedbackParagraph;

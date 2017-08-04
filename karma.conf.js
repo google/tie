@@ -20,7 +20,9 @@ module.exports = function(config) {
       'third_party/skulpt-c14015/skulpt.min.js',
       'third_party/skulpt-c14015/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
-      'client/app.js',
+      // Need to explicitly specify question.js first due to the files being
+      // loaded in descending order.
+      'client/question/question.js',
       'client/**/*.js',
       'assets/**/*.js'
     ],
@@ -33,7 +35,6 @@ module.exports = function(config) {
     exclude: [],
     // Pre-process matching files before serving them to the browser.
     preprocessors: {
-      'client/*.js': preprocessorOptions,
       'client/**/*.js': preprocessorOptions,
       'assets/**/*.js': preprocessorOptions
     },

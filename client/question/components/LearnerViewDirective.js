@@ -61,9 +61,9 @@ tie.directive('learnerView', [function() {
                   </div>
                 </div>
                 <div>
-                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage">
+                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage track by $index">
                     <hr>
-                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs"
+                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
                         class="tie-feedback-paragraph"
                         ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                       <span ng-if="paragraph.isTextParagraph()">
@@ -81,7 +81,7 @@ tie.directive('learnerView', [function() {
                   </div>
                   <div class="tie-reinforcement">
                     <li ng-repeat="bullet in reinforcementBullets">
-                      <img class="tie-bullet-img" ng-src="images/{{bullet.getImgName()}}">
+                      <img class="tie-bullet-img" ng-src="../shared/images/{{bullet.getImgName()}}">
                       <span class="tie-bullet-text">{{bullet.getContent()}}</span>
                     </li>
                   </div>
@@ -545,6 +545,12 @@ tie.directive('learnerView', [function() {
         .tie-step-unlocked {
           background-color: rgb(0, 128, 0);
         }
+        .CodeMirror-line.tie-syntax-error-line {
+          background: #FBC2C4;
+        }
+        .tie-wrapper.night-mode .CodeMirror-line.tie-syntax-error-line {
+          background: #891111;
+        }
         .tie-wrapper {
           height: 100%;
         }
@@ -556,13 +562,13 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', 'CodeStorageService',
+      'ReinforcementObjectFactory', 'LocalStorageService',
       'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, CodeStorageService,
+          ReinforcementObjectFactory, LocalStorageService,
           SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
@@ -581,6 +587,14 @@ tie.directive('learnerView', [function() {
          * @constant
          */
         var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
+
+        /**
+         * Name of the class for styling highlighted syntax errors.
+         *
+         * @type {string}
+         * @constant
+         */
+        var CSS_CLASS_SYNTAX_ERROR = 'tie-syntax-error-line';
 
         /**
          * Sets a local variable language to the value of the constant
@@ -728,22 +742,54 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         var loadQuestion = function(questionId) {
-          clearFeedback();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
-          cachedCode = CodeStorageService.loadStoredCode(
+          cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
+          var reinforcement = ReinforcementObjectFactory.create();
+          $scope.reinforcementBullets = reinforcement.getBullets();
+          $scope.feedbackStorage = [];
+          var loadedFeedback =
+            LocalStorageService.loadLatestFeedbackAndReinforcement(
+              questionId, language);
+          if (loadedFeedback) {
+            $scope.feedbackStorage.push({
+              feedbackParagraphs: loadedFeedback.feedbackParagraphs
+            });
+            $scope.reinforcementBullets =
+              loadedFeedback.reinforcementBullets || [];
+          }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
-          var reinforcement = ReinforcementObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
-          $scope.reinforcementBullets = reinforcement.getBullets();
+        };
+
+        /**
+         * Highlights the syntax errors in the coding UI
+         *
+         * @param {number} lineNumber
+         */
+        var highlightLine = function(lineNumber) {
+          var actualLineNumber = lineNumber - 1;
+          var codeLines = document.querySelectorAll('.CodeMirror-line');
+          codeLines[actualLineNumber].classList.add(CSS_CLASS_SYNTAX_ERROR);
+        };
+
+        /**
+         * Clears all highlight from syntax errors in the coding UI
+         */
+        var clearAllHighlights = function() {
+          var codeLines = document.querySelectorAll('.' +
+            CSS_CLASS_SYNTAX_ERROR);
+          for (var i = 0; i < codeLines.length; i++) {
+            codeLines[i].classList.remove(CSS_CLASS_SYNTAX_ERROR);
+          }
         };
 
         /**
@@ -751,6 +797,7 @@ tie.directive('learnerView', [function() {
          */
         var clearFeedback = function() {
           $scope.feedbackStorage = [];
+          $scope.reinforcementBullets = [];
         };
 
         /**
@@ -785,8 +832,10 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
+              clearAllHighlights();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
                 hasSyntaxError = true;
+                highlightLine(feedbackParagraphs[i].getErrorLineNumber());
                 break;
               }
             }
@@ -802,6 +851,9 @@ tie.directive('learnerView', [function() {
           // $scope.$apply() is needed to force a DOM update.
           $scope.$apply();
           $scope.scrollToBottomOfFeedbackWindow();
+
+          // Store the most recent feedback and reinforcement bullets.
+          storeLatestFeedback();
         };
 
         /**
@@ -924,7 +976,7 @@ tie.directive('learnerView', [function() {
           $scope.currentQuestionIndex = index;
           // We need to save the code before loading so that the user will get
           // their own code back if they click on the current question.
-          CodeStorageService.storeCode(
+          LocalStorageService.storeCode(
             currentQuestionId, $scope.editorContents.code, language);
           // Finally, we need to clear the undo history of the editor. This is
           // done by removing the code editor from the DOM and putting it back
@@ -965,7 +1017,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.resetCode = function() {
           var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-          CodeStorageService.clearLocalStorageCode(questionId, language);
+          LocalStorageService.clearLocalStorageCode(questionId, language);
           loadQuestion(questionId);
         };
 
@@ -987,7 +1039,7 @@ tie.directive('learnerView', [function() {
          * to the browser's local storage.
          */
         $scope.autosave = function() {
-          if (!CodeStorageService.isAvailable()) {
+          if (!LocalStorageService.isAvailable()) {
             return;
           }
 
@@ -1025,10 +1077,22 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          * @param {string} lang
          */
-        var storeCodeAndUpdateCachedCode = function(
-          questionId, code, lang) {
-          CodeStorageService.storeCode(questionId, code, lang);
+        var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
+          LocalStorageService.storeCode(questionId, code, lang);
           cachedCode = code;
+        };
+
+        /**
+         * Stores the user's latest feedback to local storage.
+         */
+        var storeLatestFeedback = function() {
+          var latestFeedback =
+            $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
+          LocalStorageService.storeLatestFeedbackAndReinforcement(
+            $scope.questionIds[$scope.currentQuestionIndex],
+            latestFeedback.feedbackParagraphs,
+            $scope.reinforcementBullets,
+            language);
         };
 
         $scope.initQuestionSet(questionSetId);
