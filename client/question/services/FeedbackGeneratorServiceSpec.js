@@ -22,6 +22,7 @@ describe('FeedbackGeneratorService', function() {
   var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
+  var FeedbackObjectFactory;
   var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var TaskObjectFactory;
@@ -49,6 +50,7 @@ describe('FeedbackGeneratorService', function() {
       'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
+    FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
     ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
@@ -230,7 +232,6 @@ describe('FeedbackGeneratorService', function() {
         'Your code is running more slowly than expected. Can you ',
         'reconfigure it such that it runs in linear time?'
       ].join(''));
-
     });
   });
 
@@ -678,6 +679,47 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
+  describe('_hasPrintStatement', function() {
+    it('returns true if there are print statements detected', function() {
+      var code = [
+        'def myFunc(arg):',
+        '    print arg',
+        '    return arg',
+        ''
+      ].join('\n');
+      expect(FeedbackGeneratorService._hasPrintStatement(code)).toBe(true);
+    });
+
+    it('returns false if there are no print statements detected', function() {
+      var code = [
+        'def myFunc(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+      expect(FeedbackGeneratorService._hasPrintStatement(code)).toBe(false);
+    });
+  });
+
+  describe('_appendPrintFeedback', function() {
+    it('appends print feedback to a given feedback object', function() {
+      var oldFeedback = FeedbackObjectFactory.create(false);
+      oldFeedback.appendTextParagraph('test paragraph');
+      var feedback = FeedbackGeneratorService._appendPrintFeedback(oldFeedback);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('test paragraph');
+      expect(paragraphs[1].getContent()).toEqual([
+        'We noticed that you\'re using a print statement within your code. ',
+        'Since you will not be able to use such statements in a technical ',
+        'interview, TIE does not support this feature. We encourage you to ',
+        'instead step through your code by hand.'
+      ].join(''));
+    });
+  });
+
   describe('getFeedback', function() {
     it('should correctly return feedback if the performance does not meet ' +
       'expectations', function() {
@@ -694,6 +736,32 @@ describe('FeedbackGeneratorService', function() {
         'slowly than expected. Can you reconfigure it such that it runs in ' +
         'linear time?');
     });
+
+    it('should correctly return feedback if print statements are detected',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    print arg',
+          ''
+        ].join('\n');
+
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          code, 'output', [], [], [['not linear']], null, null);
+
+        var feedback = FeedbackGeneratorService.getFeedback(
+          testTask, codeEvalResult, []);
+
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs.length).toEqual(2);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toEqual([
+          'We noticed that you\'re using a print statement within your code. ',
+          'Since you will not be able to use such statements in a technical ',
+          'interview, TIE does not support this feature. We encourage you to ',
+          'instead step through your code by hand.'
+        ].join(''));
+      }
+    );
   });
 
   describe('getPrereqFailureFeedback', function() {
