@@ -25,7 +25,7 @@ tie.factory('FeedbackGeneratorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   'PYTHON_PRIMER_BUTTON_NAME', 'EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
-  'EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR',
+  'EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'UNFAMILIARITY_THRESHOLD',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
@@ -33,16 +33,7 @@ tie.factory('FeedbackGeneratorService', [
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
     PYTHON_PRIMER_BUTTON_NAME, EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR,
-    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR) {
-
-    /**
-     * Constant for the number of times that a user can make a mistake (i.e.
-     * same error, syntax error, etc.) until we prompt them to look at the
-     * primer.
-     *
-     * @type {number}
-     */
-    var UNFAMILIARITY_THRESHOLD = 5;
+    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR, UNFAMILIARITY_THRESHOLD) {
 
     /**
      * Counter to keep track of language unfamiliarity errors which include
@@ -452,10 +443,9 @@ tie.factory('FeedbackGeneratorService', [
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // Reset all counters but consecutiveSameRuntimeErrorCounter.
         _resetCounters(EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR);
-
         // If the user receives the same error message increment the same error
         // counter.
-        if (!previousErrorString &&
+        if (previousErrorString &&
             previousErrorString === codeEvalResult.getErrorString()) {
           consecutiveSameRuntimeErrorCounter++;
         }

@@ -217,6 +217,15 @@ tie.constant('PARAGRAPH_TYPE_CODE', 'code');
 tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 
 /**
+ * Constant for the number of times that a user can make a mistake (i.e.
+ * same error, syntax error, etc.) until we prompt them to look at the
+ * primer.
+ *
+ * @type {number}
+ */
+tie.constant('UNFAMILIARITY_THRESHOLD', 5);
+
+/**
  * Dictionary of wrong language detection errors and their related information
  *
  * @type {{}}
