@@ -654,7 +654,6 @@ tie.factory('FeedbackGeneratorService', [
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
-      _jsToHumanReadable: _jsToHumanReadable,
       _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
       _resetCounters: _resetCounters
