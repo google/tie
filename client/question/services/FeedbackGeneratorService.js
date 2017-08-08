@@ -338,7 +338,7 @@ tie.factory('FeedbackGeneratorService', [
     var _getUnfamiliarLanguageFeedback = function(language) {
       if (language === LANGUAGE_PYTHON) {
         return [
-          "Seems like you're having some trouble with this language. Why ",
+          "Seems like you're having some trouble with Python. Why ",
           "don't you take a look at the page linked through the '",
           PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
         ].join('');

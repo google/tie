@@ -262,7 +262,7 @@ describe('FeedbackGeneratorService', function() {
       var feedbackString = FeedbackGeneratorService
         ._getUnfamiliarLanguageFeedback(LANGUAGE_PYTHON);
       expect(feedbackString).toEqual([
-        "Seems like you're having some trouble with this language. Why ",
+        "Seems like you're having some trouble with Python. Why ",
         "don't you take a look at the page linked through the '",
         PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
       ].join(''));
