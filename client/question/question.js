@@ -51,6 +51,7 @@ tie.constant('CODE_EXECUTION_TIMEOUT_SECONDS', 3);
  * @constant
  */
 tie.constant('LANGUAGE_PYTHON', 'python');
+
 /**
  * Array of strings each representing identifiers for languages that are
  * supported in TIE.
@@ -59,6 +60,7 @@ tie.constant('LANGUAGE_PYTHON', 'python');
  * @constant
  */
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
+
 /**
  * Array of strings representing the names of Python libraries that are
  * supported by the TIE system.
@@ -68,6 +70,7 @@ tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
  */
 tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
   'math', 'operator', 'random', 're', 'string', 'time']);
+
 /**
  * Class name for wrapping student code. Answer submissions are then run
  * using CLASS_NAME_STUDENT_CODE.function_name().
@@ -76,6 +79,7 @@ tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
  * @constant
  */
 tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
+
 /**
  * Class name for wrapping auxiliary code, primarily used for test evaluation.
  *
@@ -83,6 +87,7 @@ tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
  * @constant
  */
 tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
+
 /**
  * Class name for wrapping system code.
  *
@@ -90,6 +95,7 @@ tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
  * @constant
  */
 tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
+
 /**
  * Name of button that will direct users to Python language primer.
  *
@@ -97,19 +103,19 @@ tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
  * @constant
  */
 tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
+
 /**
  * Constant to represent the consecutiveLanguageUnfamiliarityCounter option
- * for the
- *
- * resetCounters function in FeedbackGeneratorService. Is to be passed into the
- * resetCounters function as a parameter when we want to reset all counters
- * except the consecutiveLanguageUnfamiliarityCounter.
+ * for the resetCounters function in FeedbackGeneratorService. Is to be passed
+ * into the resetCounters function as a parameter when we want to reset all
+ * counters except the consecutiveLanguageUnfamiliarityCounter.
  *
  * @type {string}
  * @constant
  */
 tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
   'consecutiveLanguageUnfamiliarityCounter');
+
 /**
  * Constant to represent the consecutiveSameRuntimeErrorCounter option for
  * the resetCounters function in FeedbackGeneratorService. Is to be passed into
@@ -120,6 +126,7 @@ tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
  * @constant
  */
 tie.constant('EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'consecutiveSameError');
+
 /**
  * Imports and system-level functions that should be appended to all code.
  *
