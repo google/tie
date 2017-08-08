@@ -222,6 +222,7 @@ tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
  * primer.
  *
  * @type {number}
+ * @constant
  */
 tie.constant('UNFAMILIARITY_THRESHOLD', 5);
 
