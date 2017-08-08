@@ -113,7 +113,7 @@ tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
  * @type {string}
  * @constant
  */
-tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
+tie.constant('ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
   'consecutiveLanguageUnfamiliarityCounter');
 
 /**
@@ -125,8 +125,7 @@ tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
  * @type {string}
  * @constant
  */
-tie.constant('EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'consecutiveSameError');
-
+tie.constant('ERROR_COUNTER_SAME_RUNTIME', 'consecutiveSameError');
 /**
  * Imports and system-level functions that should be appended to all code.
  *

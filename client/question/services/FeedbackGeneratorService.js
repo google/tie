@@ -24,16 +24,16 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME', 'EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
-  'EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'UNFAMILIARITY_THRESHOLD',
+  'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
+  'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME, EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR,
-    EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR, UNFAMILIARITY_THRESHOLD) {
+    PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
+    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD) {
 
     /**
      * Counter to keep track of language unfamiliarity errors which include
@@ -69,10 +69,10 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function(currentCounter) {
       // If the parameter is null, reset all counters.
       var counterNotToReset = currentCounter || '';
-      if (counterNotToReset !== EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR) {
+      if (counterNotToReset !== ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
         consecutiveLanguageUnfamiliarityCounter = 0;
       }
-      if (counterNotToReset !== EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR) {
+      if (counterNotToReset !== ERROR_COUNTER_SAME_RUNTIME) {
         consecutiveSameRuntimeErrorCounter = 0;
         previousErrorString = '';
       }
@@ -486,7 +486,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // Reset all counters but consecutiveSameRuntimeErrorCounter.
-        _resetCounters(EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR);
+        _resetCounters(ERROR_COUNTER_SAME_RUNTIME);
         // If the user receives the same error message increment the same error
         // counter.
         if (previousErrorString &&
@@ -524,7 +524,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getSyntaxErrorFeedback: function(errorString) {
         // Reset all counters but consecutiveLanguageUnfamiliarityCounter.
-        _resetCounters(EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR);
+        _resetCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
 
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
@@ -554,7 +554,7 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters(EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR);
+        _resetCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
 
         if (prereqCheckFailure.hasWrongLanguage()) {
           consecutiveLanguageUnfamiliarityCounter++;
