@@ -110,7 +110,6 @@ tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
  */
 tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
   'consecutiveLanguageUnfamiliarityCounter');
-
 /**
  * Constant to represent the consecutiveSameRuntimeErrorCounter option for
  * the resetCounters function in FeedbackGeneratorService. Is to be passed into
@@ -121,7 +120,6 @@ tie.constant('EXCLUDE_LANGUAGE_UNFAMILARITY_ERROR',
  * @constant
  */
 tie.constant('EXCLUDE_CONSECUTIVE_SAME_RUNTIME_ERROR', 'consecutiveSameError');
-
 /**
  * Imports and system-level functions that should be appended to all code.
  *
