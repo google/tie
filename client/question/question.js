@@ -248,7 +248,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
   }, {
     // Used the Java comment syntax
     errorName: 'javaComment',
-    regExString: '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
+    regExString: '\\/\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
     feedbackParagraphs: [
       {
         type: 'text',
