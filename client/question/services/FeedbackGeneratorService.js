@@ -74,7 +74,6 @@ tie.factory('FeedbackGeneratorService', [
       } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
         consecutiveLanguageUnfamiliarityCounter++;
         consecutiveSameRuntimeErrorCounter = 0;
-        previousErrorString = '';
       } else if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
         consecutiveSameRuntimeErrorCounter++;
         consecutiveLanguageUnfamiliarityCounter = 0;
@@ -539,6 +538,7 @@ tie.factory('FeedbackGeneratorService', [
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
+        previousErrorString = '';
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
@@ -555,6 +555,7 @@ tie.factory('FeedbackGeneratorService', [
       getPrereqFailureFeedback: function(prereqCheckFailure) {
         if (prereqCheckFailure.hasWrongLanguage()) {
           _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
+          previousErrorString = '';
         } else {
           _updateCounters();
         }
