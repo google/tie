@@ -60,21 +60,24 @@ tie.factory('FeedbackGeneratorService', [
     var previousErrorString = '';
 
     /**
-     * Resets all but one specific counter or all counters, depending on
-     * the parameter.
+     * Updates the counter specified in the paramter to track language
+     * unfamiliarity and resets all other counters.
      *
-     * @param {string} currentCounter
+     * @param {string} counterToIncrement
      * @private
      */
-    var _resetCounters = function(currentCounter) {
-      // If the parameter is null, reset all counters.
-      var counterNotToReset = currentCounter || '';
-      if (counterNotToReset !== ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
+    var _updateCounters = function(counterToIncrement) {
+      // If the parameters are empty clear all counters.
+      if (counterToIncrement === undefined) {
         consecutiveLanguageUnfamiliarityCounter = 0;
-      }
-      if (counterNotToReset !== ERROR_COUNTER_SAME_RUNTIME) {
+        consecutiveSameRuntimeErrorCounter = 0;
+      } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
+        consecutiveLanguageUnfamiliarityCounter++;
         consecutiveSameRuntimeErrorCounter = 0;
         previousErrorString = '';
+      } else if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
+        consecutiveSameRuntimeErrorCounter++;
+        consecutiveLanguageUnfamiliarityCounter = 0;
       }
     };
 
@@ -485,13 +488,11 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
-        // Reset all counters but consecutiveSameRuntimeErrorCounter.
-        _resetCounters(ERROR_COUNTER_SAME_RUNTIME);
         // If the user receives the same error message increment the same error
         // counter.
         if (previousErrorString &&
             previousErrorString === codeEvalResult.getErrorString()) {
-          consecutiveSameRuntimeErrorCounter++;
+          _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
         }
 
         var feedback = _getFeedbackWithoutReinforcement(
@@ -511,7 +512,7 @@ tie.factory('FeedbackGeneratorService', [
           // Once the user has been prompted, we reset the counter so
           // that we make sure not to continue to prompt and, thereby,
           // annoy them.
-          consecutiveSameRuntimeErrorCounter = 0;
+          _updateCounters();
         }
         previousErrorString = codeEvalResult.getErrorString();
         return feedback;
@@ -523,12 +524,9 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getSyntaxErrorFeedback: function(errorString) {
-        // Reset all counters but consecutiveLanguageUnfamiliarityCounter.
-        _resetCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
-        consecutiveLanguageUnfamiliarityCounter++;
+        _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
@@ -542,7 +540,7 @@ tie.factory('FeedbackGeneratorService', [
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
-          consecutiveLanguageUnfamiliarityCounter = 0;
+          _updateCounters();
         }
         return feedback;
       },
@@ -554,12 +552,10 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
-        _resetCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-
         if (prereqCheckFailure.hasWrongLanguage()) {
-          consecutiveLanguageUnfamiliarityCounter++;
+          _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         } else {
-          consecutiveLanguageUnfamiliarityCounter = 0;
+          _updateCounters();
         }
         if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
@@ -640,7 +636,7 @@ tie.factory('FeedbackGeneratorService', [
           // Once the user has been prompted, we reset the counter so
           // that we make sure we don't continue to prompt and, thereby,
           // annoy them.
-          consecutiveLanguageUnfamiliarityCounter = 0;
+          _updateCounters();
         }
 
         return feedback;
@@ -656,7 +652,7 @@ tie.factory('FeedbackGeneratorService', [
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
-      _resetCounters: _resetCounters
+      _updateCounters: _updateCounters
     };
   }
 ]);
