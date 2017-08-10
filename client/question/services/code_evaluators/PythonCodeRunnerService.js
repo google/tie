@@ -187,7 +187,7 @@ tie.factory('PythonCodeRunnerService', [
       },
       _processCodeCompilationServerResponse: (
         _processCodeCompilationServerResponse),
-      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse,
+      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse
     };
   }
 ]);
