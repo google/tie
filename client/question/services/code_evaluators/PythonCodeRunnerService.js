@@ -106,21 +106,39 @@ tie.factory('PythonCodeRunnerService', [
       });
     };
 
-    var _sendCodeToServer = function(code, urlFragment) {
+    var _compileCodeAsync = function(code) {
       clearOutput();
-      return $http({
-        url: SERVER_URL + '/ajax/' + urlFragment,
-        method: 'POST',
-        data: {
-          code: code,
-          language: 'python'
+      var data = {
+        code: code,
+        language: 'python'
+      };
+      return $http.post(SERVER_URL + '/ajax/compile_code', data).then(
+        function(response) {
+          _processCodeCompilationServerResponse(response, code);
         }
-      }).then(function(response) {
-        _processServerResponse(response, code, urlFragment);
-      });
+      );
     };
 
-    var _processServerResponse = function(response, code, urlFragment) {
+    var _processCodeCompilationServerResponse = function(response, code) {
+      // We have no response data, since it's just a compile step.
+      return CodeEvalResultObjectFactory.create(
+          code, response.data.stdout, null, null, null, null, null);
+    };
+
+    var _sendCodeToServer = function(code) {
+      clearOutput();
+      var data = {
+        code: code,
+        language: 'python'
+      };
+      return $http.post(SERVER_URL + '/ajax/run_code', data).then(
+        function(response) {
+          _processCodeExecutionServerResponse(response, code);
+        }
+      );
+    };
+
+    var _processCodeExecutionServerResponse = function(response, code) {
       var responseData = response.data;
       if (responseData.stderr.length) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
@@ -128,19 +146,15 @@ tie.factory('PythonCodeRunnerService', [
         return CodeEvalResultObjectFactory.create(
             code, '', [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT]);
-      } else if (urlFragment === 'run_code') {
+      } else if (responseData.results) {
         return CodeEvalResultObjectFactory.create(
             code, responseData.stdout,
             responseData.results[VARNAME_CORRECTNESS_TEST_RESULTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
             null, null);
-      } else if (urlFragment === 'compile_code') {
-        // We have no response data, since it's just a compile step.
-        return CodeEvalResultObjectFactory.create(
-            code, responseData.stdout, null, null, null, null, null);
       } else {
-        throw Error('A malformed or incorrect urlFragment was specified');
+        throw Error('A server error occurred. Please try again.');
       }
     };
 
@@ -153,7 +167,7 @@ tie.factory('PythonCodeRunnerService', [
        */
       compileCodeAsync: function(code) {
         if (ServerHandlerService.doesServerExist()) {
-          return _sendCodeToServer(code, 'compile_code');
+          return _compileCodeAsync(code);
         } else {
           return _runCodeInClient(code);
         }
@@ -172,7 +186,9 @@ tie.factory('PythonCodeRunnerService', [
           return _runCodeInClient(code);
         }
       },
-      _processServerResponse: _processServerResponse,
+      _processCodeCompilationServerResponse: (
+        _processCodeCompilationServerResponse),
+      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse,
       _sendCodeToServer: _sendCodeToServer
     };
   }

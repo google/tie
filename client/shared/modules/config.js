@@ -3,9 +3,9 @@
  */
 
 
-window.tieBasic = angular.module('tieBasic', []);
+window.tieCommon = angular.module('tieCommon', []);
 
-tieBasic.config(['$httpProvider', function($httpProvider) {
+tieCommon.config(['$httpProvider', function($httpProvider) {
   // Set default headers for POST and PUT requests.
   $httpProvider.defaults.headers.post = {
     'Content-Type': 'application/x-www-form-urlencoded'

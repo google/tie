@@ -568,9 +568,9 @@ tie.directive('learnerView', [function() {
       function(
           $scope, $interval, $timeout, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, LocalStorageService, ServerHandlerService,
-          SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+          ReinforcementObjectFactory, LocalStorageService,
+          ServerHandlerService, SECONDS_TO_MILLISECONDS,
+          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.

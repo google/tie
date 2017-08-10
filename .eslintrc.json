@@ -15,7 +15,7 @@
         "module": false,
         "Sk": false,
         "tie": false,
-        "tieBasic": false
+        "tieCommon": false
     },
     "parserOptions": {
         "ecmaVersion": 6,

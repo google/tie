@@ -55,7 +55,7 @@ describe('ErrorTracebackObjectFactory', function() {
   describe('fromPythonError', function() {
     it('should return correct traceback for Python runtime errors', function() {
       var expectedLineNumber = 28;
-      var expectedColumnNumber = 0;
+      var expectedColumnNumber = null;
       var errorTraceback = ErrorTracebackObjectFactory.create(
       "NameError: global name 'potato' is not defined",
         [TracebackCoordinatesObjectFactory.create(

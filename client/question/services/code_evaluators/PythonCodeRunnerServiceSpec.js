@@ -40,7 +40,7 @@ describe('PythonCodeRunnerService', function() {
       ['linear']];
   }));
 
-  describe('_processServerResponse', function() {
+  describe('_processCodeExecutionServerResponse', function() {
 
     it('returns a CodeEvalResult based on responseDict when run', function() {
       var code = [
@@ -49,9 +49,9 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      var urlFragment = 'run_code';
-      var codeEvalResult = PythonCodeRunnerService._processServerResponse(
-        responseDict, code, urlFragment);
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeExecutionServerResponse(
+          responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(
           responseDict.data.results[VARNAME_PERFORMANCE_TEST_RESULTS]);
       expect(codeEvalResult.getCorrectnessTestResults()).toEqual(
@@ -77,30 +77,14 @@ describe('PythonCodeRunnerService', function() {
         '    return 2 / 0',
         'ZeroDivisionError: integer division or modulo by zero'
       ].join('\n');
-      var urlFragment = 'run_code';
-      var codeEvalResult = PythonCodeRunnerService._processServerResponse(
-        responseDict, code, urlFragment);
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeExecutionServerResponse(
+          responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual([]);
       expect(codeEvalResult.getCorrectnessTestResults()).toEqual([]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
       expect(codeEvalResult.getErrorString()).toEqual(
           'ZeroDivisionError: integer division or modulo by zero on line 28');
-    });
-
-    it('returns a CodeEvalResult for compile-only mode', function() {
-      var code = [
-        'def yourFunction(arg):',
-        '    result = arg.rstrip()',
-        '    return result',
-        ''
-      ].join('\n');
-      var urlFragment = 'compile_code';
-      var codeEvalResult = PythonCodeRunnerService._processServerResponse(
-        responseDict, code, urlFragment);
-      expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
-      expect(codeEvalResult.getCorrectnessTestResults()).toEqual(null);
-      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
-      expect(codeEvalResult.getErrorInput()).toEqual(null);
     });
 
     it('throws an error for a bad urlFragment', function() {
@@ -110,12 +94,31 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      var urlFragment = 'throw_code_on_the_ground_to_prove_a_point';
+      responseDict.data.results = null;
       expect(function() {
-        PythonCodeRunnerService._processServerResponse(
-          responseDict, code, urlFragment);
+        PythonCodeRunnerService._processCodeExecutionServerResponse(
+          responseDict, code);
       }).toThrow(
-        new Error('A malformed or incorrect urlFragment was specified'));
+        new Error('A server error occurred. Please try again.'));
+    });
+  });
+
+  describe('_processCodeCompilationServerResponse', function() {
+
+    it('returns a CodeEvalResult for compile-only mode', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeCompilationServerResponse(
+          responseDict, code));
+      expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
+      expect(codeEvalResult.getCorrectnessTestResults()).toEqual(null);
+      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
+      expect(codeEvalResult.getErrorInput()).toEqual(null);
     });
   });
 });

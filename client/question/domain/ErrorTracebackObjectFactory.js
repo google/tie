@@ -121,7 +121,7 @@ tie.factory('ErrorTracebackObjectFactory', [
       // Split the error string by newlines for easier processing.
       var splitErrorMessage = pythonError.trim().split(/\r?\n/);
       var errorMessage = splitErrorMessage[splitErrorMessage.length - 1];
-      var lineNumber = 0;
+      var lineNumber = null;
       // Python error tracebacks use the last two lines to show the line of code
       // and the error (and sometimes a ^ indicating where the error occurred.
       // Therefore, we need to start at the second from the last line and work
@@ -134,7 +134,7 @@ tie.factory('ErrorTracebackObjectFactory', [
           break;
         }
       }
-      var colNumber = 0;
+      var colNumber = null;
       // This is used to grab the column number of an error, if one is present.
       // Python will use a '    ^' to indicate where on the line an error
       // occurred, allowing us to isolate that and use it as the column number.

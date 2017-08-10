@@ -39,23 +39,36 @@ describe('PythonCodePreprocessorService', function() {
 
   describe('_prepareCodeSubmissionForServerExecution', function() {
 
-    it('appends the correct code to the supplied code', function() {
-      var code = [
+    it('appends / prepends the correct code to the supplied code', function() {
+      var studentCode = [
         'def myFunction(arg):',
         '    result = arg.rstrip()',
         '    return result',
+      ].join('\n');
+      var preprocessedCode = [
+        'response_dict = {}',
+        'most_recent_input = None',
+        'performance_test_results = None',
+        'correctness_test_results = None',
+        'buggy_output_test_results = None',
+        '',
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        "response_dict['most_recent_input'] = most_recent_input",
+        "response_dict['performance_test_results'] = performance_test_results",
+        "response_dict['correctness_test_results'] = correctness_test_results",
+        [
+          "response_dict['buggy_output_test_results']",
+          " = buggy_output_test_results"
+        ].join(''),
         ''
       ].join('\n');
-      var codeSubmission = CodeSubmissionObjectFactory.create(code);
+      var codeSubmission = CodeSubmissionObjectFactory.create(studentCode);
       PythonCodePreprocessorService._prepareCodeSubmissionForServerExecution(
           codeSubmission);
-      expect(codeSubmission.getPreprocessedCode()).toContain(
-          'most_recent_input = None');
-      expect(codeSubmission.getPreprocessedCode()).toContain(
-          [
-            "response_dict['correctness_test_results']",
-            " = correctness_test_results"
-          ].join(''));
+      expect(codeSubmission.getPreprocessedCode()).toEqual(preprocessedCode);
+      expect(codeSubmission.getPreprocessedCode()).toContain(studentCode);
     });
   });
 

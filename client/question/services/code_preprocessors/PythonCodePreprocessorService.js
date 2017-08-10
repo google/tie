@@ -26,8 +26,8 @@ tie.factory('PythonCodePreprocessorService', [
   'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
   function(
-      ServerHandlerService, CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
-      SYSTEM_CODE, VARNAME_CORRECTNESS_TEST_RESULTS,
+      ServerHandlerService, CLASS_NAME_AUXILIARY_CODE,
+      CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_CORRECTNESS_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
@@ -492,8 +492,11 @@ tie.factory('PythonCodePreprocessorService', [
       return testCode;
     };
 
-    var _generateResponseDictString = function(str) {
-      return "response_dict['" + str + "'] = " + str + "\n";
+    var _generateResponseDictString = function(pythonVariableName) {
+      return [
+        "response_dict['", pythonVariableName, "'] = ",
+        pythonVariableName, "\n"
+      ].join('');
     };
 
     var _prepareCodeSubmissionForServerExecution = function(codeSubmission) {
