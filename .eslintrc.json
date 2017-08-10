@@ -14,7 +14,8 @@
         "inject": false,
         "module": false,
         "Sk": false,
-        "tie": false
+        "tie": false,
+        "tieBasic": false
     },
     "parserOptions": {
         "ecmaVersion": 6,
@@ -47,7 +48,7 @@
         "func-call-spacing": "error",
         "func-name-matching": "error",
         "func-style": "error",
-        "id-blacklist": ["error", "data", "cb", "callback"],
+        "id-blacklist": ["error", "cb", "callback"],
         "indent": ["error", 2],
         "jsx-quotes": "error",
         "key-spacing": "error",

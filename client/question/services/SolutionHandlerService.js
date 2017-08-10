@@ -56,7 +56,7 @@ tie.factory('SolutionHandlerService', [
         } else {
           // Next, run the raw code to detect syntax errors. If any exist, we
           // return a promise with a Feedback object.
-          return CodeRunnerDispatcherService.runCodeAsync(
+          return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
             var potentialSyntaxErrorString = codeEvalResult.getErrorString();

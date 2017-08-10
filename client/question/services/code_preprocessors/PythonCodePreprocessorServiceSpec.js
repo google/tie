@@ -17,6 +17,7 @@
  */
 
 describe('PythonCodePreprocessorService', function() {
+  var CodeSubmissionObjectFactory;
   var PythonCodePreprocessorService;
   var BuggyOutputTestObjectFactory;
   var CorrectnessTestObjectFactory;
@@ -24,6 +25,8 @@ describe('PythonCodePreprocessorService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    CodeSubmissionObjectFactory = $injector.get(
+      'CodeSubmissionObjectFactory');
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
     BuggyOutputTestObjectFactory = $injector.get(
@@ -33,6 +36,28 @@ describe('PythonCodePreprocessorService', function() {
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
   }));
+
+  describe('_prepareCodeSubmissionForServerExecution', function() {
+
+    it('appends the correct code to the supplied code', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      var codeSubmission = CodeSubmissionObjectFactory.create(code);
+      PythonCodePreprocessorService._prepareCodeSubmissionForServerExecution(
+          codeSubmission);
+      expect(codeSubmission.getPreprocessedCode()).toContain(
+          'most_recent_input = None');
+      expect(codeSubmission.getPreprocessedCode()).toContain(
+          [
+            "response_dict['correctness_test_results']",
+            " = correctness_test_results"
+          ].join(''));
+    });
+  });
 
   describe('_jsonVariableToPython', function() {
     it('should correctly convert a JSON string to a Python string', function() {

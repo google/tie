@@ -17,15 +17,15 @@
  */
 
 tie.factory('PythonCodeRunnerService', [
-  'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_MOST_RECENT_INPUT',
-  'CODE_EXECUTION_TIMEOUT_SECONDS', 'SERVER_URL',
+  '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
+  'ServerHandlerService', 'VARNAME_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS', 'SERVER_URL',
   function(
-      CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_MOST_RECENT_INPUT,
-      CODE_EXECUTION_TIMEOUT_SECONDS, SERVER_URL) {
+      $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
+      ServerHandlerService, VARNAME_CORRECTNESS_TEST_RESULTS,
+      VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
+      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS, SERVER_URL) {
     /** @type {number} @const */
     var SECONDS_TO_MILLISECONDS = 1000;
     /**
@@ -52,7 +52,7 @@ tie.factory('PythonCodeRunnerService', [
       outputLines.push(line);
     };
 
-    var runCodeInClient = function(code) {
+    var _runCodeInClient = function(code) {
       clearOutput();
       Sk.configure({
         output: addOutputLine,
@@ -106,7 +106,58 @@ tie.factory('PythonCodeRunnerService', [
       });
     };
 
+    var _sendCodeToServer = function(code, urlFragment) {
+      clearOutput();
+      return $http({
+        url: SERVER_URL + '/ajax/' + urlFragment,
+        method: 'POST',
+        data: {
+          code: code,
+          language: 'python'
+        }
+      }).then(function(response) {
+        _processServerResponse(response, code, urlFragment);
+      });
+    };
+
+    var _processServerResponse = function(response, code, urlFragment) {
+      var responseData = response.data;
+      if (responseData.stderr.length) {
+        var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
+          responseData.stderr);
+        return CodeEvalResultObjectFactory.create(
+            code, '', [], [], [], errorTraceback,
+            responseData[VARNAME_MOST_RECENT_INPUT]);
+      } else if (urlFragment === 'run_code') {
+        return CodeEvalResultObjectFactory.create(
+            code, responseData.stdout,
+            responseData.results[VARNAME_CORRECTNESS_TEST_RESULTS],
+            responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
+            responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
+            null, null);
+      } else if (urlFragment === 'compile_code') {
+        // We have no response data, since it's just a compile step.
+        return CodeEvalResultObjectFactory.create(
+            code, responseData.stdout, null, null, null, null, null);
+      } else {
+        throw Error('A malformed or incorrect urlFragment was specified');
+      }
+    };
+
     return {
+      /**
+       * Asynchronously compiles the given Python code.
+       *
+       * @param {string} code
+       * @returns {Promise}
+       */
+      compileCodeAsync: function(code) {
+        if (ServerHandlerService.doesServerExist()) {
+          return _sendCodeToServer(code, 'compile_code');
+        } else {
+          return _runCodeInClient(code);
+        }
+      },
       /**
        * Asynchronously runs the Python code against the given tests for that
        * task.
@@ -115,11 +166,14 @@ tie.factory('PythonCodeRunnerService', [
        * @returns {Promise}
        */
       runCodeAsync: function(code) {
-        if (SERVER_URL) {
-          throw Error('Server-side code execution is not implemented yet.');
+        if (ServerHandlerService.doesServerExist()) {
+          return _sendCodeToServer(code, 'run_code');
+        } else {
+          return _runCodeInClient(code);
         }
-        return runCodeInClient(code);
-      }
+      },
+      _processServerResponse: _processServerResponse,
+      _sendCodeToServer: _sendCodeToServer
     };
   }
 ]);

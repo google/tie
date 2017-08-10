@@ -18,15 +18,17 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE',
-  'VARNAME_CORRECTNESS_TEST_RESULTS', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
+  'ServerHandlerService', 'CLASS_NAME_AUXILIARY_CODE',
+  'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_CORRECTNESS_TEST_RESULTS',
+  'VARNAME_MOST_RECENT_INPUT', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
   'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
   function(
-      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE, SYSTEM_CODE,
-      VARNAME_CORRECTNESS_TEST_RESULTS, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
+      ServerHandlerService, CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_STUDENT_CODE,
+      SYSTEM_CODE, VARNAME_CORRECTNESS_TEST_RESULTS,
+      VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
       VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
@@ -490,6 +492,28 @@ tie.factory('PythonCodePreprocessorService', [
       return testCode;
     };
 
+    var _generateResponseDictString = function(str) {
+      return "response_dict['" + str + "'] = " + str + "\n";
+    };
+
+    var _prepareCodeSubmissionForServerExecution = function(codeSubmission) {
+      var instantiation = ' = None\n';
+      var prependedCode = 'response_dict = {}\n';
+      prependedCode += VARNAME_MOST_RECENT_INPUT + instantiation;
+      prependedCode += VARNAME_PERFORMANCE_TEST_RESULTS + instantiation;
+      prependedCode += VARNAME_CORRECTNESS_TEST_RESULTS + instantiation;
+      prependedCode += VARNAME_BUGGY_OUTPUT_TEST_RESULTS + instantiation;
+      var appendedCode = _generateResponseDictString(VARNAME_MOST_RECENT_INPUT);
+      appendedCode += _generateResponseDictString(
+          VARNAME_PERFORMANCE_TEST_RESULTS);
+      appendedCode += _generateResponseDictString(
+          VARNAME_CORRECTNESS_TEST_RESULTS);
+      appendedCode += _generateResponseDictString(
+          VARNAME_BUGGY_OUTPUT_TEST_RESULTS);
+      codeSubmission.prepend(prependedCode);
+      codeSubmission.append(appendedCode);
+    };
+
     return {
       /**
        * Runs a series of necessary tasks to ensure that submission and its
@@ -543,6 +567,12 @@ tie.factory('PythonCodePreprocessorService', [
             allTasksOutputFunctionNames),
           this._generatePerformanceTestCode(allTasksPerformanceTests)
         ].join('\n\n'));
+
+        // Some additional code needs to be appended (and prepended) if we're
+        // running this code on the server. We do that here.
+        if (ServerHandlerService.doesServerExist()) {
+          this._prepareCodeSubmissionForServerExecution(codeSubmission);
+        }
       },
 
       // These are seams to allow for Karma testing of the private functions.
@@ -555,6 +585,8 @@ tie.factory('PythonCodePreprocessorService', [
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
       _jsonVariableToPython: _jsonVariableToPython,
+      _prepareCodeSubmissionForServerExecution: (
+        _prepareCodeSubmissionForServerExecution),
       _transformCodeToInstanceMethods: _transformCodeToInstanceMethods
     };
   }

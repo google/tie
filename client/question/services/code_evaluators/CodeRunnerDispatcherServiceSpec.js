@@ -64,4 +64,13 @@ describe('CodeRunnerDispatcherService', function() {
       );
     });
   });
+
+  describe('compileCodeAsync', function() {
+    it('should throw an error if passed a non-Python language', function() {
+      var errorFunction = function() {
+        CodeRunnerDispatcherService.compileCodeAsync('java', 'some code');
+      };
+      expect(errorFunction).toThrowError(Error);
+    });
+  });
 });
