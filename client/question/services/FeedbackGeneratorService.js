@@ -84,7 +84,7 @@ tie.factory('FeedbackGeneratorService', [
     var _resetCounters = function() {
       consecutiveSameRuntimeErrorCounter = 0;
       consecutiveLanguageUnfamiliarityCounter = 0;
-    }
+    };
 
     /**
      * Checks the error counters to if any have reached the threshold. If they
@@ -530,7 +530,7 @@ tie.factory('FeedbackGeneratorService', [
               tasks[tasks.length - 1], codeEvalResult));
         }
 
-        _checkThreshold(feedback);
+        _applyThresholdUpdates(feedback);
         previousErrorString = codeEvalResult.getErrorString();
         return feedback;
       },
@@ -548,7 +548,7 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
-        _checkThreshold(feedback);
+        _applyThresholdUpdates(feedback);
         return feedback;
       },
       /**
@@ -634,7 +634,7 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
-        _checkThreshold(feedback);
+        _applyThresholdUpdates(feedback);
 
         return feedback;
       },
