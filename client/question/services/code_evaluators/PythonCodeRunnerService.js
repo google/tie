@@ -114,18 +114,18 @@ tie.factory('PythonCodeRunnerService', [
       };
       return $http.post(SERVER_URL + '/ajax/compile_code', data).then(
         function(response) {
-          _processCodeCompilationServerResponse(response, code);
+          _processCodeCompilationServerResponse(response.data, code);
         }
       );
     };
 
-    var _processCodeCompilationServerResponse = function(response, code) {
+    var _processCodeCompilationServerResponse = function(responseData, code) {
       // We have no response data, since it's just a compile step.
       return CodeEvalResultObjectFactory.create(
-          code, response.data.stdout, null, null, null, null, null);
+          code, responseData.stdout, null, null, null, null, null);
     };
 
-    var _sendCodeToServer = function(code) {
+    var _runCodeAsync = function(code) {
       clearOutput();
       var data = {
         code: code,
@@ -133,13 +133,12 @@ tie.factory('PythonCodeRunnerService', [
       };
       return $http.post(SERVER_URL + '/ajax/run_code', data).then(
         function(response) {
-          _processCodeExecutionServerResponse(response, code);
+          _processCodeExecutionServerResponse(response.data, code);
         }
       );
     };
 
-    var _processCodeExecutionServerResponse = function(response, code) {
-      var responseData = response.data;
+    var _processCodeExecutionServerResponse = function(responseData, code) {
       if (responseData.stderr.length) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
@@ -181,7 +180,7 @@ tie.factory('PythonCodeRunnerService', [
        */
       runCodeAsync: function(code) {
         if (ServerHandlerService.doesServerExist()) {
-          return _sendCodeToServer(code, 'run_code');
+          return _runCodeAsync(code);
         } else {
           return _runCodeInClient(code);
         }

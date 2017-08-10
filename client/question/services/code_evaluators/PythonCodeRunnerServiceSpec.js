@@ -27,16 +27,15 @@ describe('PythonCodeRunnerService', function() {
   beforeEach(inject(function($injector) {
     PythonCodeRunnerService = $injector.get(
       'PythonCodeRunnerService');
-    responseDict.data = {};
-    responseDict.data.stdout = 'hello world!';
-    responseDict.data.stderr = '';
-    responseDict.data.results = {};
-    responseDict.data.results[VARNAME_MOST_RECENT_INPUT] = 'a b c d e f f';
-    responseDict.data.results[VARNAME_CORRECTNESS_TEST_RESULTS] = [
+    responseDict.stdout = 'hello world!';
+    responseDict.stderr = '';
+    responseDict.results = {};
+    responseDict.results[VARNAME_MOST_RECENT_INPUT] = 'a b c d e f f';
+    responseDict.results[VARNAME_CORRECTNESS_TEST_RESULTS] = [
       ['TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST']];
-    responseDict.data.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS] = [
+    responseDict.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS] = [
       [false, false, false]];
-    responseDict.data.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
+    responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
       ['linear']];
   }));
 
@@ -53,11 +52,11 @@ describe('PythonCodeRunnerService', function() {
         PythonCodeRunnerService._processCodeExecutionServerResponse(
           responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(
-          responseDict.data.results[VARNAME_PERFORMANCE_TEST_RESULTS]);
+          responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS]);
       expect(codeEvalResult.getCorrectnessTestResults()).toEqual(
-          responseDict.data.results[VARNAME_CORRECTNESS_TEST_RESULTS]);
+          responseDict.results[VARNAME_CORRECTNESS_TEST_RESULTS]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(
-          responseDict.data.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS]);
+          responseDict.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS]);
     });
 
     it('returns a CodeEvalResult if stderr is not empty', function() {
@@ -67,7 +66,7 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      responseDict.data.stderr = [
+      responseDict.stderr = [
         'Traceback (most recent call last):',
         '  File "main.py", line 54, in <module>',
         '    StudentCode().fmcc, all_tasks_test_inputs[0][0]))',
@@ -94,7 +93,7 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      responseDict.data.results = null;
+      responseDict.results = null;
       expect(function() {
         PythonCodeRunnerService._processCodeExecutionServerResponse(
           responseDict, code);
