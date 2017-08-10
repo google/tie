@@ -43,7 +43,7 @@ describe('PythonCodePreprocessorService', function() {
       var studentCode = [
         'def myFunction(arg):',
         '    result = arg.rstrip()',
-        '    return result',
+        '    return result'
       ].join('\n');
       var preprocessedCode = [
         'response_dict = {}',
