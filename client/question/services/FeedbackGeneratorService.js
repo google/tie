@@ -67,18 +67,24 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _updateCounters = function(counterToIncrement) {
-      // If the parameters are empty clear all counters.
-      if (counterToIncrement === undefined) {
-        consecutiveLanguageUnfamiliarityCounter = 0;
-        consecutiveSameRuntimeErrorCounter = 0;
-      } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
-        consecutiveLanguageUnfamiliarityCounter++;
-        consecutiveSameRuntimeErrorCounter = 0;
-      } else if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
+      if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
         consecutiveSameRuntimeErrorCounter++;
         consecutiveLanguageUnfamiliarityCounter = 0;
+      } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
+        consecutiveSameRuntimeErrorCounter = 0;
+        consecutiveLanguageUnfamiliarityCounter++;
       }
     };
+
+    /**
+     * Reset all error counters.
+     *
+     * @private
+     */
+    var _resetCounters = function() {
+      consecutiveSameRuntimeErrorCounter = 0;
+      consecutiveLanguageUnfamiliarityCounter = 0;
+    }
 
     /**
      * Checks the error counters to if any have reached the threshold. If they
@@ -88,7 +94,7 @@ tie.factory('FeedbackGeneratorService', [
      * @param {Feedback} feedback
      * @private
      */
-    var _checkThreshold = function(feedback) {
+    var _applyThresholdUpdates = function(feedback) {
       if ((consecutiveLanguageUnfamiliarityCounter ===
         UNFAMILIARITY_THRESHOLD) || (consecutiveSameRuntimeErrorCounter ===
         UNFAMILIARITY_THRESHOLD)) {
@@ -98,7 +104,7 @@ tie.factory('FeedbackGeneratorService', [
         // Once the user has been prompted, we reset the counter so
         // that we make sure not to continue to prompt and, thereby,
         // annoy them.
-        _updateCounters();
+        _resetCounters();
       }
     };
 
@@ -557,7 +563,7 @@ tie.factory('FeedbackGeneratorService', [
           _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
           previousErrorString = '';
         } else {
-          _updateCounters();
+          _resetCounters();
         }
         if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
@@ -643,7 +649,9 @@ tie.factory('FeedbackGeneratorService', [
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
-      _updateCounters: _updateCounters
+      _updateCounters: _updateCounters,
+      _resetCounters: _resetCounters,
+      _applyThresholdUpdates: _applyThresholdUpdates
     };
   }
 ]);
