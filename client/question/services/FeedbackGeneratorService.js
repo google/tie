@@ -81,6 +81,28 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
+    /**
+     * Checks the error counters to if any have reached the threshold. If they
+     * have, then it appends to the feedback to prompt the user to look at the
+     * primer.
+     *
+     * @param {Feedback} feedback
+     * @private
+     */
+    var _checkThreshold = function(feedback) {
+      if ((consecutiveLanguageUnfamiliarityCounter ===
+        UNFAMILIARITY_THRESHOLD) || (consecutiveSameRuntimeErrorCounter ===
+        UNFAMILIARITY_THRESHOLD)) {
+        // TODO(dianakc, eledavi): Will have to adjust according to language
+        feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
+        // Once the user has been prompted, we reset the counter so
+        // that we make sure not to continue to prompt and, thereby,
+        // annoy them.
+        _updateCounters();
+      }
+    };
+
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -503,17 +525,7 @@ tie.factory('FeedbackGeneratorService', [
               tasks[tasks.length - 1], codeEvalResult));
         }
 
-        // If the same error counter reaches the threshold, prompt the user to
-        // look at the primer.
-        if (consecutiveSameRuntimeErrorCounter === UNFAMILIARITY_THRESHOLD) {
-          // TODO(dianakc, eledavi): Will have to adjust according to language
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
-            LANGUAGE_PYTHON));
-          // Once the user has been prompted, we reset the counter so
-          // that we make sure not to continue to prompt and, thereby,
-          // annoy them.
-          _updateCounters();
-        }
+        _checkThreshold(feedback);
         previousErrorString = codeEvalResult.getErrorString();
         return feedback;
       },
@@ -530,18 +542,7 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
-        // If the syntax error reaches the threshold, prompt the user to
-        // look at the primer.
-        if (consecutiveLanguageUnfamiliarityCounter ===
-          UNFAMILIARITY_THRESHOLD) {
-          // TODO(dianakc, eledavi): Will have to adjust according to language
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
-            LANGUAGE_PYTHON));
-          // Once the user has been prompted, we reset the counter so
-          // that we make sure we don't continue to prompt and, thereby,
-          // annoy them.
-          _updateCounters();
-        }
+        _checkThreshold(feedback);
         return feedback;
       },
       /**
@@ -626,18 +627,7 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
-        // If the wrong language counter reaches the threshold, prompt the user
-        // to look at the primer.
-        if (consecutiveLanguageUnfamiliarityCounter ===
-          UNFAMILIARITY_THRESHOLD) {
-          // TODO(dianakc, eledavi): Will have to adjust according to language
-          feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
-            LANGUAGE_PYTHON));
-          // Once the user has been prompted, we reset the counter so
-          // that we make sure we don't continue to prompt and, thereby,
-          // annoy them.
-          _updateCounters();
-        }
+        _checkThreshold(feedback);
 
         return feedback;
       },
