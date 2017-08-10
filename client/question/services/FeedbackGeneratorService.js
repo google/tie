@@ -21,13 +21,15 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
-  'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'LANGUAGE_PYTHON',
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
+  'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
+  'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   function(
-      FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
-      CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
-      RUNTIME_ERROR_FEEDBACK_MESSAGES, LANGUAGE_PYTHON,
-      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE) {
+    FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
+    CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
+    RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
+    CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
+    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR) {
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -278,6 +280,35 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns boolean indicating if there are print statements found in
+     * the given code.
+     *
+     * @param {string} code User's submitted code
+     * @returns {boolean} Indicates if there are print statements in code or not
+     */
+    var _hasPrintStatement = function(code) {
+      var printRegEx = /\bprint\b/;
+      return code.search(printRegEx) !== -1;
+    };
+
+    /**
+     * Appends a text feedback paragraph warning against use of print statements
+     * to the given Feedback object and returns the new Feedback object.
+     *
+     * @param {Feedback} feedback
+     * @returns {Feedback}
+     */
+    var _appendPrintFeedback = function(feedback) {
+      feedback.appendTextParagraph([
+        'We noticed that you\'re using a print statement within your code. ',
+        'Since you will not be able to use such statements in a technical ',
+        'interview, TIE does not support this feature. We encourage you to ',
+        'instead step through your code by hand.'
+      ].join(''));
+      return feedback;
+    };
+
+    /**
      * Returns the Feedback object associated with a given user submission
      * not including the reinforcement.
      *
@@ -291,17 +322,28 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
+      var feedback = FeedbackObjectFactory.create(false);
+      // Use RegEx to find if user has print statements and add a special
+      // feedback warning explaining we don't support print statements.
+      var code = codeEvalResult.getPreprocessedCode();
+      if (_hasPrintStatement(code)) {
+        feedback = _appendPrintFeedback(feedback);
+      }
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
         if (errorString.startsWith('TimeLimitError')) {
-          return _getTimeoutErrorFeedback();
+          feedback.appendFeedback(_getTimeoutErrorFeedback());
+          return feedback;
         } else if (errorString.startsWith(
           'ExternalError: RangeError')) {
-          return _getInfiniteLoopFeedback();
+          feedback.appendFeedback(_getInfiniteLoopFeedback());
+          return feedback;
         } else {
-          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+          feedback.appendFeedback(_getRuntimeErrorFeedback(
+            codeEvalResult, rawCodeLineIndexes));
+          return feedback;
         }
       } else {
         // Get all the tests from first task to current that need to be
@@ -323,8 +365,9 @@ tie.factory('FeedbackGeneratorService', [
         for (i = 0; i < tasks.length; i++) {
           for (var j = 0; j < buggyOutputTests[i].length; j++) {
             if (buggyOutputTestResults[i][j]) {
-              return _getBuggyOutputTestFeedback(
-                buggyOutputTests[i][j], codeEvalResult);
+              feedback.appendFeedback(_getBuggyOutputTestFeedback(
+                buggyOutputTests[i][j], codeEvalResult));
+              return feedback;
             }
           }
 
@@ -332,9 +375,10 @@ tie.factory('FeedbackGeneratorService', [
             var observedOutput = observedOutputs[i][j];
 
             if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
-              return _getCorrectnessTestFeedback(
+              feedback.appendFeedback(_getCorrectnessTestFeedback(
                 tasks[i].getOutputFunctionNameWithoutClass(),
-                correctnessTests[i][j], observedOutput);
+                correctnessTests[i][j], observedOutput));
+              return feedback;
             }
           }
 
@@ -344,12 +388,14 @@ tie.factory('FeedbackGeneratorService', [
             var observedPerformance = performanceTestResults[i][j];
 
             if (expectedPerformance !== observedPerformance) {
-              return _getPerformanceTestFeedback(expectedPerformance);
+              feedback.appendFeedback(_getPerformanceTestFeedback(
+                expectedPerformance));
+              return feedback;
             }
           }
         }
 
-        var feedback = FeedbackObjectFactory.create(true);
+        feedback = FeedbackObjectFactory.create(true);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
           '"Next" button to move on to the next question.'
@@ -415,6 +461,20 @@ tie.factory('FeedbackGeneratorService', [
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
+        } else if (prereqCheckFailure.hasWrongLanguage()) {
+          WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
+            if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
+              error.feedbackParagraphs.forEach(function(paragraph) {
+                if (paragraph.type === PARAGRAPH_TYPE_TEXT) {
+                  feedback.appendTextParagraph(paragraph.content);
+                } else if (paragraph.type === PARAGRAPH_TYPE_CODE) {
+                  feedback.appendCodeParagraph(paragraph.content);
+                } else if (paragraph.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
+                  feedback.appendSyntaxErrorParagraph(paragraph.content);
+                }
+              });
+            }
+          });
         } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
@@ -443,6 +503,7 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
+      _appendPrintFeedback: _appendPrintFeedback,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
@@ -450,6 +511,7 @@ tie.factory('FeedbackGeneratorService', [
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
+      _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable
     };
   }

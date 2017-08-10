@@ -148,6 +148,217 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
+/**
+ * Pre-requisite check error type for when the user tries to utilize code with
+ * syntax commonly used in another language that isn't valid in the current
+ * language.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG', 'wrongLang');
+
+/**
+ * FeedbackParagraph type that will be rendered to look like a normal text
+ * paragraph.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_TEXT', 'text');
+
+/**
+ * FeedbackParagraph type that will render text to look like code.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_CODE', 'code');
+
+/**
+ * FeedbackParagraph type that will render text to bring attention to a syntax
+ * error.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
+
+/**
+ * Dictionary of wrong language detection errors and their related information
+ *
+ * @type {{}}
+ */
+tie.constant('WRONG_LANGUAGE_ERRORS', {
+  python: [{
+    // Used Increment Operator
+    errorName: 'incrementOp',
+    regExString: '\\+\\+',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Hmm... It looks like you're trying to use '++' to increment a ",
+          "number, but unfortunately, this isn't valid in Python. Try ",
+          "using '+= 1' instead."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used Decrement Operator
+    errorName: 'decrementOp',
+    regExString: '\\-\\-',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Hmm... It looks like you're trying to use '--' to decrement a ",
+          "number, but unfortunately, this isn't valid in Python. Try ",
+          "using '-= 1' instead."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used `push` instead of `append`
+    errorName: 'push',
+    regExString: '.push\\(',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "It seems like you're using a `push` method to add an element ",
+          "to an array, which is valid in Java, but the Python equivalent ",
+          "called `append`."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used the catch statement
+    errorName: 'catch',
+    regExString: '\\bcatch\\b',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Are you trying to use a `catch` statement to catch an ",
+          "Exception? In Python, we use `except` instead."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used the Java comment syntax
+    errorName: 'javaComment',
+    regExString: '\\/(\\s*|\\w*)*\\n|\\/\\*(\\*)?(\\s*|\\w*)*\\*\\/',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Hmmm... It seems like you're using the Java syntax to write ",
+          "comments. Make sure you're using the '#' character on lines ",
+          "you want to comment out."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used a do-while loop
+    errorName: 'doWhile',
+    regExString: 'do\\s*{(\\w|\\s|[;])*}\\s*while\\s*\\((\\w|\\s)*\\)|\\bdo' +
+      '\\b',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Unfortunately, Python doesn't support do-while statements. ",
+          "Perhaps try using a flag or different condition instead?"
+        ].join('')
+      }
+    ]
+  }, {
+    // Used else if instead of elif
+    errorName: 'elseIf',
+    regExString: '\\belse\\s*if\\b',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Make sure to double check that you're using `elif` instead of ",
+          "`else if` for your if-else statements."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used a switch statement
+    errorName: 'switch',
+    regExString: '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase' +
+      '\\b)|(\\bdefault\\b))',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Oops, Python doesn't support switch statements. You'll ",
+          "just have to use if-else statements instead."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used the C-like import syntax
+    errorName: 'cImport',
+    regExString: '#include\\s+<\\w+>',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "It looks like you're using a C-like syntax to try and import ",
+          "packages. In Python, your imports should be in the format: "
+        ].join('')
+      }, {
+        type: 'code',
+        content: 'import [insert package name here]'
+      }
+    ]
+  }, {
+    // Used the Java/C not operator
+    errorName: 'notOp',
+    regExString: '![^=]\\w*',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Are you making sure to use the right NOT operator? In Python, ",
+          "it's just `not`."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used the Java/C and operator
+    errorName: 'andOp',
+    regExString: '&&',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Triple check you're using the right AND operator. For Python, ",
+          "the AND operator is simply `and`."
+        ].join('')
+      }
+    ]
+  }, {
+    // Used the Java/C or operator
+    errorName: 'orOp',
+    regExString: '\\|\\|',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Hmmm... It seems like you're trying to use the OR operator ",
+          "syntax from Java. Be sure you're using the Python appropriate ",
+          "operator - `or`."
+        ].join('')
+      }
+    ]
+  }]
+});
+
 
 /**
  * Pre-requisite check error type to see if the user tried to use any methods

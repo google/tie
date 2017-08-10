@@ -344,7 +344,7 @@ describe('SolutionHandlerService', function() {
       it('there is a runtime error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    print(greeting)',
+          '    return greeting',
           ''
         ].join('\n');
 
