@@ -87,7 +87,7 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Checks the error counters to if any have reached the threshold. If they
+     * Checks the error counters to see if any have reached the threshold. If they
      * have, then it appends to the feedback to prompt the user to look at the
      * primer.
      *
