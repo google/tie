@@ -16,7 +16,9 @@
  * @fileoverview Unit tests for the PythonCodeRunnerService.
  */
 describe('PythonCodeRunnerService', function() {
+  var $httpBackend;
   var PythonCodeRunnerService;
+  var ServerHandlerService;
   var responseDict = {};
   var VARNAME_CORRECTNESS_TEST_RESULTS = 'correctness_test_results';
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
@@ -25,8 +27,11 @@ describe('PythonCodeRunnerService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    $httpBackend = $injector.get('$httpBackend');
     PythonCodeRunnerService = $injector.get(
       'PythonCodeRunnerService');
+    ServerHandlerService = $injector.get(
+      'ServerHandlerService');
     responseDict.stdout = 'hello world!';
     responseDict.stderr = '';
     responseDict.results = {};
@@ -38,6 +43,44 @@ describe('PythonCodeRunnerService', function() {
     responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
       ['linear']];
   }));
+
+  describe('compileCodeAsync', function() {
+
+    it('sends a POST request to the backend to compile code', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $httpBackend.expectPOST('null/ajax/compile_code').respond(
+        200, {});
+      spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+      spyOn(PythonCodeRunnerService,
+        '_processCodeCompilationServerResponse').and.returnValue(null);
+      PythonCodeRunnerService.compileCodeAsync(code);
+      $httpBackend.flush()
+    });
+  });
+
+  describe('runCodeAsync', function() {
+
+    it('sends a POST request to the backend to run code', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $httpBackend.expectPOST('null/ajax/run_code').respond(
+        200, responseDict);;
+      spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+      spyOn(PythonCodeRunnerService,
+        '_processCodeExecutionServerResponse').and.returnValue(null);
+      PythonCodeRunnerService.runCodeAsync(code);
+      $httpBackend.flush()
+    });
+  });
 
   describe('_processCodeExecutionServerResponse', function() {
 
