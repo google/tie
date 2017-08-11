@@ -57,7 +57,7 @@ tie.factory('FeedbackGeneratorService', [
      *
      * @type {string}
      */
-    var previousErrorString = '';
+    var previousRuntimeErrorString = '';
 
     /**
      * Updates the counter specified in the paramter to track language
@@ -517,8 +517,8 @@ tie.factory('FeedbackGeneratorService', [
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // If the user receives the same error message increment the same error
         // counter.
-        if (previousErrorString &&
-            previousErrorString === codeEvalResult.getErrorString()) {
+        if (previousRuntimeErrorString &&
+            previousRuntimeErrorString === codeEvalResult.getErrorString()) {
           _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
         } else {
           _resetCounters();
@@ -533,7 +533,7 @@ tie.factory('FeedbackGeneratorService', [
         }
 
         _applyThresholdUpdates(feedback);
-        previousErrorString = codeEvalResult.getErrorString();
+        previousRuntimeErrorString = codeEvalResult.getErrorString();
         return feedback;
       },
       /**
@@ -546,7 +546,7 @@ tie.factory('FeedbackGeneratorService', [
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-        previousErrorString = '';
+        previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
@@ -563,7 +563,7 @@ tie.factory('FeedbackGeneratorService', [
       getPrereqFailureFeedback: function(prereqCheckFailure) {
         if (prereqCheckFailure.hasWrongLanguage()) {
           _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-          previousErrorString = '';
+          previousRuntimeErrorString = '';
         } else {
           _resetCounters();
         }
