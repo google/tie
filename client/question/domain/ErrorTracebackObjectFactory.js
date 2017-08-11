@@ -21,9 +21,11 @@ tie.factory('ErrorTracebackObjectFactory', [
   'TracebackCoordinatesObjectFactory',
   function(TracebackCoordinatesObjectFactory) {
     /**
-     * ErrorTraceback objects are encapsulate the error message and traceback
+     * ErrorTraceback objects encapsulate the error message and traceback
      * coordinates for a given Error in a student's submission.
      */
+
+    var LINE_DELIMITER_PYTHON = ', line ';
 
     /**
      * Constructor for ErrorTraceback
@@ -105,6 +107,42 @@ tie.factory('ErrorTracebackObjectFactory', [
         return TracebackCoordinatesObjectFactory.create(
           traceLine.lineno, traceLine.colno);
       });
+
+      return ErrorTraceback.create(errorMessage, tracebackCoordinates);
+    };
+
+    /**
+     * Returns an ErrorTraceback object from a standard Python error
+     *
+     * @param {string} pythonError
+     * @returns {ErrorTraceback}
+     */
+    ErrorTraceback.fromPythonError = function(pythonError) {
+      // Split the error string by newlines for easier processing.
+      var splitErrorMessage = pythonError.trim().split(/\r?\n/);
+      var errorMessage = splitErrorMessage[splitErrorMessage.length - 1];
+      var lineNumber = null;
+      // Python error tracebacks use the last two lines to show the line of code
+      // and the error (and sometimes a ^ indicating where the error occurred.
+      // Therefore, we need to start at the second from the last line and work
+      // backwards to find the most relevant line number.
+      for (var i = splitErrorMessage.length - 3; i >= 0; i--) {
+        if (splitErrorMessage[i].indexOf(LINE_DELIMITER_PYTHON) !== -1) {
+          lineNumber = parseInt(splitErrorMessage[i].slice(
+              splitErrorMessage[i].indexOf(LINE_DELIMITER_PYTHON) +
+              LINE_DELIMITER_PYTHON.length), 10);
+          break;
+        }
+      }
+      var colNumber = null;
+      // This is used to grab the column number of an error, if one is present.
+      // Python will use a '    ^' to indicate where on the line an error
+      // occurred, allowing us to isolate that and use it as the column number.
+      if (splitErrorMessage[splitErrorMessage.length - 2].indexOf('^') !== -1) {
+        colNumber = splitErrorMessage[splitErrorMessage.length - 2].length;
+      }
+      var tracebackCoordinates = [TracebackCoordinatesObjectFactory.create(
+          lineNumber, colNumber)];
 
       return ErrorTraceback.create(errorMessage, tracebackCoordinates);
     };

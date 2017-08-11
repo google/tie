@@ -35,6 +35,21 @@ tie.factory('CodeRunnerDispatcherService', [
         } else {
           throw Error('Language not supported: ' + language);
         }
+      },
+      /**
+       * Asynchronously compiles the code in the correct corresponding language
+       * as passed in by the language parameter.
+       *
+       * @param {string} language
+       * @param {string} code
+       * @returns {Promise}
+       */
+      compileCodeAsync: function(language, code) {
+        if (language === LANGUAGE_PYTHON) {
+          return PythonCodeRunnerService.compileCodeAsync(code);
+        } else {
+          throw Error('Language not supported: ' + language);
+        }
       }
     };
   }

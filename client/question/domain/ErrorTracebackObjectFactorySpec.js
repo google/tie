@@ -51,4 +51,48 @@ describe('ErrorTracebackObjectFactory', function() {
       ).toEqual(errorTraceback.getErrorString());
     });
   });
+
+  describe('fromPythonError', function() {
+    it('should return correct traceback for Python runtime errors', function() {
+      var expectedLineNumber = 28;
+      var expectedColumnNumber = null;
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+      "NameError: global name 'potato' is not defined",
+        [TracebackCoordinatesObjectFactory.create(
+          expectedLineNumber, expectedColumnNumber)]);
+
+      var pythonError = `Traceback (most recent call last):
+  File "main.py", line 54, in <module>
+    StudentCode().findMostCommonCharacter, all_tasks_test_inputs[0][0]))
+  File "main.py", line 19, in runTest
+    output = func(input)
+  File "main.py", line 28, in findMostCommonCharacter
+    return potato
+NameError: global name 'potato' is not defined`;
+
+      expect(
+        ErrorTracebackObjectFactory.fromPythonError(pythonError)
+          .getErrorString()
+      ).toEqual(errorTraceback.getErrorString());
+    });
+
+    it('should return correct traceback for Python syntax errors', function() {
+      var expectedLineNumber = 8;
+      var expectedColumnNumber = 17;
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+      'SyntaxError: EOL while scanning string literal',
+        [TracebackCoordinatesObjectFactory.create(
+          expectedLineNumber, expectedColumnNumber)]);
+
+      var pythonError = `  File "main.py", line 8
+    return "TEST
+               ^
+SyntaxError: EOL while scanning string literal`;
+
+      expect(
+        ErrorTracebackObjectFactory.fromPythonError(pythonError)
+          .getErrorString()
+      ).toEqual(errorTraceback.getErrorString());
+    });
+  });
 });

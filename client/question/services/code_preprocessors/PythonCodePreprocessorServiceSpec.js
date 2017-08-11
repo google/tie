@@ -17,6 +17,7 @@
  */
 
 describe('PythonCodePreprocessorService', function() {
+  var CodeSubmissionObjectFactory;
   var PythonCodePreprocessorService;
   var BuggyOutputTestObjectFactory;
   var CorrectnessTestObjectFactory;
@@ -24,6 +25,8 @@ describe('PythonCodePreprocessorService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
+    CodeSubmissionObjectFactory = $injector.get(
+      'CodeSubmissionObjectFactory');
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
     BuggyOutputTestObjectFactory = $injector.get(
@@ -33,6 +36,41 @@ describe('PythonCodePreprocessorService', function() {
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
   }));
+
+  describe('_prepareCodeSubmissionForServerExecution', function() {
+
+    it('appends / prepends the correct code to the supplied code', function() {
+      var studentCode = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result'
+      ].join('\n');
+      var preprocessedCode = [
+        'response_dict = {}',
+        'most_recent_input = None',
+        'performance_test_results = None',
+        'correctness_test_results = None',
+        'buggy_output_test_results = None',
+        '',
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        "response_dict['most_recent_input'] = most_recent_input",
+        "response_dict['performance_test_results'] = performance_test_results",
+        "response_dict['correctness_test_results'] = correctness_test_results",
+        [
+          "response_dict['buggy_output_test_results']",
+          " = buggy_output_test_results"
+        ].join(''),
+        ''
+      ].join('\n');
+      var codeSubmission = CodeSubmissionObjectFactory.create(studentCode);
+      PythonCodePreprocessorService._prepareCodeSubmissionForServerExecution(
+          codeSubmission);
+      expect(codeSubmission.getPreprocessedCode()).toEqual(preprocessedCode);
+      expect(codeSubmission.getPreprocessedCode()).toContain(studentCode);
+    });
+  });
 
   describe('_jsonVariableToPython', function() {
     it('should correctly convert a JSON string to a Python string', function() {

@@ -34,7 +34,7 @@ window.globalData = {
   questionSets: {}
 };
 
-window.tie = angular.module('tie', ['ui.codemirror']);
+window.tie = angular.module('tie', ['ui.codemirror', 'tieConfig']);
 
 /**
  * The maximum amount of time (in seconds) that the code can take to run.

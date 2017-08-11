@@ -29,7 +29,7 @@ describe('CodeRunnerDispatcherService', function() {
       var errorFunction = function() {
         CodeRunnerDispatcherService.runCodeAsync('java', 'some code');
       };
-      expect(errorFunction).toThrowError(Error);
+      expect(errorFunction).toThrow();
     });
 
     it('should throw TimeLimitError given infinite-loop code', function(done) {
@@ -62,6 +62,15 @@ describe('CodeRunnerDispatcherService', function() {
           done();
         }
       );
+    });
+  });
+
+  describe('compileCodeAsync', function() {
+    it('should throw an error if passed a non-Python language', function() {
+      var errorFunction = function() {
+        CodeRunnerDispatcherService.compileCodeAsync('java', 'some code');
+      };
+      expect(errorFunction).toThrow();
     });
   });
 });
