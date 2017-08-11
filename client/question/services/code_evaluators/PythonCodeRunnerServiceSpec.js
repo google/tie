@@ -24,9 +24,11 @@ describe('PythonCodeRunnerService', function() {
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
-  var HTTP_OK = 200;
+  var HTTP_STATUS_CODE_OK = 200;
 
-  beforeEach(module('tie'));
+  beforeEach(module('tie', function($provide) {
+    $provide.constant('SERVER_URL', 'http://katamari.com');
+  }));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
     PythonCodeRunnerService = $injector.get(
@@ -54,8 +56,8 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      $httpBackend.expectPOST('null/ajax/compile_code').respond(
-        HTTP_OK, {});
+      $httpBackend.expectPOST('http://katamari.com/ajax/compile_code').respond(
+        HTTP_STATUS_CODE_OK, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeCompilationServerResponse').and.returnValue(null);
@@ -73,8 +75,8 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      $httpBackend.expectPOST('null/ajax/run_code').respond(
-        HTTP_OK, responseDict);
+      $httpBackend.expectPOST('http://katamari.com/ajax/run_code').respond(
+        HTTP_STATUS_CODE_OK, responseDict);
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeExecutionServerResponse').and.returnValue(null);
