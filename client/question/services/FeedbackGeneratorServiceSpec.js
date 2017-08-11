@@ -266,6 +266,9 @@ describe('FeedbackGeneratorService', function() {
         "don't you take a look at the page linked through the '",
         PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
       ].join(''));
+      expect(function() {
+        FeedbackGeneratorService._updateCounters('Not a counter');
+      }).toThrowError('Invalid parameter');
     });
   });
 
