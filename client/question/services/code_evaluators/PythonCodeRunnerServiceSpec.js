@@ -24,6 +24,7 @@ describe('PythonCodeRunnerService', function() {
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
+  var HTTP_OK = 200;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -54,12 +55,12 @@ describe('PythonCodeRunnerService', function() {
         ''
       ].join('\n');
       $httpBackend.expectPOST('null/ajax/compile_code').respond(
-        200, {});
+        HTTP_OK, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeCompilationServerResponse').and.returnValue(null);
       PythonCodeRunnerService.compileCodeAsync(code);
-      $httpBackend.flush()
+      $httpBackend.flush();
     });
   });
 
@@ -73,12 +74,12 @@ describe('PythonCodeRunnerService', function() {
         ''
       ].join('\n');
       $httpBackend.expectPOST('null/ajax/run_code').respond(
-        200, responseDict);;
+        HTTP_OK, responseDict);
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeExecutionServerResponse').and.returnValue(null);
       PythonCodeRunnerService.runCodeAsync(code);
-      $httpBackend.flush()
+      $httpBackend.flush();
     });
   });
 
