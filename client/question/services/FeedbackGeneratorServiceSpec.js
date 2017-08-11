@@ -108,7 +108,7 @@ describe('FeedbackGeneratorService', function() {
       'TimeLimitError: Program exceeded run time limit.',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
 
-    FeedbackGeneratorService._updateCounters();
+    FeedbackGeneratorService._resetCounters();
   }));
 
   describe('_jsToHumanReadable', function() {

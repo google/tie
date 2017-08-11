@@ -73,6 +73,8 @@ tie.factory('FeedbackGeneratorService', [
       } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
         consecutiveSameRuntimeErrorCounter = 0;
         consecutiveLanguageUnfamiliarityCounter++;
+      } else {
+        throw Error('Invalid parameter');
       }
     };
 
