@@ -41,6 +41,9 @@ describe('FeedbackGeneratorService', function() {
 
   var LANGUAGE_PYTHON;
 
+  var PYTHON_PRIMER_BUTTON_NAME;
+  var UNFAMILIARITY_THRESHOLD;
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     BuggyOutputTestObjectFactory = $injector.get(
@@ -74,6 +77,9 @@ describe('FeedbackGeneratorService', function() {
 
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
 
+    PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
+    UNFAMILIARITY_THRESHOLD = $injector.get('UNFAMILIARITY_THRESHOLD');
+
     var taskDict = [{
       instructions: [''],
       prerequisiteSkills: [''],
@@ -101,6 +107,8 @@ describe('FeedbackGeneratorService', function() {
     timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
       'TimeLimitError: Program exceeded run time limit.',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
+
+    FeedbackGeneratorService._resetCounters();
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -246,6 +254,21 @@ describe('FeedbackGeneratorService', function() {
         'Looks like your code is hitting an infinite recursive loop.',
         'Check to see that your recursive calls terminate.'
       ].join(' '));
+    });
+  });
+
+  describe('_getUnfamiliarLanguageFeedback', function() {
+    it('should return the string for the text feedback for python', function() {
+      var feedbackString = FeedbackGeneratorService
+        ._getUnfamiliarLanguageFeedback(LANGUAGE_PYTHON);
+      expect(feedbackString).toEqual([
+        "Seems like you're having some trouble with Python. Why ",
+        "don't you take a look at the page linked through the '",
+        PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
+      ].join(''));
+      expect(function() {
+        FeedbackGeneratorService._updateCounters('Not a counter');
+      }).toThrowError('Invalid parameter');
     });
   });
 
@@ -458,7 +481,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it(['should return a null if it doesn\'t recognize the given ',
-      'error'], function() {
+      'error'].join(''), function() {
       var errorString = "not known error";
       var feedbackString =
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
@@ -735,6 +758,91 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toEqual('Your code is running more ' +
         'slowly than expected. Can you reconfigure it such that it runs in ' +
         'linear time?');
+    });
+
+    it('should correctly append language unfamiliarity feedback if ' +
+        'consecutiveUnfamiliarityLanguageCounter reaches the ' +
+        'UNFAMILIARITY_THRESHOLD count with wrong language errors', function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, starterCode, 'push');
+
+      var feedback;
+
+      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
+        feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+            prereqFailure);
+      }
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].getContent()).toEqual([
+        "It seems like you're using a `push` method to add an element ",
+        "to an array, which is valid in Java, but the Python equivalent ",
+        "called `append`."
+      ].join(''));
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toEqual(
+        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
+    });
+
+    it('should correctly append language unfamiliarity feedback if ' +
+       'consecutiveUnfamiliarityLanguageCounter reaches the ' +
+       'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
+      var errorString = 'some error';
+
+      var feedback;
+
+      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
+        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(errorString);
+      }
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('some error');
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toEqual(
+        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
+    });
+
+    it('should correctly append language unfamiliarity feedback if ' +
+       'consecutiveSameRuntimeErrorCounter reaches the ' +
+       'UNFAMILIARITY_THRESHOLD count', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], [], sampleErrorTraceback,
+        'testInput');
+
+      var feedback;
+
+      for (var i = 0; i <= UNFAMILIARITY_THRESHOLD; i++) {
+        feedback = FeedbackGeneratorService.getFeedback(
+          testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
+        TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
+      }
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(3);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'Looks like your code had a runtime error when evaluating the input ' +
+        '"testInput". Here\'s the trace:'
+      ].join(''));
+      expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe(
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
+      expect(paragraphs[2].isTextParagraph()).toBe(true);
+      expect(paragraphs[2].getContent()).toBe(
+        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
     });
 
     it('should correctly return feedback if print statements are detected',
