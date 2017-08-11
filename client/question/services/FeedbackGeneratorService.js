@@ -520,6 +520,8 @@ tie.factory('FeedbackGeneratorService', [
         if (previousErrorString &&
             previousErrorString === codeEvalResult.getErrorString()) {
           _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
+        } else {
+          _resetCounters();
         }
 
         var feedback = _getFeedbackWithoutReinforcement(
