@@ -24,12 +24,92 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
+  'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
+  'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
-    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR) {
+    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
+    PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
+    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD) {
+
+    /**
+     * Counter to keep track of language unfamiliarity errors which include
+     * syntax errors and wrong language errors.
+     *
+     * @type {number}
+     */
+    var consecutiveLanguageUnfamiliarityCounter = 0;
+
+    /**
+     * Counter to keep track of consecutive same errors.
+     *
+     * @type {number}
+     */
+    var consecutiveSameRuntimeErrorCounter = 0;
+
+    /**
+     * Variable to store the error string immediately before the current error.
+     * Will be used to see if the user is receiving the same exact error
+     * consecutively, a possible indication of language unfamiliarity.
+     *
+     * @type {string}
+     */
+    var previousRuntimeErrorString = '';
+
+    /**
+     * Updates the counter specified in the paramter to track language
+     * unfamiliarity and resets all other counters.
+     *
+     * @param {string} counterToIncrement
+     * @private
+     */
+    var _updateCounters = function(counterToIncrement) {
+      if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
+        consecutiveSameRuntimeErrorCounter++;
+        consecutiveLanguageUnfamiliarityCounter = 0;
+      } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
+        consecutiveSameRuntimeErrorCounter = 0;
+        consecutiveLanguageUnfamiliarityCounter++;
+      } else {
+        throw Error('Invalid parameter');
+      }
+    };
+
+    /**
+     * Reset all error counters.
+     *
+     * @private
+     */
+    var _resetCounters = function() {
+      consecutiveSameRuntimeErrorCounter = 0;
+      consecutiveLanguageUnfamiliarityCounter = 0;
+    };
+
+    /**
+     * Checks the error counters to see if any have reached the threshold. If
+     * they have, then it appends to the feedback to prompt the user to look at
+     * the primer.
+     *
+     * @param {Feedback} feedback
+     * @private
+     */
+    var _applyThresholdUpdates = function(feedback) {
+      if ((consecutiveLanguageUnfamiliarityCounter ===
+        UNFAMILIARITY_THRESHOLD) || (consecutiveSameRuntimeErrorCounter ===
+        UNFAMILIARITY_THRESHOLD)) {
+        // TODO(dianakc, eledavi): Will have to adjust according to language
+        feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
+        // Once the user has been prompted, we reset the counter so
+        // that we make sure not to continue to prompt and, thereby,
+        // annoy them.
+        _resetCounters();
+      }
+    };
+
     // TODO(sll): Update this function to take the programming language into
     // account when generating the human-readable representations. Currently,
     // it assumes that Python is being used.
@@ -280,6 +360,26 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns a string of the feedback to be returned when it is detected that
+     * the user is unfamiliar with the given programming language.
+     *
+     * @param {string} language
+     * @returns {String}
+     * @private
+     */
+    var _getUnfamiliarLanguageFeedback = function(language) {
+      if (language === LANGUAGE_PYTHON) {
+        return [
+          "Seems like you're having some trouble with Python. Why ",
+          "don't you take a look at the page linked through the '",
+          PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
+        ].join('');
+      } else {
+        return '';
+      }
+    };
+
+    /**
      * Returns boolean indicating if there are print statements found in
      * the given code.
      *
@@ -417,6 +517,15 @@ tie.factory('FeedbackGeneratorService', [
        * @returns {Feedback}
        */
       getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
+        // If the user receives the same error message increment the same error
+        // counter.
+        if (previousRuntimeErrorString &&
+            previousRuntimeErrorString === codeEvalResult.getErrorString()) {
+          _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
+        } else {
+          _resetCounters();
+        }
+
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
         if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
@@ -424,14 +533,42 @@ tie.factory('FeedbackGeneratorService', [
             ReinforcementGeneratorService.getReinforcement(
               tasks[tasks.length - 1], codeEvalResult));
         }
+
+        _applyThresholdUpdates(feedback);
+        previousRuntimeErrorString = codeEvalResult.getErrorString();
         return feedback;
       },
+      /**
+       * Returns the Feedback object for the given syntax error string.
+       *
+       * @param {string} errorString
+       * @returns {Feedback}
+       */
       getSyntaxErrorFeedback: function(errorString) {
+        // If the user receives another syntax error, increment the
+        // language unfamiliarity error counter.
+        _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
+        previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(false);
         feedback.appendSyntaxErrorParagraph(errorString);
+
+        _applyThresholdUpdates(feedback);
         return feedback;
       },
+      /**
+       * Returns the appropriate Feedback object for the given Prerequisite
+       * Check Failure.
+       *
+       * @param {PrereqCheckFailure} prereqCheckFailure
+       * @returns {Feedback}
+       */
       getPrereqFailureFeedback: function(prereqCheckFailure) {
+        if (prereqCheckFailure.hasWrongLanguage()) {
+          _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
+          previousRuntimeErrorString = '';
+        } else {
+          _resetCounters();
+        }
         if (!prereqCheckFailure) {
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
         }
@@ -501,6 +638,8 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
+        _applyThresholdUpdates(feedback);
+
         return feedback;
       },
       _appendPrintFeedback: _appendPrintFeedback,
@@ -508,11 +647,15 @@ tie.factory('FeedbackGeneratorService', [
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
+      _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _hasPrintStatement: _hasPrintStatement,
-      _jsToHumanReadable: _jsToHumanReadable
+      _jsToHumanReadable: _jsToHumanReadable,
+      _updateCounters: _updateCounters,
+      _resetCounters: _resetCounters,
+      _applyThresholdUpdates: _applyThresholdUpdates
     };
   }
 ]);
