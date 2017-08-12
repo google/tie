@@ -18,6 +18,8 @@
 
 window.tieConfig = angular.module('tieConfig', []);
 
+tieConfig.constant('SERVER_URL', null);
+
 tieConfig.config(['$httpProvider', function($httpProvider) {
   // Set default headers for POST and PUT requests.
   $httpProvider.defaults.headers.post = {

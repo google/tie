@@ -17,7 +17,7 @@
  * objects, which are linear sequences of questions on a particular topic.
  */
 
-tie.factory('QuestionSetObjectFactory', [
+tieData.factory('QuestionSetObjectFactory', [
   function() {
     /**
      * QuestionSet represents a component that bundles together questions of
