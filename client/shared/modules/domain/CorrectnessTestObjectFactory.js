@@ -18,7 +18,7 @@
  */
 
 
-tie.factory('CorrectnessTestObjectFactory', [
+tieData.factory('CorrectnessTestObjectFactory', [
   function() {
     /**
      * CorrectnessTest objects have all of the information necessary to

@@ -17,7 +17,7 @@
  * objects. A task is a specific coding challenge that forms part of a Question.
  */
 
-tie.factory('TaskObjectFactory', [
+tieData.factory('TaskObjectFactory', [
   'CorrectnessTestObjectFactory', 'BuggyOutputTestObjectFactory',
   'PerformanceTestObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_SYSTEM_CODE',

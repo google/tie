@@ -17,7 +17,7 @@
  * domain objects.
  */
 
-tie.factory('QuestionObjectFactory', [
+tieData.factory('QuestionObjectFactory', [
   'TaskObjectFactory', function(TaskObjectFactory) {
     /**
      * Question objects encapsulate all of the information necessary to

@@ -26,6 +26,7 @@ describe('QuestionObjectFactory', function() {
   var INVALID_LANGUAGE = "invalidLanguage";
 
   beforeEach(module('tie'));
+  beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');

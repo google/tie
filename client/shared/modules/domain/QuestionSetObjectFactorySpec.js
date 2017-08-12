@@ -20,6 +20,7 @@ describe('QuestionSetObjectFactory', function() {
   var QuestionSetObjectFactory;
 
   beforeEach(module('tie'));
+  beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     QuestionSetObjectFactory = $injector.get('QuestionSetObjectFactory');
   }));

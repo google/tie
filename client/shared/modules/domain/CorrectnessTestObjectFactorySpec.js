@@ -20,7 +20,7 @@ describe('CorrectnessTestObjectFactory', function() {
   var CorrectnessTestObjectFactory;
   var MESSAGE = "hello";
 
-  beforeEach(module('tie'));
+  beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     CorrectnessTestObjectFactory = $injector.get(
       'CorrectnessTestObjectFactory');
