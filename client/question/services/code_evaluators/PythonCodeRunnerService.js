@@ -114,7 +114,7 @@ tie.factory('PythonCodeRunnerService', [
       };
       return $http.post(SERVER_URL + '/ajax/compile_code', data).then(
         function(response) {
-          _processCodeCompilationServerResponse(response.data, code);
+          return _processCodeCompilationServerResponse(response.data, code);
         }
       );
     };
@@ -133,7 +133,7 @@ tie.factory('PythonCodeRunnerService', [
       };
       return $http.post(SERVER_URL + '/ajax/run_code', data).then(
         function(response) {
-          _processCodeExecutionServerResponse(response.data, code);
+          return _processCodeExecutionServerResponse(response.data, code);
         }
       );
     };
