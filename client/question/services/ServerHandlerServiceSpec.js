@@ -19,8 +19,9 @@
 describe('ServerHandlerService', function() {
   var ServerHandlerService;
 
+  beforeEach(module('tie'));
   var setServerUrl = function(url) {
-    module('tie', function($provide) {
+    module('tieConfig', function($provide) {
       $provide.constant('SERVER_URL', url);
     });
   };

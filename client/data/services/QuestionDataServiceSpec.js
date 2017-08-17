@@ -21,6 +21,7 @@ describe('QuestionDataService', function() {
   var QUESTION_IDS = Object.keys(globalData.questions);
 
   beforeEach(module('tie'));
+  beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     globalData.questionSets.all = {};
     globalData.questionSets.all.questionIds = QUESTION_IDS;

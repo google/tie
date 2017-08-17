@@ -17,7 +17,7 @@
  * domain objects.
  */
 
-tie.factory('PerformanceTestObjectFactory', [
+tieData.factory('PerformanceTestObjectFactory', [
   function() {
     /**
      * PerformanceTest encapsulates all of the information needed to

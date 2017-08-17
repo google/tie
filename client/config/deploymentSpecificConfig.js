@@ -11,8 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 /**
- * @fileoverview Adds a SERVER_URL constant to point to TIE's current server.
+ * @fileoverview This file contains deployment specific constants.
  */
 
-tie.constant('SERVER_URL', null);
+tieConfig.constant('SERVER_URL', null);

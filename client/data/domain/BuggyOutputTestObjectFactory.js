@@ -17,7 +17,7 @@
  * domain objects.
  */
 
-tie.factory('BuggyOutputTestObjectFactory', [
+tieData.factory('BuggyOutputTestObjectFactory', [
   function() {
     /**
      * BuggyOutputTest is used to store all of the information needed to

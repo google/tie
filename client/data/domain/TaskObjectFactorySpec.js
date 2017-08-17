@@ -21,6 +21,7 @@ describe('TaskObjectFactory', function() {
   var question;
 
   beforeEach(module('tie'));
+  beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     QuestionObjectFactory = $injector.get("QuestionObjectFactory");
 

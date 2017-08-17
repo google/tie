@@ -17,7 +17,7 @@
  * maintaining a copy in the frontend.
  */
 
-tie.factory('QuestionDataService', [
+tieData.factory('QuestionDataService', [
   'QuestionObjectFactory', 'QuestionSetObjectFactory',
   function(QuestionObjectFactory, QuestionSetObjectFactory) {
     /** @type {null|QuestionSet} */
