@@ -16,7 +16,8 @@
         "Sk": false,
         "tie": false,
         "tieConfig": false,
-        "tieData": false
+        "tieData": false,
+        "tieMenu": false
     },
     "parserOptions": {
         "ecmaVersion": 6,

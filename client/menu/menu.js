@@ -13,7 +13,17 @@
 // limitations under the License.
 
 /**
- * @fileoverview Module for storing question and user data
+ * @fileoverview Adds an importable configuration file for the TIE menu page.
  */
 
-window.tieData = angular.module('tieData', []);
+window.tieMenu = angular.module('tieMenu', ['tieData']);
+
+tieMenu.controller('MenuPageController',
+  ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
+    var questionSetId = 'strings';
+    QuestionDataService.initCurrentQuestionSet(questionSetId);
+    $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
+      questionSetId);
+    $scope.questionIds = $scope.questionSet.getQuestionIds();
+  }]
+);
