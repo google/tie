@@ -16,24 +16,6 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-window.globalData = {
-  /**
-   * Question data will be stored here, keyed by question ID.
-   * Questions are instantiated in assets/questions, and they add themselves
-   * to this dictionary when they're instantiated.
-   *
-   * @type {dict}
-   */
-  questions: {},
-
-  /**
-   * Question set data will be stored here, keyed by question set ID.
-   *
-   * @type {dict}
-   */
-  questionSets: {}
-};
-
 window.tie = angular.module('tie', ['ui.codemirror', 'tieConfig', 'tieData']);
 
 /**
@@ -79,22 +61,6 @@ tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
  * @constant
  */
 tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
-
-/**
- * Class name for wrapping auxiliary code, primarily used for test evaluation.
- *
- * @type {string}
- * @constant
- */
-tie.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
-
-/**
- * Class name for wrapping system code.
- *
- * @type {string}
- * @constant
- */
-tie.constant('CLASS_NAME_SYSTEM_CODE', 'System');
 
 /**
  * Name of button that will direct users to Python language primer.
