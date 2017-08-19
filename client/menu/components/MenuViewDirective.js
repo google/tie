@@ -57,7 +57,8 @@ tieMenu.directive('menuView', [function() {
         }
       </style>
     `,
-    controller: ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
+    controller:
+    ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
       // Currently only getting the set of string questions.
       var currentQuestionSetId = 'strings';
 
@@ -70,9 +71,9 @@ tieMenu.directive('menuView', [function() {
        */
       $scope.loadQuestions = function(questionSetId) {
         QuestionDataService.initCurrentQuestionSet(questionSetId);
-        questionSet = QuestionDataService.getCurrentQuestionSet(
+        var questionSet = QuestionDataService.getCurrentQuestionSet(
           questionSetId);
-        questionIds = questionSet.getQuestionIds();
+        var questionIds = questionSet.getQuestionIds();
         $scope.currentQuestionSetTitles = questionIds.slice();
       };
 

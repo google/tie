@@ -25,14 +25,9 @@ describe('MenuViewDirective', function() {
   beforeEach(module("tieData"));
   beforeEach(module("tieMenu"));
 
-  beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,) {
+  beforeEach(inject(function($compile, $rootScope, _QuestionDataService_) {
     $scope = $rootScope.$new();
 
-    // The reason why we have to go through this trouble to get $scope
-    // is the controller is anonymous, thus, there is no easy way to do
-    // it.
-    // TODO (mengchaowang): Refactor learnerViewDirective controller to a
-    // separate controller instead of anonymous controller.
     element = angular.element('<menu-view></menu-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();
@@ -44,7 +39,7 @@ describe('MenuViewDirective', function() {
 
   describe("loadQuestion", function() {
     it('should load the question data', function() {
-      // $scope.loadQuestions('reverseWords');
+      QuestionDataService.getQuestion('reverseWords');
     });
   });
 });

@@ -20,7 +20,7 @@ tieMenu.directive('menuQuestionCard', [function() {
   return {
     restrict: 'E',
     scope: {
-      questionId: '@',
+      questionId: '@'
     },
     template: `
       <div class="tie-menu-question">
@@ -66,7 +66,8 @@ tieMenu.directive('menuQuestionCard', [function() {
           text-align: center;
         }
     `,
-    controller: ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
+    controller:
+    ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
 
       var question = QuestionDataService.getQuestion($scope.questionId);
       var tasks = question.getTasks();
@@ -74,9 +75,10 @@ tieMenu.directive('menuQuestionCard', [function() {
       $scope.textInstructions = '';
 
       // First task containts general instructions
-      for (var i = 0; i < tasks[0].getInstructions().length ; i++) {
+      for (var i = 0; i < tasks[0].getInstructions().length; i++) {
         if (tasks[0].getInstructions()[i].type === 'text') {
-          $scope.textInstructions += tasks[0].getInstructions()[i].content + ' ';
+          $scope.textInstructions +=
+            tasks[0].getInstructions()[i].content + ' ';
         }
       }
     }]
