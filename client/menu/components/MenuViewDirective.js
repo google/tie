@@ -57,27 +57,28 @@ tieMenu.directive('menuView', [function() {
         }
       </style>
     `,
-    controller:
-    ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
-      // Currently only getting the set of string questions.
-      var currentQuestionSetId = 'strings';
+    controller: ['$scope', 'QuestionDataService',
+      function($scope, QuestionDataService) {
+        // Currently only getting the set of string questions.
+        var currentQuestionSetId = 'strings';
 
-      // The titles of the questions this menu page is displaying.
-      $scope.currentQuestionSetTitles = [];
+        // The titles of the questions this menu page is displaying.
+        $scope.currentQuestionSetTitles = [];
 
-      /**
-       * Given the question set id, retrieves the individual question ids
-       * from that set and sets it to the respective scope variable.
-       */
-      $scope.loadQuestions = function(questionSetId) {
-        QuestionDataService.initCurrentQuestionSet(questionSetId);
-        var questionSet = QuestionDataService.getCurrentQuestionSet(
-          questionSetId);
-        var questionIds = questionSet.getQuestionIds();
-        $scope.currentQuestionSetTitles = questionIds.slice();
-      };
+        /**
+         * Given the question set id, retrieves the individual question ids
+         * from that set and sets it to the respective scope variable.
+         */
+        $scope.loadQuestions = function(questionSetId) {
+          QuestionDataService.initCurrentQuestionSet(questionSetId);
+          var questionSet = QuestionDataService.getCurrentQuestionSet(
+            questionSetId);
+          var questionIds = questionSet.getQuestionIds();
+          $scope.currentQuestionSetTitles = questionIds.slice();
+        };
 
-      $scope.loadQuestions(currentQuestionSetId);
-    }]
+        $scope.loadQuestions(currentQuestionSetId);
+      }
+    ]
   };
 }]);
