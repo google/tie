@@ -849,7 +849,7 @@ tie.directive('learnerView', [function() {
 
           // Skulpt processing happens outside an Angular context, so
           // $scope.$apply() is needed to force a DOM update.
-          if (!ServerHandlerService.doesServerExist()){
+          if (!ServerHandlerService.doesServerExist()) {
             $scope.$apply();
           }
           $scope.scrollToBottomOfFeedbackWindow();
