@@ -68,19 +68,9 @@ tieMenu.directive('menuQuestionCard', [function() {
     `,
     controller: ['$scope', 'QuestionDataService',
       function($scope, QuestionDataService) {
-
-        var question = QuestionDataService.getQuestion($scope.questionId);
-        var tasks = question.getTasks();
-        $scope.title = question.getTitle();
-        $scope.textInstructions = '';
-
-        // First task containts general instructions
-        for (var i = 0; i < tasks[0].getInstructions().length; i++) {
-          if (tasks[0].getInstructions()[i].type === 'text') {
-            $scope.textInstructions +=
-              tasks[0].getInstructions()[i].content + ' ';
-          }
-        }
+        $scope.title = QuestionDataService.getQuestionTitle($scope.questionId);
+        $scope.textInstructions =
+          QuestionDataService.getQuestionPreviewInstructions($scope.questionId);
       }
     ]
   };

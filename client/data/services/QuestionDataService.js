@@ -64,6 +64,47 @@ tieData.factory('QuestionDataService', [
             questionId);
         }
         return QuestionObjectFactory.create(globalData.questions[questionId]);
+      },
+      /**
+       * Returns the question's user friendly title.
+       *
+       * @param {string} questionId
+       * @returns {string}
+       */
+      getQuestionTitle(questionId) {
+        var question = this.getQuestion(questionId);
+        return question.getTitle();
+      },
+      /**
+       * Returns the question's shortened instructions, which includes
+       * only the text content in the first task (ignores code blocks).
+       *
+       * @param {string} questionId
+       * @returns {string} concatenated string of all the text segments
+       */
+      getQuestionPreviewInstructions(questionId) {
+        var question = this.getQuestion(questionId);
+        var tasks = question.getTasks();
+        var constructedInstructions = '';
+        // First task containts general instructions
+        for (var i = 0; i < tasks[0].getInstructions().length; i++) {
+          if (tasks[0].getInstructions()[i].type === 'text') {
+            constructedInstructions +=
+              tasks[0].getInstructions()[i].content + ' ';
+          }
+        }
+        return constructedInstructions;
+      },
+      /**
+       * Returns an array of question ids of the current question set
+       * after initializing it. Throws an error if cannot initialize.
+       *
+       * @param {string} questionSetId
+       * @returns {Array}
+       */
+      initAndGetQuestionIdsFromSet(questionSetId) {
+        this.initCurrentQuestionSet(questionSetId);
+        return currentQuestionSet.getQuestionIds();
       }
     };
   }

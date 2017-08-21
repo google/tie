@@ -70,10 +70,8 @@ tieMenu.directive('menuView', [function() {
          * from that set and sets it to the respective scope variable.
          */
         $scope.loadQuestions = function(questionSetId) {
-          QuestionDataService.initCurrentQuestionSet(questionSetId);
-          var questionSet = QuestionDataService.getCurrentQuestionSet(
-            questionSetId);
-          var questionIds = questionSet.getQuestionIds();
+          var questionIds =
+            QuestionDataService.initAndGetQuestionIdsFromSet(questionSetId);
           $scope.currentQuestionSetTitles = questionIds.slice();
         };
 
