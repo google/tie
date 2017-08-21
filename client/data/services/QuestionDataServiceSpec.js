@@ -27,7 +27,6 @@ describe('QuestionDataService', function() {
     globalData.questionSets.all.questionIds = QUESTION_IDS;
     globalData.questionSets.all.introductionParagraphs = [];
 
-
     QuestionDataService = $injector.get('QuestionDataService');
   }));
 

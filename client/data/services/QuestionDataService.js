@@ -86,7 +86,9 @@ tieData.factory('QuestionDataService', [
         var question = this.getQuestion(questionId);
         var tasks = question.getTasks();
         var constructedInstructions = '';
-        // First task containts general instructions
+
+        // Only the first task contains general instructions and
+        // only need the text of the task.
         for (var i = 0; i < tasks[0].getInstructions().length; i++) {
           if (tasks[0].getInstructions()[i].type === 'text') {
             constructedInstructions +=
