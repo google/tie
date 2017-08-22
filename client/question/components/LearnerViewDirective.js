@@ -157,18 +157,6 @@ tie.directive('learnerView', [function() {
         </div>
       </div>
       <style>
-        html {
-          height: 100%;
-          min-height: 675px;
-          min-width: 1331px;
-        }
-        body {
-          background-color: rgb(242, 242, 242);
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 15px;
-          height: 100%;
-          margin: 0px;
-        }
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
         }
