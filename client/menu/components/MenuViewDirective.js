@@ -30,8 +30,8 @@ tieMenu.directive('menuView', [function() {
         </div>
       </div>
       <div class="tie-menu-question-list-wrapper"> 
-        <div ng-repeat="questionid in currentQuestionSetTitles">
-          <menu-question-card question-id="{{questionid}}"></menu-question-card>
+        <div ng-repeat="questionId in questionIds">
+          <menu-question-card question-id="{{questionId}}"></menu-question-card>
         </div>
       <div>
       <style>
@@ -63,14 +63,14 @@ tieMenu.directive('menuView', [function() {
         var currentQuestionSetId = 'strings';
 
         // The titles of the questions this menu page is displaying.
-        $scope.currentQuestionSetTitles = [];
+        $scope.questionIds = [];
 
         /**
          * Given the question set id, retrieves the individual question ids
          * from that set and sets it to the respective scope variable.
          */
         $scope.loadQuestions = function(questionSetId) {
-          $scope.currentQuestionSetTitles =
+          $scope.questionIds =
             QuestionDataService.initAndGetQuestionIdsFromSet(questionSetId);
         };
 

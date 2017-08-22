@@ -65,6 +65,7 @@ tieMenu.directive('menuQuestionCard', [function() {
           padding: 20px 20px;
           text-align: center;
         }
+      </style>
     `,
     controller: ['$scope', 'QuestionDataService',
       function($scope, QuestionDataService) {

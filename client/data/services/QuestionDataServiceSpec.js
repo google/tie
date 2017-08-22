@@ -78,7 +78,7 @@ describe('QuestionDataService', function() {
       expect(function() {
         QuestionDataService.getQuestionTitle('lemon');
       }).toThrowError(
-      'The current question set does not contain a question with ID: lemon');
+        'The current question set does not contain a question with ID: lemon');
     });
   });
 
@@ -98,7 +98,7 @@ describe('QuestionDataService', function() {
       expect(function() {
         QuestionDataService.getQuestionPreviewInstructions('grape');
       }).toThrowError(
-      'The current question set does not contain a question with ID: grape');
+        'The current question set does not contain a question with ID: grape');
     });
   });
 

@@ -84,15 +84,15 @@ tieData.factory('QuestionDataService', [
        */
       getQuestionPreviewInstructions(questionId) {
         var question = this.getQuestion(questionId);
-        var tasks = question.getTasks();
+        var instructionsForFirstTask = question.getTasks()[0].getInstructions();
         var constructedInstructions = '';
 
-        // Only the first task contains general instructions and
-        // only need the text of the task.
-        for (var i = 0; i < tasks[0].getInstructions().length; i++) {
-          if (tasks[0].getInstructions()[i].type === 'text') {
+        // We only need to grab the text portions of these instructions
+        // for the preview content.
+        for (var i = 0; i < instructionsForFirstTask.length; i++) {
+          if (instructionsForFirstTask[i].type === 'text') {
             constructedInstructions +=
-              tasks[0].getInstructions()[i].content + ' ';
+              instructionsForFirstTask[i].content + ' ';
           }
         }
         return constructedInstructions;
