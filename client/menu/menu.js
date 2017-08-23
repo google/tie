@@ -17,13 +17,3 @@
  */
 
 window.tieMenu = angular.module('tieMenu', ['tieData']);
-
-tieMenu.controller('MenuPageController',
-  ['$scope', 'QuestionDataService', function($scope, QuestionDataService) {
-    var questionSetId = 'strings';
-    QuestionDataService.initCurrentQuestionSet(questionSetId);
-    $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
-      questionSetId);
-    $scope.questionIds = $scope.questionSet.getQuestionIds();
-  }]
-);

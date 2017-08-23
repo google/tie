@@ -23,7 +23,8 @@ module.exports = function(config) {
       // Need to explicitly specify question.js first due to the files being
       // loaded in descending order.
       'client/question/question.js',
-      'client/data/tieData.js',
+      'client/data/data.js',
+      'client/menu/menu.js',
       'client/**/*.js',
       'assets/**/*.js'
     ],
