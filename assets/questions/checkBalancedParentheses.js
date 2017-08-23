@@ -125,10 +125,6 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       allowedOutputs: [true],
       tag: 'empty strings'
     }, {
-      input: 'xx',
-      allowedOutputs: [false],
-      tag: 'unexpected characters'
-    }, {
       input: '3',
       allowedOutputs: [false],
       tag: 'unexpected characters'
