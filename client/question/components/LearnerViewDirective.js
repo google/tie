@@ -24,19 +24,6 @@ tie.directive('learnerView', [function() {
       <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode}">
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
-            <div class="tie-step-container-outer">
-              <div class="tie-step-container-inner">
-                <div class="tie-step-item"
-                    ng-repeat="questionId in questionIds track by $index"
-                    ng-click="navigateToQuestion($index)">
-                  <div class="tie-step-circle" ng-class="{'tie-step-active': currentQuestionIndex === $index, 'tie-step-unlocked': questionsCompletionStatus[$index]}">
-                    <span class="tie-step-text", ng-show="!questionsCompletionStatus[$index]">{{$index + 1}}</span>
-                    <span class="tie-step-checkmark", ng-show="questionsCompletionStatus[$index]">&#10004;</span>
-                  </div>
-                  <div ng-class="{'tie-step-line': $index < (questionIds.length - 1)}"></div>
-                </div>
-              </div>
-            </div>
             <div class="tie-question-ui">
               <div class="tie-question-window" ng-class="{'night-mode': isInDarkMode}">
                 <div class="tie-greetings">
@@ -93,12 +80,6 @@ tie.directive('learnerView', [function() {
                   <br>
                 </div>
               </div>
-              <select class="tie-select-menu" name="question-set-select"
-                      ng-class="{'night-mode': isInDarkMode}"
-                      ng-change="changeQuestionSet(currentQuestionSetId)" ng-model="currentQuestionSetId"
-                      ng-options="i.questionSetId as i.questionSetId for i in questionSetIds">
-                <option style="display: none" value="">Question Set</option>
-              </select>
               <select class="tie-select-menu" name="theme-select"
                       ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeTheme(theme)" ng-model="theme"
@@ -548,13 +529,13 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$interval', '$timeout', 'SolutionHandlerService',
+      '$scope', '$interval', '$timeout', '$location', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
       'ReinforcementObjectFactory', 'LocalStorageService',
       'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       function(
-          $scope, $interval, $timeout, SolutionHandlerService,
+          $scope, $interval, $timeout, $location, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, LocalStorageService,
           ServerHandlerService, SECONDS_TO_MILLISECONDS,
@@ -1084,6 +1065,8 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.initQuestionSet(questionSetId);
+
+        loadQuestion($location.search()['qid']);
       }
     ]
   };

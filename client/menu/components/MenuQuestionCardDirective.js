@@ -24,7 +24,7 @@ tieMenu.directive('menuQuestionCard', [function() {
     },
     template: `
       <div class="tie-menu-question">
-        <a href="../question/question.html">
+        <a href="../question/question.html?qid={{questionId}}">
           <div class="tie-menu-question-title">
             {{title}}
           </div>
@@ -67,8 +67,8 @@ tieMenu.directive('menuQuestionCard', [function() {
         }
       </style>
     `,
-    controller: ['$scope', 'QuestionDataService',
-      function($scope, QuestionDataService) {
+    controller: ['$location', '$scope', 'QuestionDataService',
+      function($location, $scope, QuestionDataService) {
         $scope.title = QuestionDataService.getQuestionTitle($scope.questionId);
         $scope.textInstructions =
           QuestionDataService.getQuestionPreviewInstructions($scope.questionId);

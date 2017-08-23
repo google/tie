@@ -19,6 +19,16 @@
 window.tie = angular.module('tie', ['ui.codemirror', 'tieConfig', 'tieData']);
 
 /**
+ * Setting app to html5mode so that we don't have to have #'s in the url.
+ */
+tie.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
+}]);
+
+/**
  * The maximum amount of time (in seconds) that the code can take to run.
  *
  * @type {number}
