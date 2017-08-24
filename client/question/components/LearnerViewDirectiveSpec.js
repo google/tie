@@ -21,6 +21,7 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var QuestionDataService;
+  var $location;
 
   beforeEach(module("tie"));
 
@@ -46,7 +47,7 @@ describe('LearnerViewDirective', function() {
   var AUTOSAVE_REPEAT_RANGE = 20;
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -54,6 +55,8 @@ describe('LearnerViewDirective', function() {
     // it.
     // TODO (mengchaowang): Refactor learnerViewDirective controller to a
     // separate controller instead of anonymous controller.
+    $location = _$location_;
+    spyOn($location, 'search').and.returnValue({qid: 'findMostCommonCharacter'});
     element = angular.element('<learner-view></learner-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();

@@ -534,12 +534,14 @@ tie.directive('learnerView', [function() {
       'ReinforcementObjectFactory', 'LocalStorageService',
       'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
+      'DEFAULT_QUESTION_ID',
       function(
           $scope, $interval, $timeout, $location, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
           ReinforcementObjectFactory, LocalStorageService,
           ServerHandlerService, SECONDS_TO_MILLISECONDS,
-          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL) {
+          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
+          DEFAULT_QUESTION_ID) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -844,18 +846,6 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Sets the current question set to the one with the given questionId.
-         *
-         * @param {string} newQuestionSetId
-         */
-        $scope.changeQuestionSet = function(newQuestionSetId) {
-          if (ALLOWED_QUESTION_SET_IDS.indexOf(newQuestionSetId) === -1) {
-            return;
-          }
-          $scope.initQuestionSet(newQuestionSetId);
-        };
-
-        /**
          * Initializes the questionSet property of $scope to be a new question
          * set with the id given in newQuestionSetId.
          *
@@ -873,7 +863,8 @@ tie.directive('learnerView', [function() {
             $scope.questionsCompletionStatus.push(false);
           }
           $scope.autosaveTextIsDisplayed = false;
-          loadQuestion($scope.questionSet.getFirstQuestionId());
+          var questionToLoad = $location.search().qid || DEFAULT_QUESTION_ID;
+          loadQuestion(questionToLoad);
         };
 
         /**
@@ -1067,8 +1058,6 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.initQuestionSet(questionSetId);
-
-        loadQuestion($location.search()['qid']);
       }
     ]
   };

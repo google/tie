@@ -572,3 +572,11 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
  * @constant
  */
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
+/**
+ * Question Id of the question in case there isn't a question id
+ * specificied in the url.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('DEFAULT_QUESTION_ID', 'findMostCommonCharacter');
