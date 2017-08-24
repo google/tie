@@ -788,8 +788,6 @@ tie.directive('learnerView', [function() {
                   'Click the "Next" button to the right to proceed to the ' +
                   'next question.');
               $scope.nextButtonIsShown = true;
-              $scope.questionsCompletionStatus[
-                $scope.currentQuestionIndex] = true;
               $scope.feedbackStorage.push(
                 {
                   feedbackParagraphs: congratulatoryFeedback.getParagraphs()
@@ -855,16 +853,9 @@ tie.directive('learnerView', [function() {
           QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
           $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
             newQuestionSetId);
-          $scope.currentQuestionIndex = 0;
-          $scope.questionIds = $scope.questionSet.getQuestionIds();
-          $scope.questionsCompletionStatus = [];
-          $scope.loadingIndicatorIsShown = false;
-          for (var idx = 0; idx < $scope.questionIds.length; idx++) {
-            $scope.questionsCompletionStatus.push(false);
-          }
           $scope.autosaveTextIsDisplayed = false;
-          var questionToLoad = $location.search().qid || DEFAULT_QUESTION_ID;
-          loadQuestion(questionToLoad);
+          $scope.currentQuestionId = $location.search().qid || DEFAULT_QUESTION_ID;
+          loadQuestion($scope.currentQuestionId);
         };
 
         /**
@@ -904,19 +895,12 @@ tie.directive('learnerView', [function() {
         /**
          * Changes the UI to show the next task and its instructions for the
          * given question. If the user just finished the last task, then
-         * it renders the next question. If the user just completed the last
-         * question, then the user sees a congratulatory alert.
+         * it shows a congratulatory alert.
          */
         $scope.showNextTask = function() {
           if (question.isLastTask(currentTaskIndex)) {
-            $scope.currentQuestionIndex++;
-            if ($scope.currentQuestionIndex >= $scope.questionIds.length) {
-              // TODO(sll): This needs to be fleshed out.
-              alert('Congratulations, you have finished!');
-              return;
-            }
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId);
+            // TODO(talee): Flesh this out some more.
+            alert('Congratulations, you have finished!');
           } else {
             currentTaskIndex++;
             $scope.previousInstructions.push($scope.instructions);
@@ -924,32 +908,6 @@ tie.directive('learnerView', [function() {
             $scope.nextButtonIsShown = false;
             clearFeedback();
           }
-        };
-
-        /**
-         * Changes the UI to show the question which is at the given index.
-         *
-         * @param {number} index
-         */
-        $scope.navigateToQuestion = function(index) {
-          // Before the questionId is changed, save it for later use.
-          var currentQuestionId =
-            $scope.questionIds[$scope.currentQuestionIndex];
-          $scope.currentQuestionIndex = index;
-          // We need to save the code before loading so that the user will get
-          // their own code back if they click on the current question.
-          LocalStorageService.storeCode(
-            currentQuestionId, $scope.editorContents.code, language);
-          // Finally, we need to clear the undo history of the editor. This is
-          // done by removing the code editor from the DOM and putting it back
-          // again.
-          var CODEMIRROR_HIDE_TIMEOUT_MSEC = 20;
-          $scope.codeEditorIsShown = false;
-          $timeout(function() {
-            $scope.codeEditorIsShown = true;
-            var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-            loadQuestion(questionId);
-          }, CODEMIRROR_HIDE_TIMEOUT_MSEC);
         };
 
         /**
@@ -970,7 +928,7 @@ tie.directive('learnerView', [function() {
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
           storeCodeAndUpdateCachedCode(
-            $scope.questionIds[$scope.currentQuestionIndex], code, language);
+            $scope.currentQuestionId, code, language);
         };
 
         /**
@@ -978,9 +936,8 @@ tie.directive('learnerView', [function() {
          * question to its original state.
          */
         $scope.resetCode = function() {
-          var questionId = $scope.questionIds[$scope.currentQuestionIndex];
-          LocalStorageService.clearLocalStorageCode(questionId, language);
-          loadQuestion(questionId);
+          LocalStorageService.clearLocalStorageCode($scope.currentQuestionId, language);
+          loadQuestion($scope.currentQuestionId);
         };
 
         /**
@@ -1008,8 +965,6 @@ tie.directive('learnerView', [function() {
           if (!$scope.autosaveOn) {
             $scope.autosaveOn = true;
             autosaveCancelPromise = $interval(function() {
-              var currentQuestionId =
-                $scope.questionIds[$scope.currentQuestionIndex];
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
                 // No code change, stop autosave loop.
                 stopAutosave();
@@ -1017,7 +972,7 @@ tie.directive('learnerView', [function() {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
                 storeCodeAndUpdateCachedCode(
-                  currentQuestionId, $scope.editorContents.code, language);
+                  $scope.currentQuestionId, $scope.editorContents.code, language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
             }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
@@ -1051,7 +1006,7 @@ tie.directive('learnerView', [function() {
           var latestFeedback =
             $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
           LocalStorageService.storeLatestFeedbackAndReinforcement(
-            $scope.questionIds[$scope.currentQuestionIndex],
+            $scope.currentQuestionId,
             latestFeedback.feedbackParagraphs,
             $scope.reinforcementBullets,
             language);
