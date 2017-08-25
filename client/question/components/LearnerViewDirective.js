@@ -815,7 +815,8 @@ tie.directive('learnerView', [function() {
           $scope.autosaveTextIsDisplayed = false;
           // If there isn't a specificed qid, use the default. If there is one,
           // but it doesn't exist, use the default.
-          $scope.currentQuestionId = $location.search().qid || DEFAULT_QUESTION_ID;
+          $scope.currentQuestionId =
+            $location.search().qid || DEFAULT_QUESTION_ID;
           try {
             loadQuestion($scope.currentQuestionId);
           } catch (Error) {
@@ -901,7 +902,8 @@ tie.directive('learnerView', [function() {
          * question to its original state.
          */
         $scope.resetCode = function() {
-          LocalStorageService.clearLocalStorageCode($scope.currentQuestionId, language);
+          LocalStorageService.clearLocalStorageCode(
+            $scope.currentQuestionId, language);
           loadQuestion($scope.currentQuestionId);
         };
 
@@ -937,7 +939,9 @@ tie.directive('learnerView', [function() {
                 // Code change detected, notify user, save code,
                 // update code cache and continue this loop.
                 storeCodeAndUpdateCachedCode(
-                  $scope.currentQuestionId, $scope.editorContents.code, language);
+                  $scope.currentQuestionId,
+                  $scope.editorContents.code,
+                  language);
                 triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
               }
             }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
