@@ -176,16 +176,4 @@ describe('LearnerViewDirective', function() {
         questionId, LANGUAGE)).toEqual(randomCodes);
     });
   });
-
-  // describe("loadQuestion", function() {
-  //   it("should load a default question if no qid is specified", function() {
-  //     // spyOn($location, 'search').and.returnValue(undefined);
-  //     spyOn($location, 'search').and.returnValue({qid: 'bling'});
-  //     console.log($location.path());
-  //     expect($scope.initQuestionSet('strings')).toThrow(Error);
-  //     console.log($scope.currentQuestionId);
-  //     expect($scope.currentQuestionId).toBe(DEFAULT_QUESTION_ID);
-
-  //   });
-  // });
 });
