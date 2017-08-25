@@ -426,7 +426,7 @@ tie.directive('learnerView', [function() {
           display: table;
           margin-left: auto;
           margin-right: auto;
-          padding-top: 16px;
+          padding-top: 30px;
         }
         .tie-question-window {
           background-color: #FFFFF7;
@@ -472,47 +472,6 @@ tie.directive('learnerView', [function() {
         .tie-select-menu.night-mode {
           background-color: #333a42;
           color: white;
-        }
-        .tie-step-container-inner {
-          display: flex;
-          margin-left: auto;
-          margin-right: auto;
-          text-align: center;
-        }
-        .tie-step-container-outer {
-          display: flex;
-          margin-bottom: 8px;
-        }
-        .tie-step-circle {
-          background-color: rgb(164, 164, 164);
-          border-color: rgb(222, 222, 222);
-          border-radius: 20px;
-          color: rgb(255, 255, 255);
-          cursor: pointer;
-          height: 20px;
-          width: 20px;
-        }
-        .tie-step-item {
-          display: flex;
-        }
-        .tie-step-item > .tie-step-active {
-          background-color: rgb(42, 128, 255);
-        }
-        .tie-step-line {
-          background-color: rgb(200, 200, 200);
-          height: 1px;
-          margin-bottom: auto;
-          margin-left: 8px;
-          margin-right: 8px;
-          margin-top: auto;
-          width: 128px;
-        }
-        .tie-step-checkmark, .tie-step-text {
-          font-size: 14px;
-          vertical-align: middle;
-        }
-        .tie-step-unlocked {
-          background-color: rgb(0, 128, 0);
         }
         .CodeMirror-line.tie-syntax-error-line {
           background: #FBC2C4;
