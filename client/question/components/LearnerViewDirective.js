@@ -854,8 +854,14 @@ tie.directive('learnerView', [function() {
           $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
             newQuestionSetId);
           $scope.autosaveTextIsDisplayed = false;
+          // If there isn't a specificed qid, use the default. If there is one,
+          // but it doesn't exist, use the default.
           $scope.currentQuestionId = $location.search().qid || DEFAULT_QUESTION_ID;
-          loadQuestion($scope.currentQuestionId);
+          try {
+            loadQuestion($scope.currentQuestionId);
+          } catch (Error) {
+            loadQuestion(DEFAULT_QUESTION_ID);
+          }
         };
 
         /**

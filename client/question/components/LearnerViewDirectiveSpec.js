@@ -50,7 +50,7 @@ describe('LearnerViewDirective', function() {
   var questionId = 'findMostCommonCharacter';
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_.
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
     _DEFAULT_QUESTION_ID_) {
     $scope = $rootScope.$new();
 
@@ -60,7 +60,6 @@ describe('LearnerViewDirective', function() {
     // TODO (mengchaowang): Refactor learnerViewDirective controller to a
     // separate controller instead of anonymous controller.
     $location = _$location_;
-    spyOn($location, 'search').and.returnValue({qid: 'findMostCommonCharacter'});
     element = angular.element('<learner-view></learner-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();
@@ -82,6 +81,7 @@ describe('LearnerViewDirective', function() {
 
   describe("resetCode", function() {
     it('should reset code to starter code', function() {
+      spyOn($location, 'search').and.returnValue({qid: 'findMostCommonCharacter'});
       var question = QuestionDataService.getQuestion(questionId);
       var starterCode = question.getStarterCode(LANGUAGE);
       $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
@@ -176,4 +176,16 @@ describe('LearnerViewDirective', function() {
         questionId, LANGUAGE)).toEqual(randomCodes);
     });
   });
+
+  // describe("loadQuestion", function() {
+  //   it("should load a default question if no qid is specified", function() {
+  //     // spyOn($location, 'search').and.returnValue(undefined);
+  //     spyOn($location, 'search').and.returnValue({qid: 'bling'});
+  //     console.log($location.path());
+  //     expect($scope.initQuestionSet('strings')).toThrow(Error);
+  //     console.log($scope.currentQuestionId);
+  //     expect($scope.currentQuestionId).toBe(DEFAULT_QUESTION_ID);
+
+  //   });
+  // });
 });
