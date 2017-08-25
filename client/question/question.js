@@ -579,4 +579,4 @@ tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
  * @type {string}
  * @constant
  */
-tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
+tie.constant('DEFAULT_QUESTION_ID', 'findMostCommonCharacter');

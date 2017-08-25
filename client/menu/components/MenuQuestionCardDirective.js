@@ -67,8 +67,8 @@ tieMenu.directive('menuQuestionCard', [function() {
         }
       </style>
     `,
-    controller: ['$location', '$scope', 'QuestionDataService',
-      function($location, $scope, QuestionDataService) {
+    controller: ['$scope', '$location', 'QuestionDataService',
+      function($scope, $location, QuestionDataService) {
         $scope.title = QuestionDataService.getQuestionTitle($scope.questionId);
         $scope.textInstructions =
           QuestionDataService.getQuestionPreviewInstructions($scope.questionId);

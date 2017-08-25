@@ -45,13 +45,11 @@ describe('LearnerViewDirective', function() {
   var DELTA_MILLISECONDS = 100;
   var AUTOSAVE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
-  var DEFAULT_QUESTION_ID;
 
   var questionId = 'findMostCommonCharacter';
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
-    _DEFAULT_QUESTION_ID_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -72,7 +70,6 @@ describe('LearnerViewDirective', function() {
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
     AUTOSAVE_MILLISECONDS =
       DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS;
-    DEFAULT_QUESTION_ID = _DEFAULT_QUESTION_ID_;
 
     localStorage.clear();
 
