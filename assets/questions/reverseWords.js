@@ -392,8 +392,8 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       buggyFunctionName: 'AuxiliaryCode.treatAsciiCharsContiguously',
       messages: [
         [
-          'Check the ASCII tables -- are you sure that "A"-"z" be treated as ',
-          'a contiguous block of characters?'
+          'Check the ASCII tables -- are you sure that "A"-"z" can be ',
+          'treated as a contiguous block of characters?'
         ].join('')
       ]
     }, {
