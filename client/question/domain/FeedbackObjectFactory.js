@@ -169,7 +169,8 @@ tie.factory('FeedbackObjectFactory', [
 
     /**
      * Appends the feedback paragraphs in the given Feedback object to the
-     * current feedback.
+     * current feedback. If the appended feedback contains a hint index, that
+     * index is updated too.
      *
      * @param {Feedback} feedbackToAppend
      */
@@ -178,6 +179,11 @@ tie.factory('FeedbackObjectFactory', [
       paragraphsToAppend.forEach(function(paragraph) {
         this._paragraphs.push(paragraph);
       }.bind(this));
+
+      var appendedHintIndex = feedbackToAppend.getHintIndex();
+      if (appendedHintIndex !== null) {
+        this.setHintIndex(appendedHintIndex);
+      }
     };
 
     // Static class methods.

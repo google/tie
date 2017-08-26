@@ -265,6 +265,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-dot-container{
           height: 100%;
+          margin-top: 18px;
         }
         .tie-dot.night-mode {
           background-color: #E0E0E0;
