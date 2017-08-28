@@ -573,8 +573,7 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
  */
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
 /**
- * Question Id of the question in case there isn't a question id
- * specificied in the url.
+ * Default question ID to use if no qid parameter is specified in the URL.
  *
  * @type {string}
  * @constant
