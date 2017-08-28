@@ -43,3 +43,13 @@ tieConfig.config(['$httpProvider', function($httpProvider) {
     }
   ]);
 }]);
+
+/**
+ * Setting app to html5mode so that we don't have to have #'s in the url.
+ */
+tieConfig.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
+}]);
