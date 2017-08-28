@@ -24,7 +24,7 @@ tieMenu.directive('menuQuestionCard', [function() {
     },
     template: `
       <div class="tie-menu-question">
-        <a href="../question/question.html">
+        <a ng-href="../question/question.html?qid={{questionId}}">
           <div class="tie-menu-question-title">
             {{title}}
           </div>

@@ -21,6 +21,7 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var QuestionDataService;
+  var $location;
 
   beforeEach(module("tie"));
 
@@ -45,8 +46,10 @@ describe('LearnerViewDirective', function() {
   var AUTOSAVE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
 
+  var qid = 'findMostCommonCharacter';
+
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -54,6 +57,7 @@ describe('LearnerViewDirective', function() {
     // it.
     // TODO (mengchaowang): Refactor learnerViewDirective controller to a
     // separate controller instead of anonymous controller.
+    $location = _$location_;
     element = angular.element('<learner-view></learner-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();
@@ -74,15 +78,14 @@ describe('LearnerViewDirective', function() {
 
   describe("resetCode", function() {
     it('should reset code to starter code', function() {
-      $scope.questionIds.forEach(function(questionId, index) {
-        var question = QuestionDataService.getQuestion(questionId);
-        var starterCode = question.getStarterCode(LANGUAGE);
-        $scope.currentQuestionIndex = index;
-        $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
-        expect(starterCode).not.toEqual($scope.editorContents.code);
-        $scope.resetCode();
-        expect($scope.editorContents.code).toEqual(starterCode);
-      });
+      spyOn($location, 'search').and.returnValue(
+        {qid: 'findMostCommonCharacter'});
+      var question = QuestionDataService.getQuestion(qid);
+      var starterCode = question.getStarterCode(LANGUAGE);
+      $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
+      expect(starterCode).not.toEqual($scope.editorContents.code);
+      $scope.resetCode();
+      expect($scope.editorContents.code).toEqual(starterCode);
     });
   });
 
@@ -105,26 +108,17 @@ describe('LearnerViewDirective', function() {
     };
 
     it("should only activate autosave once", function() {
-      for (var i = 0; i < $scope.questionIds.length; i++) {
-        if (i !== 0) {
-          // Default question index is 0, we don't want to
-          // navigate to question 0 again because navigateToQuestion
-          // will already have stored code for that question and fail the test.
-          $scope.navigateToQuestion(i);
-        }
-        expect(!$scope.autosaveOn).toBe(true);
-        var questionId = $scope.questionIds[i];
-        var question = QuestionDataService.getQuestion(questionId);
-        var starterCode = question.getStarterCode(LANGUAGE);
-        // There should be no code stored in localStorage
-        // before autosave is triggered.
-        expect(LocalStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(null);
-        $scope.autosave();
-        checkAutosaveDetail(questionId, starterCode);
-        expect(LocalStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(starterCode);
-      }
+      expect(!$scope.autosaveOn).toBe(true);
+      var question = QuestionDataService.getQuestion(qid);
+      var starterCode = question.getStarterCode(LANGUAGE);
+      // There should be no code stored in localStorage
+      // before autosave is triggered.
+      expect(LocalStorageService.loadStoredCode(
+        qid, LANGUAGE)).toEqual(null);
+      $scope.autosave();
+      checkAutosaveDetail(qid, starterCode);
+      expect(LocalStorageService.loadStoredCode(
+        qid, LANGUAGE)).toEqual(starterCode);
     });
 
     // Autosave is triggered. 5 seconds later, autosave text should be
@@ -157,46 +151,27 @@ describe('LearnerViewDirective', function() {
     };
 
     it("should store the latest code into localStorage", function() {
-      for (var i = 0; i < $scope.questionIds.length; i++) {
-        if (i !== 0) {
-          // The default question index is 0, so we don't want to
-          // navigate to question 0 again as navigateToQuestion
-          // will already have stored code for the current question
-          // and will fail the test.
-          $scope.navigateToQuestion(i);
-        }
-        // Repeat 1 - 20 times
-        var repeatTimes = Math.floor(Math.random() * AUTOSAVE_REPEAT_RANGE) + 1;
-        expect(!$scope.autosaveOn).toBe(true);
-        var questionId = $scope.questionIds[i];
-        // There should be no code stored in local storage
-        // before autosave is triggerred.
-        expect(LocalStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(null);
-        $scope.autosave();
-        var randomCodes;
-        for (var j = 0; j < repeatTimes; j++) {
-          randomCodes = generateRandomChars(NUM_CHARS_CODE);
-          $scope.editorContents.code = randomCodes;
-          flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
-        }
-        expect(LocalStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(randomCodes);
+      // Repeat 1 - 20 times
+      var repeatTimes = Math.floor(Math.random() * AUTOSAVE_REPEAT_RANGE) + 1;
+      expect(!$scope.autosaveOn).toBe(true);
+      // There should be no code stored in local storage
+      // before autosave is triggerred.
+      expect(LocalStorageService.loadStoredCode(
+        qid, LANGUAGE)).toEqual(null);
+      $scope.autosave();
+      var randomCodes;
+      for (var j = 0; j < repeatTimes; j++) {
+        randomCodes = generateRandomChars(NUM_CHARS_CODE);
+        $scope.editorContents.code = randomCodes;
         flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
-        expect($scope.autosaveTextIsDisplayed).toBe(false);
-        expect($scope.autosaveOn).toBe(false);
-        expect(LocalStorageService.loadStoredCode(
-          questionId, LANGUAGE)).toEqual(randomCodes);
       }
-    });
-  });
-
-  describe("navigateToQuestion", function() {
-    it('should navigate to given question', function() {
-      for (var i = 0; i < $scope.questionIds.length; i++) {
-        $scope.navigateToQuestion(i);
-        expect($scope.currentQuestionIndex).toBe(i);
-      }
+      expect(LocalStorageService.loadStoredCode(
+        qid, LANGUAGE)).toEqual(randomCodes);
+      flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
+      expect($scope.autosaveTextIsDisplayed).toBe(false);
+      expect($scope.autosaveOn).toBe(false);
+      expect(LocalStorageService.loadStoredCode(
+        qid, LANGUAGE)).toEqual(randomCodes);
     });
   });
 });
