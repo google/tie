@@ -19,29 +19,14 @@
 #     Runs automatically before a git push command is executed.
 #     Behaviour can be set up using "bash scripts/setup.sh".
 
-# Ask user if push should continue anyway if a test fails.
-proceed_when_test_fail () {
-  # Assign standard input to keyboard.
-  exec < /dev/tty
-
-  read -p "$1 tests failed. Do you want to continue anyway? (y/n) " yn
-  case $yn in
-    [Yy]* ) ;;
-    [Nn]* ) echo "Not pushing changes"; exit 1;;
-    * ) echo "Invalid input"; exit 1;;
-  esac
-
-  # Close standard input.
-  exec <&-
-}
-
 check_test_status () {
   # Checking exit code returned.
   if [ $? -eq 0 ]
   then
     echo "$1 tests passed"
   else
-    proceed_when_test_fail "$1"
+    echo "$1 tests failed. Halting submission."
+    exit 1
   fi
 }
 
