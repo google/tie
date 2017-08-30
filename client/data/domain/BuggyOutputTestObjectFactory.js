@@ -58,8 +58,7 @@ tieData.factory('BuggyOutputTestObjectFactory', [
     };
 
     /**
-     * Returns the list of messages that a buggy function has
-     *    attached to it
+     * Returns the list of messages that a buggy output test has attached to it.
      *
      * @returns {Array} Should be array of strings
      */

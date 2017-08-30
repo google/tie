@@ -97,6 +97,20 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
+     * Returns a boolean indicating whether the preprocessed code in this
+     * object matches the preprocessed code in the given CodeEvalResult.
+     *
+     * @param {CodeEvalResult} otherCodeEvalResult
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasSamePreprocessedCodeAs = function(
+        otherCodeEvalResult) {
+      return (
+        this._preprocessedCode === otherCodeEvalResult.getPreprocessedCode());
+    };
+
+    /**
      * A getter for the _output property.
      * The function should return a string of the output for the code that was
      * run.
