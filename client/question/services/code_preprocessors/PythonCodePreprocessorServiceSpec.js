@@ -67,7 +67,8 @@ describe('PythonCodePreprocessorService', function() {
       var codeSubmission = CodeSubmissionObjectFactory.create(studentCode);
       PythonCodePreprocessorService._prepareCodeSubmissionForServerExecution(
           codeSubmission);
-      expect(codeSubmission.getPreprocessedCode()).toEqual(preprocessedCode + 'a');
+      expect(codeSubmission.getPreprocessedCode()).toEqual(
+        preprocessedCode + 'a');
       expect(codeSubmission.getPreprocessedCode()).toContain(studentCode);
     });
   });
