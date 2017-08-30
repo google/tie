@@ -26,6 +26,7 @@ check_test_status () {
     echo "$1 tests passed"
   else
     echo "$1 tests failed. Halting submission."
+    exit 1
   fi
 }
 
