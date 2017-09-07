@@ -116,7 +116,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-blue protractor-test-run-code-btn"
+                <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
@@ -137,6 +137,19 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
+      <modal show='modalIsDisplayed' title='{{modalTitle}}' description='{{modalDesc}}'>
+        <p>
+          By using TIE, you agree to do so under the Google Terms of Service,
+          Google's Privacy Policy. In addition, you understand and agree that by
+          using our tool, you may generate computer code. Metadata about the code,
+          such as how long it took to write the code and whether it performs certain
+          tasks or meet certain criteria may also be created. Generated metadata and
+          computer code (collectively “User Generated Code”) will be collected and
+          analyzed as part of product improvement. By using TIE, you grant Google a
+          worldwide license to use, host, store, and create derivative works of
+          your User Generated code.
+        </p>
+      </modal>
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -170,13 +183,21 @@ tie.directive('learnerView', [function() {
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
-        .tie-button.tie-blue {
+        .tie-button-blue {
           background-color: rgb(66, 133, 244);
           color: #ffffff;
         }
-        .tie-button.tie-blue:hover {
+        .tie-button-blue:hover {
           background-color: rgb(50, 120, 240);
           border: 1px solid rgb(42, 112, 232);
+        }
+        .tie-button-red {
+          background-color: #ef5350;
+          color: #ffffff;
+        }
+        .tie-button-red:hover {
+          background-color: #f44336;
+          border: 1px solid #e53935;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -654,10 +675,11 @@ tie.directive('learnerView', [function() {
         $scope.onPrivacyClick = function() {
           var isBrowserOnly = !SERVER_URL;
           if (isBrowserOnly) {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application stores information, ",
-              "including your code, in your browser's local storage and ",
-              "does not transmit data to any server."].join(''));
+            // alert(["Privacy Notice:\n\n",
+            //   "This version of the TIE application stores information, ",
+            //   "including your code, in your browser's local storage and ",
+            //   "does not transmit data to any server."].join(''));
+            $scope.showModal();
           } else {
             alert(["Privacy Notice:\n\n",
               "This version of the TIE application transmits data to ",
@@ -983,6 +1005,19 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.initQuestionSet(questionSetId);
+
+        $scope.modalIsDisplayed = false;
+
+        $scope.modalTitle = "";
+
+        $scope.closeModal = function() {
+          $scope.modalIsDisplayed = false;
+        };
+
+        $scope.showModal = function() {
+          $scope.modalTitle = "User Agreement";
+          $scope.modalIsDisplayed = true;
+        }
       }
     ]
   };
