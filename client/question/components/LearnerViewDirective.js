@@ -679,12 +679,12 @@ tie.directive('learnerView', [function() {
               "This version of the TIE application stores information, ",
               "including your code, in your browser's local storage and ",
               "does not transmit data to any server."].join(''));
-            $scope.showModal();
           } else {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application transmits data to ",
-              "our servers in order to provide you with a better coding ",
-              "experience."].join(''));
+            // alert(["Privacy Notice:\n\n",
+            //   "This version of the TIE application transmits data to ",
+            //   "our servers in order to provide you with a better coding ",
+            //   "experience."].join(''));
+            $scope.showModal();
           }
         };
 
