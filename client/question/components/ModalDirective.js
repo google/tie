@@ -22,7 +22,7 @@ tie.directive('modal', [function() {
     transclude: true,
     scope: {
       show: '=',
-      title: '@',
+      title: '@'
     },
     template: `
       <div class="tie-modal" ng-show="show" ng-click="closeModal()">
@@ -94,10 +94,10 @@ tie.directive('modal', [function() {
     link: function($scope) {
       // Get whether or not user has indicated to save the response
       var getSharedStatus = function() {
-        var sharedStatus = document.getElementById('tie-modal-shared-option').checked;
-        console.log(sharedStatus);
+        var sharedStatus =
+          document.getElementById('tie-modal-shared-option').checked;
         return sharedStatus;
-      }
+      };
       /**
        * Stores the user's acceptance of the privacy policy
        * and closes the modal.
@@ -106,7 +106,7 @@ tie.directive('modal', [function() {
         // Send signal to store that the user has accepted
         getSharedStatus();
         $scope.closeModal();
-      }
+      };
       /**
        * Stores the user's rejection of the privacy policy
        * and closes the modal.
@@ -115,7 +115,7 @@ tie.directive('modal', [function() {
         // Send signal to store that the user has rejected
         getSharedStatus();
         $scope.closeModal();
-      }
+      };
       /**
        * Sets the scope variable `show` to false to hide modal.
        */
