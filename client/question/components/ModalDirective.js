@@ -30,15 +30,15 @@ tie.directive('modal', [function() {
           <h1 class="tie-modal-title">{{title}}</h1>
           <p ng-transclude></p>
           <div class="tie-modal-button-container">
-            <button class="tie-button-blue tie-modal-button" ng-click="closeModal()">
+            <button class="tie-button-blue tie-modal-button" ng-click="accept()">
               <span>Accept</span>
             </button>
-            <button class="tie-button-red tie-modal-button" ng-click="closeModal()">
+            <button class="tie-button-red tie-modal-button" ng-click="reject()">
               <span>Reject</span>
             </button>
           </div>
-          <div class="tie-modal-option">
-            <input type="checkbox"></input>
+          <div>
+            <input type="checkbox" id="tie-modal-shared-option"></input>
             <span> This is a shared computer, don't save my response. </span>
           </div>
         </div>
@@ -85,22 +85,42 @@ tie.directive('modal', [function() {
           font-size: 16px;
           color: #7b7b7b;
         }
-        .tie-modal-option {
-          display: inline-block;
-        }
-
         .tie-modal-title {
           font-size: 24px;
           font-weight: 600;
         }
       </style>
     `,
-    link: function(scope) {
+    link: function($scope) {
+      // Get whether or not user has indicated to save the response
+      var getSharedStatus = function() {
+        var sharedStatus = document.getElementById('tie-modal-shared-option').checked;
+        console.log(sharedStatus);
+        return sharedStatus;
+      }
+      /**
+       * Stores the user's acceptance of the privacy policy
+       * and closes the modal.
+       */
+      $scope.accept = function() {
+        // Send signal to store that the user has accepted
+        getSharedStatus();
+        $scope.closeModal();
+      }
+      /**
+       * Stores the user's rejection of the privacy policy
+       * and closes the modal.
+       */
+      $scope.reject = function() {
+        // Send signal to store that the user has rejected
+        getSharedStatus();
+        $scope.closeModal();
+      }
       /**
        * Sets the scope variable `show` to false to hide modal.
        */
-      scope.closeModal = function() {
-        scope.show = false;
+      $scope.closeModal = function() {
+        $scope.show = false;
       };
     }
   };
