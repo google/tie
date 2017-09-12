@@ -13,38 +13,58 @@
 // limitations under the License.
 
 /**
- * @fileoverview Directive for the modal.
+ * @fileoverview Directive for the privacy agreement modal.
  */
 
-tie.directive('modal', [function() {
+tie.directive('privacyModal', [function() {
   return {
     restrict: 'E',
-    transclude: true,
     scope: {
       show: '=',
-      title: '@'
+      title: '@',
+      clientVersion: '='
     },
     template: `
-      <div class="tie-modal" ng-show="show" ng-click="closeModal()">
-        <div class="tie-modal-content" ng-click="$event.stopPropagation();">
-          <h1 class="tie-modal-title">{{title}}</h1>
-          <p ng-transclude></p>
-          <div class="tie-modal-button-container">
-            <button class="tie-button-blue tie-modal-button" ng-click="accept()">
+      <div class="tie-privacy-modal" ng-show="show" ng-click="closeModal()">
+        <div class="tie-privacy-modal-content" ng-click="$event.stopPropagation();">
+          <h1 class="tie-privacy-modal-title">{{title}}</h1>
+            <p ng-show="clientVersion">
+              This version of the TIE application stores information,
+              including your code, in your browser's local storage and
+              does not transmit data to any server.
+            </p>
+            <p ng-show="!clientVersion">
+              By using TIE, you agree to do so under the Google Terms of Service,
+              Google's Privacy Policy. In addition, you understand and agree that by
+              using our tool, you may generate computer code. Metadata about the code,
+              such as how long it took to write the code and whether it performs certain
+              tasks or meet certain criteria may also be created. Generated metadata and
+              computer code (collectively “User Generated Code”) will be collected and
+              analyzed as part of product improvement. By using TIE, you grant Google a
+              worldwide license to use, host, store, and create derivative works of
+              your User Generated code.
+            </p>
+          <div class="tie-privacy-modal-button-container">
+          <button ng-show="clientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+              <span>Okay</span>
+            </button>
+            <button ng-show="!clientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
               <span>Accept</span>
             </button>
-            <button class="tie-button-red tie-modal-button" ng-click="reject()">
+            <button ng-show="!clientVersion" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
               <span>Reject</span>
             </button>
           </div>
-          <div>
-            <input type="checkbox" id="tie-modal-shared-option"></input>
-            <span> This is a shared computer, don't save my response. </span>
+          <div ng-show="!clientVersion">
+            <label>
+              <input type="checkbox" id="tie-privacy-modal-shared-option"></input>
+              This is a shared computer, don't save my response. 
+            </label>
           </div>
         </div>
       </div>
       <style>
-        .tie-modal {
+        .tie-privacy-modal {
           background-color: rgb(0, 0, 0);
           background-color: rgba(0, 0, 0, 0.4);
           height: 100%;
@@ -55,7 +75,7 @@ tie.directive('modal', [function() {
           width: 100%;
           z-index: 4;
         }
-        .tie-modal-button {
+        .tie-privacy-modal-button {
           border-radius: 4px;
           border-style: none;
           cursor: pointer;
@@ -65,12 +85,12 @@ tie.directive('modal', [function() {
           padding: 1px 6px;
           width: 180px;
         }
-        .tie-modal-button-container {
+        .tie-privacy-modal-button-container {
           display: flex;
           justify-content: space-around;
           padding: 15px 0px;
         }
-        .tie-modal-content {
+        .tie-privacy-modal-content {
           background-color: white;
           border: 1px solid #969696;
           border-radius: 10px;
@@ -81,11 +101,11 @@ tie.directive('modal', [function() {
           width: 30%;
           z-index: 5;
         }
-        .tie-modal-content p {
+        .tie-privacy-modal-content p {
           font-size: 16px;
           color: #7b7b7b;
         }
-        .tie-modal-title {
+        .tie-privacy-modal-title {
           font-size: 24px;
           font-weight: 600;
         }
@@ -95,7 +115,7 @@ tie.directive('modal', [function() {
       // Get whether or not user has indicated to save the response
       var getSharedStatus = function() {
         var sharedStatus =
-          document.getElementById('tie-modal-shared-option').checked;
+          document.getElementById('tie-privacy-modal-shared-option').checked;
         return sharedStatus;
       };
       /**

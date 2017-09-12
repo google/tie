@@ -137,19 +137,9 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
-      <modal show='modalIsDisplayed' title='{{modalTitle}}' description='{{modalDesc}}'>
-        <p>
-          By using TIE, you agree to do so under the Google Terms of Service,
-          Google's Privacy Policy. In addition, you understand and agree that by
-          using our tool, you may generate computer code. Metadata about the code,
-          such as how long it took to write the code and whether it performs certain
-          tasks or meet certain criteria may also be created. Generated metadata and
-          computer code (collectively “User Generated Code”) will be collected and
-          analyzed as part of product improvement. By using TIE, you grant Google a
-          worldwide license to use, host, store, and create derivative works of
-          your User Generated code.
-        </p>
-      </modal>
+      <privacy-modal show='modalIsDisplayed' title='{{modalTitle}}' description='{{modalDesc}}'
+       client-version="true">
+      </privacy-modal>
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -675,10 +665,11 @@ tie.directive('learnerView', [function() {
         $scope.onPrivacyClick = function() {
           var isBrowserOnly = !SERVER_URL;
           if (isBrowserOnly) {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application stores information, ",
-              "including your code, in your browser's local storage and ",
-              "does not transmit data to any server."].join(''));
+            $scope.showModal();
+            // alert(["Privacy Notice:\n\n",
+            //   "This version of the TIE application stores information, ",
+            //   "including your code, in your browser's local storage and ",
+            //   "does not transmit data to any server."].join(''));
           } else {
             $scope.showModal();
           }
