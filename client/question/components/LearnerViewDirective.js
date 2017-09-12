@@ -603,6 +603,9 @@ tie.directive('learnerView', [function() {
           code: ''
         };
 
+        // The privacy modal is not diplayed by default.
+        $scope.privacyModalIsDisplayed = false;
+
         /**
          * Is used to store the Autosave promise such that it can later be
          * cancelled.
@@ -657,21 +660,12 @@ tie.directive('learnerView', [function() {
          */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
         /**
-         * Checks if the system is in browser only mode and changes the privacy
-         * notice message accordingly.
+         * Shows the privacy modal on click.
          */
         $scope.onPrivacyClick = function() {
-          var isBrowserOnly = !SERVER_URL;
-          if (isBrowserOnly) {
-            $scope.showModal();
-            // alert(["Privacy Notice:\n\n",
-            //   "This version of the TIE application stores information, ",
-            //   "including your code, in your browser's local storage and ",
-            //   "does not transmit data to any server."].join(''));
-          } else {
-            $scope.showModal();
-          }
+            $scope.privacyModalIsDisplayed = true;
         };
 
         /**
@@ -991,16 +985,6 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.initQuestionSet(questionSetId);
-
-        $scope.privacyModalIsDisplayed = false;
-
-        $scope.closeModal = function() {
-          $scope.privacyModalIsDisplayed = false;
-        };
-
-        $scope.showModal = function() {
-          $scope.privacyModalIsDisplayed = true;
-        };
       }
     ]
   };

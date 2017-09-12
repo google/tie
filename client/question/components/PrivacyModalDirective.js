@@ -58,7 +58,7 @@ tie.directive('privacyModal', [function() {
           <div ng-show="!isClientVersion">
             <label>
               <input type="checkbox" id="tie-privacy-modal-shared-option"></input>
-              This is a shared computer, don't save my response. 
+              This is a shared computer, don't save my response.
             </label>
           </div>
         </div>
