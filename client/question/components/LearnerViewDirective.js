@@ -665,7 +665,7 @@ tie.directive('learnerView', [function() {
          * Shows the privacy modal on click.
          */
         $scope.onPrivacyClick = function() {
-            $scope.privacyModalIsDisplayed = true;
+          $scope.privacyModalIsDisplayed = true;
         };
 
         /**
