@@ -137,8 +137,7 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
-      <privacy-modal show='modalIsDisplayed' title='{{modalTitle}}' description='{{modalDesc}}'
-       client-version="!SERVER_URL">
+      <privacy-modal show='privacyModalIsDisplayed' is-client-version="!SERVER_URL">
       </privacy-modal>
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
@@ -993,17 +992,14 @@ tie.directive('learnerView', [function() {
 
         $scope.initQuestionSet(questionSetId);
 
-        $scope.modalIsDisplayed = false;
-
-        $scope.modalTitle = "";
+        $scope.privacyModalIsDisplayed = false;
 
         $scope.closeModal = function() {
-          $scope.modalIsDisplayed = false;
+          $scope.privacyModalIsDisplayed = false;
         };
 
         $scope.showModal = function() {
-          $scope.modalTitle = "User Agreement";
-          $scope.modalIsDisplayed = true;
+          $scope.privacyModalIsDisplayed = true;
         };
       }
     ]

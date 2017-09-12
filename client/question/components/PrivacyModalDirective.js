@@ -22,18 +22,18 @@ tie.directive('privacyModal', [function() {
     scope: {
       show: '=',
       title: '@',
-      clientVersion: '='
+      isClientVersion: '='
     },
     template: `
       <div class="tie-privacy-modal" ng-show="show" ng-click="closeModal()">
         <div class="tie-privacy-modal-content" ng-click="$event.stopPropagation();">
-          <h1 class="tie-privacy-modal-title">{{title}}</h1>
-            <p ng-show="clientVersion">
+          <h1 class="tie-privacy-modal-title">Privacy Policy</h1>
+            <p ng-show="isClientVersion">
               This version of the TIE application stores information,
               including your code, in your browser's local storage and
               does not transmit data to any server.
             </p>
-            <p ng-show="!clientVersion">
+            <p ng-show="!isClientVersion">
               By using TIE, you agree to do so under the Google Terms of Service,
               Google's Privacy Policy. In addition, you understand and agree that by
               using our tool, you may generate computer code. Metadata about the code,
@@ -45,17 +45,17 @@ tie.directive('privacyModal', [function() {
               your User Generated code.
             </p>
           <div class="tie-privacy-modal-button-container">
-          <button ng-show="clientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+          <button ng-show="isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
               <span>Okay</span>
             </button>
-            <button ng-show="!clientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+            <button ng-show="!isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
               <span>Accept</span>
             </button>
-            <button ng-show="!clientVersion" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
+            <button ng-show="!isClientVersion" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
               <span>Reject</span>
             </button>
           </div>
-          <div ng-show="!clientVersion">
+          <div ng-show="!isClientVersion">
             <label>
               <input type="checkbox" id="tie-privacy-modal-shared-option"></input>
               This is a shared computer, don't save my response. 
