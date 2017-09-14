@@ -608,8 +608,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it([
-      'should return the same hint if a student reaches the end of the ',
-      'available hints.'
+      'should return null if a student reaches the end of the available hints.'
     ].join(''), function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
@@ -655,12 +654,10 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
 
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, codeEvalResultWithFourthSameBug).getParagraphs();
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
+      expect(
+        FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, codeEvalResultWithFourthSameBug)
+      ).toBe(null);
     });
 
     it([

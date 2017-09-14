@@ -19,13 +19,13 @@
 describe('CodeEvalResultObjectFactory', function() {
   var CodeEvalResultObjectFactory;
   var codeEvalResult;
-  var CODE = "code";
-  var OUTPUT = "";
+  var CODE = 'code';
+  var OUTPUT = '';
   var CORRECTNESS_TEST_RESULTS = [[true, true], [false, false]];
   var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
   var PERFORMANCE_TEST_RESULTS = [[], []];
   var ERROR_STRING = null;
-  var ERROR_INPUT = "errorInput";
+  var ERROR_INPUT = 'errorInput';
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -35,6 +35,29 @@ describe('CodeEvalResultObjectFactory', function() {
       CORRECTNESS_TEST_RESULTS, BUGGY_OUTPUT_TEST_RESULTS,
       PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
   }));
+
+  describe('getPreprocessedCode', function() {
+    it('should correctly get preprocessed code', function() {
+      expect(codeEvalResult.getPreprocessedCode()).toMatch(CODE);
+    });
+  });
+
+  describe('hasSamePreprocessedCodeAs', function() {
+    it('should correctly compare the code of two objects', function() {
+      var matchingCodeEvalResult = CodeEvalResultObjectFactory.create(
+        CODE, 'some output', [], [], [], '', '');
+      expect(
+        codeEvalResult.hasSamePreprocessedCodeAs(matchingCodeEvalResult)
+      ).toBe(true);
+
+      var nonMatchingCodeEvalResult = CodeEvalResultObjectFactory.create(
+        'blah blah not same code', 'some output', [], [], [], '', '');
+      expect(
+        codeEvalResult.hasSamePreprocessedCodeAs(nonMatchingCodeEvalResult)
+      ).toBe(false);
+    });
+  });
+
 
   describe('getOutput', function() {
     it('should correctly get output', function() {

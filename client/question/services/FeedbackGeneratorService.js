@@ -160,11 +160,12 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Returns the feedback created as a result of a failing buggy output test.
+     * Returns the feedback created as a result of a failing buggy output test,
+     * or null if all hints for that test have been exhausted.
      *
      * @param {BuggyOutputTest} failingTest
      * @param {CodeEvalResult} codeEvalResult
-     * @returns {Feedback}
+     * @returns {Feedback|null}
      * @private
      */
     var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
@@ -184,17 +185,20 @@ tie.factory('FeedbackGeneratorService', [
           // have the exact same hint, but that shouldn't be allowed.
           if (previousMessages[0].getContent() ===
               buggyMessages[previousHintIndex]) {
-            var previousCode = (
-              lastSnapshot.getCodeEvalResult().getPreprocessedCode());
-            if (previousCode === codeEvalResult.getPreprocessedCode() ||
-                previousHintIndex === buggyMessages.length - 1) {
-              hintIndex = previousHintIndex;
+            var codeHasChanged = codeEvalResult.hasSamePreprocessedCodeAs(
+              lastSnapshot.getCodeEvalResult());
+            var tentativeHintIndex = (
+              previousHintIndex + (codeHasChanged ? 0 : 1));
+
+            if (tentativeHintIndex >= buggyMessages.length) {
+              return null;
             } else {
-              hintIndex = previousHintIndex + 1;
+              hintIndex = tentativeHintIndex;
             }
           }
         }
       }
+
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(buggyMessages[hintIndex]);
       feedback.setHintIndex(hintIndex);
@@ -465,8 +469,15 @@ tie.factory('FeedbackGeneratorService', [
         for (i = 0; i < tasks.length; i++) {
           for (var j = 0; j < buggyOutputTests[i].length; j++) {
             if (buggyOutputTestResults[i][j]) {
-              feedback.appendFeedback(_getBuggyOutputTestFeedback(
-                buggyOutputTests[i][j], codeEvalResult));
+              var feedbackToAppend = _getBuggyOutputTestFeedback(
+                buggyOutputTests[i][j], codeEvalResult);
+              // Null feedback indicates that we've run out of hints and should
+              // provide correctness-test output feedback instead.
+              if (!feedbackToAppend) {
+                break;
+              }
+
+              feedback.appendFeedback(feedbackToAppend);
               return feedback;
             }
           }

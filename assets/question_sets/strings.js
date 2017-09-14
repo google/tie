@@ -27,10 +27,10 @@ globalData.questionSets['strings'] = {  // eslint-disable-line dot-notation
     ].join('')
   ],
   questionIds: [
-    'findMostCommonCharacter',
     'reverseWords',
-    'isPalindrome',
     'checkBalancedParentheses',
+    'findMostCommonCharacter',
+    'isPalindrome',
     'internationalization',
     'runLengthEncoding'
   ]
