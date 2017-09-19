@@ -19,6 +19,8 @@
 
 tie.factory('SessionIdService', [
   function() {
+    var SESSION_ID_LENGTH = 100;
+
     /**
      * Global object to keep track of the session ID.
      * @type {String}
@@ -31,17 +33,17 @@ tie.factory('SessionIdService', [
      * @returns {String}
      */
     var _createSessionId = function() {
-      var randomNumbers = new Uint32Array(100);
+      var randomNumbers = new Uint32Array(SESSION_ID_LENGTH);
       window.crypto.getRandomValues(randomNumbers);
       var idArray = [];
       var possible = ['ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
         '0123456789'].join('');
 
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < SESSION_ID_LENGTH; i++) {
         idArray.push(possible.charAt(randomNumbers[i] % possible.length));
       }
       return idArray.join('');
-    }
+    };
 
     return {
       _createSessionId: _createSessionId,

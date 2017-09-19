@@ -18,12 +18,6 @@
 
 describe('SessionIdService', function() {
   var SessionIdService;
-  var TaskObjectFactory;
-  var orderedTasks;
-  var auxiliaryCode;
-  var starterCode;
-
-  var SUPPORTED_PYTHON_LIBS;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -44,6 +38,6 @@ describe('SessionIdService', function() {
         var otherId = SessionIdService.getOrCreateSessionId();
         expect(id).toEqual(otherId);
         done();
-    });
+      });
   });
 });
