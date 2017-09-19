@@ -33,14 +33,13 @@ tie.factory('SessionIdService', [
      * @returns {String}
      */
     var _createSessionId = function() {
-      var randomNumbers = new Uint32Array(SESSION_ID_LENGTH);
-      window.crypto.getRandomValues(randomNumbers);
       var idArray = [];
       var possible = ['ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
         '0123456789'].join('');
 
       for (var i = 0; i < SESSION_ID_LENGTH; i++) {
-        idArray.push(possible.charAt(randomNumbers[i] % possible.length));
+        idArray.push(
+          possible.charAt(Math.floor(Math.random() * possible.length));
       }
       return idArray.join('');
     };

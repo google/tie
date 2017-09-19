@@ -25,17 +25,17 @@ describe('SessionIdService', function() {
       'SessionIdService');
   }));
 
-  describe("getOrCreateSessionId", function() {
+  describe("getSessionId", function() {
     it('should never return null', function(done) {
-      var id = SessionIdService.getOrCreateSessionId();
+      var id = SessionIdService.getSessionId();
       expect(id).not.toEqual(null);
       done();
     });
 
     it('should return the same sessionId across multiple calls',
       function(done) {
-        var id = SessionIdService.getOrCreateSessionId();
-        var otherId = SessionIdService.getOrCreateSessionId();
+        var id = SessionIdService.getSessionId();
+        var otherId = SessionIdService.getSessionId();
         expect(id).toEqual(otherId);
         done();
       });
