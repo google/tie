@@ -39,7 +39,7 @@ tie.factory('SessionIdService', [
 
       for (var i = 0; i < SESSION_ID_LENGTH; i++) {
         idArray.push(
-          possible.charAt(Math.floor(Math.random() * possible.length));
+          possible.charAt(Math.floor(Math.random() * possible.length)));
       }
       return idArray.join('');
     };
@@ -53,7 +53,7 @@ tie.factory('SessionIdService', [
        *
        * @returns {String}
        */
-      getOrCreateSessionId: function() {
+      getSessionId: function() {
         if (sessionId === null) {
           sessionId = _createSessionId();
         }
