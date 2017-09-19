@@ -25,7 +25,7 @@ describe('SessionIdService', function() {
       'SessionIdService');
   }));
 
-  describe("getSessionId", function() {
+  describe('getSessionId', function() {
     it('should never return null', function(done) {
       var id = SessionIdService.getSessionId();
       expect(id).not.toEqual(null);
