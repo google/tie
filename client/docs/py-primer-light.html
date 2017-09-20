@@ -1,0 +1,166 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Helvetica, Arial;
+        font-size: 14px;
+      }
+      p {
+        width: 616px;
+      }
+      pre {
+        font-size: 13px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        width: 632px;
+      }
+      .function-name {
+        color: #00f;
+      }
+      .general-statements {
+        color: #d600f5;
+      }
+      .h1 {
+        color: #4242b7;
+        font-size: 24px;
+        height: 50px;
+        line-height: 50px;
+        text-align-last: center;
+        width: 616px;
+      }
+      .h2 {
+        background-color: #4242b7;
+        color: white;
+        font-size: 16px;
+        height:32px;
+        line-height: 32px;
+        margin-bottom: 24px;
+        margin-left: -8px;
+        margin-right: -8px;
+        margin-top: 24px;
+        text-align-last: center;
+        width: 640px;
+      }
+      .method-type {
+        color: #6631e4;
+      }
+      .number {
+        color: #178e5f;
+      }
+      .single-line-comment {
+        color: #ea8545;
+      }
+      .string {
+        color: #b50a0a;
+      }
+      .transparent {
+        font-size: 0px;
+        height: 0px;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="h1">
+      <span class="transparent">"""</span>
+      PYTHON IN 2 MINUTES (OR SO)
+      <span class="transparent">"""</span>
+    </div>
+    <p>
+      <span class="transparent">"""</span>The following is a very short primer
+      on the Python programming language. It assumes you already know how to
+      program in a language such as C++ or Java, and you just want to quickly
+      start coding in Python. This primer is not meant to be exhaustive; for the
+      official Python tutorial, see
+      <a target="_blank" href="https://docs.python.org/2.7/tutorial/index.html">https://docs.python.org/2.7/tutorial/index.html</a><span class="transparent">"""</span>
+    </p>
+    <div class="h2">
+      <span class="transparent">"""</span>
+      MINUTE 1: THE BASICS
+      <span class="transparent">"""</span>
+    </div>
+    <pre>
+<span class="string">""" A multi-line comment in Python. Can also be used to create multi-line string
+literals, which can be assigned to variables. """</span>
+
+<span class="single-line-comment"># A single line comment in Python</span>
+
+<span class="single-line-comment"># This is how you define a method in Python</span>
+<span class="general-statements">def</span> <span class="function-name">exampleMethod</span>(example_input):
+   
+    <span class="single-line-comment"># Note that you do not need to end statements with a semicolon in Python</span>
+   
+    <span class="string">""" WHITESPACE IS SIGNIFICANT IN PYTHON! You need to indent your code
+    precisely. Since statements do not end with semicolons and parentheses and
+    brackets are not really used in blocks, indentation is how the Python
+    runtime understands which statements belong to which blocks. This even
+    applies to comments and empty lines! """</span>
+   
+    example_var = <span class="string">'You can declare vars simply by assigning to them, like this'</span>
+   
+    <span class="single-line-comment"># An if statement in Python</span>
+    <span class="general-statements">if</span> example_input == <span class="number">1</span>:
+        <span class="general-statements">return</span> <span class="string">'Number 1! Whoohoo!'</span>
+   
+    <span class="single-line-comment"># An "else if" statement in Python</span>
+    <span class="general-statements">elif</span> <span class="method-type">type</span>(example_input) <span class="general-statements">is</span> <span class="method-type">list</span>:
+        <span class="single-line-comment"># In the above, 'is' compares identities (whereas '==' compares values)</span>
+    
+        <span class="single-line-comment"># A for statement in Python</span>
+        <span class="general-statements">for</span> example_item <span class="general-statements">in</span> example_input:
+            <span class="method-type">print</span>(example_item)
+
+    <span class="general-statements">else</span>:
+        <span class="method-type">print</span>(<span class="string">'This is not the input I am looking for'</span>)
+    </pre>
+    <div class="h2">
+      <span class="transparent">"""</span>
+      MINUTE 2: BASIC DATA STRUCTURES
+      <span class="transparent">"""</span>
+    </div>
+    <pre>
+<span class="single-line-comment"># Lists (variable-length arrays)</span>
+
+example_list = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>, <span class="number">42</span>]
+example_list.append(<span class="string">'hello world'</span>)  <span class="single-line-comment"># appends to a list</span>
+example_list.insert(<span class="number">2</span>, <span class="string">'answer'</span>)  <span class="single-line-comment"># inserts 'answer' at position 2</span>
+last_item = example_list.pop()  <span class="single-line-comment"># removes and return last item on list</span>
+item_at_2 = example_list.pop(<span class="number">2</span>)  <span class="single-line-comment"># removes and return item at position 2</span>
+reversed_list = example_list.reverse()  <span class="single-line-comment"># reverses a list</span>
+length_of_example_list = <span class="method-type">len</span>(example_list)  <span class="single-line-comment"># returns length of a list</span>
+<span class="general-statements">del</span> example_list[<span class="number">1</span>]  <span class="single-line-comment"># deletes item at index 1 (del reduces list length)</span>
+<span class="general-statements">del</span> example_list[<span class="number">1</span>:<span class="number">2</span>]  <span class="single-line-comment"># deletes items from index 1 to index 2</span>
+<span class="general-statements">del</span> example_list[:]  <span class="single-line-comment"># deletes everything from list (list now zero length)</span>
+
+<span class="single-line-comment"># Dictionaries (associative arrays)</span>
+
+size_abbreviations = {<span class="string">'small'</span>: <span class="string">'S'</span>, <span class="string">'medium'</span>: <span class="string">'M'</span>, <span class="string">'large'</span>: <span class="string">'L'</span>}
+my_size = size_abbreviations[<span class="string">'medium'</span>]  <span class="single-line-comment"># returns 'M'</span>
+size_abbreviations[<span class="string">'extra large'</span>] = <span class="string">'XL'</span>  <span class="single-line-comment"># adds this element to dictionary</span>
+<span class="general-statements">del</span> size_abbreviations[<span class="string">'medium'</span>] <span class="single-line-comment"># removes 'medium':'M' pair from dictionary</span>
+
+<span class="single-line-comment"># Sets</span>
+
+a_set = <span class="method-type">set</span>()  <span class="single-line-comment"># creates an empty set</span>
+a_set.add(<span class="string">'hello'</span>)  <span class="single-line-comment"># adds to a set</span>
+a_set.remove(<span class="string">'hello'</span>)  <span class="single-line-comment"># removes this item from the set</span>
+a_set.clear()  <span class="single-line-comment"># removes all elements from the set</span>
+set_from_list = <span class="method-type">set</span>([<span class="string">'apples'</span>, <span class="string">'oranges'</span>])  <span class="single-line-comment"># creates a set from a list</span>
+<span class="general-statements">if</span> <span class="string">'apples'</span> <span class="general-statements">in</span> set_from_list:  <span class="single-line-comment"># checks to see if an item is in the set</span>
+    <span class="method-type">print</span>(<span class="string">'yes, we have apples!'</span>)
+<span class="general-statements">if</span> <span class="string">'pineapple'</span> <span class="general-statements">not in</span> set_from_list:  <span class="single-line-comment"># 'not' is the negation operator</span>
+    <span class="method-type">print</span>(<span class="string">'but no pineapples for you!'</span>)
+
+<span class="single-line-comment"># Adding and subtracting from strings</span>
+
+<span class="names">singular</span> = <span class="string">'word'</span>
+<span class="names">plural</span> = <span class="names">singular</span> + <span class="string">'s'</span>  <span class="single-line-comment"># plural = 'words'</span>
+    </pre>
+    <p>
+      <span class="transparent">"""</span>The official tutorial on Python data
+      structures can be found at:
+      <a target="_blank" href="https://docs.python.org/2.7/tutorial/datastructures.html">https://docs.python.org/2.7/tutorial/datastructures.html</a><span class="transparent">"""</span>
+    </p>
+    <br>
+  </body>
+</html>
