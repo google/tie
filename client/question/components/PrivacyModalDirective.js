@@ -57,7 +57,7 @@ tie.directive('privacyModal', [function() {
           </div>
           <div ng-show="!isClientVersion()">
             <label>
-              <input type="checkbox" ng-model="user.isUsingSharedComputer"></input>
+              <input type="checkbox" ng-model="modalData.isUsingSharedComputer"></input>
               This is a shared computer, don't save my response.
             </label>
           </div>
@@ -112,10 +112,12 @@ tie.directive('privacyModal', [function() {
       </style>
     `,
     controller: ['$cookies', '$scope', '$window', 'PRIVACY_COOKIE_LIFETIME',
-      function($cookies, $scope, $window, PRIVACY_COOKIE_LIFETIME) {
+      'PRIVACY_COOKIE', 'MENU_PAGE_URL_FROM_QUESTION',
+      function($cookies, $scope, $window, PRIVACY_COOKIE_LIFETIME,
+        PRIVACY_COOKIE, MENU_PAGE_URL_FROM_QUESTION) {
         // Need to create this to be able to use ng-model, see below
         // https://stackoverflow.com/questions/12618342/ng-model-does-not-update-controller-value/22768720#22768720
-        $scope.user = {};
+        $scope.modalData = {};
 
         /**
          * Stores the user's acceptance of the privacy policy
@@ -123,16 +125,15 @@ tie.directive('privacyModal', [function() {
          */
         $scope.accept = function() {
           // If this is not a shared computer
-          if ($scope.user.isUsingSharedComputer === undefined ||
-              $scope.user.isUsingSharedComputer === false) {
-            var expireDate = new Date();
-            expireDate.setDate(
-              expireDate.getDate() + PRIVACY_COOKIE_LIFETIME);
-            $cookies.put("privacyPolicyAccepted", true, {expires: expireDate});
+          if (!$scope.modalData.isUsingSharedComputer) {
+            var expiryDate = new Date();
+            expiryDate.setDate(
+              expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME);
+            $cookies.put(PRIVACY_COOKIE, true, {expires: expiryDate});
           // If this is a shared computer
-          } else if ($scope.user.isUsingSharedComputer === true) {
+          } else if ($scope.modalData.isUsingSharedComputer) {
             // Cookie only lasts until browser is closed.
-            $cookies.put("privacyPolicyAccepted", true);
+            $cookies.put(PRIVACY_COOKIE, true);
           }
           $scope.closeModal();
         };
@@ -142,8 +143,8 @@ tie.directive('privacyModal', [function() {
          * and redirects to the menu page.
          */
         $scope.reject = function() {
-          $cookies.put("privacyPolicyAccepted", false);
-          $window.location.href = "../menu/menu.html";
+          $cookies.put(PRIVACY_COOKIE, false);
+          $window.location.href = MENU_PAGE_URL_FROM_QUESTION;
         };
 
         /**

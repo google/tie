@@ -578,3 +578,17 @@ tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
  */
 var ONE_YEAR_IN_DAYS = 365;
 tie.constant('PRIVACY_COOKIE_LIFETIME', ONE_YEAR_IN_DAYS);
+/**
+ * Key to use to store the privacy policy agreement.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PRIVACY_COOKIE', 'privacyPolicyAccepted');
+/**
+ * Menu page url relative to the question page.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('MENU_PAGE_URL_FROM_QUESTION', '../menu/menu.html');
