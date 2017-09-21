@@ -501,14 +501,14 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'SolutionHandlerService',
       'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', 'LocalStorageService',
+      'ReinforcementObjectFactory', '$cookies', 'LocalStorageService',
       'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       'DEFAULT_QUESTION_ID',
       function(
           $scope, $interval, $timeout, $location, SolutionHandlerService,
           QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, LocalStorageService,
+          ReinforcementObjectFactory, $cookies, LocalStorageService,
           ServerHandlerService, SECONDS_TO_MILLISECONDS,
           DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
           DEFAULT_QUESTION_ID) {
@@ -986,7 +986,14 @@ tie.directive('learnerView', [function() {
 
         $scope.initQuestionSet(questionSetId);
 
-        $scope.privacyModalIsDisplayed = true;
+        // If server version, and the user has not accepted the privacy policy,
+        // show them the privacy modal.
+        if (SERVER_URL !== null) {
+          if ($cookies.get("privacyPolicyAccepted") === false ||
+          $cookies.get("privacyPolicyAccepted") === undefined) {
+            $scope.privacyModalIsDisplayed = true;
+          }
+        }
       }
     ]
   };

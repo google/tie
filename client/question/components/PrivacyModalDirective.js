@@ -45,7 +45,7 @@ tie.directive('privacyModal', [function() {
               your User Generated code.
             </p>
           <div class="tie-privacy-modal-button-container">
-          <button ng-show="isClientVersion()" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+          <button ng-show="isClientVersion()" class="tie-button-blue tie-privacy-modal-button" ng-click="closeModal()">
               <span>Okay</span>
             </button>
             <button ng-show="!isClientVersion()" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
@@ -57,7 +57,7 @@ tie.directive('privacyModal', [function() {
           </div>
           <div ng-show="!isClientVersion()">
             <label>
-              <input type="checkbox" ng-model="sharedStatus"></input>
+              <input type="checkbox" ng-model="user.isUsingSharedComputer"></input>
               This is a shared computer, don't save my response.
             </label>
           </div>
@@ -111,29 +111,48 @@ tie.directive('privacyModal', [function() {
         }
       </style>
     `,
-    link: function($scope) {
-      /**
-       * Stores the user's acceptance of the privacy policy
-       * and closes the modal.
-       */
-      $scope.accept = function() {
-        // Send signal to store that the user has accepted
-        $scope.closeModal();
-      };
-      /**
-       * Stores the user's rejection of the privacy policy
-       * and closes the modal.
-       */
-      $scope.reject = function() {
-        // Send signal to store that the user has rejected
-        $scope.closeModal();
-      };
-      /**
-       * Sets the scope variable `show` to false to hide modal.
-       */
-      $scope.closeModal = function() {
-        $scope.isDisplayed = false;
-      };
-    }
+    controller: ['$cookies', '$scope', '$window', 'PRIVACY_COOKIE_LIFETIME',
+      function($cookies, $scope, $window, PRIVACY_COOKIE_LIFETIME) {
+        // Need to create this to be able to use ng-model, see below
+        // https://stackoverflow.com/questions/12618342/ng-model-does-not-update-controller-value/22768720#22768720
+        $scope.user = {};
+
+        /**
+         * Stores the user's acceptance of the privacy policy
+         * and closes the modal.
+         */
+        $scope.accept = function() {
+          // If this is not a shared computer
+          if ($scope.user.isUsingSharedComputer === undefined ||
+            $scope.user.isUsingSharedComputer === false) {
+            var expireDate = new Date();
+            expireDate.setDate(
+              expireDate.getDate() + PRIVACY_COOKIE_LIFETIME);
+            $cookies.put("privacyPolicyAccepted", true, {expires: expireDate});
+          // If this is a shared computer
+          } else if ($scope.user.isUsingSharedComputer === true) {
+            // Cookie only lasts until browser is closed.
+            $cookies.put("privacyPolicyAccepted", true);
+          }
+          $scope.closeModal();
+        };
+
+        /**
+         * Stores the user's rejection of the privacy policy
+         * and redirects to the menu page.
+         */
+        $scope.reject = function() {
+          $cookies.put("privacyPolicyAccepted", false);
+          $window.location.href = "../menu/menu.html";
+        };
+
+        /**
+         *  Close the modal by setting the display variable to false.
+         */
+        $scope.closeModal = function() {
+          $scope.isDisplayed = false;
+        };
+      }
+    ]
   };
 }]);
