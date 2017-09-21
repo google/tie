@@ -499,17 +499,17 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$interval', '$timeout', '$location', 'SolutionHandlerService',
-      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', '$cookies', 'LocalStorageService',
-      'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
+      '$scope', '$interval', '$timeout', '$location', '$cookies',
+      'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
+      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
+      'LocalStorageService', 'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       'DEFAULT_QUESTION_ID',
       function(
-          $scope, $interval, $timeout, $location, SolutionHandlerService,
-          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, $cookies, LocalStorageService,
-          ServerHandlerService, SECONDS_TO_MILLISECONDS,
+          $scope, $interval, $timeout, $location, $cookies,
+          SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
+          FeedbackObjectFactory, ReinforcementObjectFactory,
+          LocalStorageService, ServerHandlerService, SECONDS_TO_MILLISECONDS,
           DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
           DEFAULT_QUESTION_ID) {
         /**
