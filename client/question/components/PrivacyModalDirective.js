@@ -124,7 +124,7 @@ tie.directive('privacyModal', [function() {
         $scope.accept = function() {
           // If this is not a shared computer
           if ($scope.user.isUsingSharedComputer === undefined ||
-            $scope.user.isUsingSharedComputer === false) {
+              $scope.user.isUsingSharedComputer === false) {
             var expireDate = new Date();
             expireDate.setDate(
               expireDate.getDate() + PRIVACY_COOKIE_LIFETIME);

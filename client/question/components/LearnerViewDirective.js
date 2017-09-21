@@ -989,8 +989,9 @@ tie.directive('learnerView', [function() {
         // If server version, and the user has not accepted the privacy policy,
         // show them the privacy modal.
         if (SERVER_URL !== null) {
-          if ($cookies.get("privacyPolicyAccepted") === false ||
-          $cookies.get("privacyPolicyAccepted") === undefined) {
+          var privacyPolicyAccepted = $cookies.get("privacyPolicyAccepted");
+          if (privacyPolicyAccepted === false ||
+              privacyPolicyAccepted === undefined) {
             $scope.privacyModalIsDisplayed = true;
           }
         }
