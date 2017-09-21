@@ -25,7 +25,7 @@ tie.directive('privacyModal', [function() {
       isClientVersion: '&'
     },
     template: `
-      <div class="tie-privacy-modal" ng-show="isDisplayed" ng-click="closeModal()">
+      <div class="tie-privacy-modal" ng-show="isDisplayed">
         <div class="tie-privacy-modal-content" ng-click="$event.stopPropagation();">
           <h1 class="tie-privacy-modal-title">Privacy Policy</h1>
             <p ng-show="isClientVersion()">
