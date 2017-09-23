@@ -63,38 +63,54 @@ class AuxiliaryCode(object):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findMostCommonCharacter',
-    correctnessTests: [{
-      input: 'cdcdc',
-      allowedOutputs: ['c'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'cdcdc',
+        allowedOutputs: ['c']
+      }, {
+        input: 'babaabb',
+        allowedOutputs: ['b']
+      }]
     }, {
-      input: 'babaabb',
-      allowedOutputs: ['b'],
-      tag: 'the general case'
+      id: 'MIXED_CASE',
+      humanReadableName: 'mixed-case strings',
+      testCases: [{
+        input: 'BBBbbbBBBaaaaaaa',
+        allowedOutputs: ['a']
+      }]
     }, {
-      input: 'BBBbbbBBBaaaaaaa',
-      allowedOutputs: ['a'],
-      tag: 'mixed-case strings'
+      id: 'NUMBERS',
+      humanReadableName: 'strings with numbers',
+      testCases: [{
+        input: 'Add: 22+22=44',
+        allowedOutputs: ['2']
+      }]
     }, {
-      input: 'Add: 22+22=44',
-      allowedOutputs: ['2'],
-      tag: 'strings with numbers'
+      id: 'SPECIAL_CHARACTERS',
+      humanReadableName: 'strings with special characters',
+      testCases: [{
+        input: 'save 200%!!!',
+        allowedOutputs: ['!']
+      }]
     }, {
-      input: 'save 200%!!!',
-      allowedOutputs: ['!'],
-      tag: 'strings with special characters'
+      id: 'SMALL_INPUTS',
+      humanReadableName: 'small inputs',
+      testCases: [{
+        input: 'x',
+        allowedOutputs: ['x']
+      }]
     }, {
-      input: 'x',
-      allowedOutputs: ['x'],
-      tag: 'small inputs'
-    }, {
-      input: 'some string with many spaces',
-      allowedOutputs: ['s'],
-      tag: 'strings with many spaces'
-    }, {
-      input: 'a    b c    d e f f',
-      allowedOutputs: ['f'],
-      tag: 'strings with many spaces'
+      id: 'MANY_SPACES',
+      humanReadableName: 'strings with many spaces',
+      testCases: [{
+        input: 'some string with many spaces',
+        allowedOutputs: ['s']
+      }, {
+        input: 'a    b c    d e f f',
+        allowedOutputs: ['f']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',

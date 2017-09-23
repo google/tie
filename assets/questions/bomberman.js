@@ -73,55 +73,62 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'For this question, you will be given a board, in which all ',
-          'elements are strings. "x" represents a wall, "e" represents ',
-          'an enemy, and "" represents an empty cell. You can place ',
-          'an bomb in an empty cell, which will kill all enemies in ',
-          'vertical and horizontal directions until the blast hits a ',
-          'wall or the edge of the board. Write a function bomb(board), ',
-          'to find the best position to place a bomb in order to ',
-          'kill as many enemies as possible, then return the number ',
-          'of enemies killed.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'For this question, you will be given a board, in which all ',
+        'elements are strings. "x" represents a wall, "e" represents ',
+        'an enemy, and "" represents an empty cell. You can place ',
+        'an bomb in an empty cell, which will kill all enemies in ',
+        'vertical and horizontal directions until the blast hits a ',
+        'wall or the edge of the board. Write a function bomb(board), ',
+        'to find the best position to place a bomb in order to ',
+        'kill as many enemies as possible, then return the number ',
+        'of enemies killed.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings'],
     acquiredSkills: ['Dynamic Programming'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'bomb',
-    correctnessTests: [{
-      input: [],
-      allowedOutputs: [0],
-      tag: 'empty boards'
+    testSuites: [{
+      id: 'EMPTY_BOARDS',
+      humanReadableName: 'empty boards',
+      testCases: [{
+        input: [],
+        allowedOutputs: [0]
+      }, {
+        input: [[], [], []],
+        allowedOutputs: [0]
+      }]
     }, {
-      input: [[], [], []],
-      allowedOutputs: [0],
-      tag: 'empty boards'
+      id: 'SINGLE_ROW_BOARDS',
+      humanReadableName: 'single-row boards',
+      testCases: [{
+        input: [["e", "", "e", "x", "", "e"]],
+        allowedOutputs: [2]
+      }, {
+        input: [["e", "", "e", "", "", "e"]],
+        allowedOutputs: [3]
+      }]
     }, {
-      input: [["e", "", "e", "x", "", "e"]],
-      allowedOutputs: [2],
-      tag: 'single row boards'
+      id: 'SINGLE_COLUMN_BOARDS',
+      humanReadableName: 'single-column boards',
+      testCases: [{
+        input: [["e"], ["x"], [""], ["x"]],
+        allowedOutputs: [0]
+      }, {
+        input: [["e"], ["e"], [""], ["x"]],
+        allowedOutputs: [2]
+      }]
     }, {
-      input: [["e", "", "e", "", "", "e"]],
-      allowedOutputs: [3],
-      tag: 'single row boards'
-    }, {
-      input: [["e"], ["x"], [""], ["x"]],
-      allowedOutputs: [0],
-      tag: 'single column boards'
-    }, {
-      input: [["e"], ["e"], [""], ["x"]],
-      allowedOutputs: [2],
-      tag: 'single column boards'
-    }, {
-      input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
-      allowedOutputs: [4],
-      tag: 'the general case'
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: [["", "e", ""], ["e", "", "e"], ["", "e", ""]],
+        allowedOutputs: [4]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
@@ -136,8 +143,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
           "could only go until it reaches a wall."
         ].join('')
       ]
-    },
-    {
+    }, {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
       messages: [
         [

@@ -29,20 +29,17 @@ describe('TaskObjectFactory', function() {
       title: 'title',
       starterCode: 'starterCode',
       tasks: [{
-        outputFunctionName:
-          'AuxiliaryCode.lettersOnly',
-        correctnessTests: [],
+        outputFunctionName: 'AuxiliaryCode.lettersOnly',
+        testSuites: [],
         buggyOutputTests: [],
         performanceTests: []
-      },
-      {
+      }, {
         outputFunctionName: 'System.extendString',
-        correctnessTests: [],
+        testSuites: [],
         buggyOutputTests: [],
         performanceTests: []
       }]
     });
-
   }));
 
   describe('getOutputFunctionNameWithoutClass', function() {

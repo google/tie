@@ -134,38 +134,35 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'In this question, you\'ll implement the encode function. It takes ',
-          'a string as input and returns an encoding of the string where long ',
-          'runs of characters are replaced by <# characters>x<character>.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "abcccccd"\nOutput: "ab5xcd"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'In this question, you\'ll implement the encode function. It takes ',
+        'a string as input and returns an encoding of the string where long ',
+        'runs of characters are replaced by <# characters>x<character>.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "abcccccd"\nOutput: "ab5xcd"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
-    correctnessTests: [{
-      input: 'abcccccd',
-      allowedOutputs: ['ab5xcd'],
-      tag: 'the general case'
-    }, {
-      input: 'ddddddddddef',
-      allowedOutputs: ['10xdef'],
-      tag: 'the general case'
-    },
-    {
-      input: 'budddddddddd',
-      allowedOutputs: ['bu10xd'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'abcccccd',
+        allowedOutputs: ['ab5xcd']
+      }, {
+        input: 'ddddddddddef',
+        allowedOutputs: ['10xdef']
+      }, {
+        input: 'budddddddddd',
+        allowedOutputs: ['bu10xd']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.skipEncodingAtEndOfString',
@@ -183,37 +180,39 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Next, double-check your code to make sure it handles short ',
-          'strings. Ideally, these strings should be as small as possible ',
-          'after encoding.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, double-check your code to make sure it handles short ',
+        'strings. Ideally, these strings should be as small as possible ',
+        'after encoding.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
-    correctnessTests: [{
-      input: 'bbb',
-      allowedOutputs: ['3xb', 'bbb'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'bbb',
+        allowedOutputs: ['3xb', 'bbb']
+      }]
     }, {
-      input: 'aa',
-      allowedOutputs: ['aa'],
-      tag: 'short strings'
-    }, {
-      input: 'a',
-      allowedOutputs: ['a'],
-      tag: 'short strings'
-    }, {
-      input: '',
-      allowedOutputs: [''],
-      tag: 'empty strings'
+      id: 'SHORT_STRINGS',
+      humanReadableName: 'short strings',
+      testCases: [{
+        input: 'aa',
+        allowedOutputs: ['aa']
+      }, {
+        input: 'a',
+        allowedOutputs: ['a']
+      }, {
+        input: '',
+        allowedOutputs: ['']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
@@ -234,46 +233,44 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Next, make sure that your method\'s output can accurately be ',
-          'decoded. For each <#x{c}> pair, the decode method will repeat the ',
-          'character c # times. Note that the input strings may also contain ',
-          'digits.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'We should be able to run "decode" on your encoded string and get ',
-          'the original string back as a result.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'You may find that, in order to complete this task, you have to ',
-          'relax or compromise on some of the original constraints. As ',
-          'long as the input can be correctly encoded and then decoded, ',
-          'this is fine.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, make sure that your method\'s output can accurately be ',
+        'decoded. For each <#x{c}> pair, the decode method will repeat the ',
+        'character c # times. Note that the input strings may also contain ',
+        'digits.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'We should be able to run "decode" on your encoded string and get ',
+        'the original string back as a result.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'You may find that, in order to complete this task, you have to ',
+        'relax or compromise on some of the original constraints. As ',
+        'long as the input can be correctly encoded and then decoded, ',
+        'this is fine.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunctionName: null,
     outputFunctionName: 'AuxiliaryCode.decodeEncodedString',
     mainFunctionName: 'encode',
-    correctnessTests: [{
-      input: '5xb',
-      allowedOutputs: ['5xb'],
-      tag: 'the general case'
-    }, {
-      input: '2aaaaaab7',
-      allowedOutputs: ['2aaaaaab7'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: '5xb',
+        allowedOutputs: ['5xb']
+      }, {
+        input: '2aaaaaab7',
+        allowedOutputs: ['2aaaaaab7']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',

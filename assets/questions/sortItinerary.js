@@ -47,62 +47,65 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          "For this problem, you'll implement a sortItinerary method, which ",
-          'sorts a series of scrambled airline tickets into an itinerary. ',
-          'This function takes as input a string representing an unordered ',
-          'series of one-way plane tickets, represented by comma-separated ',
-          'pairs of cities. Each pair is encoded as city of origin, dash, ',
-          'destination city.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'Input: "JFK-ATL,LAX-JFK"',
-          'Output: "LAX-JFK,JFK-ATL"'
-        ].join('\n'),
-        type: 'code'
-      },
-      {
-        content: [
-          'All tickets must be used to form an itinerary. ',
-          'For now, you may assume both that there are no loops in the ',
-          'itinerary, and that there is only one correct answer for a ',
-          'given set of tickets.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'If there is no solution, return None.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        "For this problem, you'll implement a sortItinerary method, which ",
+        'sorts a series of scrambled airline tickets into an itinerary. ',
+        'This function takes as input a string representing an unordered ',
+        'series of one-way plane tickets, represented by comma-separated ',
+        'pairs of cities. Each pair is encoded as city of origin, dash, ',
+        'destination city.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Input: "JFK-ATL,LAX-JFK"',
+        'Output: "LAX-JFK,JFK-ATL"'
+      ].join('\n'),
+      type: 'code'
+    }, {
+      content: [
+        'All tickets must be used to form an itinerary. ',
+        'For now, you may assume both that there are no loops in the ',
+        'itinerary, and that there is only one correct answer for a ',
+        'given set of tickets.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'If there is no solution, return None.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Graph', 'String Manipulation'],
     acquiredSkills: ['Graph Traversal', 'Topological Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    correctnessTests: [{
-      input: 'LAX-JFK',
-      allowedOutputs: ['LAX-JFK'],
-      tag: 'one ticket case'
+    testSuites: [{
+      id: 'ONE_TICKET_CASE',
+      humanReadableName: 'one ticket case',
+      testCases: [{
+        input: 'LAX-JFK',
+        allowedOutputs: ['LAX-JFK']
+      }]
     }, {
-      input: 'JFK-ATL,LAX-JFK',
-      allowedOutputs: ['LAX-JFK,JFK-ATL'],
-      tag: 'the general case'
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'JFK-ATL,LAX-JFK',
+        allowedOutputs: ['LAX-JFK,JFK-ATL']
+      }, {
+        input: 'MUC-LHR,JFK-MUC,SFO-SJC,LHR-SFO',
+        allowedOutputs: ['JFK-MUC,MUC-LHR,LHR-SFO,SFO-SJC']
+      }]
     }, {
-      input: 'JFK-ATL,LAX-SEA',
-      allowedOutputs: [null],
-      tag: 'the invalid case'
-    }, {
-      input: 'MUC-LHR,JFK-MUC,SFO-SJC,LHR-SFO',
-      allowedOutputs: ['JFK-MUC,MUC-LHR,LHR-SFO,SFO-SJC'],
-      tag: 'the general case'
+      id: 'INVALID_CASE',
+      humanReadableName: 'the invalid case',
+      testCases: [{
+        input: 'JFK-ATL,LAX-SEA',
+        allowedOutputs: [null]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
@@ -121,7 +124,8 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
           'is a directed edge between two nodes. Can you make a single ',
           'pass through the graph to find the right answer?'
         ].join('')
-      ]}],
+      ]
+    }],
     performanceTests: []
     // The intended performance test below is commented out until we
     // support nonlinear runtime complexities.
@@ -133,79 +137,83 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     //  evaluationFunctionName: 'sortItinerary'
     // }]
   }, {
-    instructions: [
-      {
-        content: [
-          'Now, modify your code to support loops. For instance, the ',
-          'following itinerary should work: '
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'Input: "SEA-SJC,SEA-SFO,PIT-SEA,SFO-PIT,HOU-SEA"',
-          'Output: "HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC"'
-        ].join('\n'),
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Now, modify your code to support loops. For instance, the ',
+        'following itinerary should work: '
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Input: "SEA-SJC,SEA-SFO,PIT-SEA,SFO-PIT,HOU-SEA"',
+        'Output: "HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC"'
+      ].join('\n'),
+      type: 'code'
+    }],
     prerequisiteSkills: ['Graph', 'String Manupulation'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    correctnessTests: [{
-      input: 'JFK-KUL,JFK-NRT,NRT-JFK',
-      allowedOutputs: ['JFK-NRT,NRT-JFK,JFK-KUL'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'JFK-KUL,JFK-NRT,NRT-JFK',
+        allowedOutputs: ['JFK-NRT,NRT-JFK,JFK-KUL']
+      }]
     }, {
-      input: 'JFK-SFO,JFK-ATL,SFO-ATL,ATL-JFK,ATL-SFO',
-      allowedOutputs: ['JFK-ATL,ATL-JFK,JFK-SFO,SFO-ATl,ATL-SFO'],
-      tag: 'the hard case'
-    }, {
-      input: 'SEA-SJC,SEA-SFO,PIT-SEA,SFO-PIT,HOU-SEA',
-      allowedOutputs: ['HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC'],
-      tag: 'the hardcase'
-    }, {
-      input: 'AXA-TIA,JFK-ANU,ANU-TIA,TIA-AXA',
-      allowedOutputs: ['JFK-ANU,ANU-TIA,TIA-AXA,AXA-TIA'],
-      tag: 'the hard case'
+      id: 'HARD_CASE',
+      humanReadableName: 'the hard case',
+      testCases: [{
+        input: 'JFK-SFO,JFK-ATL,SFO-ATL,ATL-JFK,ATL-SFO',
+        allowedOutputs: ['JFK-ATL,ATL-JFK,JFK-SFO,SFO-ATl,ATL-SFO']
+      }, {
+        input: 'SEA-SJC,SEA-SFO,PIT-SEA,SFO-PIT,HOU-SEA',
+        allowedOutputs: ['HOU-SEA,SEA-SFO,SFO-PIT,PIT-SEA,SEA-SJC']
+      }, {
+        input: 'AXA-TIA,JFK-ANU,ANU-TIA,TIA-AXA',
+        allowedOutputs: ['JFK-ANU,ANU-TIA,TIA-AXA,AXA-TIA']
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'In some cases, tickets might be able to form more than one ',
-          'valid itinerary. In these cases, choose the airport that comes ',
-          'earlier in the alphabet, (for instance, ATL instead of BOS).'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'Input: "JFK-ATL,ATL-JFK,JFK-BOS,JFK-CLE,CLE-JFK"',
-          'Output: "JFK-ATL,ATL-JFK,JFK-CLE,CLE-JFK,JFK-BOS"'
-        ].join('\n'),
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'In some cases, tickets might be able to form more than one ',
+        'valid itinerary. In these cases, choose the airport that comes ',
+        'earlier in the alphabet, (for instance, ATL instead of BOS).'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Input: "JFK-ATL,ATL-JFK,JFK-BOS,JFK-CLE,CLE-JFK"',
+        'Output: "JFK-ATL,ATL-JFK,JFK-CLE,CLE-JFK,JFK-BOS"'
+      ].join('\n'),
+      type: 'code'
+    }],
     prerequisiteSkills: ['Graph', 'String Manipulation', 'Topological Sorting'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    correctnessTests: [{
-      input: 'JFK-ATL,ATL-JFK,JFK-BOS,JFK-CLE,CLE-JFK',
-      allowedOutputs: ['JFK-ATL-JFK-CLE-JFK-BOS'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'JFK-ATL,ATL-JFK,JFK-BOS,JFK-CLE,CLE-JFK',
+        allowedOutputs: ['JFK-ATL-JFK-CLE-JFK-BOS']
+      }]
     }, {
-      input: 'JFK-ATL,ORD-PHL,JFK-ORD,PHX-LAX,LAX-JFK,PHL-ATL,ATL-PHX',
-      allowedOutputs: [
-        'JFK-ATL,ATL-PHX,PHX-LAX,LAX-JFK,JFK-ORD,ORD-PHL,PHL-ATL'
-      ],
-      tag: 'the hard case'
+      id: 'HARD_CASE',
+      humanReadableName: 'the hard case',
+      testCases: [{
+        input: 'JFK-ATL,ORD-PHL,JFK-ORD,PHX-LAX,LAX-JFK,PHL-ATL,ATL-PHX',
+        allowedOutputs: [
+          'JFK-ATL,ATL-PHX,PHX-LAX,LAX-JFK,JFK-ORD,ORD-PHL,PHL-ATL'
+        ]
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: []

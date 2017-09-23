@@ -13,31 +13,31 @@
 // limitations under the License.
 
 /**
- * @fileoverview Factory for creating new frontend instances of CorrectnessTest
+ * @fileoverview Factory for creating new frontend instances of TestCase
  * domain objects.
  */
 
 
-tieData.factory('CorrectnessTestObjectFactory', [
+tieData.factory('TestCaseObjectFactory', [
   function() {
     /**
-     * CorrectnessTest objects have all of the information necessary to
-     * successfully test the correctness of a student's code submission.
+     * Each TestCase objects represents a test case that is used to test the
+     * correctness of a student's code submission.
      */
 
     /**
-     * Constructor for CorrectnessTest
+     * Constructor for TestCase
      *
-     * @param {dict} correctnessTestDict contains all the properties needed to
-     *    make a CorrectnessTest object
+     * @param {dict} testCaseDict contains all the properties needed to
+     *    make a TestCase object
      * @constructor
      */
-    var CorrectnessTest = function(correctnessTestDict) {
+    var TestCase = function(testCaseDict) {
       /**
        * @type{*}
        * @private
        */
-      this._input = correctnessTestDict.input;
+      this._input = testCaseDict.input;
 
       /**
        * @type{string}
@@ -49,52 +49,40 @@ tieData.factory('CorrectnessTestObjectFactory', [
        * @type {Array}
        * @private
        */
-      this._allowedOutputs = correctnessTestDict.allowedOutputs;
-
-      /**
-       * @type {string}
-       * @private
-       */
-      this._message = correctnessTestDict.message;
-
-      /**
-       * @type {string}
-       * @private
-       */
-      this._tag = correctnessTestDict.tag;
+      this._allowedOutputs = testCaseDict.allowedOutputs;
     };
 
     // Instance methods.
     /**
      * A getter for the _input property.
      * This function should return an object for the input associated with this
-     * CorrectnessTest.
+     * TestCase.
      *
      * @returns {*}
      */
-    CorrectnessTest.prototype.getInput = function() {
+    TestCase.prototype.getInput = function() {
       return this._input;
     };
 
     /**
      * A getter for the _stringifiedInput property.
      * This function should return a string version of the input associated with
-     * this test.
+     * this test case.
      *
      * @returns {string}
      */
-    CorrectnessTest.prototype.getStringifiedInput = function() {
+    TestCase.prototype.getStringifiedInput = function() {
       return this._stringifiedInput;
     };
 
     /**
      * Checks if the output param matches any of the allowed
-     * outputs for this correctness test.
+     * outputs for this test case.
      *
      * @param {*} output the output being checked
      * @returns {boolean} true if output matches, false if not
      */
-    CorrectnessTest.prototype.matchesOutput = function(output) {
+    TestCase.prototype.matchesOutput = function(output) {
       var allowedOutputs = this._allowedOutputs;
       var target = output;
       if (angular.isArray(output)) {
@@ -111,7 +99,7 @@ tieData.factory('CorrectnessTestObjectFactory', [
      *
      * @returns {*}
      */
-    CorrectnessTest.prototype.getAnyAllowedOutput = function() {
+    TestCase.prototype.getAnyAllowedOutput = function() {
       return this._allowedOutputs[0];
     };
 
@@ -122,45 +110,23 @@ tieData.factory('CorrectnessTestObjectFactory', [
      *
      * @returns {Array}
      */
-    CorrectnessTest.prototype.getAllAllowedOutputs = function() {
+    TestCase.prototype.getAllAllowedOutputs = function() {
       return this._allowedOutputs;
-    };
-
-    /**
-     * A getter for the _message property.
-     * This function should return a string that describes this correctness
-     * test.
-     *
-     * @returns {string}
-     */
-    CorrectnessTest.prototype.getMessage = function() {
-      return this._message;
-    };
-
-    /**
-     * A getter for the _tag property.
-     * This function should return a string that describes the role/purpose
-     * of this correctness test to help associate related or similar tests.
-     *
-     * @returns {string}
-     */
-    CorrectnessTest.prototype.getTag = function() {
-      return this._tag;
     };
 
     // Static class methods.
     /**
-     * Returns a CorrectnessTest object built from the properties specified
-     * in the dictionary parameter.
+     * Returns a TestCase object built from the properties specified in the
+     * dictionary parameter.
      *
-     * @param {dict} correctnessTestDict should specify all the properties
-     *    necessary to make this CorrectnessTest
-     * @returns {CorrectnessTest}
+     * @param {dict} testCaseDict should specify all the properties necessary
+     *     to make this TestCase.
+     * @returns {TestCase}
      */
-    CorrectnessTest.create = function(correctnessTestDict) {
-      return new CorrectnessTest(correctnessTestDict);
+    TestCase.create = function(testCaseDict) {
+      return new TestCase(testCaseDict);
     };
 
-    return CorrectnessTest;
+    return TestCase;
   }
 ]);

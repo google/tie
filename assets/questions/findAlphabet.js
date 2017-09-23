@@ -104,174 +104,104 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
 
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'Given a dictionary (a list of words in lexicographic order) of all',
-          'words in an unknown or invented language, write a function ',
-          'findAlphabet that returns the alphabet (an alphabetically sorted ',
-          'list of characters) of that language.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: ["art", "rat", "cat", "car"]\nOutput: "atrc"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Given a dictionary (a list of words in lexicographic order) of all',
+        'words in an unknown or invented language, write a function ',
+        'findAlphabet that returns the alphabet (an alphabetically sorted ',
+        'list of characters) of that language.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: ["art", "rat", "cat", "car"]\nOutput: "atrc"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    correctnessTests: [{
-      input: [
-        "a",
-        "ab",
-        "b"
-      ],
-      allowedOutputs: ['ab'],
-      tag: '2 letter alphabet'
+    testSuites: [{
+      id: 'TWO_LETTER_ALPHABET',
+      humanReadableName: '2-letter alphabet',
+      testCases: [{
+        input: ['a', 'ab', 'b'],
+        allowedOutputs: ['ab']
+      }]
     }, {
-      input: [
-        "aaec",
-        "aaed",
-        "aac",
-        "abe",
-        "abc",
-        "bed",
-        "bea",
-        "bcc",
-        "bcd"
-      ],
-      allowedOutputs: ['ecdab'],
-      tag: 'small alphabet'
+      id: 'SMALL_ALPHABET',
+      humanReadableName: 'small alphabet',
+      testCases: [{
+        input: [
+          'aaec', 'aaed', 'aac', 'abe', 'abc', 'bed', 'bea', 'bcc', 'bcd'
+        ],
+        allowedOutputs: ['ecdab']
+      }]
     }, {
-      input: [
-        "egdi",
-        "egdb",
-        "egej",
-        "egei",
-        "ebjj",
-        "ebjg",
-        "ebgh",
-        "ebgj",
-        "igac",
-        "igae",
-        "igia",
-        "igif",
-        "idcf",
-        "idcc",
-        "idh"
-      ],
-      allowedOutputs: ['afchjgdeib'],
-      tag: 'the general case'
-    },
-    {
-      input: [
-        "curwfe",
-        "curwfe",
-        "curwst",
-        "curwsw",
-        "curuyc",
-        "curuyf",
-        "curuga",
-        "curugs",
-        "cuxdeh",
-        "cuxdeu",
-        "cuxdbv",
-        "cuxdbn",
-        "cuxolc",
-        "cuxolb",
-        "cuxojd",
-        "cuxojs",
-        "cpcnow",
-        "cpcnob",
-        "cpcnqu",
-        "cpcnqp",
-        "cpctkj",
-        "cpctkd",
-        "cpctfg",
-        "cpctfa",
-        "cpbjeq",
-        "cpbjec",
-        "cpbjz",
-        "cpbhx",
-        "cpbhc",
-        "khjzs",
-        "khjzu",
-        "khjis",
-        "khjiv",
-        "khfax",
-        "khfay",
-        "khftg",
-        "khftq",
-        "kmima",
-        "kmimd",
-        "kmiej",
-        "kmies",
-        "kmrbm",
-        "kmrbr",
-        "kmrus",
-        "kmrut"
-      ],
-      allowedOutputs: ['ljhmezirxygadoqckfsvntwbup'],
-      tag: 'the general case'
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: [
+          'egdi', 'egdb', 'egej', 'egei', 'ebjj', 'ebjg', 'ebgh', 'ebgj',
+          'igac', 'igae', 'igia', 'igif', 'idcf', 'idcc', 'idh'
+        ],
+        allowedOutputs: ['afchjgdeib']
+      }, {
+        input: [
+          'curwfe', 'curwfe', 'curwst', 'curwsw', 'curuyc', 'curuyf', 'curuga',
+          'curugs', 'cuxdeh', 'cuxdeu', 'cuxdbv', 'cuxdbn', 'cuxolc', 'cuxolb',
+          'cuxojd', 'cuxojs', 'cpcnow', 'cpcnob', 'cpcnqu', 'cpcnqp', 'cpctkj',
+          'cpctkd', 'cpctfg', 'cpctfa', 'cpbjeq', 'cpbjec', 'cpbjz', 'cpbhx',
+          'cpbhc', 'khjzs', 'khjzu', 'khjis', 'khjiv', 'khfax', 'khfay',
+          'khftg', 'khftq', 'kmima', 'kmimd', 'kmiej', 'kmies', 'kmrbm',
+          'kmrbr', 'kmrus', 'kmrut'
+        ],
+        allowedOutputs: ['ljhmezirxygadoqckfsvntwbup']
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Next, make sure your code handles unexpected cases, such as a test ',
-          'case with no solution or a test case with more than ',
-          'one correct answer.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'If the test case has no solution, return "". If there is not ',
-          'enough information to order multiple characters, return them in ',
-          'standard alphabetical order.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: [a, b, a]\nOutput: ""\nInput: [cba]\nOutput: "abc"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, make sure your code handles unexpected cases, such as a test ',
+        'case with no solution or a test case with more than ',
+        'one correct answer.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'If the test case has no solution, return "". If there is not ',
+        'enough information to order multiple characters, return them in ',
+        'standard alphabetical order.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: [a, b, a]\nOutput: ""\nInput: [cba]\nOutput: "abc"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    correctnessTests: [{
-      input: [
-        "a",
-        "b",
-        "a"
-      ],
-      allowedOutputs: [''],
-      tag: 'invalid alphabet'
+    testSuites: [{
+      id: 'INVALID_ALPHABET',
+      humanReadableName: 'invalid alphabet',
+      testCases: [{
+        input: ['a', 'b', 'a'],
+        allowedOutputs: ['']
+      }, {
+        input: ['c', 'a', 'b', 'a'],
+        allowedOutputs: ['']
+      }]
     }, {
-      input: [
-        "c",
-        "a",
-        "b",
-        "a"
-      ],
-      allowedOutputs: [''],
-      tag: 'invalid alphabet'
-    }, {
-      input: [
-        "cab",
-        "bc"
-      ],
-      allowedOutputs: ['acb'],
-      tag: 'multiple possible orderings'
+      id: 'MULTIPLE_ORDERINGS',
+      humanReadableName: 'multiple possible orderings',
+      testCases: [{
+        input: ['cab', 'bc'],
+        allowedOutputs: ['acb']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnNoSolution',
@@ -289,34 +219,30 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Finally, modify your code to handle strings with a mix of ',
-          'lowercase and uppercase letters. Assume that a lowercase and ',
-          'uppercase version of a letter is the same with regards to ',
-          'lexicographic ordering. Your answer, though, should be lowercase.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: ["b", "Ba"]\nOutput: "ab"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Finally, modify your code to handle strings with a mix of ',
+        'lowercase and uppercase letters. Assume that a lowercase and ',
+        'uppercase version of a letter is the same with regards to ',
+        'lexicographic ordering. Your answer, though, should be lowercase.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: ["b", "Ba"]\nOutput: "ab"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    correctnessTests: [{
-      input: [
-        "ab",
-        "Aba",
-        "b"
-      ],
-      allowedOutputs: ['ab'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: ['ab', 'Aba', 'b'],
+        allowedOutputs: ['ab']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnUppercase',

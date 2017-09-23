@@ -56,54 +56,52 @@ def are_all_unique(words):
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: 'In this question, you will implement two functions.',
-        type: 'text'
-      },
-      {
-        content: [
-          'First, implement the abbreviate function. It takes a string as ',
-          'input and returns an abbreviation of the string of the form ',
-          '<first character><length of the middle of the string><last ',
-          'character> but only if it shortens the input.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "internationalization"\nOutput: "i18n"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: 'In this question, you will implement two functions.',
+      type: 'text'
+    }, {
+      content: [
+        'First, implement the abbreviate function. It takes a string as ',
+        'input and returns an abbreviation of the string of the form ',
+        '<first character><length of the middle of the string><last ',
+        'character> but only if it shortens the input.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "internationalization"\nOutput: "i18n"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'abbreviate',
-    correctnessTests: [{
-      input: 'internationalization',
-      allowedOutputs: ['i18n'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'internationalization',
+        allowedOutputs: ['i18n']
+      }, {
+        input: 'monkey',
+        allowedOutputs: ['m4y']
+      }, {
+        input: 'friendship',
+        allowedOutputs: ['f8p']
+      }]
     }, {
-      input: 'monkey',
-      allowedOutputs: ['m4y'],
-      tag: 'the general case'
-    }, {
-      input: 'friendship',
-      allowedOutputs: ['f8p'],
-      tag: 'the general case'
-    }, {
-      input: 't',
-      allowedOutputs: ['t'],
-      tag: 'short strings'
-    }, {
-      input: 'at',
-      allowedOutputs: ['at'],
-      tag: 'short strings'
-    }, {
-      input: 'bat',
-      allowedOutputs: ['bat'],
-      tag: 'short strings'
+      id: 'SHORT_STRINGS',
+      humanReadableName: 'short strings',
+      testCases: [{
+        input: 't',
+        allowedOutputs: ['t']
+      }, {
+        input: 'at',
+        allowedOutputs: ['at']
+      }, {
+        input: 'bat',
+        allowedOutputs: ['bat']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastLetter',
@@ -118,8 +116,7 @@ def are_all_unique(words):
           "you've abbreviated."
         ].join('')
       ]
-    },
-    {
+    }, {
       buggyFunctionName: (
         'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate'),
       messages: [
@@ -158,32 +155,31 @@ def are_all_unique(words):
       ]
     }],
     performanceTests: []
-  },
-  {
-    instructions: [
-      {
-        content: [
-          'Implement are_all_unique, a function that takes a list of strings ',
-          'as input and returns a boolean indicating whether all the strings ',
-          'in the input are unique when abbreviated by the above abbreviate ',
-          'function.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+  }, {
+    instructions: [{
+      content: [
+        'Implement are_all_unique, a function that takes a list of strings ',
+        'as input and returns a boolean indicating whether all the strings ',
+        'in the input are unique when abbreviated by the above abbreviate ',
+        'function.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'are_all_unique',
-    correctnessTests: [{
-      input: ['cat', 'dog', 'cart'],
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: ['clot', 'dog', 'cart'],
-      allowedOutputs: [false],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: ['cat', 'dog', 'cart'],
+        allowedOutputs: [true]
+      }, {
+        input: ['clot', 'dog', 'cart'],
+        allowedOutputs: [false]
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: [{

@@ -139,130 +139,119 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'reverseWords',
-    correctnessTests: [{
-      input: 'Hello, John',
-      allowedOutputs: ['olleH, nhoJ'],
-      tag: 'the sample input'
+    testSuites: [{
+      id: 'SAMPLE_INPUT',
+      humanReadableName: 'the sample input',
+      testCases: [{
+        input: 'Hello, John',
+        allowedOutputs: ['olleH, nhoJ']
+      }]
     }, {
-      input: 'Hi, world',
-      allowedOutputs: ['iH, dlrow'],
-      tag: 'the general case'
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'Hi, world',
+        allowedOutputs: ['iH, dlrow']
+      }, {
+        input: 'Hello, world',
+        allowedOutputs: ['olleH, dlrow']
+      }, {
+        input: 'Hey, how are you',
+        allowedOutputs: ['yeH, woh era uoy']
+      }]
     }, {
-      input: 'Hello, world',
-      allowedOutputs: ['olleH, dlrow'],
-      tag: 'the general case'
+      id: 'LOTS_OF_WHITESPACE',
+      humanReadableName: 'strings with lots of whitespace',
+      testCases: [{
+        input: '  hello  ',
+        allowedOutputs: ['  olleh  ']
+      }, {
+        input: 'hello  world',
+        allowedOutputs: ['olleh  dlrow']
+      }, {
+        input: 'hello    ',
+        allowedOutputs: ['olleh    ']
+      }]
     }, {
-      input: 'Hey, how are you',
-      allowedOutputs: ['yeH, woh era uoy'],
-      tag: 'the sample input'
+      id: 'PUNCTUATION',
+      humanReadableName: 'strings with punctuation',
+      testCases: [{
+        input: 'Hi-- John',
+        allowedOutputs: ['iH-- nhoJ']
+      }, {
+        input: 'Hi$ John',
+        allowedOutputs: ['iH$ nhoJ']
+      }, {
+        input: 'Hi , John',
+        allowedOutputs: ['iH , nhoJ']
+      }, {
+        input: '+one+two',
+        allowedOutputs: ['+eno+owt']
+      }, {
+        input: 'Hello.goodbye',
+        allowedOutputs: ['olleH.eybdoog']
+      }]
     }, {
-      input: '  hello  ',
-      allowedOutputs: ['  olleh  '],
-      tag: 'strings with lots of whitespace'
-    }, {
-      input: 'hello  world',
-      allowedOutputs: ['olleh  dlrow'],
-      tag: 'strings with lots of whitespace'
-    }, {
-      input: 'hello    ',
-      allowedOutputs: ['olleh    '],
-      tag: 'strings with lots of whitespace'
-    }, {
-      input: 'Hi-- John',
-      allowedOutputs: ['iH-- nhoJ'],
-      tag: 'strings with punctuation'
-    }, {
-      input: 'Hi$ John',
-      allowedOutputs: ['iH$ nhoJ'],
-      tag: 'strings with punctuation'
-    }, {
-      input: 'Hi , John',
-      allowedOutputs: ['iH , nhoJ'],
-      tag: 'strings with punctuation'
-    }, {
-      input: '+one+two',
-      allowedOutputs: ['+eno+owt'],
-      tag: 'strings with punctuation'
-    }, {
-      input: 'Hello.goodbye',
-      allowedOutputs: ['olleH.eybdoog'],
-      tag: 'strings with punctuation'
-    }, {
-      input: 'Hi[ John',
-      allowedOutputs: ['iH[ nhoJ'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hi Antoine',
-      allowedOutputs: ['iH eniotnA'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hi antoine',
-      allowedOutputs: ['iH eniotna'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hi Zaphod',
-      allowedOutputs: ['iH dohpaZ'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hi 007',
-      allowedOutputs: ['iH 007'],
-      tag: 'corner cases'
-    }, {
-      input: 'H1 John',
-      allowedOutputs: ['H1 nhoJ'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hello',
-      allowedOutputs: ['olleH'],
-      tag: 'corner cases'
-    }, {
-      input: 'hi',
-      allowedOutputs: ['ih'],
-      tag: 'corner cases'
-    }, {
-      input: 'a',
-      allowedOutputs: ['a'],
-      tag: 'corner cases'
-    }, {
-      input: 'A',
-      allowedOutputs: ['A'],
-      tag: 'corner cases'
-    }, {
-      input: ' ',
-      allowedOutputs: [' '],
-      tag: 'corner cases'
-    }, {
-      input: '  ',
-      allowedOutputs: ['  '],
-      tag: 'corner cases'
-    }, {
-      input: '',
-      allowedOutputs: [''],
-      tag: 'corner cases'
-    }, {
-      input: '..,. !?',
-      allowedOutputs: ['..,. !?'],
-      tag: 'corner cases'
-    }, {
-      input: '123',
-      allowedOutputs: ['123'],
-      tag: 'corner cases'
-    }, {
-      input: 'hello,,, how are you?',
-      allowedOutputs: ['olleh,,, woh era uoy?'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hello.,.!?world',
-      allowedOutputs: ['olleH.,.!?dlrow'],
-      tag: 'corner cases'
-    }, {
-      input: 'Hello---john',
-      allowedOutputs: ['olleH---nhoj'],
-      tag: 'corner cases'
-    }, {
-      input: '...hello..goodbye...',
-      allowedOutputs: ['...olleh..eybdoog...'],
-      tag: 'corner cases'
+      id: 'CORNER_CASES',
+      humanReadableName: 'corner cases',
+      testCases: [{
+        input: 'Hi[ John',
+        allowedOutputs: ['iH[ nhoJ']
+      }, {
+        input: 'Hi Antoine',
+        allowedOutputs: ['iH eniotnA']
+      }, {
+        input: 'Hi antoine',
+        allowedOutputs: ['iH eniotna']
+      }, {
+        input: 'Hi Zaphod',
+        allowedOutputs: ['iH dohpaZ']
+      }, {
+        input: 'Hi 007',
+        allowedOutputs: ['iH 007']
+      }, {
+        input: 'H1 John',
+        allowedOutputs: ['H1 nhoJ']
+      }, {
+        input: 'Hello',
+        allowedOutputs: ['olleH']
+      }, {
+        input: 'hi',
+        allowedOutputs: ['ih']
+      }, {
+        input: 'a',
+        allowedOutputs: ['a']
+      }, {
+        input: 'A',
+        allowedOutputs: ['A']
+      }, {
+        input: ' ',
+        allowedOutputs: [' ']
+      }, {
+        input: '  ',
+        allowedOutputs: ['  ']
+      }, {
+        input: '',
+        allowedOutputs: ['']
+      }, {
+        input: '..,. !?',
+        allowedOutputs: ['..,. !?']
+      }, {
+        input: '123',
+        allowedOutputs: ['123']
+      }, {
+        input: 'hello,,, how are you?',
+        allowedOutputs: ['olleh,,, woh era uoy?']
+      }, {
+        input: 'Hello.,.!?world',
+        allowedOutputs: ['olleH.,.!?dlrow']
+      }, {
+        input: 'Hello---john',
+        allowedOutputs: ['olleH---nhoj']
+      }, {
+        input: '...hello..goodbye...',
+        allowedOutputs: ['...olleh..eybdoog...']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnNone',

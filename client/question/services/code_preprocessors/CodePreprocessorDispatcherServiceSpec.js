@@ -46,7 +46,7 @@ describe('CodePreprocessorDispatcherService', function() {
       var codeSubmission = CodeSubmissionObjectFactory.create('a = 1\nb= 2');
       var originProcessedCode = codeSubmission.getPreprocessedCode();
       var task = TaskObjectFactory.create({
-        correctnessTests: [],
+        testSuites: [],
         buggyOutputTests: [],
         performanceTests: []
       });

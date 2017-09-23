@@ -44,42 +44,39 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'For this question, you will implement the isBalanced function. ',
-          'It takes a string of only parentheses as input and returns True if ',
-          'for every open parentheses there is a matching closing ',
-          'parentheses, and False otherwise.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "(())"\nOutput: True',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'For this question, you will implement the isBalanced function. ',
+        'It takes a string of only parentheses as input and returns True if ',
+        'for every open parentheses there is a matching closing ',
+        'parentheses, and False otherwise.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "(())"\nOutput: True',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
-    correctnessTests: [{
-      input: '((()))',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: '()()()()()()(()',
-      allowedOutputs: [false],
-      tag: 'the general case'
-    }, {
-      input: '))))))((((((',
-      allowedOutputs: [false],
-      tag: 'the general case'
-    }, {
-      input: '()()()()()()()())(',
-      allowedOutputs: [false],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: '((()))',
+        allowedOutputs: [true]
+      }, {
+        input: '()()()()()()(()',
+        allowedOutputs: [false]
+      }, {
+        input: '))))))((((((',
+        allowedOutputs: [false]
+      }, {
+        input: '()()()()()()()())(',
+        allowedOutputs: [false]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfParentheses',
@@ -98,86 +95,83 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Now, double-check your code to make sure it handles unexpected ',
-          'cases, such as the empty string. Once you think that it does, ',
-          'submit it to check if you\'re correct.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          "We will guarantee that you will always be passed a string, so ",
-          "don't worry about that."
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Now, double-check your code to make sure it handles unexpected ',
+        'cases, such as the empty string. Once you think that it does, ',
+        'submit it to check if you\'re correct.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        "We will guarantee that you will always be passed a string, so ",
+        "don't worry about that."
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
-    correctnessTests: [{
-      input: '',
-      allowedOutputs: [true],
-      tag: 'empty strings'
+    testSuites: [{
+      id: 'EMPTY_STRINGS',
+      humanReadableName: 'empty strings',
+      testCases: [{
+        input: '',
+        allowedOutputs: [true]
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Next, modify your code to support all types of braces ',
-          '([], (), {}) and check that they are balanced against each other.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: '[(){}] is balanced, but ([)] is not.',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, modify your code to support all types of braces ',
+        '([], (), {}) and check that they are balanced against each other.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: '[(){}] is balanced, but ([)] is not.',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
-    correctnessTests: [{
-      input: '[(){}]',
-      allowedOutputs: [true],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: '[(){}]',
+        allowedOutputs: [true]
+      }, {
+        input: '(){}[]',
+        allowedOutputs: [true]
+      }, {
+        input: '{{[[(())]]}}',
+        allowedOutputs: [true]
+      }, {
+        input: '{}[{([{([{()}])}])}][]',
+        allowedOutputs: [true]
+      }, {
+        input: ']{()}[',
+        allowedOutputs: [false]
+      }, {
+        input: '[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}',
+        allowedOutputs: [false]
+      }]
     }, {
-      input: '(){}[]',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: '{{[[(())]]}}',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: '{}[{([{([{()}])}])}][]',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: '([)]',
-      allowedOutputs: [false],
-      tag: 'balancing between different types'
-    }, {
-      input: '{{[[([})]]}}',
-      allowedOutputs: [false],
-      tag: 'balancing between different types'
-    }, {
-      input: ']{()}[',
-      allowedOutputs: [false],
-      tag: 'the general case'
-    }, {
-      input: '[[[[[{{{{{((((([[[[[{{{{{((((()))))}}}}}]]]]])))))}}}}}]]]]}',
-      allowedOutputs: [false],
-      tag: 'the general case'
+      id: 'DIFFERENT_TYPES',
+      humanReadableName: 'balancing between different types',
+      testCases: [{
+        input: '([)]',
+        allowedOutputs: [false]
+      }, {
+        input: '{{[[([})]]}}',
+        allowedOutputs: [false]
+      }]
     }],
     buggyOutputTests: [],
     performanceTests: [{

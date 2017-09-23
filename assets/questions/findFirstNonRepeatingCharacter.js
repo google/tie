@@ -37,108 +37,115 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
             return uniqueChar[0]
 `
   },
-  tasks: [
-    {
-      instructions: [
-        {
-          content: [
-            'For this question, you will implement a ',
-            'findFirstNonRepeatingCharacter function. ',
-            'This function takes a string as input and returns ',
-            'the first character that isn\'t repeated elsewhere in the string.'
-          ].join(''),
-          type: 'text'
-        },
-        {
-          content: 'Input: "mom"\nOutput: "o"',
-          type: 'code'
-        },
-        {
-          content: 'If there is no appropriate character, return None.',
-          type: 'text'
-        }
-      ],
-      prerequisiteSkills: ['Strings'],
-      acquiredSkills: ['String Manipulation', 'Hash Maps'],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'findFirstNonRepeatingCharacter',
-      correctnessTests: [{
+  tasks: [{
+    instructions: [{
+      content: [
+        'For this question, you will implement a ',
+        'findFirstNonRepeatingCharacter function. ',
+        'This function takes a string as input and returns ',
+        'the first character that isn\'t repeated elsewhere in the string.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "mom"\nOutput: "o"',
+      type: 'code'
+    }, {
+      content: 'If there is no appropriate character, return None.',
+      type: 'text'
+    }],
+    prerequisiteSkills: ['Strings'],
+    acquiredSkills: ['String Manipulation', 'Hash Maps'],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'findFirstNonRepeatingCharacter',
+
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
         input: 'mom',
-        allowedOutputs: ['o'],
-        tag: 'the general case'
+        allowedOutputs: ['o']
       }, {
         input: 'apple',
-        allowedOutputs: ['a'],
-        tag: 'the general case'
+        allowedOutputs: ['a']
       }, {
         input: 'wefffa',
-        allowedOutputs: ['w'],
-        tag: 'the general case'
+        allowedOutputs: ['w']
       }, {
         input: 'weffwa',
-        allowedOutputs: ['e'],
-        tag: 'the general case'
-      }, {
-        input: '',
-        allowedOutputs: [null],
-        tag: 'empty strings'
-      }, {
-        input: 'aaaeee',
-        allowedOutputs: [null],
-        tag: 'no repeated characters'
-      }],
-      buggyOutputTests: [{
-        buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
-        messages: [
-          [
-            'Try running your code on \'wefffa\' on paper. What\'s the result?'
-          ].join(''),
-          'It looks like you\'re returning a unique character, ',
-          'but it is not the first one in the provided string.'
-        ]
-      }],
-      performanceTests: []
-    },
-    {
-      instructions: [
-        {
-          content: [
-            'Next, update your code to handle more than just letters.',
-            'more than just letters.'
-          ].join(''),
-          type: 'text'
-        }
-      ],
-      prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
-      acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'findFirstNonRepeatingCharacter',
-      correctnessTests: [{
-        input: 'TT AsAs',
-        allowedOutputs: [' '],
-        tag: 'the general case'
-      }, {
-        input: 'AbCABcBb',
-        allowedOutputs: ['C'],
-        tag: 'case sensitive inputs'
-      }, {
-        input: 'BB337 7122 ',
-        allowedOutputs: ['1'],
-        tag: 'numbers'
-      }, {
-        input: 'test11@test',
-        allowedOutputs: ['@'],
-        tag: 'special characters'
-      }],
-      buggyOutputTests: [],
-      performanceTests: [{
-        inputDataAtom: 'meow',
-        transformationFunctionName: 'System.extendString',
-        expectedPerformance: 'linear',
-        evaluationFunctionName: 'findFirstNonRepeatingCharacter'
+        allowedOutputs: ['e']
       }]
-    }
-  ]
+    }, {
+      id: 'EMPTY_STRINGS',
+      humanReadableName: 'empty strings',
+      testCases: [{
+        input: '',
+        allowedOutputs: [null]
+      }]
+    }, {
+      id: 'NO_REPEATED_CHARACTERS',
+      humanReadableName: 'no repeated characters',
+      testCases: [{
+        input: 'aaaeee',
+        allowedOutputs: [null]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
+      messages: [
+        [
+          'Try running your code on \'wefffa\' on paper. What\'s the result?'
+        ].join(''),
+        'It looks like you\'re returning a unique character, ',
+        'but it is not the first one in the provided string.'
+      ]
+    }],
+    performanceTests: []
+  }, {
+    instructions: [{
+      content: 'Next, update your code to handle more than just letters.',
+      type: 'text'
+    }],
+    prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
+    acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'findFirstNonRepeatingCharacter',
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'TT AsAs',
+        allowedOutputs: [' ']
+      }]
+    }, {
+      id: 'CASE_SENSITIVE_INPUTS',
+      humanReadableName: 'case sensitive inputs',
+      testCases: [{
+        input: 'AbCABcBb',
+        allowedOutputs: ['C']
+      }]
+    }, {
+      id: 'NUMBERS',
+      humanReadableName: 'numbers',
+      testCases: [{
+        input: 'BB337 7122 ',
+        allowedOutputs: ['1']
+      }]
+    }, {
+      id: 'SPECIAL_CHARACTERS',
+      humanReadableName: 'special characters',
+      testCases: [{
+        input: 'test11@test',
+        allowedOutputs: ['@']
+      }]
+    }],
+    buggyOutputTests: [],
+    performanceTests: [{
+      inputDataAtom: 'meow',
+      transformationFunctionName: 'System.extendString',
+      expectedPerformance: 'linear',
+      evaluationFunctionName: 'findFirstNonRepeatingCharacter'
+    }]
+  }]
 };

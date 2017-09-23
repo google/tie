@@ -75,77 +75,77 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content:
-        [
-          'In this question, you need to find the closest value in a' +
-          'non-empty binary search tree, given the target value. The ' +
-          'target value is given in float format. It\'s guaranteed ',
-          'that there\'s only one closest value. You will have the root ' +
-          'TreeNode. Each TreeNode has attributes val, left and right.'
-        ].join('\n'),
-        type: 'text'
-      },
-      {
-        content:
-        [
-          'For instance, given the following tree and the target value 1.1, ' +
-          'you should return 1.',
-          '  2',
-          ' / \\',
-          '1   3'
-        ].join('\n'),
-        type: 'code'
-      },
-      {
-        content:
-        [
-          'The tree is represented as a preorder traversal sequence of node ' +
-          'values in which \'#\'', 'represents an empty node. For example: ' +
-          'the input \'2 1 # # #\' represents the serialized', 'format of a ' +
-          'binary tree using preorder order traversal, where root value is 2 ' +
-          'and only has a left child with value 1.'
-        ].join('\n'),
-        type: 'text'
-      },
-      {
-        content:
-        [
-          '# Definition for a binary tree node.',
-          'class TreeNode(object):',
-          '  def __init__(self, x):',
-          '    self.val = x',
-          '    self.left = None',
-          '    self.right = None'
-        ].join('\n'),
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'In this question, you need to find the closest value in a' +
+        'non-empty binary search tree, given the target value. The ' +
+        'target value is given in float format. It\'s guaranteed ',
+        'that there\'s only one closest value. You will have the root ' +
+        'TreeNode. Each TreeNode has attributes val, left and right.'
+      ].join('\n'),
+      type: 'text'
+    }, {
+      content: [
+        'For instance, given the following tree and the target value 1.1, ' +
+        'you should return 1.',
+        '  2',
+        ' / \\',
+        '1   3'
+      ].join('\n'),
+      type: 'code'
+    }, {
+      content: [
+        'The tree is represented as a preorder traversal sequence of node ' +
+        'values in which \'#\'', 'represents an empty node. For example: ' +
+        'the input \'2 1 # # #\' represents the serialized', 'format of a ' +
+        'binary tree using preorder order traversal, where root value is 2 ' +
+        'and only has a left child with value 1.'
+      ].join('\n'),
+      type: 'text'
+    }, {
+      content: [
+        '# Definition for a binary tree node.',
+        'class TreeNode(object):',
+        '  def __init__(self, x):',
+        '    self.val = x',
+        '    self.left = None',
+        '    self.right = None'
+      ].join('\n'),
+      type: 'code'
+    }],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
-    correctnessTests: [{
-      input: '2 1 # # 3 # #|1.1',
-      allowedOutputs: [1],
-      tag: 'the general case'
-    },
-    {
-      input: '10 3 # 6 4 # # 7 # # #|4.1',
-      allowedOutputs: [4],
-      tag: 'result smaller than target'
-    },
-    {
-      input: '10 3 # # 14 # 15 14.7 # # 100 # #|14.6',
-      allowedOutputs: [14.7],
-      tag: 'result larger than target'
-    },
-    {
-      input: '2.5 # #|3.2',
-      allowedOutputs: [2.5],
-      tag: 'BST with one node'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: '2 1 # # 3 # #|1.1',
+        allowedOutputs: [1]
+      }]
+    }, {
+      id: 'RESULT_SMALLER_THAN_TARGET',
+      humanReadableName: 'result smaller than target',
+      testCases: [{
+        input: '10 3 # 6 4 # # 7 # # #|4.1',
+        allowedOutputs: [4]
+      }]
+    }, {
+      id: 'RESULT_LARGER_THAN_TARGET',
+      humanReadableName: 'result larger than target',
+      testCases: [{
+        input: '10 3 # # 14 # 15 14.7 # # 100 # #|14.6',
+        allowedOutputs: [14.7]
+      }]
+    }, {
+      id: 'ONE_NODE',
+      humanReadableName: 'BST with one node',
+      testCases: [{
+        input: '2.5 # #|3.2',
+        allowedOutputs: [2.5]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToUseAbsoluteDifference',
@@ -161,30 +161,28 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content:
-        [
-          'Next, make sure you compare all possible candidates during the ' +
-          'search process.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, make sure you compare all possible candidates during the ' +
+        'search process.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
-    correctnessTests: [{
-      input: '24 22 # # 25 # #|23.8',
-      allowedOutputs: [24],
-      tag: 'should return root'
-    },
-    {
-      input: '24 22 # # 25 # #|24.1',
-      allowedOutputs: [24],
-      tag: 'should return root'
+    testSuites: [{
+      id: 'SHOULD_RETURN_ROOT',
+      humanReadableName: 'should return root',
+      testCases: [{
+        input: '24 22 # # 25 # #|23.8',
+        allowedOutputs: [24]
+      }, {
+        input: '24 22 # # 25 # #|24.1',
+        allowedOutputs: [24]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToCompareAll',

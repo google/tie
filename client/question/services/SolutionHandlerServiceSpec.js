@@ -44,12 +44,16 @@ describe('SolutionHandlerService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [{
-        input: 'task_1_correctness_test_1',
-        allowedOutputs: [true]
-      }, {
-        input: 'task_1_correctness_test_2',
-        allowedOutputs: [true]
+      testSuites: [{
+        id: 'GENERAL_CASE',
+        humanReadableName: 'the general case',
+        testCases: [{
+          input: 'task_1_correctness_test_1',
+          allowedOutputs: [true]
+        }, {
+          input: 'task_1_correctness_test_2',
+          allowedOutputs: [true]
+        }]
       }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
@@ -72,12 +76,16 @@ describe('SolutionHandlerService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [{
-        input: 'task_2_correctness_test_1',
-        allowedOutputs: [false]
-      }, {
-        input: 'task_2_correctness_test_2',
-        allowedOutputs: [false]
+      testSuites: [{
+        id: 'GENERAL_CASE',
+        humanReadableName: 'the general case',
+        testCases: [{
+          input: 'task_2_correctness_test_1',
+          allowedOutputs: [false]
+        }, {
+          input: 'task_2_correctness_test_2',
+          allowedOutputs: [false]
+        }]
       }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
@@ -116,7 +124,7 @@ describe('SolutionHandlerService', function() {
   }));
 
   describe('processSolutionAsync', function() {
-    describe('correctnessTests', function() {
+    describe('correctness tests', function() {
       it('should check both task1 and task2 to ' +
           'verify that the learner has the correct answer', function(done) {
         var studentCode = [

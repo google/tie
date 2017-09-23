@@ -46,14 +46,20 @@ describe('ReinforcementGeneratorService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [{
-        input: 'task_1_correctness_test_1',
-        allowedOutputs: [true],
-        tag: 'tag1'
+      testSuites: [{
+        id: 'TAG_ONE',
+        humanReadableName: 'tag1',
+        testCases: [{
+          input: 'task_1_correctness_test_1',
+          allowedOutputs: [true]
+        }]
       }, {
-        input: 'task_1_correctness_test_2',
-        allowedOutputs: [true],
-        tag: 'tag2'
+        id: 'TAG_TWO',
+        humanReadableName: 'tag2',
+        testCases: [{
+          input: 'task_1_correctness_test_2',
+          allowedOutputs: [true]
+        }]
       }],
       buggyOutputTests: [],
       performanceTests: []
@@ -66,18 +72,27 @@ describe('ReinforcementGeneratorService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [{
-        input: 'task_2_correctness_test_1',
-        allowedOutputs: [true],
-        tag: 'tag1'
+      testSuites: [{
+        id: 'TAG_ONE',
+        humanReadableName: 'tag1',
+        testCases: [{
+          input: 'task_2_correctness_test_1',
+          allowedOutputs: [true]
+        }]
       }, {
-        input: 'task_2_correctness_test_2',
-        allowedOutputs: [true],
-        tag: 'tag2'
+        id: 'TAG_TWO',
+        humanReadableName: 'tag2',
+        testCases: [{
+          input: 'task_2_correctness_test_2',
+          allowedOutputs: [true]
+        }]
       }, {
-        input: 'task_2_correctness_test_3',
-        allowedOutputs: [true],
-        tag: 'tag3'
+        id: 'TAG_THREE',
+        humanReadableName: 'tag3',
+        testCases: [{
+          input: 'task_2_correctness_test_3',
+          allowedOutputs: [true]
+        }]
       }],
       buggyOutputTests: [],
       performanceTests: []
@@ -90,18 +105,19 @@ describe('ReinforcementGeneratorService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [{
-        input: 'task_3_correctness_test_1',
-        allowedOutputs: [true],
-        tag: 'tag'
-      }, {
-        input: 'task_3_correctness_test_2',
-        allowedOutputs: [true],
-        tag: 'tag'
-      }, {
-        input: 'task_3_correctness_test_3',
-        allowedOutputs: [true],
-        tag: 'tag'
+      testSuites: [{
+        id: 'TAG',
+        humanReadableName: 'tag',
+        testCases: [{
+          input: 'task_3_correctness_test_1',
+          allowedOutputs: [true]
+        }, {
+          input: 'task_3_correctness_test_2',
+          allowedOutputs: [true]
+        }, {
+          input: 'task_3_correctness_test_3',
+          allowedOutputs: [true]
+        }]
       }],
       buggyOutputTests: [],
       performanceTests: []

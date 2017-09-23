@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for CorrectnessTest domain objects.
+ * @fileoverview Unit tests for Transcript domain objects.
  */
 
 describe('TranscriptObjectFactory', function() {

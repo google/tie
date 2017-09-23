@@ -45,47 +45,48 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'N people live in a city with streets that form a regular 2D grid. ',
-          'They start out at different intersections and want to meet up. ',
-          'They are only able to move orthogonally along the roads (no ',
-          'diagonal crossing). Write a function findBestMeetupLocation that ',
-          'returns a meeting place minimizing the total travel distance.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'The input is a list of strings indicating the coordinates of the ',
-          'people in a 2D grid. Your function should return a string ',
-          'indicating the best meeting point for N people.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: ["0, 0", "4, 2", "2, 4"]\nOutput: "2, 2"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'N people live in a city with streets that form a regular 2D grid. ',
+        'They start out at different intersections and want to meet up. ',
+        'They are only able to move orthogonally along the roads (no ',
+        'diagonal crossing). Write a function findBestMeetupLocation that ',
+        'returns a meeting place minimizing the total travel distance.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'The input is a list of strings indicating the coordinates of the ',
+        'people in a 2D grid. Your function should return a string ',
+        'indicating the best meeting point for N people.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: ["0, 0", "4, 2", "2, 4"]\nOutput: "2, 2"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
-    correctnessTests: [{
-      input: ['0, 0', '4, 2', '10, 10'],
-      allowedOutputs: ['4, 2'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: ['0, 0', '4, 2', '10, 10'],
+        allowedOutputs: ['4, 2']
+      }, {
+        input: ['0, 0', '5, 6', '4, 5', '20, 9'],
+        allowedOutputs: ['4, 5', '4, 6', '5, 5', '5, 6']
+      }]
     }, {
-      input: ['0, 0', '5, 6', '4, 5', '20, 9'],
-      allowedOutputs: ['4, 5', '4, 6', '5, 5', '5, 6'],
-      tag: 'the general case'
-    }, {
-      input: [],
-      allowedOutputs: [''],
-      tag: 'empty input'
+      id: 'EMPTY_INPUT',
+      humanReadableName: 'empty input',
+      testCases: [{
+        input: [],
+        allowedOutputs: ['']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.findAverageLocation',
@@ -107,33 +108,36 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
       evaluationFunctionName: 'findBestMeetupLocation'
     }]
   }, {
-    instructions: [
-      {
-        content: [
-          'You might notice that some inputs have more than one possible ',
-          '"best" meeting point. Modify your bestMeetupLocation function to ',
-          'return a list of all of the best meeting points.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'You might notice that some inputs have more than one possible ',
+        '"best" meeting point. Modify your bestMeetupLocation function to ',
+        'return a list of all of the best meeting points.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
-    correctnessTests: [{
-      input: ['0, 0', '4, 2', '10, 10'],
-      allowedOutputs: [['2, 2']],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: ['0, 0', '4, 2', '10, 10'],
+        allowedOutputs: [['2, 2']]
+      }, {
+        input: ['0, 0', '5, 6', '4, 5', '20, 9'],
+        allowedOutputs: [['4, 5', '4, 6', '5, 5', '5, 6']]
+      }]
     }, {
-      input: ['0, 0', '5, 6', '4, 5', '20, 9'],
-      allowedOutputs: [['4, 5', '4, 6', '5, 5', '5, 6']],
-      tag: 'the general case'
-    }, {
-      input: [],
-      allowedOutputs: [''],
-      tag: 'empty input'
+      id: 'EMPTY_INPUT',
+      humanReadableName: 'empty input',
+      testCases: [{
+        input: [],
+        allowedOutputs: ['']
+      }]
     }],
     buggyOutputTests: [],
     // TODO: the time complexity of the solution to this quesiton

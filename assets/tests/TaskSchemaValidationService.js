@@ -275,69 +275,144 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
-       * Checks that the correctnessTests property for a given Task is an Array.
+       * Checks that the testSuites property for a given Task is an Array.
        *
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyCorrectnessTestsAreArray: function(task) {
-        var correctnessTests = task.getCorrectnessTests();
-        return angular.isArray(correctnessTests);
+      verifyTestSuitesAreArray: function(task) {
+        var testSuites = task.getTestSuites();
+        return angular.isArray(testSuites);
       },
 
       /**
-       * Checks that there is at least one correctness test in the given Task.
+       * Checks that there is at least one test suite in the given Task.
        *
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyAtLeastOneCorrectnessTest: function(task) {
-        var correctnessTests = task.getCorrectnessTests();
-        return correctnessTests.length > 0;
+      verifyAtLeastOneTestSuite: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.length > 0;
       },
 
       /**
-       * Checks that the correctness tests property does not have empty allowed
-       * output arrays.
+       * Checks that test suite IDs are nonempty strings using only uppercase
+       * letters and underscores.
        *
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyCorrectnessTestsHaveNonEmptyAllowedOutputArrays: function(task) {
-        var correctnessTests = task.getCorrectnessTests();
-        return correctnessTests.every(function(test) {
-          return (
-            angular.isArray(test.getAllAllowedOutputs()) &&
-            test.getAllAllowedOutputs().length > 0);
+      verifyTestSuiteIdsAreFormattedCorrectly: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return angular.isString(suite.id) && suite.id.match(/^[A-Z_]+$/);
         });
       },
 
       /**
-       * Checks that the correctnessTests of a given Task do not have undefined
-       * outputs.
+       * Checks that test suite IDs are unique.
        *
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyCorrectnessTestsHaveNoUndefinedOutputs: function(task) {
-        var correctnessTests = task.getCorrectnessTests();
-        return correctnessTests.every(function(test) {
-          return test.getAllAllowedOutputs().every(function(output) {
-            return output !== undefined;
+      verifyTestSuiteIdsAreUnique: function(task) {
+        var testSuites = task.getTestSuites();
+        var ids = new Set();
+        testSuites.forEach(function(suite) {
+          ids.add(suite.id);
+        });
+        return ids.size === testSuites.length;
+      },
+
+      /**
+       * Checks that test suite human-readable names are nonempty strings.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyTestSuiteHumanReadableNamesAreNonemptyStrings: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return (
+              suite.humanReadableName &&
+              angular.isString(suite.humanReadableName));
+        });
+      },
+
+      /**
+       * Checks that test suite human-readable names are unique.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyTestSuiteHumanReadableNamesAreUnique: function(task) {
+        var testSuites = task.getTestSuites();
+        var humanReadableNames = new Set();
+        testSuites.forEach(function(suite) {
+          humanReadableNames.add(suite.humanReadableName);
+        });
+        return humanReadableNames.size === testSuites.length;
+      },
+
+      /**
+       * Checks that the testCases property of each test suite is an Array.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyTestCasesAreArrays: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return angular.isArray(suite.testCases);
+        });
+      },
+
+      /**
+       * Checks that each test case does not have empty allowed output arrays.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyEachTestCaseHasInputAttr: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return suite.testCases.every(function(test) {
+            return test.input !== undefined;
           });
         });
       },
 
       /**
-       * Checks that the correctnessTests property for a given Task has tags.
+       * Checks that each test case does not have empty allowed output arrays.
        *
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyCorrectnessTestsHaveTags: function(task) {
-        var correctnessTests = task.getCorrectnessTests();
-        return correctnessTests.every(function(test) {
-          return angular.isString(test.getTag());
+      verifyEachTestCaseHasNonEmptyAllowedOutputArrays: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return suite.testCases.every(function(test) {
+            return angular.isArray(test.getAllAllowedOutputs()) &&
+              test.getAllAllowedOutputs().length > 0;
+          });
+        });
+      },
+
+      /**
+       * Checks that each test case does not have undefined outputs.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyEachTestCaseHasNoUndefinedOutputs: function(task) {
+        var testSuites = task.getTestSuites();
+        return testSuites.every(function(suite) {
+          return suite.testCases.every(function(test) {
+            return test.getAllAllowedOutputs().every(function(output) {
+              return output !== undefined;
+            });
+          });
         });
       },
 
