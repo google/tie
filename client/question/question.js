@@ -591,4 +591,4 @@ tie.constant('PRIVACY_COOKIE', 'privacyPolicyAccepted');
  * @type {string}
  * @constant
  */
-tie.constant('MENU_PAGE_URL_FROM_QUESTION', '../menu/menu.html');
+tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');

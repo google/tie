@@ -111,10 +111,10 @@ tie.directive('privacyModal', [function() {
         }
       </style>
     `,
-    controller: ['$cookies', '$scope', '$window', 'PRIVACY_COOKIE_LIFETIME',
-      'PRIVACY_COOKIE', 'MENU_PAGE_URL_FROM_QUESTION',
-      function($cookies, $scope, $window, PRIVACY_COOKIE_LIFETIME,
-        PRIVACY_COOKIE, MENU_PAGE_URL_FROM_QUESTION) {
+    controller: ['$scope', '$window', 'CookieStorageService',
+      'MENU_PAGE_URL_FROM_QUESTION_PAGE',
+      function($scope, $window, CookieStorageService,
+        MENU_PAGE_URL_FROM_QUESTION_PAGE) {
         // Need to create this to be able to use ng-model, see below
         // https://stackoverflow.com/questions/12618342/ng-model-does-not-update-controller-value/22768720#22768720
         $scope.modalData = {};
@@ -124,16 +124,10 @@ tie.directive('privacyModal', [function() {
          * and closes the modal.
          */
         $scope.accept = function() {
-          // If this is not a shared computer
-          if (!$scope.modalData.isUsingSharedComputer) {
-            var expiryDate = new Date();
-            expiryDate.setDate(
-              expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME);
-            $cookies.put(PRIVACY_COOKIE, true, {expires: expiryDate});
-          // If this is a shared computer
-          } else if ($scope.modalData.isUsingSharedComputer) {
-            // Cookie only lasts until browser is closed.
-            $cookies.put(PRIVACY_COOKIE, true);
+          if ($scope.modalData.isUsingSharedComputer) {
+            CookieStorageService.setPrivacyCookie(true);
+          } else {
+            CookieStorageService.setPrivacyCookieWithExpiryDate();
           }
           $scope.closeModal();
         };
@@ -143,8 +137,8 @@ tie.directive('privacyModal', [function() {
          * and redirects to the menu page.
          */
         $scope.reject = function() {
-          $cookies.put(PRIVACY_COOKIE, false);
-          $window.location.href = MENU_PAGE_URL_FROM_QUESTION;
+          CookieStorageService.setPrivacyCookie(false);
+          $window.location.href = MENU_PAGE_URL_FROM_QUESTION_PAGE;
         };
 
         /**

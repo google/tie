@@ -499,19 +499,19 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$interval', '$timeout', '$location', '$cookies',
+      '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
       'LocalStorageService', 'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
-      'DEFAULT_QUESTION_ID', 'PRIVACY_COOKIE',
+      'DEFAULT_QUESTION_ID',
       function(
-          $scope, $interval, $timeout, $location, $cookies,
+          $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
           LocalStorageService, ServerHandlerService, SECONDS_TO_MILLISECONDS,
           DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
-          DEFAULT_QUESTION_ID, PRIVACY_COOKIE) {
+          DEFAULT_QUESTION_ID) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -989,7 +989,7 @@ tie.directive('learnerView', [function() {
         // If server version, and the user has not accepted the privacy policy,
         // show them the privacy modal.
         if (SERVER_URL) {
-          var privacyPolicyAccepted = $cookies.get(PRIVACY_COOKIE);
+          var privacyPolicyAccepted = CookieStorageService.getPrivacyCookie();
           if (!privacyPolicyAccepted) {
             $scope.privacyModalIsDisplayed = true;
           }
