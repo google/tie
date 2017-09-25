@@ -23,14 +23,14 @@ tie.factory('SessionIdService', [
 
     /**
      * Global object to keep track of the session ID.
-     * @type {String}
+     * @type {string}
      */
     var sessionId = null;
 
     /**
      * Generates a pseudorandom sessionId.
      *
-     * @returns {String}
+     * @returns {string}
      */
     var _createSessionId = function() {
       var idArray = [];
@@ -51,13 +51,20 @@ tie.factory('SessionIdService', [
        * A getter for the sessionId property. Will also create a sessionId
        * if the current sessionId is null.
        *
-       * @returns {String}
+       * @returns {string}
        */
       getSessionId: function() {
         if (sessionId === null) {
           sessionId = _createSessionId();
         }
         return sessionId;
+      },
+
+      /**
+       * A method that resets the sessionId property.
+       */
+      resetSessionId: function() {
+        sessionId = _createSessionId();
       }
     };
   }

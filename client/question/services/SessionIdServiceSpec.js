@@ -39,5 +39,13 @@ describe('SessionIdService', function() {
         expect(id).toEqual(otherId);
         done();
       });
+
+    it('should reset the sessionId', function(done) {
+      var id = SessionIdService.getSessionId();
+      SessionIdService.resetSessionId();
+      var otherId = SessionIdService.getSessionId();
+      expect(id).not.toEqual(otherId);
+      done();
+    });
   });
 });
