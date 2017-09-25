@@ -21,19 +21,18 @@ tie.directive('privacyModal', [function() {
     restrict: 'E',
     scope: {
       isDisplayed: '=',
-      title: '@',
-      isClientVersion: '&'
+      title: '@'
     },
     template: `
       <div class="tie-privacy-modal" ng-show="isDisplayed">
         <div class="tie-privacy-modal-content" ng-click="$event.stopPropagation();">
           <h1 class="tie-privacy-modal-title">Privacy Policy</h1>
-            <p ng-show="isClientVersion()">
+            <p ng-show="isClientVersion">
               This version of the TIE application stores information,
               including your code, in your browser's local storage and
               does not transmit data to any server.
             </p>
-            <p ng-show="!isClientVersion()">
+            <p ng-show="!isClientVersion">
               By using TIE, you agree to do so under the Google Terms of Service,
               Google's Privacy Policy. In addition, you understand and agree that by
               using our tool, you may generate computer code. Metadata about the code,
@@ -45,17 +44,17 @@ tie.directive('privacyModal', [function() {
               your User Generated code.
             </p>
           <div class="tie-privacy-modal-button-container">
-          <button ng-show="isClientVersion()" class="tie-button-blue tie-privacy-modal-button" ng-click="closeModal()">
+            <button ng-show="isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="closeModal()">
               <span>Okay</span>
             </button>
-            <button ng-show="!isClientVersion()" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+            <button ng-show="!isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
               <span>Accept</span>
             </button>
-            <button ng-show="!isClientVersion()" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
+            <button ng-show="!isClientVersion" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
               <span>Reject</span>
             </button>
           </div>
-          <div ng-show="!isClientVersion()">
+          <div ng-show="!isClientVersion">
             <label>
               <input type="checkbox" ng-model="modalData.isUsingSharedComputer"></input>
               This is a shared computer, don't save my response.
@@ -112,12 +111,14 @@ tie.directive('privacyModal', [function() {
       </style>
     `,
     controller: ['$scope', '$window', 'CookieStorageService',
-      'MENU_PAGE_URL_FROM_QUESTION_PAGE',
+      'ServerHandlerService', 'MENU_PAGE_URL_FROM_QUESTION_PAGE',
       function($scope, $window, CookieStorageService,
-        MENU_PAGE_URL_FROM_QUESTION_PAGE) {
+        ServerHandlerService, MENU_PAGE_URL_FROM_QUESTION_PAGE) {
         // Need to create this to be able to use ng-model, see below
         // https://stackoverflow.com/questions/12618342/ng-model-does-not-update-controller-value/22768720#22768720
         $scope.modalData = {};
+
+        $scope.isClientVersion = !ServerHandlerService.doesServerExist();
 
         /**
          * Stores the user's acceptance of the privacy policy

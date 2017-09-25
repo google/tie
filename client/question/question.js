@@ -576,15 +576,15 @@ tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
  * @type {number}
  * @constant
  */
-var ONE_YEAR_IN_DAYS = 365;
-tie.constant('PRIVACY_COOKIE_LIFETIME', ONE_YEAR_IN_DAYS);
+var SIX_MONTHS_IN_DAYS = 180;
+tie.constant('PRIVACY_COOKIE_LIFETIME', SIX_MONTHS_IN_DAYS);
 /**
- * Key to use to store the privacy policy agreement.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PRIVACY_COOKIE', 'privacyPolicyAccepted');
+* Key to use to store the privacy policy agreement.
+*
+* @type {string}
+* @constant
+*/
+tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
 /**
  * Menu page url relative to the question page.
  *

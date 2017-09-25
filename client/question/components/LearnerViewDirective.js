@@ -137,7 +137,7 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
-      <privacy-modal is-displayed='privacyModalIsDisplayed' is-client-version="!SERVER_URL">
+      <privacy-modal is-displayed="privacyModalIsDisplayed">
       </privacy-modal>
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
