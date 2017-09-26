@@ -38,12 +38,12 @@ describe('CookieStorageService', function() {
     describe('getPrivacyCookie', function() {
       it('should get the value of a cookie set to true', function() {
         $cookies.put(PRIVACY_COOKIE_NAME, 'true');
-        expect(CookieStorageService.getPrivacyCookie(PRIVACY_COOKIE_NAME))
+        expect(CookieStorageService.hasPrivacyCookie(PRIVACY_COOKIE_NAME))
           .toBe(true);
       });
       it('should return false if cookie not set', function() {
         $cookies.remove(PRIVACY_COOKIE_NAME);
-        expect(CookieStorageService.getPrivacyCookie(PRIVACY_COOKIE_NAME))
+        expect(CookieStorageService.hasPrivacyCookie(PRIVACY_COOKIE_NAME))
           .toBe(false);
       });
     });
