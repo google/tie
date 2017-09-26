@@ -17,58 +17,35 @@
  */
 
 describe('ReinforcementObjectFactory', function() {
-  var CorrectnessTestObjectFactory;
+  var TestSuiteObjectFactory;
   var ReinforcementObjectFactory;
-  var reinforcement;
   var ReinforcementBulletObjectFactory;
   var TaskObjectFactory;
+  var reinforcement;
   var task;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    CorrectnessTestObjectFactory = $injector.get(
-      'CorrectnessTestObjectFactory');
-    ReinforcementObjectFactory = $injector.get(
-      'ReinforcementObjectFactory');
+    TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
+    ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     ReinforcementBulletObjectFactory = $injector.get(
       'ReinforcementBulletObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
 
-    var input = '';
-    var stringifiedInput = '';
-    var allowedOutput = [];
-    var message = '';
-    var tag = '';
-    var correctnessTestsDict = {
-      input,
-      stringifiedInput,
-      allowedOutput,
-      message,
-      tag
-    };
-    var instructions = [''];
-    var prerequisiteSkills = [''];
-    var acquiredSkills = [''];
-    var inputFunctionName = null;
-    var outputFunctionName = null;
-    var mainFunctionName = '';
-    var correctnessTests = [CorrectnessTestObjectFactory
-      .create(correctnessTestsDict)];
-    var buggyOutputTests = [];
-    var performanceTests = [];
-    var taskDict = {
-      instructions,
-      prerequisiteSkills,
-      acquiredSkills,
-      inputFunctionName,
-      outputFunctionName,
-      mainFunctionName,
-      correctnessTests,
-      buggyOutputTests,
-      performanceTests
-    };
-
-    task = TaskObjectFactory.create(taskDict);
+    task = TaskObjectFactory.create({
+      instructions: [''],
+      prerequisiteSkills: [],
+      acquiredSkills: [],
+      inputFunctionName: null,
+      outputFunctionName: null,
+      mainFunctionName: null,
+      testSuites: TestSuiteObjectFactory.create([{
+        input: 'abc',
+        allowedOutputs: ['a']
+      }]),
+      buggyOutputTests: [],
+      performanceTests: []
+    });
     reinforcement = ReinforcementObjectFactory.create(task);
   }));
 

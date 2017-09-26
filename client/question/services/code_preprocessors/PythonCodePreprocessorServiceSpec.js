@@ -20,19 +20,17 @@ describe('PythonCodePreprocessorService', function() {
   var CodeSubmissionObjectFactory;
   var PythonCodePreprocessorService;
   var BuggyOutputTestObjectFactory;
-  var CorrectnessTestObjectFactory;
+  var TestSuiteObjectFactory;
   var PerformanceTestObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    CodeSubmissionObjectFactory = $injector.get(
-      'CodeSubmissionObjectFactory');
+    CodeSubmissionObjectFactory = $injector.get('CodeSubmissionObjectFactory');
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
-    CorrectnessTestObjectFactory = $injector.get(
-      'CorrectnessTestObjectFactory');
+    TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
   }));
@@ -532,10 +530,14 @@ describe('PythonCodePreprocessorService', function() {
 
   describe('_generateCorrectnessTestCode', function() {
     it('should add correctness test code to skeleton code', function() {
-      var correctnessTests = [[CorrectnessTestObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['at', 'bc']
-      })]];
+      var testSuites = [TestSuiteObjectFactory.create({
+        id: 'SAMPLE',
+        humanReadableName: 'sample tests',
+        testCases: [{
+          input: 'cat',
+          allowedOutputs: ['at', 'bc']
+        }]
+      })];
       var expectedGeneratedCode = [
         /* eslint-disable max-len */
         'all_tasks_test_inputs = [[\'cat\']]',
@@ -550,7 +552,7 @@ describe('PythonCodePreprocessorService', function() {
 
       expect(
         PythonCodePreprocessorService._generateCorrectnessTestCode(
-          correctnessTests, ['inputFnName'], ['mainFnName'], ['outputFnName'])
+          [testSuites], ['inputFnName'], ['mainFnName'], ['outputFnName'])
       ).toEqual(expectedGeneratedCode);
     });
   });

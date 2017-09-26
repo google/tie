@@ -19,13 +19,13 @@
 describe('FeedbackGeneratorService', function() {
   var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
-  var CorrectnessTestObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
   var FeedbackObjectFactory;
   var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var TaskObjectFactory;
+  var TestCaseObjectFactory;
   var TracebackCoordinatesObjectFactory;
   var TranscriptService;
   var sampleErrorTraceback;
@@ -49,8 +49,6 @@ describe('FeedbackGeneratorService', function() {
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
-    CorrectnessTestObjectFactory = $injector.get(
-      'CorrectnessTestObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
@@ -58,6 +56,7 @@ describe('FeedbackGeneratorService', function() {
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
+    TestCaseObjectFactory = $injector.get('TestCaseObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
@@ -87,7 +86,7 @@ describe('FeedbackGeneratorService', function() {
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: 'mockMainFunction',
-      correctnessTests: [],
+      testSuites: [],
       buggyOutputTests: [],
       performanceTests: [{
         inputDataAtom: 'meow ',
@@ -170,14 +169,13 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback on a user function that ',
       'doesn\'t pass all correctness tests'
     ].join(''), function() {
-      var correctnessTest = CorrectnessTestObjectFactory.create({
+      var testCase = TestCaseObjectFactory.create({
         input: 'cat',
         allowedOutputs: ['a']
       });
 
       var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(
-          null, correctnessTest, "output").getParagraphs();
+        ._getCorrectnessTestFeedback(null, testCase, 'output').getParagraphs();
       expect(paragraphs.length).toEqual(5);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(
@@ -199,14 +197,14 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback with the output function name ',
       'on a user function that doesn\'t pass all correctness tests'
     ].join(''), function() {
-      var correctnessTest = CorrectnessTestObjectFactory.create({
+      var testCase = TestCaseObjectFactory.create({
         input: 'cat',
         allowedOutputs: ['a']
       });
 
       var paragraphs = FeedbackGeneratorService
         ._getCorrectnessTestFeedback(
-          'flufferNutter', correctnessTest, "output").getParagraphs();
+          'flufferNutter', testCase, 'output').getParagraphs();
       expect(paragraphs.length).toEqual(5);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(

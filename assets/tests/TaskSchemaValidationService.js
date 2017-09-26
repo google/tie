@@ -306,7 +306,8 @@ tie.factory('TaskSchemaValidationService', [
       verifyTestSuiteIdsAreFormattedCorrectly: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return angular.isString(suite.id) && suite.id.match(/^[A-Z_]+$/);
+          var suiteId = suite.getId();
+          return angular.isString(suiteId) && suiteId.match(/^[A-Z_]+$/);
         });
       },
 
@@ -320,7 +321,7 @@ tie.factory('TaskSchemaValidationService', [
         var testSuites = task.getTestSuites();
         var ids = new Set();
         testSuites.forEach(function(suite) {
-          ids.add(suite.id);
+          ids.add(suite.getId());
         });
         return ids.size === testSuites.length;
       },
@@ -334,9 +335,8 @@ tie.factory('TaskSchemaValidationService', [
       verifyTestSuiteHumanReadableNamesAreNonemptyStrings: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return (
-              suite.humanReadableName &&
-              angular.isString(suite.humanReadableName));
+          var humanReadableName = suite.getHumanReadableName();
+          return humanReadableName && angular.isString(humanReadableName);
         });
       },
 
@@ -350,7 +350,7 @@ tie.factory('TaskSchemaValidationService', [
         var testSuites = task.getTestSuites();
         var humanReadableNames = new Set();
         testSuites.forEach(function(suite) {
-          humanReadableNames.add(suite.humanReadableName);
+          humanReadableNames.add(suite.getHumanReadableName());
         });
         return humanReadableNames.size === testSuites.length;
       },
@@ -364,7 +364,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyTestCasesAreArrays: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return angular.isArray(suite.testCases);
+          return angular.isArray(suite.getTestCases());
         });
       },
 
@@ -377,8 +377,8 @@ tie.factory('TaskSchemaValidationService', [
       verifyEachTestCaseHasInputAttr: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return suite.testCases.every(function(test) {
-            return test.input !== undefined;
+          return suite.getTestCases().every(function(test) {
+            return test.getInput() !== undefined;
           });
         });
       },
@@ -392,7 +392,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyEachTestCaseHasNonEmptyAllowedOutputArrays: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return suite.testCases.every(function(test) {
+          return suite.getTestCases().every(function(test) {
             return angular.isArray(test.getAllAllowedOutputs()) &&
               test.getAllAllowedOutputs().length > 0;
           });
@@ -408,7 +408,7 @@ tie.factory('TaskSchemaValidationService', [
       verifyEachTestCaseHasNoUndefinedOutputs: function(task) {
         var testSuites = task.getTestSuites();
         return testSuites.every(function(suite) {
-          return suite.testCases.every(function(test) {
+          return suite.getTestCases().every(function(test) {
             return test.getAllAllowedOutputs().every(function(output) {
               return output !== undefined;
             });

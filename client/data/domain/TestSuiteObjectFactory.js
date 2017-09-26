@@ -49,7 +49,9 @@ tieData.factory('TestSuiteObjectFactory', [
        * @type {Array}
        * @private
        */
-      this._testCases = TestCaseObjectFactory.create(testSuiteDict.testCases);
+      this._testCases = testSuiteDict.testCases.map(function(testCase) {
+        return TestCaseObjectFactory.create(testCase);
+      });
     };
 
     // Instance methods.

@@ -58,7 +58,7 @@ describe('TestSuiteObjectFactory', function() {
         testCases: []
       });
 
-      expect(suite1.getTestCases()).toBe([]);
+      expect(suite1.getTestCases()).toEqual([]);
 
       var suite2 = TestSuiteObjectFactory.create({
         id: 'ID',
@@ -72,7 +72,7 @@ describe('TestSuiteObjectFactory', function() {
       expect(suite2.getTestCases().length).toBe(1);
       expect(suite2.getTestCases()[0] instanceof TestCaseObjectFactory)
         .toBe(true);
-      expect(suite2.getTestCases()[0].getId()).toEqual('ID');
+      expect(suite2.getTestCases()[0].getInput()).toEqual('abc');
     });
   });
 });

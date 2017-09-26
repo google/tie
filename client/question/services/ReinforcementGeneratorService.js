@@ -20,42 +20,6 @@
 tie.factory('ReinforcementGeneratorService', [
   'ReinforcementObjectFactory', 'TranscriptService',
   function(ReinforcementObjectFactory, TranscriptService) {
-    /**
-     * Splits correctness tests into groups based on matching tag.
-     *
-     * @param {Array} tests
-     * @returns {dict}
-     */
-    var getTestsKeyedByTag = function(tests) {
-      var splitTests = {};
-      for (var i = 0; i < tests.length; ++i) {
-        var test = tests[i];
-        var testTag = test.getTag();
-        if (splitTests.hasOwnProperty(testTag)) {
-          splitTests[testTag].push(test);
-        } else {
-          splitTests[testTag] = [test];
-        }
-      }
-      return splitTests;
-    };
-
-    /**
-     * Creates a dict from stringified test case input to
-     * the index of the test case in the task.
-     *
-     * @param {Array} tests
-     * @returns {dict}
-     */
-    var getTestIndexes = function(tests) {
-      var inputToOriginalIndex = {};
-      for (var i = 0; i < tests.length; ++i) {
-        var test = tests[i];
-        inputToOriginalIndex[test.getStringifiedInput()] = i;
-      }
-      return inputToOriginalIndex;
-    };
-
     return {
       /**
        * Returns a Reinforcement object that's associated with the code
@@ -92,46 +56,46 @@ tie.factory('ReinforcementGeneratorService', [
         }
 
         // Go through correctness tests to update reinforcement data.
-        var correctnessTestsByTag = getTestsKeyedByTag(
-          task.getCorrectnessTests());
-        var testIndexes = getTestIndexes(task.getCorrectnessTests());
+        var testSuites = task.getTestSuites();
         var observedOutputs = codeEvalResult.getLastTaskResults();
         var failedCaseSeenOverall = false;
-        for (var testTag in correctnessTestsByTag) {
-          var failedCaseSeenInTag = false;
-          for (var testIdx = 0; testIdx < correctnessTestsByTag[testTag].length;
-              ++testIdx) {
-            var test = correctnessTestsByTag[testTag][testIdx];
-            var observedOutput =
-              observedOutputs[testIndexes[test.getStringifiedInput()]];
+
+        testSuites.forEach(function(suite, suiteIndex) {
+          var testCases = suite.getTestCases();
+          var failedCaseSeenInSuite = false;
+          var testTag = suite.getHumanReadableName();
+
+          for (var testIdx = 0; testIdx < testCases.length; ++testIdx) {
+            var test = testCases[testIdx];
+            var observedOutput = observedOutputs[suiteIndex][testIdx];
+            var stringifiedInput = test.getStringifiedInput();
+            var hasPastFailedCase = reinforcement.hasPastFailedCase(
+              test.getStringifiedInput());
             if (test.matchesOutput(observedOutput)) {
-              if (reinforcement.hasPastFailedCase(test.getStringifiedInput())) {
-                reinforcement.updatePastFailedCase(
-                  test.getStringifiedInput(), true);
+              if (hasPastFailedCase) {
+                reinforcement.updatePastFailedCase(stringifiedInput, true);
               }
-            } else if (!failedCaseSeenInTag) {
+            } else if (!failedCaseSeenInSuite) {
               // We want to display only 1 new failed case among all tasks.
               if (!failedCaseSeenOverall) {
-                reinforcement.addPastFailedCase(
-                  test.getStringifiedInput(), false);
+                reinforcement.addPastFailedCase(stringifiedInput, false);
                 failedCaseSeenOverall = true;
               }
-              failedCaseSeenInTag = true;
-            } else if (reinforcement.hasPastFailedCase(
-                test.getStringifiedInput())) {
-              reinforcement.updatePastFailedCase(
-                test.getStringifiedInput(), false);
+              failedCaseSeenInSuite = true;
+            } else if (hasPastFailedCase) {
+              reinforcement.updatePastFailedCase(stringifiedInput, false);
             }
           }
-          if (failedCaseSeenInTag) {
-            if (testTag in reinforcement.getPassedTags()) {
+
+          if (failedCaseSeenInSuite) {
+            if (reinforcement.getPassedTags().hasOwnProperty(testTag)) {
               reinforcement.updatePassedTag(testTag, false);
             }
           } else {
-            // If all cases pass in this tag.
+            // All cases pass in this tag.
             reinforcement.addPassedTag(testTag, true);
           }
-        }
+        });
 
         return reinforcement;
       }
