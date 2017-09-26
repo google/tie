@@ -28,7 +28,7 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
         var expiryDate = new Date();
         expiryDate.setDate(
           expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME_DAYS);
-        $cookies.putObject(PRIVACY_COOKIE_NAME, 'true', {expires: expiryDate});
+        $cookies.put(PRIVACY_COOKIE_NAME, 'true', {expires: expiryDate});
       },
       /**
        * Sets the privacy policy cookie to be true. Default
