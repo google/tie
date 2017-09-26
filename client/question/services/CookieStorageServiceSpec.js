@@ -22,10 +22,8 @@ describe('CookieStorageService', function() {
   var PRIVACY_COOKIE_NAME;
 
   beforeEach(module('tie'));
-  beforeEach(module('ngCookies'));
   beforeEach(inject(function($injector, _$cookies_) {
     CookieStorageService = $injector.get('CookieStorageService');
-
     PRIVACY_COOKIE_NAME = $injector.get('PRIVACY_COOKIE_NAME');
     $cookies = _$cookies_;
   }));
