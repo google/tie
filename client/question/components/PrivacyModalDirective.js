@@ -126,7 +126,7 @@ tie.directive('privacyModal', [function() {
          */
         $scope.accept = function() {
           if ($scope.modalData.isUsingSharedComputer) {
-            CookieStorageService.setPrivacyCookie(true);
+            CookieStorageService.setPrivacyCookieToBeTrue();
           } else {
             CookieStorageService.setPrivacyCookieWithExpiryDate();
           }
@@ -138,7 +138,7 @@ tie.directive('privacyModal', [function() {
          * and redirects to the menu page.
          */
         $scope.reject = function() {
-          CookieStorageService.setPrivacyCookie(false);
+          CookieStorageService.setPrivacyCookieToBeFalse;
           $window.location.href = MENU_PAGE_URL_FROM_QUESTION_PAGE;
         };
 
