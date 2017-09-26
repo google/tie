@@ -126,7 +126,7 @@ tie.directive('privacyModal', [function() {
          */
         $scope.accept = function() {
           if ($scope.modalData.isUsingSharedComputer) {
-            CookieStorageService.setPrivacyCookieToBeTrue();
+            CookieStorageService.setTransientPrivacyCookie();
           } else {
             CookieStorageService.setPrivacyCookieWithExpiryDate();
           }
@@ -134,11 +134,9 @@ tie.directive('privacyModal', [function() {
         };
 
         /**
-         * Stores the user's rejection of the privacy policy
-         * and redirects to the menu page.
+         * Redirects to the menu page.
          */
         $scope.reject = function() {
-          CookieStorageService.setPrivacyCookieToBeFalse();
           $window.location.href = MENU_PAGE_URL_FROM_QUESTION_PAGE;
         };
 

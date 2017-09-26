@@ -29,20 +29,20 @@ describe('CookieStorageService', function() {
   }));
 
   describe('PrivacyCookie', function() {
-    describe('setPrivacyCookie', function() {
-      it('should set cookie to value', function() {
-        CookieStorageService.setPrivacyCookieToBeTrue();
+    describe('setTransientPrivacyCookie', function() {
+      it('should set cookie to true', function() {
+        CookieStorageService.setTransientPrivacyCookie();
         expect($cookies.get(PRIVACY_COOKIE_NAME)).toBe('true');
-        CookieStorageService.setPrivacyCookieToBeFalse();
-        expect($cookies.get(PRIVACY_COOKIE_NAME)).toBe('false');
       });
     });
     describe('getPrivacyCookie', function() {
-      it('should get the value of a cookie', function() {
+      it('should get the value of a cookie set to true', function() {
         $cookies.put(PRIVACY_COOKIE_NAME, 'true');
         expect(CookieStorageService.getPrivacyCookie(PRIVACY_COOKIE_NAME))
           .toBe(true);
-        $cookies.put(PRIVACY_COOKIE_NAME, 'false');
+      });
+      it('should return false if cookie not set', function() {
+        $cookies.remove(PRIVACY_COOKIE_NAME);
         expect(CookieStorageService.getPrivacyCookie(PRIVACY_COOKIE_NAME))
           .toBe(false);
       });

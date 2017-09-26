@@ -28,21 +28,14 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
         var expiryDate = new Date();
         expiryDate.setDate(
           expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME_DAYS);
-        $cookies.put(PRIVACY_COOKIE_NAME, 'true', {expires: expiryDate});
+        $cookies.putObject(PRIVACY_COOKIE_NAME, 'true', {expires: expiryDate});
       },
       /**
        * Sets the privacy policy cookie to be true. Default
        * expiration ends when the browser session ends.
        */
-      setPrivacyCookieToBeTrue: function() {
+      setTransientPrivacyCookie: function() {
         $cookies.put(PRIVACY_COOKIE_NAME, 'true');
-      },
-      /**
-       * Sets the privacy policy cookie to be false. Default
-       * expiration ends when the browser session ends.
-       */
-      setPrivacyCookieToBeFalse: function() {
-        $cookies.put(PRIVACY_COOKIE_NAME, 'false');
       },
       /**
        * Retrieves the privacy policy cookie value.
