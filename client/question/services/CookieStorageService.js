@@ -48,9 +48,8 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME',
        * Retrieves the privacy policy cookie value.
        */
       getPrivacyCookie: function() {
-        return ($cookies.get(PRIVACY_COOKIE_NAME) == 'true');
+        return ($cookies.get(PRIVACY_COOKIE_NAME) === 'true');
       }
     };
   }
 ]);
-
