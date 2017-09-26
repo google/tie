@@ -577,7 +577,7 @@ tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
  * @constant
  */
 var SIX_MONTHS_IN_DAYS = 180;
-tie.constant('PRIVACY_COOKIE_LIFETIME', SIX_MONTHS_IN_DAYS);
+tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
 /**
 * Key to use to store the privacy policy agreement.
 *

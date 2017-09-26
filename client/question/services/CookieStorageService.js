@@ -15,9 +15,9 @@
  * @fileoverview A service that stores cookies.
  */
 
-tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME',
+tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
   'PRIVACY_COOKIE_NAME',
-  function($cookies, PRIVACY_COOKIE_LIFETIME, PRIVACY_COOKIE_NAME) {
+  function($cookies, PRIVACY_COOKIE_LIFETIME_DAYS, PRIVACY_COOKIE_NAME) {
 
     return {
       /**
@@ -27,7 +27,7 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME',
       setPrivacyCookieWithExpiryDate: function() {
         var expiryDate = new Date();
         expiryDate.setDate(
-          expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME);
+          expiryDate.getDate() + PRIVACY_COOKIE_LIFETIME_DAYS);
         $cookies.put(PRIVACY_COOKIE_NAME, 'true', {expires: expiryDate});
       },
       /**
