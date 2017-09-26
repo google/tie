@@ -56,7 +56,7 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      $httpBackend.expectPOST('http://katamari.com/ajax/compile_code').respond(
+      $httpBackend.expectPOST('/ajax/compile_code').respond(
         HTTP_STATUS_CODE_OK, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
@@ -75,7 +75,7 @@ describe('PythonCodeRunnerService', function() {
         '    return result',
         ''
       ].join('\n');
-      $httpBackend.expectPOST('http://katamari.com/ajax/run_code').respond(
+      $httpBackend.expectPOST('/ajax/run_code').respond(
         HTTP_STATUS_CODE_OK, responseDict);
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
