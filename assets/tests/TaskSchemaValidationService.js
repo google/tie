@@ -428,35 +428,55 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
-       * Checks that the BuggyOutputTests property for a given Task is an array
-       * of strings.
-       *
-       * @param {Task} task
-       */
-      verifyBuggyOutputTestsHaveArrayOfStringMessages: function(task) {
-        var buggyOutputTests = task.getBuggyOutputTests();
-        return buggyOutputTests.every(function(test) {
-          var messages = test.getMessages();
-          return (angular.isArray(messages) &&
-            messages.every(function(message) {
-              return angular.isString(message);
-            }));
-        });
-      },
-
-      /**
        * Checks that the BuggyOutputTests for a given Task have functions that
        * exist within the auxiliary code.
        *
        * @param {Task} task
        * @returns: {boolean}
        */
-      verifyAllBuggyOutputFunctionsAppearInAuxiliaryCode: function(
-        task) {
+      verifyAllBuggyOutputFunctionsAppearInAuxiliaryCode: function(task) {
         return task.getBuggyOutputTests().every(function(test) {
           var buggyFunctionName = test.getBuggyFunctionName();
           return CodeCheckerService.checkIfFunctionExistsInClass(
             buggyFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode);
+        });
+      },
+
+      /**
+       * Checks that the ignoredTestSuiteIds property for each buggy output
+       * test is an array of test suite IDs.
+       *
+       * @param {Task} task
+       */
+      verifyBuggyOutputTestsHaveValidIgnoredTestSuiteIds: function(task) {
+        var allTestSuiteIds = task.getTestSuites().map(function(testSuite) {
+          return testSuite.id;
+        });
+
+        var buggyOutputTests = task.getBuggyOutputTests();
+        return buggyOutputTests.every(function(test) {
+          var ignoredTestSuiteIds = test.ignoredTestSuites();
+          return ignoredTestSuiteIds.every(function(testSuiteId) {
+            return allTestSuiteIds.indexOf(testSuiteId) !== -1;
+          });
+        });
+      },
+
+      /**
+       * Checks that the messages for each buggy output test are a non-empty
+       * array of strings.
+       *
+       * @param {Task} task
+       */
+      verifyBuggyOutputTestsHaveNonemptyArrayOfStringMessages: function(task) {
+        var buggyOutputTests = task.getBuggyOutputTests();
+        return buggyOutputTests.every(function(test) {
+          var messages = test.getMessages();
+          return (
+            angular.isArray(messages) && messages.length > 0 &&
+            messages.every(function(message) {
+              return angular.isString(message);
+            }));
         });
       },
 
@@ -468,6 +488,90 @@ tie.factory('TaskSchemaValidationService', [
        */
       verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
         return task.getBuggyOutputTests().every(function(test) {
+          var messages = new Set();
+          test.getMessages().forEach(function(message) {
+            messages.add(message);
+          });
+          return messages.size === test.getMessages().length;
+        });
+      },
+
+      /**
+       * Checks that the suiteLevelTests property for a given Task is an array.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifySuiteLevelTestsAreArray: function(task) {
+        var suiteLevelTests = task.getSuiteLevelTests();
+        return angular.isArray(suiteLevelTests);
+      },
+
+      /**
+       * Checks that the passing and failing test suite IDs for each
+       * suite-level test are valid.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifySuiteLevelTestsHaveValidTestSuiteIds: function(task) {
+        var allTestSuiteIds = task.getTestSuites().map(function(testSuite) {
+          return testSuite.id;
+        });
+
+        var suiteLevelTests = task.getSuiteLevelTests();
+        return suiteLevelTests.every(function(test) {
+          var testSuiteIdsThatMustPass = test.getTestSuiteIdsThatMustPass();
+          var testSuiteIdsThatMustFail = test.getTestSuiteIdsThatMustFail();
+          var suiteIds = testSuiteIdsThatMustPass.concat(
+            testSuiteIdsThatMustFail);
+          return suiteIds.every(function(suiteId) {
+            return allTestSuiteIds.indexOf(suiteId) !== -1;
+          });
+        });
+      },
+
+      /**
+       * Checks that the passing and failing test suite IDs for each
+       * suite-level test are valid.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifySuiteLevelTestsHaveAtLeastOneFailingSuiteId: function(task) {
+        var suiteLevelTests = task.getSuiteLevelTests();
+        return suiteLevelTests.every(function(test) {
+          var testSuiteIdsThatMustFail = test.getTestSuiteIdsThatMustFail();
+          return testSuiteIdsThatMustFail.length > 0;
+        });
+      },
+
+      /**
+       * Checks that the messages for each suite-level test are a non-empty
+       * array of strings.
+       *
+       * @param {Task} task
+       */
+      verifySuiteLevelTestsHaveNonemptyArrayOfStringMessages: function(task) {
+        var suiteLevelTests = task.getSuiteLevelTests();
+        return suiteLevelTests.every(function(test) {
+          var messages = test.getMessages();
+          return (
+            angular.isArray(messages) && messages.length > 0 &&
+            messages.every(function(message) {
+              return angular.isString(message);
+            }));
+        });
+      },
+
+      /**
+       * Checks that the messages for each suite-level test are unique.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
+        return task.getSuiteLevelTests().every(function(test) {
           var messages = new Set();
           test.getMessages().forEach(function(message) {
             messages.add(message);

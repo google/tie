@@ -81,6 +81,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try running your code on 'newcode' on paper, assuming 'new' and ",
@@ -90,6 +91,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
         "It looks like you're returning the input without adding a space."
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -122,7 +124,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
       }]
     }],
     buggyOutputTests: [],
-    // TODO(eyurko): Add performance tests.
+    suiteLevelTests: [],
     performanceTests: []
   }]
 };

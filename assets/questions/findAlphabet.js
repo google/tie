@@ -160,6 +160,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -205,6 +206,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnNoSolution',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your function on ["c", "a", "b", "a"] on paper. ',
@@ -217,6 +219,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -246,6 +249,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failsOnUppercase',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code over ["a", "Ab", "b"]. Do you get the result ',
@@ -258,6 +262,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     // TODO: Time complexity is O(m), which is non-linear. Fix in the future.
     performanceTests: []
   }]

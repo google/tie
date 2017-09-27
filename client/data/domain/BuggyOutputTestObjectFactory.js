@@ -43,6 +43,12 @@ tieData.factory('BuggyOutputTestObjectFactory', [
        * @type {Array}
        * @private
        */
+      this._ignoredTestSuiteIds = buggyOutputTestDict._ignoredTestSuiteIds;
+
+      /**
+       * @type {Array}
+       * @private
+       */
       this._messages = buggyOutputTestDict.messages;
     };
 
@@ -55,6 +61,17 @@ tieData.factory('BuggyOutputTestObjectFactory', [
      */
     BuggyOutputTest.prototype.getBuggyFunctionName = function() {
       return this._buggyFunctionName;
+    };
+
+    /**
+     * Returns a list of IDs of test suites that should not be considered when
+     * comparing the output of the learner's code to the output of a buggy
+     * function.
+     *
+     * @returns {Array}
+     */
+    BuggyOutputTest.prototype.getIgnoredTestSuiteIds = function() {
+      return this._ignoredTestSuiteIds;
     };
 
     /**

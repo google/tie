@@ -32,11 +32,13 @@ describe('TaskObjectFactory', function() {
         outputFunctionName: 'AuxiliaryCode.lettersOnly',
         testSuites: [],
         buggyOutputTests: [],
+        suiteLevelTests: [],
         performanceTests: []
       }, {
         outputFunctionName: 'System.extendString',
         testSuites: [],
         buggyOutputTests: [],
+        suiteLevelTests: [],
         performanceTests: []
       }]
     });

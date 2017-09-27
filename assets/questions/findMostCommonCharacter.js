@@ -114,6 +114,7 @@ class AuxiliaryCode(object):
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.lettersOnly',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Note that the characters in the input strings may not always be ',
@@ -132,6 +133,7 @@ class AuxiliaryCode(object):
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.lettersAndNumbersOnly',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Note that the characters in the input strings may not always be ',
@@ -152,6 +154,7 @@ class AuxiliaryCode(object):
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.includeSpaces',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'What happens if your function is given a string that has lots of ',
@@ -164,6 +167,7 @@ class AuxiliaryCode(object):
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'abbac',
       transformationFunctionName: 'System.extendString',

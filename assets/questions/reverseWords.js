@@ -160,7 +160,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         allowedOutputs: ['yeH, woh era uoy']
       }]
     }, {
-      id: 'LOTS_OF_WHITESPACE',
+      id: 'WHITESPACE',
       humanReadableName: 'strings with lots of whitespace',
       testCases: [{
         input: '  hello  ',
@@ -192,12 +192,22 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         allowedOutputs: ['olleH.eybdoog']
       }]
     }, {
-      id: 'CORNER_CASES',
-      humanReadableName: 'corner cases',
+      id: 'NON_CONTIGUOUS_ASCII',
+      humanReadableName: 'corner cases involving ASCII ranges',
       testCases: [{
         input: 'Hi[ John',
         allowedOutputs: ['iH[ nhoJ']
       }, {
+        input: 'Hi] John',
+        allowedOutputs: ['iH] nhoJ']
+      }, {
+        input: 'Hi^ John',
+        allowedOutputs: ['iH^ nhoJ']
+      }]
+    }, {
+      id: 'WEAK_ASCII_INEQUALITIES',
+      humanReadableName: 'more corner cases involving ASCII ranges',
+      testCases: [{
         input: 'Hi Antoine',
         allowedOutputs: ['iH eniotnA']
       }, {
@@ -207,12 +217,23 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         input: 'Hi Zaphod',
         allowedOutputs: ['iH dohpaZ']
       }, {
+        input: 'Hi zaphod',
+        allowedOutputs: ['iH dohpaz']
+      }]
+    }, {
+      id: 'NUMBERS',
+      humanReadableName: 'cases involving numbers',
+      testCases: [{
         input: 'Hi 007',
         allowedOutputs: ['iH 007']
       }, {
         input: 'H1 John',
         allowedOutputs: ['H1 nhoJ']
-      }, {
+      }]
+    }, , {
+      id: 'CORNER_CASES',
+      humanReadableName: 'corner cases',
+      testCases: [{
         input: 'Hello',
         allowedOutputs: ['olleH']
       }, {
@@ -255,6 +276,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnNone',
+      ignoredTestSuiteIds: [],
       messages: [
         'What value does your code return when given the input "Hello, John"?',
         [
@@ -264,6 +286,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.returnSampleOutput',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Your code should work in the general case, not just the one given ',
@@ -277,6 +300,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.reverseString',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try reading the question again, and looking at the sample ",
@@ -295,6 +319,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your algorithm, by hand, on the sample input. Does it ',
@@ -313,6 +338,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.elideNonLetters',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your algorithm, by hand, on the sample input. Does it ',
@@ -329,6 +355,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.forgetLastWord',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your algorithm, by hand, on the sample input. Does it ',
@@ -341,6 +368,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.forgetToReverseLastWord',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your algorithm, by hand, on the sample input. Does it ',
@@ -354,6 +382,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.treatCommaAsPartOfWord',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'When you run your algorithm with "Hello, John", what is the first ',
@@ -370,6 +399,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.addSpaceAtEnd',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Adding spaces at ends of words to keep things simple is a nice ',
@@ -379,6 +409,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.treatAsciiCharsContiguously',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Check the ASCII tables -- are you sure that "A"-"z" can be ',
@@ -387,6 +418,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.useWeakInequalitiesForCharValidity',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Are you correctly handling the check for whether a character is a ',
@@ -395,8 +427,31 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.useWeakInequalitiesForCharValidity',
+      ignoredTestSuiteIds: [],
       messages: [
         'Note that numbers should not be treated as English words.'
+      ]
+    }],
+    suiteLevelTests: [{
+      testSuiteIdsThatMustPass: ['SAMPLE_INPUT', 'GENERAL_CASE', 'WHITESPACE'],
+      testSuiteIdsThatMustFail: ['CORNER_CASES'],
+      messages: [
+        [
+          'Are you happy with the code? It must give the correct answer in ',
+          'all cases, regardless of whatever input string is passed in.'
+        ].join(''),
+        [
+          'It looks like there are some corner cases that your code doesn\'t ',
+          'handle. See if you can find the bug.'
+        ].join(''),
+        [
+          'Try pretending that this code was written by someone else, and ',
+          'think about different ways to break it. For example, perhaps the ',
+          'string contains only punctuation, or it\'s empty -- there\'s at ',
+          'least one case in which your code does not process the input ',
+          'correctly. Make sure that your fix doesn\'t invalidate an already-',
+          'passing test case, though!'
+        ].join('')
       ]
     }],
     performanceTests: []

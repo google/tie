@@ -19,12 +19,12 @@
 
 tieData.factory('TaskObjectFactory', [
   'TestSuiteObjectFactory', 'BuggyOutputTestObjectFactory',
-  'PerformanceTestObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
-  'CLASS_NAME_SYSTEM_CODE',
+  'SuiteLevelTestObjectFactory', 'PerformanceTestObjectFactory',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
   function(
       TestSuiteObjectFactory, BuggyOutputTestObjectFactory,
-      PerformanceTestObjectFactory, CLASS_NAME_AUXILIARY_CODE,
-      CLASS_NAME_SYSTEM_CODE) {
+      SuiteLevelTestObjectFactory, PerformanceTestObjectFactory,
+      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE) {
     /**
      * Task objects represent a single task for the user to complete for a
      * question. This includes all of the information, skills, and testing
@@ -119,6 +119,20 @@ tieData.factory('TaskObjectFactory', [
       );
 
       /**
+       * An Array of SuiteLevelTest objects that will be run to determine
+       * if the student's code should result in feedback given based on which
+       * test suites passed or failed.
+       *
+       * @type {Array}
+       * @private
+       */
+      this._suiteLevelTests = taskDict.suiteLevelTests.map(
+        function(suiteLevelTestDict) {
+          return SuiteLevelTestObjectFactory.create(suiteLevelTestDict);
+        }
+      );
+
+      /**
        * An Array of PerformanceTest objects that will be run to determine if
        * the student's code meets performance expectations.
        *
@@ -205,6 +219,15 @@ tieData.factory('TaskObjectFactory', [
      */
     Task.prototype.getBuggyOutputTests = function() {
       return this._buggyOutputTests;
+    };
+
+    /**
+     * A getter for the _suiteLevelTests property.
+     *
+     * @returns {Array}
+     */
+    Task.prototype.getSuiteLevelTests = function() {
+      return this._suiteLevelTests;
     };
 
     /**

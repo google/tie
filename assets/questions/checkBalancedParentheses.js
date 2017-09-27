@@ -80,6 +80,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfParentheses',
+      ignoredTestSuiteIds: [],
       messages: [
         "Try running your code on '))((' on paper. Did you expect that result?",
         [
@@ -93,6 +94,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -123,6 +125,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -174,6 +177,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: '()',
       transformationFunctionName: (
