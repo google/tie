@@ -17,32 +17,33 @@
  */
 
 describe('ReinforcementObjectFactory', function() {
-  var TestSuiteObjectFactory;
   var ReinforcementObjectFactory;
   var ReinforcementBulletObjectFactory;
   var TaskObjectFactory;
   var reinforcement;
-  var task;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
     ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     ReinforcementBulletObjectFactory = $injector.get(
       'ReinforcementBulletObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
 
-    task = TaskObjectFactory.create({
+    var task = TaskObjectFactory.create({
       instructions: [''],
       prerequisiteSkills: [],
       acquiredSkills: [],
       inputFunctionName: null,
       outputFunctionName: null,
       mainFunctionName: null,
-      testSuites: TestSuiteObjectFactory.create([{
-        input: 'abc',
-        allowedOutputs: ['a']
-      }]),
+      testSuites: [{
+        id: 'SAMPLE',
+        humanReadableName: 'sample tests',
+        testCases: [{
+          input: 'abc',
+          allowedOutputs: ['a']
+        }]
+      }],
       buggyOutputTests: [],
       performanceTests: []
     });

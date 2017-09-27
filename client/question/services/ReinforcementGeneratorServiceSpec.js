@@ -18,9 +18,9 @@
 
 describe('ReinforcementGeneratorService', function() {
   // Task with 2 correctness tests
-  var taskWithTwoTests;
+  var taskWithTwoSuites;
   // Task with 3 correctness tests
-  var taskWithThreeTests;
+  var taskWithThreeSuites;
   // Task with 3 correctness tests with the same tag
   var taskWithThreeCases;
 
@@ -39,7 +39,7 @@ describe('ReinforcementGeneratorService', function() {
     TranscriptService = $injector.get('TranscriptService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
 
-    var taskDict = [{
+    var taskDictWithTwoSuites = [{
       instructions: [''],
       prerequisiteSkills: [''],
       acquiredSkills: [''],
@@ -65,7 +65,7 @@ describe('ReinforcementGeneratorService', function() {
       performanceTests: []
     }];
 
-    var taskDict2 = [{
+    var taskDictWithThreeSuites = [{
       instructions: [''],
       prerequisiteSkills: [''],
       acquiredSkills: [''],
@@ -98,7 +98,7 @@ describe('ReinforcementGeneratorService', function() {
       performanceTests: []
     }];
 
-    var taskDictMultCases = [{
+    var taskDictWithThreeTestCases = [{
       instructions: [''],
       prerequisiteSkills: [''],
       acquiredSkills: [''],
@@ -123,15 +123,15 @@ describe('ReinforcementGeneratorService', function() {
       performanceTests: []
     }];
 
-    taskWithTwoTests = taskDict.map(function(task) {
+    taskWithTwoSuites = taskDictWithTwoSuites.map(function(task) {
       return TaskObjectFactory.create(task);
     });
 
-    taskWithThreeTests = taskDict2.map(function(task) {
+    taskWithThreeSuites = taskDictWithThreeSuites.map(function(task) {
       return TaskObjectFactory.create(task);
     });
 
-    taskWithThreeCases = taskDictMultCases.map(function(task) {
+    taskWithThreeCases = taskDictWithThreeTestCases.map(function(task) {
       return TaskObjectFactory.create(task);
     });
   }));
@@ -139,12 +139,12 @@ describe('ReinforcementGeneratorService', function() {
   describe('getReinforcement', function() {
     it('copies and updates previous reinforcement if from the same task',
       function() {
-        // Simulate most recent snapshot
+        // Simulate most recent snapshot.
         var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[false, false]],
+          'some code', 'some output', [[[false], [false]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          taskWithTwoTests, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithTwoSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
@@ -159,10 +159,10 @@ describe('ReinforcementGeneratorService', function() {
         expect(Object.keys(passedTags).length).toEqual(0);
 
         var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[true, false]], [], [], null, null);
+          'some code', 'some output', [[[true], [false]]], [], [], null, null);
 
         var reinforcement = ReinforcementGeneratorService.getReinforcement(
-          taskWithTwoTests[0], codeEvalResult2);
+          taskWithTwoSuites[0], codeEvalResult2);
         var reinforcementPassedTags = reinforcement.getPassedTags();
         pastFailedCases = reinforcement.getPastFailedCases();
         expectedPastFailedCases = {
@@ -177,42 +177,43 @@ describe('ReinforcementGeneratorService', function() {
     it('does not copy reinforcement if the previous reinforcement is not from' +
       ' the same task', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[false, false, false]],
+        'some code', 'some output', [[[false], [false], [false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
-        taskWithThreeTests, codeEvalResult, [0, 1, 2, 3, 4]);
+        taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
       var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-      var task = taskWithThreeTests[0];
-      var input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+      var task = taskWithThreeSuites[0];
+      var input1 = (
+        task.getTestSuites()[0].getTestCases()[0].getStringifiedInput());
 
       expect(pastFailedCases[input1]).toEqual(false);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[false, false]], [], [], null, null);
+        'some code', 'some output', [[[false], [false]]], [], [], null, null);
 
       var reinforcement = ReinforcementGeneratorService.getReinforcement(
-        taskWithTwoTests[0], codeEvalResult2);
+        taskWithTwoSuites[0], codeEvalResult2);
       pastFailedCases = reinforcement.getPastFailedCases();
 
       expect(pastFailedCases[input1]).toEqual(undefined);
-      task = taskWithTwoTests[0];
-      input1 = task.getCorrectnessTests()[0].getStringifiedInput();
+      task = taskWithTwoSuites[0];
+      input1 = task.getTestSuites()[0].getTestCases()[0].getStringifiedInput();
       expect(pastFailedCases[input1]).toEqual(false);
     });
 
     it('should only display one new failed case among all tasks', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[false, false, false]],
+        'some code', 'some output', [[[false], [false], [false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
-        taskWithThreeTests, codeEvalResult, [0, 1, 2, 3, 4]);
+        taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       var reinforcement = ReinforcementGeneratorService.getReinforcement(
-        taskWithThreeTests[0], codeEvalResult);
+        taskWithThreeSuites[0], codeEvalResult);
 
       var pastFailedCases = reinforcement.getPastFailedCases();
 
@@ -224,9 +225,10 @@ describe('ReinforcementGeneratorService', function() {
       expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
       var updatedCodeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[true, false, false]], [], [], null, null);
+        'some code', 'some output', [[[true], [false], [false]]], [], [], null,
+        null);
       reinforcement = ReinforcementGeneratorService.getReinforcement(
-        taskWithThreeTests[0], updatedCodeEvalResult);
+        taskWithThreeSuites[0], updatedCodeEvalResult);
 
       pastFailedCases = reinforcement.getPastFailedCases();
       expectedPastFailedCases = {
@@ -242,15 +244,15 @@ describe('ReinforcementGeneratorService', function() {
     it('should update passedTags if previously passing testTag fails',
       function() {
         var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[true, true, true]],
+          'some code', 'some output', [[[true], [true], [true]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          taskWithThreeTests, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
-        var task = taskWithThreeTests[0];
+        var task = taskWithThreeSuites[0];
 
         var expectedPastFailedCases = {};
         var expectedPassedTags = {
@@ -265,7 +267,7 @@ describe('ReinforcementGeneratorService', function() {
           expectedPassedTags);
         // Make the first test fail
         codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[false, true, true]],
+          'some code', 'some output', [[[false], [true], [true]]],
           [], [], null, null);
         var reinforcement = ReinforcementGeneratorService.getReinforcement(
           task, codeEvalResult);
@@ -283,10 +285,10 @@ describe('ReinforcementGeneratorService', function() {
     it('should update pastFailedCases if previously passing tag fails',
       function() {
         var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[false, false, false]],
+          'some code', 'some output', [[[false], [false], [false]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          taskWithThreeTests, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
@@ -298,10 +300,10 @@ describe('ReinforcementGeneratorService', function() {
         expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
         var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[true, false, false]],
+          'some code', 'some output', [[[true], [false], [false]]],
           [], [], null, null);
         feedback = FeedbackGeneratorService.getFeedback(
-          taskWithThreeTests, codeEvalResult2, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult2, [0, 1, 2, 3, 4]);
         TranscriptService.recordSnapshot(null, codeEvalResult2, feedback);
 
         pastFailedCases = feedback.getReinforcement().getPastFailedCases();
@@ -314,10 +316,10 @@ describe('ReinforcementGeneratorService', function() {
         expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
         var codeEvalResult3 = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [[true, true, false]],
+          'some code', 'some output', [[[true], [true], [false]]],
           [], [], null, null);
         feedback = FeedbackGeneratorService.getFeedback(
-          taskWithThreeTests, codeEvalResult3, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult3, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult3, feedback);
 
@@ -332,7 +334,7 @@ describe('ReinforcementGeneratorService', function() {
         expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
         var reinforcement = ReinforcementGeneratorService.getReinforcement(
-          taskWithThreeTests[0], codeEvalResult);
+          taskWithThreeSuites[0], codeEvalResult);
         pastFailedCases = reinforcement.getPastFailedCases();
 
         expectedPastFailedCases = {
@@ -347,7 +349,7 @@ describe('ReinforcementGeneratorService', function() {
     it('should update pastFailedCases if previously passing case fails' +
       ' with the same tag', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[false, false, false]],
+        'some code', 'some output', [[[false, false, false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
         taskWithThreeCases, codeEvalResult, [0, 1, 2, 3, 4]);
@@ -362,7 +364,7 @@ describe('ReinforcementGeneratorService', function() {
       expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[true, false, false]],
+        'some code', 'some output', [[[true, false, false]]],
         [], [], null, null);
       feedback = FeedbackGeneratorService.getFeedback(
         taskWithThreeCases, codeEvalResult2, [0, 1, 2, 3, 4]);
@@ -379,7 +381,7 @@ describe('ReinforcementGeneratorService', function() {
       expect(pastFailedCases).toEqual(expectedPastFailedCases);
 
       var codeEvalResult3 = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[true, true, false]],
+        'some code', 'some output', [[[true, true, false]]],
         [], [], null, null);
       feedback = FeedbackGeneratorService.getFeedback(
         taskWithThreeCases, codeEvalResult3, [0, 1, 2, 3, 4]);
@@ -411,7 +413,7 @@ describe('ReinforcementGeneratorService', function() {
 
     it('should update passedTestTags if all cases in tag pass', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [[true, true, true]],
+        'some code', 'some output', [[[true, true, true]]],
         [], [], null, null);
 
       var reinforcement = ReinforcementGeneratorService.getReinforcement(
