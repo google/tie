@@ -15,7 +15,7 @@
 /**
  * @fileoverview Unit tests for the EventHandlerService.
  */
-describe('EventHandlerService', function() {
+describe('EventHandlerService', function(FEEDBACK_CATEGORIES) {
   var $httpBackend;
   var EventHandlerService;
   var ServerHandlerService;
@@ -24,6 +24,8 @@ describe('EventHandlerService', function() {
   var questionVersion;
   var taskId;
 
+  var FEEDBACK_CATEGORIES;
+
   var HTTP_STATUS_CODE_OK = 200;
 
   beforeEach(module('tie', function($provide) {
@@ -31,6 +33,8 @@ describe('EventHandlerService', function() {
   }));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
+    FEEDBACK_CATEGORIES = $injector.get(
+      'FEEDBACK_CATEGORIES');
     EventHandlerService = $injector.get(
       'EventHandlerService');
     ServerHandlerService = $injector.get(
@@ -46,7 +50,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a SessionPauseEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_session_pause_event').respond(
+          '/ajax/event/create_session_pause_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createSessionPauseEvent(sessionId);
@@ -60,7 +64,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a SessionResumeEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_session_resume_event').respond(
+          '/ajax/event/create_session_resume_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createSessionResumeEvent(sessionId);
@@ -74,7 +78,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a QuestionStartEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_question_start_event').respond(
+          '/ajax/event/create_question_start_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createQuestionStartEvent(
@@ -88,7 +92,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a QuestionCompleteEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_question_complete_event').respond(
+          '/ajax/event/create_question_complete_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createQuestionCompleteEvent(
@@ -103,7 +107,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a TaskStartEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_task_start_event').respond(
+          '/ajax/event/create_task_start_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createTaskStartEvent(
@@ -118,7 +122,7 @@ describe('EventHandlerService', function() {
     it('sends a POST request to the backend to create a TaskCompleteEvent',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/admin/create_task_complete_event').respond(
+          '/ajax/event/create_task_complete_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createTaskCompleteEvent(
@@ -139,11 +143,11 @@ describe('EventHandlerService', function() {
         ].join('\n');
         var feedbackText = 'Here is some feedback!';
         $httpBackend.expectPOST(
-          '/ajax/admin/create_code_submit_event').respond(
+          '/ajax/event/create_code_submit_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createCodeSubmitEvent(
-          sessionId, feedbackText, EventHandlerService.FEEDBACK_CATEGORIES[0],
+          sessionId, feedbackText, FEEDBACK_CATEGORIES[0],
           code, false);
         $httpBackend.flush();
       });

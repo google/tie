@@ -18,14 +18,11 @@
  */
 tie.factory('EventHandlerService', [
   '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
-    var FEEDBACK_CATEGORIES = [
-      'SYNTAX', 'MATCHED BUGGY OUTPUT', 'UNMATCHED BUGGY OUTPUT', 'RUNTIME',
-      'PERFORMANCE', 'NO ERROR'];
 
     return {
-      FEEDBACK_CATEGORIES: FEEDBACK_CATEGORIES,
       /**
        * Submits data to TIE's backend to create a SessionPauseEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
        *
        */
       createSessionPauseEvent: function(sessionId) {
@@ -33,12 +30,13 @@ tie.factory('EventHandlerService', [
           var data = {
             sessionId: sessionId
           };
-          $http.post('/ajax/admin/create_session_pause_event', data);
+          $http.post('/ajax/event/create_session_pause_event', data);
         }
       },
 
       /**
        * Submits data to TIE's backend to create a SessionResumeEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
        *
        */
       createSessionResumeEvent: function(sessionId) {
@@ -46,12 +44,16 @@ tie.factory('EventHandlerService', [
           var data = {
             sessionId: sessionId
           };
-          $http.post('/ajax/admin/create_session_resume_event', data);
+          $http.post('/ajax/event/create_session_resume_event', data);
         }
       },
 
       /**
        * Submits a QuestionStartEvent to TIE's backend.
+       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} questionId ID of the question being attempted.
+       * @param {string} questionVersion Version number of the question 
+       *  being attempted.
        *
        */
       createQuestionStartEvent: function(
@@ -62,12 +64,16 @@ tie.factory('EventHandlerService', [
             questionId: questionId,
             questionVersion: questionVersion
           };
-          $http.post('/ajax/admin/create_question_start_event', data);
+          $http.post('/ajax/event/create_question_start_event', data);
         }
       },
 
       /**
        * Submits data to TIE's backend to create a QuestionCompleteEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} questionId ID of the question being attempted.
+       * @param {string} questionVersion Version number of the question 
+       *  being attempted.
        *
        */
       createQuestionCompleteEvent: function(
@@ -78,12 +84,17 @@ tie.factory('EventHandlerService', [
             questionId: questionId,
             questionVersion: questionVersion
           };
-          $http.post('/ajax/admin/create_question_complete_event', data);
+          $http.post('/ajax/event/create_question_complete_event', data);
         }
       },
 
       /**
        * Submits data to TIE's backend to create a TaskStartEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} questionId ID of the question being attempted.
+       * @param {string} questionVersion Version number of the question 
+       *  being attempted.
+       * @param {string} taskId ID of the task being attempted.
        *
        */
       createTaskStartEvent: function(
@@ -95,12 +106,17 @@ tie.factory('EventHandlerService', [
             questionVersion: questionVersion,
             taskId: taskId
           };
-          $http.post('/ajax/admin/create_task_start_event', data);
+          $http.post('/ajax/event/create_task_start_event', data);
         }
       },
 
       /**
        * Submits data to TIE's backend to create a TaskCompleteEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} questionId ID of the question being attempted.
+       * @param {string} questionVersion Version number of the question 
+       *  being attempted.
+       * @param {string} taskId ID of the task being attempted.
        *
        */
       createTaskCompleteEvent: function(
@@ -112,12 +128,18 @@ tie.factory('EventHandlerService', [
             questionVersion: questionVersion,
             taskId: taskId
           };
-          $http.post('/ajax/admin/create_task_complete_event', data);
+          $http.post('/ajax/event/create_task_complete_event', data);
         }
       },
 
       /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} feedbackText The feedback shown to the user.
+       * @param {string} errorCategory The type of feedback shown 
+       *  to the user.
+       * @param {string} code The user's submitted code.
+       * @param {boolean} success Whether or not the question was completed.
        *
        */
       createCodeSubmitEvent: function(
@@ -130,7 +152,7 @@ tie.factory('EventHandlerService', [
             code: code,
             success: success
           };
-          $http.post('/ajax/admin/create_code_submit_event', data);
+          $http.post('/ajax/event/create_code_submit_event', data);
         }
       }
     };
