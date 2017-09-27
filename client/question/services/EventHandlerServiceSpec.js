@@ -139,7 +139,7 @@ describe('EventHandlerService', function() {
           '/ajax/event/create_code_reset_event').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
-        EventHandlerService.createSessionPauseEvent(sessionId);
+        EventHandlerService.createCodeResetEvent(sessionId);
         $httpBackend.flush();
       });
   });
