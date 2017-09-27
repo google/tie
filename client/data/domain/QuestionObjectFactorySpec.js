@@ -35,12 +35,11 @@ describe('QuestionObjectFactory', function() {
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
       tasks: [{
-        correctnessTests: [],
+        testSuites: [],
         buggyOutputTests: [],
         performanceTests: []
-      },
-      {
-        correctnessTests: [],
+      }, {
+        testSuites: [],
         buggyOutputTests: [],
         performanceTests: []
       }]

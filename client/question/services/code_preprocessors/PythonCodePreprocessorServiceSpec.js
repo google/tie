@@ -20,19 +20,17 @@ describe('PythonCodePreprocessorService', function() {
   var CodeSubmissionObjectFactory;
   var PythonCodePreprocessorService;
   var BuggyOutputTestObjectFactory;
-  var CorrectnessTestObjectFactory;
+  var TestSuiteObjectFactory;
   var PerformanceTestObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    CodeSubmissionObjectFactory = $injector.get(
-      'CodeSubmissionObjectFactory');
+    CodeSubmissionObjectFactory = $injector.get('CodeSubmissionObjectFactory');
     PythonCodePreprocessorService = $injector.get(
       'PythonCodePreprocessorService');
     BuggyOutputTestObjectFactory = $injector.get(
       'BuggyOutputTestObjectFactory');
-    CorrectnessTestObjectFactory = $injector.get(
-      'CorrectnessTestObjectFactory');
+    TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
   }));
@@ -532,25 +530,38 @@ describe('PythonCodePreprocessorService', function() {
 
   describe('_generateCorrectnessTestCode', function() {
     it('should add correctness test code to skeleton code', function() {
-      var correctnessTests = [[CorrectnessTestObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['at', 'bc']
-      })]];
+      var testSuites = [TestSuiteObjectFactory.create({
+        id: 'SAMPLE',
+        humanReadableName: 'sample tests',
+        testCases: [{
+          input: 'cat',
+          allowedOutputs: ['at', 'bc']
+        }]
+      })];
       var expectedGeneratedCode = [
         /* eslint-disable max-len */
-        'all_tasks_test_inputs = [[\'cat\']]',
+        'all_tasks_test_inputs = [',
+        '    [',
+        '        [\'cat\']',
+        '    ]',
+        ']',
         '',
         'correctness_test_results = []',
-        'task_correctness_test_results = []',
-        'task_correctness_test_results.append(outputFnName(System.runTest(',
-        '    StudentCode().mainFnName, inputFnName(all_tasks_test_inputs[0][0]))))',
-        'correctness_test_results.append(task_correctness_test_results)'
+        '',
+        'task_test_inputs = all_tasks_test_inputs[0]',
+        'task_results = []',
+        'for suite_test_inputs in task_test_inputs:',
+        '    suite_results = [',
+        '        outputFnName(System.runTest(StudentCode().mainFnName, inputFnName(test_input)))',
+        '        for test_input in suite_test_inputs]',
+        '    task_results.append(suite_results)',
+        'correctness_test_results.append(task_results)'
         /* eslint-enable max-len */
       ].join('\n');
 
       expect(
         PythonCodePreprocessorService._generateCorrectnessTestCode(
-          correctnessTests, ['inputFnName'], ['mainFnName'], ['outputFnName'])
+          [testSuites], ['inputFnName'], ['mainFnName'], ['outputFnName'])
       ).toEqual(expectedGeneratedCode);
     });
   });
@@ -571,20 +582,23 @@ describe('PythonCodePreprocessorService', function() {
         /* eslint-disable max-len */
         'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
         '    buggy_results = []',
-        '    for task_tests in all_tasks_test_inputs:',
+        '    for task_inputs in all_tasks_test_inputs:',
         '        task_results = []',
-        '        for test_input in task_tests:',
-        '            if inputFunctionName is None and outputFunctionName is None:',
-        '                task_results.append(System.runTest(func, test_input))',
-        '            elif inputFunctionName is None:',
-        '                task_results.append(outputFunctionName(',
-        '                    System.runTest(func, test_input)))',
-        '            elif outputFunctionName is None:',
-        '                task_results.append(',
-        '                    System.runTest(func, inputFunctionName(test_input)))',
-        '            else:',
-        '               task_results.append(outputFunctionName(',
-        '                   System.runTest(func, inputFunctionName(test_input))))',
+        '        for suite_inputs in task_inputs:',
+        '            suite_results = []',
+        '            for test_input in suite_inputs:',
+        '                if inputFunctionName is None and outputFunctionName is None:',
+        '                    suite_results.append(System.runTest(func, test_input))',
+        '                elif inputFunctionName is None:',
+        '                    suite_results.append(outputFunctionName(',
+        '                        System.runTest(func, test_input)))',
+        '                elif outputFunctionName is None:',
+        '                    suite_results.append(',
+        '                        System.runTest(func, inputFunctionName(test_input)))',
+        '                else:',
+        '                    suite_results.append(outputFunctionName(',
+        '                        System.runTest(func, inputFunctionName(test_input))))',
+        '            task_results.append(suite_results)',
         '        buggy_results.append(task_results)',
         '    return buggy_results == correctness_test_results',
         '',
@@ -615,20 +629,23 @@ describe('PythonCodePreprocessorService', function() {
           /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
-          '    for task_tests in all_tasks_test_inputs:',
+          '    for task_inputs in all_tasks_test_inputs:',
           '        task_results = []',
-          '        for test_input in task_tests:',
-          '            if inputFunctionName is None and outputFunctionName is None:',
-          '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName is None:',
-          '                task_results.append(outputFunctionName(',
-          '                    System.runTest(func, test_input)))',
-          '            elif outputFunctionName is None:',
-          '                task_results.append(',
-          '                    System.runTest(func, inputFunctionName(test_input)))',
-          '            else:',
-          '               task_results.append(outputFunctionName(',
-          '                   System.runTest(func, inputFunctionName(test_input))))',
+          '        for suite_inputs in task_inputs:',
+          '            suite_results = []',
+          '            for test_input in suite_inputs:',
+          '                if inputFunctionName is None and outputFunctionName is None:',
+          '                    suite_results.append(System.runTest(func, test_input))',
+          '                elif inputFunctionName is None:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, test_input)))',
+          '                elif outputFunctionName is None:',
+          '                    suite_results.append(',
+          '                        System.runTest(func, inputFunctionName(test_input)))',
+          '                else:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, inputFunctionName(test_input))))',
+          '            task_results.append(suite_results)',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
@@ -658,20 +675,23 @@ describe('PythonCodePreprocessorService', function() {
           /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
-          '    for task_tests in all_tasks_test_inputs:',
+          '    for task_inputs in all_tasks_test_inputs:',
           '        task_results = []',
-          '        for test_input in task_tests:',
-          '            if inputFunctionName is None and outputFunctionName is None:',
-          '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName is None:',
-          '                task_results.append(outputFunctionName(',
-          '                    System.runTest(func, test_input)))',
-          '            elif outputFunctionName is None:',
-          '                task_results.append(',
-          '                    System.runTest(func, inputFunctionName(test_input)))',
-          '            else:',
-          '               task_results.append(outputFunctionName(',
-          '                   System.runTest(func, inputFunctionName(test_input))))',
+          '        for suite_inputs in task_inputs:',
+          '            suite_results = []',
+          '            for test_input in suite_inputs:',
+          '                if inputFunctionName is None and outputFunctionName is None:',
+          '                    suite_results.append(System.runTest(func, test_input))',
+          '                elif inputFunctionName is None:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, test_input)))',
+          '                elif outputFunctionName is None:',
+          '                    suite_results.append(',
+          '                        System.runTest(func, inputFunctionName(test_input)))',
+          '                else:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, inputFunctionName(test_input))))',
+          '            task_results.append(suite_results)',
           '        buggy_results.append(task_results)',
           '    return buggy_results == correctness_test_results',
           '',
@@ -700,20 +720,23 @@ describe('PythonCodePreprocessorService', function() {
         /* eslint-disable max-len */
         'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
         '    buggy_results = []',
-        '    for task_tests in all_tasks_test_inputs:',
+        '    for task_inputs in all_tasks_test_inputs:',
         '        task_results = []',
-        '        for test_input in task_tests:',
-        '            if inputFunctionName is None and outputFunctionName is None:',
-        '                task_results.append(System.runTest(func, test_input))',
-        '            elif inputFunctionName is None:',
-        '                task_results.append(outputFunctionName(',
-        '                    System.runTest(func, test_input)))',
-        '            elif outputFunctionName is None:',
-        '                task_results.append(',
-        '                    System.runTest(func, inputFunctionName(test_input)))',
-        '            else:',
-        '               task_results.append(outputFunctionName(',
-        '                   System.runTest(func, inputFunctionName(test_input))))',
+        '        for suite_inputs in task_inputs:',
+        '            suite_results = []',
+        '            for test_input in suite_inputs:',
+        '                if inputFunctionName is None and outputFunctionName is None:',
+        '                    suite_results.append(System.runTest(func, test_input))',
+        '                elif inputFunctionName is None:',
+        '                    suite_results.append(outputFunctionName(',
+        '                        System.runTest(func, test_input)))',
+        '                elif outputFunctionName is None:',
+        '                    suite_results.append(',
+        '                        System.runTest(func, inputFunctionName(test_input)))',
+        '                else:',
+        '                    suite_results.append(outputFunctionName(',
+        '                        System.runTest(func, inputFunctionName(test_input))))',
+        '            task_results.append(suite_results)',
         '        buggy_results.append(task_results)',
         '    return buggy_results == correctness_test_results',
         '',

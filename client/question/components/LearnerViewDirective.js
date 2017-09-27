@@ -748,10 +748,9 @@ tie.directive('learnerView', [function() {
                   'Click the "Next" button to the right to proceed to the ' +
                   'next question.');
               $scope.nextButtonIsShown = true;
-              $scope.feedbackStorage.push(
-                {
-                  feedbackParagraphs: congratulatoryFeedback.getParagraphs()
-                });
+              $scope.feedbackStorage.push({
+                feedbackParagraphs: congratulatoryFeedback.getParagraphs()
+              });
             } else {
               $scope.showNextTask();
             }

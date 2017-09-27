@@ -43,38 +43,44 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'Implement a function getStrobogrammaticNumbers which takes a ',
-          'number n as input and generates a list of n-digit numbers which ',
-          'look the same if you rotate them 180 degrees.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: 2\nOutput: ["11", "69", "88", "96"]',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Implement a function getStrobogrammaticNumbers which takes a ',
+        'number n as input and generates a list of n-digit numbers which ',
+        'look the same if you rotate them 180 degrees.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: 2\nOutput: ["11", "69", "88", "96"]',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Arrays'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'getStrobogrammaticNumbers',
-    correctnessTests: [{
-      input: '2',
-      allowedOutputs: [["11", "69", "88", "96"]],
-      tag: 'small sized numbers'
+    testSuites: [{
+      id: 'SMALL_NUMBERS',
+      humanReadableName: 'small-sized numbers',
+      testCases: [{
+        input: '2',
+        allowedOutputs: [["11", "69", "88", "96"]]
+      }, {
+        input: '1',
+        allowedOutputs: [['0', '1', '8']]
+      }]
     }, {
-      input: '1',
-      allowedOutputs: [['0', '1', '8']],
-      tag: 'small sized numbers'
-    }, {
-      input: '3',
-      allowedOutputs: [['101', '111', '181', '609', '619', '689',
-        '808', '818', '906', '916', '986']],
-      tag: '3 digit numbers'
+      id: 'THREE_DIGIT_NUMBERS',
+      humanReadableName: '3-digit numbers',
+      testCases: [{
+        input: '3',
+        allowedOutputs: [
+          [
+            '101', '111', '181', '609', '619', '689', '808', '818', '906',
+            '916', '986'
+          ]
+        ]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
@@ -85,8 +91,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
           '0, for instance, should be included.'
         ].join('')
       ]
-    },
-    {
+    }, {
       buggyFunctionName: 'AuxiliaryCode.allowLeadingZeroInResult',
       messages: [
         [
@@ -108,4 +113,3 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     performanceTests: []
   }]
 };
-

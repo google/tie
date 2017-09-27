@@ -74,79 +74,76 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'For this question, you will implement the isPalindrome function. ',
-          'It takes a sentence as input and returns True if the input is a ',
-          'palindrome and False if it is not.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'A palindrome is a word, phrase, or sequence that reads the same ',
-          'backward as forward.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "do geese see god"\nOutput: True',
-        type: 'code'
-      },
-      {
-        content: 'Input: "a dog says bork"\nOutput: False',
-        type: 'code'
-      },
-      {
-        content: [
-          'Note that the input string will consist of lowercase letters (a-z) ',
-          'and spaces.'
-        ].join(''),
-        type: 'text'
-      }
-    ],
+    instructions: [{
+      content: [
+        'For this question, you will implement the isPalindrome function. ',
+        'It takes a sentence as input and returns True if the input is a ',
+        'palindrome and False if it is not.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'A palindrome is a word, phrase, or sequence that reads the same ',
+        'backward as forward.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "do geese see god"\nOutput: True',
+      type: 'code'
+    }, {
+      content: 'Input: "a dog says bork"\nOutput: False',
+      type: 'code'
+    }, {
+      content: [
+        'Note that the input string will consist of lowercase letters (a-z) ',
+        'and spaces.'
+      ].join(''),
+      type: 'text'
+    }],
     prerequisiteSkills: ['String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isPalindrome',
-    correctnessTests: [{
-      input: '',
-      allowedOutputs: [true],
-      tag: 'empty strings'
+    testSuites: [{
+      id: 'EMPTY_STRINGS',
+      humanReadableName: 'empty strings',
+      testCases: [{
+        input: '',
+        allowedOutputs: [true]
+      }]
     }, {
-      input: 'nurses run',
-      allowedOutputs: [true],
-      tag: 'strings with spaces'
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'abcdcba',
+        allowedOutputs: [true]
+      }, {
+        input: 'abccba',
+        allowedOutputs: [true]
+      }, {
+        input: 'abab',
+        allowedOutputs: [false]
+      }]
     }, {
-      input: 'a b   cba',
-      allowedOutputs: [true],
-      tag: 'strings with spaces'
-    }, {
-      input: 'abcdcba',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: 'abccba',
-      allowedOutputs: [true],
-      tag: 'the general case'
-    }, {
-      input: 'abab',
-      allowedOutputs: [false],
-      tag: 'the general case'
-    }, {
-      input: 'stressed desserts',
-      allowedOutputs: [true],
-      tag: 'strings with spaces'
-    }, {
-      input: 'dioramas is samaroid',
-      allowedOutputs: [false],
-      tag: 'strings with spaces'
-    }, {
-      input: 'dioramas is si samaroid',
-      allowedOutputs: [true],
-      tag: 'strings with spaces'
+      id: 'STRINGS_WITH_SPACES',
+      humanReadableName: 'strings with spaces',
+      testCases: [{
+        input: 'nurses run',
+        allowedOutputs: [true]
+      }, {
+        input: 'a b   cba',
+        allowedOutputs: [true]
+      }, {
+        input: 'stressed desserts',
+        allowedOutputs: [true]
+      }, {
+        input: 'dioramas is samaroid',
+        allowedOutputs: [false]
+      }, {
+        input: 'dioramas is si samaroid',
+        allowedOutputs: [true]
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',

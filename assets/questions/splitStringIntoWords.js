@@ -42,44 +42,42 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          'For this question, you\'ll implement the splitStringIntoWords ',
-          'function. This function takes a list of two elements, the first ',
-          'element being a string of letters with no whitespace and the ',
-          'second element being a set of valid words. The function should ',
-          'take the input string and split it ',
-          'into two words that are both in the given ',
-          'set. If there is no valid solution, return \'None\'.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'Input: ["fruitsalad", ["friend", "fruit", "banana", "salad"]]',
-          'Output: "fruit salad"'
-        ].join('\n'),
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'For this question, you\'ll implement the splitStringIntoWords ',
+        'function. This function takes a list of two elements, the first ',
+        'element being a string of letters with no whitespace and the ',
+        'second element being a set of valid words. The function should ',
+        'take the input string and split it ',
+        'into two words that are both in the given ',
+        'set. If there is no valid solution, return \'None\'.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Input: ["fruitsalad", ["friend", "fruit", "banana", "salad"]]',
+        'Output: "fruit salad"'
+      ].join('\n'),
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets', 'Lists'],
     acquiredSkills: ['String Parsing'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
-    correctnessTests: [{
-      input: 'goodneighbor:good neighbor',
-      allowedOutputs: ['good neighbor'],
-      tag: 'the general case'
-    }, {
-      input: 'hondacivic:honda civic accord',
-      allowedOutputs: ['honda civic'],
-      tag: 'the general case'
-    }, {
-      input: 'toyotacamry:honda civic accord',
-      allowedOutputs: ['None'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'goodneighbor:good neighbor',
+        allowedOutputs: ['good neighbor']
+      }, {
+        input: 'hondacivic:honda civic accord',
+        allowedOutputs: ['honda civic']
+      }, {
+        input: 'toyotacamry:honda civic accord',
+        allowedOutputs: ['None']
+      }]
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.returnOriginalString',
@@ -94,40 +92,37 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     }],
     performanceTests: []
   }, {
-    instructions: [
-      {
-        content: [
-          'Next, expand your solution so that it can handle splitting the ',
-          'string into more than just 2 valid words.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: 'Input: "freshfruitsalad"\nOutput: "fresh fruit salad"',
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        'Next, expand your solution so that it can handle splitting the ',
+        'string into more than just 2 valid words.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: 'Input: "freshfruitsalad"\nOutput: "fresh fruit salad"',
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets'],
     acquiredSkills: ['String Manipulation', 'Shortest Path Search'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
-    correctnessTests: [{
-      input: 'bluehondacivic:honda civic accord blue',
-      allowedOutputs: ['blue honda civic'],
-      tag: 'the general case'
-    }, {
-      input: 'verygoodneighbor:very neighbor good bad',
-      allowedOutputs: ['very good neighbor'],
-      tag: 'the general case'
-    }, {
-      input: 'graytoyotacamry:honda civic accord gray blue',
-      allowedOutputs: ['None'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'bluehondacivic:honda civic accord blue',
+        allowedOutputs: ['blue honda civic']
+      }, {
+        input: 'verygoodneighbor:very neighbor good bad',
+        allowedOutputs: ['very good neighbor']
+      }, {
+        input: 'graytoyotacamry:honda civic accord gray blue',
+        allowedOutputs: ['None']
+      }]
     }],
     buggyOutputTests: [],
     // TODO(eyurko): Add performance tests.
     performanceTests: []
   }]
 };
-

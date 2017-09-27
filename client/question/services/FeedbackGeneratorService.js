@@ -211,27 +211,27 @@ tie.factory('FeedbackGeneratorService', [
      *
      * @param {string|null} outputFunctionName If needed, is string of the
      *    name for the function needed to process/format the user's output.
-     * @param {CorrectnessTest} correctnessTest
+     * @param {CorrectnessTest} TestCase
      * @param {*} observedOutput Actual output for running user's code.
      * @returns {Feedback}
      * @private
      */
     var _getCorrectnessTestFeedback = function(
-      outputFunctionName, correctnessTest, observedOutput) {
-      var allowedOutputExample = correctnessTest.getAnyAllowedOutput();
+      outputFunctionName, testCase, observedOutput) {
+      var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(false);
       // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
       if (outputFunctionName) {
         feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
           ('Output (after running ' + outputFunctionName + '): ' +
             _jsToHumanReadable(observedOutput)));
         feedback.appendTextParagraph(
           'However, the expected output of ' + outputFunctionName + ' is:');
       } else {
         feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(correctnessTest.getInput()) + '\n' +
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
           'Output: ' + _jsToHumanReadable(observedOutput));
         feedback.appendTextParagraph('However, the expected output is:');
       }
@@ -433,6 +433,7 @@ tie.factory('FeedbackGeneratorService', [
       if (_hasPrintStatement(code)) {
         feedback = _appendPrintFeedback(feedback);
       }
+
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
@@ -440,8 +441,7 @@ tie.factory('FeedbackGeneratorService', [
         if (errorString.startsWith('TimeLimitError')) {
           feedback.appendFeedback(_getTimeoutErrorFeedback());
           return feedback;
-        } else if (errorString.startsWith(
-          'ExternalError: RangeError')) {
+        } else if (errorString.startsWith('ExternalError: RangeError')) {
           feedback.appendFeedback(_getInfiniteLoopFeedback());
           return feedback;
         } else {
@@ -453,18 +453,16 @@ tie.factory('FeedbackGeneratorService', [
         // Get all the tests from first task to current that need to be
         // executed.
         var buggyOutputTests = [];
-        var correctnessTests = [];
+        var testSuitesForTasks = [];
         var performanceTests = [];
         for (var i = 0; i < tasks.length; i++) {
           buggyOutputTests.push(tasks[i].getBuggyOutputTests());
-          correctnessTests.push(tasks[i].getCorrectnessTests());
+          testSuitesForTasks.push(tasks[i].getTestSuites());
           performanceTests.push(tasks[i].getPerformanceTests());
         }
-        var buggyOutputTestResults =
-            codeEvalResult.getBuggyOutputTestResults();
+        var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
-        var performanceTestResults =
-            codeEvalResult.getPerformanceTestResults();
+        var performanceTestResults = codeEvalResult.getPerformanceTestResults();
 
         for (i = 0; i < tasks.length; i++) {
           for (var j = 0; j < buggyOutputTests[i].length; j++) {
@@ -482,14 +480,17 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          for (j = 0; j < correctnessTests[i].length; j++) {
-            var observedOutput = observedOutputs[i][j];
-
-            if (!correctnessTests[i][j].matchesOutput(observedOutput)) {
-              feedback.appendFeedback(_getCorrectnessTestFeedback(
-                tasks[i].getOutputFunctionNameWithoutClass(),
-                correctnessTests[i][j], observedOutput));
-              return feedback;
+          for (j = 0; j < testSuitesForTasks[i].length; j++) {
+            var testCases = testSuitesForTasks[i][j].getTestCases();
+            for (var k = 0; k < testCases.length; k++) {
+              var testCase = testCases[k];
+              var observedOutput = observedOutputs[i][j][k];
+              if (!testCase.matchesOutput(observedOutput)) {
+                feedback.appendFeedback(_getCorrectnessTestFeedback(
+                  tasks[i].getOutputFunctionNameWithoutClass(),
+                  testCase, observedOutput));
+                return feedback;
+              }
             }
           }
 

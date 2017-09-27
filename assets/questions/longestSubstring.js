@@ -46,71 +46,68 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
 `
   },
   tasks: [{
-    instructions: [
-      {
-        content: [
-          "For this problem, you'll be writing a longestSubstring method ",
-          'that, given a string, finds the longest substring (continous ',
-          'sequence of characters) that contains at ',
-          'most 2 distinct characters.'
-        ].join(''),
-        type: 'text'
-      },
-      {
-        content: [
-          'Input: "cababadadad"',
-          'Output: "adadad"'
-        ].join('\n'),
-        type: 'code'
-      }
-    ],
+    instructions: [{
+      content: [
+        "For this problem, you'll be writing a longestSubstring method ",
+        'that, given a string, finds the longest substring (continous ',
+        'sequence of characters) that contains at ',
+        'most 2 distinct characters.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Input: "cababadadad"',
+        'Output: "adadad"'
+      ].join('\n'),
+      type: 'code'
+    }],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'longestSubstring',
-    correctnessTests: [{
-      input: 'ababcbcbaaabbdef',
-      allowedOutputs: ['baaabb'],
-      tag: 'the general case'
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'ababcbcbaaabbdef',
+        allowedOutputs: ['baaabb']
+      }, {
+        input: 'abcbbcbcbb',
+        allowedOutputs: ['bcbbcbcbb']
+      }, {
+        input: 'cababadadad',
+        allowedOutputs: ['adadad']
+      }]
     }, {
-      input: 'abcbbcbcbb',
-      allowedOutputs: ['bcbbcbcbb'],
-      tag: 'the general case'
-    }, {
-      input: 'bbbbbbbb',
-      allowedOutputs: ['bbbbbbbb'],
-      tag: 'strings with less than 2 distinct characters'
-    }, {
-      input: 'ab',
-      allowedOutputs: ['ab'],
-      tag: 'strings with less than 2 distinct characters'
-    }, {
-      input: 'cababadadad',
-      allowedOutputs: ['adadad'],
-      tag: 'the general case'
-    }, {
-      input: 'abbba',
-      allowedOutputs: ['abbba'],
-      tag: 'strings with less than 2 distinct characters'
+      id: 'FEW_DISTINCT_CHARACTERS',
+      humanReadableName: 'strings with at most 2 distinct characters',
+      testCases: [{
+        input: 'bbbbbbbb',
+        allowedOutputs: ['bbbbbbbb']
+      }, {
+        input: 'ab',
+        allowedOutputs: ['ab']
+      }, {
+        input: 'abbba',
+        allowedOutputs: ['abbba']
+      }]
     }],
-    buggyOutputTests: [
-      {
-        buggyFunctionName: 'AuxiliaryCode.onlyUseOneLetterInResult',
-        messages: [
-          [
-            'Try running your code on the input, "abbabbabb". ',
-            'Is the result what you expected?'
-          ].join(''),
-          'How many types of characters appear in your solution?',
-          [
-            'For a string that has at least two types of characters, ',
-            'the result should have two types of characters, as well. ',
-            "For example, 'abbba' should return 'abbba', not 'bbb'."
-          ].join('')
-        ]
-      }
-    ],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.onlyUseOneLetterInResult',
+      messages: [
+        [
+          'Try running your code on the input, "abbabbabb". ',
+          'Is the result what you expected?'
+        ].join(''),
+        'How many types of characters appear in your solution?',
+        [
+          'For a string that has at least two types of characters, ',
+          'the result should have two types of characters, as well. ',
+          "For example, 'abbba' should return 'abbba', not 'bbb'."
+        ].join('')
+      ]
+    }],
     performanceTests: [{
       inputDataAtom: 'oooyyoxaoo',
       transformationFunctionName: 'System.extendString',

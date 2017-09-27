@@ -281,7 +281,7 @@ tie.factory('PythonCodePreprocessorService', [
     /**
      * Creates and returns the code necessary to run all correctness tests.
      *
-     * @param {Array} allTasksCorrectnessTests
+     * @param {Array} allTasksTestSuites
      * @param {Array} allTasksInputFunctionNames
      * @param {Array} allTasksMainFunctionNames
      * @param {Array} allTasksOutputFunctionNames
@@ -289,55 +289,58 @@ tie.factory('PythonCodePreprocessorService', [
      * @private
      */
     var _generateCorrectnessTestCode = function(
-        allTasksCorrectnessTests, allTasksInputFunctionNames,
+        allTasksTestSuites, allTasksInputFunctionNames,
         allTasksMainFunctionNames, allTasksOutputFunctionNames) {
-      var pythonInputs = allTasksCorrectnessTests.map(function(tests) {
-        return tests.map(function(test) {
-          return _jsonVariableToPython(test.getInput());
+      // This returns a list of lists of lists of input data. Each inner list
+      // represents a test suite; the next level up represents all test suites
+      // for a task, and the outer list represents all the test suites for all
+      // the tasks.
+      var allTaskInputs = allTasksTestSuites.map(function(taskTestSuites) {
+        return taskTestSuites.map(function(suite) {
+          return suite.getTestCases().map(function(test) {
+            return _jsonVariableToPython(test.getInput());
+          });
         });
       });
 
       var testCode = [
         VARNAME_ALL_TASKS_TEST_INPUTS +
-          ' = [' + pythonInputs.map(function(tests) {
-            return '[' + tests.join(', ') + ']';
-          }).join(', ') + ']',
+          ' = [' + allTaskInputs.map(function(taskInputs) {
+            return '\n    [' + taskInputs.map(function(suiteInputs) {
+              return '\n        [' + suiteInputs.join(', ') + ']';
+            }).join(', ') + '\n    ]';
+          }).join(', ') + '\n]',
         '',
         VARNAME_CORRECTNESS_TEST_RESULTS + ' = []'
       ].join('\n');
 
-      for (var i = 0; i < allTasksCorrectnessTests.length; i++) {
+      for (var i = 0; i < allTasksTestSuites.length; i++) {
         var qualifiedMainFunctionName = (
             CLASS_NAME_STUDENT_CODE + '().' + allTasksMainFunctionNames[i]);
         var inputFunctionName = allTasksInputFunctionNames[i];
         var outputFunctionName = allTasksOutputFunctionNames[i];
+        var testInputCode = (
+          inputFunctionName ? inputFunctionName + '(test_input)' : 'test_input'
+        );
+        var testRunCode = (
+          'System.runTest(' + qualifiedMainFunctionName + ', ' +
+          testInputCode + ')');
+        var testOutputCode = (
+          outputFunctionName ? outputFunctionName + '(' + testRunCode + ')' :
+          testRunCode);
 
-        var oneTaskCorrectnessTests = allTasksCorrectnessTests[i];
-        testCode += ('\n' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ' = []');
-
-        for (var j = 0; j < oneTaskCorrectnessTests.length; j++) {
-          var testInputCode = (
-            inputFunctionName ?
-            (inputFunctionName + '(' + VARNAME_ALL_TASKS_TEST_INPUTS +
-             '[' + i + '][' + j + '])') :
-            VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + '][' + j + ']');
-          var testRunCode = (
-            'System.runTest(\n    ' + qualifiedMainFunctionName + ', ' +
-            testInputCode + ')');
-          var testOutputCode = (
-            outputFunctionName ?
-            outputFunctionName + '(' + testRunCode + ')' : testRunCode);
-
-          testCode += (
-            '\n' +
-            VARNAME_TASK_CORRECTNESS_TEST_RESULTS +
-            '.append(' + testOutputCode + ')');
-        }
-
-        testCode += (
-          '\n' +
-          VARNAME_CORRECTNESS_TEST_RESULTS +
-          '.append(' + VARNAME_TASK_CORRECTNESS_TEST_RESULTS + ')');
+        testCode += '\n';
+        testCode += [
+          '',
+          'task_test_inputs = ' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + ']',
+          'task_results = []',
+          'for suite_test_inputs in task_test_inputs:',
+          '    suite_results = [',
+          '        ' + testOutputCode,
+          '        for test_input in suite_test_inputs]',
+          '    task_results.append(suite_results)',
+          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(task_results)'
+        ].join('\n');
       }
 
       return testCode;
@@ -396,20 +399,23 @@ tie.factory('PythonCodePreprocessorService', [
           /* eslint-disable max-len */
           'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
           '    buggy_results = []',
-          '    for task_tests in all_tasks_test_inputs:',
+          '    for task_inputs in all_tasks_test_inputs:',
           '        task_results = []',
-          '        for test_input in task_tests:',
-          '            if inputFunctionName is None and outputFunctionName is None:',
-          '                task_results.append(System.runTest(func, test_input))',
-          '            elif inputFunctionName is None:',
-          '                task_results.append(outputFunctionName(',
-          '                    System.runTest(func, test_input)))',
-          '            elif outputFunctionName is None:',
-          '                task_results.append(',
-          '                    System.runTest(func, inputFunctionName(test_input)))',
-          '            else:',
-          '               task_results.append(outputFunctionName(',
-          '                   System.runTest(func, inputFunctionName(test_input))))',
+          '        for suite_inputs in task_inputs:',
+          '            suite_results = []',
+          '            for test_input in suite_inputs:',
+          '                if inputFunctionName is None and outputFunctionName is None:',
+          '                    suite_results.append(System.runTest(func, test_input))',
+          '                elif inputFunctionName is None:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, test_input)))',
+          '                elif outputFunctionName is None:',
+          '                    suite_results.append(',
+          '                        System.runTest(func, inputFunctionName(test_input)))',
+          '                else:',
+          '                    suite_results.append(outputFunctionName(',
+          '                        System.runTest(func, inputFunctionName(test_input))))',
+          '            task_results.append(suite_results)',
           '        buggy_results.append(task_results)',
           '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
           '',
@@ -526,11 +532,11 @@ tie.factory('PythonCodePreprocessorService', [
        * @param tasks
        */
       preprocess: function(codeSubmission, auxiliaryCode, tasks) {
-        var allTasksCorrectnessTests = [];
+        var allTasksTestSuites = [];
         var allTasksBuggyOutputTests = [];
         var allTasksPerformanceTests = [];
         for (var i = 0; i < tasks.length; i++) {
-          allTasksCorrectnessTests.push(tasks[i].getCorrectnessTests());
+          allTasksTestSuites.push(tasks[i].getTestSuites());
           allTasksBuggyOutputTests.push(tasks[i].getBuggyOutputTests());
           allTasksPerformanceTests.push(tasks[i].getPerformanceTests());
         }
@@ -563,7 +569,7 @@ tie.factory('PythonCodePreprocessorService', [
         codeSubmission.append([
           auxiliaryCode,
           this._generateCorrectnessTestCode(
-            allTasksCorrectnessTests, allTasksInputFunctionNames,
+            allTasksTestSuites, allTasksInputFunctionNames,
             allTasksMainFunctionNames, allTasksOutputFunctionNames),
           this._generateBuggyOutputTestCode(
             allTasksBuggyOutputTests, allTasksInputFunctionNames,

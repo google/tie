@@ -23,7 +23,7 @@ describe('TaskSchemaValidationService', function() {
   var questions = [];
   // Hardcoded number of functions in TaskSchemaValidationService.
   // Update if you add new task schema tests.
-  var EXPECTED_VERIFIER_FUNCTION_COUNT = 28;
+  var EXPECTED_VERIFIER_FUNCTION_COUNT = 33;
   // Should contain all question IDs.
   var QUESTION_IDS = Object.keys(globalData.questions);
 

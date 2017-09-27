@@ -18,11 +18,11 @@
  */
 
 tieData.factory('TaskObjectFactory', [
-  'CorrectnessTestObjectFactory', 'BuggyOutputTestObjectFactory',
+  'TestSuiteObjectFactory', 'BuggyOutputTestObjectFactory',
   'PerformanceTestObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_SYSTEM_CODE',
   function(
-      CorrectnessTestObjectFactory, BuggyOutputTestObjectFactory,
+      TestSuiteObjectFactory, BuggyOutputTestObjectFactory,
       PerformanceTestObjectFactory, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_SYSTEM_CODE) {
     /**
@@ -95,17 +95,15 @@ tieData.factory('TaskObjectFactory', [
       this._mainFunctionName = taskDict.mainFunctionName;
 
       /**
-       * An Array of CorrectnessTest objects that will be run to determine
-       * the correctness of the student's code.
+       * An Array of TestSuite objects containing tests that will be used to
+       * determine the correctness of the student's code.
        *
        * @type {Array}
        * @private
        */
-      this._correctnessTests = taskDict.correctnessTests.map(
-        function(correctnessTestDict) {
-          return CorrectnessTestObjectFactory.create(correctnessTestDict);
-        }
-      );
+      this._testSuites = taskDict.testSuites.map(function(testSuiteDict) {
+        return TestSuiteObjectFactory.create(testSuiteDict);
+      });
 
       /**
        * An Array of BuggyOutputTest objects that will be run to determine
@@ -192,12 +190,12 @@ tieData.factory('TaskObjectFactory', [
     };
 
     /**
-     * A getter for the _correctnessTests property.
+     * A getter for the _testSuites property.
      *
      * @returns {Array}
      */
-    Task.prototype.getCorrectnessTests = function() {
-      return this._correctnessTests;
+    Task.prototype.getTestSuites = function() {
+      return this._testSuites;
     };
 
     /**
