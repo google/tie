@@ -92,6 +92,18 @@ tie.constant('ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
  * @constant
  */
 tie.constant('ERROR_COUNTER_SAME_RUNTIME', 'consecutiveSameError');
+
+/**
+ * Array of strings representing the types of potential feedback a TIE user
+ * could potentially receive.
+ *
+ * @type {[string]}
+ * @constant
+ */
+tie.constant('FEEDBACK_CATEGORIES', [
+  'SYNTAX', 'MATCHED BUGGY OUTPUT', 'UNMATCHED BUGGY OUTPUT', 'RUNTIME',
+  'PERFORMANCE', 'NO ERROR']);
+
 /**
  * Imports and system-level functions that should be appended to all code.
  *

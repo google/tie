@@ -20,12 +20,12 @@ tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
   'ServerHandlerService', 'VARNAME_CORRECTNESS_TEST_RESULTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
-  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS', 'SERVER_URL',
+  'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
       ServerHandlerService, VARNAME_CORRECTNESS_TEST_RESULTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
-      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS, SERVER_URL) {
+      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
     /** @type {number} @const */
     var SECONDS_TO_MILLISECONDS = 1000;
     /**
@@ -112,7 +112,7 @@ tie.factory('PythonCodeRunnerService', [
         code: code,
         language: 'python'
       };
-      return $http.post(SERVER_URL + '/ajax/compile_code', data).then(
+      return $http.post('/ajax/compile_code', data).then(
         function(response) {
           return _processCodeCompilationServerResponse(response.data, code);
         }
@@ -131,7 +131,7 @@ tie.factory('PythonCodeRunnerService', [
         code: code,
         language: 'python'
       };
-      return $http.post(SERVER_URL + '/ajax/run_code', data).then(
+      return $http.post('/ajax/run_code', data).then(
         function(response) {
           return _processCodeExecutionServerResponse(response.data, code);
         }
