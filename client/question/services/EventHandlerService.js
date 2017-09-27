@@ -133,6 +133,20 @@ tie.factory('EventHandlerService', [
       },
 
       /**
+       * Submits data to TIE's backend to create a CodeResetEvent.
+       * @param {string} sessionId Unique ID for a user's question session.
+       *
+       */
+      createCodeResetEvent: function(sessionId) {
+        if (ServerHandlerService.doesServerExist()) {
+          var data = {
+            sessionId: sessionId
+          };
+          $http.post('/ajax/event/create_code_reset_event', data);
+        }
+      },
+
+      /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} feedbackText The feedback shown to the user.

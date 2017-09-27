@@ -131,6 +131,20 @@ describe('EventHandlerService', function() {
       });
   });
 
+  describe('createCodeResetEvent', function() {
+
+    it('sends a POST request to the backend to create a CodeResetEvent',
+      function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/create_code_reset_event').respond(
+          HTTP_STATUS_CODE_OK, {});
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        EventHandlerService.createSessionPauseEvent(sessionId);
+        $httpBackend.flush();
+      });
+  });
+
+
   describe('createCodeSubmitEvent', function() {
 
     it('sends a POST request to the backend to create a CodeSubmitEvent',
