@@ -101,8 +101,8 @@ tie.constant('ERROR_COUNTER_SAME_RUNTIME', 'consecutiveSameError');
  * @constant
  */
 tie.constant('FEEDBACK_CATEGORIES', [
-      'SYNTAX', 'MATCHED BUGGY OUTPUT', 'UNMATCHED BUGGY OUTPUT', 'RUNTIME',
-      'PERFORMANCE', 'NO ERROR']);
+  'SYNTAX', 'MATCHED BUGGY OUTPUT', 'UNMATCHED BUGGY OUTPUT', 'RUNTIME',
+  'PERFORMANCE', 'NO ERROR']);
 
 /**
  * Imports and system-level functions that should be appended to all code.

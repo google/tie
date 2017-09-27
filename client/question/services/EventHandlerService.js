@@ -52,7 +52,7 @@ tie.factory('EventHandlerService', [
        * Submits a QuestionStartEvent to TIE's backend.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question 
+       * @param {string} questionVersion Version number of the question
        *  being attempted.
        *
        */
@@ -72,7 +72,7 @@ tie.factory('EventHandlerService', [
        * Submits data to TIE's backend to create a QuestionCompleteEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question 
+       * @param {string} questionVersion Version number of the question
        *  being attempted.
        *
        */
@@ -92,7 +92,7 @@ tie.factory('EventHandlerService', [
        * Submits data to TIE's backend to create a TaskStartEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question 
+       * @param {string} questionVersion Version number of the question
        *  being attempted.
        * @param {string} taskId ID of the task being attempted.
        *
@@ -114,7 +114,7 @@ tie.factory('EventHandlerService', [
        * Submits data to TIE's backend to create a TaskCompleteEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question 
+       * @param {string} questionVersion Version number of the question
        *  being attempted.
        * @param {string} taskId ID of the task being attempted.
        *
@@ -136,7 +136,7 @@ tie.factory('EventHandlerService', [
        * Submits data to TIE's backend to create a CodeSubmitEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} feedbackText The feedback shown to the user.
-       * @param {string} errorCategory The type of feedback shown 
+       * @param {string} errorCategory The type of feedback shown
        *  to the user.
        * @param {string} code The user's submitted code.
        * @param {boolean} success Whether or not the question was completed.

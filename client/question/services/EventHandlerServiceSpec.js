@@ -15,7 +15,7 @@
 /**
  * @fileoverview Unit tests for the EventHandlerService.
  */
-describe('EventHandlerService', function(FEEDBACK_CATEGORIES) {
+describe('EventHandlerService', function() {
   var $httpBackend;
   var EventHandlerService;
   var ServerHandlerService;
