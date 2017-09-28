@@ -188,18 +188,20 @@ tie.factory('FeedbackObjectFactory', [
 
 
     /**
-     * Returns all of the feedback provided as a single text string.
+     * Returns all of the feedback provided as a JSON dict, preserving type
+     * and content information.
      *
-     * @returns [string] The feedback paragraphs as plaintext.
+     * @returns [{string, string}] The feedback paragraphs list of dicts.
      */
-    Feedback.prototype.getFeedbackParagraphsAsText = function() {
-      var textParagraphs = [];
+    Feedback.prototype.getParagraphsAsListOfDicts = function() {
+      var feedbackParagraphs = []
 
       for (var i = 0; i < this._paragraphs.length; i++) {
-        textParagraphs.push(this._paragraphs[i].getContent());
+        feedbackParagraphs.push(
+          FeedbackParagraphObjectFactory.toDict(this._paragraphs[i]));
       }
 
-      return textParagraphs.join('\n');
+      return feedbackParagraphs;
     };
 
     // Static class methods.
