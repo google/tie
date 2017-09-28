@@ -31,10 +31,17 @@ describe('CookieStorageService', function() {
   describe('PrivacyCookie', function() {
     describe('setTransientPrivacyCookie', function() {
       it('should set cookie to true', function() {
+        spyOn($cookies, 'put');
         CookieStorageService.setTransientPrivacyCookie();
-        expect($cookies.get(PRIVACY_COOKIE_NAME)).toBe('true');
+        expect($cookies.put).toHaveBeenCalledWith(
+          PRIVACY_COOKIE_NAME, 'true',
+          {
+            secure: true
+          });
       });
     });
+    // Because a secure connection cannot be tested via a local version
+    // We can only test that the cookie was set to true or not set.
     describe('getPrivacyCookie', function() {
       it('should get the value of a cookie set to true', function() {
         $cookies.put(PRIVACY_COOKIE_NAME, 'true');
