@@ -186,6 +186,22 @@ tie.factory('FeedbackObjectFactory', [
       }
     };
 
+
+    /**
+     * Returns all of the feedback provided as a single text string.
+     *
+     * @returns [string] The feedback paragraphs as plaintext.
+     */
+    Feedback.prototype.getFeedbackParagraphsAsText = function() {
+      var textParagraphs = [];
+
+      for (var i = 0; i < this._paragraphs.length; i++) {
+        textParagraphs.push(this._paragraphs[i].getContent());
+      }
+
+      return textParagraphs.join('\n');
+    };
+
     // Static class methods.
     /**
      * Returns a Feedback object based on the param passed in.

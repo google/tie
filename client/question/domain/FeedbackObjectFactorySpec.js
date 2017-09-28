@@ -69,6 +69,16 @@ describe('FeedbackObjectFactory', function() {
     );
   });
 
+  describe('getFeedbackParagraphsAsText', function() {
+    it('should return a string containing all paragraphs as text', function() {
+      feedback.appendTextParagraph("This");
+      feedback.appendCodeParagraph("is");
+      feedback.appendSyntaxErrorParagraph("fine");
+      var text = feedback.getFeedbackParagraphsAsText();
+      expect(text).toEqual("This\nis\nfine");
+    });
+  });
+
   describe('clearParagraphs', function() {
     it('should clear all paragraphs in the current feedback', function() {
       feedback.appendTextParagraph("text");
