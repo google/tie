@@ -78,24 +78,24 @@ describe('FeedbackObjectFactory', function() {
 
   describe('getParagraphsAsListOfDicts', function() {
     it('should return an array of paragraphs as dictionaries', function() {
-      feedback.appendTextParagraph("This");
-      feedback.appendCodeParagraph("is");
-      feedback.appendSyntaxErrorParagraph("fine");
+      feedback.appendTextParagraph('This');
+      feedback.appendCodeParagraph('is');
+      feedback.appendSyntaxErrorParagraph('fine');
       var dictionaries = feedback.getParagraphsAsListOfDicts();
       expect(dictionaries.length).toEqual(3);
-      expect(dictionaries[0].content).toEqual("This");
+      expect(dictionaries[0].content).toEqual('This');
       expect(dictionaries[0].type).toEqual(PARAGRAPH_TYPE_TEXT);
-      expect(dictionaries[1].content).toEqual("is");
+      expect(dictionaries[1].content).toEqual('is');
       expect(dictionaries[1].type).toEqual(PARAGRAPH_TYPE_CODE);
-      expect(dictionaries[2].content).toEqual("fine");
+      expect(dictionaries[2].content).toEqual('fine');
       expect(dictionaries[2].type).toEqual(PARAGRAPH_TYPE_SYNTAX_ERROR);
     });
   });
 
   describe('clearParagraphs', function() {
     it('should clear all paragraphs in the current feedback', function() {
-      feedback.appendTextParagraph("text");
-      feedback.appendSyntaxErrorParagraph("error");
+      feedback.appendTextParagraph('text');
+      feedback.appendSyntaxErrorParagraph('error');
       feedback.clear();
       expect(feedback.getParagraphs.length).toEqual(0);
     });

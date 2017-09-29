@@ -194,14 +194,9 @@ tie.factory('FeedbackObjectFactory', [
      * @returns [{string, string}] The feedback paragraphs list of dicts.
      */
     Feedback.prototype.getParagraphsAsListOfDicts = function() {
-      var feedbackParagraphs = [];
-
-      for (var i = 0; i < this._paragraphs.length; i++) {
-        feedbackParagraphs.push(
-          FeedbackParagraphObjectFactory.toDict(this._paragraphs[i]));
-      }
-
-      return feedbackParagraphs;
+      return this._paragraphs.map(function(paragraph) {
+        return paragraph.toDict();
+      });
     };
 
     // Static class methods.

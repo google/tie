@@ -146,8 +146,6 @@ describe('LocalStorageService', function() {
 
     beforeEach(inject(function($injector) {
       var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-      var FeedbackParagraphObjectFactory =
-        $injector.get('FeedbackParagraphObjectFactory');
       var ReinforcementBulletObjectFactory =
         $injector.get('ReinforcementBulletObjectFactory');
 
@@ -164,7 +162,7 @@ describe('LocalStorageService', function() {
       reinforcementBullets = [bullet1, bullet2];
 
       feedbackSet1Dict = feedbackSet1.map(function(paragraph) {
-        return FeedbackParagraphObjectFactory.toDict(paragraph);
+        return paragraph.toDict();
       });
 
       reinforcementBulletsDict = reinforcementBullets.map(function(bullet) {

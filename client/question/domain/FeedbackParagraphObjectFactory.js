@@ -104,6 +104,30 @@ tie.factory('FeedbackParagraphObjectFactory', [
       }
     };
 
+    /**
+     * Returns a dict created from a FeedbackParagraphObject.
+     *
+     * @param {FeedbackParagraph}
+     * @returns {Object} dict that should have a type, and the content
+     *    of a FeedbackParagraphObject.
+     */
+    FeedbackParagraph.prototype.toDict = function() {
+      var feedbackParagraphDict = {};
+      if (this.isTextParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_TEXT;
+      } else if (this.isCodeParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
+      } else if (this.isSyntaxErrorParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
+      } else {
+        // If undefined type, return null.
+        return null;
+      }
+
+      feedbackParagraphDict.content = this.getContent();
+      return feedbackParagraphDict;
+    };
+
     // Static class methods.
     /**
      * Returns a text-based FeedbackParagraph with the given text inside it.
@@ -151,30 +175,6 @@ tie.factory('FeedbackParagraphObjectFactory', [
         return (this.createSyntaxErrorParagraph(dict.content));
       }
       return null;
-    };
-
-    /**
-     * Returns a dict created from a FeedbackParagraphObject.
-     *
-     * @param {FeedbackParagraph}
-     * @returns {Object} dict that should have a type, and the content
-     *    of a FeedbackParagraphObject.
-     */
-    FeedbackParagraph.toDict = function(feedbackParagraph) {
-      var feedbackParagraphDict = {};
-      if (feedbackParagraph.isTextParagraph()) {
-        feedbackParagraphDict.type = PARAGRAPH_TYPE_TEXT;
-      } else if (feedbackParagraph.isCodeParagraph()) {
-        feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
-      } else if (feedbackParagraph.isSyntaxErrorParagraph()) {
-        feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
-      } else {
-        // If undefined type, return null.
-        return null;
-      }
-
-      feedbackParagraphDict.content = feedbackParagraph.getContent();
-      return feedbackParagraphDict;
     };
 
     return FeedbackParagraph;

@@ -77,12 +77,9 @@ describe('FeedbackParagraphObjectFactory', function() {
 
   describe('toDict', function() {
     it('should convert a FeedbackParagraphObjectFactory to a dict', function() {
-      expect(FeedbackParagraphObjectFactory.toDict(textParagraph))
-        .toEqual(textDict);
-      expect(FeedbackParagraphObjectFactory.toDict(errorParagraph))
-        .toEqual(errorDict);
-      expect(FeedbackParagraphObjectFactory.toDict(codeParagraph))
-        .toEqual(codeDict);
+      expect(textParagraph.toDict()).toEqual(textDict);
+      expect(errorParagraph.toDict()).toEqual(errorDict);
+      expect(codeParagraph.toDict()).toEqual(codeDict);
     });
   });
 
