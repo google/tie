@@ -15,6 +15,7 @@ module.exports = function(config) {
     files: [
       'third_party/angular-1.6.1/angular.min.js',
       'third_party/angular-1.6.1/angular-mocks.js',
+      'third_party/angular-cookies-1.6.1/angular-cookies.min.js',
       'third_party/codemirror-5.19.0/lib/codemirror.js',
       'third_party/codemirror-5.19.0/mode/python/python.js',
       'third_party/skulpt-c14015/skulpt.min.js',

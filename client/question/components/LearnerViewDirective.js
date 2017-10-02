@@ -116,7 +116,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-blue protractor-test-run-code-btn"
+                <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
@@ -137,6 +137,8 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
+      <privacy-modal is-displayed="privacyModalIsDisplayed">
+      </privacy-modal>
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -170,13 +172,21 @@ tie.directive('learnerView', [function() {
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
-        .tie-button.tie-blue {
+        .tie-button-blue {
           background-color: rgb(66, 133, 244);
           color: #ffffff;
         }
-        .tie-button.tie-blue:hover {
+        .tie-button-blue:hover {
           background-color: rgb(50, 120, 240);
           border: 1px solid rgb(42, 112, 232);
+        }
+        .tie-button-red {
+          background-color: #ef5350;
+          color: #ffffff;
+        }
+        .tie-button-red:hover {
+          background-color: #f44336;
+          border: 1px solid #e53935;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -489,17 +499,17 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$interval', '$timeout', '$location', 'SolutionHandlerService',
-      'QuestionDataService', 'LANGUAGE_PYTHON', 'FeedbackObjectFactory',
-      'ReinforcementObjectFactory', 'LocalStorageService',
-      'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
+      '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
+      'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
+      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
+      'LocalStorageService', 'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
       'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
       'DEFAULT_QUESTION_ID',
       function(
-          $scope, $interval, $timeout, $location, SolutionHandlerService,
-          QuestionDataService, LANGUAGE_PYTHON, FeedbackObjectFactory,
-          ReinforcementObjectFactory, LocalStorageService,
-          ServerHandlerService, SECONDS_TO_MILLISECONDS,
+          $scope, $interval, $timeout, $location, CookieStorageService,
+          SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
+          FeedbackObjectFactory, ReinforcementObjectFactory,
+          LocalStorageService, ServerHandlerService, SECONDS_TO_MILLISECONDS,
           DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
           DEFAULT_QUESTION_ID) {
         /**
@@ -593,6 +603,9 @@ tie.directive('learnerView', [function() {
           code: ''
         };
 
+        // The privacy modal is not diplayed by default.
+        $scope.privacyModalIsDisplayed = false;
+
         /**
          * Is used to store the Autosave promise such that it can later be
          * cancelled.
@@ -647,23 +660,12 @@ tie.directive('learnerView', [function() {
          */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
         /**
-         * Checks if the system is in browser only mode and changes the privacy
-         * notice message accordingly.
+         * Shows the privacy modal on click.
          */
         $scope.onPrivacyClick = function() {
-          var isBrowserOnly = !SERVER_URL;
-          if (isBrowserOnly) {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application stores information, ",
-              "including your code, in your browser's local storage and ",
-              "does not transmit data to any server."].join(''));
-          } else {
-            alert(["Privacy Notice:\n\n",
-              "This version of the TIE application transmits data to ",
-              "our servers in order to provide you with a better coding ",
-              "experience."].join(''));
-          }
+          $scope.privacyModalIsDisplayed = true;
         };
 
         /**
@@ -982,6 +984,15 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.initQuestionSet(questionSetId);
+
+        // If server version, and the user has not accepted the privacy policy,
+        // show them the privacy modal.
+        if (SERVER_URL) {
+          var privacyPolicyAccepted = CookieStorageService.hasPrivacyCookie();
+          if (!privacyPolicyAccepted) {
+            $scope.privacyModalIsDisplayed = true;
+          }
+        }
       }
     ]
   };
