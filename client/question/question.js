@@ -16,7 +16,8 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-window.tie = angular.module('tie', ['ui.codemirror', 'tieConfig', 'tieData']);
+window.tie = angular.module('tie',
+  ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies']);
 
 /**
  * The maximum amount of time (in seconds) that the code can take to run.
@@ -581,3 +582,25 @@ tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
  * @constant
  */
 tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
+/**
+ * Default cookie lifetime for the privacy policy in days.
+ *
+ * @type {number}
+ * @constant
+ */
+var SIX_MONTHS_IN_DAYS = 180;
+tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
+/**
+* Key to use to store the privacy policy agreement.
+*
+* @type {string}
+* @constant
+*/
+tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
+/**
+ * Menu page url relative to the question page.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
