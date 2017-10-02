@@ -151,7 +151,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
 
         feedbackWithReinforcement.feedbackParagraphs = feedback.map(
           function(paragraph) {
-            return FeedbackParagraphObjectFactory.toDict(paragraph);
+            return paragraph.toDict();
           }
         );
         feedbackWithReinforcement.reinforcementBullets = reinforcement.map(

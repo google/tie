@@ -186,6 +186,19 @@ tie.factory('FeedbackObjectFactory', [
       }
     };
 
+
+    /**
+     * Returns all of the feedback provided as a JSON dict, preserving type
+     * and content information.
+     *
+     * @returns [{string, Object}] The feedback paragraphs list of dicts.
+     */
+    Feedback.prototype.getParagraphsAsListOfDicts = function() {
+      return this._paragraphs.map(function(paragraph) {
+        return paragraph.toDict();
+      });
+    };
+
     // Static class methods.
     /**
      * Returns a Feedback object based on the param passed in.
