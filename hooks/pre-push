@@ -30,12 +30,12 @@ check_test_status () {
   fi
 }
 
-echo "Running linter tests"
-bash scripts/run_linter.sh
-check_test_status "Linter"
+#echo "Running linter tests"
+#bash scripts/run_linter.sh
+#check_test_status "Linter"
 
-echo "Running karma tests"
-bash scripts/run_karma_tests.sh
-check_test_status "Karma"
+#echo "Running karma tests"
+#bash scripts/run_karma_tests.sh
+#check_test_status "Karma"
 
 exit 0
