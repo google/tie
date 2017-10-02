@@ -202,6 +202,7 @@ tie.factory('FeedbackGeneratorService', [
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(buggyMessages[hintIndex]);
       feedback.setHintIndex(hintIndex);
+      feedback.setErrorCategory('MATCHED BUGGY OUTPUT');
       return feedback;
     };
 
@@ -238,6 +239,7 @@ tie.factory('FeedbackGeneratorService', [
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
       feedback.appendTextParagraph('Could you fix this?');
+      feedback.setErrorCategory('UNMATCHED BUGGY OUTPUT');
       return feedback;
     };
 

@@ -62,6 +62,12 @@ tie.factory('FeedbackObjectFactory', [
        * @private
        */
       this._reinforcement = ReinforcementObjectFactory.create();
+
+      /**
+       * @type {string}
+       * @private
+       */
+      this._errorCategory = 'NO ERROR';
     };
 
     // Instance methods.
@@ -165,6 +171,26 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.setReinforcement = function(reinforcement) {
       this._reinforcement = reinforcement;
+    };
+
+    /**
+     * A getter for the _errorCategory property.
+     * This function should the type of error noted in the feedback, or
+     * 'NO ERROR', if none present.
+     *
+     * @returns {*|string}
+     */
+    Feedback.prototype.getErrorCategory = function() {
+      return this._errorCategory;
+    };
+
+    /**
+     * A setter for the _errorCategory property.
+     *
+     * @param {string} The type of error noted in the feedback, or 'NO ERROR'.
+     */
+    Feedback.prototype.setErrorCategory = function(errorCategory) {
+      this._errorCategory = errorCategory;
     };
 
     /**
