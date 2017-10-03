@@ -249,7 +249,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         content: [
           "It seems like you're using a `push` method to add an element ",
           "to an array, which is valid in Java, but the Python equivalent ",
-          "called `append`."
+          "is called `append`."
         ].join('')
       }
     ]
