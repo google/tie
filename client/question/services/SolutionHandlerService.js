@@ -55,7 +55,7 @@ tie.factory('SolutionHandlerService', [
           EventHandlerService.createCodeSubmitEvent(
             SessionIdService.getSessionId(),
             feedback.getParagraphsAsListOfDicts(), '',
-            studentCode, feedback.isAnswerCorrect())
+            studentCode, feedback.isAnswerCorrect());
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
           return Promise.resolve(feedback);
@@ -70,11 +70,10 @@ tie.factory('SolutionHandlerService', [
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               // TODO(eyurko): Add error category.
-              debugger;
               EventHandlerService.createCodeSubmitEvent(
                 SessionIdService.getSessionId(),
                 feedback.getParagraphsAsListOfDicts(), '',
-                studentCode, feedback.isAnswerCorrect())
+                studentCode, feedback.isAnswerCorrect());
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return feedback;
             }
@@ -94,11 +93,10 @@ tie.factory('SolutionHandlerService', [
                 tasks, preprocessedCodeEvalResult,
                 codeSubmission.getRawCodeLineIndexes());
               // TODO(eyurko): Add error category.
-              debugger;
               EventHandlerService.createCodeSubmitEvent(
                 SessionIdService.getSessionId(),
                 feedback.getParagraphsAsListOfDicts(), '',
-                studentCode, feedback.isAnswerCorrect())
+                studentCode, feedback.isAnswerCorrect());
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
               return feedback;

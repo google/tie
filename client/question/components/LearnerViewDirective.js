@@ -663,7 +663,8 @@ tie.directive('learnerView', [function() {
 
         // Set the name of the hidden property and the change event for
         // visibility
-        var hidden, visibilityChange;
+        var hidden;
+        var visibilityChange;
 
         var onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -694,7 +695,7 @@ tie.directive('learnerView', [function() {
         // or the Page Visibility API
         if (typeof document.addEventListener === 'undefined' ||
           typeof document[hidden] === 'undefined') {
-          console.log('Action not supported by current browser.');
+          alert('Action not supported by current browser.');
         } else {
           // Handle page visibility change
           document.addEventListener(

@@ -26,7 +26,6 @@ tie.factory('EventHandlerService', [
        *
        */
       createSessionPauseEvent: function(sessionId) {
-        console.log(sessionId);
         if (ServerHandlerService.doesServerExist()) {
           var data = {
             sessionId: sessionId
@@ -41,7 +40,6 @@ tie.factory('EventHandlerService', [
        *
        */
       createSessionResumeEvent: function(sessionId) {
-        console.log(sessionId);
         if (ServerHandlerService.doesServerExist()) {
           var data = {
             sessionId: sessionId
