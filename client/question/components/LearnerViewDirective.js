@@ -502,16 +502,16 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
-      'LocalStorageService', 'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
-      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
-      'DEFAULT_QUESTION_ID',
+      'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
+      'SessionIdService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
-          LocalStorageService, ServerHandlerService, SECONDS_TO_MILLISECONDS,
-          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
-          DEFAULT_QUESTION_ID) {
+          EventHandlerService, LocalStorageService, ServerHandlerService,
+          SessionIdService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -661,6 +661,47 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
+        // Set the name of the hidden property and the change event for
+        // visibility
+        var hidden, visibilityChange;
+
+        var onVisibilityChange = function() {
+          // When a user changes tabs (or comes back), add a SessionPause
+          // or SessionResumeEvent, respectively.
+          if (document[hidden]) {
+            EventHandlerService.createSessionPauseEvent(
+              SessionIdService.getSessionId());
+          } else {
+            EventHandlerService.createSessionResumeEvent(
+              SessionIdService.getSessionId());
+          }
+        };
+
+        // Code for evaluating and handling page visiblity changes.
+        if (typeof document.hidden !== 'undefined') {
+          // Opera 12.10 and Firefox 18 and later support
+          hidden = 'hidden';
+          visibilityChange = 'visibilitychange';
+        } else if (typeof document.msHidden !== 'undefined') {
+          hidden = 'msHidden';
+          visibilityChange = 'msvisibilitychange';
+        } else if (typeof document.webkitHidden !== 'undefined') {
+          hidden = 'webkitHidden';
+          visibilityChange = 'webkitvisibilitychange';
+        }
+
+        // Warn if the browser doesn't support addEventListener
+        // or the Page Visibility API
+        if (typeof document.addEventListener === 'undefined' ||
+          typeof document[hidden] === 'undefined') {
+          console.log('Action not supported by current browser.');
+        } else {
+          // Handle page visibility change
+          document.addEventListener(
+            visibilityChange, onVisibilityChange, false);
+
+        }
+
         /**
          * Shows the privacy modal on click.
          */
@@ -675,6 +716,7 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         var loadQuestion = function(questionId) {
+          SessionIdService.resetSessionId();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
@@ -701,6 +743,12 @@ tie.directive('learnerView', [function() {
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
+          EventHandlerService.createQuestionStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            'QUESTION_VERSION');
+          EventHandlerService.createTaskStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            'QUESTION_VERSION', currentTaskIndex);
         };
 
         /**
@@ -753,6 +801,9 @@ tie.directive('learnerView', [function() {
               $scope.feedbackStorage.push({
                 feedbackParagraphs: congratulatoryFeedback.getParagraphs()
               });
+              EventHandlerService.createQuestionCompleteEvent(
+                SessionIdService.getSessionId(), $scope.currentQuestionId,
+                'QUESTION_VERSION');
             } else {
               $scope.showNextTask();
             }
@@ -866,6 +917,9 @@ tie.directive('learnerView', [function() {
          * it shows a congratulatory alert.
          */
         $scope.showNextTask = function() {
+          EventHandlerService.createTaskCompleteEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            'QUESTION_VERSION', currentTaskIndex);
           if (question.isLastTask(currentTaskIndex)) {
             // TODO(talee): Flesh this out some more.
             alert('Congratulations, you have finished!');
@@ -875,6 +929,9 @@ tie.directive('learnerView', [function() {
             $scope.instructions = tasks[currentTaskIndex].getInstructions();
             $scope.nextButtonIsShown = false;
             clearFeedback();
+            EventHandlerService.createTaskStartEvent(
+              SessionIdService.getSessionId(), $scope.currentQuestionId,
+              'QUESTION_VERSION', currentTaskIndex);
           }
         };
 
@@ -906,6 +963,9 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           LocalStorageService.clearLocalStorageCode(
             $scope.currentQuestionId, language);
+          EventHandlerService.createCodeResetEvent(
+            SessionIdService.getSessionId());
+          // Do we want to trigger another QuestionStartEvent?
           loadQuestion($scope.currentQuestionId);
         };
 

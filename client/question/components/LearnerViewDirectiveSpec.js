@@ -21,6 +21,7 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var QuestionDataService;
+  var EventHandlerService;
   var $location;
 
   beforeEach(module("tie"));
@@ -49,7 +50,8 @@ describe('LearnerViewDirective', function() {
   var QUESTION_ID = 'reverseWords';
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
+    _EventHandlerService_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -65,6 +67,7 @@ describe('LearnerViewDirective', function() {
     $scope.$digest();
 
     QuestionDataService = _QuestionDataService_;
+    EventHandlerService = _EventHandlerService_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
@@ -81,12 +84,15 @@ describe('LearnerViewDirective', function() {
       spyOn($location, 'search').and.returnValue({
         qid: QUESTION_ID
       });
+      spyOn(EventHandlerService, 'createCodeResetEvent');
+
       var question = QuestionDataService.getQuestion(QUESTION_ID);
       var starterCode = question.getStarterCode(LANGUAGE);
       $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
       expect(starterCode).not.toEqual($scope.editorContents.code);
       $scope.resetCode();
       expect($scope.editorContents.code).toEqual(starterCode);
+      expect(EventHandlerService.createCodeResetEvent).toHaveBeenCalled();
     });
   });
 
