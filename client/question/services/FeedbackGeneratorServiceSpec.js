@@ -779,7 +779,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toEqual([
         "It seems like you're using a `push` method to add an element ",
         "to an array, which is valid in Java, but the Python equivalent ",
-        "called `append`."
+        "is called `append`."
       ].join(''));
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toEqual(
@@ -972,7 +972,7 @@ describe('FeedbackGeneratorService', function() {
         expect(paragraphs[0].getContent()).toEqual([
           "It seems like you're using a `push` method to add an element ",
           "to an array, which is valid in Java, but the Python equivalent ",
-          "called `append`."
+          "is called `append`."
         ].join(''));
       }
     );
