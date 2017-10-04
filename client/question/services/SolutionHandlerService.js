@@ -19,14 +19,12 @@
 
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
-  'EventHandlerService', 'FeedbackGeneratorService',
-  'PrereqCheckDispatcherService', 'SessionIdService', 'TranscriptService',
-  'CodeSubmissionObjectFactory',
+  'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
+  'TranscriptService', 'CodeSubmissionObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
-      EventHandlerService, FeedbackGeneratorService,
-      PrereqCheckDispatcherService, SessionIdService, TranscriptService,
-      CodeSubmissionObjectFactory) {
+      FeedbackGeneratorService, PrereqCheckDispatcherService,
+      TranscriptService, CodeSubmissionObjectFactory) {
     return {
       /**
        * Asynchronously returns a Promise with a Feedback object associated
@@ -52,10 +50,6 @@ tie.factory('SolutionHandlerService', [
         if (potentialPrereqCheckFailure) {
           feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
             potentialPrereqCheckFailure);
-          EventHandlerService.createCodeSubmitEvent(
-            SessionIdService.getSessionId(),
-            feedback.getParagraphsAsListOfDicts(), '',
-            studentCode, feedback.isAnswerCorrect());
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
           return Promise.resolve(feedback);
@@ -69,11 +63,6 @@ tie.factory('SolutionHandlerService', [
             if (potentialSyntaxErrorString) {
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
-              // TODO(eyurko): Add error category.
-              EventHandlerService.createCodeSubmitEvent(
-                SessionIdService.getSessionId(),
-                feedback.getParagraphsAsListOfDicts(), '',
-                studentCode, feedback.isAnswerCorrect());
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return feedback;
             }
@@ -92,11 +81,6 @@ tie.factory('SolutionHandlerService', [
               feedback = FeedbackGeneratorService.getFeedback(
                 tasks, preprocessedCodeEvalResult,
                 codeSubmission.getRawCodeLineIndexes());
-              // TODO(eyurko): Add error category.
-              EventHandlerService.createCodeSubmitEvent(
-                SessionIdService.getSessionId(),
-                feedback.getParagraphsAsListOfDicts(), '',
-                studentCode, feedback.isAnswerCorrect());
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
               return feedback;

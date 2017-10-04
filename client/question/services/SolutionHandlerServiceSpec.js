@@ -18,7 +18,6 @@
 
 describe('SolutionHandlerService', function() {
   var SolutionHandlerService;
-  var EventHandlerService;
   var TaskObjectFactory;
   var orderedTasks;
   var auxiliaryCode;
@@ -30,8 +29,6 @@ describe('SolutionHandlerService', function() {
   beforeEach(inject(function($injector) {
     SolutionHandlerService = $injector.get(
       'SolutionHandlerService');
-    EventHandlerService = $injector.get(
-      'EventHandlerService');
   }));
 
   // Mock tasks for preprocessing.
@@ -137,14 +134,11 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(true);
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -158,8 +152,6 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -167,7 +159,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
               "Input: \"task_1_correctness_test_2\"\nOutput: False");
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -181,8 +172,6 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -190,7 +179,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
              "Input: \"task_2_correctness_test_1\"\nOutput: True");
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -205,8 +193,6 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -214,7 +200,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
               "Input: \"task_1_correctness_test_1\"\nOutput: False");
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -228,8 +213,6 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -237,7 +220,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual(
              "Mock BuggyOutputTest Message One for task1");
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -250,8 +232,6 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -259,7 +239,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
              "Input: \"task_1_correctness_test_1\"\nOutput: False");
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -274,8 +253,6 @@ describe('SolutionHandlerService', function() {
             'mockMainFunction("input")'
           ].join('\n');
 
-          spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode,
             auxiliaryCode, 'python'
@@ -285,17 +262,12 @@ describe('SolutionHandlerService', function() {
               'Please keep your code within the existing predefined functions',
               '-- we cannot process code in the global scope.'
             ].join(' '));
-            expect(
-              EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
             done();
           });
         }
       );
 
       it('should be correctly handled if missing starter code', function(done) {
-
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, '',
           auxiliaryCode, 'python'
@@ -308,7 +280,6 @@ describe('SolutionHandlerService', function() {
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           expect(feedback.getParagraphs()[1].getContent()).toEqual(starterCode);
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -319,8 +290,6 @@ describe('SolutionHandlerService', function() {
           'def mockMainFunction(input):',
           '    return True'
         ].join('\n');
-
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
 
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
@@ -336,7 +305,6 @@ describe('SolutionHandlerService', function() {
             'Here is a list of libraries we currently support:\n');
           expect(feedback.getParagraphs()[3].getContent()).toEqual(
             SUPPORTED_PYTHON_LIBS.join(', '));
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -349,8 +317,6 @@ describe('SolutionHandlerService', function() {
           '    return True -'
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -358,7 +324,6 @@ describe('SolutionHandlerService', function() {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent().startsWith(
             'SyntaxError:')).toEqual(true);
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -372,8 +337,6 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -382,7 +345,6 @@ describe('SolutionHandlerService', function() {
             "Looks like your code is hitting an infinite recursive loop.",
             "Check to see that your recursive calls terminate."
           ].join(' '));
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });
@@ -394,8 +356,6 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        spyOn(EventHandlerService, 'createCodeSubmitEvent');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -404,7 +364,6 @@ describe('SolutionHandlerService', function() {
             feedback.getParagraphs()[0].getContent().startsWith(
                 'It looks like greeting isn\'t a declared variable.')
           ).toBe(true);
-          expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
           done();
         });
       });

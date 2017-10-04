@@ -661,15 +661,12 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
-        // Set the name of the hidden property and the change event for
-        // visibility
-        var hidden;
-        var visibilityChange;
-
         var onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
           // or SessionResumeEvent, respectively.
-          if (document[hidden]) {
+          var hiddenAttributeName = determineHiddenAttributeNameForBrowser();
+          if (hiddenAttributeName !== null &&
+            document[determineHiddenAttributeNameForBrowser()]) {
             EventHandlerService.createSessionPauseEvent(
               SessionIdService.getSessionId());
           } else {
@@ -678,30 +675,48 @@ tie.directive('learnerView', [function() {
           }
         };
 
-        // Code for evaluating and handling page visiblity changes.
-        if (typeof document.hidden !== 'undefined') {
-          // Opera 12.10 and Firefox 18 and later support
-          hidden = 'hidden';
-          visibilityChange = 'visibilitychange';
-        } else if (typeof document.msHidden !== 'undefined') {
-          hidden = 'msHidden';
-          visibilityChange = 'msvisibilitychange';
-        } else if (typeof document.webkitHidden !== 'undefined') {
-          hidden = 'webkitHidden';
-          visibilityChange = 'webkitvisibilitychange';
-        }
+        /**
+         * Different browsers call the "hidden" attribute different things.
+         * This method determines what the current browser calls its "hidden"
+         * attribute and returns it.
+         */
+        var determineHiddenAttributeNameForBrowser = function() {
+          if (typeof document.hidden !== 'undefined') {
+            // Opera 12.10 and Firefox 18 and later support
+            return 'hidden';
+          } else if (typeof document.msHidden !== 'undefined') {
+            return 'msHidden';
+          } else if (typeof document.webkitHidden !== 'undefined') {
+            return 'webkitHidden';
+          }
+          return null;
+        };
 
-        // Warn if the browser doesn't support addEventListener
-        // or the Page Visibility API
-        if (typeof document.addEventListener === 'undefined' ||
-          typeof document[hidden] === 'undefined') {
-          alert('Action not supported by current browser.');
-        } else {
-          // Handle page visibility change
-          document.addEventListener(
-            visibilityChange, onVisibilityChange, false);
+        var setEventListenerForVisibilityChange = function() {
+          var hiddenAttributeName = determineHiddenAttributeNameForBrowser();
+          var visibilityChange;
+          if (typeof document.addEventListener === 'undefined' ||
+            hiddenAttributeName === null ||
+            typeof document[hiddenAttributeName] === 'undefined') {
+            // Browser either doesn't support addEventListener or
+            // the Page Visibility API.
+          } else {
+            // Handle page visibility change
+            if (typeof document.hidden !== 'undefined') {
+              // Opera 12.10 and Firefox 18 and later support
+              visibilityChange = 'visibilitychange';
+            } else if (typeof document.msHidden !== 'undefined') {
+              visibilityChange = 'msvisibilitychange';
+            } else if (typeof document.webkitHidden !== 'undefined') {
+              visibilityChange = 'webkitvisibilitychange';
+            }
+            document.addEventListener(
+              visibilityChange, onVisibilityChange, false);
 
-        }
+          }
+        };
+
+        setEventListenerForVisibilityChange();
 
         /**
          * Shows the privacy modal on click.
@@ -716,7 +731,7 @@ tie.directive('learnerView', [function() {
          *
          * @param {string} questionId ID of question whose data will be loaded
          */
-        var loadQuestion = function(questionId) {
+        $scope.loadQuestion = function(questionId) {
           SessionIdService.resetSessionId();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
@@ -783,28 +798,41 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Displays congratulations when the question is complete.
+         * Also sends a QuestionCompleteEvent to the backend.
+         */
+        $scope.completeQuestion = function() {
+          congratulatoryFeedback.clear();
+          congratulatoryFeedback.appendTextParagraph(
+              "Good work! You've completed this question.");
+          congratulatoryFeedback.appendTextParagraph(
+              'Click the "Next" button to the right to proceed to the ' +
+              'next question.');
+          $scope.nextButtonIsShown = true;
+          $scope.feedbackStorage.push({
+            feedbackParagraphs: congratulatoryFeedback.getParagraphs()
+          });
+          EventHandlerService.createQuestionCompleteEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            'QUESTION_VERSION');
+        };
+
+        /**
          * Sets the feedbackStorage property to the appropriate text according
          * to the feedback passed into the function.
          *
          * @param {Feedback} feedback
+         * @param {string} code
          */
-        var setFeedback = function(feedback) {
+        $scope.setFeedback = function(feedback, code) {
+          EventHandlerService.createCodeSubmitEvent(
+            SessionIdService.getSessionId(),
+            feedback.getParagraphsAsListOfDicts(), 'ERROR CATEGORY',
+            code, feedback.isAnswerCorrect());
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
-              congratulatoryFeedback.clear();
-              congratulatoryFeedback.appendTextParagraph(
-                  "Good work! You've completed this question.");
-              congratulatoryFeedback.appendTextParagraph(
-                  'Click the "Next" button to the right to proceed to the ' +
-                  'next question.');
-              $scope.nextButtonIsShown = true;
-              $scope.feedbackStorage.push({
-                feedbackParagraphs: congratulatoryFeedback.getParagraphs()
-              });
-              EventHandlerService.createQuestionCompleteEvent(
-                SessionIdService.getSessionId(), $scope.currentQuestionId,
-                'QUESTION_VERSION');
+              $scope.completeQuestion();
             } else {
               $scope.showNextTask();
             }
@@ -872,9 +900,9 @@ tie.directive('learnerView', [function() {
           $scope.currentQuestionId =
             $location.search().qid || DEFAULT_QUESTION_ID;
           try {
-            loadQuestion($scope.currentQuestionId);
+            $scope.loadQuestion($scope.currentQuestionId);
           } catch (Error) {
-            loadQuestion(DEFAULT_QUESTION_ID);
+            $scope.loadQuestion(DEFAULT_QUESTION_ID);
           }
         };
 
@@ -950,7 +978,9 @@ tie.directive('learnerView', [function() {
               SolutionHandlerService.processSolutionAsync(
                 orderedTasks, question.getStarterCode(language),
                 code, question.getAuxiliaryCode(language), language
-              ).then(setFeedback);
+              ).then(function(feedback) {
+                $scope.setFeedback(feedback, code);
+              });
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
           storeCodeAndUpdateCachedCode(
@@ -966,8 +996,7 @@ tie.directive('learnerView', [function() {
             $scope.currentQuestionId, language);
           EventHandlerService.createCodeResetEvent(
             SessionIdService.getSessionId());
-          // Do we want to trigger another QuestionStartEvent?
-          loadQuestion($scope.currentQuestionId);
+          $scope.loadQuestion($scope.currentQuestionId);
         };
 
         /**

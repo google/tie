@@ -22,6 +22,7 @@ describe('LearnerViewDirective', function() {
   var element;
   var QuestionDataService;
   var EventHandlerService;
+  var FeedbackObjectFactory;
   var $location;
 
   beforeEach(module("tie"));
@@ -51,7 +52,7 @@ describe('LearnerViewDirective', function() {
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
     _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
-    _EventHandlerService_) {
+    _EventHandlerService_, _FeedbackObjectFactory_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -68,6 +69,7 @@ describe('LearnerViewDirective', function() {
 
     QuestionDataService = _QuestionDataService_;
     EventHandlerService = _EventHandlerService_;
+    FeedbackObjectFactory = _FeedbackObjectFactory_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
@@ -78,23 +80,6 @@ describe('LearnerViewDirective', function() {
 
 
   }));
-
-  describe("resetCode", function() {
-    it('should reset code to starter code', function() {
-      spyOn($location, 'search').and.returnValue({
-        qid: QUESTION_ID
-      });
-      spyOn(EventHandlerService, 'createCodeResetEvent');
-
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
-      var starterCode = question.getStarterCode(LANGUAGE);
-      $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
-      expect(starterCode).not.toEqual($scope.editorContents.code);
-      $scope.resetCode();
-      expect($scope.editorContents.code).toEqual(starterCode);
-      expect(EventHandlerService.createCodeResetEvent).toHaveBeenCalled();
-    });
-  });
 
   describe("autosave", function() {
     var $interval;
@@ -179,6 +164,73 @@ describe('LearnerViewDirective', function() {
       expect($scope.autosaveOn).toBe(false);
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
+    });
+  });
+
+  describe("resetCode", function() {
+    it('should reset code to starter code', function() {
+      spyOn($location, 'search').and.returnValue({
+        qid: QUESTION_ID
+      });
+      spyOn(EventHandlerService, 'createCodeResetEvent');
+
+      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var starterCode = question.getStarterCode(LANGUAGE);
+      $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
+      expect(starterCode).not.toEqual($scope.editorContents.code);
+      $scope.resetCode();
+      expect($scope.editorContents.code).toEqual(starterCode);
+      expect(EventHandlerService.createCodeResetEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe("completeQuestion", function() {
+    it('should create a QuestionCompleteEvent after final task', function() {
+      spyOn(EventHandlerService, 'createQuestionCompleteEvent');
+
+      $scope.completeQuestion();
+      expect(
+        EventHandlerService.createQuestionCompleteEvent).toHaveBeenCalled();
+    });
+
+  });
+
+  describe("loadNextTask", function() {
+
+    it('should create events for tasks', function() {
+      spyOn(EventHandlerService, 'createTaskCompleteEvent');
+      spyOn(EventHandlerService, 'createTaskStartEvent');
+
+      $scope.loadQuestion('checkBalancedParentheses');
+      $scope.currentTaskIndex = 0;
+      $scope.showNextTask();
+      expect(EventHandlerService.createTaskCompleteEvent).toHaveBeenCalled();
+      expect(EventHandlerService.createTaskStartEvent).toHaveBeenCalled();
+      $scope.loadQuestion(QUESTION_ID);
+    });
+  });
+
+  describe("loadQuestion", function() {
+    it('should create events for questionStart', function() {
+      spyOn(EventHandlerService, 'createQuestionStartEvent');
+
+      $scope.loadQuestion(QUESTION_ID);
+      expect(EventHandlerService.createQuestionStartEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe("setFeedback", function() {
+    it('should create events for code submission', function() {
+      spyOn($scope, 'scrollToBottomOfFeedbackWindow');
+      spyOn(EventHandlerService, 'createCodeSubmitEvent');
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $scope.setFeedback(FeedbackObjectFactory.create(false), code);
+      expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
     });
   });
 });
