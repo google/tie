@@ -813,7 +813,7 @@ tie.directive('learnerView', [function() {
           });
           EventHandlerService.createQuestionCompleteEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion();
+            QuestionDataService.getQuestionVersion());
         };
 
         /**
