@@ -76,6 +76,16 @@ tieData.factory('QuestionDataService', [
         return question.getTitle();
       },
       /**
+       * Returns the question's version.
+       * Currently returns null, as question versioning isn't implemented yet.
+       * TODO(eyurko): Return correct question version, once implemented.
+       *
+       * @returns {null}
+       */
+      getQuestionVersion() {
+        return null;
+      },
+      /**
        * Returns the question's shortened instructions, which includes
        * only the text content in the first task (ignores code blocks).
        *
