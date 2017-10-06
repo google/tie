@@ -43,7 +43,7 @@ tieData.factory('BuggyOutputTestObjectFactory', [
        * @type {Array}
        * @private
        */
-      this._ignoredTestSuiteIds = buggyOutputTestDict._ignoredTestSuiteIds;
+      this._ignoredTestSuiteIds = buggyOutputTestDict.ignoredTestSuiteIds;
 
       /**
        * @type {Array}

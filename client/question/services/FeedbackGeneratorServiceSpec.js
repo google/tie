@@ -88,6 +88,7 @@ describe('FeedbackGeneratorService', function() {
       mainFunctionName: 'mockMainFunction',
       testSuites: [],
       buggyOutputTests: [],
+      suiteLevelTests: [],
       performanceTests: [{
         inputDataAtom: 'meow ',
         transformationFunctionName: 'System.extendString',

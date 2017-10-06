@@ -501,7 +501,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
  * @type {string}
  * @constant
  */
-tie.constant('VARNAME_CORRECTNESS_TEST_RESULTS', 'correctness_test_results');
+tie.constant('VARNAME_OBSERVED_OUTPUTS', 'correctness_test_results');
 /**
  * Name of the list in which buggy output test results of all tasks are stored.
  *

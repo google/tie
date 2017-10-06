@@ -45,6 +45,7 @@ describe('ReinforcementObjectFactory', function() {
         }]
       }],
       buggyOutputTests: [],
+      suiteLevelTests: [],
       performanceTests: []
     });
     reinforcement = ReinforcementObjectFactory.create(task);
@@ -69,5 +70,4 @@ describe('ReinforcementObjectFactory', function() {
       ]);
     });
   });
-
 });

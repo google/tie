@@ -455,7 +455,7 @@ tie.factory('TaskSchemaValidationService', [
 
         var buggyOutputTests = task.getBuggyOutputTests();
         return buggyOutputTests.every(function(test) {
-          var ignoredTestSuiteIds = test.ignoredTestSuites();
+          var ignoredTestSuiteIds = test.getIgnoredTestSuiteIds();
           return ignoredTestSuiteIds.every(function(testSuiteId) {
             return allTestSuiteIds.indexOf(testSuiteId) !== -1;
           });
@@ -516,7 +516,7 @@ tie.factory('TaskSchemaValidationService', [
        */
       verifySuiteLevelTestsHaveValidTestSuiteIds: function(task) {
         var allTestSuiteIds = task.getTestSuites().map(function(testSuite) {
-          return testSuite.id;
+          return testSuite.getId();
         });
 
         var suiteLevelTests = task.getSuiteLevelTests();
@@ -570,7 +570,7 @@ tie.factory('TaskSchemaValidationService', [
        * @param {Task} task
        * @returns {boolean}
        */
-      verifyAllBuggyOutputTestMessagesAreUnique: function(task) {
+      verifyAllSuiteLevelTestMessagesAreUnique: function(task) {
         return task.getSuiteLevelTests().every(function(test) {
           var messages = new Set();
           test.getMessages().forEach(function(message) {

@@ -48,6 +48,7 @@ describe('CodePreprocessorDispatcherService', function() {
       var task = TaskObjectFactory.create({
         testSuites: [],
         buggyOutputTests: [],
+        suiteLevelTests: [],
         performanceTests: []
       });
       CodePreprocessorDispatcherService.preprocess(

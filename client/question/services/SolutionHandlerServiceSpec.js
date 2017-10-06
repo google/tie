@@ -26,15 +26,11 @@ describe('SolutionHandlerService', function() {
   var SUPPORTED_PYTHON_LIBS;
 
   beforeEach(module('tie'));
-  beforeEach(inject(function($injector) {
-    SolutionHandlerService = $injector.get(
-      'SolutionHandlerService');
-  }));
 
   // Mock tasks for preprocessing.
   beforeEach(inject(function($injector) {
-    TaskObjectFactory = $injector.get(
-      'TaskObjectFactory');
+    SolutionHandlerService = $injector.get('SolutionHandlerService');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
 
     var taskDict = [{
@@ -57,12 +53,14 @@ describe('SolutionHandlerService', function() {
       }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
+        ignoredTestSuiteIds: [],
         messages: [
           "Mock BuggyOutputTest Message One for task1",
           "Mock BuggyOutputTest Message Two for task1",
           "Mock BuggyOutputTest Message Three for task1"
         ]
       }],
+      suiteLevelTests: [],
       performanceTests: [{
         inputDataAtom: 'meow ',
         transformationFunctionName: 'System.extendString',
@@ -89,12 +87,14 @@ describe('SolutionHandlerService', function() {
       }],
       buggyOutputTests: [{
         buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
+        ignoredTestSuiteIds: [],
         messages: [
           "Mock BuggyOutputTest Message One for task2",
           "Mock BuggyOutputTest Message Two for task2",
           "Mock BuggyOutputTest Message Three for task2"
         ]
       }],
+      suiteLevelTests: [],
       performanceTests: [{
         inputDataAtom: 'meow ',
         transformationFunctionName: 'System.extendString',

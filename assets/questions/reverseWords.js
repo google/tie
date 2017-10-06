@@ -230,7 +230,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         input: 'H1 John',
         allowedOutputs: ['H1 nhoJ']
       }]
-    }, , {
+    }, {
       id: 'CORNER_CASES',
       humanReadableName: 'corner cases',
       testCases: [{
