@@ -437,12 +437,14 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       testSuiteIdsThatMustFail: ['CORNER_CASES'],
       messages: [
         [
-          'Are you happy with the code? It must give the correct answer in ',
-          'all cases, regardless of whatever input string is passed in.'
+          'It looks like your code is failing on some test cases. Try ',
+          'stepping through a few sample inputs on paper to see if the output ',
+          'your program produces is consistent with the expected output in ',
+          'all cases.'
         ].join(''),
         [
-          'It looks like there are some corner cases that your code doesn\'t ',
-          'handle. See if you can find the bug.'
+          'It looks like there are still some corner cases that your code ',
+          'doesn\'t handle. See if you can find the bug.'
         ].join(''),
         [
           'Try pretending that this code was written by someone else, and ',

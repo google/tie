@@ -394,30 +394,32 @@ describe('SolutionHandlerService', function() {
         }];
       }));
 
-      it('should check all buggy output if nothing is ignored', function(done) {
-        taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
+      it('should check all buggy outputs if nothing is ignored',
+        function(done) {
+          taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
+          orderedTasks = taskDict.map(function(task) {
+            return TaskObjectFactory.create(task);
+          });
 
-        // The buggy function returns True for all cases. The student's code
-        // returns True in the first three cases and False in the fourth.
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return input != "task_1_suite_2_test_2"',
-          ''
-        ].join('\n');
+          // The buggy function returns True for all cases. The student's code
+          // returns True in the first three cases and False in the fourth.
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return input != "task_1_suite_2_test_2"',
+            ''
+          ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(feedback) {
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'Your code produced the following result:');
-          done();
-        });
-      });
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+          ).then(function(feedback) {
+            expect(feedback.getParagraphs()[0].getContent()).toBe(
+              'Your code produced the following result:');
+            done();
+          });
+        }
+      );
 
-      it('should ignore buggy output for ignored suite ids', function(done) {
+      it('should ignore buggy outputs for ignored suite ids', function(done) {
         taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = ['SUITE2'];
         orderedTasks = taskDict.map(function(task) {
           return TaskObjectFactory.create(task);
