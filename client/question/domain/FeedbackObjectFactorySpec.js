@@ -40,6 +40,19 @@ describe('FeedbackObjectFactory', function() {
     });
   });
 
+  describe('getErrorCategory', function() {
+    it('should return null', function() {
+      expect(feedback.getErrorCategory()).toBe(null);
+    });
+  });
+
+  describe('setErrorCategory', function() {
+    it('should set the _errorCategory property', function() {
+      feedback.setErrorCategory('ERROR OPERATOR');
+      expect(feedback._errorCategory).toBe('ERROR OPERATOR');
+    });
+  });
+
   describe('firstParagraphText', function() {
     it('should throw an error when adding paragraph one as code', function() {
       var errorFunction = function() {

@@ -71,7 +71,7 @@ tieData.factory('QuestionDataService', [
        * @param {string} questionId
        * @returns {string}
        */
-      getQuestionTitle(questionId) {
+      getQuestionTitle: function(questionId) {
         var question = this.getQuestion(questionId);
         return question.getTitle();
       },
@@ -82,7 +82,7 @@ tieData.factory('QuestionDataService', [
        *
        * @returns {null}
        */
-      getQuestionVersion() {
+      getQuestionVersion: function() {
         return null;
       },
       /**

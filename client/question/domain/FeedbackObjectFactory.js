@@ -58,6 +58,14 @@ tie.factory('FeedbackObjectFactory', [
       this._hintIndex = null;
 
       /**
+       * Records what type of error was found in the submission, or 'NO ERROR'.
+       *
+       * @type {string}
+       * @private
+       */
+      this._errorCategory = null;
+
+      /**
        * @type {Reinforcement}
        * @private
        */
@@ -145,6 +153,26 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.setHintIndex = function(index) {
       this._hintIndex = index;
+    };
+
+    /**
+     * A getter for the _errorCategory property.
+     * This function should return a number that indicates the index of the
+     * hint given for this feedback (if one is given).
+     *
+     * @returns {*|string}
+     */
+    Feedback.prototype.getErrorCategory = function() {
+      return this._errorCategory;
+    };
+
+    /**
+     * A setter for the _errorCategory property.
+     *
+     * @param {string} category
+     */
+    Feedback.prototype.setErrorCategory = function(category) {
+      this._errorCategory = category;
     };
 
     /**
