@@ -57,15 +57,6 @@ tieData.factory('SuiteLevelTestObjectFactory', [
     // Instance methods.
 
     /**
-     * Returns the list of messages attached to this suite-level test.
-     *
-     * @returns {Array} Should be array of strings
-     */
-    SuiteLevelTest.prototype.getMessages = function() {
-      return this._messages;
-    };
-
-    /**
      * Returns the list of test suite IDs that must pass. This should only be
      * used in validation tests; callers should use areConditionsMet() instead
      * for running tests.
@@ -85,6 +76,15 @@ tieData.factory('SuiteLevelTestObjectFactory', [
      */
     SuiteLevelTest.prototype.getTestSuiteIdsThatMustFail = function() {
       return this._testSuiteIdsThatMustFail;
+    };
+
+    /**
+     * Returns the list of messages attached to this suite-level test.
+     *
+     * @returns {Array} Should be array of strings
+     */
+    SuiteLevelTest.prototype.getMessages = function() {
+      return this._messages;
     };
 
     /**

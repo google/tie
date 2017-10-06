@@ -17,13 +17,81 @@
  */
 
 describe('SolutionHandlerService', function() {
+  var SUPPORTED_PYTHON_LIBS;
   var SolutionHandlerService;
   var TaskObjectFactory;
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
-
-  var SUPPORTED_PYTHON_LIBS;
+  var taskDict = [{
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_1_correctness_test_1',
+        allowedOutputs: [true]
+      }, {
+        input: 'task_1_correctness_test_2',
+        allowedOutputs: [true]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task1",
+        "Mock BuggyOutputTest Message Two for task1",
+        "Mock BuggyOutputTest Message Three for task1"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: [{
+      inputDataAtom: 'meow ',
+      transformationFunctionName: 'System.extendString',
+      expectedPerformance: 'linear',
+      evaluationFunctionName: 'mockMainFunction'
+    }]
+  }, {
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_2_correctness_test_1',
+        allowedOutputs: [false]
+      }, {
+        input: 'task_2_correctness_test_2',
+        allowedOutputs: [false]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task2",
+        "Mock BuggyOutputTest Message Two for task2",
+        "Mock BuggyOutputTest Message Three for task2"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: [{
+      inputDataAtom: 'meow ',
+      transformationFunctionName: 'System.extendString',
+      expectedPerformance: 'linear',
+      evaluationFunctionName: 'mockMainFunction'
+    }]
+  }];
 
   beforeEach(module('tie'));
 
@@ -32,76 +100,6 @@ describe('SolutionHandlerService', function() {
     SolutionHandlerService = $injector.get('SolutionHandlerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
-
-    var taskDict = [{
-      instructions: [''],
-      prerequisiteSkills: [''],
-      acquiredSkills: [''],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'mockMainFunction',
-      testSuites: [{
-        id: 'GENERAL_CASE',
-        humanReadableName: 'the general case',
-        testCases: [{
-          input: 'task_1_correctness_test_1',
-          allowedOutputs: [true]
-        }, {
-          input: 'task_1_correctness_test_2',
-          allowedOutputs: [true]
-        }]
-      }],
-      buggyOutputTests: [{
-        buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
-        ignoredTestSuiteIds: [],
-        messages: [
-          "Mock BuggyOutputTest Message One for task1",
-          "Mock BuggyOutputTest Message Two for task1",
-          "Mock BuggyOutputTest Message Three for task1"
-        ]
-      }],
-      suiteLevelTests: [],
-      performanceTests: [{
-        inputDataAtom: 'meow ',
-        transformationFunctionName: 'System.extendString',
-        expectedPerformance: 'linear',
-        evaluationFunctionName: 'mockMainFunction'
-      }]
-    }, {
-      instructions: [''],
-      prerequisiteSkills: [''],
-      acquiredSkills: [''],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'mockMainFunction',
-      testSuites: [{
-        id: 'GENERAL_CASE',
-        humanReadableName: 'the general case',
-        testCases: [{
-          input: 'task_2_correctness_test_1',
-          allowedOutputs: [false]
-        }, {
-          input: 'task_2_correctness_test_2',
-          allowedOutputs: [false]
-        }]
-      }],
-      buggyOutputTests: [{
-        buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
-        ignoredTestSuiteIds: [],
-        messages: [
-          "Mock BuggyOutputTest Message One for task2",
-          "Mock BuggyOutputTest Message Two for task2",
-          "Mock BuggyOutputTest Message Three for task2"
-        ]
-      }],
-      suiteLevelTests: [],
-      performanceTests: [{
-        inputDataAtom: 'meow ',
-        transformationFunctionName: 'System.extendString',
-        expectedPerformance: 'linear',
-        evaluationFunctionName: 'mockMainFunction'
-      }]
-    }];
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
@@ -364,6 +362,80 @@ describe('SolutionHandlerService', function() {
             feedback.getParagraphs()[0].getContent().startsWith(
                 'It looks like greeting isn\'t a declared variable.')
           ).toBe(true);
+          done();
+        });
+      });
+    });
+
+    describe('buggy output ignored test suites', function() {
+      beforeEach(inject(function() {
+        // Reconfigure the test suites and buggy output tests for the first
+        // task.
+        taskDict[0].testSuites = [{
+          id: 'SUITE1',
+          humanReadableName: 'suite 1',
+          testCases: [{
+            input: 'task_1_suite_1_test_1',
+            allowedOutputs: [true]
+          }, {
+            input: 'task_1_suite_1_test_2',
+            allowedOutputs: [true]
+          }]
+        }, {
+          id: 'SUITE2',
+          humanReadableName: 'suite 2',
+          testCases: [{
+            input: 'task_1_suite_2_test_1',
+            allowedOutputs: [false]
+          }, {
+            input: 'task_1_suite_2_test_2',
+            allowedOutputs: [false]
+          }]
+        }];
+      }));
+
+      it('should check all buggy output if nothing is ignored', function(done) {
+        taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        // The buggy function returns True for all cases. The student's code
+        // returns True in the first three cases and False in the fourth.
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return input != "task_1_suite_2_test_2"',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'Your code produced the following result:');
+          done();
+        });
+      });
+
+      it('should ignore buggy output for ignored suite ids', function(done) {
+        taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = ['SUITE2'];
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        // The buggy function returns True for all cases. The student's code
+        // returns True in the first three cases and False in the fourth.
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return input != "task_1_suite_2_test_2"',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'Mock BuggyOutputTest Message One for task1');
           done();
         });
       });
