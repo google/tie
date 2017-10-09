@@ -157,8 +157,8 @@ tie.factory('FeedbackObjectFactory', [
 
     /**
      * A getter for the _errorCategory property.
-     * This function should return a number that indicates the index of the
-     * hint given for this feedback (if one is given).
+     * This function should return a number that indicates what type of error
+     * corresponds to this feedback (if one occurs).
      *
      * @returns {*|string}
      */
