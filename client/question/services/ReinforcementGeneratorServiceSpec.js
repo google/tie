@@ -62,6 +62,7 @@ describe('ReinforcementGeneratorService', function() {
         }]
       }],
       buggyOutputTests: [],
+      suiteLevelTests: [],
       performanceTests: []
     }];
 
@@ -95,6 +96,7 @@ describe('ReinforcementGeneratorService', function() {
         }]
       }],
       buggyOutputTests: [],
+      suiteLevelTests: [],
       performanceTests: []
     }];
 
@@ -120,6 +122,7 @@ describe('ReinforcementGeneratorService', function() {
         }]
       }],
       buggyOutputTests: [],
+      suiteLevelTests: [],
       performanceTests: []
     }];
 

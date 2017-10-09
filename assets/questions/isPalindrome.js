@@ -147,6 +147,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.countNumberOfCharacters',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code on \'abab\' on paper. Did you expect that',
@@ -166,6 +167,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.forgetToIgnoreSpaces',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code on \'nurses run\' on paper. Did you ',
@@ -179,6 +181,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'abcdefghijklmnopqrstuvwxyz',
       transformationFunctionName: 'AuxiliaryCode.createPalindrome',

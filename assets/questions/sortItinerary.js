@@ -109,6 +109,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.connectTicketsInGivenOrder',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your input on JFK-LAX,SEA-JFK,LAX-HOU. ',
@@ -126,6 +127,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
     // The intended performance test below is commented out until we
     // support nonlinear runtime complexities.
@@ -177,6 +179,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -216,6 +219,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: []
   }]
 };

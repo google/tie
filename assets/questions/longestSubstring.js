@@ -95,6 +95,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.onlyUseOneLetterInResult',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code on the input, "abbabbabb". ',
@@ -108,6 +109,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'oooyyoxaoo',
       transformationFunctionName: 'System.extendString',

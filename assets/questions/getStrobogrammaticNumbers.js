@@ -84,6 +84,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetToIncludeZero',
+      ignoredTestSuiteIds: [],
       messages: [
         "Which 1-digit numbers does your function return?",
         [
@@ -93,6 +94,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.allowLeadingZeroInResult',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code on 2-digit numbers. Did you get the expected ',
@@ -108,6 +110,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     // Currently, the system does not support nonlinear runtime complexities.
     // So we are omitting performance tests for now.
     performanceTests: []

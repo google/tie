@@ -20,7 +20,7 @@ describe('PythonCodeRunnerService', function() {
   var PythonCodeRunnerService;
   var ServerHandlerService;
   var responseDict = {};
-  var VARNAME_CORRECTNESS_TEST_RESULTS = 'correctness_test_results';
+  var VARNAME_OBSERVED_OUTPUTS = 'correctness_test_results';
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
@@ -31,15 +31,13 @@ describe('PythonCodeRunnerService', function() {
   }));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
-    PythonCodeRunnerService = $injector.get(
-      'PythonCodeRunnerService');
-    ServerHandlerService = $injector.get(
-      'ServerHandlerService');
+    PythonCodeRunnerService = $injector.get('PythonCodeRunnerService');
+    ServerHandlerService = $injector.get('ServerHandlerService');
     responseDict.stdout = 'hello world!';
     responseDict.stderr = '';
     responseDict.results = {};
     responseDict.results[VARNAME_MOST_RECENT_INPUT] = 'a b c d e f f';
-    responseDict.results[VARNAME_CORRECTNESS_TEST_RESULTS] = [
+    responseDict.results[VARNAME_OBSERVED_OUTPUTS] = [
       ['TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST', 'TEST']];
     responseDict.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS] = [
       [false, false, false]];
@@ -100,7 +98,7 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(
           responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS]);
       expect(codeEvalResult.getCorrectnessTestResults()).toEqual(
-          responseDict.results[VARNAME_CORRECTNESS_TEST_RESULTS]);
+          responseDict.results[VARNAME_OBSERVED_OUTPUTS]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(
           responseDict.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS]);
     });

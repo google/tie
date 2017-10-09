@@ -19,7 +19,7 @@
 
 tie.factory('PythonCodePreprocessorService', [
   'ServerHandlerService', 'CLASS_NAME_AUXILIARY_CODE',
-  'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_CORRECTNESS_TEST_RESULTS',
+  'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_MOST_RECENT_INPUT', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_TASK_CORRECTNESS_TEST_RESULTS',
@@ -27,7 +27,7 @@ tie.factory('PythonCodePreprocessorService', [
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
   function(
       ServerHandlerService, CLASS_NAME_AUXILIARY_CODE,
-      CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_CORRECTNESS_TEST_RESULTS,
+      CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_TASK_CORRECTNESS_TEST_RESULTS,
@@ -291,27 +291,36 @@ tie.factory('PythonCodePreprocessorService', [
     var _generateCorrectnessTestCode = function(
         allTasksTestSuites, allTasksInputFunctionNames,
         allTasksMainFunctionNames, allTasksOutputFunctionNames) {
-      // This returns a list of lists of lists of input data. Each inner list
-      // represents a test suite; the next level up represents all test suites
-      // for a task, and the outer list represents all the test suites for all
-      // the tasks.
+      // This returns a list of lists of dicts of input data. Each inner dict
+      // represents a test suite (with ID and a list of python-formatted test
+      // case inputs). The containing list represents all test suites for a
+      // task, // and the outer list represents all the test suites for all the
+      // tasks.
       var allTaskInputs = allTasksTestSuites.map(function(taskTestSuites) {
         return taskTestSuites.map(function(suite) {
-          return suite.getTestCases().map(function(test) {
-            return _jsonVariableToPython(test.getInput());
-          });
+          return {
+            id: suite.getId(),
+            pythonTestCaseInputs: suite.getTestCases().map(function(test) {
+              return _jsonVariableToPython(test.getInput());
+            })
+          };
         });
       });
 
       var testCode = [
         VARNAME_ALL_TASKS_TEST_INPUTS +
           ' = [' + allTaskInputs.map(function(taskInputs) {
-            return '\n    [' + taskInputs.map(function(suiteInputs) {
-              return '\n        [' + suiteInputs.join(', ') + ']';
-            }).join(', ') + '\n    ]';
+            return '\n    [' + taskInputs.map(function(suiteDict) {
+              var testCaseInputs = suiteDict.pythonTestCaseInputs.join(', ');
+              return (
+                '{' +
+                '\n        "id": "' + suiteDict.id + '",' +
+                '\n        "inputs": [' + testCaseInputs + '],' +
+                '\n    }');
+            }).join(', ') + ']';
           }).join(', ') + '\n]',
         '',
-        VARNAME_CORRECTNESS_TEST_RESULTS + ' = []'
+        VARNAME_OBSERVED_OUTPUTS + ' = []'
       ].join('\n');
 
       for (var i = 0; i < allTasksTestSuites.length; i++) {
@@ -334,12 +343,12 @@ tie.factory('PythonCodePreprocessorService', [
           '',
           'task_test_inputs = ' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + ']',
           'task_results = []',
-          'for suite_test_inputs in task_test_inputs:',
+          'for suite_dicts in task_test_inputs:',
           '    suite_results = [',
           '        ' + testOutputCode,
-          '        for test_input in suite_test_inputs]',
+          '        for test_input in suite_dicts["inputs"]]',
           '    task_results.append(suite_results)',
-          VARNAME_CORRECTNESS_TEST_RESULTS + '.append(task_results)'
+          VARNAME_OBSERVED_OUTPUTS + '.append(task_results)'
         ].join('\n');
       }
 
@@ -360,11 +369,14 @@ tie.factory('PythonCodePreprocessorService', [
       var code = (VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ' = []\n');
       oneTaskBuggyOutputTests.forEach(function(buggyOutputTest) {
         var qualifiedBuggyFunctionName = buggyOutputTest.getBuggyFunctionName();
+        var ignoredTestSuiteIds = buggyOutputTest.getIgnoredTestSuiteIds();
         code += (
-          VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + '.append(\n' +
-          '    matches_buggy_function(' + qualifiedBuggyFunctionName + ', ' +
-          (inputFunctionName ? inputFunctionName : 'None') + ', ' +
-          (outputFunctionName ? outputFunctionName : 'None') + '))\n');
+          VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + '.append(\n' + [
+            '    matches_buggy_function(' + qualifiedBuggyFunctionName,
+            _jsonVariableToPython(ignoredTestSuiteIds),
+            (inputFunctionName ? inputFunctionName : 'None'),
+            (outputFunctionName ? outputFunctionName : 'None')
+          ].join(', ') + '))\n');
       });
 
       code += (
@@ -397,27 +409,30 @@ tie.factory('PythonCodePreprocessorService', [
 
         var fullTestCode = [
           /* eslint-disable max-len */
-          'def matches_buggy_function(func, inputFunctionName, outputFunctionName):',
-          '    buggy_results = []',
-          '    for task_inputs in all_tasks_test_inputs:',
-          '        task_results = []',
-          '        for suite_inputs in task_inputs:',
-          '            suite_results = []',
+          'def matches_buggy_function(func, ignoredSuiteIds, inputFunctionName, outputFunctionName):',
+          '    for task_index, task_inputs in enumerate(all_tasks_test_inputs):',
+          '        for suite_index, suite_dict in enumerate(task_inputs):',
+          '            num_tests = len(suite_dict["inputs"])',
+          '            if suite_dict["id"] in ignoredSuiteIds:',
+          '                continue',
+          '',
+          '            buggy_results = []',
+          '            suite_inputs = suite_dict["inputs"]',
           '            for test_input in suite_inputs:',
           '                if inputFunctionName is None and outputFunctionName is None:',
-          '                    suite_results.append(System.runTest(func, test_input))',
+          '                    buggy_results.append(System.runTest(func, test_input))',
           '                elif inputFunctionName is None:',
-          '                    suite_results.append(outputFunctionName(',
+          '                    buggy_results.append(outputFunctionName(',
           '                        System.runTest(func, test_input)))',
           '                elif outputFunctionName is None:',
-          '                    suite_results.append(',
+          '                    buggy_results.append(',
           '                        System.runTest(func, inputFunctionName(test_input)))',
           '                else:',
-          '                    suite_results.append(outputFunctionName(',
+          '                    buggy_results.append(outputFunctionName(',
           '                        System.runTest(func, inputFunctionName(test_input))))',
-          '            task_results.append(suite_results)',
-          '        buggy_results.append(task_results)',
-          '    return buggy_results == ' + VARNAME_CORRECTNESS_TEST_RESULTS,
+          '            if buggy_results != ' + VARNAME_OBSERVED_OUTPUTS + '[task_index][suite_index]:',
+          '                return False',
+          '    return True',
           '',
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS + ' = []',
           ''
@@ -510,13 +525,13 @@ tie.factory('PythonCodePreprocessorService', [
       var prependedCode = 'response_dict = {}\n';
       prependedCode += VARNAME_MOST_RECENT_INPUT + instantiation;
       prependedCode += VARNAME_PERFORMANCE_TEST_RESULTS + instantiation;
-      prependedCode += VARNAME_CORRECTNESS_TEST_RESULTS + instantiation;
+      prependedCode += VARNAME_OBSERVED_OUTPUTS + instantiation;
       prependedCode += VARNAME_BUGGY_OUTPUT_TEST_RESULTS + instantiation;
       var appendedCode = _generateResponseDictString(VARNAME_MOST_RECENT_INPUT);
       appendedCode += _generateResponseDictString(
           VARNAME_PERFORMANCE_TEST_RESULTS);
       appendedCode += _generateResponseDictString(
-          VARNAME_CORRECTNESS_TEST_RESULTS);
+          VARNAME_OBSERVED_OUTPUTS);
       appendedCode += _generateResponseDictString(
           VARNAME_BUGGY_OUTPUT_TEST_RESULTS);
       codeSubmission.prepend(prependedCode);

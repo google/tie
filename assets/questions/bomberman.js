@@ -132,6 +132,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreWalls',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try to run your code on [['e', '', 'x', 'e']]. ",
@@ -145,6 +146,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.bombAllEnemiesOnBoard',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try to run your code on [['e', 'x', '', 'x', 'e']]. ",
@@ -157,6 +159,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     // The system currently only supports O(n) runtime complexities and
     // this requires an O(n^2) solution, so performance tests will be
     // implemented at a later date.

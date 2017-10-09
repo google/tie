@@ -166,6 +166,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.skipEncodingAtEndOfString',
+      ignoredTestSuiteIds: [],
       messages: [
         "Run your code on 'adddd' in your head. What's the result?",
         [
@@ -178,6 +179,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -216,6 +218,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.ignoreStringLengthWhenEncoding',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try running your encode method on 'aa' on paper. ",
@@ -231,6 +234,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -274,6 +278,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToDemarcateBeginningOfEncodedChunk',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try running your code on '5aaaa' in your head. ",
@@ -291,6 +296,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'o',
       transformationFunctionName: 'System.extendString',

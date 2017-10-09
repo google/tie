@@ -105,6 +105,7 @@ def are_all_unique(words):
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.forgetLastLetter',
+      ignoredTestSuiteIds: [],
       messages: [
         "Try running your code on 'word' in your head. What's the result?.",
         [
@@ -119,6 +120,7 @@ def are_all_unique(words):
     }, {
       buggyFunctionName: (
         'AuxiliaryCode.useFirstAndLastLetterAndLengthToAbbreviate'),
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "It looks like you're using the string's length minus two in the ",
@@ -137,6 +139,7 @@ def are_all_unique(words):
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.abbreviateLazily',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "It looks like you're using the string's length minus two in the ",
@@ -154,6 +157,7 @@ def are_all_unique(words):
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -182,6 +186,7 @@ def are_all_unique(words):
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'o',
       transformationFunctionName: 'AuxiliaryCode.createListOfUniqueStrings',

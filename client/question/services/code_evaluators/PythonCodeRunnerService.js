@@ -18,12 +18,12 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'ServerHandlerService', 'VARNAME_CORRECTNESS_TEST_RESULTS',
+  'ServerHandlerService', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      ServerHandlerService, VARNAME_CORRECTNESS_TEST_RESULTS,
+      ServerHandlerService, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
     /** @type {number} @const */
@@ -75,9 +75,9 @@ tie.factory('PythonCodeRunnerService', [
         // the global Python 'test results' variables (which Skulpt stores in
         // Sk.globals), and maps each of them to a JS value for later
         // comparison against the "correct output" specification.
-        if (Sk.globals.hasOwnProperty(VARNAME_CORRECTNESS_TEST_RESULTS)) {
+        if (Sk.globals.hasOwnProperty(VARNAME_OBSERVED_OUTPUTS)) {
           correctnessTestResults = Sk.ffi.remapToJs(
-            Sk.globals[VARNAME_CORRECTNESS_TEST_RESULTS]);
+            Sk.globals[VARNAME_OBSERVED_OUTPUTS]);
         }
         if (Sk.globals.hasOwnProperty(VARNAME_BUGGY_OUTPUT_TEST_RESULTS)) {
           buggyOutputTestResults = Sk.ffi.remapToJs(
@@ -148,7 +148,7 @@ tie.factory('PythonCodeRunnerService', [
       } else if (responseData.results) {
         return CodeEvalResultObjectFactory.create(
             code, responseData.stdout,
-            responseData.results[VARNAME_CORRECTNESS_TEST_RESULTS],
+            responseData.results[VARNAME_OBSERVED_OUTPUTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
             null, null);

@@ -149,6 +149,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToUseAbsoluteDifference',
+      ignoredTestSuiteIds: [],
       messages: [
         "Run your code on '2 1 # # 3 # #|2.9' in your head. What is the " +
         "expected result?",
@@ -159,6 +160,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -186,6 +188,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.failToCompareAll',
+      ignoredTestSuiteIds: [],
       messages: [
         "Run your code on '2 1 # # 3 # #|2.1' in your head. What is the " +
         "expected result?",
@@ -197,6 +200,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     /**
      * TODO: implement O(logn) performance tests
      * once logarithmic scale is supported

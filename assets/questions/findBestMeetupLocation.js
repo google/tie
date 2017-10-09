@@ -90,6 +90,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.findAverageLocation',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           "Try running your code on ['0, 0', '4, 2', '10, 10']. ",
@@ -101,6 +102,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: '0, 0',
       transformationFunctionName: 'System.extendString',
@@ -140,6 +142,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     // TODO: the time complexity of the solution to this quesiton
     // is not linear. A performance test will be added later.
     performanceTests: []

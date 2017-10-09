@@ -130,6 +130,7 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.incrementLastDigitOnly',
+      ignoredTestSuiteIds: [],
       messages: [
         "Try running your code on [1, 9] in your head. What's the result?.",
         [
@@ -142,6 +143,7 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
       ]
     }, {
       buggyFunctionName: 'AuxiliaryCode.incrementWithoutChangingSize',
+      ignoredTestSuiteIds: [],
       messages: [
         "What happens when you run your code on [9]?",
         "Are you adding on new digits when necessary?",
@@ -151,6 +153,7 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
         ].join('')
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: '9',
       transformationFunctionName: 'AuxiliaryCode.createDigits',

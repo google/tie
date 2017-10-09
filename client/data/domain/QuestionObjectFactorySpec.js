@@ -37,10 +37,12 @@ describe('QuestionObjectFactory', function() {
       tasks: [{
         testSuites: [],
         buggyOutputTests: [],
+        suiteLevelTests: [],
         performanceTests: []
       }, {
         testSuites: [],
         buggyOutputTests: [],
+        suiteLevelTests: [],
         performanceTests: []
       }]
     });
@@ -89,4 +91,3 @@ describe('QuestionObjectFactory', function() {
     });
   });
 });
-

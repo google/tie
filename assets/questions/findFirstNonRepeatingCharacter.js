@@ -92,6 +92,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     }],
     buggyOutputTests: [{
       buggyFunctionName: 'AuxiliaryCode.sortCharactersInString',
+      ignoredTestSuiteIds: [],
       messages: [
         [
           'Try running your code on \'wefffa\' on paper. What\'s the result?'
@@ -100,6 +101,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
         'but it is not the first one in the provided string.'
       ]
     }],
+    suiteLevelTests: [],
     performanceTests: []
   }, {
     instructions: [{
@@ -141,6 +143,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       }]
     }],
     buggyOutputTests: [],
+    suiteLevelTests: [],
     performanceTests: [{
       inputDataAtom: 'meow',
       transformationFunctionName: 'System.extendString',
