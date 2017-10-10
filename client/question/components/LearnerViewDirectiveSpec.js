@@ -21,9 +21,11 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var QuestionDataService;
+  var EventHandlerService;
+  var FeedbackObjectFactory;
   var $location;
 
-  beforeEach(module("tie"));
+  beforeEach(module('tie'));
 
   var generateRandomChars = function(number) {
     var generatedChars = '';
@@ -49,7 +51,8 @@ describe('LearnerViewDirective', function() {
   var QUESTION_ID = 'reverseWords';
 
   beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_) {
+    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
+    _EventHandlerService_, _FeedbackObjectFactory_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -65,6 +68,8 @@ describe('LearnerViewDirective', function() {
     $scope.$digest();
 
     QuestionDataService = _QuestionDataService_;
+    EventHandlerService = _EventHandlerService_;
+    FeedbackObjectFactory = _FeedbackObjectFactory_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
@@ -76,21 +81,7 @@ describe('LearnerViewDirective', function() {
 
   }));
 
-  describe("resetCode", function() {
-    it('should reset code to starter code', function() {
-      spyOn($location, 'search').and.returnValue({
-        qid: QUESTION_ID
-      });
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
-      var starterCode = question.getStarterCode(LANGUAGE);
-      $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
-      expect(starterCode).not.toEqual($scope.editorContents.code);
-      $scope.resetCode();
-      expect($scope.editorContents.code).toEqual(starterCode);
-    });
-  });
-
-  describe("autosave", function() {
+  describe('autosave', function() {
     var $interval;
     var $timeout;
     var LocalStorageService;
@@ -108,7 +99,7 @@ describe('LearnerViewDirective', function() {
       $timeout.flush(timeToFlush);
     };
 
-    it("should only activate autosave once", function() {
+    it('should only activate autosave once', function() {
       expect(!$scope.autosaveOn).toBe(true);
       var question = QuestionDataService.getQuestion(QUESTION_ID);
       var starterCode = question.getStarterCode(LANGUAGE);
@@ -151,7 +142,7 @@ describe('LearnerViewDirective', function() {
       expect($scope.autosaveOn).toBe(false);
     };
 
-    it("should store the latest code into localStorage", function() {
+    it('should store the latest code into localStorage', function() {
       // Repeat 1 - 20 times
       var repeatTimes = Math.floor(Math.random() * AUTOSAVE_REPEAT_RANGE) + 1;
       expect(!$scope.autosaveOn).toBe(true);
@@ -173,6 +164,213 @@ describe('LearnerViewDirective', function() {
       expect($scope.autosaveOn).toBe(false);
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
+    });
+  });
+
+  describe('resetCode', function() {
+    it('should reset code to starter code', function() {
+      spyOn($location, 'search').and.returnValue({
+        qid: QUESTION_ID
+      });
+      spyOn(EventHandlerService, 'createCodeResetEvent');
+
+      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var starterCode = question.getStarterCode(LANGUAGE);
+      $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
+      expect(starterCode).not.toEqual($scope.editorContents.code);
+      $scope.resetCode();
+      expect($scope.editorContents.code).toEqual(starterCode);
+      expect(EventHandlerService.createCodeResetEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe('completeQuestion', function() {
+    it('should create a QuestionCompleteEvent after final task', function() {
+      spyOn(EventHandlerService, 'createQuestionCompleteEvent');
+
+      $scope.completeQuestion();
+      expect(
+        EventHandlerService.createQuestionCompleteEvent).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('loadNextTask', function() {
+
+    it('should create events for tasks', function() {
+      spyOn(EventHandlerService, 'createTaskCompleteEvent');
+      spyOn(EventHandlerService, 'createTaskStartEvent');
+
+      $scope.loadQuestion('checkBalancedParentheses');
+      $scope.currentTaskIndex = 0;
+      $scope.showNextTask();
+      expect(EventHandlerService.createTaskCompleteEvent).toHaveBeenCalled();
+      expect(EventHandlerService.createTaskStartEvent).toHaveBeenCalled();
+      $scope.loadQuestion(QUESTION_ID);
+    });
+  });
+
+  describe('loadQuestion', function() {
+    it('should create events for questionStart', function() {
+      spyOn(EventHandlerService, 'createQuestionStartEvent');
+
+      $scope.loadQuestion(QUESTION_ID);
+      expect(EventHandlerService.createQuestionStartEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe('isDocumentHidden', function() {
+    it('should return document[hiddenAttributeName]', function() {
+      expect($scope.isDocumentHidden('hidden')).toEqual(document.hidden);
+    });
+  });
+
+  describe('getHiddenAttribute', function() {
+    it('should return document.hidden', function() {
+      expect($scope.getHiddenAttribute()).toEqual(document.hidden);
+    });
+  });
+
+  describe('getMsHiddenAttribute', function() {
+    it('should return document.msHidden', function() {
+      expect($scope.getMsHiddenAttribute()).toEqual(document.msHidden);
+    });
+  });
+
+  describe('getWebkitHiddenAttribute', function() {
+    it('should return document.webkitHidden', function() {
+      expect($scope.getWebkitHiddenAttribute()).toEqual(document.webkitHidden);
+    });
+  });
+
+  describe('determineHiddenAttributeNameForBrowser', function() {
+    it('should return null if no hidden attribute is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue(undefined);
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual(null);
+    });
+
+    it('should return "hidden" if hidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('hidden');
+    });
+
+    it('should return "msHidden" if msHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('msHidden');
+    });
+
+    it('should return "webkitHidden" if webkitHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('webkitHidden');
+    });
+  });
+
+  describe('determineVisibilityChangeAttributeNameForBrowser', function() {
+    it('should return null if no hidden attribute is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue(undefined);
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual(null);
+    });
+
+    it('should return "visibilitychange" if hidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue('whatever');
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual('visibilitychange');
+    });
+
+    it('should return "msvisibilitychange" if msHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue('whatever');
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual('msvisibilitychange');
+    });
+
+    it('should return "webkitvisibilitychange" if webkitHidden is defined',
+      function() {
+        spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+        spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+        spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue('whatever');
+        var visibilityChange = (
+          $scope.determineVisibilityChangeAttributeNameForBrowser());
+        expect(visibilityChange).toEqual('webkitvisibilitychange');
+      });
+  });
+
+  describe('setEventListenerForVisibilityChange', function() {
+    it('should set an event listener in a supported browser', function() {
+      spyOn(document, 'addEventListener');
+      $scope.setEventListenerForVisibilityChange();
+      expect(document.addEventListener).toHaveBeenCalled();
+    });
+
+    it('should NOT set an event listener in an unsupported browser',
+      function() {
+        spyOn(document, 'addEventListener');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          null);
+        $scope.setEventListenerForVisibilityChange();
+        expect(document.addEventListener).not.toHaveBeenCalled();
+      });
+
+    it('should NOT set an event listener if visibilityChange is null',
+      function() {
+        spyOn(document, 'addEventListener');
+        spyOn($scope,
+          'determineVisibilityChangeAttributeNameForBrowser').and.returnValue(
+          null);
+        $scope.setEventListenerForVisibilityChange();
+        expect(document.addEventListener).not.toHaveBeenCalled();
+      });
+  });
+
+  describe('onVisiblityChange', function() {
+    it('should create a SessionPauseEvent when the user hides the tab',
+      function() {
+        spyOn(EventHandlerService, 'createSessionPauseEvent');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          'whatever');
+        spyOn($scope, 'isDocumentHidden').and.returnValue(true);
+        $scope.onVisibilityChange();
+        expect(EventHandlerService.createSessionPauseEvent).toHaveBeenCalled();
+      });
+
+    it('should create a SessionResumeEvent when the user returns to the tab',
+      function() {
+        spyOn(EventHandlerService, 'createSessionResumeEvent');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          'whatever');
+        spyOn($scope, 'isDocumentHidden').and.returnValue(false);
+        $scope.onVisibilityChange();
+        expect(EventHandlerService.createSessionResumeEvent).toHaveBeenCalled();
+      });
+  });
+
+  describe('setFeedback', function() {
+    it('should create events for code submission', function() {
+      spyOn($scope, 'scrollToBottomOfFeedbackWindow');
+      spyOn(EventHandlerService, 'createCodeSubmitEvent');
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $scope.setFeedback(FeedbackObjectFactory.create(false), code);
+      expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
     });
   });
 });
