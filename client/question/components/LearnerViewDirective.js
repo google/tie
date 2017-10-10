@@ -661,18 +661,40 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
-        var onVisibilityChange = function() {
+        $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
           // or SessionResumeEvent, respectively.
-          var hiddenAttributeName = determineHiddenAttributeNameForBrowser();
-          if (hiddenAttributeName !== null &&
-            document[determineHiddenAttributeNameForBrowser()]) {
-            EventHandlerService.createSessionPauseEvent(
-              SessionIdService.getSessionId());
-          } else {
-            EventHandlerService.createSessionResumeEvent(
-              SessionIdService.getSessionId());
+          var hiddenAttributeName = (
+            $scope.determineHiddenAttributeNameForBrowser());
+          if (hiddenAttributeName !== null) {
+            if ($scope.isDocumentHidden(hiddenAttributeName)) {
+              EventHandlerService.createSessionPauseEvent(
+                SessionIdService.getSessionId());
+            } else {
+              EventHandlerService.createSessionResumeEvent(
+                SessionIdService.getSessionId());
+            }
           }
+        };
+
+        // Move document[hiddenAttributeName] getter into function for testing.
+        $scope.isDocumentHidden = function(hiddenAttributeName) {
+          return document[hiddenAttributeName];
+        };
+
+        // Move document.hidden getter into function for testing.
+        $scope.getHiddenAttribute = function() {
+          return document.hidden;
+        };
+
+        // Move document.msHidden getter into function for testing.
+        $scope.getMsHiddenAttribute = function() {
+          return document.msHidden;
+        };
+
+        // Move document.webkitHidden getter into function for testing.
+        $scope.getWebkitHiddenAttribute = function() {
+          return document.webkitHidden;
         };
 
         /**
@@ -680,42 +702,52 @@ tie.directive('learnerView', [function() {
          * This method determines what the current browser calls its "hidden"
          * attribute and returns it.
          */
-        var determineHiddenAttributeNameForBrowser = function() {
-          if (typeof document.hidden !== 'undefined') {
+        $scope.determineHiddenAttributeNameForBrowser = function() {
+          if (typeof $scope.getHiddenAttribute() !== 'undefined') {
             // Opera 12.10 and Firefox 18 and later support
             return 'hidden';
-          } else if (typeof document.msHidden !== 'undefined') {
+          } else if (typeof $scope.getMsHiddenAttribute() !== 'undefined') {
             return 'msHidden';
-          } else if (typeof document.webkitHidden !== 'undefined') {
+          } else if (typeof $scope.getWebkitHiddenAttribute() !== 'undefined') {
             return 'webkitHidden';
           }
           return null;
         };
 
-        var setEventListenerForVisibilityChange = function() {
-          var hiddenAttributeName = determineHiddenAttributeNameForBrowser();
+        $scope.determineVisibilityChangeAttributeNameForBrowser = function() {
+          // Handle page visibility change
+          if (typeof $scope.getHiddenAttribute() !== 'undefined') {
+            // Opera 12.10 and Firefox 18 and later support
+            return 'visibilitychange';
+          } else if (typeof $scope.getMsHiddenAttribute() !== 'undefined') {
+            return 'msvisibilitychange';
+          } else if (
+            typeof $scope.getWebkitHiddenAttribute() !== 'undefined') {
+            return 'webkitvisibilitychange';
+          }
+          // This should never happen, as hiddenAttributeName relies on the same
+          // criteria to be non-null.
+          return null;
+        };
+
+        $scope.setEventListenerForVisibilityChange = function() {
+          var hiddenAttributeName = (
+            $scope.determineHiddenAttributeNameForBrowser());
           if (typeof document.addEventListener === 'undefined' ||
             hiddenAttributeName === null) {
             // Browser either doesn't support addEventListener or
             // the Page Visibility API.
           } else {
-            var visibilityChange;
-            // Handle page visibility change
-            if (typeof document.hidden !== 'undefined') {
-              // Opera 12.10 and Firefox 18 and later support
-              visibilityChange = 'visibilitychange';
-            } else if (typeof document.msHidden !== 'undefined') {
-              visibilityChange = 'msvisibilitychange';
-            } else if (typeof document.webkitHidden !== 'undefined') {
-              visibilityChange = 'webkitvisibilitychange';
+            var visibilityChange = (
+              $scope.determineVisibilityChangeAttributeNameForBrowser());
+            if (visibilityChange !== null) {
+              document.addEventListener(
+                visibilityChange, $scope.onVisibilityChange, false);
             }
-            document.addEventListener(
-              visibilityChange, onVisibilityChange, false);
-
           }
         };
 
-        setEventListenerForVisibilityChange();
+        $scope.setEventListenerForVisibilityChange();
 
         /**
          * Shows the privacy modal on click.

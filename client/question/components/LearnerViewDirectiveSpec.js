@@ -219,6 +219,146 @@ describe('LearnerViewDirective', function() {
     });
   });
 
+  describe("isDocumentHidden", function() {
+    it('should return document[hiddenAttributeName]', function() {
+      expect($scope.isDocumentHidden('sure')).toEqual(document.sure);
+    });
+  });
+
+  describe("getHiddenAttribute", function() {
+    it('should return document.hidden', function() {
+      expect($scope.getHiddenAttribute()).toEqual(document.hidden);
+    });
+  });
+
+  describe("getMsHiddenAttribute", function() {
+    it('should return document.msHidden', function() {
+      expect($scope.getMsHiddenAttribute()).toEqual(document.msHidden);
+    });
+  });
+
+  describe("getWebkitHiddenAttribute", function() {
+    it('should return document.webkitHidden', function() {
+      expect($scope.getWebkitHiddenAttribute()).toEqual(document.webkitHidden);
+    });
+  });
+
+  describe("determineHiddenAttributeNameForBrowser", function() {
+    it('should return null if no hidden attribute is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue(undefined);
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual(null);
+    });
+
+    it('should return "hidden" if hidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('hidden');
+    });
+
+    it('should return "msHidden" if msHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('msHidden');
+    });
+
+    it('should return "webkitHidden" if webkitHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue('whatever');
+      var hiddenAttributeName = $scope.determineHiddenAttributeNameForBrowser();
+      expect(hiddenAttributeName).toEqual('webkitHidden');
+    });
+  });
+
+  describe("determineVisibilityChangeAttributeNameForBrowser", function() {
+    it('should return null if no hidden attribute is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue(undefined);
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual(null);
+    });
+
+    it('should return "visibilitychange" if hidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue('whatever');
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual('visibilitychange');
+    });
+
+    it('should return "msvisibilitychange" if msHidden is defined', function() {
+      spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+      spyOn($scope, 'getMsHiddenAttribute').and.returnValue('whatever');
+      var visibilityChange = (
+        $scope.determineVisibilityChangeAttributeNameForBrowser());
+      expect(visibilityChange).toEqual('msvisibilitychange');
+    });
+
+    it('should return "webkitvisibilitychange" if webkitHidden is defined',
+      function() {
+        spyOn($scope, 'getHiddenAttribute').and.returnValue(undefined);
+        spyOn($scope, 'getMsHiddenAttribute').and.returnValue(undefined);
+        spyOn($scope, 'getWebkitHiddenAttribute').and.returnValue('whatever');
+        var visibilityChange = (
+          $scope.determineVisibilityChangeAttributeNameForBrowser());
+        expect(visibilityChange).toEqual('webkitvisibilitychange');
+      });
+  });
+
+  describe("setEventListenerForVisibilityChange", function() {
+    it('should set an event listener in a supported browser', function() {
+      spyOn(document, 'addEventListener');
+      $scope.setEventListenerForVisibilityChange();
+      expect(document.addEventListener).toHaveBeenCalled();
+    });
+
+    it('should NOT set an event listener in an unsupported browser',
+      function() {
+        spyOn(document, 'addEventListener');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          null);
+        $scope.setEventListenerForVisibilityChange();
+        expect(document.addEventListener).not.toHaveBeenCalled();
+      });
+
+    it('should NOT set an event listener if visibilityChange is null',
+      function() {
+        spyOn(document, 'addEventListener');
+        spyOn($scope,
+          'determineVisibilityChangeAttributeNameForBrowser').and.returnValue(
+          null);
+        $scope.setEventListenerForVisibilityChange();
+        expect(document.addEventListener).not.toHaveBeenCalled();
+      });
+  });
+
+  describe("onVisiblityChange", function() {
+    it('should create a SessionPauseEvent when the user hides the tab',
+      function() {
+        spyOn(EventHandlerService, 'createSessionPauseEvent');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          'whatever');
+        spyOn($scope, 'isDocumentHidden').and.returnValue(true);
+        $scope.onVisibilityChange();
+        expect(EventHandlerService.createSessionPauseEvent).toHaveBeenCalled();
+      });
+
+    it('should create a SessionResumeEvent when the user returns to the tab',
+      function() {
+        spyOn(EventHandlerService, 'createSessionResumeEvent');
+        spyOn($scope, 'determineHiddenAttributeNameForBrowser').and.returnValue(
+          'whatever');
+        spyOn($scope, 'isDocumentHidden').and.returnValue(false);
+        $scope.onVisibilityChange();
+        expect(EventHandlerService.createSessionResumeEvent).toHaveBeenCalled();
+      });
+  });
+
   describe("setFeedback", function() {
     it('should create events for code submission', function() {
       spyOn($scope, 'scrollToBottomOfFeedbackWindow');
