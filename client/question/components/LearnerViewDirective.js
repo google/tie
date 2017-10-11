@@ -105,7 +105,10 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <button class="tie-python-primer tie-button" ng-class="{'night-mode': isInDarkMode}">
+                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
+                  <option value="Python" selected>Python</option>
+                </select>
+                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button" ng-class="{'night-mode': isInDarkMode}">
                   <a class="tie-primer-link" ng-class="{'night-mode': isInDarkMode}" target="_blank" ng-href="../docs/py-primer-{{isInDarkMode === true ? 'dark' : 'light'}}.html">New to python?</a>
                 </button>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
@@ -390,6 +393,9 @@ tie.directive('learnerView', [function() {
         .tie-primer-link {
           color: black;
           text-decoration: none;
+        }
+        .tie-primer-link.night-mode {
+          color: white;
         }
         .tie-privacy-button {
           float: right;
