@@ -948,7 +948,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should return the correct info if it has code in the global scope',
       function() {
-      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
+        spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
           PREREQ_CHECK_TYPE_GLOBAL_CODE, null, null);
 
@@ -961,9 +961,9 @@ describe('FeedbackGeneratorService', function() {
           '-- we cannot process code in the global scope.'
         ].join(' '));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(
-        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
-        'FAILS_GLOBAL_CODE_CHECK');
+        expect(
+          FeedbackObjectFactory.prototype.setErrorCategory
+          ).toHaveBeenCalledWith('FAILS_GLOBAL_CODE_CHECK');
       }
     );
 
@@ -1149,7 +1149,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should return the correct info if it has an invalid AuxiliaryCode call',
       function() {
-      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
+        spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
           PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
         var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -1166,15 +1166,15 @@ describe('FeedbackGeneratorService', function() {
           'Please resubmit without using this class.'
         ].join(''));
         expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(
-        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
-        'FAILS_FORBIDDEN_NAMESPACE_CHECK');
+        expect(
+          FeedbackObjectFactory.prototype.setErrorCategory
+          ).toHaveBeenCalledWith('FAILS_FORBIDDEN_NAMESPACE_CHECK');
       }
     );
 
     it('should return the correct info if it has an invalid System call',
       function() {
-      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
+        spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL, null, null);
         var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -1192,9 +1192,9 @@ describe('FeedbackGeneratorService', function() {
           'using this class.'
         ].join(''));
         expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(
-        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
-        'FAILS_FORBIDDEN_NAMESPACE_CHECK');
+        expect(
+          FeedbackObjectFactory.prototype.setErrorCategory
+          ).toHaveBeenCalledWith('FAILS_FORBIDDEN_NAMESPACE_CHECK');
       }
     );
 
