@@ -228,6 +228,7 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback if user\'s function is running ',
       'significantly more slowly than expected'
     ].join(''), function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var performanceParagraphs = FeedbackGeneratorService
         ._getPerformanceTestFeedback("linear").getParagraphs();
 
@@ -238,11 +239,15 @@ describe('FeedbackGeneratorService', function() {
         'Your code is running more slowly than expected. Can you ',
         'reconfigure it such that it runs in linear time?'
       ].join(''));
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'PERFORMANCE_TEST_FAILURE');
     });
   });
 
   describe('_getInfiniteLoopFeedback', function() {
     it('should return an error if an infinite loop is detected', function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var paragraphs = FeedbackGeneratorService
         ._getInfiniteLoopFeedback().getParagraphs();
 
@@ -252,6 +257,9 @@ describe('FeedbackGeneratorService', function() {
         'Looks like your code is hitting an infinite recursive loop.',
         'Check to see that your recursive calls terminate.'
       ].join(' '));
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'STACK_EXCEEDED_ERROR');
     });
   });
 
@@ -275,6 +283,7 @@ describe('FeedbackGeneratorService', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
 
       var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
         codeEvalResult, [0, 1, 2, 3, 4]).getParagraphs();
@@ -288,6 +297,9 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].isCodeParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
         'ZeroDivisionError: integer division or modulo by zero on line 5');
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'RUNTIME_ERROR');
     });
 
     it('should throw an error if the line number index is less than 0',
@@ -493,17 +505,22 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback if a syntax / compiler error is ',
       'found in the user\'s code'
     ].join(''), function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var paragraphs = FeedbackGeneratorService
         .getSyntaxErrorFeedback('some error').getParagraphs();
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe('some error');
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'SYNTAX_ERROR');
     });
   });
 
   describe('_getTimeoutErrorFeedback', function() {
     it('should return a specific error for TimeLimitErrors', function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var questionMock = {};
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], timeLimitErrorTraceback,
@@ -519,6 +536,9 @@ describe('FeedbackGeneratorService', function() {
         "3 seconds) we've set. Can you try to make it run ",
         "more efficiently?"
       ].join(''));
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'TIME_LIMIT_ERROR');
     });
   });
 
@@ -546,6 +566,7 @@ describe('FeedbackGeneratorService', function() {
       'should return the next hint in sequence for buggy outputs, provided ',
       'the code has been changed'
     ].join(''), function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
@@ -557,6 +578,9 @@ describe('FeedbackGeneratorService', function() {
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, codeEvalResult);
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'KNOWN_BUG_FAILURE');
       var paragraphs = feedback.getParagraphs();
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
@@ -880,6 +904,7 @@ describe('FeedbackGeneratorService', function() {
         '    return arg',
         ''
       ].join('\n');
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, null, starterCode);
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -893,9 +918,13 @@ describe('FeedbackGeneratorService', function() {
         'over.  Or, you can copy the starter code below:'
       ].join(''));
       expect(paragraphs[1].getContent()).toEqual(starterCode);
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_STARTER_CODE_CHECK');
     });
 
     it('should return the correct info if using a bad import', function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_BAD_IMPORT, ['panda'], null);
 
@@ -912,10 +941,14 @@ describe('FeedbackGeneratorService', function() {
         ' we currently support:\n');
       expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
         'math, operator, random, re, string, time');
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_BAD_IMPORT_CHECK');
     });
 
     it('should return the correct info if it has code in the global scope',
       function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
           PREREQ_CHECK_TYPE_GLOBAL_CODE, null, null);
 
@@ -928,11 +961,15 @@ describe('FeedbackGeneratorService', function() {
           '-- we cannot process code in the global scope.'
         ].join(' '));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_GLOBAL_CODE_CHECK');
       }
     );
 
     it('should throw an error if it uses the increment operator for the wrong' +
         'language', function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG, null, null, 'incrementOp');
       var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -944,6 +981,9 @@ describe('FeedbackGeneratorService', function() {
         "number, but unfortunately, this isn't valid in Python. Try ",
         "using '+= 1' instead."
       ].join(''));
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_LANGUAGE_DETECTION_CHECK');
     });
 
     it('should throw an error if it uses the decrement operator for the wrong' +
@@ -1109,6 +1149,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should return the correct info if it has an invalid AuxiliaryCode call',
       function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
           PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
         var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -1125,11 +1166,15 @@ describe('FeedbackGeneratorService', function() {
           'Please resubmit without using this class.'
         ].join(''));
         expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_FORBIDDEN_NAMESPACE_CHECK');
       }
     );
 
     it('should return the correct info if it has an invalid System call',
       function() {
+      spyOn(FeedbackObjectFactory.prototype, 'setErrorCategory');
         var prereqFailure = PrereqCheckFailureObjectFactory.create(
             PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL, null, null);
         var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
@@ -1147,6 +1192,9 @@ describe('FeedbackGeneratorService', function() {
           'using this class.'
         ].join(''));
         expect(paragraphs[1].isCodeParagraph()).toBe(true);
+      expect(
+        FeedbackObjectFactory.prototype.setErrorCategory).toHaveBeenCalledWith(
+        'FAILS_FORBIDDEN_NAMESPACE_CHECK');
       }
     );
 

@@ -80,10 +80,10 @@ tieData.factory('QuestionDataService', [
        * Currently returns null, as question versioning isn't implemented yet.
        * TODO(eyurko): Return correct question version, once implemented.
        *
-       * @returns {null}
+       * @returns {int} Currently the number 1.
        */
       getQuestionVersion: function() {
-        return null;
+        return 1;
       },
       /**
        * Returns the question's shortened instructions, which includes

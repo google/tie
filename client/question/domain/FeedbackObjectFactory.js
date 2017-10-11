@@ -58,7 +58,7 @@ tie.factory('FeedbackObjectFactory', [
       this._hintIndex = null;
 
       /**
-       * Records what type of error was found in the submission, or 'NO ERROR'.
+       * Records the type of error found in the submission, or 'SUCCESSFUL'.
        *
        * @type {string}
        * @private

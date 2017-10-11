@@ -202,6 +202,7 @@ tie.factory('FeedbackGeneratorService', [
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(buggyMessages[hintIndex]);
       feedback.setHintIndex(hintIndex);
+      feedback.setErrorCategory('KNOWN_BUG_FAILURE');
       return feedback;
     };
 
@@ -238,6 +239,7 @@ tie.factory('FeedbackGeneratorService', [
       feedback.appendCodeParagraph(
         _jsToHumanReadable(allowedOutputExample));
       feedback.appendTextParagraph('Could you fix this?');
+      feedback.setErrorCategory('INCORRECT_OUTPUT_FAILURE');
       return feedback;
     };
 
@@ -256,6 +258,7 @@ tie.factory('FeedbackGeneratorService', [
         expectedPerformance,
         ' time?'
       ].join(''));
+      feedback.setErrorCategory('PERFORMANCE_TEST_FAILURE');
       return feedback;
     };
 
@@ -310,6 +313,10 @@ tie.factory('FeedbackGeneratorService', [
       } else {
         feedback.appendTextParagraph(feedbackString);
       }
+      if (feedback.getErrorCategory() === null) {
+        // Add generic runtime error feedback.
+        feedback.setErrorCategory('RUNTIME_ERROR');
+      }
       return feedback;
     };
 
@@ -345,6 +352,7 @@ tie.factory('FeedbackGeneratorService', [
         " seconds) we've set. Can you try to make it run ",
         "more efficiently?"
       ].join(''));
+      feedback.setErrorCategory('TIME_LIMIT_ERROR');
       return feedback;
     };
 
@@ -360,6 +368,7 @@ tie.factory('FeedbackGeneratorService', [
         "Looks like your code is hitting an infinite recursive loop.",
         "Check to see that your recursive calls terminate."
       ].join(' '));
+      feedback.setErrorCategory('STACK_EXCEEDED_ERROR');
       return feedback;
     };
 
@@ -512,6 +521,7 @@ tie.factory('FeedbackGeneratorService', [
           'You\'ve completed all the tasks for this question! Click the ',
           '"Next" button to move on to the next question.'
         ].join(''));
+        feedback.setErrorCategory('SUCCESSFUL');
         return feedback;
       }
     };
@@ -565,6 +575,7 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendSyntaxErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);
+        feedback.setErrorCategory('SYNTAX_ERROR');
         return feedback;
       },
       /**
@@ -595,6 +606,7 @@ tie.factory('FeedbackGeneratorService', [
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
+          feedback.setErrorCategory('FAILS_STARTER_CODE_CHECK');
         } else if (prereqCheckFailure.isBadImport()) {
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
@@ -605,11 +617,13 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
+          feedback.setErrorCategory('FAILS_BAD_IMPORT_CHECK');
         } else if (prereqCheckFailure.hasGlobalCode()) {
           feedback.appendTextParagraph([
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
+          feedback.setErrorCategory('FAILS_GLOBAL_CODE_CHECK');
         } else if (prereqCheckFailure.hasWrongLanguage()) {
           WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
             if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
@@ -624,6 +638,7 @@ tie.factory('FeedbackGeneratorService', [
               });
             }
           });
+          feedback.setErrorCategory('FAILS_LANGUAGE_DETECTION_CHECK');
         } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
@@ -634,6 +649,7 @@ tie.factory('FeedbackGeneratorService', [
             'the ' + CLASS_NAME_AUXILIARY_CODE + ' class or its methods, ',
             'which is forbidden. Please resubmit without using this class.'
           ].join(''));
+          feedback.setErrorCategory('FAILS_FORBIDDEN_NAMESPACE_CHECK');
         } else if (prereqCheckFailure.hasInvalidSystemCall()) {
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
@@ -644,6 +660,7 @@ tie.factory('FeedbackGeneratorService', [
             CLASS_NAME_SYSTEM_CODE + ' class or its methods, which is ',
             'forbidden. Please resubmit without using this class.'
           ].join(''));
+          feedback.setErrorCategory('FAILS_FORBIDDEN_NAMESPACE_CHECK');
         } else {
           // Prereq check failure type not handled; throw an error
           throw new Error(['Unrecognized prereq check failure type ',
