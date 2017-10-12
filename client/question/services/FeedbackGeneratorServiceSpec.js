@@ -41,6 +41,7 @@ describe('FeedbackGeneratorService', function() {
 
   var LANGUAGE_PYTHON;
 
+  var FEEDBACK_CATEGORIES;
   var PYTHON_PRIMER_BUTTON_NAME;
   var UNFAMILIARITY_THRESHOLD;
 
@@ -76,6 +77,7 @@ describe('FeedbackGeneratorService', function() {
 
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
 
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
     UNFAMILIARITY_THRESHOLD = $injector.get('UNFAMILIARITY_THRESHOLD');
 
@@ -721,7 +723,8 @@ describe('FeedbackGeneratorService', function() {
 
   describe('_appendPrintFeedback', function() {
     it('appends print feedback to a given feedback object', function() {
-      var oldFeedback = FeedbackObjectFactory.create(false);
+      var oldFeedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.SYNTAX, false);
       oldFeedback.appendTextParagraph('test paragraph');
       var feedback = FeedbackGeneratorService._appendPrintFeedback(oldFeedback);
 

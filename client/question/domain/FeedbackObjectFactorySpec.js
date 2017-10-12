@@ -23,15 +23,17 @@ describe('FeedbackObjectFactory', function() {
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
   var PARAGRAPH_TYPE_SYNTAX_ERROR;
+  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     PARAGRAPH_TYPE_TEXT = $injector.get('PARAGRAPH_TYPE_TEXT');
     PARAGRAPH_TYPE_CODE = $injector.get('PARAGRAPH_TYPE_CODE');
     PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
-    FeedbackObjectFactory = $injector.get(
-      'FeedbackObjectFactory');
-    feedback = FeedbackObjectFactory.create(true);
+    FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    feedback = FeedbackObjectFactory.create(
+      FEEDBACK_CATEGORIES.SUCCESSFUL, true);
   }));
 
   describe('isAnswerCorrect', function() {
@@ -65,7 +67,8 @@ describe('FeedbackObjectFactory', function() {
   describe('appendFeedback', function() {
     it('should append any feedback paragraphs from a given Feedback object',
       function() {
-        var feedbackToAppend = FeedbackObjectFactory.create(true);
+        var feedbackToAppend = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
         feedbackToAppend.appendTextParagraph('test1');
         feedbackToAppend.appendTextParagraph('test2');
         feedback.appendTextParagraph('testA');

@@ -19,7 +19,10 @@
 
 tie.factory('FeedbackObjectFactory', [
   'FeedbackParagraphObjectFactory', 'ReinforcementObjectFactory',
-  function(FeedbackParagraphObjectFactory, ReinforcementObjectFactory) {
+  'FEEDBACK_CATEGORIES',
+  function(
+      FeedbackParagraphObjectFactory, ReinforcementObjectFactory,
+      FEEDBACK_CATEGORIES) {
     /**
      * Feedback objects contain encapsulate all of the information
      * - including personalized feedback and Reinforcement - that are used to
@@ -29,11 +32,17 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Constructor for Feedback
      *
+     * @param {string} feedbackCategory The category of the feedback. Must be
+     *    a valid entry in FEEDBACK_CATEGORIES.
      * @param {boolean} answerIsCorrect indicates whether student's answer
      *    is correct or not
      * @constructor
      */
-    var Feedback = function(answerIsCorrect) {
+    var Feedback = function(feedbackCategory, answerIsCorrect) {
+      if (!FEEDBACK_CATEGORIES.hasOwnProperty(feedbackCategory)) {
+        throw Error('Invalid feedback category: ' + feedbackCategory);
+      }
+
       /**
        * List of FeedbackParagraph objects associated with this feedback.
        *
@@ -58,12 +67,12 @@ tie.factory('FeedbackObjectFactory', [
       this._hintIndex = null;
 
       /**
-       * Records what type of error was found in the submission, or 'NO ERROR'.
+       * Records the category corresponding to this feedback.
        *
        * @type {string}
        * @private
        */
-      this._errorCategory = null;
+      this._errorCategory = feedbackCategory;
 
       /**
        * @type {Reinforcement}
@@ -157,22 +166,13 @@ tie.factory('FeedbackObjectFactory', [
 
     /**
      * A getter for the _errorCategory property.
-     * This function should return a number that indicates what type of error
-     * corresponds to this feedback (if one occurs).
+     * This function should return the category which corresponds to this
+     * feedback.
      *
-     * @returns {*|string}
+     * @returns {string}
      */
     Feedback.prototype.getErrorCategory = function() {
       return this._errorCategory;
-    };
-
-    /**
-     * A setter for the _errorCategory property.
-     *
-     * @param {string} category
-     */
-    Feedback.prototype.setErrorCategory = function(category) {
-      this._errorCategory = category;
     };
 
     /**
@@ -231,12 +231,14 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Returns a Feedback object based on the param passed in.
      *
+     * @param {string} feedbackCategory The category of the feedback. Must be
+     *    a valid entry in FEEDBACK_CATEGORIES.
      * @param {boolean} answerIsCorrect Indicates if the student's answer is
      *    correct or not.
      * @returns {Feedback}
      */
-    Feedback.create = function(answerIsCorrect) {
-      return new Feedback(answerIsCorrect);
+    Feedback.create = function(feedbackCategory, answerIsCorrect) {
+      return new Feedback(answerIsCorrect, feedbackCategory);
     };
 
     return Feedback;
