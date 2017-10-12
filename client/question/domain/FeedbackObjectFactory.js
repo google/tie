@@ -104,6 +104,16 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
+     * Prepends a FeedbackParagraph of type text to the _paragraphs Array.
+     *
+     * @param {string} text String to be inserted in text paragraph
+     */
+    Feedback.prototype.prependTextParagraph = function(text) {
+      this._paragraphs.unshift(
+        FeedbackParagraphObjectFactory.createTextParagraph(text));
+    };
+
+    /**
      * Appends a FeedbackParagraph of type text to the _paragraphs Array.
      *
      * @param {string} text String to be inserted in text paragraph
@@ -214,7 +224,6 @@ tie.factory('FeedbackObjectFactory', [
       }
     };
 
-
     /**
      * Returns all of the feedback provided as a JSON dict, preserving type
      * and content information.
@@ -238,7 +247,7 @@ tie.factory('FeedbackObjectFactory', [
      * @returns {Feedback}
      */
     Feedback.create = function(feedbackCategory, answerIsCorrect) {
-      return new Feedback(answerIsCorrect, feedbackCategory);
+      return new Feedback(feedbackCategory, answerIsCorrect);
     };
 
     return Feedback;

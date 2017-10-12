@@ -453,14 +453,15 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Appends a text feedback paragraph warning against use of print statements
-     * to the given Feedback object and returns the new Feedback object.
+     * Prepends a text feedback paragraph warning against use of print
+     * statements to the given Feedback object and returns the new Feedback
+     * object.
      *
      * @param {Feedback} feedback
      * @returns {Feedback}
      */
-    var _appendPrintFeedback = function(feedback) {
-      feedback.appendTextParagraph([
+    var _prependPrintFeedback = function(feedback) {
+      feedback.prependTextParagraph([
         'We noticed that you\'re using a print statement within your code. ',
         'Since you will not be able to use such statements in a technical ',
         'interview, TIE does not support this feature. We encourage you to ',
@@ -534,9 +535,9 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          for (var j = 0; j < suiteLevelTests.length; j++) {
+          for (j = 0; j < suiteLevelTests.length; j++) {
             if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-              var feedback = _getSuiteLevelTestFeedback(
+              feedback = _getSuiteLevelTestFeedback(
                 suiteLevelTests[j], codeHasChanged);
               if (!feedback) {
                 break;
@@ -570,7 +571,7 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
 
-        var feedback = FeedbackObjectFactory.create(
+        feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SUCCESSFUL, true);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
@@ -583,7 +584,8 @@ tie.factory('FeedbackGeneratorService', [
     return {
       /**
        * Returns the Feedback and Reinforcement associated with a user's
-       * code submission and their test results.
+       * code submission and their test results. This also includes feedback
+       * for print statements.
        *
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
@@ -612,6 +614,14 @@ tie.factory('FeedbackGeneratorService', [
 
         _applyThresholdUpdates(feedback);
         previousRuntimeErrorString = codeEvalResult.getErrorString();
+
+        // Use RegEx to find if user has print statements and add a special
+        // feedback warning explaining we don't support print statements.
+        var code = codeEvalResult.getPreprocessedCode();
+        if (_hasPrintStatement(code)) {
+          feedback = _prependPrintFeedback(feedback);
+        }
+
         return feedback;
       },
       /**
@@ -730,7 +740,7 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
-      _appendPrintFeedback: _appendPrintFeedback,
+      _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
@@ -741,9 +751,9 @@ tie.factory('FeedbackGeneratorService', [
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
-      _updateCounters: _updateCounters,
+      _prependPrintFeedback: _prependPrintFeedback,
       _resetCounters: _resetCounters,
-      _applyThresholdUpdates: _applyThresholdUpdates
+      _updateCounters: _updateCounters
     };
   }
 ]);

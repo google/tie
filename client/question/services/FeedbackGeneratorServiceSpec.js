@@ -721,24 +721,25 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_appendPrintFeedback', function() {
-    it('appends print feedback to a given feedback object', function() {
+  describe('_prependPrintFeedback', function() {
+    it('prepends print feedback to a given feedback object', function() {
       var oldFeedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.SYNTAX, false);
+        FEEDBACK_CATEGORIES.SYNTAX_ERROR, false);
       oldFeedback.appendTextParagraph('test paragraph');
-      var feedback = FeedbackGeneratorService._appendPrintFeedback(oldFeedback);
+      var feedback = FeedbackGeneratorService._prependPrintFeedback(
+        oldFeedback);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('test paragraph');
-      expect(paragraphs[1].getContent()).toEqual([
+      expect(paragraphs[0].getContent()).toEqual([
         'We noticed that you\'re using a print statement within your code. ',
         'Since you will not be able to use such statements in a technical ',
         'interview, TIE does not support this feature. We encourage you to ',
         'instead step through your code by hand.'
       ].join(''));
+      expect(paragraphs[1].getContent()).toEqual('test paragraph');
     });
   });
 
