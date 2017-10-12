@@ -46,7 +46,7 @@ describe('FeedbackObjectFactory', function() {
   });
 
   describe('isAnswerCorrect', function() {
-    it('should return whether or not answer is correct', function() {
+    it('should return whether or not the answer is correct', function() {
       expect(feedback.isAnswerCorrect()).toBe(true);
     });
   });

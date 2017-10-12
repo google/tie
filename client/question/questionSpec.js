@@ -67,7 +67,7 @@ describe('question.js', function() {
   });
 
   describe('FEEDBACK_CATEGORIES', function() {
-    it('should have keys being equal to values', function() {
+    it('should have identical keys and values', function() {
       for (var key in FEEDBACK_CATEGORIES) {
         expect(key).toEqual(FEEDBACK_CATEGORIES[key]);
       }
