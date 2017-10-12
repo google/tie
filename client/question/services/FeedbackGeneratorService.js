@@ -26,6 +26,7 @@ tie.factory('FeedbackGeneratorService', [
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
   'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
+  'FEEDBACK_CATEGORIES',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
@@ -33,7 +34,8 @@ tie.factory('FeedbackGeneratorService', [
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
     PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
-    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD) {
+    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
+    FEEDBACK_CATEGORIES) {
 
     /**
      * Counter to keep track of language unfamiliarity errors which include
@@ -160,49 +162,97 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns a boolean representing whether the student's code has changed
+     * from the previous attempt.
+     *
+     * @param {CodeEvalResult} codeEvalResult
+     * @returns {boolean}
+     * @private
+     */
+    var _hasCodeChanged = function(codeEvalResult) {
+      var lastSnapshot = (
+        TranscriptService.getTranscript().getMostRecentSnapshot());
+      return (
+        lastSnapshot !== null &&
+        lastSnapshot.getCodeEvalResult() !== null &&
+        codeEvalResult.hasSamePreprocessedCodeAs(
+          lastSnapshot.getCodeEvalResult()));
+    };
+
+    /**
+     * Returns the specific feedback created as a result of a failing buggy
+     * output or suite-level test, or null if all hints for that test have been
+     * exhausted.
+     *
+     * @param {Array} messages The array of message strings.
+     * @param {bool} codeHasChanged Whether the learner's code has changed
+     *   since the previous submission attempt.
+     * @param {string} currentErrorCategory The error category for the current
+     *   set of message strings.
+     * @returns {Feedback|null}
+     * @private
+     */
+    var _getSpecificTestFeedback = function(
+        messages, codeHasChanged, currentErrorCategory) {
+      var previousHintIndex = 0;
+      var previousMessage = null;
+
+      var lastSnapshot = (
+        TranscriptService.getTranscript().getMostRecentSnapshot());
+      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
+        var previousErrorCategory = (
+          lastSnapshot.getFeedback().getErrorCategory());
+        previousMessage = previousFeedback.getParagraphs()[0].getContent();
+        if (previousErrorCategory === currentErrorCategory) {
+          previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
+        }
+      }
+
+      var newHintIndex = previousHintIndex;
+      // Provide a new hint if the student gets stuck on the same bug despite
+      // having modified their code, since in that case we don't want to give
+      // the same message twice in a row.
+      if (codeHasChanged && messages[previousHintIndex] === previousMessage) {
+        newHintIndex++;
+      }
+
+      if (newHintIndex >= messages.length) {
+        return null;
+      }
+      var feedback = FeedbackObjectFactory.create(false);
+      feedback.appendTextParagraph(messages[newHintIndex]);
+      feedback.setHintIndex(newHintIndex);
+      return feedback;
+    };
+
+    /**
      * Returns the feedback created as a result of a failing buggy output test,
      * or null if all hints for that test have been exhausted.
      *
      * @param {BuggyOutputTest} failingTest
-     * @param {CodeEvalResult} codeEvalResult
+     * @param {bool} codeHasChanged
      * @returns {Feedback|null}
      * @private
      */
-    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
-      var hintIndex = 0;
-      var buggyMessages = failingTest.getMessages();
-      var lastSnapshot = (
-        TranscriptService.getTranscript().getMostRecentSnapshot());
-      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
-        // This section makes sure to provide a new hint
-        // if the student gets stuck on the same bug by checking
-        // that they've submitted new code with the same error.
-        var previousFeedback = lastSnapshot.getFeedback();
-        var previousHintIndex = previousFeedback.getHintIndex();
-        if (previousHintIndex !== null) {
-          var previousMessages = previousFeedback.getParagraphs();
-          // This could cause a problem if two different buggy outputs
-          // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() ===
-              buggyMessages[previousHintIndex]) {
-            var codeHasChanged = codeEvalResult.hasSamePreprocessedCodeAs(
-              lastSnapshot.getCodeEvalResult());
-            var tentativeHintIndex = (
-              previousHintIndex + (codeHasChanged ? 0 : 1));
+    var _getBuggyOutputTestFeedback = function(failingTest, codeHasChanged) {
+      var messages = failingTest.getMessages();
+      return _getSpecificTestFeedback(
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.KNOWN_BUG_ERROR);
+    };
 
-            if (tentativeHintIndex >= buggyMessages.length) {
-              return null;
-            } else {
-              hintIndex = tentativeHintIndex;
-            }
-          }
-        }
-      }
-
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(buggyMessages[hintIndex]);
-      feedback.setHintIndex(hintIndex);
-      return feedback;
+    /**
+     * Returns the feedback created as a result of a failing suite-level test,
+     * or null if all hints for that test have been exhausted.
+     *
+     * @param {SuiteLevelTest} suiteLevelTest
+     * @param {CodeEvalResult} codeHasChanged
+     * @returns {Feedback|null}
+     * @private
+     */
+    var _getSuiteLevelTestFeedback = function(suiteLevelTest, codeHasChanged) {
+      var messages = suiteLevelTest.getMessages();
+      return _getSpecificTestFeedback(
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.SUITE_LEVEL_ERROR);
     };
 
     /**
@@ -450,25 +500,34 @@ tie.factory('FeedbackGeneratorService', [
           return feedback;
         }
       } else {
-        // Get all the tests from first task to current that need to be
-        // executed.
-        var buggyOutputTests = [];
-        var testSuitesForTasks = [];
-        var performanceTests = [];
-        for (var i = 0; i < tasks.length; i++) {
-          buggyOutputTests.push(tasks[i].getBuggyOutputTests());
-          testSuitesForTasks.push(tasks[i].getTestSuites());
-          performanceTests.push(tasks[i].getPerformanceTests());
-        }
         var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
         var performanceTestResults = codeEvalResult.getPerformanceTestResults();
+        var codeHasChanged = _hasCodeChanged(codeEvalResult);
 
-        for (i = 0; i < tasks.length; i++) {
-          for (var j = 0; j < buggyOutputTests[i].length; j++) {
+        for (var i = 0; i < tasks.length; i++) {
+          var buggyOutputTests = tasks[i].getBuggyOutputTests();
+          var suiteLevelTests = tasks[i].getSuiteLevelTests();
+          var testSuites = tasks[i].getTestSuites();
+          var performanceTests = tasks[i].getPerformanceTests();
+
+          var passingSuiteIds = [];
+          testSuites.forEach(function(suite, suiteIndex) {
+            var testCases = suite.getTestCases();
+            var observedSuiteOutputs = observedOutputs[i][suiteIndex];
+            var allTestCasesPass = testCases.every(function(testCase, index) {
+              return testCase.matchesOutput(observedSuiteOutputs[index]);
+            });
+
+            if (allTestCasesPass) {
+              passingSuiteIds.push(suite.getId());
+            }
+          });
+
+          for (var j = 0; j < buggyOutputTests.length; j++) {
             if (buggyOutputTestResults[i][j]) {
               var feedbackToAppend = _getBuggyOutputTestFeedback(
-                buggyOutputTests[i][j], codeEvalResult);
+                buggyOutputTests[j], codeHasChanged);
               // Null feedback indicates that we've run out of hints and should
               // provide correctness-test output feedback instead.
               if (!feedbackToAppend) {
@@ -480,8 +539,21 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          for (j = 0; j < testSuitesForTasks[i].length; j++) {
-            var testCases = testSuitesForTasks[i][j].getTestCases();
+          for (var j = 0; j < suiteLevelTests.length; j++) {
+            if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+              var feedbackToAppend = _getSuiteLevelTestFeedback(
+                suiteLevelTests[j], codeHasChanged);
+              if (!feedbackToAppend) {
+                break;
+              }
+
+              feedback.appendFeedback(feedbackToAppend);
+              return feedback;
+            }
+          }
+
+          for (j = 0; j < testSuites.length; j++) {
+            var testCases = testSuites[j].getTestCases();
             for (var k = 0; k < testCases.length; k++) {
               var testCase = testCases[k];
               var observedOutput = observedOutputs[i][j][k];
@@ -494,9 +566,9 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          for (j = 0; j < performanceTests[i].length; j++) {
+          for (j = 0; j < performanceTests.length; j++) {
             var expectedPerformance = (
-              performanceTests[i][j].getExpectedPerformance());
+              performanceTests[j].getExpectedPerformance());
             var observedPerformance = performanceTestResults[i][j];
 
             if (expectedPerformance !== observedPerformance) {
