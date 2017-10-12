@@ -83,10 +83,10 @@ describe('QuestionDataService', function() {
   });
 
   describe('getQuestionVersion', function() {
-    it('should return null exclusively, for now', function() {
+    it('should return 1 exclusively, for now', function() {
       QuestionDataService.initCurrentQuestionSet('strings');
       expect(QuestionDataService.getQuestionVersion())
-        .toEqual(null);
+        .toEqual(1);
     });
   });
 
