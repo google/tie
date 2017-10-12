@@ -126,7 +126,14 @@ tie.constant('FEEDBACK_CATEGORIES', {
  */
 tie.constant('SYSTEM_CODE', {
   python: [
+    'import collections',
     'import copy',
+    'import image',
+    'import math',
+    'import operator',
+    'import random',
+    'import re',
+    'import string',
     'import time',
     '',
     '# A copy of the most-recently processed input item. This is useful',
