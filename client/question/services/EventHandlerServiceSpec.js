@@ -33,12 +33,9 @@ describe('EventHandlerService', function() {
   }));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
-    FEEDBACK_CATEGORIES = $injector.get(
-      'FEEDBACK_CATEGORIES');
-    EventHandlerService = $injector.get(
-      'EventHandlerService');
-    ServerHandlerService = $injector.get(
-      'ServerHandlerService');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    EventHandlerService = $injector.get('EventHandlerService');
+    ServerHandlerService = $injector.get('ServerHandlerService');
     sessionId = '1000';
     questionId = 'katamari';
     questionVersion = 'katamari forever';
@@ -161,8 +158,8 @@ describe('EventHandlerService', function() {
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createCodeSubmitEvent(
-          sessionId, feedbackText, FEEDBACK_CATEGORIES[0],
-          code, false);
+          sessionId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code,
+          false);
         $httpBackend.flush();
       });
   });

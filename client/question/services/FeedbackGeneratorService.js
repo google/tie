@@ -200,10 +200,10 @@ tie.factory('FeedbackGeneratorService', [
       var lastSnapshot = (
         TranscriptService.getTranscript().getMostRecentSnapshot());
       if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
-        var previousErrorCategory = (
-          lastSnapshot.getFeedback().getErrorCategory());
+        var previousFeedback = lastSnapshot.getFeedback();
         previousMessage = previousFeedback.getParagraphs()[0].getContent();
-        if (previousErrorCategory === currentErrorCategory) {
+
+        if (previousFeedback.getErrorCategory() === currentErrorCategory) {
           previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
         }
       }
@@ -221,6 +221,7 @@ tie.factory('FeedbackGeneratorService', [
       }
       var feedback = FeedbackObjectFactory.create(false);
       feedback.appendTextParagraph(messages[newHintIndex]);
+      feedback.setErrorCategory(currentErrorCategory);
       feedback.setHintIndex(newHintIndex);
       return feedback;
     };
@@ -237,7 +238,7 @@ tie.factory('FeedbackGeneratorService', [
     var _getBuggyOutputTestFeedback = function(failingTest, codeHasChanged) {
       var messages = failingTest.getMessages();
       return _getSpecificTestFeedback(
-        messages, codeHasChanged, FEEDBACK_CATEGORIES.KNOWN_BUG_ERROR);
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
     };
 
     /**
@@ -252,7 +253,7 @@ tie.factory('FeedbackGeneratorService', [
     var _getSuiteLevelTestFeedback = function(suiteLevelTest, codeHasChanged) {
       var messages = suiteLevelTest.getMessages();
       return _getSpecificTestFeedback(
-        messages, codeHasChanged, FEEDBACK_CATEGORIES.SUITE_LEVEL_ERROR);
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
     };
 
     /**
