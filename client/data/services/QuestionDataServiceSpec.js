@@ -82,6 +82,14 @@ describe('QuestionDataService', function() {
     });
   });
 
+  describe('getQuestionVersion', function() {
+    it('should return null exclusively, for now', function() {
+      QuestionDataService.initCurrentQuestionSet('strings');
+      expect(QuestionDataService.getQuestionVersion())
+        .toEqual(null);
+    });
+  });
+
   describe('getQuestionPreviewInstructions', function() {
     it('should get the title of a question', function() {
       QuestionDataService.initCurrentQuestionSet('strings');

@@ -71,9 +71,19 @@ tieData.factory('QuestionDataService', [
        * @param {string} questionId
        * @returns {string}
        */
-      getQuestionTitle(questionId) {
+      getQuestionTitle: function(questionId) {
         var question = this.getQuestion(questionId);
         return question.getTitle();
+      },
+      /**
+       * Returns the question's version.
+       * Currently returns null, as question versioning isn't implemented yet.
+       * TODO(eyurko): Return correct question version, once implemented.
+       *
+       * @returns {null}
+       */
+      getQuestionVersion: function() {
+        return null;
       },
       /**
        * Returns the question's shortened instructions, which includes

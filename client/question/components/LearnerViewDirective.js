@@ -502,16 +502,16 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
-      'LocalStorageService', 'ServerHandlerService', 'SECONDS_TO_MILLISECONDS',
-      'DEFAULT_AUTOSAVE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL',
-      'DEFAULT_QUESTION_ID',
+      'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
+      'SessionIdService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
-          LocalStorageService, ServerHandlerService, SECONDS_TO_MILLISECONDS,
-          DEFAULT_AUTOSAVE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL,
-          DEFAULT_QUESTION_ID) {
+          EventHandlerService, LocalStorageService, ServerHandlerService,
+          SessionIdService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -661,6 +661,94 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
+        $scope.onVisibilityChange = function() {
+          // When a user changes tabs (or comes back), add a SessionPause
+          // or SessionResumeEvent, respectively.
+          var hiddenAttributeName = (
+            $scope.determineHiddenAttributeNameForBrowser());
+          if (hiddenAttributeName !== null) {
+            if ($scope.isDocumentHidden(hiddenAttributeName)) {
+              EventHandlerService.createSessionPauseEvent(
+                SessionIdService.getSessionId());
+            } else {
+              EventHandlerService.createSessionResumeEvent(
+                SessionIdService.getSessionId());
+            }
+          }
+        };
+
+        // Move document[hiddenAttributeName] getter into function for testing.
+        $scope.isDocumentHidden = function(hiddenAttributeName) {
+          return document[hiddenAttributeName];
+        };
+
+        // Move document.hidden getter into function for testing.
+        $scope.getHiddenAttribute = function() {
+          return document.hidden;
+        };
+
+        // Move document.msHidden getter into function for testing.
+        $scope.getMsHiddenAttribute = function() {
+          return document.msHidden;
+        };
+
+        // Move document.webkitHidden getter into function for testing.
+        $scope.getWebkitHiddenAttribute = function() {
+          return document.webkitHidden;
+        };
+
+        /**
+         * Different browsers call the "hidden" attribute different things.
+         * This method determines what the current browser calls its "hidden"
+         * attribute and returns it.
+         */
+        $scope.determineHiddenAttributeNameForBrowser = function() {
+          if (typeof $scope.getHiddenAttribute() !== 'undefined') {
+            // Opera 12.10 and Firefox 18 and later support
+            return 'hidden';
+          } else if (typeof $scope.getMsHiddenAttribute() !== 'undefined') {
+            return 'msHidden';
+          } else if (typeof $scope.getWebkitHiddenAttribute() !== 'undefined') {
+            return 'webkitHidden';
+          }
+          return null;
+        };
+
+        $scope.determineVisibilityChangeAttributeNameForBrowser = function() {
+          // Handle page visibility change
+          if (typeof $scope.getHiddenAttribute() !== 'undefined') {
+            // Opera 12.10 and Firefox 18 and later support
+            return 'visibilitychange';
+          } else if (typeof $scope.getMsHiddenAttribute() !== 'undefined') {
+            return 'msvisibilitychange';
+          } else if (
+            typeof $scope.getWebkitHiddenAttribute() !== 'undefined') {
+            return 'webkitvisibilitychange';
+          }
+          // This should never happen, as hiddenAttributeName relies on the same
+          // criteria to be non-null.
+          return null;
+        };
+
+        $scope.setEventListenerForVisibilityChange = function() {
+          var hiddenAttributeName = (
+            $scope.determineHiddenAttributeNameForBrowser());
+          if (typeof document.addEventListener === 'undefined' ||
+            hiddenAttributeName === null) {
+            // Browser either doesn't support addEventListener or
+            // the Page Visibility API.
+          } else {
+            var visibilityChange = (
+              $scope.determineVisibilityChangeAttributeNameForBrowser());
+            if (visibilityChange !== null) {
+              document.addEventListener(
+                visibilityChange, $scope.onVisibilityChange, false);
+            }
+          }
+        };
+
+        $scope.setEventListenerForVisibilityChange();
+
         /**
          * Shows the privacy modal on click.
          */
@@ -674,7 +762,8 @@ tie.directive('learnerView', [function() {
          *
          * @param {string} questionId ID of question whose data will be loaded
          */
-        var loadQuestion = function(questionId) {
+        $scope.loadQuestion = function(questionId) {
+          SessionIdService.resetSessionId();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
           currentTaskIndex = 0;
@@ -701,6 +790,12 @@ tie.directive('learnerView', [function() {
           $scope.nextButtonIsShown = false;
           var feedback = FeedbackObjectFactory.create();
           $scope.greetingParagraphs = feedback.getParagraphs();
+          EventHandlerService.createQuestionStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createTaskStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion(), currentTaskIndex);
         };
 
         /**
@@ -734,25 +829,41 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Displays congratulations when the question is complete.
+         * Also sends a QuestionCompleteEvent to the backend.
+         */
+        $scope.completeQuestion = function() {
+          congratulatoryFeedback.clear();
+          congratulatoryFeedback.appendTextParagraph(
+              "Good work! You've completed this question.");
+          congratulatoryFeedback.appendTextParagraph(
+              'Click the "Next" button to the right to proceed to the ' +
+              'next question.');
+          $scope.nextButtonIsShown = true;
+          $scope.feedbackStorage.push({
+            feedbackParagraphs: congratulatoryFeedback.getParagraphs()
+          });
+          EventHandlerService.createQuestionCompleteEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion());
+        };
+
+        /**
          * Sets the feedbackStorage property to the appropriate text according
          * to the feedback passed into the function.
          *
          * @param {Feedback} feedback
+         * @param {string} code
          */
-        var setFeedback = function(feedback) {
+        $scope.setFeedback = function(feedback, code) {
+          EventHandlerService.createCodeSubmitEvent(
+            SessionIdService.getSessionId(),
+            feedback.getParagraphsAsListOfDicts(), feedback.getErrorCategory(),
+            code, feedback.isAnswerCorrect());
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
-              congratulatoryFeedback.clear();
-              congratulatoryFeedback.appendTextParagraph(
-                  "Good work! You've completed this question.");
-              congratulatoryFeedback.appendTextParagraph(
-                  'Click the "Next" button to the right to proceed to the ' +
-                  'next question.');
-              $scope.nextButtonIsShown = true;
-              $scope.feedbackStorage.push({
-                feedbackParagraphs: congratulatoryFeedback.getParagraphs()
-              });
+              $scope.completeQuestion();
             } else {
               $scope.showNextTask();
             }
@@ -820,9 +931,9 @@ tie.directive('learnerView', [function() {
           $scope.currentQuestionId =
             $location.search().qid || DEFAULT_QUESTION_ID;
           try {
-            loadQuestion($scope.currentQuestionId);
+            $scope.loadQuestion($scope.currentQuestionId);
           } catch (Error) {
-            loadQuestion(DEFAULT_QUESTION_ID);
+            $scope.loadQuestion(DEFAULT_QUESTION_ID);
           }
         };
 
@@ -866,6 +977,9 @@ tie.directive('learnerView', [function() {
          * it shows a congratulatory alert.
          */
         $scope.showNextTask = function() {
+          EventHandlerService.createTaskCompleteEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion(), currentTaskIndex);
           if (question.isLastTask(currentTaskIndex)) {
             // TODO(talee): Flesh this out some more.
             alert('Congratulations, you have finished!');
@@ -875,6 +989,9 @@ tie.directive('learnerView', [function() {
             $scope.instructions = tasks[currentTaskIndex].getInstructions();
             $scope.nextButtonIsShown = false;
             clearFeedback();
+            EventHandlerService.createTaskStartEvent(
+              SessionIdService.getSessionId(), $scope.currentQuestionId,
+              QuestionDataService.getQuestionVersion(), currentTaskIndex);
           }
         };
 
@@ -892,7 +1009,9 @@ tie.directive('learnerView', [function() {
               SolutionHandlerService.processSolutionAsync(
                 orderedTasks, question.getStarterCode(language),
                 code, question.getAuxiliaryCode(language), language
-              ).then(setFeedback);
+              ).then(function(feedback) {
+                $scope.setFeedback(feedback, code);
+              });
             }, DURATION_MSEC_WAIT_FOR_SCROLL);
           }, 0);
           storeCodeAndUpdateCachedCode(
@@ -906,7 +1025,9 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           LocalStorageService.clearLocalStorageCode(
             $scope.currentQuestionId, language);
-          loadQuestion($scope.currentQuestionId);
+          EventHandlerService.createCodeResetEvent(
+            SessionIdService.getSessionId());
+          $scope.loadQuestion($scope.currentQuestionId);
         };
 
         /**
