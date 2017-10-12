@@ -21,6 +21,7 @@ describe('question.js', function() {
   var PARAGRAPH_TYPE_CODE;
   var PARAGRAPH_TYPE_SYNTAX_ERROR;
   var RUNTIME_ERROR_FEEDBACK_MESSAGES;
+  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -30,6 +31,7 @@ describe('question.js', function() {
     PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
     RUNTIME_ERROR_FEEDBACK_MESSAGES = $injector.get(
       'RUNTIME_ERROR_FEEDBACK_MESSAGES');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
@@ -61,6 +63,14 @@ describe('question.js', function() {
           'defined KeyError: key AttributeError: \'key\' object has no ',
           'attribute \'length\''].join(''))).toEqual('string');
       });
+    });
+  });
+
+  describe('FEEDBACK_CATEGORIES', function() {
+    it('should have identical keys and values', function() {
+      for (var key in FEEDBACK_CATEGORIES) {
+        expect(key).toEqual(FEEDBACK_CATEGORIES[key]);
+      }
     });
   });
 });

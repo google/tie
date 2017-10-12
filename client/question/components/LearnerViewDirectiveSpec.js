@@ -23,6 +23,7 @@ describe('LearnerViewDirective', function() {
   var QuestionDataService;
   var EventHandlerService;
   var FeedbackObjectFactory;
+  var FEEDBACK_CATEGORIES;
   var $location;
 
   beforeEach(module('tie'));
@@ -50,9 +51,10 @@ describe('LearnerViewDirective', function() {
 
   var QUESTION_ID = 'reverseWords';
 
-  beforeEach(inject(function($compile, $rootScope, _QuestionDataService_,
-    _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
-    _EventHandlerService_, _FeedbackObjectFactory_) {
+  beforeEach(inject(function(
+      $compile, $rootScope, $injector, _QuestionDataService_,
+      _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
+      _EventHandlerService_, _FeedbackObjectFactory_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -75,6 +77,7 @@ describe('LearnerViewDirective', function() {
     DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
     AUTOSAVE_MILLISECONDS =
       DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS;
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
     localStorage.clear();
 
@@ -369,7 +372,9 @@ describe('LearnerViewDirective', function() {
         '    return result',
         ''
       ].join('\n');
-      $scope.setFeedback(FeedbackObjectFactory.create(false), code);
+      $scope.setFeedback(
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.RUNTIME_ERROR, false),
+        code);
       expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
     });
   });

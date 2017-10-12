@@ -150,19 +150,19 @@ tie.factory('EventHandlerService', [
        * Submits data to TIE's backend to create a CodeSubmitEvent.
        * @param {string} sessionId Unique ID for a user's question session.
        * @param {string} feedbackText The feedback shown to the user.
-       * @param {string} errorCategory The type of feedback shown
-       *  to the user.
+       * @param {string} feedbackCategory The type of feedback shown to the
+       *   user.
        * @param {string} code The user's submitted code.
        * @param {boolean} success Whether or not the question was completed.
        *
        */
       createCodeSubmitEvent: function(
-        sessionId, feedbackText, errorCategory, code, success) {
+          sessionId, feedbackText, feedbackCategory, code, success) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
             sessionId: sessionId,
             feedbackText: feedbackText,
-            errorCategory: errorCategory,
+            feedbackCategory: feedbackCategory,
             code: code,
             success: success
           };

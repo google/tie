@@ -26,6 +26,7 @@ tie.factory('FeedbackGeneratorService', [
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
   'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
+  'FEEDBACK_CATEGORIES',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
@@ -33,7 +34,8 @@ tie.factory('FeedbackGeneratorService', [
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
     PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
-    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD) {
+    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
+    FEEDBACK_CATEGORIES) {
 
     /**
      * Counter to keep track of language unfamiliarity errors which include
@@ -160,49 +162,99 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns a boolean representing whether the student's code has changed
+     * from the previous attempt.
+     *
+     * @param {CodeEvalResult} codeEvalResult
+     * @returns {boolean}
+     * @private
+     */
+    var _hasCodeChanged = function(codeEvalResult) {
+      var lastSnapshot = (
+        TranscriptService.getTranscript().getMostRecentSnapshot());
+      return (
+        lastSnapshot !== null &&
+        lastSnapshot.getCodeEvalResult() !== null &&
+        codeEvalResult.hasSamePreprocessedCodeAs(
+          lastSnapshot.getCodeEvalResult()));
+    };
+
+    /**
+     * Returns the specific feedback created as a result of a failing buggy
+     * output or suite-level test, or null if all hints for that test have been
+     * exhausted.
+     *
+     * @param {Array} messages The array of message strings.
+     * @param {bool} codeHasChanged Whether the learner's code has changed
+     *   since the previous submission attempt.
+     * @param {string} currentFeedbackCategory The feedback category for the
+     *   current set of message strings.
+     * @returns {Feedback|null}
+     * @private
+     */
+    var _getSpecificTestFeedback = function(
+        messages, codeHasChanged, currentFeedbackCategory) {
+      var previousHintIndex = 0;
+      var previousMessage = null;
+
+      var lastSnapshot = (
+        TranscriptService.getTranscript().getMostRecentSnapshot());
+      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
+        var previousFeedback = lastSnapshot.getFeedback();
+        previousMessage = previousFeedback.getParagraphs()[0].getContent();
+
+        if (previousFeedback.getFeedbackCategory() ===
+            currentFeedbackCategory) {
+          previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
+        }
+      }
+
+      var newHintIndex = previousHintIndex;
+      // Provide a new hint if the student gets stuck on the same bug despite
+      // having modified their code, since in that case we don't want to give
+      // the same message twice in a row.
+      if (codeHasChanged && messages[previousHintIndex] === previousMessage) {
+        newHintIndex++;
+      }
+
+      if (newHintIndex >= messages.length) {
+        return null;
+      }
+      var feedback = FeedbackObjectFactory.create(
+        currentFeedbackCategory, false);
+      feedback.appendTextParagraph(messages[newHintIndex]);
+      feedback.setHintIndex(newHintIndex);
+      return feedback;
+    };
+
+    /**
      * Returns the feedback created as a result of a failing buggy output test,
      * or null if all hints for that test have been exhausted.
      *
      * @param {BuggyOutputTest} failingTest
-     * @param {CodeEvalResult} codeEvalResult
+     * @param {bool} codeHasChanged
      * @returns {Feedback|null}
      * @private
      */
-    var _getBuggyOutputTestFeedback = function(failingTest, codeEvalResult) {
-      var hintIndex = 0;
-      var buggyMessages = failingTest.getMessages();
-      var lastSnapshot = (
-        TranscriptService.getTranscript().getMostRecentSnapshot());
-      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
-        // This section makes sure to provide a new hint
-        // if the student gets stuck on the same bug by checking
-        // that they've submitted new code with the same error.
-        var previousFeedback = lastSnapshot.getFeedback();
-        var previousHintIndex = previousFeedback.getHintIndex();
-        if (previousHintIndex !== null) {
-          var previousMessages = previousFeedback.getParagraphs();
-          // This could cause a problem if two different buggy outputs
-          // have the exact same hint, but that shouldn't be allowed.
-          if (previousMessages[0].getContent() ===
-              buggyMessages[previousHintIndex]) {
-            var codeHasChanged = codeEvalResult.hasSamePreprocessedCodeAs(
-              lastSnapshot.getCodeEvalResult());
-            var tentativeHintIndex = (
-              previousHintIndex + (codeHasChanged ? 0 : 1));
+    var _getBuggyOutputTestFeedback = function(failingTest, codeHasChanged) {
+      var messages = failingTest.getMessages();
+      return _getSpecificTestFeedback(
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+    };
 
-            if (tentativeHintIndex >= buggyMessages.length) {
-              return null;
-            } else {
-              hintIndex = tentativeHintIndex;
-            }
-          }
-        }
-      }
-
-      var feedback = FeedbackObjectFactory.create(false);
-      feedback.appendTextParagraph(buggyMessages[hintIndex]);
-      feedback.setHintIndex(hintIndex);
-      return feedback;
+    /**
+     * Returns the feedback created as a result of a failing suite-level test,
+     * or null if all hints for that test have been exhausted.
+     *
+     * @param {SuiteLevelTest} suiteLevelTest
+     * @param {CodeEvalResult} codeHasChanged
+     * @returns {Feedback|null}
+     * @private
+     */
+    var _getSuiteLevelTestFeedback = function(suiteLevelTest, codeHasChanged) {
+      var messages = suiteLevelTest.getMessages();
+      return _getSpecificTestFeedback(
+        messages, codeHasChanged, FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
     };
 
     /**
@@ -219,7 +271,8 @@ tie.factory('FeedbackGeneratorService', [
     var _getCorrectnessTestFeedback = function(
       outputFunctionName, testCase, observedOutput) {
       var allowedOutputExample = testCase.getAnyAllowedOutput();
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, false);
       // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
       if (outputFunctionName) {
@@ -249,7 +302,8 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getPerformanceTestFeedback = function(expectedPerformance) {
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, false);
       feedback.appendTextParagraph([
         'Your code is running more slowly than expected. Can you ',
         'reconfigure it such that it runs in ',
@@ -275,7 +329,8 @@ tie.factory('FeedbackGeneratorService', [
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.RUNTIME_ERROR, false);
 
       var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
@@ -338,7 +393,8 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getTimeoutErrorFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR, false);
       feedback.appendTextParagraph([
         "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
@@ -355,7 +411,8 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getInfiniteLoopFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(false);
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR, false);
       feedback.appendTextParagraph([
         "Looks like your code is hitting an infinite recursive loop.",
         "Check to see that your recursive calls terminate."
@@ -396,14 +453,15 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Appends a text feedback paragraph warning against use of print statements
-     * to the given Feedback object and returns the new Feedback object.
+     * Prepends a text feedback paragraph warning against use of print
+     * statements to the given Feedback object and returns the new Feedback
+     * object.
      *
      * @param {Feedback} feedback
      * @returns {Feedback}
      */
-    var _appendPrintFeedback = function(feedback) {
-      feedback.appendTextParagraph([
+    var _prependPrintFeedback = function(feedback) {
+      feedback.prependTextParagraph([
         'We noticed that you\'re using a print statement within your code. ',
         'Since you will not be able to use such statements in a technical ',
         'interview, TIE does not support this feature. We encourage you to ',
@@ -426,88 +484,95 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getFeedbackWithoutReinforcement = function(
         tasks, codeEvalResult, rawCodeLineIndexes) {
-      var feedback = FeedbackObjectFactory.create(false);
-      // Use RegEx to find if user has print statements and add a special
-      // feedback warning explaining we don't support print statements.
-      var code = codeEvalResult.getPreprocessedCode();
-      if (_hasPrintStatement(code)) {
-        feedback = _appendPrintFeedback(feedback);
-      }
 
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
         // integrate it into the existing feedback pipeline.
         if (errorString.startsWith('TimeLimitError')) {
-          feedback.appendFeedback(_getTimeoutErrorFeedback());
-          return feedback;
+          return _getTimeoutErrorFeedback();
         } else if (errorString.startsWith('ExternalError: RangeError')) {
-          feedback.appendFeedback(_getInfiniteLoopFeedback());
-          return feedback;
+          return _getInfiniteLoopFeedback();
         } else {
-          feedback.appendFeedback(_getRuntimeErrorFeedback(
-            codeEvalResult, rawCodeLineIndexes));
-          return feedback;
+          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         }
       } else {
-        // Get all the tests from first task to current that need to be
-        // executed.
-        var buggyOutputTests = [];
-        var testSuitesForTasks = [];
-        var performanceTests = [];
-        for (var i = 0; i < tasks.length; i++) {
-          buggyOutputTests.push(tasks[i].getBuggyOutputTests());
-          testSuitesForTasks.push(tasks[i].getTestSuites());
-          performanceTests.push(tasks[i].getPerformanceTests());
-        }
         var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
         var observedOutputs = codeEvalResult.getCorrectnessTestResults();
         var performanceTestResults = codeEvalResult.getPerformanceTestResults();
+        var codeHasChanged = _hasCodeChanged(codeEvalResult);
 
-        for (i = 0; i < tasks.length; i++) {
-          for (var j = 0; j < buggyOutputTests[i].length; j++) {
+        for (var i = 0; i < tasks.length; i++) {
+          var buggyOutputTests = tasks[i].getBuggyOutputTests();
+          var suiteLevelTests = tasks[i].getSuiteLevelTests();
+          var testSuites = tasks[i].getTestSuites();
+          var performanceTests = tasks[i].getPerformanceTests();
+
+          var passingSuiteIds = [];
+          testSuites.forEach(function(suite, suiteIndex) {
+            var testCases = suite.getTestCases();
+            var observedSuiteOutputs = observedOutputs[i][suiteIndex];
+            var allTestCasesPass = testCases.every(function(testCase, index) {
+              return testCase.matchesOutput(observedSuiteOutputs[index]);
+            });
+
+            if (allTestCasesPass) {
+              passingSuiteIds.push(suite.getId());
+            }
+          });
+
+          for (var j = 0; j < buggyOutputTests.length; j++) {
             if (buggyOutputTestResults[i][j]) {
-              var feedbackToAppend = _getBuggyOutputTestFeedback(
-                buggyOutputTests[i][j], codeEvalResult);
+              var feedback = _getBuggyOutputTestFeedback(
+                buggyOutputTests[j], codeHasChanged);
               // Null feedback indicates that we've run out of hints and should
               // provide correctness-test output feedback instead.
-              if (!feedbackToAppend) {
+              if (!feedback) {
                 break;
               }
 
-              feedback.appendFeedback(feedbackToAppend);
               return feedback;
             }
           }
 
-          for (j = 0; j < testSuitesForTasks[i].length; j++) {
-            var testCases = testSuitesForTasks[i][j].getTestCases();
+          for (j = 0; j < suiteLevelTests.length; j++) {
+            if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+              feedback = _getSuiteLevelTestFeedback(
+                suiteLevelTests[j], codeHasChanged);
+              if (!feedback) {
+                break;
+              }
+
+              return feedback;
+            }
+          }
+
+          for (j = 0; j < testSuites.length; j++) {
+            var testCases = testSuites[j].getTestCases();
             for (var k = 0; k < testCases.length; k++) {
               var testCase = testCases[k];
               var observedOutput = observedOutputs[i][j][k];
               if (!testCase.matchesOutput(observedOutput)) {
-                feedback.appendFeedback(_getCorrectnessTestFeedback(
+                return _getCorrectnessTestFeedback(
                   tasks[i].getOutputFunctionNameWithoutClass(),
-                  testCase, observedOutput));
-                return feedback;
+                  testCase, observedOutput);
               }
             }
           }
 
-          for (j = 0; j < performanceTests[i].length; j++) {
+          for (j = 0; j < performanceTests.length; j++) {
             var expectedPerformance = (
-              performanceTests[i][j].getExpectedPerformance());
+              performanceTests[j].getExpectedPerformance());
             var observedPerformance = performanceTestResults[i][j];
 
             if (expectedPerformance !== observedPerformance) {
-              feedback.appendFeedback(_getPerformanceTestFeedback(
-                expectedPerformance));
-              return feedback;
+              return _getPerformanceTestFeedback(expectedPerformance);
             }
           }
         }
 
-        feedback = FeedbackObjectFactory.create(true);
+        feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
           '"Next" button to move on to the next question.'
@@ -519,7 +584,8 @@ tie.factory('FeedbackGeneratorService', [
     return {
       /**
        * Returns the Feedback and Reinforcement associated with a user's
-       * code submission and their test results.
+       * code submission and their test results. This also includes feedback
+       * for print statements.
        *
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
@@ -548,6 +614,14 @@ tie.factory('FeedbackGeneratorService', [
 
         _applyThresholdUpdates(feedback);
         previousRuntimeErrorString = codeEvalResult.getErrorString();
+
+        // Use RegEx to find if user has print statements and add a special
+        // feedback warning explaining we don't support print statements.
+        var code = codeEvalResult.getPreprocessedCode();
+        if (_hasPrintStatement(code)) {
+          feedback = _prependPrintFeedback(feedback);
+        }
+
         return feedback;
       },
       /**
@@ -561,7 +635,8 @@ tie.factory('FeedbackGeneratorService', [
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         previousRuntimeErrorString = '';
-        var feedback = FeedbackObjectFactory.create(false);
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SYNTAX_ERROR, false);
         feedback.appendSyntaxErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);
@@ -585,9 +660,10 @@ tie.factory('FeedbackGeneratorService', [
           throw new Error('getPrereqFailureFeedback() called with 0 failures.');
         }
 
-        var feedback = FeedbackObjectFactory.create(false);
-
+        var feedback = null;
         if (prereqCheckFailure.isMissingStarterCode()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_STARTER_CODE_CHECK, false);
           feedback.appendTextParagraph([
             'It looks like you deleted or modified the starter code!  Our ',
             'evaluation program requires the function names given in the ',
@@ -596,6 +672,8 @@ tie.factory('FeedbackGeneratorService', [
           ].join(''));
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
         } else if (prereqCheckFailure.isBadImport()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_BAD_IMPORT_CHECK, false);
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
@@ -606,11 +684,15 @@ tie.factory('FeedbackGeneratorService', [
             'Here is a list of libraries we currently support:\n');
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
         } else if (prereqCheckFailure.hasGlobalCode()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_GLOBAL_CODE_CHECK, false);
           feedback.appendTextParagraph([
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
         } else if (prereqCheckFailure.hasWrongLanguage()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_LANGUAGE_DETECTION_CHECK, false);
           WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
             if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
               error.feedbackParagraphs.forEach(function(paragraph) {
@@ -625,6 +707,8 @@ tie.factory('FeedbackGeneratorService', [
             }
           });
         } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK, false);
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
             'message: '
@@ -635,6 +719,8 @@ tie.factory('FeedbackGeneratorService', [
             'which is forbidden. Please resubmit without using this class.'
           ].join(''));
         } else if (prereqCheckFailure.hasInvalidSystemCall()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK, false);
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
             'message: '
@@ -654,8 +740,9 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
-      _appendPrintFeedback: _appendPrintFeedback,
+      _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
+      _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
@@ -665,9 +752,9 @@ tie.factory('FeedbackGeneratorService', [
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
-      _updateCounters: _updateCounters,
+      _prependPrintFeedback: _prependPrintFeedback,
       _resetCounters: _resetCounters,
-      _applyThresholdUpdates: _applyThresholdUpdates
+      _updateCounters: _updateCounters
     };
   }
 ]);

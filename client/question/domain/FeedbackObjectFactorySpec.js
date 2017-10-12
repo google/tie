@@ -23,33 +23,38 @@ describe('FeedbackObjectFactory', function() {
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
   var PARAGRAPH_TYPE_SYNTAX_ERROR;
+  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     PARAGRAPH_TYPE_TEXT = $injector.get('PARAGRAPH_TYPE_TEXT');
     PARAGRAPH_TYPE_CODE = $injector.get('PARAGRAPH_TYPE_CODE');
     PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
-    FeedbackObjectFactory = $injector.get(
-      'FeedbackObjectFactory');
-    feedback = FeedbackObjectFactory.create(true);
+    FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    feedback = FeedbackObjectFactory.create(
+      FEEDBACK_CATEGORIES.SUCCESSFUL, true);
   }));
 
   describe('isAnswerCorrect', function() {
-    it('should return whether or not answer is correct', function() {
+    it('should validate the feedback category', function() {
+      expect(function() {
+        FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.INVALID_CATEGORY, false);
+      }).toThrowError('Invalid feedback category: undefined');
+    });
+  });
+
+  describe('isAnswerCorrect', function() {
+    it('should return whether or not the answer is correct', function() {
       expect(feedback.isAnswerCorrect()).toBe(true);
     });
   });
 
-  describe('getErrorCategory', function() {
-    it('should return null', function() {
-      expect(feedback.getErrorCategory()).toBe(null);
-    });
-  });
-
-  describe('setErrorCategory', function() {
-    it('should set the _errorCategory property', function() {
-      feedback.setErrorCategory('ERROR OPERATOR');
-      expect(feedback._errorCategory).toBe('ERROR OPERATOR');
+  describe('getFeedbackCategory', function() {
+    it('should return the feedback category', function() {
+      expect(feedback.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.SUCCESSFUL);
     });
   });
 
@@ -65,7 +70,8 @@ describe('FeedbackObjectFactory', function() {
   describe('appendFeedback', function() {
     it('should append any feedback paragraphs from a given Feedback object',
       function() {
-        var feedbackToAppend = FeedbackObjectFactory.create(true);
+        var feedbackToAppend = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
         feedbackToAppend.appendTextParagraph('test1');
         feedbackToAppend.appendTextParagraph('test2');
         feedback.appendTextParagraph('testA');

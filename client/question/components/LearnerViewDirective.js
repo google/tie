@@ -26,11 +26,6 @@ tie.directive('learnerView', [function() {
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
               <div class="tie-question-window" ng-class="{'night-mode': isInDarkMode}">
-                <div class="tie-greetings">
-                  <p ng-repeat="paragraph in greetingParagraphs track by $index">
-                      {{paragraph.getContent()}}
-                  </p>
-                </div>
                 <h3 class="tie-question-title">{{title}}</h3>
                 <div class="tie-previous-instructions">
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -505,13 +500,15 @@ tie.directive('learnerView', [function() {
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
       'SessionIdService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
+      'FEEDBACK_CATEGORIES',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
           EventHandlerService, LocalStorageService, ServerHandlerService,
           SessionIdService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID) {
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
+          FEEDBACK_CATEGORIES) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -627,7 +624,8 @@ tie.directive('learnerView', [function() {
          *
          * @type {Feedback}
          */
-        var congratulatoryFeedback = FeedbackObjectFactory.create();
+        var congratulatoryFeedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
 
         /**
          * Stores the current question that the user is working on.
@@ -758,7 +756,7 @@ tie.directive('learnerView', [function() {
 
         /**
          * Initializes the appropriate values in $scope for the question
-         * instructions, stored code, starter code, feedback, and greetings.
+         * instructions, stored code, starter code and feedback.
          *
          * @param {string} questionId ID of question whose data will be loaded
          */
@@ -788,8 +786,6 @@ tie.directive('learnerView', [function() {
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
-          var feedback = FeedbackObjectFactory.create();
-          $scope.greetingParagraphs = feedback.getParagraphs();
           EventHandlerService.createQuestionStartEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
@@ -858,8 +854,8 @@ tie.directive('learnerView', [function() {
         $scope.setFeedback = function(feedback, code) {
           EventHandlerService.createCodeSubmitEvent(
             SessionIdService.getSessionId(),
-            feedback.getParagraphsAsListOfDicts(), feedback.getErrorCategory(),
-            code, feedback.isAnswerCorrect());
+            feedback.getParagraphsAsListOfDicts(),
+            feedback.getFeedbackCategory(), code, feedback.isAnswerCorrect());
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {

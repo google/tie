@@ -25,11 +25,12 @@ describe('SnapshotObjectFactory', function() {
   var codeEvalResult;
   var FeedbackObjectFactory;
   var feedback;
+  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    SnapshotObjectFactory = $injector.get(
-      'SnapshotObjectFactory');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    SnapshotObjectFactory = $injector.get('SnapshotObjectFactory');
     snapshot = SnapshotObjectFactory.create({
       codeEvalResult: null,
       feedback: null
@@ -45,9 +46,9 @@ describe('SnapshotObjectFactory', function() {
       'code', '', [[true, true], [false, false]], [[false], [false]],
       [[], []], null, 'errorInput'
     );
-    FeedbackObjectFactory = $injector.get(
-      'FeedbackObjectFactory');
-    feedback = FeedbackObjectFactory.create(true);
+    FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+    feedback = FeedbackObjectFactory.create(
+      FEEDBACK_CATEGORIES.SUCCESSFUL, true);
   }));
 
   describe('setPrereqCheckFailure', function() {
@@ -74,8 +75,8 @@ describe('SnapshotObjectFactory', function() {
   describe('setFeedback', function() {
     it('should correctly set and get feedback', function() {
       snapshot.setFeedback(feedback);
-      expect(snapshot.getFeedback()).toEqual(FeedbackObjectFactory
-        .create(true));
+      expect(snapshot.getFeedback()).toEqual(
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL, true));
     });
   });
 });
