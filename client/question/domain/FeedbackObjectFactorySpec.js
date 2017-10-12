@@ -37,6 +37,15 @@ describe('FeedbackObjectFactory', function() {
   }));
 
   describe('isAnswerCorrect', function() {
+    it('should validate the feedback category', function() {
+      expect(function() {
+        FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.INVALID_CATEGORY, false);
+      }).toThrowError('Invalid feedback category: undefined');
+    });
+  });
+
+  describe('isAnswerCorrect', function() {
     it('should return whether or not answer is correct', function() {
       expect(feedback.isAnswerCorrect()).toBe(true);
     });

@@ -742,6 +742,7 @@ tie.factory('FeedbackGeneratorService', [
       },
       _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
+      _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,

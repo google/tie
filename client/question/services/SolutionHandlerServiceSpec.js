@@ -369,8 +369,7 @@ describe('SolutionHandlerService', function() {
 
     describe('buggy output ignored test suites', function() {
       beforeEach(inject(function() {
-        // Reconfigure the test suites and buggy output tests for the first
-        // task.
+        // Reconfigure the test suites for the first task.
         taskDict[0].testSuites = [{
           id: 'SUITE1',
           humanReadableName: 'suite 1',
@@ -442,5 +441,111 @@ describe('SolutionHandlerService', function() {
         });
       });
     });
+
+    describe('suite-level tests', function() {
+      beforeEach(inject(function() {
+        // Reconfigure the test suites, buggy output tests and suite-level
+        // tests for the first task.
+        taskDict[0].testSuites = [{
+          id: 'SUITE1',
+          humanReadableName: 'suite 1',
+          testCases: [{
+            input: 'task_1_suite_1_test_1',
+            allowedOutputs: [true]
+          }, {
+            input: 'task_1_suite_1_test_2',
+            allowedOutputs: [true]
+          }]
+        }, {
+          id: 'SUITE2',
+          humanReadableName: 'suite 2',
+          testCases: [{
+            input: 'task_1_suite_2_test_1',
+            allowedOutputs: [false]
+          }, {
+            input: 'task_1_suite_2_test_2',
+            allowedOutputs: [false]
+          }]
+        }];
+        taskDict[0].buggyOutputTests = [];
+        taskDict[0].suiteLevelTests = [{
+          testSuiteIdsThatMustPass: ['SUITE1'],
+          testSuiteIdsThatMustFail: ['SUITE2'],
+          messages: ['suite_message1']
+        }]
+      }));
+
+      it('should return suite-level feedback if the condition is triggered',
+        function(done) {
+          orderedTasks = taskDict.map(function(task) {
+            return TaskObjectFactory.create(task);
+          });
+
+          // This code passes suite 1 and fails suite 2.
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return True',
+            ''
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+          ).then(function(feedback) {
+            expect(feedback.getParagraphs()[0].getContent()).toBe(
+              'suite_message1');
+            done();
+          });
+        }
+      );
+
+      it([
+        'should not return suite-level feedback if the passing-suite ',
+        ' prerequisites do not hold'
+      ].join(''), function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        // This code passes one test case in suite 1 and fails the other, thus
+        // failing the suite.
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return input == "task_1_suite_1_test_1"',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'Your code produced the following result:');
+          done();
+        });
+      });
+
+      it([
+        'should consider a suite failed if at least one test in it fails'
+      ].join(''), function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        // This code passes suite 1, and passes one of the two tests in suite 2.
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return input != "task_1_suite_2_test_2"',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'suite_message1');
+          done();
+        });
+      });
+    });
+
   });
 });
