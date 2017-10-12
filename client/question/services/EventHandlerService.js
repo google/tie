@@ -162,7 +162,7 @@ tie.factory('EventHandlerService', [
           var data = {
             sessionId: sessionId,
             feedbackText: feedbackText,
-            errorCategory: feedbackCategory,
+            feedbackCategory: feedbackCategory,
             code: code,
             success: success
           };
