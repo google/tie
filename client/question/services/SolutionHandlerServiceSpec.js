@@ -472,7 +472,7 @@ describe('SolutionHandlerService', function() {
           testSuiteIdsThatMustPass: ['SUITE1'],
           testSuiteIdsThatMustFail: ['SUITE2'],
           messages: ['suite_message1']
-        }]
+        }];
       }));
 
       it('should return suite-level feedback if the condition is triggered',
