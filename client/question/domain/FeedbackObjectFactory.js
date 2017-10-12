@@ -72,7 +72,7 @@ tie.factory('FeedbackObjectFactory', [
        * @type {string}
        * @private
        */
-      this._errorCategory = feedbackCategory;
+      this._feedbackCategory = feedbackCategory;
 
       /**
        * @type {Reinforcement}
@@ -165,14 +165,14 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * A getter for the _errorCategory property.
+     * A getter for the _feedbackCategory property.
      * This function should return the category which corresponds to this
      * feedback.
      *
      * @returns {string}
      */
-    Feedback.prototype.getErrorCategory = function() {
-      return this._errorCategory;
+    Feedback.prototype.getFeedbackCategory = function() {
+      return this._feedbackCategory;
     };
 
     /**

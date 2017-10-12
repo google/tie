@@ -187,13 +187,13 @@ tie.factory('FeedbackGeneratorService', [
      * @param {Array} messages The array of message strings.
      * @param {bool} codeHasChanged Whether the learner's code has changed
      *   since the previous submission attempt.
-     * @param {string} currentErrorCategory The error category for the current
-     *   set of message strings.
+     * @param {string} currentFeedbackCategory The feedback category for the
+     *   current set of message strings.
      * @returns {Feedback|null}
      * @private
      */
     var _getSpecificTestFeedback = function(
-        messages, codeHasChanged, currentErrorCategory) {
+        messages, codeHasChanged, currentFeedbackCategory) {
       var previousHintIndex = 0;
       var previousMessage = null;
 
@@ -203,7 +203,8 @@ tie.factory('FeedbackGeneratorService', [
         var previousFeedback = lastSnapshot.getFeedback();
         previousMessage = previousFeedback.getParagraphs()[0].getContent();
 
-        if (previousFeedback.getErrorCategory() === currentErrorCategory) {
+        if (previousFeedback.getFeedbackCategory() ===
+            currentFeedbackCategory) {
           previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
         }
       }
@@ -219,7 +220,8 @@ tie.factory('FeedbackGeneratorService', [
       if (newHintIndex >= messages.length) {
         return null;
       }
-      var feedback = FeedbackObjectFactory.create(currentErrorCategory, false);
+      var feedback = FeedbackObjectFactory.create(
+        currentFeedbackCategory, false);
       feedback.appendTextParagraph(messages[newHintIndex]);
       feedback.setHintIndex(newHintIndex);
       return feedback;
