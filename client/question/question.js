@@ -51,8 +51,8 @@ tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
  * @type {[string]}
  * @constant
  */
-tie.constant('SUPPORTED_PYTHON_LIBS', ['collections', 'image',
-  'math', 'operator', 'random', 're', 'string', 'time']);
+tie.constant('SUPPORTED_PYTHON_LIBS', [
+  'collections', 'math', 'operator', 'random', 're', 'string', 'time']);
 
 /**
  * Class name for wrapping student code. Answer submissions are then run
@@ -128,7 +128,6 @@ tie.constant('SYSTEM_CODE', {
   python: [
     'import collections',
     'import copy',
-    'import image',
     'import math',
     'import operator',
     'import random',
