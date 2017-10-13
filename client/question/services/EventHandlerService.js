@@ -153,18 +153,16 @@ tie.factory('EventHandlerService', [
        * @param {string} feedbackCategory The type of feedback shown to the
        *   user.
        * @param {string} code The user's submitted code.
-       * @param {boolean} success Whether or not the question was completed.
        *
        */
       createCodeSubmitEvent: function(
-          sessionId, feedbackText, feedbackCategory, code, success) {
+          sessionId, feedbackText, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
             sessionId: sessionId,
             feedbackText: feedbackText,
             feedbackCategory: feedbackCategory,
-            code: code,
-            success: success
+            code: code
           };
           $http.post('/ajax/event/create_code_submit_event', data);
         }

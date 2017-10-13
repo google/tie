@@ -855,7 +855,8 @@ tie.directive('learnerView', [function() {
           EventHandlerService.createCodeSubmitEvent(
             SessionIdService.getSessionId(),
             feedback.getParagraphsAsListOfDicts(),
-            feedback.getFeedbackCategory(), code, feedback.isAnswerCorrect());
+            feedback.getFeedbackCategory(), code);
+
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {

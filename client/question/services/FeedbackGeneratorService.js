@@ -220,8 +220,7 @@ tie.factory('FeedbackGeneratorService', [
       if (newHintIndex >= messages.length) {
         return null;
       }
-      var feedback = FeedbackObjectFactory.create(
-        currentFeedbackCategory, false);
+      var feedback = FeedbackObjectFactory.create(currentFeedbackCategory);
       feedback.appendTextParagraph(messages[newHintIndex]);
       feedback.setHintIndex(newHintIndex);
       return feedback;
@@ -272,7 +271,7 @@ tie.factory('FeedbackGeneratorService', [
       outputFunctionName, testCase, observedOutput) {
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, false);
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
       // TODO(eyurko): Add varied statements for when code is incorrect.
       feedback.appendTextParagraph('Your code produced the following result:');
       if (outputFunctionName) {
@@ -303,7 +302,7 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getPerformanceTestFeedback = function(expectedPerformance) {
       var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, false);
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
       feedback.appendTextParagraph([
         'Your code is running more slowly than expected. Can you ',
         'reconfigure it such that it runs in ',
@@ -330,7 +329,7 @@ tie.factory('FeedbackGeneratorService', [
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
       var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.RUNTIME_ERROR, false);
+        FEEDBACK_CATEGORIES.RUNTIME_ERROR);
 
       var fixedErrorString = codeEvalResult.getErrorString().replace(
         new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
@@ -394,7 +393,7 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getTimeoutErrorFeedback = function() {
       var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR, false);
+        FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
       feedback.appendTextParagraph([
         "Your program's exceeded the time limit (",
         CODE_EXECUTION_TIMEOUT_SECONDS,
@@ -412,7 +411,7 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getInfiniteLoopFeedback = function() {
       var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR, false);
+        FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
       feedback.appendTextParagraph([
         "Looks like your code is hitting an infinite recursive loop.",
         "Check to see that your recursive calls terminate."
@@ -571,8 +570,7 @@ tie.factory('FeedbackGeneratorService', [
           }
         }
 
-        feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
+        feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
           '"Next" button to move on to the next question.'
@@ -636,7 +634,7 @@ tie.factory('FeedbackGeneratorService', [
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SYNTAX_ERROR, false);
+          FEEDBACK_CATEGORIES.SYNTAX_ERROR);
         feedback.appendSyntaxErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);
@@ -663,7 +661,7 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = null;
         if (prereqCheckFailure.isMissingStarterCode()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_STARTER_CODE_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_STARTER_CODE_CHECK);
           feedback.appendTextParagraph([
             'It looks like you deleted or modified the starter code!  Our ',
             'evaluation program requires the function names given in the ',
@@ -673,7 +671,7 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendCodeParagraph(prereqCheckFailure.getStarterCode());
         } else if (prereqCheckFailure.isBadImport()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_BAD_IMPORT_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_BAD_IMPORT_CHECK);
           feedback.appendTextParagraph([
             "It looks like you're importing an external library. However, the ",
             'following libraries are not supported:\n'
@@ -685,14 +683,14 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendCodeParagraph(SUPPORTED_PYTHON_LIBS.join(', '));
         } else if (prereqCheckFailure.hasGlobalCode()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_GLOBAL_CODE_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_GLOBAL_CODE_CHECK);
           feedback.appendTextParagraph([
             'Please keep your code within the existing predefined functions',
             '-- we cannot process code in the global scope.'
           ].join(' '));
         } else if (prereqCheckFailure.hasWrongLanguage()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_LANGUAGE_DETECTION_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_LANGUAGE_DETECTION_CHECK);
           WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
             if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
               error.feedbackParagraphs.forEach(function(paragraph) {
@@ -708,7 +706,7 @@ tie.factory('FeedbackGeneratorService', [
           });
         } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK);
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
             'message: '
@@ -720,7 +718,7 @@ tie.factory('FeedbackGeneratorService', [
           ].join(''));
         } else if (prereqCheckFailure.hasInvalidSystemCall()) {
           feedback = FeedbackObjectFactory.create(
-            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK, false);
+            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK);
           feedback.appendTextParagraph([
             'Looks like your code had a runtime error. Here is the error ',
             'message: '

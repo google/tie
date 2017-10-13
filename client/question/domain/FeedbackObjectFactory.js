@@ -34,11 +34,9 @@ tie.factory('FeedbackObjectFactory', [
      *
      * @param {string} feedbackCategory The category of the feedback. Must be
      *    a valid entry in FEEDBACK_CATEGORIES.
-     * @param {boolean} answerIsCorrect indicates whether student's answer
-     *    is correct or not
      * @constructor
      */
-    var Feedback = function(feedbackCategory, answerIsCorrect) {
+    var Feedback = function(feedbackCategory) {
       if (!FEEDBACK_CATEGORIES.hasOwnProperty(feedbackCategory)) {
         throw Error('Invalid feedback category: ' + feedbackCategory);
       }
@@ -50,12 +48,6 @@ tie.factory('FeedbackObjectFactory', [
        * @private
        */
       this._paragraphs = [];
-
-      /**
-       * @type {boolean}
-       * @private
-       */
-      this._answerIsCorrect = answerIsCorrect;
 
       /**
        * Records index of what message was displayed with this feedback.
@@ -93,14 +85,13 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * A getter for _answerIsCorrect property.
-     * Should return a boolean indicating if the student's submission is correct
+     * Returns a boolean indicating if the student's submission is correct
      * or not.
      *
      * @returns {boolean}
      */
     Feedback.prototype.isAnswerCorrect = function() {
-      return this._answerIsCorrect;
+      return this._feedbackCategory === FEEDBACK_CATEGORIES.SUCCESSFUL;
     };
 
     /**
@@ -242,12 +233,10 @@ tie.factory('FeedbackObjectFactory', [
      *
      * @param {string} feedbackCategory The category of the feedback. Must be
      *    a valid entry in FEEDBACK_CATEGORIES.
-     * @param {boolean} answerIsCorrect Indicates if the student's answer is
-     *    correct or not.
      * @returns {Feedback}
      */
-    Feedback.create = function(feedbackCategory, answerIsCorrect) {
-      return new Feedback(feedbackCategory, answerIsCorrect);
+    Feedback.create = function(feedbackCategory) {
+      return new Feedback(feedbackCategory);
     };
 
     return Feedback;

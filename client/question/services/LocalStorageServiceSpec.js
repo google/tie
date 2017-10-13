@@ -151,7 +151,7 @@ describe('LocalStorageService', function() {
 
       var FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
       var feedbackObject = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, false);
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
       feedbackObject.appendTextParagraph('text1');
       feedbackObject.appendCodeParagraph('code1');
       feedbackSet1 = feedbackObject.getParagraphs();

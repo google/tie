@@ -32,15 +32,13 @@ describe('FeedbackObjectFactory', function() {
     PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
-    feedback = FeedbackObjectFactory.create(
-      FEEDBACK_CATEGORIES.SUCCESSFUL, true);
+    feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
   }));
 
   describe('isAnswerCorrect', function() {
     it('should validate the feedback category', function() {
       expect(function() {
-        FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.INVALID_CATEGORY, false);
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.INVALID_CATEGORY);
       }).toThrowError('Invalid feedback category: undefined');
     });
   });
@@ -71,7 +69,7 @@ describe('FeedbackObjectFactory', function() {
     it('should append any feedback paragraphs from a given Feedback object',
       function() {
         var feedbackToAppend = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUCCESSFUL, true);
+          FEEDBACK_CATEGORIES.SUCCESSFUL);
         feedbackToAppend.appendTextParagraph('test1');
         feedbackToAppend.appendTextParagraph('test2');
         feedback.appendTextParagraph('testA');
