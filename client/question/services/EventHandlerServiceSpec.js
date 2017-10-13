@@ -158,8 +158,7 @@ describe('EventHandlerService', function() {
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createCodeSubmitEvent(
-          sessionId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code,
-          false);
+          sessionId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
         $httpBackend.flush();
       });
   });

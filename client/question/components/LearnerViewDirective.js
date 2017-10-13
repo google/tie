@@ -852,13 +852,10 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.setFeedback = function(feedback, code) {
-          var entireQuestionCompleted = (
-            feedback.isAnswerCorrect() &&
-            question.isLastTask(currentTaskIndex));
           EventHandlerService.createCodeSubmitEvent(
             SessionIdService.getSessionId(),
             feedback.getParagraphsAsListOfDicts(),
-            feedback.getFeedbackCategory(), code, entireQuestionCompleted);
+            feedback.getFeedbackCategory(), code);
 
           $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {

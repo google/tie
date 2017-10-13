@@ -158,14 +158,13 @@ tie.factory('EventHandlerService', [
        *
        */
       createCodeSubmitEvent: function(
-          sessionId, feedbackText, feedbackCategory, code, success) {
+          sessionId, feedbackText, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
             sessionId: sessionId,
             feedbackText: feedbackText,
             feedbackCategory: feedbackCategory,
-            code: code,
-            success: success
+            code: code
           };
           $http.post('/ajax/event/create_code_submit_event', data);
         }
