@@ -1048,7 +1048,7 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[1].getContent()).toEqual('panda');
       expect(paragraphs[2].getContent()).toEqual('Here is a list of libraries' +
         ' we currently support:\n');
-      expect(paragraphs[3].getContent()).toEqual('collections, image, ' +
+      expect(paragraphs[3].getContent()).toEqual('collections, ' +
         'math, operator, random, re, string, time');
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.FAILS_BAD_IMPORT_CHECK);
