@@ -855,7 +855,7 @@ describe('FeedbackGeneratorService', function() {
   describe('_prependPrintFeedback', function() {
     it('prepends print feedback to a given feedback object', function() {
       var oldFeedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.SYNTAX_ERROR, false);
+        FEEDBACK_CATEGORIES.SYNTAX_ERROR);
       oldFeedback.appendTextParagraph('test paragraph');
       var feedback = FeedbackGeneratorService._prependPrintFeedback(
         oldFeedback);

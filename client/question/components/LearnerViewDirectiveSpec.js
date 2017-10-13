@@ -373,7 +373,7 @@ describe('LearnerViewDirective', function() {
         ''
       ].join('\n');
       $scope.setFeedback(
-        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.RUNTIME_ERROR, false),
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.RUNTIME_ERROR),
         code);
       expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
     });

@@ -47,8 +47,7 @@ describe('SnapshotObjectFactory', function() {
       [[], []], null, 'errorInput'
     );
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-    feedback = FeedbackObjectFactory.create(
-      FEEDBACK_CATEGORIES.SUCCESSFUL, true);
+    feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
   }));
 
   describe('setPrereqCheckFailure', function() {
@@ -76,7 +75,7 @@ describe('SnapshotObjectFactory', function() {
     it('should correctly set and get feedback', function() {
       snapshot.setFeedback(feedback);
       expect(snapshot.getFeedback()).toEqual(
-        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL, true));
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL));
     });
   });
 });

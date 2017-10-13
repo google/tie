@@ -153,7 +153,8 @@ tie.factory('EventHandlerService', [
        * @param {string} feedbackCategory The type of feedback shown to the
        *   user.
        * @param {string} code The user's submitted code.
-       * @param {boolean} success Whether or not the question was completed.
+       * @param {boolean} success Whether or not the entire question was
+       *   completed.
        *
        */
       createCodeSubmitEvent: function(
