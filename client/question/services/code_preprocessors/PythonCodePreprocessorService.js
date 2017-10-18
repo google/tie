@@ -121,6 +121,45 @@ tie.factory('PythonCodePreprocessorService', [
       }
     };
 
+    /**
+     * **Naively** strips Python comments from the code that is passed in,
+     * without changing any of the line numbers.
+     *
+     * NOTE TO DEVELOPERS: For safety, this preserves any line containing
+     * a quotation mark, since we don't want this comment stripping to cause
+     * the code to not run. We also assume that the input code string does not
+     * contain any multi-line comments.
+     *
+     * @param {string} code
+     * @private
+     */
+    var _naivelyStripComments = function(code) {
+      var originalLines = code.split('\n');
+      var strippedLines = originalLines.map(function(line) {
+        // Handling hash chars in strings without a Python parser is error-
+        // prone. However, the naive method of stripping strings from '#'
+        // onwards could cause otherwise-working code not to run, e.g.:
+        //
+        //     a = 'a string with a # character'
+        //
+        // becomes
+        //
+        //     a = 'a string with a
+        //
+        // For now, we therefore leave unchanged any line that contains a
+        // quotation mark.
+        if (line.indexOf("'") !== -1 || line.indexOf('"') !== -1) {
+          return line;
+        }
+
+        var commentIndex = line.indexOf('#');
+        if (commentIndex !== -1) {
+          return line.substring(0, commentIndex).replace(/\s*$/, '');
+        }
+        return line;
+      });
+      return strippedLines.join('\n');
+    };
 
     /**
      * Transforms a bunch of functions into a bunch of instance methods, and
@@ -567,9 +606,10 @@ tie.factory('PythonCodePreprocessorService', [
         });
 
         // Transform the student code (without changing the number of lines) to
-        // put it within a class.
+        // strip comments and put it within a class.
         var transformedStudentCode = this._transformCodeToInstanceMethods(
-          codeSubmission.getRawCode(), CLASS_NAME_STUDENT_CODE);
+          this._naivelyStripComments(codeSubmission.getRawCode()),
+          CLASS_NAME_STUDENT_CODE);
         codeSubmission.replace(transformedStudentCode);
 
         // Prepend the class header and the system code.
@@ -611,6 +651,7 @@ tie.factory('PythonCodePreprocessorService', [
       _jsonVariableToPython: _jsonVariableToPython,
       _prepareCodeSubmissionForServerExecution: (
         _prepareCodeSubmissionForServerExecution),
+      _naivelyStripComments: _naivelyStripComments,
       _transformCodeToInstanceMethods: _transformCodeToInstanceMethods
     };
   }

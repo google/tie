@@ -119,6 +119,62 @@ describe('PythonCodePreprocessorService', function() {
     });
   });
 
+  describe('_naivelyStripComments', function() {
+    it('should correctly remove comments that start mid-line', function() {
+      var rawCode = [
+        'def myFunc():  # this is my function',
+        '    a = 3'
+      ].join('\n');
+
+      var expectedOutput = [
+        'def myFunc():',
+        '    a = 3'
+      ].join('\n');
+
+      expect(
+        PythonCodePreprocessorService._naivelyStripComments(rawCode)
+      ).toEqual(expectedOutput);
+    });
+
+    it('should remove comments that start at the first column', function() {
+      var rawCode = [
+        '# This is a function  ',
+        '###  And another comment line # # # ',
+        'def myFunc():',
+        '    a = 3'
+      ].join('\n');
+
+      var expectedOutput = [
+        '',
+        '',
+        'def myFunc():',
+        '    a = 3'
+      ].join('\n');
+
+      expect(
+        PythonCodePreprocessorService._naivelyStripComments(rawCode)
+      ).toEqual(expectedOutput);
+    });
+
+    it('preserves comments in lines with strings', function() {
+      var rawCode = [
+        'def myFunc():',
+        '    a = "hello"  # This line has a quotation mark',
+        '    b = 5  # This line does not'
+      ].join('\n');
+
+      var expectedOutput = [
+        'def myFunc():',
+        '    a = "hello"  # This line has a quotation mark',
+        '    b = 5'
+      ].join('\n');
+
+      expect(
+        PythonCodePreprocessorService._naivelyStripComments(rawCode)
+      ).toEqual(expectedOutput);
+    });
+  });
+
   describe('_transformCodeToInstanceMethods', function() {
     it('should correctly wrap a function', function() {
       var rawCode = [

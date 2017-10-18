@@ -243,7 +243,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "using '+= 1' instead."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used Decrement Operator
     errorName: 'decrementOp',
@@ -257,7 +258,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "using '-= 1' instead."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used `push` instead of `append`
     errorName: 'push',
@@ -271,7 +273,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "is called `append`."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used the catch statement
     errorName: 'catch',
@@ -284,7 +287,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "Exception? In Python, we use `except` instead."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used the Java comment syntax
     errorName: 'javaComment',
@@ -298,7 +302,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "you want to comment out."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: true
   }, {
     // Used a do-while loop
     errorName: 'doWhile',
@@ -312,7 +317,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "Perhaps try using a flag or different condition instead?"
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: true
   }, {
     // Used else if instead of elif
     errorName: 'elseIf',
@@ -325,7 +331,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "`else if` for your if-else statements."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used a switch statement
     errorName: 'switch',
@@ -339,7 +346,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "just have to use if-else statements instead."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: true
   }, {
     // Used the C-like import syntax
     errorName: 'cImport',
@@ -355,7 +363,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         type: 'code',
         content: 'import [insert package name here]'
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used the Java/C not operator
     errorName: 'notOp',
@@ -368,7 +377,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "it's just `not`."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used the Java/C and operator
     errorName: 'andOp',
@@ -381,7 +391,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "the AND operator is simply `and`."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }, {
     // Used the Java/C or operator
     errorName: 'orOp',
@@ -395,7 +406,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
           "operator - `or`."
         ].join('')
       }
-    ]
+    ],
+    allowMultiline: false
   }]
 });
 

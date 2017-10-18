@@ -35,21 +35,37 @@ tie.factory('PythonPrereqCheckService', [
      * Checks if the given code uses any syntax that isn't valid in Python
      * but is specific to languages like C/C++ and Java.
      *
+     * NOTE TO DEVELOPERS: For safety, we do not process any lines that contain
+     * strings in this check. The check also assumes that the code does not
+     * contain any multi-line strings ("""....""").
+     *
      * @param {string}
      * @returns {string | null} If there is wrong language syntax detected,
      *    will return the name of the error as referenced in
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var errorName = null;
-      if (code !== '') {
-        WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
-          if (!errorName && code.search(new RegExp(error.regExString)) !== -1) {
-            errorName = error.errorName;
+      var codeLines = code.split('\n').filter(function(codeLine) {
+        return (codeLine.indexOf('"') === -1 && codeLine.indexOf("'") === -1);
+      });
+
+      for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
+        var error = WRONG_LANGUAGE_ERRORS.python[i];
+        var regexp = new RegExp(error.regExString);
+
+        if (error.allowMultiline) {
+          if (code.search(regexp) !== -1) {
+            return error.errorName;
           }
-        });
+        } else {
+          for (var j = 0; j < codeLines.length; j++) {
+            if (codeLines[j].search(regexp) !== -1) {
+              return error.errorName;
+            }
+          }
+        }
       }
-      return errorName;
+      return null;
     };
 
     /**

@@ -39,6 +39,7 @@ describe('question.js', function() {
       WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
         expect(typeof error.errorName).toBe('string');
         expect(typeof error.regExString).toBe('string');
+        expect(typeof error.allowMultiline).toBe('boolean');
         expect(Array.isArray(error.feedbackParagraphs)).toBe(true);
         error.feedbackParagraphs.forEach(function(paragraph) {
           expect(typeof paragraph.type).toEqual('string');
