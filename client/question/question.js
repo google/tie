@@ -373,8 +373,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Are you making sure to use the right NOT operator? In Python, ",
-          "it's just `not`."
+          "Are you using the right NOT operator? In Python, it's just `not`."
         ].join('')
       }
     ],

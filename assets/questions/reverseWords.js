@@ -126,7 +126,8 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         'For this question, you\'ll implement the reverseWords function. ',
         'This function takes a string of words and reverses the individual ',
         'words, but it does not change the ordering of the words within the ',
-        'sentence. All the original whitespace/punctuation should be ',
+        'sentence. A word consists of contiguous letters. Characters that are ',
+        'not letters, such as whitespace and punctuation, should be ',
         'preserved. Here\'s an example:'
       ].join(''),
       type: 'text'
@@ -303,8 +304,10 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ignoredTestSuiteIds: [],
       messages: [
         [
-          "Try reading the question again, and looking at the sample ",
-          "input/output -- it's asking for something different."
+          "You might have misinterpreted the question. Try verifying your ",
+          "algorithm against the sample input/output to ensure you've ",
+          "understood the question correctly -- it's generally a good idea to ",
+          "do this in interviews before committing to an answer."
         ].join(''),
         [
           'For the sample input "Hello, John", the expected output is "olleH, ',
