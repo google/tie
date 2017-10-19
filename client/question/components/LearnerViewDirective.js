@@ -109,7 +109,7 @@ tie.directive('learnerView', [function() {
                   <option value="Python" selected>Python</option>
                 </select>
                 <button ng-if="!SERVER_URL" class="tie-python-primer tie-button" ng-class="{'night-mode': isInDarkMode}">
-                  <a class="tie-primer-link" ng-class="{'night-mode': isInDarkMode}" target="_blank" ng-href="../docs/py-primer-{{isInDarkMode === true ? 'dark' : 'light'}}.html">New to python?</a>
+                  <a class="tie-primer-link" ng-class="{'night-mode': isInDarkMode}" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 </button>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-class="{'night-mode': isInDarkMode}"
@@ -925,6 +925,14 @@ tie.directive('learnerView', [function() {
             $scope.codeMirrorOptions.theme = 'default';
           }
         };
+
+        /**
+         * Provides the URL to the appropriately themed python primer file.
+         */
+        $scope.getPythonPrimerUrl = function() {
+          var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
+          return "../docs/py-primer-" + primerTheme + ".html";
+        }
 
         /**
          * Initializes the questionSet property of $scope to be a new question
