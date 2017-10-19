@@ -100,9 +100,12 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
+                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
                   <option value="Python" selected>Python</option>
                 </select>
+                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button" ng-class="{'night-mode': isInDarkMode}">
+                  <a class="tie-primer-link" ng-class="{'night-mode': isInDarkMode}" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
+                </button>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-class="{'night-mode': isInDarkMode}"
                     ng-click="resetCode()">
@@ -161,6 +164,7 @@ tie.directive('learnerView', [function() {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           font-size: 12px;
           height: 24px;
+          margin-right: 10px;
           padding: 1px 6px;
           width: 100px;
         }
@@ -192,11 +196,11 @@ tie.directive('learnerView', [function() {
         .tie-code-auto-save.night-mode {
           color: #E0E0E0;
         }
-        .tie-code-reset {
+        .tie-code-reset, .tie-python-primer {
           float: left;
           margin-top: 10px;
         }
-        .tie-code-reset.night-mode {
+        .tie-code-reset.night-mode, .tie-python-primer.night-mode {
           background-color: #333a42;
           color: white;
         }
@@ -380,6 +384,13 @@ tie.directive('learnerView', [function() {
         }
         .tie-previous-instructions {
           opacity: 0.5;
+        }
+        .tie-primer-link {
+          color: black;
+          text-decoration: none;
+        }
+        .tie-primer-link.night-mode {
+          color: white;
         }
         .tie-privacy-button {
           float: right;
@@ -910,6 +921,14 @@ tie.directive('learnerView', [function() {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+        };
+
+        /**
+         * Provides the URL to the appropriately themed python primer file.
+         */
+        $scope.getPythonPrimerUrl = function() {
+          var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
+          return '../docs/py-primer-' + primerTheme + '.html';
         };
 
         /**
