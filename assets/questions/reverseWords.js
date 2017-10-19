@@ -126,9 +126,9 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         'For this question, you\'ll implement the reverseWords function. ',
         'This function takes a string of words and reverses the individual ',
         'words, but it does not change the ordering of the words within the ',
-        'sentence. A word is defined to consist of contiguous letters, and ',
-        'all other characters in the string (such as whitespace and ',
-        'punctuation) should be preserved. Here\'s an example:'
+        'sentence. A word consists of contiguous letters. Characters that are ',
+        'not letters, such as whitespace and punctuation, should be ',
+        'preserved. Here\'s an example:'
       ].join(''),
       type: 'text'
     }, {
