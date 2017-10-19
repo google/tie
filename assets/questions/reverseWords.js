@@ -304,8 +304,8 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ignoredTestSuiteIds: [],
       messages: [
         [
-          "I think you might have misinterpreted the question. Try verifying ",
-          "your algorithm against the sample input/output to ensure you've ",
+          "You might have misinterpreted the question. Try verifying your ",
+          "algorithm against the sample input/output to ensure you've ",
           "understood the question correctly -- it's generally a good idea to ",
           "do this in interviews before committing to an answer."
         ].join(''),
