@@ -932,7 +932,7 @@ tie.directive('learnerView', [function() {
         $scope.getPythonPrimerUrl = function() {
           var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
           return "../docs/py-primer-" + primerTheme + ".html";
-        }
+        };
 
         /**
          * Initializes the questionSet property of $scope to be a new question
