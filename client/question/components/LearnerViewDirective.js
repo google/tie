@@ -931,7 +931,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.getPythonPrimerUrl = function() {
           var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
-          return "../docs/py-primer-" + primerTheme + ".html";
+          return '../docs/py-primer-' + primerTheme + '.html';
         };
 
         /**
