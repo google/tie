@@ -398,6 +398,24 @@ describe('PythonPrereqCheckService', function() {
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
       expect(prereqFailureType).toEqual('notOp');
     });
+
+    it('ignores lines with strings for non-multiline checks', function() {
+      // This tests one "if" clause that does not have an error, and another
+      // "if" clause that does have a legitimate error. In both cases, these
+      // are left as-is.
+      var code = [
+        'def myFunction(arg):',
+        '    if "!arg":',
+        '        return arg',
+        '',
+        '    if (!arg + "abc"):',
+        '        return arg',
+        ''
+      ].join('\n');
+      var prereqFailureType =
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
+      expect(prereqFailureType).toEqual(null);
+    });
   });
 
   describe('hasInvalidSystemClassCalls', function() {
