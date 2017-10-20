@@ -176,7 +176,7 @@ tie.factory('PythonCodePreprocessorService', [
     var _transformCodeToInstanceMethods = function(code, wrapperClassName) {
       var wrappedCode = _addClassWrappingToHelperFunctions(
         code, wrapperClassName, true);
-      var codeLines = wrappedCode.trim().split('\n');
+      var codeLines = wrappedCode.split('\n');
       var subsequentLines = codeLines.map(function(line) {
         if (line.indexOf('def') === 0) {
           var leftParenIndex = line.indexOf('(');

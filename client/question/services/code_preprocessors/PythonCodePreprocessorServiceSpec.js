@@ -294,7 +294,7 @@ describe('PythonCodePreprocessorService', function() {
       ).toEqual(expectedTransformedCode);
     });
 
-    it('should trim whitespace at the ends, but preserve it between functions',
+    it('should preserve whitespace',
       function() {
         var rawCode = [
           '',
@@ -312,13 +312,18 @@ describe('PythonCodePreprocessorService', function() {
         ].join('\n');
 
         var expectedTransformedCode = [
+          '    ',
+          '    ',
           '    def funcOne(self, a, b):',
           '        x = 3',
           '    ',
           '    ',
           '    ',
           '    def funcTwo(self, c):',
-          '        d = 4'
+          '        d = 4',
+          '    ',
+          '    ',
+          '    '
         ].join('\n');
 
         expect(
