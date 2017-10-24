@@ -490,7 +490,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         [
           'You might have an incorrect test for what constitutes a "word ',
           'separator". Can you think of a better way to ensure that only ',
-          'Roman letters are left in place?'
+          'letters are left in place?'
         ].join('')
       ]
     }, {
