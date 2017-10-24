@@ -334,6 +334,20 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
     ],
     allowMultiline: false
   }, {
+    // Used the wrong casing for "True" or "False".
+    errorName: 'booleans',
+    regExString: '\\b(true|TRUE|false|FALSE)\\b',
+    feedbackParagraphs: [
+      {
+        type: 'text',
+        content: [
+          "Note that, in Python, we write boolean values as True and False. ",
+          "Triple-check to make sure you've got the right casing!"
+        ].join('')
+      }
+    ],
+    allowMultiline: false
+  }, {
     // Used a switch statement
     errorName: 'switch',
     regExString: '\\bswitch\\b\\s*\\((\\w|\\s)*\\)\\s*[{|:]?\\s*((\\bcase' +
