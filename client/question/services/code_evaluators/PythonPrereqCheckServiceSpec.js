@@ -302,6 +302,59 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType).toEqual('elseIf');
     });
 
+    it('correctly returns "booleans" when the ' +
+      'submission includes a wrongly-cased true/false value', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    if arg > 0',
+        '        return true',
+        ''
+      ].join('\n');
+      expect(
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+      ).toEqual('booleans');
+
+      code = [
+        'def myFunction(arg):',
+        '    if arg > 0',
+        '        return TRUE',
+        ''
+      ].join('\n');
+      expect(
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+      ).toEqual('booleans');
+
+      code = [
+        'def myFunction(arg):',
+        '    if arg > 0',
+        '        return false',
+        ''
+      ].join('\n');
+      expect(
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+      ).toEqual('booleans');
+
+      code = [
+        'def myFunction(arg):',
+        '    if arg > 0',
+        '        return FALSE',
+        ''
+      ].join('\n');
+      expect(
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+      ).toEqual('booleans');
+
+      code = [
+        'def myFunction(arg):',
+        '    if arg > 0',
+        '        return True and False',
+        ''
+      ].join('\n');
+      expect(
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+      ).toEqual(null);
+    });
+
     it('correctly returns "push" when the ' +
         'submission includes using the push method', function() {
       var code = [
