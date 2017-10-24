@@ -164,14 +164,20 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       id: 'WHITESPACE',
       humanReadableName: 'strings with lots of whitespace',
       testCases: [{
+        input: 'hello    ',
+        allowedOutputs: ['olleh    ']
+      }, {
+        input: '   hello',
+        allowedOutputs: ['   olleh']
+      }, {
         input: '  hello  ',
         allowedOutputs: ['  olleh  ']
       }, {
         input: 'hello  world',
         allowedOutputs: ['olleh  dlrow']
       }, {
-        input: 'hello    ',
-        allowedOutputs: ['olleh    ']
+        input: 'hello  hello   world',
+        allowedOutputs: ['olleh  olleh   dlrow']
       }]
     }, {
       id: 'PUNCTUATION',
@@ -256,8 +262,14 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
         input: '',
         allowedOutputs: ['']
       }, {
+        input: '.',
+        allowedOutputs: ['.']
+      }, {
         input: '..,. !?',
         allowedOutputs: ['..,. !?']
+      }, {
+        input: '...hi',
+        allowedOutputs: ['...ih']
       }, {
         input: '123',
         allowedOutputs: ['123']
@@ -436,6 +448,52 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       ]
     }],
     suiteLevelTests: [{
+      testSuiteIdsThatMustPass: [],
+      testSuiteIdsThatMustFail: ['SAMPLE_INPUT'],
+      messages: [
+        [
+          "Hmm, that code doesn't seem to work. Try taking a look at the ",
+          "sample inputs and outputs, then walk through your code to see what ",
+          "might be wrong."
+        ].join(''),
+        [
+          "Have you tried stepping through your code using the sample input ",
+          "and expected output above? It might help you find where the ",
+          "problem is."
+        ].join('')
+      ]
+    }, {
+      testSuiteIdsThatMustPass: ['SAMPLE_INPUT', 'GENERAL_CASE'],
+      testSuiteIdsThatMustFail: ['WHITESPACE'],
+      messages: [
+        [
+          'Be careful about whitespace: all spaces in the original string ',
+          'should be left in place.'
+        ].join(''),
+        [
+          'Note that spaces may occur in other places in the string, not just ',
+          'between words.'
+        ].join(''),
+        [
+          'Does your code correctly handle cases in which the space is at the ',
+          'start or end of the string?'
+        ].join('')
+      ]
+    }, {
+      testSuiteIdsThatMustPass: ['SAMPLE_INPUT', 'GENERAL_CASE', 'WHITESPACE'],
+      testSuiteIdsThatMustFail: ['PUNCTUATION'],
+      messages: [
+        [
+          'Be careful about what constitues a "word". Punctuation should be ',
+          'left in place, and not reversed along with the words.'
+        ].join(''),
+        [
+          'You might have an incorrect test for what constitutes a "word ',
+          'separator". Can you think of a better way to ensure that only ',
+          'Roman letters are left in place?'
+        ].join('')
+      ]
+    }, {
       testSuiteIdsThatMustPass: ['SAMPLE_INPUT', 'GENERAL_CASE', 'WHITESPACE'],
       testSuiteIdsThatMustFail: ['CORNER_CASES'],
       messages: [
