@@ -342,7 +342,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         type: 'text',
         content: [
           "Note that, in Python, we write boolean values as True and False. ",
-          "Triple-check to make sure you've got the right casing!"
+          "Double-check to make sure 'True' or 'False' are written with the ",
+          "letters in the correct case."
         ].join('')
       }
     ],
