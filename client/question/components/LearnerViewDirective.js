@@ -449,6 +449,9 @@ tie.directive('learnerView', [function() {
           background-color: #FFFFF7;
           font-size: 14px;
           height: 508px;
+          min-height: 300px;
+          max-width: 700px;
+          min-width: 400px;
           overflow: auto;
           padding: 10px;
           resize: both;
