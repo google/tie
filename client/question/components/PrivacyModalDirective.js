@@ -44,13 +44,13 @@ tie.directive('privacyModal', [function() {
               your User Generated code.
             </p>
           <div class="tie-privacy-modal-button-container">
-            <button ng-show="isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="closeModal()">
+            <button ng-show="isClientVersion" class="tie-button-blue tie-privacy-modal-button protractor-test-privacy-modal-okay-button" ng-click="closeModal()">
               <span>Okay</span>
             </button>
-            <button ng-show="!isClientVersion" class="tie-button-blue tie-privacy-modal-button" ng-click="accept()">
+            <button ng-show="!isClientVersion" class="tie-button-blue tie-privacy-modal-button protractor-test-privacy-modal-accept-button" ng-click="accept()">
               <span>Accept</span>
             </button>
-            <button ng-show="!isClientVersion" class="tie-button-red tie-privacy-modal-button" ng-click="reject()">
+            <button ng-show="!isClientVersion" class="tie-button-red tie-privacy-modal-button protractor-test-privacy-modal-reject-button" ng-click="reject()">
               <span>Reject</span>
             </button>
           </div>
