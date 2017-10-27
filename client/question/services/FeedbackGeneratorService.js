@@ -24,18 +24,26 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
-  'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
-  'FEEDBACK_CATEGORIES',
+  'PARAGRAPH_TYPE_OUTPUT', 'PYTHON_PRIMER_BUTTON_NAME',
+  'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY', 'ERROR_COUNTER_SAME_RUNTIME',
+  'UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
-    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
-    FEEDBACK_CATEGORIES) {
+    PARAGRAPH_TYPE_OUTPUT, PYTHON_PRIMER_BUTTON_NAME,
+    ERROR_COUNTER_LANGUAGE_UNFAMILIARITY, ERROR_COUNTER_SAME_RUNTIME,
+    UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES) {
+
+    /**
+     * Object used to keep track of how many corrective feedback (values)
+     * were generated for a given test suite (keys).
+     *
+     * @type {Object.<string, number>}
+     */
+    var attemptCounter = {};
 
     /**
      * Counter to keep track of language unfamiliarity errors which include
@@ -53,6 +61,57 @@ tie.factory('FeedbackGeneratorService', [
     var consecutiveSameRuntimeErrorCounter = 0;
 
     /**
+     * Object containing variations on feedback text for different scenarios.
+     *
+     * $type {Object.<string, Array.<string>>}
+     */
+    var correctnessFeedbackText = {
+      'input_to_try': [
+        'Would your code work for the following input?',
+        'How about the following input? Would your code still work?',
+        'Would your code work with the following?',
+        'Consider the input below. How would you code handle it?',
+        'Have you considered input such as the following?'
+      ],
+      'expected_output': [
+        ('Below is the output your code should produce for the given input. ' +
+         'Can you find the bug?'),
+        'Consider the input/output pair below. Can you find the bug?',
+        'Here is the input/output pair. Where could the bug be?',
+        ('Your code should produce the output shown below. Can you update ' +
+         'your code to produce the same output?'),
+        ('It looks like there is still a bug. Can you modify your code so ' +
+         'that it produces the output shown below?')
+      ],
+      'output_enabled': [
+        ('If you are really stuck, you can display the output of your code.'),
+        ('If you are stuck and need help, you can display the output of your ' +
+         'code.'),
+        ('If you can\'t seem to get unstuck, you can display the output of ' +
+         'your code.'),
+        ('If you feel stumped, you can display the output of your code.'),
+        ('If you can\'t find the bug, you can display the output of your code.')
+      ]
+    };
+
+    /**
+     * Object to hold index of correctness feedback given (values), per
+     * test suite (keys). Used when avoiding presenting the same feedback text
+     * consecutively.
+     *
+     * $type {Object.<string, number>}
+     */
+    var lastCorrectnessFeedback = {};
+
+    /**
+     * Index of last test suite for which corrective feedback was given. Used
+     * to determine if the user has moved on to a new test suite.
+     *
+     * $type {number} 
+     */
+    var lastTestSuiteIndex = -1;
+
+    /**
      * Variable to store the error string immediately before the current error.
      * Will be used to see if the user is receiving the same exact error
      * consecutively, a possible indication of language unfamiliarity.
@@ -60,6 +119,39 @@ tie.factory('FeedbackGeneratorService', [
      * @type {string}
      */
     var previousRuntimeErrorString = '';
+
+    /**
+     * Pseudo-randomly returns an int between min and max (inclusive).
+     *
+     * @param {number} min Minimum number for range.
+     * @param {number} max Maximum number for range.
+     * @returns {number}
+     * @private
+     */
+    var _getRandomInt = function(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min
+    };
+
+    /**
+     * Randomly selects feedback string from an object containing variations
+     * of a given feedback type.
+     *
+     * @param {Object.<string, Array.<string>>} correctnessFeedbackText
+     * @param {string} type Correctnness feedback type.
+     * @returns {string}
+     * @private
+     */
+    var _selectCorrectnessFeedback = function(correctnessFeedbackText, type) {
+      var defaultFeedbackIndex = lastCorrectnessFeedback[type];
+      while (defaultFeedbackIndex == lastCorrectnessFeedback[type]) {
+        var defaultFeedbackIndex = _getRandomInt(0,
+          (correctnessFeedbackText[type].length));
+        }
+      lastCorrectnessFeedback[type] = defaultFeedbackIndex;
+      return correctnessFeedbackText[type][defaultFeedbackIndex];
+    };
 
     /**
      * Updates the counter specified in the paramter to track language
@@ -268,28 +360,45 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getCorrectnessTestFeedback = function(
-      outputFunctionName, testCase, observedOutput) {
+      outputFunctionName, testCase, observedOutput, testSuiteId,
+      testSuiteIndex) {
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
-      // TODO(eyurko): Add varied statements for when code is incorrect.
-      feedback.appendTextParagraph('Your code produced the following result:');
-      if (outputFunctionName) {
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-          ('Output (after running ' + outputFunctionName + '): ' +
-            _jsToHumanReadable(observedOutput)));
-        feedback.appendTextParagraph(
-          'However, the expected output of ' + outputFunctionName + ' is:');
+      if (testSuiteIndex == lastTestSuiteIndex) {
+        // Same test suite; attempt number > 1
+        attemptCounter[testSuiteId] += 1;
+        if (attemptCounter[testSuiteId] == 2 && testSuiteId != 'SAMPLE_INPUT') {
+          // Display expected output
+          feedback.appendTextParagraph(
+            _selectCorrectnessFeedback(correctnessFeedbackText,
+            'expected_output'));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+            'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
+          return feedback;
+        }
       } else {
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-          'Output: ' + _jsToHumanReadable(observedOutput));
-        feedback.appendTextParagraph('However, the expected output is:');
+        // New / next test suite
+        lastTestSuiteIndex = testSuiteIndex;
+        if (testSuiteId != 'SAMPLE_INPUT') {
+          // Display input user should try
+          feedback.appendTextParagraph(
+            _selectCorrectnessFeedback(correctnessFeedbackText,
+            'input_to_try'));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()));
+          attemptCounter[testSuiteId] = 1;
+          return feedback;
+        }
       }
-      feedback.appendCodeParagraph(
-        _jsToHumanReadable(allowedOutputExample));
-      feedback.appendTextParagraph('Could you fix this?');
+      // Allow user to display output
+      feedback.appendTextParagraph(
+        _selectCorrectnessFeedback(correctnessFeedbackText, 'output_enabled'));
+      feedback.appendOutputParagraph(
+        'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+        'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) + '\n' +
+        'Actual Output: ' + _jsToHumanReadable(observedOutput));
       return feedback;
     };
 
@@ -550,11 +659,13 @@ tie.factory('FeedbackGeneratorService', [
             var testCases = testSuites[j].getTestCases();
             for (var k = 0; k < testCases.length; k++) {
               var testCase = testCases[k];
+              var testSuiteId = testSuites[j]._id;
+              var testSuiteIndex = j;
               var observedOutput = observedOutputs[i][j][k];
               if (!testCase.matchesOutput(observedOutput)) {
                 return _getCorrectnessTestFeedback(
-                  tasks[i].getOutputFunctionNameWithoutClass(),
-                  testCase, observedOutput);
+                  tasks[i].getOutputFunctionNameWithoutClass(), testCase,
+                  observedOutput, testSuiteId, testSuiteIndex);
               }
             }
           }
@@ -700,6 +811,8 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendCodeParagraph(paragraph.content);
                 } else if (paragraph.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
                   feedback.appendSyntaxErrorParagraph(paragraph.content);
+                } else if (paragraph.type === PARAGRAPH_TYPE_OUTPUT) {
+                  feedback.appendOutputParagraph(paragraph.content);
                 }
               });
             }

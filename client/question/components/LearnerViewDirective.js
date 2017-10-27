@@ -59,6 +59,10 @@ tie.directive('learnerView', [function() {
                                               on-state-change="scrollToBottomOfFeedbackWindow()">
                         </syntax-error-snippet>
                       </span>
+                      <span ng-if="paragraph.isOutputParagraph()">
+                        <output-snippet content="paragraph.getContent()">
+                        </output-snippet>
+                      </span>
                     </p>
                   </div>
                   <div class="tie-reinforcement">

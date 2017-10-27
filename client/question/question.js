@@ -215,6 +215,14 @@ tie.constant('PARAGRAPH_TYPE_CODE', 'code');
 tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 
 /**
+ * FeedbackParagraph type that will render text to look like code.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
+
+/**
  * Constant for the number of times that a user can make a mistake (i.e.
  * same error, syntax error, etc.) until we prompt them to look at the
  * primer.
