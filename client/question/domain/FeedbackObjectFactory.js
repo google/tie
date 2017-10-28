@@ -97,7 +97,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Prepends a FeedbackParagraph of type text to the _paragraphs Array.
      *
-     * @param {string} text String to be inserted in text paragraph
+     * @param {string} text String to be inserted in text paragraph.
      */
     Feedback.prototype.prependTextParagraph = function(text) {
       this._paragraphs.unshift(
@@ -107,7 +107,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Appends a FeedbackParagraph of type text to the _paragraphs Array.
      *
-     * @param {string} text String to be inserted in text paragraph
+     * @param {string} text String to be inserted in text paragraph.
      */
     Feedback.prototype.appendTextParagraph = function(text) {
       this._paragraphs.push(
@@ -115,9 +115,9 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * Appends a FeedbackParagraph of type code to the _paragraphs Array
+     * Appends a FeedbackParagraph of type code to the _paragraphs Array.
      *
-     * @param {string} code String of code to be inserted into code paragraph
+     * @param {string} code String of code to be inserted into code paragraph.
      */
     Feedback.prototype.appendCodeParagraph = function(code) {
       if (this._paragraphs.length === 0) {
@@ -129,20 +129,21 @@ tie.factory('FeedbackObjectFactory', [
 
     /**
      * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
-     * Array
+     * Array.
      *
-     * @param {string} text String describing the syntax error
+     * @param {string} outputString String describing the syntax error.
      */
-    Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
+    Feedback.prototype.appendSyntaxErrorParagraph = function(outputString) {
       this._paragraphs.push(
-        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
+        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(outputString)
+      );
     };
 
     /**
      * Appends a FeedbackParagraph of type output to the _paragraphs
-     * Array
+     * Array.
      *
-     * @param {string} text String of code to be inserted as code output
+     * @param {string} text String of code to be inserted as code output.
      */
     Feedback.prototype.appendOutputParagraph = function(text) {
       this._paragraphs.push(

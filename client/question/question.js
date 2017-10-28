@@ -20,6 +20,79 @@ window.tie = angular.module('tie',
   ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies']);
 
 /**
+ * String used to label test suites that contain sample input and output
+ * that are presented to the user.
+ *
+ * @type {string}
+ */
+tie.constant('SAMPLE_INPUT', 'SAMPLE_INPUT'); 
+
+/**
+ * Correctness state where the test case input has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_TEST_INPUT_DISPLAYED',
+  'CORRECTNESS_TEST_INPUT_DISPLAYED');
+
+/**
+ * Correctness state where the expeced output has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED', 
+  'CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED');
+
+/**
+ * Correctness state where the observed output has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED',
+  'CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED');
+
+/**
+ * Object containing variations on feedback text for different scenarios.
+ *
+ * @type {Object.<string, Array.<string>>}
+ */
+tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
+  'INPUT_TO_TRY': [
+    'Would your code work for the following input?',
+    'How about the following input? Would your code still work?',
+    'Would your code work with the following?',
+    'Consider the input below. How would you code handle it?',
+    'Have you considered input such as the following?'
+  ],
+  'EXPECTED_OUTPUT': [
+    ('Below is the output your code should produce for the given input. ' +
+     'Can you find the bug?'),
+    'Consider the input/output pair below. Can you find the bug?',
+    'Here is the input/output pair. Where could the bug be?',
+    ('Your code should produce the output shown below. Can you update ' +
+     'your code to produce the same output?'),
+    ('It looks like there is still a bug. Can you modify your code so ' +
+     'that it produces the output shown below?')
+  ],
+  'OUTPUT_ENABLED': [
+    ('If you are really stuck, you can display the output of your code.'),
+    ('If you are stuck and need help, you can display the output of your ' +
+     'code.'),
+    ('If you can\'t seem to get unstuck, you can display the output of ' +
+     'your code.'),
+    ('If you feel stumped, you can display the output of your code.'),
+    ('If you can\'t find the bug, you can display the output of your code.')
+  ]});
+
+/**
+ * Correctness state where input has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_TEST_INPUT_DISPLAYED', 
+  'CORRECTNESS_TEST_INPUT_DISPLAYED');
+
+/**
  * The maximum amount of time (in seconds) that the code can take to run.
  *
  * @type {number}
@@ -162,6 +235,7 @@ tie.constant('SYSTEM_CODE', {
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
+
 /**
  * Pre-requisite check error type for when the user tries to import an
  * unsupported library in their code submission.
@@ -170,6 +244,7 @@ tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
+
 /**
  * Pre-requisite check error type for when the user tries to declare or use
  * code in the global scope.
@@ -178,6 +253,7 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
+
 /**
  * Pre-requisite check error type for when the user tries to utilize code with
  * syntax commonly used in another language that isn't valid in the current
@@ -433,7 +509,6 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
   }]
 });
 
-
 /**
  * Pre-requisite check error type to see if the user tried to use any methods
  * from System in their code submission.
@@ -556,6 +631,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
  * @constant
  */
 tie.constant('VARNAME_OBSERVED_OUTPUTS', 'correctness_test_results');
+
 /**
  * Name of the list in which buggy output test results of all tasks are stored.
  *
@@ -563,6 +639,7 @@ tie.constant('VARNAME_OBSERVED_OUTPUTS', 'correctness_test_results');
  * @constant
  */
 tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
+
 /**
  *  Name of the list in which performance test results of all tasks are stored.
  *
@@ -570,6 +647,7 @@ tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
  *  @constant
  */
 tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
+
 /**
  * Name of the list in which correctness test results of one single task are
  * stored.
@@ -604,6 +682,7 @@ tie.constant('VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
  * @constant
  */
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
+
 /**
  * Conversion rate between seconds to milliseconds.
  *
@@ -620,6 +699,7 @@ tie.constant('SECONDS_TO_MILLISECONDS', SECONDS_TO_MILLISECONDS);
  * @constant
  */
 tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
+
 /**
  * Number of seconds that "Saving code..." message will appear for before
  * disappearing.
@@ -627,6 +707,7 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
  * @type {number}
  * @constant
  */
+
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
 /**
  * Default question ID to use if no qid parameter is specified in the URL.
@@ -635,6 +716,7 @@ tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
  * @constant
  */
 tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
+
 /**
  * Default cookie lifetime for the privacy policy in days.
  *
@@ -643,6 +725,7 @@ tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
  */
 var SIX_MONTHS_IN_DAYS = 180;
 tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
+
 /**
 * Key to use to store the privacy policy agreement.
 *
@@ -650,6 +733,7 @@ tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
 * @constant
 */
 tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
+
 /**
  * Menu page url relative to the question page.
  *
