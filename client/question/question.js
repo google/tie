@@ -85,14 +85,6 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
   ]});
 
 /**
- * Correctness state where input has been displayed to the user.
- *
- * @type {string}
- */
-tie.constant('CORRECTNESS_TEST_INPUT_DISPLAYED', 
-  'CORRECTNESS_TEST_INPUT_DISPLAYED');
-
-/**
  * The maximum amount of time (in seconds) that the code can take to run.
  *
  * @type {number}
