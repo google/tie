@@ -26,8 +26,8 @@ tie.factory('FeedbackGeneratorService', [
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   'PARAGRAPH_TYPE_OUTPUT', 'PYTHON_PRIMER_BUTTON_NAME',
   'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY', 'ERROR_COUNTER_SAME_RUNTIME',
-  'UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES', 'SAMPLE_INPUT',
-  'CORRECTNESS_TEST_INPUT_DISPLAYED',
+  'UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
+  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_TEST_INPUT_DISPLAYED',
   'CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED',
   'CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED', 'CORRECTNESS_FEEDBACK_TEXT',
   function(
@@ -38,14 +38,14 @@ tie.factory('FeedbackGeneratorService', [
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
     PARAGRAPH_TYPE_OUTPUT, PYTHON_PRIMER_BUTTON_NAME,
     ERROR_COUNTER_LANGUAGE_UNFAMILIARITY, ERROR_COUNTER_SAME_RUNTIME,
-    UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES, SAMPLE_INPUT,
-    CORRECTNESS_TEST_INPUT_DISPLAYED,
+    UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES,
+    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_TEST_INPUT_DISPLAYED,
     CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED,
     CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED, CORRECTNESS_FEEDBACK_TEXT) {
 
     /**
-     * Object used to keep track of how many correctness feedback (values)
-     * were generated for a given test suite (keys).
+     * Object used to keep track of which state we are in for correctness
+     * feedback.
      *
      * @type {Object.<string, number>}
      */
@@ -81,7 +81,7 @@ tie.factory('FeedbackGeneratorService', [
      *
      * @type {number} 
      */
-    var lastTestSuiteId = '';
+    var previousTestSuiteId = '';
 
     /**
      * Variable to store the error string immediately before the current error.
@@ -103,27 +103,27 @@ tie.factory('FeedbackGeneratorService', [
     var _getRandomInt = function(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min)) + min
+      return Math.floor(Math.random() * (max - min)) + min;
     };
 
     /**
      * Randomly selects feedback string from an object containing variations
      * of a given feedback type.
      *
-     * @param {Object.<string, Array.<string>>} correctnessFeedbackText
+     * @param {Object.<string, Array.<string>>} CORRECTNESS_FEEDBACK_TEXT
      * @param {string} type Correctness feedback type.
      * @returns {string}
      * @private
      */
-    var _getCorrectnessFeedbackString = function(correctnessFeedbackText,
-        type) {
+    var _getCorrectnessFeedbackString = function(
+        CORRECTNESS_FEEDBACK_TEXT, type) {
       var defaultFeedbackIndex = lastCorrectnessFeedback[type];
       while (defaultFeedbackIndex == lastCorrectnessFeedback[type]) {
-        var defaultFeedbackIndex = _getRandomInt(0,
-          (correctnessFeedbackText[type].length));
+        var defaultFeedbackIndex = _getRandomInt(
+            0, CORRECTNESS_FEEDBACK_TEXT[type].length);
         }
       lastCorrectnessFeedback[type] = defaultFeedbackIndex;
-      return correctnessFeedbackText[type][defaultFeedbackIndex];
+      return CORRECTNESS_FEEDBACK_TEXT[type][defaultFeedbackIndex];
     };
 
     /**
@@ -337,14 +337,15 @@ tie.factory('FeedbackGeneratorService', [
     var _getCorrectnessTestFeedback = function(
         outputFunctionName, testCase, testCaseIndex, observedOutput,
         testSuiteId) {
-      var testCaseStateKey = testSuiteId + '-' + testCaseIndex;
+      var testCaseKey = testSuiteId + '-' + testCaseIndex;
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
-      if (testSuiteId == lastTestSuiteId) {
-        if (correctnessTestStates[testCaseStateKey] ==
+      if (testSuiteId == previousTestSuiteId) {
+        // Same test suite (another answer attempt by user)
+        if (correctnessTestStates[testCaseKey] ==
             CORRECTNESS_TEST_INPUT_DISPLAYED &&
-            testSuiteId != SAMPLE_INPUT) {
+            testSuiteId != TEST_SUITE_ID_SAMPLE_INPUT) {
           // Display expected output
           feedback.appendTextParagraph(_getCorrectnessFeedbackString(
             CORRECTNESS_FEEDBACK_TEXT,
@@ -352,30 +353,29 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendCodeParagraph(
             'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
             'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
-          correctnessTestStates[testCaseStateKey] =
+          correctnessTestStates[testCaseKey] =
             CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED;
           return feedback;
         }
       } else {
         // New / next test suite
-        lastTestSuiteId = testSuiteId;
-        if (testSuiteId != SAMPLE_INPUT) {
-          if (!(testCaseStateKey in correctnessTestStates)) {
+        previousTestSuiteId = testSuiteId;
+        if (testSuiteId != TEST_SUITE_ID_SAMPLE_INPUT) {
+          if (!correctnessTestStates.hasOwnProperty(testCaseKey)) {
             // Display input user should try
             feedback.appendTextParagraph(
               _getCorrectnessFeedbackString(CORRECTNESS_FEEDBACK_TEXT,
               'INPUT_TO_TRY'));
             feedback.appendCodeParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()));
-            correctnessTestStates[testSuiteId] = 1;
-            correctnessTestStates[testCaseStateKey] = 
+            correctnessTestStates[testCaseKey] = 
               CORRECTNESS_TEST_INPUT_DISPLAYED;
             return feedback;
           } else {
             // Catch regressions
-            feedback.appendTextParagraph('It looks like there was a ' +
-              'regression in your code. Your code worked for the following, ' +
-              'but it now fails:');
+            feedback.appendTextParagraph(
+              'It looks like there was a regression in your code. Your code' +
+              ' worked for the following, but it now fails:');
             feedback.appendCodeParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
               'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
@@ -390,7 +390,7 @@ tie.factory('FeedbackGeneratorService', [
         'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
         'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) + '\n' +
         'Actual Output: ' + _jsToHumanReadable(observedOutput));
-      correctnessTestStates[testCaseStateKey] =
+      correctnessTestStates[testCaseKey] =
         CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED;
       return feedback;
     };

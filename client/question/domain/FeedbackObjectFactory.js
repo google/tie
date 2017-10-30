@@ -131,11 +131,11 @@ tie.factory('FeedbackObjectFactory', [
      * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
      * Array.
      *
-     * @param {string} outputString String describing the syntax error.
+     * @param {string} text String describing the syntax error.
      */
-    Feedback.prototype.appendSyntaxErrorParagraph = function(outputString) {
+    Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
       this._paragraphs.push(
-        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(outputString)
+        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text)
       );
     };
 
@@ -143,11 +143,11 @@ tie.factory('FeedbackObjectFactory', [
      * Appends a FeedbackParagraph of type output to the _paragraphs
      * Array.
      *
-     * @param {string} text String of code to be inserted as code output.
+     * @param {string} outputString String of code to be inserted as code output.
      */
-    Feedback.prototype.appendOutputParagraph = function(text) {
+    Feedback.prototype.appendOutputParagraph = function(outputString) {
       this._paragraphs.push(
-        FeedbackParagraphObjectFactory.createOutputParagraph(text));
+        FeedbackParagraphObjectFactory.createOutputParagraph(outputString));
     };
 
     /**

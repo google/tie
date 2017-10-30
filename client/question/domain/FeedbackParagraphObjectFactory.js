@@ -18,8 +18,8 @@
  */
 
 tie.factory('FeedbackParagraphObjectFactory', [
-  'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
-  'PARAGRAPH_TYPE_OUTPUT',
+  'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE',
+  'PARAGRAPH_TYPE_SYNTAX_ERROR', 'PARAGRAPH_TYPE_OUTPUT',
   function(PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_CODE,
     PARAGRAPH_TYPE_SYNTAX_ERROR, PARAGRAPH_TYPE_OUTPUT) {
     /**
@@ -58,7 +58,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
 
     // Instance methods.
     /**
-     * Checks if the Paragraph is a text-based paragraph
+     * Checks if the Paragraph is a text-based paragraph.
      *
      * @returns {boolean}
      */
@@ -67,7 +67,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Checks if the Paragraph is a paragraph consisting of code
+     * Checks if the Paragraph is a paragraph consisting of code.
      *
      * @returns {boolean}
      */
@@ -84,7 +84,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Checks if the Paragraph is a paragraph consisting of code output
+     * Checks if the Paragraph is a paragraph consisting of code output.
      *
      * @returns {boolean}
      */

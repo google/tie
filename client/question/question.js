@@ -25,7 +25,7 @@ window.tie = angular.module('tie',
  *
  * @type {string}
  */
-tie.constant('SAMPLE_INPUT', 'SAMPLE_INPUT'); 
+tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT'); 
 
 /**
  * Correctness state where the test case input has been displayed to the user.
