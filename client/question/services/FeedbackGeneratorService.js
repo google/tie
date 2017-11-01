@@ -27,7 +27,8 @@ tie.factory('FeedbackGeneratorService', [
   'PARAGRAPH_TYPE_OUTPUT', 'PYTHON_PRIMER_BUTTON_NAME',
   'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY', 'ERROR_COUNTER_SAME_RUNTIME',
   'UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
-  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_TEST_INPUT_DISPLAYED',
+  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_TEST_STARTING_STATE',
+  'CORRECTNESS_TEST_INPUT_DISPLAYED',
   'CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED',
   'CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED', 'CORRECTNESS_FEEDBACK_TEXT',
   function(
@@ -39,7 +40,8 @@ tie.factory('FeedbackGeneratorService', [
     PARAGRAPH_TYPE_OUTPUT, PYTHON_PRIMER_BUTTON_NAME,
     ERROR_COUNTER_LANGUAGE_UNFAMILIARITY, ERROR_COUNTER_SAME_RUNTIME,
     UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES,
-    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_TEST_INPUT_DISPLAYED,
+    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_TEST_STARTING_STATE,
+    CORRECTNESS_TEST_INPUT_DISPLAYED,
     CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED,
     CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED, CORRECTNESS_FEEDBACK_TEXT) {
 
@@ -110,13 +112,11 @@ tie.factory('FeedbackGeneratorService', [
      * Randomly selects feedback string from an object containing variations
      * of a given feedback type.
      *
-     * @param {Object.<string, Array.<string>>} CORRECTNESS_FEEDBACK_TEXT
      * @param {string} type Correctness feedback type.
      * @returns {string}
      * @private
      */
-    var _getCorrectnessFeedbackString = function(
-        CORRECTNESS_FEEDBACK_TEXT, type) {
+    var _getCorrectnessFeedbackString = function(type) {
       var defaultFeedbackIndex = lastCorrectnessFeedback[type];
       while (defaultFeedbackIndex == lastCorrectnessFeedback[type]) {
         var defaultFeedbackIndex = _getRandomInt(
@@ -341,58 +341,62 @@ tie.factory('FeedbackGeneratorService', [
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
-      if (testSuiteId == previousTestSuiteId) {
-        // Same test suite (another answer attempt by user)
-        if (correctnessTestStates[testCaseKey] ==
-            CORRECTNESS_TEST_INPUT_DISPLAYED &&
-            testSuiteId != TEST_SUITE_ID_SAMPLE_INPUT) {
-          // Display expected output
-          feedback.appendTextParagraph(_getCorrectnessFeedbackString(
-            CORRECTNESS_FEEDBACK_TEXT,
-            'EXPECTED_OUTPUT'));
+      // Check if new / next test suite
+      if (testSuiteId != previousTestSuiteId) {
+        previousTestSuiteId = testSuiteId;
+        // Catch regressions
+        if (correctnessTestStates.hasOwnProperty(testCaseKey)) {
+          feedback.appendTextParagraph(
+            'It looks like there was a regression in your code. Your code ' +
+            'worked for the following, but it now fails:');
           feedback.appendCodeParagraph(
             'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
             'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
+          return feedback;
+        }
+        correctnessTestStates[testCaseKey] = CORRECTNESS_TEST_STARTING_STATE;
+      }
+      // Check if sample input test suite (input and expected already displayed)
+      if (testSuiteId == TEST_SUITE_ID_SAMPLE_INPUT) {
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED;
+      }
+      switch(correctnessTestStates[testCaseKey]) {
+        case CORRECTNESS_TEST_STARTING_STATE:
+          // Display input user should try
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString('INPUT_TO_TRY'));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_TEST_INPUT_DISPLAYED;
+          return feedback;
+          break;
+        case CORRECTNESS_TEST_INPUT_DISPLAYED:
+          // Display expected output
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString('EXPECTED_OUTPUT'));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+            'Expected Output: ' +
+            _jsToHumanReadable(allowedOutputExample));
           correctnessTestStates[testCaseKey] =
             CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED;
           return feedback;
-        }
-      } else {
-        // New / next test suite
-        previousTestSuiteId = testSuiteId;
-        if (testSuiteId != TEST_SUITE_ID_SAMPLE_INPUT) {
-          if (!correctnessTestStates.hasOwnProperty(testCaseKey)) {
-            // Display input user should try
-            feedback.appendTextParagraph(
-              _getCorrectnessFeedbackString(CORRECTNESS_FEEDBACK_TEXT,
-              'INPUT_TO_TRY'));
-            feedback.appendCodeParagraph(
-              'Input: ' + _jsToHumanReadable(testCase.getInput()));
-            correctnessTestStates[testCaseKey] = 
-              CORRECTNESS_TEST_INPUT_DISPLAYED;
-            return feedback;
-          } else {
-            // Catch regressions
-            feedback.appendTextParagraph(
-              'It looks like there was a regression in your code. Your code' +
-              ' worked for the following, but it now fails:');
-            feedback.appendCodeParagraph(
-              'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-              'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
-          }
-        }
+          break;
+        default:
+          // Allow user to display code output
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString('OUTPUT_ENABLED'));
+          feedback.appendOutputParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+            'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+            '\n' + 'Actual Output: ' + _jsToHumanReadable(observedOutput));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED;
+          return feedback;
+          break;
       }
-      // Allow user to display code output
-      feedback.appendTextParagraph(
-        _getCorrectnessFeedbackString(CORRECTNESS_FEEDBACK_TEXT,
-        'OUTPUT_ENABLED'));
-      feedback.appendOutputParagraph(
-        'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-        'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) + '\n' +
-        'Actual Output: ' + _jsToHumanReadable(observedOutput));
-      correctnessTestStates[testCaseKey] =
-        CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED;
-      return feedback;
     };
 
     /**

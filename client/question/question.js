@@ -28,6 +28,14 @@ window.tie = angular.module('tie',
 tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT'); 
 
 /**
+ * Correctness state for first user attempt to pass a test suite.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_TEST_STARTING_STATE',
+  'CORRECTNESS_TEST_STARTING_STATE');
+
+/**
  * Correctness state where the test case input has been displayed to the user.
  *
  * @type {string}
