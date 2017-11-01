@@ -27,10 +27,10 @@ tie.factory('FeedbackGeneratorService', [
   'PARAGRAPH_TYPE_OUTPUT', 'PYTHON_PRIMER_BUTTON_NAME',
   'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY', 'ERROR_COUNTER_SAME_RUNTIME',
   'UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
-  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_TEST_STARTING_STATE',
-  'CORRECTNESS_TEST_INPUT_DISPLAYED',
-  'CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED',
-  'CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED', 'CORRECTNESS_FEEDBACK_TEXT',
+  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_STATE_STARTING',
+  'CORRECTNESS_STATE_INPUT_DISPLAYED',
+  'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
+  'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED', 'CORRECTNESS_FEEDBACK_TEXT',
   function(
     FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
@@ -40,10 +40,10 @@ tie.factory('FeedbackGeneratorService', [
     PARAGRAPH_TYPE_OUTPUT, PYTHON_PRIMER_BUTTON_NAME,
     ERROR_COUNTER_LANGUAGE_UNFAMILIARITY, ERROR_COUNTER_SAME_RUNTIME,
     UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES,
-    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_TEST_STARTING_STATE,
-    CORRECTNESS_TEST_INPUT_DISPLAYED,
-    CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED,
-    CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED, CORRECTNESS_FEEDBACK_TEXT) {
+    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_STATE_STARTING,
+    CORRECTNESS_STATE_INPUT_DISPLAYED,
+    CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
+    CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED, CORRECTNESS_FEEDBACK_TEXT) {
 
     /**
      * Object used to keep track of which state we are in for correctness
@@ -354,25 +354,25 @@ tie.factory('FeedbackGeneratorService', [
             'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
           return feedback;
         }
-        correctnessTestStates[testCaseKey] = CORRECTNESS_TEST_STARTING_STATE;
+        correctnessTestStates[testCaseKey] = CORRECTNESS_STATE_STARTING;
       }
       // Check if sample input test suite (input and expected already displayed)
       if (testSuiteId == TEST_SUITE_ID_SAMPLE_INPUT) {
         correctnessTestStates[testCaseKey] =
-          CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED;
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
       switch(correctnessTestStates[testCaseKey]) {
-        case CORRECTNESS_TEST_STARTING_STATE:
+        case CORRECTNESS_STATE_STARTING:
           // Display input user should try
           feedback.appendTextParagraph(
             _getCorrectnessFeedbackString('INPUT_TO_TRY'));
           feedback.appendCodeParagraph(
             'Input: ' + _jsToHumanReadable(testCase.getInput()));
           correctnessTestStates[testCaseKey] =
-            CORRECTNESS_TEST_INPUT_DISPLAYED;
+            CORRECTNESS_STATE_INPUT_DISPLAYED;
           return feedback;
           break;
-        case CORRECTNESS_TEST_INPUT_DISPLAYED:
+        case CORRECTNESS_STATE_INPUT_DISPLAYED:
           // Display expected output
           feedback.appendTextParagraph(
             _getCorrectnessFeedbackString('EXPECTED_OUTPUT'));
@@ -381,7 +381,7 @@ tie.factory('FeedbackGeneratorService', [
             'Expected Output: ' +
             _jsToHumanReadable(allowedOutputExample));
           correctnessTestStates[testCaseKey] =
-            CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED;
+            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
           return feedback;
           break;
         default:
@@ -393,7 +393,7 @@ tie.factory('FeedbackGeneratorService', [
             'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) +
             '\n' + 'Actual Output: ' + _jsToHumanReadable(observedOutput));
           correctnessTestStates[testCaseKey] =
-            CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED;
+            CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
           return feedback;
           break;
       }

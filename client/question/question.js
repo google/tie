@@ -32,32 +32,32 @@ tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT');
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_TEST_STARTING_STATE',
-  'CORRECTNESS_TEST_STARTING_STATE');
+tie.constant('CORRECTNESS_STATE_STARTING',
+  'CORRECTNESS_STATE_STARTING');
 
 /**
  * Correctness state where the test case input has been displayed to the user.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_TEST_INPUT_DISPLAYED',
-  'CORRECTNESS_TEST_INPUT_DISPLAYED');
+tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED',
+  'CORRECTNESS_STATE_INPUT_DISPLAYED');
 
 /**
  * Correctness state where the expeced output has been displayed to the user.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED', 
-  'CORRECTNESS_TEST_EXPECTED_OUTPUT_DISPLAYED');
+tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED', 
+  'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
 
 /**
  * Correctness state where the observed output has been displayed to the user.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED',
-  'CORRECTNESS_TEST_OBSERVED_OUTPUT_DISPLAYED');
+tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
+  'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED');
 
 /**
  * Object containing variations on feedback text for different scenarios.
