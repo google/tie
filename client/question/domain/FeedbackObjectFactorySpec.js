@@ -102,7 +102,7 @@ describe('FeedbackObjectFactory', function() {
       feedback.appendSyntaxErrorParagraph('fine');
       feedback.appendOutputParagraph(':-)');
       var dictionaries = feedback.getParagraphsAsListOfDicts();
-      expect(dictionaries.length).toEqual(3);
+      expect(dictionaries.length).toEqual(4);
       expect(dictionaries[0].content).toEqual('This');
       expect(dictionaries[0].type).toEqual(PARAGRAPH_TYPE_TEXT);
       expect(dictionaries[1].content).toEqual('is');
