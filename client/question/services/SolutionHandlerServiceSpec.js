@@ -156,7 +156,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-              "Input: \"task_1_correctness_test_2\"\nOutput: False");
+              "Input: \"task_1_correctness_test_2\"");
           done();
         });
       });
@@ -176,7 +176,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-             "Input: \"task_2_correctness_test_1\"\nOutput: True");
+             "Input: \"task_2_correctness_test_1\"");
           done();
         });
       });
@@ -197,7 +197,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-              "Input: \"task_1_correctness_test_1\"\nOutput: False");
+              "Input: \"task_1_correctness_test_1\"");
           done();
         });
       });
@@ -236,7 +236,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-             "Input: \"task_1_correctness_test_1\"\nOutput: False");
+             "Input: \"task_1_correctness_test_1\"");
           done();
         });
       });
