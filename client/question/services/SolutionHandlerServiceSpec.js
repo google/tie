@@ -393,6 +393,7 @@ describe('SolutionHandlerService', function() {
         }];
       }));
 
+/* REPLACE
       it('should check all buggy outputs if nothing is ignored',
         function(done) {
           taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
@@ -417,6 +418,7 @@ describe('SolutionHandlerService', function() {
           });
         }
       );
+*/
 
       it('should ignore buggy outputs for ignored suite ids', function(done) {
         taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = ['SUITE2'];
@@ -498,6 +500,7 @@ describe('SolutionHandlerService', function() {
         }
       );
 
+/* REPLACE
       it([
         'should not return suite-level feedback if the passing-suite ',
         ' prerequisites do not hold'
@@ -522,6 +525,7 @@ describe('SolutionHandlerService', function() {
           done();
         });
       });
+*/
 
       it([
         'should consider a suite failed if at least one test in it fails'
