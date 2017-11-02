@@ -21,9 +21,11 @@ describe('FeedbackParagraphObjectFactory', function() {
   var textDict;
   var errorDict;
   var codeDict;
+  var outputDict;
   var textParagraph;
   var errorParagraph;
   var codeParagraph;
+  var outputParagraph;
 
 
   beforeEach(module('tie'));
@@ -43,6 +45,10 @@ describe('FeedbackParagraphObjectFactory', function() {
       type: 'code',
       content: 'ZeroDivisionError: integer division or modulo by zero on line 5'
     };
+    outputDict = {
+      type: 'output',
+      content: 'nhoJ ,olleH'
+    };
 
     textParagraph = FeedbackParagraphObjectFactory
       .createTextParagraph('Could you fix this?');
@@ -51,18 +57,21 @@ describe('FeedbackParagraphObjectFactory', function() {
     codeParagraph = FeedbackParagraphObjectFactory
       .createCodeParagraph(
         'ZeroDivisionError: integer division or modulo by zero on line 5');
+    outputParagraph = FeedbackParagraphObjectFactory
+      .createOutputParagraph('nhoJ ,olleH');
 
   }));
 
   describe('fromDict', function() {
     it('should return FeedbackParagraphObjects from a dict', function() {
-
       expect(FeedbackParagraphObjectFactory.fromDict(textDict))
         .toEqual(textParagraph);
       expect(FeedbackParagraphObjectFactory.fromDict(errorDict))
         .toEqual(errorParagraph);
       expect(FeedbackParagraphObjectFactory.fromDict(codeDict))
         .toEqual(codeParagraph);
+      expect(FeedbackParagraphObjectFactory.fromDict(outputDict))
+        .toEqual(outputParagraph);
     });
 
     it('should return null if the dict has undefined type', function() {
@@ -80,6 +89,7 @@ describe('FeedbackParagraphObjectFactory', function() {
       expect(textParagraph.toDict()).toEqual(textDict);
       expect(errorParagraph.toDict()).toEqual(errorDict);
       expect(codeParagraph.toDict()).toEqual(codeDict);
+      expect(outputParagraph.toDict()).toEqual(outputDict);
     });
   });
 

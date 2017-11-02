@@ -75,7 +75,7 @@ tie.factory('FeedbackGeneratorService', [
      *
      * @type {Object.<string, number>}
      */
-    var lastCorrectnessFeedback = {};
+    var previousCorrectnessFeedback = {};
 
     /**
      * Index of last test suite for which correctness feedback was given. Used
@@ -95,10 +95,10 @@ tie.factory('FeedbackGeneratorService', [
     var previousRuntimeErrorString = '';
 
     /**
-     * Pseudo-randomly returns an int between min and max (inclusive).
+     * Pseudo-randomly returns an int between min (inclusive) and max.
      *
-     * @param {number} min Minimum number for range.
-     * @param {number} max Maximum number for range.
+     * @param {number} min Minimum number for range (inclusive).
+     * @param {number} max Maximum number for range (exclusive).
      * @returns {number}
      * @private
      */
@@ -117,13 +117,13 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getCorrectnessFeedbackString = function(type) {
-      var defaultFeedbackIndex = lastCorrectnessFeedback[type];
-      while (defaultFeedbackIndex == lastCorrectnessFeedback[type]) {
-        var defaultFeedbackIndex = _getRandomInt(
+      var correctnessFeedbackIndex = previousCorrectnessFeedback[type];
+      while (correctnessFeedbackIndex == previousCorrectnessFeedback[type]) {
+        var correctnessFeedbackIndex = _getRandomInt(
             0, CORRECTNESS_FEEDBACK_TEXT[type].length);
         }
-      lastCorrectnessFeedback[type] = defaultFeedbackIndex;
-      return CORRECTNESS_FEEDBACK_TEXT[type][defaultFeedbackIndex];
+      previousCorrectnessFeedback[type] = correctnessFeedbackIndex;
+      return CORRECTNESS_FEEDBACK_TEXT[type][correctnessFeedbackIndex];
     };
 
     /**
@@ -322,11 +322,19 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Concats two strings to create testCaseKey
+     *
+     * @param {string} testSuiteId
+     * @param {string} testCaseIndex
+     */
+    var _getTestCaseKey = function(testSuiteId, testCaseIndex) {
+      return testSuiteId + '-' + testCaseIndex;
+    };
+
+    /**
      * Returns the Feedback object created as a result of a specified
      * correctness test.
      *
-     * @param {string|null} outputFunctionName If needed, is string of the
-     *    name for the function needed to process/format the user's output.
      * @param {CorrectnessTest} TestCase
      * @param {number} testCaseIndex
      * @param {*} observedOutput Actual output for running user's code.
@@ -335,9 +343,8 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getCorrectnessTestFeedback = function(
-        outputFunctionName, testCase, testCaseIndex, observedOutput,
-        testSuiteId) {
-      var testCaseKey = testSuiteId + '-' + testCaseIndex;
+        testCase, testCaseIndex, observedOutput, testSuiteId) {
+      var testCaseKey = _getTestCaseKey(testSuiteId, testCaseIndex);
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
@@ -661,8 +668,7 @@ tie.factory('FeedbackGeneratorService', [
               var observedOutput = observedOutputs[i][j][k];
               if (!testCase.matchesOutput(observedOutput)) {
                 return _getCorrectnessTestFeedback(
-                  tasks[i].getOutputFunctionNameWithoutClass(), testCase,
-                  testCaseIndex, observedOutput, testSuiteId);
+                  testCase, testCaseIndex, observedOutput, testSuiteId);
               }
             }
           }
