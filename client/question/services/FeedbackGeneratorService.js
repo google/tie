@@ -81,7 +81,7 @@ tie.factory('FeedbackGeneratorService', [
      * Index of last test suite for which correctness feedback was given. Used
      * to determine if the user has moved on to a new test suite.
      *
-     * @type {number} 
+     * @type {number}
      */
     var previousTestSuiteId = '';
 
@@ -103,9 +103,9 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getRandomInt = function(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min)) + min;
+      var minimum = Math.ceil(min);
+      var maximum = Math.floor(max);
+      return Math.floor(Math.random() * (maximum - minimum)) + minimum;
     };
 
     /**
@@ -119,8 +119,8 @@ tie.factory('FeedbackGeneratorService', [
     var _getCorrectnessFeedbackString = function(type) {
       var correctnessFeedbackIndex = previousCorrectnessFeedback[type];
       while (correctnessFeedbackIndex == previousCorrectnessFeedback[type]) {
-        var correctnessFeedbackIndex = _getRandomInt(
-            0, CORRECTNESS_FEEDBACK_TEXT[type].length);
+        correctnessFeedbackIndex = _getRandomInt(
+          0, CORRECTNESS_FEEDBACK_TEXT[type].length);
         }
       previousCorrectnessFeedback[type] = correctnessFeedbackIndex;
       return CORRECTNESS_FEEDBACK_TEXT[type][correctnessFeedbackIndex];
@@ -269,7 +269,7 @@ tie.factory('FeedbackGeneratorService', [
         previousMessage = previousFeedback.getParagraphs()[0].getContent();
 
         if (previousFeedback.getFeedbackCategory() ===
-            currentFeedbackCategory) {
+          currentFeedbackCategory) {
           previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
         }
       }
@@ -343,7 +343,7 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getCorrectnessTestFeedback = function(
-        testCase, testCaseIndex, observedOutput, testSuiteId) {
+      testCase, testCaseIndex, observedOutput, testSuiteId) {
       var testCaseKey = _getTestCaseKey(testSuiteId, testCaseIndex);
       var allowedOutputExample = testCase.getAnyAllowedOutput();
       var feedback = FeedbackObjectFactory.create(
@@ -437,7 +437,7 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getRuntimeErrorFeedback = function(
-        codeEvalResult, rawCodeLineIndexes) {
+      codeEvalResult, rawCodeLineIndexes) {
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
@@ -449,7 +449,7 @@ tie.factory('FeedbackGeneratorService', [
           var preprocessedCodeLineIndex = (
             Number(humanReadableLineNumber) - 1);
           if (preprocessedCodeLineIndex < 0 ||
-              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+            preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
             throw Error(
               'Line number index out of range: ' + preprocessedCodeLineIndex);
           }
@@ -471,8 +471,8 @@ tie.factory('FeedbackGeneratorService', [
           fixedErrorString, LANGUAGE_PYTHON);
       if (feedbackString === null) {
         feedback.appendTextParagraph(
-            "Looks like your code had a runtime error" + inputClause +
-            ". Here's the trace:");
+          "Looks like your code had a runtime error" + inputClause +
+          ". Here's the trace:");
         feedback.appendCodeParagraph(fixedErrorString);
       } else {
         feedback.appendTextParagraph(feedbackString);

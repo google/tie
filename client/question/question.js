@@ -25,7 +25,7 @@ window.tie = angular.module('tie',
  *
  * @type {string}
  */
-tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT'); 
+tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT');
 
 /**
  * Correctness state for first user attempt to pass a test suite.
@@ -48,7 +48,7 @@ tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED',
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED', 
+tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
   'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
 
 /**
@@ -65,14 +65,14 @@ tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
  * @type {Object.<string, Array.<string>>}
  */
 tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
-  'INPUT_TO_TRY': [
+  INPUT_TO_TRY: [
     'Would your code work for the following input?',
     'How about the following input? Would your code still work?',
     'Would your code work with the following?',
     'Consider the input below. How would you code handle it?',
     'Have you considered input such as the following?'
   ],
-  'EXPECTED_OUTPUT': [
+  EXPECTED_OUTPUT: [
     ('Below is the output your code should produce for the given input. ' +
      'Can you find the bug?'),
     'Consider the input/output pair below. Can you find the bug?',
@@ -82,7 +82,7 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
     ('It looks like there is still a bug. Can you modify your code so ' +
      'that it produces the output shown below?')
   ],
-  'OUTPUT_ENABLED': [
+  OUTPUT_ENABLED: [
     ('If you are really stuck, you can display the output of your code.'),
     ('If you are stuck and need help, you can display the output of your ' +
      'code.'),

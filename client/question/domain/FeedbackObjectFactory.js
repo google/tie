@@ -143,7 +143,8 @@ tie.factory('FeedbackObjectFactory', [
      * Appends a FeedbackParagraph of type output to the _paragraphs
      * Array.
      *
-     * @param {string} outputString String of code to be inserted as code output.
+     * @param {string} outputString String of code to be inserted as code
+     * output.
      */
     Feedback.prototype.appendOutputParagraph = function(outputString) {
       this._paragraphs.push(
