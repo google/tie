@@ -121,7 +121,7 @@ tie.factory('FeedbackGeneratorService', [
       while (correctnessFeedbackIndex == previousCorrectnessFeedback[type]) {
         correctnessFeedbackIndex = _getRandomInt(
           0, CORRECTNESS_FEEDBACK_TEXT[type].length);
-        }
+      }
       previousCorrectnessFeedback[type] = correctnessFeedbackIndex;
       return CORRECTNESS_FEEDBACK_TEXT[type][correctnessFeedbackIndex];
     };
@@ -368,41 +368,38 @@ tie.factory('FeedbackGeneratorService', [
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
-      switch(correctnessTestStates[testCaseKey]) {
-        case CORRECTNESS_STATE_STARTING:
-          // Display input user should try
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString('INPUT_TO_TRY'));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_INPUT_DISPLAYED;
-          return feedback;
-          break;
-        case CORRECTNESS_STATE_INPUT_DISPLAYED:
-          // Display expected output
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString('EXPECTED_OUTPUT'));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' +
-            _jsToHumanReadable(allowedOutputExample));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-          return feedback;
-          break;
-        default:
-          // Allow user to display code output
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString('OUTPUT_ENABLED'));
-          feedback.appendOutputParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-            '\n' + 'Actual Output: ' + _jsToHumanReadable(observedOutput));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
-          return feedback;
-          break;
+      switch (correctnessTestStates[testCaseKey]) {
+      case CORRECTNESS_STATE_STARTING:
+        // Display input user should try
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString('INPUT_TO_TRY'));
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_INPUT_DISPLAYED;
+        return feedback;
+      case CORRECTNESS_STATE_INPUT_DISPLAYED:
+        // Display expected output
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString('EXPECTED_OUTPUT'));
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+          'Expected Output: ' +
+          _jsToHumanReadable(allowedOutputExample));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+        return feedback;
+      default:
+        // Allow user to display code output
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString('OUTPUT_ENABLED'));
+        feedback.appendOutputParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+          'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+          '\n' + 'Actual Output: ' + _jsToHumanReadable(observedOutput));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
+        return feedback;
       }
     };
 

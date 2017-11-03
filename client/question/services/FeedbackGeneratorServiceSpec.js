@@ -46,6 +46,8 @@ describe('FeedbackGeneratorService', function() {
   var PYTHON_PRIMER_BUTTON_NAME;
   var UNFAMILIARITY_THRESHOLD;
 
+  var CORRECTNESS_FEEDBACK_TEXT;
+
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     BuggyOutputTestObjectFactory = $injector.get(
@@ -1352,7 +1354,7 @@ describe('FeedbackGeneratorService', function() {
           selectedFeedbckText =
             FeedbackGeneratorService._getCorrectnessFeedbackString(
             correctnessFeedbackType);
-          if(!CORRECTNESS_FEEDBACK_TEXT[correctnessFeedbackType].includes(
+          if (!CORRECTNESS_FEEDBACK_TEXT[correctnessFeedbackType].includes(
               selectedFeedbckText)) {
             isValidCorrectnessFeedbackText = 'no';
             break;
