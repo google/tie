@@ -118,7 +118,7 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getCorrectnessFeedbackString = function(type) {
       var correctnessFeedbackIndex = previousCorrectnessFeedback[type];
-      while (correctnessFeedbackIndex == previousCorrectnessFeedback[type]) {
+      while (correctnessFeedbackIndex === previousCorrectnessFeedback[type]) {
         correctnessFeedbackIndex = _getRandomInt(
           0, CORRECTNESS_FEEDBACK_TEXT[type].length);
       }
@@ -349,7 +349,7 @@ tie.factory('FeedbackGeneratorService', [
       var feedback = FeedbackObjectFactory.create(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
       // Check if new / next test suite
-      if (testSuiteId != previousTestSuiteId) {
+      if (testSuiteId !== previousTestSuiteId) {
         previousTestSuiteId = testSuiteId;
         // Catch regressions
         if (correctnessTestStates.hasOwnProperty(testCaseKey)) {
@@ -364,7 +364,7 @@ tie.factory('FeedbackGeneratorService', [
         correctnessTestStates[testCaseKey] = CORRECTNESS_STATE_STARTING;
       }
       // Check if sample input test suite (input and expected already displayed)
-      if (testSuiteId == TEST_SUITE_ID_SAMPLE_INPUT) {
+      if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
@@ -394,9 +394,9 @@ tie.factory('FeedbackGeneratorService', [
         feedback.appendTextParagraph(
           _getCorrectnessFeedbackString('OUTPUT_ENABLED'));
         feedback.appendOutputParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-          'Expected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-          '\n' + 'Actual Output: ' + _jsToHumanReadable(observedOutput));
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+          '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+          '\nActual Output: ' + _jsToHumanReadable(observedOutput));
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
         return feedback;

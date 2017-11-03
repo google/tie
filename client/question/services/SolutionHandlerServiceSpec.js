@@ -393,7 +393,7 @@ describe('SolutionHandlerService', function() {
         }];
       }));
 
-/* REPLACE
+/* RE-WRITE
       it('should check all buggy outputs if nothing is ignored',
         function(done) {
           taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
@@ -500,7 +500,7 @@ describe('SolutionHandlerService', function() {
         }
       );
 
-/* REPLACE
+/* RE-WRITE
       it([
         'should not return suite-level feedback if the passing-suite ',
         ' prerequisites do not hold'

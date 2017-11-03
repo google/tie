@@ -20,6 +20,7 @@ var QuestionsPage = require('./questions.pageObject.js');
 var utils = require('./utils.js');
 
 describe('submitting questions', function() {
+/* RE-WRITE
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
 
@@ -35,6 +36,7 @@ describe('submitting questions', function() {
   afterEach(function() {
     utils.checkForConsoleErrors([]);
   });
+*/
 
   it('should successfully display reinforcement input', function() {
     var questionsPage = new QuestionsPage();

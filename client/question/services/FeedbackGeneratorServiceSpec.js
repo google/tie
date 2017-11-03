@@ -1331,7 +1331,7 @@ describe('FeedbackGeneratorService', function() {
         var isValidRandomNum = 'yes';
         for (var i = 0; i < maxTries; i++) {
           var randomNumber = FeedbackGeneratorService._getRandomInt(min, max);
-          if (typeof randomNumber != 'number') {
+          if (typeof randomNumber !== 'number') {
             isValidRandomNum = 'no';
             break;
           }
