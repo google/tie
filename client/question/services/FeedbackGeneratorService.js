@@ -363,7 +363,9 @@ tie.factory('FeedbackGeneratorService', [
         }
         correctnessTestStates[testCaseKey] = CORRECTNESS_STATE_STARTING;
       }
-      // Check if sample input test suite (input and expected already displayed)
+      // If the suite ID corresponds to the sample input, the question will
+      // already have displayed the input and expected output, so we advance
+      // the correctness state to "expected output displayed".
       if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;

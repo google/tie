@@ -173,74 +173,93 @@ describe('FeedbackGeneratorService', function() {
     );
   });
 
-/*
   describe('_getCorrectnessTestFeedback', function() {
-    it([
-      'should return feedback on a user function that ',
-      'doesn\'t pass all correctness tests'
-    ].join(''), function() {
-      var testSuite = TestSuiteObjectFactory.create(
+    var sampleInputTestSuite = {
+      id: 'SAMPLE_INPUT',
+      testCase: {
+        input: 'Hello, John',
+        allowedOutputs: ['olleH, nhoJ']
+      }};
+    var generalTestSuite = {
+      id: 'GENERAL_CASE',
+      testCase: {
+        input: 'Hi, world',
+        allowedOutputs: ['iH, dlrow']
+      }};
+    ];
 
-  describe('_getCorrectnessTestFeedback', function() {
-    it([
-      'should return feedback on a user function that ',
-      'doesn\'t pass all correctness tests'
-    ].join(''), function() {
-      var testCase = TestCaseObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['a']
-      });
-
-      var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(
-          null, testCase, 'output').getParagraphs();
-      expect(paragraphs.length).toEqual(5);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        "Your code produced the following result:");
-      expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe(
-        "Input: \"cat\"\nOutput: \"output\"");
-      expect(paragraphs[2].isTextParagraph()).toBe(true);
-      expect(paragraphs[2].getContent()).toBe(
-        "However, the expected output is:");
-      expect(paragraphs[3].isCodeParagraph()).toBe(true);
-      expect(paragraphs[3].getContent()).toBe("\"a\"");
-      expect(paragraphs[4].isTextParagraph()).toBe(true);
-      expect(paragraphs[4].getContent()).toBe(
-        "Could you fix this?");
+    it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
+      function() {
+      var correctnessFeedbackParagraphs = 
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        sampleInputTestSuite['testCase'], 0, 'incorrect answer',
+        sampleInputTestSuite['id']);
+      var expectedCorrectnessFeedbackText =
+        'valid correctness feedback of type \'OUTPUT_ENABLED\'';
+      var expectedFirstParagraphType = 'text paragraph type';
+      var expectedSecondParagraphType = 'output paragraph type';
+      var expectedFeedbackParagraphsLengthCheck =
+        'feedback paragraph length of 2';
+      var actualCorrectnessFeedbackText = validCorrectnessFeedbackText;
+      var actualFirstParagraphType = expectedFirstParagraphType;
+      var actualSecondParagraphType = expectedSecondParagraphType;
+      var actualFeedbackParagraphsLengthCheck =
+        'feedback paragraph length of ' +
+        correctnessFeedbackParagraphs.length.toString();
+      if (!CORRECTNESS_FEEDBACK_TEXT['OUTPUT_ENABLED'].includes(
+        correctnessFeedbackParagraphs[0].getContent())) {
+        actualCorrectnessFeedbackText = 'invalid correctness feedback';
+      }
+      if (correctnessFeedbackParagraphs[0].isTextParagraph != true) {
+        actualFirstParagraphType = 'invalid paragraph type';
+      }
+      if (correctnessFeedbackParagraphs[1].isOutputParagraph != true) {
+        actualSecondParagraphType = 'invalid paragraph type';
+      }
+      expect(actualCorrectnessFeedbackText).toEqual(
+        expectedCorrectnessFeedbackText);
+      expect(actualFirstParagraphType).toEqual(expectedFirstParagraphType);
+      expect(actualSecondParagraphType).toEqual(expectedSecondParagraphType);
+      expect(actualFeedbackParagraphsLengthCheck).toEqual(
+        expectedFeedbackParagraphsLengthCheck);
     });
 
-    it([
-      'should return feedback with the output function name ',
-      'on a user function that doesn\'t pass all correctness tests'
-    ].join(''), function() {
-      var testCase = TestCaseObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['a']
-      });
-
-      var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(
-          'flufferNutter', testCase, 'output').getParagraphs();
-      expect(paragraphs.length).toEqual(5);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        "Your code produced the following result:");
-      expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe(
-        "Input: \"cat\"\nOutput (after running flufferNutter): \"output\"");
-      expect(paragraphs[2].isTextParagraph()).toBe(true);
-      expect(paragraphs[2].getContent()).toBe(
-        "However, the expected output of flufferNutter is:");
-      expect(paragraphs[3].isCodeParagraph()).toBe(true);
-      expect(paragraphs[3].getContent()).toBe("\"a\"");
-      expect(paragraphs[4].isTextParagraph()).toBe(true);
-      expect(paragraphs[4].getContent()).toBe(
-        "Could you fix this?");
+    it('should suggest input to try first', function() {
+      function() {
+      var correctnessFeedbackParagraphs = 
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalTestSuite['testCase'], 0, 'incorrect answer',
+        generalTestSuite['id']);
+      var expectedCorrectnessFeedbackText =
+        'valid correctness feedback of type \'INPUT_TO_TRY\'';
+      var expectedFirstParagraphType = 'text paragraph type';
+      var expectedSecondParagraphType = 'code paragraph type';
+      var expectedFeedbackParagraphsLengthCheck =
+        'feedback paragraph length of 2';
+      var actualCorrectnessFeedbackText = validCorrectnessFeedbackText;
+      var actualFirstParagraphType = expectedFirstParagraphType;
+      var actualSecondParagraphType = expectedSecondParagraphType;
+      var actualFeedbackParagraphsLengthCheck =
+        'feedback paragraph length of ' +
+        correctnessFeedbackParagraphs.length.toString();
+      if (!CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY'].includes(
+        correctnessFeedbackParagraphs[0].getContent())) {
+        actualCorrectnessFeedbackText = 'invalid correctness feedback';
+      }
+      if (correctnessFeedbackParagraphs[0].isTextParagraph != true) {
+        actualFirstParagraphType = 'invalid paragraph type';
+      }
+      if (correctnessFeedbackParagraphs[1].isCodeParagraph != true) {
+        actualSecondParagraphType = 'invalid paragraph type';
+      }
+      expect(actualCorrectnessFeedbackText).toEqual(
+        expectedCorrectnessFeedbackText);
+      expect(actualFirstParagraphType).toEqual(expectedFirstParagraphType);
+      expect(actualSecondParagraphType).toEqual(expectedSecondParagraphType);
+      expect(actualFeedbackParagraphsLengthCheck).toEqual(
+        expectedFeedbackParagraphsLengthCheck);
     });
   });
-*/
 
   describe('_getPerformanceTestFeedback', function() {
     it([
@@ -1328,19 +1347,20 @@ describe('FeedbackGeneratorService', function() {
         var min = 0;
         var max = 4;
         var maxTries = 100;
-        var isValidRandomNum = 'yes';
+        var expectedRandomNumValue = 'valid number within range';
+        var actualRandomNumValue = expectedRandomNumValue;
         for (var i = 0; i < maxTries; i++) {
           var randomNumber = FeedbackGeneratorService._getRandomInt(min, max);
           if (typeof randomNumber !== 'number') {
-            isValidRandomNum = 'no';
+            actualRandomNumValue = 'invalid number / out of bounds';
             break;
           }
           if (randomNumber < min || randomNumber >= max) {
-            isValidRandomNum = 'no';
+            actualRandomNumValue = 'invalid number / out of bounds';
             break;
           }
         }
-        expect(isValidRandomNum).toEqual('yes');
+        expect(actualRandomNumValue).toEqual(expectedRandomNumValue);
       }
     );
   });
@@ -1349,20 +1369,20 @@ describe('FeedbackGeneratorService', function() {
     it('should return a feedback string from CORRECTNESS_FEEDBACK_TEXT',
       function() {
         var selectedFeedbckText = '';
-        var isValidCorrectnessFeedbackText = 'yes';
+        var expectedCorrectnessFeedback = 'valid correctness feedback';
+        var actualCorrectnessFeedback = expectedCorrectnessFeedback;
         for (var correctnessFeedbackType in CORRECTNESS_FEEDBACK_TEXT) {
           selectedFeedbckText =
             FeedbackGeneratorService._getCorrectnessFeedbackString(
             correctnessFeedbackType);
           if (!CORRECTNESS_FEEDBACK_TEXT[correctnessFeedbackType].includes(
               selectedFeedbckText)) {
-            isValidCorrectnessFeedbackText = 'no';
+            actualCorrectnessFeedback = 'invalid correctness feedback';
             break;
           }
         }
-        expect(isValidCorrectnessFeedbackText).toEqual('yes');
+        expect(actualCorrectnessFeedback).toEqual(actualCorrectnessFeedback);
       }
     );
   });
-
 });
