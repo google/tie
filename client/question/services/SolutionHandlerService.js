@@ -20,11 +20,11 @@
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'TranscriptService', 'CodeSubmissionObjectFactory', 'TipsGeneratorService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory) {
+      TranscriptService, CodeSubmissionObjectFactory, TipsGeneratorService) {
     return {
       /**
        * Asynchronously returns a Promise with a Feedback object associated
@@ -59,10 +59,13 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
+            var tipParagraphs = TipsGeneratorService.getTipParagraphs(
+              language, studentCode);
+
             var potentialSyntaxErrorString = codeEvalResult.getErrorString();
             if (potentialSyntaxErrorString) {
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-                potentialSyntaxErrorString);
+                tipParagraphs, potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return feedback;
             }
@@ -79,7 +82,7 @@ tie.factory('SolutionHandlerService', [
               language, codeSubmission.getPreprocessedCode()
             ).then(function(preprocessedCodeEvalResult) {
               feedback = FeedbackGeneratorService.getFeedback(
-                tasks, preprocessedCodeEvalResult,
+                tipParagraphs, tasks, preprocessedCodeEvalResult,
                 codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
