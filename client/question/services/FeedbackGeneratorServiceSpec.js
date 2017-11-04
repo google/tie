@@ -186,7 +186,6 @@ describe('FeedbackGeneratorService', function() {
         input: 'Hi, world',
         allowedOutputs: ['iH, dlrow']
       }};
-    ];
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
