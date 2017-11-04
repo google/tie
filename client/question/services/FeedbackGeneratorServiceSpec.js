@@ -224,7 +224,6 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should suggest input to try first', function() {
-      function() {
       var correctnessFeedbackParagraphs = 
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalTestSuite['testCase'], 0, 'incorrect answer',
