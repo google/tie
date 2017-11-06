@@ -20,6 +20,13 @@ var QuestionsPage = require('./questions.pageObject.js');
 var utils = require('./utils.js');
 
 describe('submitting questions', function() {
+  var CORRECTNESS_FEEDBACK_TEXT;
+
+  beforeEach(inject(function($injector) {
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
+  }));
+
+
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
 
@@ -27,9 +34,23 @@ describe('submitting questions', function() {
     questionsPage.resetCode();
     questionsPage.runCode();
 
-    expect(questionsPage.countFeedbackParagraphs()).toEqual(5);
+    expect(questionsPage.countFeedbackParagraphs()).toEqual(2);
+
+    var expectedFeedbackTextResult = 'valid feeback text';
+    var actualFeedbackTextResult = 'invalid feeback text';
+    var actualFeedbackText = questionsPage.getFeedbackParagraphText(0);
+    for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
+      if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
+        actualFeedbackText)) {
+        actualFeedbackTextResult = expectedFeedbackTextResult;
+        break;
+      }
+    }
+    expect(actualFeedbackTextResult).toEqual(expectedFeedbackTextResult);
+/*
     expect(questionsPage.getFeedbackParagraphText(0)).toMatch(
       'Your code produced the following result*');
+*/
   });
 
   afterEach(function() {
