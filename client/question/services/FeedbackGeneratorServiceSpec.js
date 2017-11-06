@@ -230,7 +230,8 @@ describe('FeedbackGeneratorService', function() {
         expect(actualSecondParagraphType).toEqual(expectedSecondParagraphType);
         expect(actualFeedbackParagraphsLengthCheck).toEqual(
           expectedFeedbackParagraphsLengthCheck);
-    });
+      }
+    );
 
     it('should suggest input to try first', function() {
       var correctnessFeedbackParagraphs =
