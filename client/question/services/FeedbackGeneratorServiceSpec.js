@@ -191,7 +191,7 @@ describe('FeedbackGeneratorService', function() {
         TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
       var generalInputTestCase = 
         TestCaseObjectFactory.create(generalTestSuite['testCase']);
-    };
+    });
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
