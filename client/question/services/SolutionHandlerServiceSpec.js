@@ -240,6 +240,49 @@ describe('SolutionHandlerService', function() {
           done();
         });
       });
+
+      it('should display a new message only if the code changes',
+        function(done) {
+          var studentCode1 = [
+            'def mockMainFunction(input):',
+            '    return True'
+          ].join('\n');
+          var studentCode2 = [
+            'def mockMainFunction(input):',
+            '    return True or True'
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode1,
+            auxiliaryCode, 'python'
+          ).then(function(feedback1) {
+            expect(feedback1.isAnswerCorrect()).toEqual(false);
+            expect(feedback1.getParagraphs()[0].getContent()).toEqual(
+               'Mock BuggyOutputTest Message One for task1');
+
+            SolutionHandlerService.processSolutionAsync(
+              orderedTasks, starterCode, studentCode1,
+              auxiliaryCode, 'python'
+            ).then(function(feedback2) {
+              expect(feedback2.isAnswerCorrect()).toEqual(false);
+              // The code has not changed, so the message stays the same.
+              expect(feedback2.getParagraphs()[0].getContent()).toEqual(
+                 'Mock BuggyOutputTest Message One for task1');
+
+              SolutionHandlerService.processSolutionAsync(
+                orderedTasks, starterCode, studentCode2,
+                auxiliaryCode, 'python'
+              ).then(function(feedback3) {
+                expect(feedback3.isAnswerCorrect()).toEqual(false);
+                // The code has changed, so the message changes.
+                expect(feedback3.getParagraphs()[0].getContent()).toEqual(
+                   'Mock BuggyOutputTest Message Two for task1');
+                done();
+              });
+            });
+          });
+        }
+      );
     });
 
     describe("prereqCheckFailures", function() {
