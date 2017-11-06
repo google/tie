@@ -174,22 +174,24 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('_getCorrectnessTestFeedback', function() {
-    var sampleInputTestSuite = {
-      id: 'SAMPLE_INPUT',
-      testCase: {
-        input: 'Hello, John',
-        allowedOutputs: ['olleH, nhoJ']
-      }};
-    var generalTestSuite = {
-      id: 'GENERAL_CASE',
-      testCase: {
-        input: 'Hi, world',
-        allowedOutputs: ['iH, dlrow']
-      }};
-    var sampleInputTestCase =
-      TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
-    var generalInputTestCase = 
-      TestCaseObjectFactory.create(generalTestSuite['testCase']);
+    beforeEach(function() {
+      var sampleInputTestSuite = {
+        id: 'SAMPLE_INPUT',
+        testCase: {
+          input: 'Hello, John',
+          allowedOutputs: ['olleH, nhoJ']
+        }};
+      var generalTestSuite = {
+        id: 'GENERAL_CASE',
+        testCase: {
+          input: 'Hi, world',
+          allowedOutputs: ['iH, dlrow']
+        }};
+      var sampleInputTestCase =
+        TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
+      var generalInputTestCase = 
+        TestCaseObjectFactory.create(generalTestSuite['testCase']);
+    };
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
