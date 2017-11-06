@@ -186,12 +186,16 @@ describe('FeedbackGeneratorService', function() {
         input: 'Hi, world',
         allowedOutputs: ['iH, dlrow']
       }};
+    var sampleInputTestCase =
+      TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
+    var generalInputTestCase = 
+      TestCaseObjectFactory.create(generalTestSuite['testCase']);
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
       var correctnessFeedbackParagraphs = 
         FeedbackGeneratorService._getCorrectnessTestFeedback(
-        sampleInputTestSuite['testCase'], 0, 'incorrect answer',
+        sampleInputTestCase, 0, 'incorrect answer',
         sampleInputTestSuite['id']);
       var expectedCorrectnessFeedbackText =
         'valid correctness feedback of type \'OUTPUT_ENABLED\'';
@@ -226,7 +230,7 @@ describe('FeedbackGeneratorService', function() {
     it('should suggest input to try first', function() {
       var correctnessFeedbackParagraphs = 
         FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalTestSuite['testCase'], 0, 'incorrect answer',
+        generalInputTestCase, 0, 'incorrect answer',
         generalTestSuite['id']);
       var expectedCorrectnessFeedbackText =
         'valid correctness feedback of type \'INPUT_TO_TRY\'';
