@@ -413,11 +413,9 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-// LEFT OFF HERE
             var expectedFeedbackTextResult = 'valid feeback text';
-//          var actualFeedbackTextResult = 'invalid feeback text';
+            var actualFeedbackTextResult = 'invalid feeback text';
             var actualFeedbackText = feedback.getParagraphs()[0].getContent();
-            var actualFeedbackTextResult = actualFeedbackText;
             for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
               if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
                 actualFeedbackText)) {
@@ -531,11 +529,9 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-// LEFT OFF HERE
           var expectedFeedbackTextResult = 'valid feeback text';
-//        var actualFeedbackTextResult = 'invalid feeback text';
+          var actualFeedbackTextResult = 'invalid feeback text';
           var actualFeedbackText = feedback.getParagraphs()[0].getContent();
-          var actualFeedbackTextResult = actualFeedbackText;
           for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
             if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
               actualFeedbackText)) {
