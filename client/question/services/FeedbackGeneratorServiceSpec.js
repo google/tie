@@ -188,6 +188,7 @@ describe('FeedbackGeneratorService', function() {
       }};
     var sampleInputTestCase;
     var generalInputTestCase;
+
     beforeEach(function() {
       sampleInputTestCase =
         TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
@@ -207,7 +208,7 @@ describe('FeedbackGeneratorService', function() {
       var expectedSecondParagraphType = 'output paragraph type';
       var expectedFeedbackParagraphsLengthCheck =
         'feedback paragraph length of 2';
-      var actualCorrectnessFeedbackText = validCorrectnessFeedbackText;
+      var actualCorrectnessFeedbackText = expectedCorrectnessFeedbackText;
       var actualFirstParagraphType = expectedFirstParagraphType;
       var actualSecondParagraphType = expectedSecondParagraphType;
       var actualFeedbackParagraphsLengthCheck =
@@ -242,7 +243,7 @@ describe('FeedbackGeneratorService', function() {
       var expectedSecondParagraphType = 'code paragraph type';
       var expectedFeedbackParagraphsLengthCheck =
         'feedback paragraph length of 2';
-      var actualCorrectnessFeedbackText = validCorrectnessFeedbackText;
+      var actualCorrectnessFeedbackText = expectedCorrectnessFeedbackText;
       var actualFirstParagraphType = expectedFirstParagraphType;
       var actualSecondParagraphType = expectedSecondParagraphType;
       var actualFeedbackParagraphsLengthCheck =
