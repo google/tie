@@ -218,10 +218,10 @@ describe('FeedbackGeneratorService', function() {
         correctnessFeedbackParagraphs[0].getContent())) {
         actualCorrectnessFeedbackText = 'invalid correctness feedback';
       }
-      if (correctnessFeedbackParagraphs[0].isTextParagraph != true) {
+      if (correctnessFeedbackParagraphs[0].isTextParagraph() != true) {
         actualFirstParagraphType = 'invalid paragraph type';
       }
-      if (correctnessFeedbackParagraphs[1].isOutputParagraph != true) {
+      if (correctnessFeedbackParagraphs[1].isOutputParagraph() != true) {
         actualSecondParagraphType = 'invalid paragraph type';
       }
       expect(actualCorrectnessFeedbackText).toEqual(
@@ -253,10 +253,10 @@ describe('FeedbackGeneratorService', function() {
         correctnessFeedbackParagraphs[0].getContent())) {
         actualCorrectnessFeedbackText = 'invalid correctness feedback';
       }
-      if (correctnessFeedbackParagraphs[0].isTextParagraph != true) {
+      if (correctnessFeedbackParagraphs[0].isTextParagraph() != true) {
         actualFirstParagraphType = 'invalid paragraph type';
       }
-      if (correctnessFeedbackParagraphs[1].isCodeParagraph != true) {
+      if (correctnessFeedbackParagraphs[1].isCodeParagraph() != true) {
         actualSecondParagraphType = 'invalid paragraph type';
       }
       expect(actualCorrectnessFeedbackText).toEqual(
