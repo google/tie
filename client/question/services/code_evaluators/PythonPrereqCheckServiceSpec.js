@@ -172,6 +172,20 @@ describe('PythonPrereqCheckService', function() {
     });
   });
 
+  describe('getNonStringLines', function() {
+    it('omits lines with string constants', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    b = "hello"',
+        '    c = \'hi\'',
+        '    return arg',
+        ''
+      ].join('\n');
+      var codeLines = PythonPrereqCheckService.getNonStringLines(code);
+      expect(codeLines).toEqual(['def myFunction(arg):', '    return arg', '']);
+    });
+  });
+
   describe('getUnsupportedImports', function() {
     it('correctly returns a list of the unsupported imports', function() {
       var code = [

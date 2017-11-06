@@ -31,23 +31,37 @@ tie.factory('PythonPrereqCheckService', [
       WRONG_LANGUAGE_ERRORS, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
       PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_SYSTEM_CODE) {
+
+    /**
+     * Returns a list of lines in the code that do not contain strings, in
+     * order to prevent spurious false positives in code-analysis checks.
+     *
+     * NOTE TO DEVELOPERS: This check assumes that the code does not contain
+     * any multi-line strings ("""....""").
+     * TODO(sll): Handle the case of multi-line strings.
+     *
+     * @param {string} language The language in which the code is written.
+     * @param {string} code The code to analyze.
+     * @returns {Array} A list of lines of the original code. Lines
+     *   containing strings are omitted.
+     */
+    var getNonStringLines = function(code) {
+      return code.split('\n').filter(function(codeLine) {
+        return (codeLine.indexOf('"') === -1 && codeLine.indexOf("'") === -1);
+      });
+    };
+
     /**
      * Checks if the given code uses any syntax that isn't valid in Python
      * but is specific to languages like C/C++ and Java.
      *
-     * NOTE TO DEVELOPERS: For safety, we do not process any lines that contain
-     * strings in this check. The check also assumes that the code does not
-     * contain any multi-line strings ("""....""").
-     *
-     * @param {string}
+     * @param {string} code
      * @returns {string | null} If there is wrong language syntax detected,
      *    will return the name of the error as referenced in
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var codeLines = code.split('\n').filter(function(codeLine) {
-        return (codeLine.indexOf('"') === -1 && codeLine.indexOf("'") === -1);
-      });
+      var codeLines = getNonStringLines(code);
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
@@ -267,6 +281,7 @@ tie.factory('PythonPrereqCheckService', [
       doTopLevelFunctionLinesExist: doTopLevelFunctionLinesExist,
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
+      getNonStringLines: getNonStringLines,
       getUnsupportedImports: getUnsupportedImports,
       hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
       hasInvalidSystemClassCalls: hasInvalidSystemClassCalls

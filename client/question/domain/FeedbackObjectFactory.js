@@ -42,12 +42,20 @@ tie.factory('FeedbackObjectFactory', [
       }
 
       /**
+       * List of FeedbackParagraph objects to be shown as tips.
+       *
+       * @type {Array}
+       * @private
+       */
+      this._tipParagraphs = [];
+
+      /**
        * List of FeedbackParagraph objects associated with this feedback.
        *
        * @type {Array}
        * @private
        */
-      this._paragraphs = [];
+      this._feedbackParagraphs = [];
 
       /**
        * Records index of what message was displayed with this feedback.
@@ -75,13 +83,14 @@ tie.factory('FeedbackObjectFactory', [
 
     // Instance methods.
     /**
-     * A getter for the _paragraphs property.
-     * Should return an Array of FeedbackParagraph objects.
+     * Retrieves the list of tips and paragraphs associated with this Feedback
+     * object.
      *
-     * @returns {Array}
+     * @returns {Array} An array of FeedbackParagraph objects, comprising tips
+     *   followed by feedback.
      */
     Feedback.prototype.getParagraphs = function() {
-      return this._paragraphs;
+      return this._tipParagraphs.concat(this._feedbackParagraphs);
     };
 
     /**
@@ -95,13 +104,13 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * Prepends a FeedbackParagraph of type text to the _paragraphs Array.
+     * Sets the list of tip paragraphs that are included with this feedback.
      *
-     * @param {string} text String to be inserted in text paragraph
+     * @param {Array} tipParagraphs List of FeedbackParagraph objects
+     *   representing tips to prepend to the feedback shown to the learner.
      */
-    Feedback.prototype.prependTextParagraph = function(text) {
-      this._paragraphs.unshift(
-        FeedbackParagraphObjectFactory.createTextParagraph(text));
+    Feedback.prototype.setTipParagraphs = function(tipParagraphs) {
+      this._tipParagraphs = angular.copy(tipParagraphs);
     };
 
     /**
@@ -110,7 +119,7 @@ tie.factory('FeedbackObjectFactory', [
      * @param {string} text String to be inserted in text paragraph
      */
     Feedback.prototype.appendTextParagraph = function(text) {
-      this._paragraphs.push(
+      this._feedbackParagraphs.push(
         FeedbackParagraphObjectFactory.createTextParagraph(text));
     };
 
@@ -120,10 +129,10 @@ tie.factory('FeedbackObjectFactory', [
      * @param {string} code String of code to be inserted into code paragraph
      */
     Feedback.prototype.appendCodeParagraph = function(code) {
-      if (this._paragraphs.length === 0) {
+      if (this._feedbackParagraphs.length === 0) {
         throw Error('The first feedback paragraph should be a text paragraph.');
       }
-      this._paragraphs.push(
+      this._feedbackParagraphs.push(
         FeedbackParagraphObjectFactory.createCodeParagraph(code));
     };
 
@@ -134,7 +143,7 @@ tie.factory('FeedbackObjectFactory', [
      * @param {string} text String describing the syntax error
      */
     Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
-      this._paragraphs.push(
+      this._feedbackParagraphs.push(
         FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
     };
 
@@ -142,7 +151,7 @@ tie.factory('FeedbackObjectFactory', [
      * Clears all FeedbackParagraph objects from the _paragraphs property.
      */
     Feedback.prototype.clear = function() {
-      this._paragraphs.length = 0;
+      this._feedbackParagraphs.length = 0;
     };
 
     /**
@@ -206,7 +215,7 @@ tie.factory('FeedbackObjectFactory', [
     Feedback.prototype.appendFeedback = function(feedbackToAppend) {
       var paragraphsToAppend = feedbackToAppend.getParagraphs();
       paragraphsToAppend.forEach(function(paragraph) {
-        this._paragraphs.push(paragraph);
+        this._feedbackParagraphs.push(paragraph);
       }.bind(this));
 
       var appendedHintIndex = feedbackToAppend.getHintIndex();
@@ -222,7 +231,7 @@ tie.factory('FeedbackObjectFactory', [
      * @returns [{string, Object}] The feedback paragraphs list of dicts.
      */
     Feedback.prototype.getParagraphsAsListOfDicts = function() {
-      return this._paragraphs.map(function(paragraph) {
+      return this._feedbackParagraphs.map(function(paragraph) {
         return paragraph.toDict();
       });
     };

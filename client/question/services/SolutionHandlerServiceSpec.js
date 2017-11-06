@@ -547,5 +547,34 @@ describe('SolutionHandlerService', function() {
       });
     });
 
+    describe('tips', function() {
+      it('should return tips if they are triggered', function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print input',
+          '    return True',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          var paragraphs = feedback.getParagraphs();
+          expect(paragraphs.length).toEqual(2);
+          expect(paragraphs[0].isTextParagraph()).toBe(true);
+          expect(paragraphs[0].getContent()).toEqual([
+            'We noticed that you\'re using a print statement within your ',
+            'code. Since you will not be able to use such statements in a ',
+            'technical interview, TIE does not support this feature. We ',
+            'encourage you to instead step through your code by hand.'
+          ].join(''));
+          done();
+        });
+      });
+    });
   });
 });
