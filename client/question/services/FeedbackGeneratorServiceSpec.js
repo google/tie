@@ -32,20 +32,16 @@ describe('FeedbackGeneratorService', function() {
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
   var testTask;
-
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
   var PREREQ_CHECK_TYPE_WRONG_LANG;
   var PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL;
   var PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL;
-
   var LANGUAGE_PYTHON;
-
   var FEEDBACK_CATEGORIES;
   var PYTHON_PRIMER_BUTTON_NAME;
   var UNFAMILIARITY_THRESHOLD;
-
   var CORRECTNESS_FEEDBACK_TEXT;
 
   beforeEach(module('tie'));
@@ -65,7 +61,6 @@ describe('FeedbackGeneratorService', function() {
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
-
     PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
@@ -78,13 +73,10 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL');
     PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL = $injector.get(
       'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL');
-
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
-
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
     UNFAMILIARITY_THRESHOLD = $injector.get('UNFAMILIARITY_THRESHOLD');
-
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     var taskDict = [{

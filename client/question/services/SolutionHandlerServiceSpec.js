@@ -23,6 +23,7 @@ describe('SolutionHandlerService', function() {
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
+  var CORRECTNESS_FEEDBACK_TEXT;
   var taskDict = [{
     instructions: [''],
     prerequisiteSkills: [''],
@@ -100,6 +101,7 @@ describe('SolutionHandlerService', function() {
     SolutionHandlerService = $injector.get('SolutionHandlerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
@@ -393,7 +395,6 @@ describe('SolutionHandlerService', function() {
         }];
       }));
 
-/* RE-WRITE
       it('should check all buggy outputs if nothing is ignored',
         function(done) {
           taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
@@ -412,13 +413,22 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            expect(feedback.getParagraphs()[0].getContent()).toBe(
-              'Your code produced the following result:');
+            var expectedFeedbackTextResult = 'valid feeback text';
+            var actualFeedbackTextResult = 'invalid feeback text';
+            var actualFeedbackText = feedback.getParagraphs()[0].getContent();
+            for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
+              if (actualFeedbackText in
+                CORRECTNESS_FEEDBACK_TEXT[typeKey]) {
+                actualFeedbackTextResult = expectedFeedbackTextResult;
+                break;
+              }
+            }
+            expect(actualFeedbackTextResult).toEqual(
+              expectedFeedbackTextResult);
             done();
           });
         }
       );
-*/
 
       it('should ignore buggy outputs for ignored suite ids', function(done) {
         taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = ['SUITE2'];
@@ -500,7 +510,6 @@ describe('SolutionHandlerService', function() {
         }
       );
 
-/* RE-WRITE
       it([
         'should not return suite-level feedback if the passing-suite ',
         ' prerequisites do not hold'
@@ -520,12 +529,21 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'Your code produced the following result:');
+          var expectedFeedbackTextResult = 'valid feeback text';
+          var actualFeedbackTextResult = 'invalid feeback text';
+          var actualFeedbackText = feedback.getParagraphs()[0].getContent();
+          for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
+            if (actualFeedbackText in
+              CORRECTNESS_FEEDBACK_TEXT[typeKey]) {
+              actualFeedbackTextResult = expectedFeedbackTextResult;
+              break;
+            } 
+          }
+          expect(actualFeedbackTextResult).toEqual(
+            expectedFeedbackTextResult);
           done();
         });
       });
-*/
 
       it([
         'should consider a suite failed if at least one test in it fails'
