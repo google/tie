@@ -40,7 +40,7 @@ describe('question.js', function() {
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
-    it('should have a valid and consistent internal structure', function() {
+    it('should have the correct keys and valid values', function() {
       WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
         expect(typeof error.errorName).toBe('string');
         expect(typeof error.regExString).toBe('string');
@@ -58,7 +58,7 @@ describe('question.js', function() {
   });
 
   describe('SYSTEM_GENERATED_TIPS', function() {
-    it('should have a valid and consistent internal structure', function() {
+    it('should have the correct keys and valid values', function() {
       SYSTEM_GENERATED_TIPS.python.forEach(function(tip) {
         expect(typeof tip.type).toBe('string');
         expect(typeof tip.regExString).toBe('string');
@@ -75,7 +75,7 @@ describe('question.js', function() {
   });
 
   describe('RUNTIME_ERROR_FEEDBACK_MESSAGES', function() {
-    it('should have a valid and consistent internal structure', function() {
+    it('should have the correct keys and valid values', function() {
       RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
         expect(error.checker('test')).toBe(false);
         expect(typeof error.generateMessage(['NameError: name \'key\' is not ',

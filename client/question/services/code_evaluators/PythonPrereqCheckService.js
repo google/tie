@@ -38,6 +38,7 @@ tie.factory('PythonPrereqCheckService', [
      *
      * NOTE TO DEVELOPERS: This check assumes that the code does not contain
      * any multi-line strings ("""....""").
+     * TODO(sll): Handle the case of multi-line strings.
      *
      * @param {string} language The language in which the code is written.
      * @param {string} code The code to analyze.
