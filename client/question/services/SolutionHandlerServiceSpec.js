@@ -370,20 +370,6 @@ describe('SolutionHandlerService', function() {
     });
 
     describe('buggy output ignored test suites', function() {
-      var expectedFeedbackTextResult = 'valid feeback text';
-
-      var checkFeedbackTextValidity = function (actualFeedbackText) {
-        var actualFeedbackTextResult = 'invalid feeback text';
-        for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
-          if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
-            actualFeedbackText)) {
-            actualFeedbackTextResult = expectedFeedbackTextResult;
-            break;
-          }
-        }
-        return actualFeedbackTextResult;
-      };
-
       beforeEach(inject(function() {
         // Reconfigure the test suites for the first task.
         taskDict[0].testSuites = [{
@@ -427,10 +413,6 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            var actualFeedbackText = feedback.getParagraphs()[0].getContent();
-            var actualFeedbackTextResult = checkFeedbackTextValidity(
-              actualFeedbackText);
-/*
             var expectedFeedbackTextResult = 'valid feeback text';
             var actualFeedbackTextResult = 'invalid feeback text';
             var actualFeedbackText = feedback.getParagraphs()[0].getContent();
@@ -441,7 +423,6 @@ describe('SolutionHandlerService', function() {
                 break;
               }
             }
-*/
             expect(actualFeedbackTextResult).toEqual(
               expectedFeedbackTextResult);
             done();
@@ -548,10 +529,6 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          var actualFeedbackText = feedback.getParagraphs()[0].getContent();
-          var actualFeedbackTextResult = checkFeedbackTextValidity(
-            actualFeedbackText);
-/*
           var expectedFeedbackTextResult = 'valid feeback text';
           var actualFeedbackTextResult = 'invalid feeback text';
           var actualFeedbackText = feedback.getParagraphs()[0].getContent();
@@ -562,7 +539,6 @@ describe('SolutionHandlerService', function() {
               break;
             }
           }
-*/
           expect(actualFeedbackTextResult).toEqual(
             expectedFeedbackTextResult);
           done();
