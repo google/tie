@@ -174,22 +174,24 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('_getCorrectnessTestFeedback', function() {
+    var sampleInputTestSuite = {
+      id: 'SAMPLE_INPUT',
+      testCase: {
+        input: 'Hello, John',
+        allowedOutputs: ['olleH, nhoJ']
+      }};
+    var generalTestSuite = {
+      id: 'GENERAL_CASE',
+      testCase: {
+        input: 'Hi, world',
+        allowedOutputs: ['iH, dlrow']
+      }};
+    var sampleInputTestCase;
+    var generalInputTestCase;
     beforeEach(function() {
-      var sampleInputTestSuite = {
-        id: 'SAMPLE_INPUT',
-        testCase: {
-          input: 'Hello, John',
-          allowedOutputs: ['olleH, nhoJ']
-        }};
-      var generalTestSuite = {
-        id: 'GENERAL_CASE',
-        testCase: {
-          input: 'Hi, world',
-          allowedOutputs: ['iH, dlrow']
-        }};
-      var sampleInputTestCase =
+      sampleInputTestCase =
         TestCaseObjectFactory.create(sampleInputTestSuite['testCase']);
-      var generalInputTestCase = 
+      generalInputTestCase = 
         TestCaseObjectFactory.create(generalTestSuite['testCase']);
     });
 
