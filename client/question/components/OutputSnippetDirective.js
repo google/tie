@@ -78,15 +78,15 @@ tie.directive('outputSnippet', [function() {
         $scope.snippetLines = [];
 
         /**
-         * Represents whether a syntax error is being shown or not.
+         * Represents whether user code output is being shown or not.
          *
          * @type {boolean}
          */
         $scope.outputIsShown = false;
 
         /**
-         * Used to switch between states of when a syntax error is being shown
-         * or not.
+         * Used to switch between states of whether user code output is
+         * displayed or not.
          */
         $scope.toggleOutput = function() {
           $scope.outputIsShown = !$scope.outputIsShown;
