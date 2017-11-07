@@ -155,7 +155,7 @@ tie.factory('FeedbackObjectFactory', [
      * output.
      */
     Feedback.prototype.appendOutputParagraph = function(outputString) {
-      this._paragraphs.push(
+      this._feedbackParagraphs.push(
         FeedbackParagraphObjectFactory.createOutputParagraph(outputString));
     };
 

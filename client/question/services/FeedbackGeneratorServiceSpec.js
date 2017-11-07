@@ -1312,7 +1312,6 @@ describe('FeedbackGeneratorService', function() {
       }
     );
   });
-});
 
   describe('_getRandomInt', function() {
     it('should return a random number within the defined range',
