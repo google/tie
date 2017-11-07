@@ -195,8 +195,8 @@ describe('FeedbackGeneratorService', function() {
       function() {
         var correctnessFeedbackParagraphs =
           FeedbackGeneratorService._getCorrectnessTestFeedback(
-          sampleInputTestCase, 0, 'incorrect answer',
-          sampleInputTestSuite.id).getParagraphs();
+          sampleInputTestCase, sampleInputTestSuite.id, 0,
+          'incorrect answer').getParagraphs();
         var expectedCorrectnessFeedbackText =
           'valid correctness feedback of type \'OUTPUT_ENABLED\'';
         var expectedFirstParagraphType = 'text paragraph type';
@@ -231,8 +231,8 @@ describe('FeedbackGeneratorService', function() {
     it('should suggest input to try first', function() {
       var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, 0, 'incorrect answer',
-        generalTestSuite.id).getParagraphs();
+        generalInputTestCase, generalTestSuite.id, 0,
+        'incorrect answer').getParagraphs();
       var expectedCorrectnessFeedbackText =
         'valid correctness feedback of type \'INPUT_TO_TRY\'';
       var expectedFirstParagraphType = 'text paragraph type';
