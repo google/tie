@@ -37,6 +37,22 @@ tie.factory('PrereqCheckDispatcherService', [
         } else {
           throw Error('Language not supported: ' + language);
         }
+      },
+      /**
+       * Returns a list of lines that do not contain strings, in order to
+       * prevent spurious false positives in code-analysis checks.
+       *
+       * @param {string} language The language in which the code is written.
+       * @param {string} code The code to analyze.
+       * @returns {Array} A list of lines of the original code. Lines
+       *   containing strings are omitted.
+       */
+      getNonStringLines: function(language, code) {
+        if (language === LANGUAGE_PYTHON) {
+          return PythonPrereqCheckService.getNonStringLines(code);
+        } else {
+          throw Error('Language not supported: ' + language);
+        }
       }
     };
   }

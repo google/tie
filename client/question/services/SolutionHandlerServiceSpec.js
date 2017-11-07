@@ -242,6 +242,49 @@ describe('SolutionHandlerService', function() {
           done();
         });
       });
+
+      it('should display a new message only if the code changes',
+        function(done) {
+          var studentCode1 = [
+            'def mockMainFunction(input):',
+            '    return True'
+          ].join('\n');
+          var studentCode2 = [
+            'def mockMainFunction(input):',
+            '    return True or True'
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode1,
+            auxiliaryCode, 'python'
+          ).then(function(feedback1) {
+            expect(feedback1.isAnswerCorrect()).toEqual(false);
+            expect(feedback1.getParagraphs()[0].getContent()).toEqual(
+               'Mock BuggyOutputTest Message One for task1');
+
+            SolutionHandlerService.processSolutionAsync(
+              orderedTasks, starterCode, studentCode1,
+              auxiliaryCode, 'python'
+            ).then(function(feedback2) {
+              expect(feedback2.isAnswerCorrect()).toEqual(false);
+              // The code has not changed, so the message stays the same.
+              expect(feedback2.getParagraphs()[0].getContent()).toEqual(
+                 'Mock BuggyOutputTest Message One for task1');
+
+              SolutionHandlerService.processSolutionAsync(
+                orderedTasks, starterCode, studentCode2,
+                auxiliaryCode, 'python'
+              ).then(function(feedback3) {
+                expect(feedback3.isAnswerCorrect()).toEqual(false);
+                // The code has changed, so the message changes.
+                expect(feedback3.getParagraphs()[0].getContent()).toEqual(
+                   'Mock BuggyOutputTest Message Two for task1');
+                done();
+              });
+            });
+          });
+        }
+      );
     });
 
     describe("prereqCheckFailures", function() {
@@ -569,5 +612,34 @@ describe('SolutionHandlerService', function() {
       });
     });
 
+    describe('tips', function() {
+      it('should return tips if they are triggered', function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
+
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print input',
+          '    return True',
+          ''
+        ].join('\n');
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          var paragraphs = feedback.getParagraphs();
+          expect(paragraphs.length).toEqual(2);
+          expect(paragraphs[0].isTextParagraph()).toBe(true);
+          expect(paragraphs[0].getContent()).toEqual([
+            'We noticed that you\'re using a print statement within your ',
+            'code. Since you will not be able to use such statements in a ',
+            'technical interview, TIE does not support this feature. We ',
+            'encourage you to instead step through your code by hand.'
+          ].join(''));
+          done();
+        });
+      });
+    });
   });
 });

@@ -510,6 +510,28 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
 });
 
 /**
+ * Dictionary of system-generated tips.
+ *
+ * @type {{}}
+ */
+tie.constant('SYSTEM_GENERATED_TIPS', {
+  python: [{
+    // Included a print statement
+    type: 'print',
+    regExString: '\\bprint\\b',
+    feedbackParagraphs: [{
+      type: 'text',
+      content: [
+        'We noticed that you\'re using a print statement within your code. ',
+        'Since you will not be able to use such statements in a technical ',
+        'interview, TIE does not support this feature. We encourage you to ',
+        'instead step through your code by hand.'
+      ].join('')
+    }]
+  }]
+});
+
+/**
  * Pre-requisite check error type to see if the user tried to use any methods
  * from System in their code submission.
  *

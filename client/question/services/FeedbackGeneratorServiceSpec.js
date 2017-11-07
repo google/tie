@@ -21,7 +21,7 @@ describe('FeedbackGeneratorService', function() {
   var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
-  var FeedbackObjectFactory;
+  var FeedbackParagraphObjectFactory;
   var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var SuiteLevelTestObjectFactory;
@@ -51,7 +51,8 @@ describe('FeedbackGeneratorService', function() {
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
-    FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
+    FeedbackParagraphObjectFactory = $injector.get(
+      'FeedbackParagraphObjectFactory');
     ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
@@ -533,13 +534,13 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getSyntaxErrorFeedback', function() {
+  describe('getSyntaxErrorFeedback', function() {
     it([
       'should return feedback if a syntax / compiler error is ',
       'found in the user\'s code'
     ].join(''), function() {
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-        'some error');
+        [], 'some error');
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
 
@@ -558,7 +559,7 @@ describe('FeedbackGeneratorService', function() {
         'testInput');
 
       var feedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResult, []);
+        [], questionMock, codeEvalResult, []);
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
 
@@ -864,49 +865,6 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_hasPrintStatement', function() {
-    it('returns true if there are print statements detected', function() {
-      var code = [
-        'def myFunc(arg):',
-        '    print arg',
-        '    return arg',
-        ''
-      ].join('\n');
-      expect(FeedbackGeneratorService._hasPrintStatement(code)).toBe(true);
-    });
-
-    it('returns false if there are no print statements detected', function() {
-      var code = [
-        'def myFunc(arg):',
-        '    return arg',
-        ''
-      ].join('\n');
-      expect(FeedbackGeneratorService._hasPrintStatement(code)).toBe(false);
-    });
-  });
-
-  describe('_prependPrintFeedback', function() {
-    it('prepends print feedback to a given feedback object', function() {
-      var oldFeedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-      oldFeedback.appendTextParagraph('test paragraph');
-      var feedback = FeedbackGeneratorService._prependPrintFeedback(
-        oldFeedback);
-
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual([
-        'We noticed that you\'re using a print statement within your code. ',
-        'Since you will not be able to use such statements in a technical ',
-        'interview, TIE does not support this feature. We encourage you to ',
-        'instead step through your code by hand.'
-      ].join(''));
-      expect(paragraphs[1].getContent()).toEqual('test paragraph');
-    });
-  });
-
   describe('getFeedback', function() {
     it('should correctly return feedback if the performance does not meet ' +
       'expectations', function() {
@@ -914,7 +872,7 @@ describe('FeedbackGeneratorService', function() {
         'some code', 'some output', [], [], ['not linear'], null, null);
 
       var feedback = FeedbackGeneratorService.getFeedback(
-        testTask, codeEvalResult, []);
+        [], testTask, codeEvalResult, []);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
@@ -965,7 +923,8 @@ describe('FeedbackGeneratorService', function() {
       var feedback;
 
       for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(errorString);
+        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+          [], errorString);
       }
 
       var paragraphs = feedback.getParagraphs();
@@ -989,7 +948,7 @@ describe('FeedbackGeneratorService', function() {
 
       for (var i = 0; i <= UNFAMILIARITY_THRESHOLD; i++) {
         feedback = FeedbackGeneratorService.getFeedback(
-          testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
+          [], testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       }
 
@@ -1008,32 +967,6 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
     });
-
-    it('should correctly return feedback if print statements are detected',
-      function() {
-        var code = [
-          'def myFunction(arg):',
-          '    print arg',
-          ''
-        ].join('\n');
-
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          code, 'output', [], [], [['not linear']], null, null);
-
-        var feedback = FeedbackGeneratorService.getFeedback(
-          testTask, codeEvalResult, []);
-
-        var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(2);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toEqual([
-          'We noticed that you\'re using a print statement within your code. ',
-          'Since you will not be able to use such statements in a technical ',
-          'interview, TIE does not support this feature. We encourage you to ',
-          'instead step through your code by hand.'
-        ].join(''));
-      }
-    );
   });
 
   describe('getPrereqFailureFeedback', function() {
@@ -1340,6 +1273,46 @@ describe('FeedbackGeneratorService', function() {
       }).toThrow();
     });
   });
+
+  describe('tips', function() {
+    it('should include tips passed in when returning feedback', function() {
+      var tip = FeedbackParagraphObjectFactory.fromDict({
+        type: 'text',
+        content: 'a tip'
+      });
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], ['not linear'], null, null);
+
+      var feedback = FeedbackGeneratorService.getFeedback(
+        [tip], testTask, codeEvalResult, []);
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('a tip');
+    });
+
+    it(
+      'should include tips passed in when returning syntax error feedback',
+      function() {
+        var tip = FeedbackParagraphObjectFactory.fromDict({
+          type: 'text',
+          content: 'a tip'
+        });
+        var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+          [tip], 'some error');
+        expect(feedback.getFeedbackCategory()).toEqual(
+          FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs.length).toEqual(2);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toEqual('a tip');
+        expect(paragraphs[1].isSyntaxErrorParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toBe('some error');
+      }
+    );
+  });
+});
 
   describe('_getRandomInt', function() {
     it('should return a random number within the defined range',

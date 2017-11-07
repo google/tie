@@ -22,6 +22,8 @@ describe('question.js', function() {
   var PARAGRAPH_TYPE_SYNTAX_ERROR;
   var RUNTIME_ERROR_FEEDBACK_MESSAGES;
   var FEEDBACK_CATEGORIES;
+  var SYSTEM_GENERATED_TIPS;
+  var ALLOWED_PARAGRAPH_TYPES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -32,24 +34,40 @@ describe('question.js', function() {
     RUNTIME_ERROR_FEEDBACK_MESSAGES = $injector.get(
       'RUNTIME_ERROR_FEEDBACK_MESSAGES');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    SYSTEM_GENERATED_TIPS = $injector.get('SYSTEM_GENERATED_TIPS');
+    ALLOWED_PARAGRAPH_TYPES = [
+      PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_SYNTAX_ERROR];
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
-    it('should have a valid and consistent internal structure', function() {
+    it('should have the correct keys and valid values', function() {
       WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
         expect(typeof error.errorName).toBe('string');
         expect(typeof error.regExString).toBe('string');
         expect(typeof error.allowMultiline).toBe('boolean');
         expect(Array.isArray(error.feedbackParagraphs)).toBe(true);
+
         error.feedbackParagraphs.forEach(function(paragraph) {
           expect(typeof paragraph.type).toEqual('string');
-          var equalsTypeText = paragraph.type === PARAGRAPH_TYPE_TEXT;
-          var equalsTypeCode = paragraph.type === PARAGRAPH_TYPE_CODE;
-          var equalsTypeSyntaxError =
-              paragraph.type === PARAGRAPH_TYPE_SYNTAX_ERROR;
-          expect(equalsTypeCode || equalsTypeText || equalsTypeSyntaxError)
-              .toBe(true);
+          expect(ALLOWED_PARAGRAPH_TYPES.indexOf(paragraph.type) !== -1).toBe(
+            true);
+          expect(typeof paragraph.content).toEqual('string');
+        });
+      });
+    });
+  });
 
+  describe('SYSTEM_GENERATED_TIPS', function() {
+    it('should have the correct keys and valid values', function() {
+      SYSTEM_GENERATED_TIPS.python.forEach(function(tip) {
+        expect(typeof tip.type).toBe('string');
+        expect(typeof tip.regExString).toBe('string');
+        expect(Array.isArray(tip.feedbackParagraphs)).toBe(true);
+
+        tip.feedbackParagraphs.forEach(function(paragraph) {
+          expect(typeof paragraph.type).toEqual('string');
+          expect(ALLOWED_PARAGRAPH_TYPES.indexOf(paragraph.type) !== -1).toBe(
+            true);
           expect(typeof paragraph.content).toEqual('string');
         });
       });
@@ -57,7 +75,7 @@ describe('question.js', function() {
   });
 
   describe('RUNTIME_ERROR_FEEDBACK_MESSAGES', function() {
-    it('should have a valid and consistent internal structure', function() {
+    it('should have the correct keys and valid values', function() {
       RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
         expect(error.checker('test')).toBe(false);
         expect(typeof error.generateMessage(['NameError: name \'key\' is not ',

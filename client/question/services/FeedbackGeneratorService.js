@@ -240,7 +240,7 @@ tie.factory('FeedbackGeneratorService', [
       return (
         lastSnapshot !== null &&
         lastSnapshot.getCodeEvalResult() !== null &&
-        codeEvalResult.hasSamePreprocessedCodeAs(
+        !codeEvalResult.hasSamePreprocessedCodeAs(
           lastSnapshot.getCodeEvalResult()));
     };
 
@@ -550,37 +550,6 @@ tie.factory('FeedbackGeneratorService', [
         return '';
       }
     };
-
-    /**
-     * Returns boolean indicating if there are print statements found in
-     * the given code.
-     *
-     * @param {string} code User's submitted code
-     * @returns {boolean} Indicates if there are print statements in code or not
-     */
-    var _hasPrintStatement = function(code) {
-      var printRegEx = /\bprint\b/;
-      return code.search(printRegEx) !== -1;
-    };
-
-    /**
-     * Prepends a text feedback paragraph warning against use of print
-     * statements to the given Feedback object and returns the new Feedback
-     * object.
-     *
-     * @param {Feedback} feedback
-     * @returns {Feedback}
-     */
-    var _prependPrintFeedback = function(feedback) {
-      feedback.prependTextParagraph([
-        'We noticed that you\'re using a print statement within your code. ',
-        'Since you will not be able to use such statements in a technical ',
-        'interview, TIE does not support this feature. We encourage you to ',
-        'instead step through your code by hand.'
-      ].join(''));
-      return feedback;
-    };
-
     /**
      * Returns the Feedback object associated with a given user submission
      * not including the reinforcement.
@@ -698,6 +667,8 @@ tie.factory('FeedbackGeneratorService', [
        * code submission and their test results. This also includes feedback
        * for print statements.
        *
+       * @param {Array} tipParagraphs A list of FeedbackParagraph objects
+       *   representing tips to include in the feedback.
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
        * @param {CodeEvalResult} codeEvalResult Test results for this submission
@@ -705,7 +676,8 @@ tie.factory('FeedbackGeneratorService', [
        *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(
+          tipParagraphs, tasks, codeEvalResult, rawCodeLineIndexes) {
         // If the user receives the same error message increment the same error
         // counter.
         if (previousRuntimeErrorString &&
@@ -717,6 +689,7 @@ tie.factory('FeedbackGeneratorService', [
 
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
+        feedback.setTipParagraphs(tipParagraphs);
         if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
           feedback.setReinforcement(
             ReinforcementGeneratorService.getReinforcement(
@@ -726,28 +699,24 @@ tie.factory('FeedbackGeneratorService', [
         _applyThresholdUpdates(feedback);
         previousRuntimeErrorString = codeEvalResult.getErrorString();
 
-        // Use RegEx to find if user has print statements and add a special
-        // feedback warning explaining we don't support print statements.
-        var code = codeEvalResult.getPreprocessedCode();
-        if (_hasPrintStatement(code)) {
-          feedback = _prependPrintFeedback(feedback);
-        }
-
         return feedback;
       },
       /**
        * Returns the Feedback object for the given syntax error string.
        *
+       * @param {Array} tipParagraphs A list of FeedbackParagraph objects
+       *   representing tips to include in the feedback.
        * @param {string} errorString
        * @returns {Feedback}
        */
-      getSyntaxErrorFeedback: function(errorString) {
+      getSyntaxErrorFeedback: function(tipParagraphs, errorString) {
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+        feedback.setTipParagraphs(tipParagraphs);
         feedback.appendSyntaxErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);
@@ -865,9 +834,7 @@ tie.factory('FeedbackGeneratorService', [
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
       _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
-      _hasPrintStatement: _hasPrintStatement,
       _jsToHumanReadable: _jsToHumanReadable,
-      _prependPrintFeedback: _prependPrintFeedback,
       _resetCounters: _resetCounters,
       _updateCounters: _updateCounters
     };
