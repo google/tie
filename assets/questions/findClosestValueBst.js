@@ -75,6 +75,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
 `
   },
   tasks: [{
+    id: 'findClosestValueInBst',
     instructions: [{
       content: [
         'In this question, you need to find the closest value in a' +
@@ -118,6 +119,9 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -163,6 +167,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'findAllPossibleCandidates',
     instructions: [{
       content: [
         'Next, make sure you compare all possible candidates during the ' +
@@ -175,6 +180,9 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'SHOULD_RETURN_ROOT',
       humanReadableName: 'should return root',

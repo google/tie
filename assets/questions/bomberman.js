@@ -73,6 +73,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
+    id: 'findBestBombLocation',
     instructions: [{
       content: [
         'For this question, you will be given a board, in which all ',
@@ -92,6 +93,9 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'bomb',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'EMPTY_BOARDS',
       humanReadableName: 'empty boards',

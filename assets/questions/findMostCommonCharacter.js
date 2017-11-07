@@ -46,6 +46,7 @@ class AuxiliaryCode(object):
 `
   },
   tasks: [{
+    id: 'findMostCommonCharacter',
     instructions: [{
       content: [
         'In this problem, we\'d like you to write a function that determines ',
@@ -63,6 +64,9 @@ class AuxiliaryCode(object):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findMostCommonCharacter',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

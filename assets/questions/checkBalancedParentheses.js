@@ -44,6 +44,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
 `
   },
   tasks: [{
+    id: 'verifyParens',
     instructions: [{
       content: [
         'For this question, you will implement the isBalanced function. ',
@@ -61,6 +62,9 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -97,6 +101,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'handleCornerCases',
     instructions: [{
       content: [
         'Now, double-check your code to make sure it handles unexpected ',
@@ -116,6 +121,9 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'EMPTY_STRINGS',
       humanReadableName: 'empty strings',

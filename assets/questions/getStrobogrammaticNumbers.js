@@ -43,6 +43,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
 `
   },
   tasks: [{
+    id: 'generateStrobogrammaticNumbers',
     instructions: [{
       content: [
         'Implement a function getStrobogrammaticNumbers which takes a ',
@@ -59,6 +60,9 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'getStrobogrammaticNumbers',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'SMALL_NUMBERS',
       humanReadableName: 'small-sized numbers',

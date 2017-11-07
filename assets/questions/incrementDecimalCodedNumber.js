@@ -59,6 +59,7 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
 `
   },
   tasks: [{
+    id: 'incrementNumber',
     instructions: [{
       content: [
         'In this problem, you\'ll write a function to increment a ',
@@ -80,6 +81,9 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'increment',
+    tips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
