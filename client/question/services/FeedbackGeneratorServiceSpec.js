@@ -172,13 +172,15 @@ describe('FeedbackGeneratorService', function() {
       testCase: {
         input: 'Hello, John',
         allowedOutputs: ['olleH, nhoJ']
-      }};
+      }
+    };
     var generalTestSuite = {
       id: 'GENERAL_CASE',
       testCase: {
         input: 'Hi, world',
         allowedOutputs: ['iH, dlrow']
-      }};
+      }
+    };
     var sampleInputTestCase;
     var generalInputTestCase;
 

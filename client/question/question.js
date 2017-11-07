@@ -291,7 +291,7 @@ tie.constant('PARAGRAPH_TYPE_CODE', 'code');
 tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 
 /**
- * FeedbackParagraph type that will render text to look like code.
+ * FeedbackParagraph type for displaying user code output.
  *
  * @type {string}
  * @constant
