@@ -32,24 +32,22 @@ tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT');
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_STARTING',
-  'CORRECTNESS_STATE_STARTING');
+tie.constant('CORRECTNESS_STATE_STARTING', 'STARTING');
 
 /**
  * Correctness state where the test case input has been displayed to the user.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED',
-  'CORRECTNESS_STATE_INPUT_DISPLAYED');
+tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED', 'INPUT_DISPLAYED');
 
 /**
- * Correctness state where the expeced output has been displayed to the user.
+ * Correctness state where the expected output has been displayed to the user.
  *
  * @type {string}
  */
 tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
-  'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
+  'EXPECTED_OUTPUT_DISPLAYED');
 
 /**
  * Correctness state where the observed output has been displayed to the user.
@@ -57,7 +55,31 @@ tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
  * @type {string}
  */
 tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
-  'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED');
+  'OBSERVED_OUTPUT_DISPLAYED');
+
+/**
+ * Label for feedback displayed to user when presenting input(s) the user should
+ * consider before they revise their code. 
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_INPUT_TO_TRY', 'INPUT_TO_TRY');
+
+/**
+ * Label for feedback displayed to user when presenting the expected output for
+ * given input.
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_EXPECTED_OUTPUT', 'EXPECTED_OUTPUT');
+
+/**
+ * Label for feedback displayed to user when allowing the user to display the
+ * output from their submitted code. 
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
 
 /**
  * Object containing variations on feedback text for different scenarios.
