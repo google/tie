@@ -79,7 +79,7 @@ tie.factory('TaskSchemaValidationService', [
        */
       verifyIdExists: function(task) {
         var id = task.getId();
-        return !!id && angular.isString(id);
+        return Boolean(id) && angular.isString(id);
       },
 
       /**
@@ -224,7 +224,7 @@ tie.factory('TaskSchemaValidationService', [
        */
       verifyTipsCoverAllSupportedLanguages: function(task) {
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
-          return !!task.getTips(language);
+          return Boolean(task.getTips(language));
         });
       },
 
@@ -242,8 +242,8 @@ tie.factory('TaskSchemaValidationService', [
             var regexString = tip.getRegexString();
             var message = tip.getMessage();
             return (
-              !!regexString && angular.isString(regexString) &&
-              !!message && angular.isString(message));
+              Boolean(regexString) && angular.isString(regexString) &&
+              Boolean(message) && angular.isString(message));
           });
         });
       },
