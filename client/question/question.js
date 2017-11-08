@@ -59,7 +59,7 @@ tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
 
 /**
  * Label for feedback displayed to user when presenting input(s) the user should
- * consider before they revise their code. 
+ * consider before they revise their code.
  *
  * @type {string}
  */
@@ -75,7 +75,7 @@ tie.constant('FEEDBACK_TYPE_EXPECTED_OUTPUT', 'EXPECTED_OUTPUT');
 
 /**
  * Label for feedback displayed to user when allowing the user to display the
- * output from their submitted code. 
+ * output from their submitted code.
  *
  * @type {string}
  */

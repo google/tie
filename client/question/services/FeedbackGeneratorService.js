@@ -129,8 +129,8 @@ tie.factory('FeedbackGeneratorService', [
         availableCorrectnessFeedbackIndexes[feedbackType] = [];
       }
       // Resets availableCorrectnessFeedbackIndexes when length is 0.
-      if (availableCorrectnessFeedbackIndexes[feedbackType].length == 0) {
-        var feedbackMaxArrayLength = 
+      if (availableCorrectnessFeedbackIndexes[feedbackType].length === 0) {
+        var feedbackMaxArrayLength =
           CORRECTNESS_FEEDBACK_TEXT[feedbackType].length;
         // Creates an array in which each value corresponds to its index.
         availableCorrectnessFeedbackIndexes[feedbackType] =
@@ -142,8 +142,6 @@ tie.factory('FeedbackGeneratorService', [
         0, availableCorrectnessFeedbackIndexes[feedbackType].length);
       var correctnessFeedbackIndex =
         availableCorrectnessFeedbackIndexes[feedbackType][randomArrayIndex];
-      var feedbackText =
-        CORRECTNESS_FEEDBACK_TEXT[feedbackType][correctnessFeedbackIndex];
       availableCorrectnessFeedbackIndexes[feedbackType].splice(
         randomArrayIndex, 1);
       return CORRECTNESS_FEEDBACK_TEXT[feedbackType][correctnessFeedbackIndex];
