@@ -93,7 +93,7 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'bomb',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

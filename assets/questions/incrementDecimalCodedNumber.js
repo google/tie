@@ -81,7 +81,7 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'increment',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

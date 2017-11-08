@@ -122,7 +122,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -191,7 +191,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -248,7 +248,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

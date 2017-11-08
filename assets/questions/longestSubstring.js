@@ -67,7 +67,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'longestSubstring',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

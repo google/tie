@@ -151,7 +151,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -200,7 +200,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -274,7 +274,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: 'AuxiliaryCode.decodeEncodedString',
     mainFunctionName: 'encode',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

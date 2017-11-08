@@ -106,7 +106,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isPalindrome',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

@@ -141,7 +141,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'reverseWords',
-    tips: {
+    languageSpecificTips: {
       python: [{
         regexString: 'import re|regex',
         message: 'You don\'t need to use regexes for this question.'

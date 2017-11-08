@@ -18,11 +18,11 @@
  */
 
 tieData.factory('TaskObjectFactory', [
-  'TestSuiteObjectFactory', 'BuggyOutputTestObjectFactory',
+  'TipObjectFactory', 'TestSuiteObjectFactory', 'BuggyOutputTestObjectFactory',
   'SuiteLevelTestObjectFactory', 'PerformanceTestObjectFactory',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
   function(
-      TestSuiteObjectFactory, BuggyOutputTestObjectFactory,
+      TipObjectFactory, TestSuiteObjectFactory, BuggyOutputTestObjectFactory,
       SuiteLevelTestObjectFactory, PerformanceTestObjectFactory,
       CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE) {
     /**
@@ -38,6 +38,14 @@ tieData.factory('TaskObjectFactory', [
      * @constructor
      */
     var Task = function(taskDict) {
+      /**
+       * The ID of the task.
+       *
+       * @type {string}
+       * @private
+       */
+      this._id = taskDict.id;
+
       /**
        * A list of strings (where each string corresponds to a paragraph in the
        * UI).
@@ -95,6 +103,21 @@ tieData.factory('TaskObjectFactory', [
       this._mainFunctionName = taskDict.mainFunctionName;
 
       /**
+       * An object mapping languages to a list of tips.
+       *
+       * @type {string}
+       * @private
+       */
+      this._languageSpecificTips = {};
+      for (var language in taskDict.languageSpecificTips) {
+        this._languageSpecificTips[language] = (
+          taskDict.languageSpecificTips[language].map(function(tipDict) {
+            return TipObjectFactory.create(tipDict);
+          })
+        );
+      }
+
+      /**
        * An Array of TestSuite objects containing tests that will be used to
        * determine the correctness of the student's code.
        *
@@ -149,6 +172,15 @@ tieData.factory('TaskObjectFactory', [
 
     // Instance methods.
     /**
+     * A getter for the _id property.
+     *
+     * @returns {string}
+     */
+    Task.prototype.getId = function() {
+      return this._id;
+    };
+
+    /**
      * A getter for the _instructions property.
      *
      * @returns {Array}
@@ -201,6 +233,15 @@ tieData.factory('TaskObjectFactory', [
         }
       }
       return this._outputFunctionName;
+    };
+
+    /**
+     * A getter for the tips relevant to a particular language.
+     *
+     * @returns {Array<Tip>}
+     */
+    Task.prototype.getTips = function(language) {
+      return this._languageSpecificTips[language];
     };
 
     /**

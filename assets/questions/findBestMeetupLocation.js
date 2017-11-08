@@ -71,7 +71,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -128,7 +128,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

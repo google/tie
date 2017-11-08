@@ -60,7 +60,7 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'getStrobogrammaticNumbers',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

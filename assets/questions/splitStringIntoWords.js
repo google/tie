@@ -66,7 +66,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -114,7 +114,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

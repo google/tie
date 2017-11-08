@@ -83,7 +83,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -162,7 +162,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -210,7 +210,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

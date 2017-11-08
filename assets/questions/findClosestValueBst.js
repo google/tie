@@ -119,7 +119,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -180,7 +180,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
     inputFunctionName: 'AuxiliaryCode.deserialize',
     outputFunctionName: null,
     mainFunctionName: 'findClosestValue',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

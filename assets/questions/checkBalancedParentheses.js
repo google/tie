@@ -62,7 +62,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -121,7 +121,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -136,6 +136,7 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'handleDifferentBraceTypes',
     instructions: [{
       content: [
         'Next, modify your code to support all types of braces ',
@@ -151,6 +152,9 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isBalanced',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

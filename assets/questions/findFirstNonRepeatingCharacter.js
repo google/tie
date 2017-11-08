@@ -59,7 +59,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findFirstNonRepeatingCharacter',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -117,7 +117,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findFirstNonRepeatingCharacter',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

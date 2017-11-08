@@ -64,7 +64,7 @@ class AuxiliaryCode(object):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findMostCommonCharacter',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{

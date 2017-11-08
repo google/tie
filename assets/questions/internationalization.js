@@ -77,7 +77,7 @@ def are_all_unique(words):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'abbreviate',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
@@ -179,7 +179,7 @@ def are_all_unique(words):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'are_all_unique',
-    tips: {
+    languageSpecificTips: {
       python: []
     },
     testSuites: [{
