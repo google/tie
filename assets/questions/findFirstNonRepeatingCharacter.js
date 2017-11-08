@@ -38,7 +38,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
 `
   },
   tasks: [{
-    id: 'findFirstNonrepeatingCharacter',
+    id: 'findFirstNonRepeatingCharacter',
     instructions: [{
       content: [
         'For this question, you will implement a ',
