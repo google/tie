@@ -19,7 +19,10 @@
 
 tie.factory('TaskSchemaValidationService', [
   'SYSTEM_CODE', 'CLASS_NAME_AUXILIARY_CODE', 'CodeCheckerService',
-  function(SYSTEM_CODE, CLASS_NAME_AUXILIARY_CODE, CodeCheckerService) {
+  'ALL_SUPPORTED_LANGUAGES',
+  function(
+      SYSTEM_CODE, CLASS_NAME_AUXILIARY_CODE, CodeCheckerService,
+      ALL_SUPPORTED_LANGUAGES) {
     /**
      * Defines the system code's class name.
      *
@@ -69,7 +72,19 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
-       * Checks that the instructions property of the a given Task is not empty.
+       * Checks that the ID property of the given Task is a non-empty string.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyIdExists: function(task) {
+        var id = task.getId();
+        return Boolean(id) && angular.isString(id);
+      },
+
+      /**
+       * Checks that the instructions property of the given Task is not empty.
+       *
        * @param {Task} task
        * @returns {boolean}
        */
@@ -199,6 +214,38 @@ tie.factory('TaskSchemaValidationService', [
           CodeCheckerService.checkIfFunctionExistsInClass(
             outputFunctionName, CLASS_NAME_AUXILIARY_CODE, _auxiliaryCode)
         );
+      },
+
+      /**
+       * Checks that the tips cover all supported languages.
+       *
+       * @param task
+       * @returns {boolean}
+       */
+      verifyTipsCoverAllSupportedLanguages: function(task) {
+        return ALL_SUPPORTED_LANGUAGES.every(function(language) {
+          return Boolean(task.getTips(language));
+        });
+      },
+
+      /**
+       * Checks that the regex string and message for each tip are non-empty
+       * strings.
+       *
+       * @param task
+       * @returns {boolean}
+       */
+      verifyRegexAndMessageForTipsAreNonemptyStrings: function(task) {
+        return ALL_SUPPORTED_LANGUAGES.every(function(language) {
+          var tips = task.getTips(language);
+          return tips.every(function(tip) {
+            var regexString = tip.getRegexString();
+            var message = tip.getMessage();
+            return (
+              Boolean(regexString) && angular.isString(regexString) &&
+              Boolean(message) && angular.isString(message));
+          });
+        });
       },
 
       /**

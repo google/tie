@@ -42,6 +42,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
 `
   },
   tasks: [{
+    id: 'splitIntoTwoWords',
     instructions: [{
       content: [
         'For this question, you\'ll implement the splitStringIntoWords ',
@@ -65,6 +66,9 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -94,6 +98,7 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'splitIntoWords',
     instructions: [{
       content: [
         'Next, expand your solution so that it can handle splitting the ',
@@ -109,6 +114,9 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
     outputFunctionName: null,
     mainFunctionName: 'splitStringIntoWords',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

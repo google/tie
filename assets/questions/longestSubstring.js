@@ -46,6 +46,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
 `
   },
   tasks: [{
+    id: 'findLongestSubstring',
     instructions: [{
       content: [
         "For this problem, you'll be writing a longestSubstring method ",
@@ -66,6 +67,9 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'longestSubstring',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

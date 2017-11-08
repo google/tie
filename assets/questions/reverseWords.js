@@ -121,6 +121,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
+    id: 'reverseWords',
     instructions: [{
       content: [
         'For this question, you\'ll implement the reverseWords function. ',
@@ -140,6 +141,16 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'reverseWords',
+    languageSpecificTips: {
+      python: [{
+        regexString: 'import re|regex',
+        message: 'You don\'t need to use regexes for this question.'
+      }, {
+        regexString: 'import',
+        message: (
+          'For this question, you do not need to import any Python libraries.')
+      }]
+    },
     testSuites: [{
       id: 'SAMPLE_INPUT',
       humanReadableName: 'the sample input',
