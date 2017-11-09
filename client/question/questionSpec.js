@@ -24,6 +24,10 @@ describe('question.js', function() {
   var FEEDBACK_CATEGORIES;
   var SYSTEM_GENERATED_TIPS;
   var ALLOWED_PARAGRAPH_TYPES;
+  var FEEDBACK_TYPE_INPUT_TO_TRY;
+  var FEEDBACK_TYPE_EXPECTED_OUTPUT;
+  var FEEDBACK_TYPE_OUTPUT_ENABLED;
+  var CORRECTNESS_FEEDBACK_TEXT;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -37,6 +41,12 @@ describe('question.js', function() {
     SYSTEM_GENERATED_TIPS = $injector.get('SYSTEM_GENERATED_TIPS');
     ALLOWED_PARAGRAPH_TYPES = [
       PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_SYNTAX_ERROR];
+    FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
+    FEEDBACK_TYPE_EXPECTED_OUTPUT =
+      $injector.get('FEEDBACK_TYPE_EXPECTED_OUTPUT');
+    FEEDBACK_TYPE_OUTPUT_ENABLED =
+      $injector.get('FEEDBACK_TYPE_OUTPUT_ENABLED');
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
@@ -91,5 +101,20 @@ describe('question.js', function() {
         expect(key).toEqual(FEEDBACK_CATEGORIES[key]);
       }
     });
+  });
+
+  describe('CORRECTNESS_FEEDBACK_TEXT', function() {
+    it('should match user state constant values with feedback type labels'),
+      function() {
+        var correctnessFeedbackTextKeys =
+          Object.keys(CORRECTNESS_FEEDBACK_TEXT);
+        expect(correctnessFeedbackTextKeys).toContain(
+          FEEDBACK_TYPE_INPUT_TO_TRY);
+        expect(correctnessFeedbackTextKeys).toContain(
+          FEEDBACK_TYPE_EXPECTED_OUTPUT);
+        expect(correctnessFeedbackTextKeys).toContain(
+          FEEDBACK_TYPE_OUTPUT_ENABLED);
+      }
+    );
   });
 });
