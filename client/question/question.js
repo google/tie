@@ -50,11 +50,11 @@ tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
   'EXPECTED_OUTPUT_DISPLAYED');
 
 /**
- * Correctness state where the observed output has been displayed to the user.
+ * Correctness state where the observed output is available to the user.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
+tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE',
   'OBSERVED_OUTPUT_DISPLAYED');
 
 /**

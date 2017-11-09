@@ -29,7 +29,7 @@ tie.factory('FeedbackGeneratorService', [
   'FEEDBACK_CATEGORIES', 'TEST_SUITE_ID_SAMPLE_INPUT',
   'CORRECTNESS_STATE_STARTING', 'CORRECTNESS_STATE_INPUT_DISPLAYED',
   'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
-  'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
+  'CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE',
   'FEEDBACK_TYPE_INPUT_TO_TRY', 'FEEDBACK_TYPE_EXPECTED_OUTPUT',
   'FEEDBACK_TYPE_OUTPUT_ENABLED', 'CORRECTNESS_FEEDBACK_TEXT',
   function(
@@ -43,7 +43,7 @@ tie.factory('FeedbackGeneratorService', [
     FEEDBACK_CATEGORIES, TEST_SUITE_ID_SAMPLE_INPUT,
     CORRECTNESS_STATE_STARTING, CORRECTNESS_STATE_INPUT_DISPLAYED,
     CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
-    CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED,
+    CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE,
     FEEDBACK_TYPE_INPUT_TO_TRY, FEEDBACK_TYPE_EXPECTED_OUTPUT,
     FEEDBACK_TYPE_OUTPUT_ENABLED, CORRECTNESS_FEEDBACK_TEXT) {
 
@@ -391,44 +391,44 @@ tie.factory('FeedbackGeneratorService', [
       }
       // If the suite ID corresponds to the sample input, the question will
       // already have displayed the input and expected output, so we advance
-      // the correctness state to "expected output displayed".
+      // the correctness state to "expected output available".
       if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
       switch (correctnessTestStates[testCaseKey]) {
-        case CORRECTNESS_STATE_STARTING:
-          // Display an input that the learner should use to manually walk
-          // through their code.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_INPUT_DISPLAYED;
-          return feedback;
-        case CORRECTNESS_STATE_INPUT_DISPLAYED:
-          // Display expected output to the user.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' +
-            _jsToHumanReadable(allowedOutputExample));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-          return feedback;
-        default:
-          // Allow the user to display the output of their code.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
-          feedback.appendOutputParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
-          return feedback;
+      case CORRECTNESS_STATE_STARTING:
+        // Display an input that the learner should use to manually walk
+        // through their code.
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_INPUT_DISPLAYED;
+        return feedback;
+      case CORRECTNESS_STATE_INPUT_DISPLAYED:
+        // Display expected output to the user.
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
+        feedback.appendCodeParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+          'Expected Output: ' +
+          _jsToHumanReadable(allowedOutputExample));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+        return feedback;
+      default:
+        // Allow the user to display the output of their code.
+        feedback.appendTextParagraph(
+          _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
+        feedback.appendOutputParagraph(
+          'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+          '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+          '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+        correctnessTestStates[testCaseKey] =
+          CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE;
+        return feedback;
       }
     };
 
