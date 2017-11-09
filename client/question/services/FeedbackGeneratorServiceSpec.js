@@ -232,7 +232,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should present expected output second', function() {
-      correctnessFeedbackParagraphs =
+      var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
@@ -250,7 +250,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should allow user to display code output last', function() {
-      correctnessFeedbackParagraphs =
+      var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
@@ -272,7 +272,7 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should catch regressions in user code', function() {
-      correctnessFeedbackParagraphs =
+      var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
