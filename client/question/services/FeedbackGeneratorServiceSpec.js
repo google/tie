@@ -181,14 +181,24 @@ describe('FeedbackGeneratorService', function() {
         allowedOutputs: ['iH, dlrow']
       }
     };
+    var whitespaceTestSuite = {
+      id: 'WHITESPACE',
+      testCase: {
+        input: 'hello    ',
+        allowedOutputs: ['olleh    ']
+      }
+    };
     var sampleInputTestCase;
     var generalInputTestCase;
+    var whitespaceTestCase;
 
     beforeEach(function() {
       sampleInputTestCase =
         TestCaseObjectFactory.create(sampleInputTestSuite.testCase);
       generalInputTestCase =
         TestCaseObjectFactory.create(generalTestSuite.testCase);
+      whitespaceTestCase =
+        TestCaseObjectFactory.create(whitespaceTestSuite.testCase);
     });
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
@@ -211,9 +221,56 @@ describe('FeedbackGeneratorService', function() {
       var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
-        'incorrect answer').getParagraphs();
+        'yeH, uoyerawoh').getParagraphs();
       expect(CORRECTNESS_FEEDBACK_TEXT.INPUT_TO_TRY).toContain(
         correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+    });
+
+    it('should present expected output second', function() {
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(CORRECTNESS_FEEDBACK_TEXT.EXPECTED_OUTPUT).toContain(
+        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+    });
+
+    it('should allow user to display code output last', function() {
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
+        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+    });
+
+    it('should catch regressions in user code', function() {
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        whitespaceTestCase, whitespaceTestSuite.id, 0,
+        'olleh ').getParagraphs();
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(correctnessFeedbackParagraphs[0].getContent()).toEqual(
+        'It looks like there was a regression in your code. Your code ' +
+        'used to work for the following, but it now fails:');
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
         true);
       expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
