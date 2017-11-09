@@ -236,6 +236,10 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
       expect(CORRECTNESS_FEEDBACK_TEXT.EXPECTED_OUTPUT).toContain(
         correctnessFeedbackParagraphs[0].getContent());
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
@@ -250,6 +254,14 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
       expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
         correctnessFeedbackParagraphs[0].getContent());
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
@@ -260,6 +272,10 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should catch regressions in user code', function() {
+      correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
       correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         whitespaceTestCase, whitespaceTestSuite.id, 0,
