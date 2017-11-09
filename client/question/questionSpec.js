@@ -104,7 +104,7 @@ describe('question.js', function() {
   });
 
   describe('CORRECTNESS_FEEDBACK_TEXT', function() {
-    it('should match user state constant values with feedback type labels'),
+    it('should match user state constant values with feedback type labels',
       function() {
         var correctnessFeedbackTextKeys =
           Object.keys(CORRECTNESS_FEEDBACK_TEXT);
