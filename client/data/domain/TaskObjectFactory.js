@@ -257,7 +257,7 @@ tieData.factory('TaskObjectFactory', [
       return this._prerequisiteSkills;
     };
 
-   // Static class methods.
+    // Static class methods.
     /**
      * Returns a Task object with the properties based on the dictionary
      * passed into the function.

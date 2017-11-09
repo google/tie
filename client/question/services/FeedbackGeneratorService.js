@@ -288,7 +288,7 @@ tie.factory('FeedbackGeneratorService', [
         previousMessage = previousFeedback.getParagraphs()[0].getContent();
 
         if (previousFeedback.getFeedbackCategory() ===
-          currentFeedbackCategory) {
+            currentFeedbackCategory) {
           previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
         }
       }
@@ -397,38 +397,38 @@ tie.factory('FeedbackGeneratorService', [
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
       switch (correctnessTestStates[testCaseKey]) {
-      case CORRECTNESS_STATE_STARTING:
-        // Display an input that the learner should use to manually walk
-        // through their code.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_INPUT_DISPLAYED;
-        return feedback;
-      case CORRECTNESS_STATE_INPUT_DISPLAYED:
-        // Display expected output to the user.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-          'Expected Output: ' +
-          _jsToHumanReadable(allowedOutputExample));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-        return feedback;
-      default:
-        // Allow the user to display the output of their code.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
-        feedback.appendOutputParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-          '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-          '\nActual Output: ' + _jsToHumanReadable(observedOutput));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
-        return feedback;
+        case CORRECTNESS_STATE_STARTING:
+          // Display an input that the learner should use to manually walk
+          // through their code.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_INPUT_DISPLAYED;
+          return feedback;
+        case CORRECTNESS_STATE_INPUT_DISPLAYED:
+          // Display expected output to the user.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+            'Expected Output: ' +
+            _jsToHumanReadable(allowedOutputExample));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+          return feedback;
+        default:
+          // Allow the user to display the output of their code.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
+          feedback.appendOutputParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
+          return feedback;
       }
     };
 
@@ -463,7 +463,7 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getRuntimeErrorFeedback = function(
-      codeEvalResult, rawCodeLineIndexes) {
+        codeEvalResult, rawCodeLineIndexes) {
       var errorInput = codeEvalResult.getErrorInput();
       var inputClause = (
         ' when evaluating the input ' + _jsToHumanReadable(errorInput));
@@ -475,7 +475,7 @@ tie.factory('FeedbackGeneratorService', [
           var preprocessedCodeLineIndex = (
             Number(humanReadableLineNumber) - 1);
           if (preprocessedCodeLineIndex < 0 ||
-            preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
             throw Error(
               'Line number index out of range: ' + preprocessedCodeLineIndex);
           }
