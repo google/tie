@@ -243,11 +243,10 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should present expected output second', function() {
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
-      correctnessFeedbackParagraphs =
+      var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
@@ -267,15 +266,13 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should allow user to display code output last', function() {
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
       var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
@@ -296,15 +293,13 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should catch regressions in user code', function() {
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
-      correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
         whitespaceTestCase, whitespaceTestSuite.id, 0,
         'olleh ').getParagraphs();
-      correctnessFeedbackParagraphs =
+      var correctnessFeedbackParagraphs =
         FeedbackGeneratorService._getCorrectnessTestFeedback(
         generalInputTestCase, generalTestSuite.id, 0,
         'yeH, uoyerawoh').getParagraphs();
