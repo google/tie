@@ -97,7 +97,7 @@ describe('PythonCodeRunnerService', function() {
           responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(
           responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS]);
-      expect(codeEvalResult.getCorrectnessTestResults()).toEqual(
+      expect(codeEvalResult.getObservedOutputs()).toEqual(
           responseDict.results[VARNAME_OBSERVED_OUTPUTS]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(
           responseDict.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS]);
@@ -124,7 +124,7 @@ describe('PythonCodeRunnerService', function() {
         PythonCodeRunnerService._processCodeExecutionServerResponse(
           responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual([]);
-      expect(codeEvalResult.getCorrectnessTestResults()).toEqual([]);
+      expect(codeEvalResult.getObservedOutputs()).toEqual([]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
       expect(codeEvalResult.getErrorString()).toEqual(
           'ZeroDivisionError: integer division or modulo by zero on line 28');
@@ -159,7 +159,7 @@ describe('PythonCodeRunnerService', function() {
         PythonCodeRunnerService._processCodeCompilationServerResponse(
           responseDict, code));
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
-      expect(codeEvalResult.getCorrectnessTestResults()).toEqual(null);
+      expect(codeEvalResult.getObservedOutputs()).toEqual(null);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
       expect(codeEvalResult.getErrorInput()).toEqual(null);
     });

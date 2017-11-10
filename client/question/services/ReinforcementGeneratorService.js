@@ -57,7 +57,7 @@ tie.factory('ReinforcementGeneratorService', [
 
         // Go through correctness tests to update reinforcement data.
         var testSuites = task.getTestSuites();
-        var observedOutputs = codeEvalResult.getLastTaskResults();
+        var observedOutputs = codeEvalResult.getLastTaskObservedOutputs();
         var failedCaseSeenOverall = false;
 
         testSuites.forEach(function(suite, suiteIndex) {
