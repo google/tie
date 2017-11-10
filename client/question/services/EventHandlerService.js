@@ -103,7 +103,7 @@ tie.factory('EventHandlerService', [
         sessionId, questionId, questionVersion) {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
-            type: 'SessionPauseEvent',
+            type: 'QuestionStartEvent',
             data: {
               sessionId: sessionId,
               questionId: questionId,
