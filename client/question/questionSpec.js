@@ -107,9 +107,9 @@ describe('question.js', function() {
     it('should match user state constant values with feedback type labels',
       function() {
         var feedbackTypeConstNames = [
-          'FEEDBACK_TYPE_INPUT_TO_TRY',
-          'FEEDBACK_TYPE_EXPECTED_OUTPUT',
-          'FEEDBACK_TYPE_OUTPUT_ENABLED'];
+          FEEDBACK_TYPE_INPUT_TO_TRY,
+          FEEDBACK_TYPE_EXPECTED_OUTPUT,
+          FEEDBACK_TYPE_OUTPUT_ENABLED];
         var correctnessFeedbackTextKeys =
           Object.keys(CORRECTNESS_FEEDBACK_TEXT);
         expect(feedbackTypeConstNames.sort()).toEqual(
