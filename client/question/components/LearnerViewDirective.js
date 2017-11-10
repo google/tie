@@ -514,7 +514,7 @@ tie.directive('learnerView', [function() {
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
       'SessionIdService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
-      'FEEDBACK_CATEGORIES',
+      'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -522,7 +522,7 @@ tie.directive('learnerView', [function() {
           EventHandlerService, LocalStorageService, ServerHandlerService,
           SessionIdService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
-          FEEDBACK_CATEGORIES) {
+          FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -767,6 +767,16 @@ tie.directive('learnerView', [function() {
         $scope.onPrivacyClick = function() {
           $scope.privacyModalIsDisplayed = true;
         };
+
+        /**
+         * Triggers the SendEventBatch method on an interval defined by
+         * DEFAULT_EVENT_BATCH_PERIOD_SECONDS.
+         */
+        if (ServerHandlerService.doesServerExist()) {
+          $interval(function() {
+            EventHandlerService.sendCurrentEventBatch();
+          }, DEFAULT_EVENT_BATCH_PERIOD_SECONDS * SECONDS_TO_MILLISECONDS);
+        }
 
         /**
          * Initializes the appropriate values in $scope for the question
