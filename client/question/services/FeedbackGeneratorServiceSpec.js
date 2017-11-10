@@ -289,7 +289,7 @@ describe('FeedbackGeneratorService', function() {
       var expectedOutputParagraph =
         'Input: \"' + generalTestSuite.testCase.input +
         '\"\nExpected Output: \"' +
-        generalInputTestCase.testCase.allowedOutputs[0] +
+        generalTestSuite.testCase.allowedOutputs[0] +
         '\"\nActual Output: \"yeH, uoyerawoh\"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedOutputParagraph);
@@ -319,7 +319,7 @@ describe('FeedbackGeneratorService', function() {
       var expectedRegressionParagraph =
         'Input: \"' + generalTestSuite.testCase.input + '\"\n' +
         'Expected Output: \"' +
-        generalInputTestCase.testCase.allowedOutputs[0] + '\"';
+        generalTestSuite.testCase.allowedOutputs[0] + '\"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedRegressionParagraph);
     });
