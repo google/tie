@@ -90,7 +90,7 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
   INPUT_TO_TRY: [
     'Would your code work for the following input?',
     'How about the following input? Would your code still work?',
-    'Would your code work with the following?',
+    'What would happen if you run your code with this input?',
     'Consider the input below. How would you code handle it?',
     'Have you considered input such as the following?'
   ],

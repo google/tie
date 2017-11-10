@@ -114,6 +114,8 @@ describe('question.js', function() {
           FEEDBACK_TYPE_EXPECTED_OUTPUT);
         expect(correctnessFeedbackTextKeys).toContain(
           FEEDBACK_TYPE_OUTPUT_ENABLED);
+        expect(correctnessFeedbackTextKeys).toContain(
+          'OUTPUT_');
       }
     );
   });
