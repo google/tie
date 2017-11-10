@@ -23,7 +23,7 @@ tie.factory('EventHandlerService', [
      * Global object to keep track of the current batch of events to send.
      * @type [Event]
      */
-    var currentEventBatch = [];
+    var _currentEventBatch = [];
 
     /**
      * Submits the current batch of event data to TIE's backend.
@@ -35,12 +35,12 @@ tie.factory('EventHandlerService', [
         return null;
       }
       var data = {
-        events: currentEventBatch,
+        events: _currentEventBatch,
         timeSentToBackendMsec: (new Date()).getTime()
       };
       return $http.post('/ajax/event/send_event_batch', data).then(
         function() {
-          currentEventBatch.length = 0;
+          _currentEventBatch.length = 0;
         }, function() {
           // Otherwise, we should do nothing.
           // Since the call errored, don't dump the current batch.
@@ -48,7 +48,7 @@ tie.factory('EventHandlerService', [
     };
 
     var getCurrentEventBatchLength = function() {
-      return currentEventBatch.length;
+      return _currentEventBatch.length;
     };
 
     return {
@@ -215,7 +215,7 @@ tie.factory('EventHandlerService', [
        *
        */
       createCodeSubmitEvent: function(
-          sessionId, feedbackText, feedbackCategory, code) {
+          sessionId, feedbackParagraphs, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'CodeSubmitEvent',
