@@ -84,7 +84,7 @@ tie.factory('FeedbackGeneratorService', [
     var availableCorrectnessFeedbackIndexes = {};
 
     /**
-     * Index of last test suite for which correctness feedback was given. Used
+     * ID of last test suite for which correctness feedback was given. Used
      * to determine if the user has moved on to a new test suite.
      *
      * @type {string}

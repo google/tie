@@ -106,14 +106,14 @@ describe('question.js', function() {
   describe('CORRECTNESS_FEEDBACK_TEXT', function() {
     it('should match user state constant values with feedback type labels',
       function() {
+        var feedbackTypeConstNames = [
+          'FEEDBACK_TYPE_INPUT_TO_TRY',
+          'FEEDBACK_TYPE_EXPECTED_OUTPUT',
+          'FEEDBACK_TYPE_OUTPUT_ENABLED'];
         var correctnessFeedbackTextKeys =
           Object.keys(CORRECTNESS_FEEDBACK_TEXT);
-        expect(correctnessFeedbackTextKeys).toContain(
-          FEEDBACK_TYPE_INPUT_TO_TRY);
-        expect(correctnessFeedbackTextKeys).toContain(
-          FEEDBACK_TYPE_EXPECTED_OUTPUT);
-        expect(correctnessFeedbackTextKeys).toContain(
-          FEEDBACK_TYPE_OUTPUT_ENABLED);
+        expect(feedbackTypeConstNames.sort()).toEqual(
+          correctnessFeedbackTextKeys.sort());
       }
     );
   });
