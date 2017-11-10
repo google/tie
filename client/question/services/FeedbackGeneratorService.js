@@ -73,7 +73,7 @@ tie.factory('FeedbackGeneratorService', [
     var consecutiveSameRuntimeErrorCounter = 0;
 
     /**
-     * Object to hold arrays indexes (values) of available correctness feedback
+     * Object to hold array indexes (values) of available correctness feedback
      * text as listed in CORRECTNESS_FEEDBACK_TEXT, per feedback type (keys).
      * Used in order to avoid presenting the same feedback text consecutively.
      * A given feedback text is not used again until all other available
@@ -123,7 +123,7 @@ tie.factory('FeedbackGeneratorService', [
      * @private
      */
     var _getCorrectnessFeedbackString = function(feedbackType) {
-      if (!availableCorrectnessFeedbackIndexes[feedbackType]) {
+      if (!availableCorrectnessFeedbackIndexes.hasOwnProperty(feedbackType)) {
         availableCorrectnessFeedbackIndexes[feedbackType] = [];
       }
       // Resets availableCorrectnessFeedbackIndexes when length is 0.
@@ -135,8 +135,7 @@ tie.factory('FeedbackGeneratorService', [
           Array.apply(null, {length: feedbackMaxArrayLength}).map(
           Number.call, Number);
       }
-      var randomArrayIndex =
-        _getRandomInt(
+      var randomArrayIndex = _getRandomInt(
         0, availableCorrectnessFeedbackIndexes[feedbackType].length);
       var correctnessFeedbackIndex =
         availableCorrectnessFeedbackIndexes[feedbackType][randomArrayIndex];
@@ -373,7 +372,7 @@ tie.factory('FeedbackGeneratorService', [
         previousTestSuiteId = testSuiteId;
         // Catch regressions to errors previously encountered and passed.
         // If certain feedback was given before, the user passes the test,
-        // then later regress, do not repeat feedback that was given before.
+        // then later regresses, do not repeat feedback that was given before.
         // Note that if they passed a given test on the first try but later
         // regress, it is OK to display feedback as if it was the first time
         // they encountered the error; subsequent regressions will be captured
@@ -391,7 +390,7 @@ tie.factory('FeedbackGeneratorService', [
       }
       // If the suite ID corresponds to the sample input, the question will
       // already have displayed the input and expected output, so we advance
-      // the correctness state to "expected output available".
+      // the correctness state to "expected output displayed".
       if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
         correctnessTestStates[testCaseKey] =
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
