@@ -23,36 +23,36 @@ tie.factory('EventHandlerService', [
      * Global object to keep track of the current batch of events to send.
      * @type [Event]
      */
-    var _currentEventBatch = [];
+    var currentEventBatch = [];
 
     /**
      * Submits the current batch of event data to TIE's backend.
      *
      */
     var sendCurrentEventBatch = function() {
-      if (_getCurrentEventBatchLength() === 0) {
+      if (getCurrentEventBatchLength() === 0) {
         // No point in sending an empty batch.
         return null;
       }
       var data = {
-        events: _currentEventBatch,
+        events: currentEventBatch,
         timeSentToBackendMsec: (new Date()).getTime()
       };
       return $http.post('/ajax/event/send_event_batch', data).then(
         function() {
-          _currentEventBatch.length = 0;
+          currentEventBatch.length = 0;
         }, function() {
           // Otherwise, we should do nothing.
           // Since the call errored, don't dump the current batch.
       });
     };
 
-    var _getCurrentEventBatchLength = function() {
-      return _currentEventBatch.length;
+    var getCurrentEventBatchLength = function() {
+      return currentEventBatch.length;
     };
 
     return {
-      getCurrentEventBatchLength: _getCurrentEventBatchLength,
+      _getCurrentEventBatchLength: getCurrentEventBatchLength,
 
       sendCurrentEventBatch: sendCurrentEventBatch,
 
@@ -67,7 +67,7 @@ tie.factory('EventHandlerService', [
             type: 'SessionPauseEvent',
             data: {
               sessionId: sessionId,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
           sendCurrentEventBatch();
@@ -85,7 +85,7 @@ tie.factory('EventHandlerService', [
             type: 'SessionResumeEvent',
             data: {
               sessionId: sessionId,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
@@ -108,7 +108,7 @@ tie.factory('EventHandlerService', [
               sessionId: sessionId,
               questionId: questionId,
               questionVersion: questionVersion,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
@@ -131,7 +131,7 @@ tie.factory('EventHandlerService', [
               sessionId: sessionId,
               questionId: questionId,
               questionVersion: questionVersion,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
           sendCurrentEventBatch();
@@ -157,7 +157,7 @@ tie.factory('EventHandlerService', [
               questionId: questionId,
               questionVersion: questionVersion,
               taskId: taskId,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
@@ -182,7 +182,7 @@ tie.factory('EventHandlerService', [
               questionId: questionId,
               questionVersion: questionVersion,
               taskId: taskId,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
@@ -199,7 +199,7 @@ tie.factory('EventHandlerService', [
             type: 'CodeResetEvent',
             data: {
               sessionId: sessionId,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
@@ -208,7 +208,7 @@ tie.factory('EventHandlerService', [
       /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
        * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} feedbackText The feedback shown to the user.
+       * @param [{string}] feedbackParagraphs The feedback shown to the user.
        * @param {string} feedbackCategory The type of feedback shown to the
        *   user.
        * @param {string} code The user's submitted code.
@@ -221,10 +221,10 @@ tie.factory('EventHandlerService', [
             type: 'CodeSubmitEvent',
             data: {
               sessionId: sessionId,
-              feedbackText: feedbackText,
+              feedbackParagraphs: feedbackParagraphs,
               feedbackCategory: feedbackCategory,
               code: code,
-              timeSentToBackendMsec: (new Date()).getTime()
+              createdMsec: (new Date()).getTime()
             }
           });
         }
