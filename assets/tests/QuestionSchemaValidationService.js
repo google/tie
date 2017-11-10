@@ -109,6 +109,22 @@ tie.factory('QuestionSchemaValidationService', [
       },
 
       /**
+       * Checks that the IDs of the tasks for the given Question are unique.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
+      verifyTaskIdsAreUnique: function(question) {
+        var tasks = question.getTasks();
+
+        var ids = new Set();
+        tasks.forEach(function(task) {
+          ids.add(task.getId());
+        });
+        return ids.size === tasks.length;
+      },
+
+      /**
        * Checks that the given Question has at least one Buggy Output Test in
        * its schema.
        * @param {Question} question

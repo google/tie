@@ -47,6 +47,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
+    id: 'sortItinerary',
     instructions: [{
       content: [
         "For this problem, you'll implement a sortItinerary method, which ",
@@ -82,6 +83,9 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'ONE_TICKET_CASE',
       humanReadableName: 'one ticket case',
@@ -139,6 +143,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     //  evaluationFunctionName: 'sortItinerary'
     // }]
   }, {
+    id: 'handleLoops',
     instructions: [{
       content: [
         'Now, modify your code to support loops. For instance, the ',
@@ -157,6 +162,9 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -182,6 +190,7 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'pickLexicographicallyEarliestItinerary',
     instructions: [{
       content: [
         'In some cases, tickets might be able to form more than one ',
@@ -201,6 +210,9 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'sortItinerary',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

@@ -104,6 +104,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
 
   },
   tasks: [{
+    id: 'findAlphabet',
     instructions: [{
       content: [
         'Given a dictionary (a list of words in lexicographic order) of all',
@@ -121,6 +122,9 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'TWO_LETTER_ALPHABET',
       humanReadableName: '2-letter alphabet',
@@ -163,6 +167,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'handleCornerCases',
     instructions: [{
       content: [
         'Next, make sure your code handles unexpected cases, such as a test ',
@@ -186,6 +191,9 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'INVALID_ALPHABET',
       humanReadableName: 'invalid alphabet',
@@ -222,6 +230,7 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'handleDifferentCasedLetters',
     instructions: [{
       content: [
         'Finally, modify your code to handle strings with a mix of ',
@@ -239,6 +248,9 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findAlphabet',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

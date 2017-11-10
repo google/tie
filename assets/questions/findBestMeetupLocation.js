@@ -45,6 +45,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
 `
   },
   tasks: [{
+    id: 'findBestMeetupLocation',
     instructions: [{
       content: [
         'N people live in a city with streets that form a regular 2D grid. ',
@@ -70,6 +71,9 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -110,6 +114,7 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
       evaluationFunctionName: 'findBestMeetupLocation'
     }]
   }, {
+    id: 'findAllBestMeetingPoints',
     instructions: [{
       content: [
         'You might notice that some inputs have more than one possible ',
@@ -123,6 +128,9 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findBestMeetupLocation',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

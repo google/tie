@@ -19,7 +19,43 @@
 tie.factory('EventHandlerService', [
   '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
 
+    /**
+     * Global object to keep track of the current batch of events to send.
+     * @type [Event]
+     */
+    var _currentEventBatch = [];
+
+    /**
+     * Submits the current batch of event data to TIE's backend.
+     *
+     */
+    var sendCurrentEventBatch = function() {
+      if (getCurrentEventBatchLength() === 0) {
+        // No point in sending an empty batch.
+        return null;
+      }
+      var data = {
+        events: _currentEventBatch,
+        timeSentToBackendMsec: (new Date()).getTime()
+      };
+      return $http.post('/ajax/event/send_event_batch', data).then(
+        function() {
+          _currentEventBatch.length = 0;
+        }, function() {
+          // Otherwise, we should do nothing.
+          // Since the call errored, don't dump the current batch.
+      });
+    };
+
+    var getCurrentEventBatchLength = function() {
+      return _currentEventBatch.length;
+    };
+
     return {
+      _getCurrentEventBatchLength: getCurrentEventBatchLength,
+
+      sendCurrentEventBatch: sendCurrentEventBatch,
+
       /**
        * Submits data to TIE's backend to create a SessionPauseEvent.
        * @param {string} sessionId Unique ID for a user's question session.
@@ -27,10 +63,14 @@ tie.factory('EventHandlerService', [
        */
       createSessionPauseEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId
-          };
-          $http.post('/ajax/event/create_session_pause_event', data);
+          _currentEventBatch.push({
+            type: 'SessionPauseEvent',
+            data: {
+              sessionId: sessionId,
+              createdMsec: (new Date()).getTime()
+            }
+          });
+          sendCurrentEventBatch();
         }
       },
 
@@ -41,10 +81,13 @@ tie.factory('EventHandlerService', [
        */
       createSessionResumeEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId
-          };
-          $http.post('/ajax/event/create_session_resume_event', data);
+          _currentEventBatch.push({
+            type: 'SessionResumeEvent',
+            data: {
+              sessionId: sessionId,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -59,12 +102,15 @@ tie.factory('EventHandlerService', [
       createQuestionStartEvent: function(
         sessionId, questionId, questionVersion) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion
-          };
-          $http.post('/ajax/event/create_question_start_event', data);
+          _currentEventBatch.push({
+            type: 'QuestionStartEvent',
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -79,12 +125,16 @@ tie.factory('EventHandlerService', [
       createQuestionCompleteEvent: function(
         sessionId, questionId, questionVersion) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion
-          };
-          $http.post('/ajax/event/create_question_complete_event', data);
+          _currentEventBatch.push({
+            type: 'QuestionCompleteEvent',
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              createdMsec: (new Date()).getTime()
+            }
+          });
+          sendCurrentEventBatch();
         }
       },
 
@@ -100,13 +150,16 @@ tie.factory('EventHandlerService', [
       createTaskStartEvent: function(
         sessionId, questionId, questionVersion, taskId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            taskId: taskId
-          };
-          $http.post('/ajax/event/create_task_start_event', data);
+          _currentEventBatch.push({
+            type: 'TaskStartEvent',
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              taskId: taskId,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -122,13 +175,16 @@ tie.factory('EventHandlerService', [
       createTaskCompleteEvent: function(
         sessionId, questionId, questionVersion, taskId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            taskId: taskId
-          };
-          $http.post('/ajax/event/create_task_complete_event', data);
+          _currentEventBatch.push({
+            type: 'TaskCompleteEvent',
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              taskId: taskId,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -139,32 +195,38 @@ tie.factory('EventHandlerService', [
        */
       createCodeResetEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId
-          };
-          $http.post('/ajax/event/create_code_reset_event', data);
+          _currentEventBatch.push({
+            type: 'CodeResetEvent',
+            data: {
+              sessionId: sessionId,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
       /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
        * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} feedbackText The feedback shown to the user.
+       * @param [{string}] feedbackParagraphs The feedback shown to the user.
        * @param {string} feedbackCategory The type of feedback shown to the
        *   user.
        * @param {string} code The user's submitted code.
        *
        */
       createCodeSubmitEvent: function(
-          sessionId, feedbackText, feedbackCategory, code) {
+          sessionId, feedbackParagraphs, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            feedbackText: feedbackText,
-            feedbackCategory: feedbackCategory,
-            code: code
-          };
-          $http.post('/ajax/event/create_code_submit_event', data);
+          _currentEventBatch.push({
+            type: 'CodeSubmitEvent',
+            data: {
+              sessionId: sessionId,
+              feedbackParagraphs: feedbackParagraphs,
+              feedbackCategory: feedbackCategory,
+              code: code,
+              createdMsec: (new Date()).getTime()
+            }
+          });
         }
       }
     };

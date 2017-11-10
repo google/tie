@@ -74,6 +74,7 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
 `
   },
   tasks: [{
+    id: 'isPalindrome',
     instructions: [{
       content: [
         'For this question, you will implement the isPalindrome function. ',
@@ -105,6 +106,9 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'isPalindrome',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'EMPTY_STRINGS',
       humanReadableName: 'empty strings',

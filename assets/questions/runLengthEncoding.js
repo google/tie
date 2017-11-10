@@ -134,6 +134,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
 `
   },
   tasks: [{
+    id: 'encodeStringNaively',
     instructions: [{
       content: [
         'In this question, you\'ll implement the encode function. It takes ',
@@ -150,6 +151,9 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -182,6 +186,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'encodeStringOptimally',
     instructions: [{
       content: [
         'Next, double-check your code to make sure it handles short ',
@@ -195,6 +200,9 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'encode',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -237,6 +245,7 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'encodeStringDecodably',
     instructions: [{
       content: [
         'Next, make sure that your method\'s output can accurately be ',
@@ -265,6 +274,9 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
     inputFunctionName: null,
     outputFunctionName: 'AuxiliaryCode.decodeEncodedString',
     mainFunctionName: 'encode',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

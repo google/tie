@@ -38,6 +38,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
 `
   },
   tasks: [{
+    id: 'findFirstNonRepeatingCharacter',
     instructions: [{
       content: [
         'For this question, you will implement a ',
@@ -58,7 +59,9 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findFirstNonRepeatingCharacter',
-
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -104,6 +107,7 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'handleNonLetters',
     instructions: [{
       content: 'Next, update your code to handle more than just letters.',
       type: 'text'
@@ -113,6 +117,9 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'findFirstNonRepeatingCharacter',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',

@@ -56,6 +56,7 @@ def are_all_unique(words):
 `
   },
   tasks: [{
+    id: 'abbreviate',
     instructions: [{
       content: 'In this question, you will implement two functions.',
       type: 'text'
@@ -76,6 +77,9 @@ def are_all_unique(words):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'abbreviate',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -160,6 +164,7 @@ def are_all_unique(words):
     suiteLevelTests: [],
     performanceTests: []
   }, {
+    id: 'groupByAbbreviations',
     instructions: [{
       content: [
         'Implement are_all_unique, a function that takes a list of strings ',
@@ -174,6 +179,9 @@ def are_all_unique(words):
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'are_all_unique',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
