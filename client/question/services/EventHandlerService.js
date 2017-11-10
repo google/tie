@@ -30,7 +30,7 @@ tie.factory('EventHandlerService', [
      *
      */
     var sendCurrentEventBatch = function() {
-      if (getCurrentEventBatchLength() === 0) {
+      if (_getCurrentEventBatchLength() === 0) {
         // No point in sending an empty batch.
         return null;
       }
@@ -47,12 +47,12 @@ tie.factory('EventHandlerService', [
       });
     };
 
-    var getCurrentEventBatchLength = function() {
+    var _getCurrentEventBatchLength = function() {
       return _currentEventBatch.length;
     };
 
     return {
-      getCurrentEventBatchLength: getCurrentEventBatchLength,
+      getCurrentEventBatchLength: _getCurrentEventBatchLength,
 
       sendCurrentEventBatch: sendCurrentEventBatch,
 

@@ -623,8 +623,8 @@ tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
  * @type {number}
  * @constant
  */
-var SECONDS_TO_MILLISECONDS = 1000;
-tie.constant('SECONDS_TO_MILLISECONDS', SECONDS_TO_MILLISECONDS);
+ // eslint-disable-next-line no-magic-numbers
+tie.constant('SECONDS_TO_MILLISECONDS', 1000);
 
 /**
  * Default auto save time in seconds.
@@ -640,9 +640,8 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
  * @type {number}
  * @constant
  */
-var DEFAULT_EVENT_BATCH_PERIOD_SECONDS = 30;
-tie.constant(
-  'DEFAULT_EVENT_BATCH_PERIOD_SECONDS', DEFAULT_EVENT_BATCH_PERIOD_SECONDS);
+ // eslint-disable-next-line no-magic-numbers
+tie.constant('DEFAULT_EVENT_BATCH_PERIOD_SECONDS', 30);
 
 /**
  * Number of seconds that "Saving code..." message will appear for before
