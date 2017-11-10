@@ -633,6 +633,16 @@ tie.constant('SECONDS_TO_MILLISECONDS', SECONDS_TO_MILLISECONDS);
  * @constant
  */
 tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
+
+/**
+ * Default time in seconds between calls to SendEventBatch.
+ *
+ * @type {number}
+ * @constant
+ */
+var DEFAULT_EVENT_BATCH_PERIOD_SECONDS = 30;
+tie.constant(
+  'DEFAULT_EVENT_BATCH_PERIOD_SECONDS', DEFAULT_EVENT_BATCH_PERIOD_SECONDS);
 /**
  * Number of seconds that "Saving code..." message will appear for before
  * disappearing.

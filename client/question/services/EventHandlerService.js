@@ -19,7 +19,38 @@
 tie.factory('EventHandlerService', [
   '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
 
+
+    /**
+     * Global object to keep track of the current batch of events to send.
+     * @type [Event]
+     */
+    var currentEventBatch = [];
+
+    /**
+     * Submits the current batch of event data to TIE's backend.
+     *
+     */
+    var sendCurrentEventBatch = function() {
+      var data = {
+        events: currentEventBatch,
+        createdMsec: (new Date()).getTime()
+      };
+      return $http.post('/ajax/event/send_event_batch', data).then(
+        function() {
+          while (currentEventBatch.length > 0) {
+            currentEventBatch.pop();
+          }
+        }, function() {
+          // Otherwise, we should do nothing.
+          // Since the call errored, don't dump the current batch.
+      });
+    };
+
     return {
+      currentEventBatch: currentEventBatch,
+
+      sendCurrentEventBatch: sendCurrentEventBatch,
+
       /**
        * Submits data to TIE's backend to create a SessionPauseEvent.
        * @param {string} sessionId Unique ID for a user's question session.
@@ -28,9 +59,15 @@ tie.factory('EventHandlerService', [
       createSessionPauseEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
-            sessionId: sessionId
+            sessionId: sessionId,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_session_pause_event', data);
+          var event = {
+            type: 'SessionPauseEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
+          sendCurrentEventBatch();
         }
       },
 
@@ -42,9 +79,14 @@ tie.factory('EventHandlerService', [
       createSessionResumeEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
-            sessionId: sessionId
+            sessionId: sessionId,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_session_resume_event', data);
+          var event = {
+            type: 'SessionResumeEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       },
 
@@ -62,9 +104,14 @@ tie.factory('EventHandlerService', [
           var data = {
             sessionId: sessionId,
             questionId: questionId,
-            questionVersion: questionVersion
+            questionVersion: questionVersion,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_question_start_event', data);
+          var event = {
+            type: 'QuestionStartEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       },
 
@@ -82,9 +129,15 @@ tie.factory('EventHandlerService', [
           var data = {
             sessionId: sessionId,
             questionId: questionId,
-            questionVersion: questionVersion
+            questionVersion: questionVersion,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_question_complete_event', data);
+          var event = {
+            type: 'QuestionCompleteEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
+          sendCurrentEventBatch();
         }
       },
 
@@ -104,9 +157,14 @@ tie.factory('EventHandlerService', [
             sessionId: sessionId,
             questionId: questionId,
             questionVersion: questionVersion,
-            taskId: taskId
+            taskId: taskId,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_task_start_event', data);
+          var event = {
+            type: 'TaskStartEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       },
 
@@ -126,9 +184,14 @@ tie.factory('EventHandlerService', [
             sessionId: sessionId,
             questionId: questionId,
             questionVersion: questionVersion,
-            taskId: taskId
+            taskId: taskId,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_task_complete_event', data);
+          var event = {
+            type: 'TaskCompleteEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       },
 
@@ -140,9 +203,14 @@ tie.factory('EventHandlerService', [
       createCodeResetEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
           var data = {
-            sessionId: sessionId
+            sessionId: sessionId,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_code_reset_event', data);
+          var event = {
+            type: 'CodeResetEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       },
 
@@ -162,9 +230,14 @@ tie.factory('EventHandlerService', [
             sessionId: sessionId,
             feedbackText: feedbackText,
             feedbackCategory: feedbackCategory,
-            code: code
+            code: code,
+            createdMsec: (new Date()).getTime()
           };
-          $http.post('/ajax/event/create_code_submit_event', data);
+          var event = {
+            type: 'CodeSubmitEvent',
+            data: data
+          };
+          currentEventBatch.push(event);
         }
       }
     };

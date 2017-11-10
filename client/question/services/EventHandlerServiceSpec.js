@@ -27,6 +27,7 @@ describe('EventHandlerService', function() {
   var FEEDBACK_CATEGORIES;
 
   var HTTP_STATUS_CODE_OK = 200;
+  var HTTP_STATUS_CODE_SERVER_ERROR = 500;
 
   beforeEach(module('tie', function($provide) {
     $provide.constant('SERVER_URL', 'http://katamari.com');
@@ -44,12 +45,13 @@ describe('EventHandlerService', function() {
 
   describe('createSessionPauseEvent', function() {
 
-    it('sends a POST request to the backend to create a SessionPauseEvent',
+    it('creates a SessionPauseEvent + sends the event batch to the backend',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/event/create_session_pause_event').respond(
+          '/ajax/event/send_event_batch').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
         EventHandlerService.createSessionPauseEvent(sessionId);
         $httpBackend.flush();
       });
@@ -58,40 +60,35 @@ describe('EventHandlerService', function() {
 
   describe('createSessionResumeEvent', function() {
 
-    it('sends a POST request to the backend to create a SessionResumeEvent',
+    it('creates a SessionResumeEvent and adds it to the current EventBatch',
       function() {
-        $httpBackend.expectPOST(
-          '/ajax/event/create_session_resume_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createSessionResumeEvent(sessionId);
-        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 
 
   describe('createQuestionStartEvent', function() {
 
-    it('sends a POST request to the backend to create a QuestionStartEvent',
+    it('creates a QuestionStartEvent and adds it to the current EventBatch',
       function() {
-        $httpBackend.expectPOST(
-          '/ajax/event/create_question_start_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createQuestionStartEvent(
           sessionId, questionId, questionVersion);
-        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 
   describe('createQuestionCompleteEvent', function() {
 
-    it('sends a POST request to the backend to create a QuestionCompleteEvent',
+    it('creates a QuestionCompleteEvent + sends the event batch to the backend',
       function() {
         $httpBackend.expectPOST(
-          '/ajax/event/create_question_complete_event').respond(
+          '/ajax/event/send_event_batch').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
         EventHandlerService.createQuestionCompleteEvent(
           sessionId, questionId, questionVersion);
         $httpBackend.flush();
@@ -101,50 +98,41 @@ describe('EventHandlerService', function() {
 
   describe('createTaskStartEvent', function() {
 
-    it('sends a POST request to the backend to create a TaskStartEvent',
+    it('creates a TaskStartEvent and adds it to the current EventBatch',
       function() {
-        $httpBackend.expectPOST(
-          '/ajax/event/create_task_start_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createTaskStartEvent(
           sessionId, questionId, questionVersion, taskId);
-        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 
 
   describe('createTaskCompleteEvent', function() {
 
-    it('sends a POST request to the backend to create a TaskCompleteEvent',
+    it('creates a TaskCompleteEvent and adds it to the current EventBatch',
       function() {
-        $httpBackend.expectPOST(
-          '/ajax/event/create_task_complete_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createTaskCompleteEvent(
           sessionId, questionId, questionVersion, taskId);
-        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 
   describe('createCodeResetEvent', function() {
 
-    it('sends a POST request to the backend to create a CodeResetEvent',
+    it('creates a CodeResetEvent and adds it to the current EventBatch',
       function() {
-        $httpBackend.expectPOST(
-          '/ajax/event/create_code_reset_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createCodeResetEvent(sessionId);
-        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 
 
   describe('createCodeSubmitEvent', function() {
 
-    it('sends a POST request to the backend to create a CodeSubmitEvent',
+    it('creates a CodeSubmitEvent and adds it to the current EventBatch',
       function() {
         var code = [
           'def myFunction(arg):',
@@ -153,13 +141,42 @@ describe('EventHandlerService', function() {
           ''
         ].join('\n');
         var feedbackText = 'Here is some feedback!';
-        $httpBackend.expectPOST(
-          '/ajax/event/create_code_submit_event').respond(
-          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.createCodeSubmitEvent(
           sessionId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+      });
+  });
+
+
+  describe('sendCurrentEventBatch', function() {
+
+    it('sends an EventBatch to the backend and clears the batch.',
+      function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/send_event_batch').respond(
+          HTTP_STATUS_CODE_OK, {});
+        EventHandlerService.createTaskCompleteEvent(
+          sessionId, questionId, questionVersion, taskId);
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        EventHandlerService.sendCurrentEventBatch();
         $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(0);
+      });
+
+    it('holds onto the current EventBatch if there is a backend error.',
+      function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/send_event_batch').respond(
+          HTTP_STATUS_CODE_SERVER_ERROR, {});
+        EventHandlerService.createTaskCompleteEvent(
+          sessionId, questionId, questionVersion, taskId);
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        EventHandlerService.sendCurrentEventBatch();
+        $httpBackend.flush();
+        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
       });
   });
 });
