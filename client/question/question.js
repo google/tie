@@ -643,6 +643,7 @@ tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
 var DEFAULT_EVENT_BATCH_PERIOD_SECONDS = 30;
 tie.constant(
   'DEFAULT_EVENT_BATCH_PERIOD_SECONDS', DEFAULT_EVENT_BATCH_PERIOD_SECONDS);
+
 /**
  * Number of seconds that "Saving code..." message will appear for before
  * disappearing.

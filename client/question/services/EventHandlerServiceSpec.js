@@ -52,6 +52,7 @@ describe('EventHandlerService', function() {
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createSessionPauseEvent(sessionId);
         $httpBackend.flush();
       });
@@ -63,8 +64,9 @@ describe('EventHandlerService', function() {
     it('creates a SessionResumeEvent and adds it to the current EventBatch',
       function() {
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createSessionResumeEvent(sessionId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -74,9 +76,10 @@ describe('EventHandlerService', function() {
     it('creates a QuestionStartEvent and adds it to the current EventBatch',
       function() {
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createQuestionStartEvent(
           sessionId, questionId, questionVersion);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -88,6 +91,7 @@ describe('EventHandlerService', function() {
           '/ajax/event/send_event_batch').respond(
           HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
         EventHandlerService.createQuestionCompleteEvent(
           sessionId, questionId, questionVersion);
@@ -101,9 +105,10 @@ describe('EventHandlerService', function() {
     it('creates a TaskStartEvent and adds it to the current EventBatch',
       function() {
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createTaskStartEvent(
           sessionId, questionId, questionVersion, taskId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -113,9 +118,10 @@ describe('EventHandlerService', function() {
     it('creates a TaskCompleteEvent and adds it to the current EventBatch',
       function() {
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createTaskCompleteEvent(
           sessionId, questionId, questionVersion, taskId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -124,8 +130,9 @@ describe('EventHandlerService', function() {
     it('creates a CodeResetEvent and adds it to the current EventBatch',
       function() {
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createCodeResetEvent(sessionId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -142,9 +149,10 @@ describe('EventHandlerService', function() {
         ].join('\n');
         var feedbackText = 'Here is some feedback!';
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
         EventHandlerService.createCodeSubmitEvent(
           sessionId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
       });
   });
 
@@ -158,11 +166,11 @@ describe('EventHandlerService', function() {
           HTTP_STATUS_CODE_OK, {});
         EventHandlerService.createTaskCompleteEvent(
           sessionId, questionId, questionVersion, taskId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.sendCurrentEventBatch();
         $httpBackend.flush();
-        expect(EventHandlerService.currentEventBatch.length).toEqual(0);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
       });
 
     it('holds onto the current EventBatch if there is a backend error.',
@@ -172,11 +180,19 @@ describe('EventHandlerService', function() {
           HTTP_STATUS_CODE_SERVER_ERROR, {});
         EventHandlerService.createTaskCompleteEvent(
           sessionId, questionId, questionVersion, taskId);
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         EventHandlerService.sendCurrentEventBatch();
         $httpBackend.flush();
-        expect(EventHandlerService.currentEventBatch.length).toEqual(1);
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(1);
+      });
+
+    it('Should not make a POST request if the batch is empty.',
+      function() {
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        EventHandlerService.sendCurrentEventBatch();
+        expect(EventHandlerService.getCurrentEventBatchLength()).toEqual(0);
       });
   });
 });

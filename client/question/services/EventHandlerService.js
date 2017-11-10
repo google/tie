@@ -19,35 +19,40 @@
 tie.factory('EventHandlerService', [
   '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
 
-
     /**
      * Global object to keep track of the current batch of events to send.
      * @type [Event]
      */
-    var currentEventBatch = [];
+    var _currentEventBatch = [];
 
     /**
      * Submits the current batch of event data to TIE's backend.
      *
      */
     var sendCurrentEventBatch = function() {
+      if (getCurrentEventBatchLength() === 0) {
+        // No point in sending an empty batch.
+        return null;
+      }
       var data = {
-        events: currentEventBatch,
-        createdMsec: (new Date()).getTime()
+        events: _currentEventBatch,
+        timeSentToBackendMsec: (new Date()).getTime()
       };
       return $http.post('/ajax/event/send_event_batch', data).then(
         function() {
-          while (currentEventBatch.length > 0) {
-            currentEventBatch.pop();
-          }
+          _currentEventBatch.length = 0;
         }, function() {
           // Otherwise, we should do nothing.
           // Since the call errored, don't dump the current batch.
       });
     };
 
+    var getCurrentEventBatchLength = function() {
+      return _currentEventBatch.length;
+    };
+
     return {
-      currentEventBatch: currentEventBatch,
+      getCurrentEventBatchLength: getCurrentEventBatchLength,
 
       sendCurrentEventBatch: sendCurrentEventBatch,
 
@@ -58,15 +63,13 @@ tie.factory('EventHandlerService', [
        */
       createSessionPauseEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'SessionPauseEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
           sendCurrentEventBatch();
         }
       },
@@ -78,15 +81,13 @@ tie.factory('EventHandlerService', [
        */
       createSessionResumeEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'SessionResumeEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -101,17 +102,15 @@ tie.factory('EventHandlerService', [
       createQuestionStartEvent: function(
         sessionId, questionId, questionVersion) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
-            type: 'QuestionStartEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+          _currentEventBatch.push({
+            type: 'SessionPauseEvent',
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -126,17 +125,15 @@ tie.factory('EventHandlerService', [
       createQuestionCompleteEvent: function(
         sessionId, questionId, questionVersion) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'QuestionCompleteEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
           sendCurrentEventBatch();
         }
       },
@@ -153,18 +150,16 @@ tie.factory('EventHandlerService', [
       createTaskStartEvent: function(
         sessionId, questionId, questionVersion, taskId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            taskId: taskId,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'TaskStartEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              taskId: taskId,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -180,18 +175,16 @@ tie.factory('EventHandlerService', [
       createTaskCompleteEvent: function(
         sessionId, questionId, questionVersion, taskId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            questionId: questionId,
-            questionVersion: questionVersion,
-            taskId: taskId,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'TaskCompleteEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              questionId: questionId,
+              questionVersion: questionVersion,
+              taskId: taskId,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -202,15 +195,13 @@ tie.factory('EventHandlerService', [
        */
       createCodeResetEvent: function(sessionId) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'CodeResetEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       },
 
@@ -226,18 +217,16 @@ tie.factory('EventHandlerService', [
       createCodeSubmitEvent: function(
           sessionId, feedbackText, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
-          var data = {
-            sessionId: sessionId,
-            feedbackText: feedbackText,
-            feedbackCategory: feedbackCategory,
-            code: code,
-            createdMsec: (new Date()).getTime()
-          };
-          var event = {
+          _currentEventBatch.push({
             type: 'CodeSubmitEvent',
-            data: data
-          };
-          currentEventBatch.push(event);
+            data: {
+              sessionId: sessionId,
+              feedbackText: feedbackText,
+              feedbackCategory: feedbackCategory,
+              code: code,
+              timeSentToBackendMsec: (new Date()).getTime()
+            }
+          });
         }
       }
     };
