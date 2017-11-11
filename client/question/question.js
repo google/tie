@@ -20,6 +20,101 @@ window.tie = angular.module('tie',
   ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies']);
 
 /**
+ * String used to label test suites that contain sample input and output
+ * that are presented to the user.
+ *
+ * @type {string}
+ */
+tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT');
+
+/**
+ * Correctness state for first user attempt to pass a test suite.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_STATE_STARTING', 'STARTING');
+
+/**
+ * Correctness state where the test case input has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED', 'INPUT_DISPLAYED');
+
+/**
+ * Correctness state where the expected output has been displayed to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
+  'EXPECTED_OUTPUT_DISPLAYED');
+
+/**
+ * Correctness state where the observed output is available to the user.
+ *
+ * @type {string}
+ */
+tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE',
+  'OBSERVED_OUTPUT_DISPLAYED');
+
+/**
+ * Label for feedback displayed to user when presenting input(s) the user should
+ * consider before they revise their code.
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_INPUT_TO_TRY', 'INPUT_TO_TRY');
+
+/**
+ * Label for feedback displayed to user when presenting the expected output for
+ * given input.
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_EXPECTED_OUTPUT', 'EXPECTED_OUTPUT');
+
+/**
+ * Label for feedback displayed to user when allowing the user to display the
+ * output from their submitted code.
+ *
+ * @type {string}
+ */
+tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
+
+/**
+ * Object containing variations on feedback text for different scenarios.
+ *
+ * @type {Object.<string, Array.<string>>}
+ */
+tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
+  INPUT_TO_TRY: [
+    'Would your code work for the following input?',
+    'How about the following input? Would your code still work?',
+    'What would happen if you run your code with this input?',
+    'Consider the input below. How would you code handle it?',
+    'Have you considered input such as the following?'
+  ],
+  EXPECTED_OUTPUT: [
+    ('Below is the output your code should produce for the given input. ' +
+     'Can you find the bug?'),
+    'Consider the input/output pair below. Can you find the bug?',
+    'Here is the input/output pair. Where could the bug be?',
+    ('Your code should produce the output shown below. Can you update ' +
+     'your code to produce the same output?'),
+    ('It looks like there is still a bug. Can you modify your code so ' +
+     'that it produces the output shown below?')
+  ],
+  OUTPUT_ENABLED: [
+    ('If you are really stuck, you can display the output of your code.'),
+    ('If you are stuck and need help, you can display the output of your ' +
+     'code.'),
+    ('If you can\'t seem to get unstuck, you can display the output of ' +
+     'your code.'),
+    ('If you feel stumped, you can display the output of your code.'),
+    ('If you can\'t find the bug, you can display the output of your code.')
+  ]});
+
+/**
  * The maximum amount of time (in seconds) that the code can take to run.
  *
  * @type {number}
@@ -162,6 +257,7 @@ tie.constant('SYSTEM_CODE', {
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
+
 /**
  * Pre-requisite check error type for when the user tries to import an
  * unsupported library in their code submission.
@@ -170,6 +266,7 @@ tie.constant('PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'missingStarterCode');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
+
 /**
  * Pre-requisite check error type for when the user tries to declare or use
  * code in the global scope.
@@ -178,6 +275,7 @@ tie.constant('PREREQ_CHECK_TYPE_BAD_IMPORT', 'badImport');
  * @constant
  */
 tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
+
 /**
  * Pre-requisite check error type for when the user tries to utilize code with
  * syntax commonly used in another language that isn't valid in the current
@@ -213,6 +311,14 @@ tie.constant('PARAGRAPH_TYPE_CODE', 'code');
  * @constant
  */
 tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
+
+/**
+ * FeedbackParagraph type for displaying user code output.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
 
 /**
  * Constant for the number of times that a user can make a mistake (i.e.
@@ -569,6 +675,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
  * @constant
  */
 tie.constant('VARNAME_OBSERVED_OUTPUTS', 'correctness_test_results');
+
 /**
  * Name of the list in which buggy output test results of all tasks are stored.
  *
@@ -576,6 +683,7 @@ tie.constant('VARNAME_OBSERVED_OUTPUTS', 'correctness_test_results');
  * @constant
  */
 tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
+
 /**
  *  Name of the list in which performance test results of all tasks are stored.
  *
@@ -583,6 +691,7 @@ tie.constant('VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'buggy_output_test_results');
  *  @constant
  */
 tie.constant('VARNAME_PERFORMANCE_TEST_RESULTS', 'performance_test_results');
+
 /**
  * Name of the list in which buggy output test results of one single task are
  * stored.
@@ -608,6 +717,7 @@ tie.constant('VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
  * @constant
  */
 tie.constant('VARNAME_MOST_RECENT_INPUT', 'most_recent_input');
+
 /**
  * Conversion rate between seconds to milliseconds.
  *
@@ -641,6 +751,7 @@ tie.constant('DEFAULT_EVENT_BATCH_PERIOD_SECONDS', 30);
  * @type {number}
  * @constant
  */
+
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
 /**
  * Default question ID to use if no qid parameter is specified in the URL.
@@ -649,6 +760,7 @@ tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
  * @constant
  */
 tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
+
 /**
  * Default cookie lifetime for the privacy policy in days.
  *
@@ -657,6 +769,7 @@ tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
  */
 var SIX_MONTHS_IN_DAYS = 180;
 tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
+
 /**
 * Key to use to store the privacy policy agreement.
 *
@@ -664,6 +777,7 @@ tie.constant('PRIVACY_COOKIE_LIFETIME_DAYS', SIX_MONTHS_IN_DAYS);
 * @constant
 */
 tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
+
 /**
  * Menu page url relative to the question page.
  *

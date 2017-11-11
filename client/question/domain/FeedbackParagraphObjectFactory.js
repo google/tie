@@ -18,9 +18,10 @@
  */
 
 tie.factory('FeedbackParagraphObjectFactory', [
-  'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
+  'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE',
+  'PARAGRAPH_TYPE_SYNTAX_ERROR', 'PARAGRAPH_TYPE_OUTPUT',
   function(PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_CODE,
-    PARAGRAPH_TYPE_SYNTAX_ERROR) {
+    PARAGRAPH_TYPE_SYNTAX_ERROR, PARAGRAPH_TYPE_OUTPUT) {
     /**
      * FeedbackParagraph objects have all of the information necessary
      * to represent one paragraph of feedback (code-, text-, or error-based) in
@@ -46,7 +47,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
       this._type = type;
 
       /**
-       * Property holds the text/code/Syntax Error description for this object.
+       * Property holds the text/code/output/Syntax Error description for
+       * this object.
        *
        * @type {string}
        * @private
@@ -56,7 +58,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
 
     // Instance methods.
     /**
-     * Checks if the Paragraph is a text-based paragraph
+     * Checks if the Paragraph is a text-based paragraph.
      *
      * @returns {boolean}
      */
@@ -65,7 +67,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Checks if the Paragraph is a paragraph consisting of code
+     * Checks if the Paragraph is a paragraph consisting of code.
      *
      * @returns {boolean}
      */
@@ -79,6 +81,15 @@ tie.factory('FeedbackParagraphObjectFactory', [
      */
     FeedbackParagraph.prototype.isSyntaxErrorParagraph = function() {
       return this._type === PARAGRAPH_TYPE_SYNTAX_ERROR;
+    };
+
+    /**
+     * Checks if the Paragraph is a paragraph consisting of code output.
+     *
+     * @returns {boolean}
+     */
+    FeedbackParagraph.prototype.isOutputParagraph = function() {
+      return this._type === PARAGRAPH_TYPE_OUTPUT;
     };
 
     /**
@@ -119,6 +130,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
       } else if (this.isSyntaxErrorParagraph()) {
         feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
+      } else if (this.isOutputParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_OUTPUT;
       } else {
         // If undefined type, return null.
         return null;
@@ -160,6 +173,16 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
+     * Returns a FeedbackParagraph comprising of output from user code.
+     *
+     * @param {string} output Output to be in the paragraph
+     * @returns {FeedbackParagraph}
+     */
+    FeedbackParagraph.createOutputParagraph = function(output) {
+      return new FeedbackParagraph(PARAGRAPH_TYPE_OUTPUT, output);
+    };
+
+    /**
      * Returns a FeedbackParagraph created from a dict.
      *
      * @param {Object} dict that should have a type, and the content
@@ -173,6 +196,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         return (this.createCodeParagraph(dict.content));
       } else if (dict.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
         return (this.createSyntaxErrorParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_OUTPUT) {
+        return (this.createOutputParagraph(dict.content));
       }
       return null;
     };

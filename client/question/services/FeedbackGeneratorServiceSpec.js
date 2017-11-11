@@ -32,19 +32,17 @@ describe('FeedbackGeneratorService', function() {
   var sampleErrorTraceback;
   var timeLimitErrorTraceback;
   var testTask;
-
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
   var PREREQ_CHECK_TYPE_WRONG_LANG;
   var PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL;
   var PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL;
-
   var LANGUAGE_PYTHON;
-
   var FEEDBACK_CATEGORIES;
   var PYTHON_PRIMER_BUTTON_NAME;
   var UNFAMILIARITY_THRESHOLD;
+  var CORRECTNESS_FEEDBACK_TEXT;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -64,7 +62,6 @@ describe('FeedbackGeneratorService', function() {
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
     TranscriptService = $injector.get('TranscriptService');
-
     PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
@@ -77,12 +74,11 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL');
     PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL = $injector.get(
       'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL');
-
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
-
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
     UNFAMILIARITY_THRESHOLD = $injector.get('UNFAMILIARITY_THRESHOLD');
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     var taskDict = [{
       instructions: [''],
@@ -171,61 +167,151 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('_getCorrectnessTestFeedback', function() {
-    it([
-      'should return feedback on a user function that ',
-      'doesn\'t pass all correctness tests'
-    ].join(''), function() {
-      var testCase = TestCaseObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['a']
-      });
+    var sampleInputTestSuite = {
+      id: 'SAMPLE_INPUT',
+      testCase: {
+        input: 'Hello, John',
+        allowedOutputs: ['olleH, nhoJ']
+      }
+    };
+    var generalTestSuite = {
+      id: 'GENERAL_CASE',
+      testCase: {
+        input: 'Hi, world',
+        allowedOutputs: ['iH, dlrow']
+      }
+    };
+    var whitespaceTestSuite = {
+      id: 'WHITESPACE',
+      testCase: {
+        input: 'hello    ',
+        allowedOutputs: ['olleh    ']
+      }
+    };
+    var sampleInputTestCase;
+    var generalInputTestCase;
+    var whitespaceTestCase;
 
-      var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(null, testCase, 'output').getParagraphs();
-      expect(paragraphs.length).toEqual(5);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        "Your code produced the following result:");
-      expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe(
-        "Input: \"cat\"\nOutput: \"output\"");
-      expect(paragraphs[2].isTextParagraph()).toBe(true);
-      expect(paragraphs[2].getContent()).toBe(
-        "However, the expected output is:");
-      expect(paragraphs[3].isCodeParagraph()).toBe(true);
-      expect(paragraphs[3].getContent()).toBe("\"a\"");
-      expect(paragraphs[4].isTextParagraph()).toBe(true);
-      expect(paragraphs[4].getContent()).toBe(
-        "Could you fix this?");
+    beforeEach(function() {
+      sampleInputTestCase =
+        TestCaseObjectFactory.create(sampleInputTestSuite.testCase);
+      generalInputTestCase =
+        TestCaseObjectFactory.create(generalTestSuite.testCase);
+      whitespaceTestCase =
+        TestCaseObjectFactory.create(whitespaceTestSuite.testCase);
     });
 
-    it([
-      'should return feedback with the output function name ',
-      'on a user function that doesn\'t pass all correctness tests'
-    ].join(''), function() {
-      var testCase = TestCaseObjectFactory.create({
-        input: 'cat',
-        allowedOutputs: ['a']
-      });
+    it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
+      function() {
+        var correctnessFeedbackParagraphs =
+          FeedbackGeneratorService._getCorrectnessTestFeedback(
+          sampleInputTestCase, sampleInputTestSuite.id, 0,
+          'incorrect answer').getParagraphs();
+        expect(correctnessFeedbackParagraphs.length).toEqual(2);
+        expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+          true);
+        expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
+          correctnessFeedbackParagraphs[0].getContent());
+        expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
+          true);
+        var expectedOutputParagraph =
+          'Input: "Hello, John"\n' +
+          'Expected Output: "olleH, nhoJ"\n' +
+          'Actual Output: "incorrect answer"';
+        expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+          expectedOutputParagraph);
+      }
+    );
 
-      var paragraphs = FeedbackGeneratorService
-        ._getCorrectnessTestFeedback(
-          'flufferNutter', testCase, 'output').getParagraphs();
-      expect(paragraphs.length).toEqual(5);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(
-        "Your code produced the following result:");
-      expect(paragraphs[1].isCodeParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toBe(
-        "Input: \"cat\"\nOutput (after running flufferNutter): \"output\"");
-      expect(paragraphs[2].isTextParagraph()).toBe(true);
-      expect(paragraphs[2].getContent()).toBe(
-        "However, the expected output of flufferNutter is:");
-      expect(paragraphs[3].isCodeParagraph()).toBe(true);
-      expect(paragraphs[3].getContent()).toBe("\"a\"");
-      expect(paragraphs[4].isTextParagraph()).toBe(true);
-      expect(paragraphs[4].getContent()).toBe(
-        "Could you fix this?");
+    it('should suggest input to try first', function() {
+      var correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(CORRECTNESS_FEEDBACK_TEXT.INPUT_TO_TRY).toContain(
+        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
+        true);
+      var expectedInputCodeParagraph = 'Input: "Hi, world"';
+      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+        expectedInputCodeParagraph);
+    });
+
+    it('should present expected output second', function() {
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      var correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(CORRECTNESS_FEEDBACK_TEXT.EXPECTED_OUTPUT).toContain(
+        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
+        true);
+      var expectedExpectedOutputParagraph =
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"';
+      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+        expectedExpectedOutputParagraph);
+    });
+
+    it('should allow user to display code output last', function() {
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      var correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
+        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
+        true);
+      var expectedOutputParagraph =
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"\n' +
+        'Actual Output: "yeH, uoyerawoh"';
+      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+        expectedOutputParagraph);
+    });
+
+    it('should catch regressions in user code', function() {
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      FeedbackGeneratorService._getCorrectnessTestFeedback(
+        whitespaceTestCase, whitespaceTestSuite.id, 0,
+        'olleh ').getParagraphs();
+      var correctnessFeedbackParagraphs =
+        FeedbackGeneratorService._getCorrectnessTestFeedback(
+        generalInputTestCase, generalTestSuite.id, 0,
+        'yeH, uoyerawoh').getParagraphs();
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+        true);
+      expect(correctnessFeedbackParagraphs[0].getContent()).toEqual(
+        'It looks like there was a regression in your code. Your code ' +
+        'used to work for the following, but it now fails:');
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
+        true);
+      var expectedRegressionParagraph =
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"';
+      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+        expectedRegressionParagraph);
     });
   });
 
@@ -1279,5 +1365,34 @@ describe('FeedbackGeneratorService', function() {
       }
     );
   });
-});
 
+  describe('_getRandomInt', function() {
+    it('should return a random number within the defined range',
+      function() {
+        var min = 0;
+        var max = 4;
+        var maxTries = 100;
+        for (var i = 0; i < maxTries; i++) {
+          var randomNumber = FeedbackGeneratorService._getRandomInt(min, max);
+          expect(typeof randomNumber).toEqual('number');
+          expect(randomNumber).not.toBeLessThan(0);
+          expect(randomNumber).not.toBeGreaterThan(3);
+        }
+      }
+    );
+  });
+
+  describe('_getCorrectnessFeedbackString', function() {
+    it('should return a feedback string from CORRECTNESS_FEEDBACK_TEXT',
+      function() {
+        for (var correctnessFeedbackType in CORRECTNESS_FEEDBACK_TEXT) {
+          var selectedFeedbackText =
+            FeedbackGeneratorService._getCorrectnessFeedbackString(
+            correctnessFeedbackType);
+          expect(CORRECTNESS_FEEDBACK_TEXT[correctnessFeedbackType]).toContain(
+            selectedFeedbackText);
+        }
+      }
+    );
+  });
+});

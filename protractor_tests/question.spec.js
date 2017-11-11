@@ -27,9 +27,7 @@ describe('submitting questions', function() {
     questionsPage.resetCode();
     questionsPage.runCode();
 
-    expect(questionsPage.countFeedbackParagraphs()).toEqual(5);
-    expect(questionsPage.getFeedbackParagraphText(0)).toMatch(
-      'Your code produced the following result*');
+    expect(questionsPage.countFeedbackParagraphs()).toEqual(2);
   });
 
   afterEach(function() {

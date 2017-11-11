@@ -23,6 +23,8 @@ describe('SolutionHandlerService', function() {
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
+  var FEEDBACK_TYPE_INPUT_TO_TRY;
+  var CORRECTNESS_FEEDBACK_TEXT;
   var taskDict = [{
     instructions: [''],
     prerequisiteSkills: [''],
@@ -100,6 +102,8 @@ describe('SolutionHandlerService', function() {
     SolutionHandlerService = $injector.get('SolutionHandlerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
+    FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
@@ -156,7 +160,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-              "Input: \"task_1_correctness_test_2\"\nOutput: False");
+              "Input: \"task_1_correctness_test_2\"");
           done();
         });
       });
@@ -176,7 +180,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-             "Input: \"task_2_correctness_test_1\"\nOutput: True");
+             "Input: \"task_2_correctness_test_1\"");
           done();
         });
       });
@@ -197,7 +201,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-              "Input: \"task_1_correctness_test_1\"\nOutput: False");
+              "Input: \"task_1_correctness_test_1\"");
           done();
         });
       });
@@ -236,7 +240,7 @@ describe('SolutionHandlerService', function() {
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
-             "Input: \"task_1_correctness_test_1\"\nOutput: False");
+             "Input: \"task_1_correctness_test_1\"");
           done();
         });
       });
@@ -454,8 +458,9 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            expect(feedback.getParagraphs()[0].getContent()).toBe(
-              'Your code produced the following result:');
+            expect(
+              CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
+              feedback.getParagraphs()[0].getContent());
             done();
           });
         }
@@ -560,8 +565,9 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'Your code produced the following result:');
+          expect(
+            CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
+            feedback.getParagraphs()[0].getContent());
           done();
         });
       });

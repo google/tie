@@ -116,7 +116,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * Appends a FeedbackParagraph of type text to the _paragraphs Array.
      *
-     * @param {string} text String to be inserted in text paragraph
+     * @param {string} text String to be inserted in text paragraph.
      */
     Feedback.prototype.appendTextParagraph = function(text) {
       this._feedbackParagraphs.push(
@@ -124,9 +124,9 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * Appends a FeedbackParagraph of type code to the _paragraphs Array
+     * Appends a FeedbackParagraph of type code to the _paragraphs Array.
      *
-     * @param {string} code String of code to be inserted into code paragraph
+     * @param {string} code String of code to be inserted into code paragraph.
      */
     Feedback.prototype.appendCodeParagraph = function(code) {
       if (this._feedbackParagraphs.length === 0) {
@@ -138,13 +138,25 @@ tie.factory('FeedbackObjectFactory', [
 
     /**
      * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
-     * Array
+     * Array.
      *
-     * @param {string} text String describing the syntax error
+     * @param {string} text String describing the syntax error.
      */
     Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
       this._feedbackParagraphs.push(
         FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
+    };
+
+    /**
+     * Appends a FeedbackParagraph of type output to the _paragraphs
+     * Array.
+     *
+     * @param {string} outputString String of code to be inserted as code
+     * output.
+     */
+    Feedback.prototype.appendOutputParagraph = function(outputString) {
+      this._feedbackParagraphs.push(
+        FeedbackParagraphObjectFactory.createOutputParagraph(outputString));
     };
 
     /**
