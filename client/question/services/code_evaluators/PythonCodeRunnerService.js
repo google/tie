@@ -68,7 +68,7 @@ tie.factory('PythonCodeRunnerService', [
       return Sk.misceval.asyncToPromise(function() {
         return Sk.importMainWithBody('<stdin>', false, code, true);
       }).then(function() {
-        var correctnessTestResults = [];
+        var observedOutputs = [];
         var buggyOutputTestResults = [];
         var performanceTestResults = [];
         // These checks retrieve the values of Skulpt's representation of
@@ -76,7 +76,7 @@ tie.factory('PythonCodeRunnerService', [
         // Sk.globals), and maps each of them to a JS value for later
         // comparison against the "correct output" specification.
         if (Sk.globals.hasOwnProperty(VARNAME_OBSERVED_OUTPUTS)) {
-          correctnessTestResults = Sk.ffi.remapToJs(
+          observedOutputs = Sk.ffi.remapToJs(
             Sk.globals[VARNAME_OBSERVED_OUTPUTS]);
         }
         if (Sk.globals.hasOwnProperty(VARNAME_BUGGY_OUTPUT_TEST_RESULTS)) {
@@ -90,7 +90,7 @@ tie.factory('PythonCodeRunnerService', [
 
         // The run was successful.
         return CodeEvalResultObjectFactory.create(
-          code, outputLines.join('\n'), correctnessTestResults,
+          code, outputLines.join('\n'), observedOutputs,
           buggyOutputTestResults, performanceTestResults, null, null);
       }, function(skulptError) {
         var errorInput = null;

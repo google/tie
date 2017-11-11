@@ -21,7 +21,7 @@ describe('CodeEvalResultObjectFactory', function() {
   var codeEvalResult;
   var CODE = 'code';
   var OUTPUT = '';
-  var CORRECTNESS_TEST_RESULTS = [[[true, true]], [[false, false]]];
+  var OBSERVED_OUTPUTS = [[[true, true]], [[false, false]]];
   var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
   var PERFORMANCE_TEST_RESULTS = [[], []];
   var ERROR_STRING = null;
@@ -32,7 +32,7 @@ describe('CodeEvalResultObjectFactory', function() {
     CodeEvalResultObjectFactory = $injector.get(
       'CodeEvalResultObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(CODE, OUTPUT,
-      CORRECTNESS_TEST_RESULTS, BUGGY_OUTPUT_TEST_RESULTS,
+      OBSERVED_OUTPUTS, BUGGY_OUTPUT_TEST_RESULTS,
       PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
   }));
 
@@ -65,16 +65,16 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
-  describe('getCorrectnessTestResults', function() {
-    it('should correctly get correctness test results', function() {
-      expect(codeEvalResult.getCorrectnessTestResults())
-        .toEqual(CORRECTNESS_TEST_RESULTS);
+  describe('getObservedOutputs', function() {
+    it('should correctly get the observed outputs', function() {
+      expect(codeEvalResult.getObservedOutputs())
+        .toEqual(OBSERVED_OUTPUTS);
     });
   });
 
-  describe('getLastTaskResults', function() {
-    it('should correctly get last task results', function() {
-      expect(codeEvalResult.getLastTaskResults())
+  describe('getLastTaskObservedOutputs', function() {
+    it('should correctly get last task observed outputs', function() {
+      expect(codeEvalResult.getLastTaskObservedOutputs())
         .toEqual([[false, false]]);
     });
   });

@@ -466,7 +466,7 @@ tie.factory('FeedbackGeneratorService', [
         }
       } else {
         var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
-        var observedOutputs = codeEvalResult.getCorrectnessTestResults();
+        var observedOutputs = codeEvalResult.getObservedOutputs();
         var performanceTestResults = codeEvalResult.getPerformanceTestResults();
         var codeHasChanged = _hasCodeChanged(codeEvalResult);
 
