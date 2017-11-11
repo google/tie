@@ -456,18 +456,16 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            var expectedFeedbackTextResult = 'valid feedback text';
-            var actualFeedbackTextResult = 'invalid feedback text';
-            var actualFeedbackText = feedback.getParagraphs()[0].getContent();
+            var feedbackText = feedback.getParagraphs()[0].getContent();
+            var foundInCorrectnessFeedbackText = false;
             for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
               if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
-                actualFeedbackText)) {
-                actualFeedbackTextResult = expectedFeedbackTextResult;
+                feedbackText)) {
+                foundInCorrectnessFeedbackText = true;
                 break;
               }
             }
-            expect(actualFeedbackTextResult).toEqual(
-              expectedFeedbackTextResult);
+            expect(foundInCorrectnessFeedbackText).toEqual(true);
             done();
           });
         }
@@ -572,18 +570,17 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          var expectedFeedbackTextResult = 'valid feedback text';
-          var actualFeedbackTextResult = 'invalid feedback text';
-          var actualFeedbackText = feedback.getParagraphs()[0].getContent();
+          var feedbackText = feedback.getParagraphs()[0].getContent();
+          var foundInCorrectnessFeedbackText = false;
+
           for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
             if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
-              actualFeedbackText)) {
-              actualFeedbackTextResult = expectedFeedbackTextResult;
+              feedbackText)) {
+              foundInCorrectnessFeedbackText = true;
               break;
             }
           }
-          expect(actualFeedbackTextResult).toEqual(
-            expectedFeedbackTextResult);
+          expect(foundInCorrectnessFeedbackText).toEqual(true);
           done();
         });
       });

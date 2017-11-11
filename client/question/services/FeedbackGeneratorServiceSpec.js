@@ -1380,8 +1380,8 @@ describe('FeedbackGeneratorService', function() {
         for (var i = 0; i < maxTries; i++) {
           var randomNumber = FeedbackGeneratorService._getRandomInt(min, max);
           expect(typeof randomNumber).toEqual('number');
-          expect(randomNumber).toBeGreaterThan(-1);
-          expect(randomNumber).toBeLessThan(4);
+          expect(randomNumber).not.toBeLessThan(0);
+          expect(randomNumber).not.toBeGreaterThan(3);
         }
       }
     );
@@ -1390,13 +1390,12 @@ describe('FeedbackGeneratorService', function() {
   describe('_getCorrectnessFeedbackString', function() {
     it('should return a feedback string from CORRECTNESS_FEEDBACK_TEXT',
       function() {
-        var selectedFeedbckText = '';
         for (var correctnessFeedbackType in CORRECTNESS_FEEDBACK_TEXT) {
-          selectedFeedbckText =
+          var selectedFeedbackText =
             FeedbackGeneratorService._getCorrectnessFeedbackString(
             correctnessFeedbackType);
           expect(CORRECTNESS_FEEDBACK_TEXT[correctnessFeedbackType]).toContain(
-            selectedFeedbckText);
+            selectedFeedbackText);
         }
       }
     );
