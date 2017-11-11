@@ -24,31 +24,56 @@ tie.factory('TipsGeneratorService', [
       FeedbackParagraphObjectFactory) {
     /**
      * Returns a list of paragraphs indicating system-generated tips for the
-     * learner.
+     * learner. At most one system-generated tip is presented.
      *
      * @param {string} language The language in which the code is written.
-     * @param {string} code The code to analyze.
-     * @returns {Array} A list of FeedbackParagraph objects, representing
-     *   system-generated tips, to prepend to the regular TIE feedback.
+     * @param {string} codeLines The lines of code to analyze.
+     * @returns {Array<FeedbackParagraph>} The feedback paragraphs to prepend
+     *   to the regular TIE feedback.
      */
     var getSystemTipParagraphs = function(language, codeLines) {
-      var tipParagraphs = [];
-
-      SYSTEM_GENERATED_TIPS[language].forEach(function(tipSpecification) {
+      for (var i = 0; i < SYSTEM_GENERATED_TIPS[language].length; i++) {
+        var tipSpecification = SYSTEM_GENERATED_TIPS[language][i];
         var regexp = new RegExp(tipSpecification.regExString);
         var detected = codeLines.some(function(line) {
           return line.search(regexp) !== -1;
         });
         if (detected) {
-          var feedbackParagraphs = tipSpecification.feedbackParagraphs.map(
+          return tipSpecification.feedbackParagraphs.map(
             function(paragraphDict) {
               return FeedbackParagraphObjectFactory.fromDict(paragraphDict);
             });
-          tipParagraphs = tipParagraphs.concat(feedbackParagraphs);
         }
-      });
+      }
 
-      return tipParagraphs;
+      return [];
+    };
+
+    /**
+     * Returns a list of paragraphs indicating task-specific tips for the
+     * learner. We do not show tips for already-passed tasks.
+     *
+     * @param {Array<Tip>} taskSpecificTips The checks to apply for determining
+     *  which task-specific tips to show.
+     * @param {string} codeLines The lines of code to analyze.
+     * @returns {Array<FeedbackParagraph>} The feedback paragraphs to prepend
+     *   to the general feedback. At most one task-specific tip is prepended
+     *   (to avoid cognitive overload).
+     */
+    var getTaskSpecificTipParagraphs = function(taskSpecificTips, codeLines) {
+      for (var i = 0; i < taskSpecificTips.length; i++) {
+        var tipSpecification = taskSpecificTips[i];
+        var regexp = new RegExp(tipSpecification.getRegexString());
+        var detected = codeLines.some(function(line) {
+          return line.search(regexp) !== -1;
+        });
+        if (detected) {
+          return [FeedbackParagraphObjectFactory.createTextParagraph(
+            'Tip: ' + tipSpecification.getMessage())];
+        }
+      }
+
+      return [];
     };
 
     return {
@@ -59,13 +84,16 @@ tie.factory('TipsGeneratorService', [
        *
        * @param {string} language The language in which the code is written.
        * @param {string} code The code to analyze.
+       * @param {Array<Tip>} taskSpecificTips The checks to apply for
+       *  which task-specific tips to show.
        * @returns {Array} A list of FeedbackParagraph objects to prepend to the
        *   regular TIE feedback.
        */
-      getTipParagraphs: function(language, code) {
+      getTipParagraphs: function(language, code, taskSpecificTips) {
         var codeLines = PrereqCheckDispatcherService.getNonStringLines(
           language, code);
-        return getSystemTipParagraphs(language, codeLines);
+        return getSystemTipParagraphs(language, codeLines).concat(
+          getTaskSpecificTipParagraphs(taskSpecificTips, codeLines));
       }
     };
   }

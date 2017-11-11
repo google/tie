@@ -36,7 +36,8 @@ describe('TipsGeneratorService', function() {
           'def func(a):',
           '    print a',
           ''
-        ].join(''));
+        ].join(''),
+        []);
 
       expect(tipParagraphs.length).toBe(1);
       var tipParagraph = tipParagraphs[0];

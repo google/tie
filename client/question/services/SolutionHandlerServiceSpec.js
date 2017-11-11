@@ -32,6 +32,9 @@ describe('SolutionHandlerService', function() {
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
@@ -66,6 +69,9 @@ describe('SolutionHandlerService', function() {
     inputFunctionName: null,
     outputFunctionName: null,
     mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
     testSuites: [{
       id: 'GENERAL_CASE',
       humanReadableName: 'the general case',
