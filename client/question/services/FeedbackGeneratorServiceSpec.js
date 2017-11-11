@@ -216,7 +216,7 @@ describe('FeedbackGeneratorService', function() {
           true);
         var expectedOutputParagraph =
           'Input: "Hello, John"\n' +
-          'Expected Output: "Hello, John"\n' +
+          'Expected Output: "olleH, nhoJ"\n' +
           'Actual Output: "incorrect answer"';
         expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
           expectedOutputParagraph);
