@@ -456,16 +456,8 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            var feedbackText = feedback.getParagraphs()[0].getContent();
-            var foundInCorrectnessFeedbackText = false;
-            for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
-              if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
-                feedbackText)) {
-                foundInCorrectnessFeedbackText = true;
-                break;
-              }
-            }
-            expect(foundInCorrectnessFeedbackText).toEqual(true);
+            expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY'].toContain(
+              feedback.getParagraphs()[0].getContent());
             done();
           });
         }
@@ -570,17 +562,8 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          var feedbackText = feedback.getParagraphs()[0].getContent();
-          var foundInCorrectnessFeedbackText = false;
-
-          for (var typeKey in CORRECTNESS_FEEDBACK_TEXT) {
-            if (CORRECTNESS_FEEDBACK_TEXT[typeKey].includes(
-              feedbackText)) {
-              foundInCorrectnessFeedbackText = true;
-              break;
-            }
-          }
-          expect(foundInCorrectnessFeedbackText).toEqual(true);
+          expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY'].toContain(
+            feedback.getParagraphs()[0].getContent());
           done();
         });
       });
