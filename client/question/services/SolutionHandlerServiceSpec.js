@@ -456,7 +456,7 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY'].toContain(
+            expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY']).toContain(
               feedback.getParagraphs()[0].getContent());
             done();
           });
@@ -562,7 +562,7 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY'].toContain(
+          expect(CORRECTNESS_FEEDBACK_TEXT['INPUT_TO_TRY']).toContain(
             feedback.getParagraphs()[0].getContent());
           done();
         });
