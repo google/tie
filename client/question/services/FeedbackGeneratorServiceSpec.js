@@ -215,10 +215,9 @@ describe('FeedbackGeneratorService', function() {
         expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
           true);
         var expectedOutputParagraph =
-          'Input: "' + sampleInputTestSuite.testCase.input +
-          '"\nExpected Output: "' +
-          sampleInputTestSuite.testCase.allowedOutputs[0] +
-          '"\nActual Output: "incorrect answer"';
+          'Input: "Hello, John"\n' +
+          'Expected Output: "Hello, John"\n' +
+          'Actual Output: "incorrect answer"';
         expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
           expectedOutputParagraph);
       }
@@ -236,8 +235,7 @@ describe('FeedbackGeneratorService', function() {
         correctnessFeedbackParagraphs[0].getContent());
       expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
         true);
-      var expectedInputCodeParagraph =
-        'Input: "' + generalTestSuite.testCase.input + '"';
+      var expectedInputCodeParagraph = 'Input: "Hi, world"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedInputCodeParagraph);
     });
@@ -258,9 +256,8 @@ describe('FeedbackGeneratorService', function() {
       expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
         true);
       var expectedExpectedOutputParagraph =
-        'Input: "' + generalTestSuite.testCase.input + '"\n' +
-        'Expected Output: "' + generalTestSuite.testCase.allowedOutputs[0] +
-        '"';
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedExpectedOutputParagraph);
     });
@@ -284,10 +281,9 @@ describe('FeedbackGeneratorService', function() {
       expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
         true);
       var expectedOutputParagraph =
-        'Input: "' + generalTestSuite.testCase.input +
-        '"\nExpected Output: "' +
-        generalTestSuite.testCase.allowedOutputs[0] +
-        '"\nActual Output: "yeH, uoyerawoh"';
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"\n' +
+        'Actual Output: "yeH, uoyerawoh"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedOutputParagraph);
     });
@@ -312,9 +308,8 @@ describe('FeedbackGeneratorService', function() {
       expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
         true);
       var expectedRegressionParagraph =
-        'Input: "' + generalTestSuite.testCase.input + '"\n' +
-        'Expected Output: "' +
-        generalTestSuite.testCase.allowedOutputs[0] + '"';
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"' +
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedRegressionParagraph);
     });
