@@ -309,7 +309,7 @@ describe('FeedbackGeneratorService', function() {
         true);
       var expectedRegressionParagraph =
         'Input: "Hi, world"\n' +
-        'Expected Output: "iH, dlrow"' +
+        'Expected Output: "iH, dlrow"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedRegressionParagraph);
     });
