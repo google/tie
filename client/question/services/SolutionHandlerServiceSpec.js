@@ -23,6 +23,7 @@ describe('SolutionHandlerService', function() {
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
+  var FEEDBACK_TYPE_INPUT_TO_TRY;
   var CORRECTNESS_FEEDBACK_TEXT;
   var taskDict = [{
     instructions: [''],
@@ -101,6 +102,7 @@ describe('SolutionHandlerService', function() {
     SolutionHandlerService = $injector.get('SolutionHandlerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
+    FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     orderedTasks = taskDict.map(function(task) {
@@ -456,7 +458,8 @@ describe('SolutionHandlerService', function() {
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
-            expect(CORRECTNESS_FEEDBACK_TEXT.INPUT_TO_TRY).toContain(
+            expect(
+              CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
               feedback.getParagraphs()[0].getContent());
             done();
           });
@@ -562,7 +565,8 @@ describe('SolutionHandlerService', function() {
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
-          expect(CORRECTNESS_FEEDBACK_TEXT.INPUT_TO_TRY).toContain(
+          expect(
+            CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
             feedback.getParagraphs()[0].getContent());
           done();
         });
