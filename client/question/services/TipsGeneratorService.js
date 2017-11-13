@@ -69,7 +69,7 @@ tie.factory('TipsGeneratorService', [
         });
         if (detected) {
           return [FeedbackParagraphObjectFactory.createTextParagraph(
-            'Tip: ' + tipSpecification.getMessage())];
+            tipSpecification.getMessage())];
         }
       }
 
