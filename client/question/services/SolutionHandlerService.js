@@ -25,6 +25,27 @@ tie.factory('SolutionHandlerService', [
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory, TipsGeneratorService) {
+    // Caches the index of the first failed task in the most recent submission
+    // that passes syntax checks. This is initialized to zero because, at the
+    // outset (before the user even submits any code), none of the tasks are
+    // passing.
+    var indexOfFirstFailedTask = 0;
+
+    /**
+     * Returns the list of tips for the given index, or an empty array if the
+     * given index is null.
+     *
+     * @param {Array<Task>} tasks The list of tasks
+     * @param {string} language The language the user's code is written in
+     * @param {number|null} taskIndexOrNull The index of a task, or null.
+     * @returns {Array<Tip>} tips The corresponding array of Tip objects.
+     */
+    var getTips = function(tasks, language, taskIndexOrNull) {
+      return (
+        (taskIndexOrNull === null) ? [] :
+        tasks[taskIndexOrNull].getTips(language));
+    };
+
     return {
       /**
        * Asynchronously returns a Promise with a Feedback object associated
@@ -59,13 +80,13 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
-            var tipParagraphs = TipsGeneratorService.getTipParagraphs(
-              language, studentCode);
-
             var potentialSyntaxErrorString = codeEvalResult.getErrorString();
             if (potentialSyntaxErrorString) {
+              var previousTipParagraphs = TipsGeneratorService.getTipParagraphs(
+                language, studentCode,
+                getTips(tasks, language, indexOfFirstFailedTask));
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-                tipParagraphs, potentialSyntaxErrorString);
+                previousTipParagraphs, potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return feedback;
             }
@@ -81,6 +102,11 @@ tie.factory('SolutionHandlerService', [
             return CodeRunnerDispatcherService.runCodeAsync(
               language, codeSubmission.getPreprocessedCode()
             ).then(function(preprocessedCodeEvalResult) {
+              indexOfFirstFailedTask = (
+                preprocessedCodeEvalResult.getIndexOfFirstFailedTask(tasks));
+              var tipParagraphs = TipsGeneratorService.getTipParagraphs(
+                language, studentCode,
+                getTips(tasks, language, indexOfFirstFailedTask));
               feedback = FeedbackGeneratorService.getFeedback(
                 tipParagraphs, tasks, preprocessedCodeEvalResult,
                 codeSubmission.getRawCodeLineIndexes());

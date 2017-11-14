@@ -18,6 +18,8 @@
 
 describe('CodeEvalResultObjectFactory', function() {
   var CodeEvalResultObjectFactory;
+  var TaskObjectFactory;
+
   var codeEvalResult;
   var CODE = 'code';
   var OUTPUT = '';
@@ -31,6 +33,7 @@ describe('CodeEvalResultObjectFactory', function() {
   beforeEach(inject(function($injector) {
     CodeEvalResultObjectFactory = $injector.get(
       'CodeEvalResultObjectFactory');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(CODE, OUTPUT,
       OBSERVED_OUTPUTS, BUGGY_OUTPUT_TEST_RESULTS,
       PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
@@ -58,7 +61,6 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
-
   describe('getOutput', function() {
     it('should correctly get output', function() {
       expect(codeEvalResult.getOutput()).toMatch(OUTPUT);
@@ -69,6 +71,97 @@ describe('CodeEvalResultObjectFactory', function() {
     it('should correctly get the observed outputs', function() {
       expect(codeEvalResult.getObservedOutputs())
         .toEqual(OBSERVED_OUTPUTS);
+    });
+  });
+
+  describe('getIndexOfFirstFailedTask', function() {
+    it('should correctly get the index of the first failed task', function() {
+      var tasks = [
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'GENERAL_CASE',
+            humanReadableName: 'the general case',
+            testCases: [{
+              input: 'task_1_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_1_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        }),
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'GENERAL_CASE',
+            humanReadableName: 'the general case',
+            testCases: [{
+              input: 'task_2_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_2_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        })
+      ];
+
+      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]], [[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult1.getIndexOfFirstFailedTask(tasks))
+        .toEqual(null);
+
+      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false]], [[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult2.getIndexOfFirstFailedTask(tasks))
+        .toEqual(0);
+
+      var codeEvalResult3 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]], [[false, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult3.getIndexOfFirstFailedTask(tasks))
+        .toEqual(1);
+
+      var codeEvalResult4 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false]], [[false, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult4.getIndexOfFirstFailedTask(tasks))
+        .toEqual(0);
+
+      var codeEvalResult5 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult5.getIndexOfFirstFailedTask(tasks))
+        .toEqual(0);
     });
   });
 

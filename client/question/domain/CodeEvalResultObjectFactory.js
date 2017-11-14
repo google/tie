@@ -135,6 +135,46 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
+     * Compares the observed outputs to the expected values of the test cases,
+     * and returns the index of the first task with at least one failing test
+     * case.
+     *
+     * @param {Array<Task>} The list of tasks for the current question.
+     * @returns {number|null} The index of the first task that failed, or null
+     * if all tasks passed.
+     */
+    CodeEvalResult.prototype.getIndexOfFirstFailedTask = function(tasks) {
+      if (this._observedOutputs.length === 0) {
+        // This can occur if there is a runtime or infinite-loop error.
+        return 0;
+      }
+
+      for (var i = 0; i < tasks.length; i++) {
+        var taskPassed = true;
+        var testSuites = tasks[i].getTestSuites();
+        for (var j = 0; j < testSuites.length; j++) {
+          var suitePassed = true;
+          var testCases = testSuites[j].getTestCases();
+          for (var k = 0; k < testCases.length; k++) {
+            if (!testCases[k].matchesOutput(this._observedOutputs[i][j][k])) {
+              suitePassed = false;
+              break;
+            }
+          }
+          if (!suitePassed) {
+            taskPassed = false;
+            break;
+          }
+        }
+        if (!taskPassed) {
+          return i;
+        }
+      }
+
+      return null;
+    };
+
+    /**
      * Returns the observed outputs for the last task that is run. The function
      * should return the last subarray in _observedOutputs.
      *
