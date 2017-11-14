@@ -139,6 +139,7 @@ tie.factory('CodeEvalResultObjectFactory', [
      * and returns the index of the first task with at least one failing test
      * case.
      *
+     * @param {Array<Task>} The list of tasks for the current question.
      * @returns {number|null} The index of the first task that failed, or null
      * if all tasks passed.
      */

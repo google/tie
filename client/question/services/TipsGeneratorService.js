@@ -27,7 +27,7 @@ tie.factory('TipsGeneratorService', [
      * learner. At most one system-generated tip is presented.
      *
      * @param {string} language The language in which the code is written.
-     * @param {string} codeLines The lines of code to analyze.
+     * @param {Array<string>} codeLines The lines of code to analyze.
      * @returns {Array<FeedbackParagraph>} The feedback paragraphs to prepend
      *   to the regular TIE feedback.
      */
@@ -55,7 +55,7 @@ tie.factory('TipsGeneratorService', [
      *
      * @param {Array<Tip>} taskSpecificTips The checks to apply for determining
      *  which task-specific tips to show.
-     * @param {string} codeLines The lines of code to analyze.
+     * @param {Array<string>} codeLines The lines of code to analyze.
      * @returns {Array<FeedbackParagraph>} The feedback paragraphs to prepend
      *   to the general feedback. At most one task-specific tip is prepended
      *   (to avoid cognitive overload).
