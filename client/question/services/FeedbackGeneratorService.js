@@ -296,6 +296,9 @@ tie.factory('FeedbackGeneratorService', [
       // Provide a new hint if the student gets stuck on the same bug despite
       // having modified their code, since in that case we don't want to give
       // the same message twice in a row.
+      // NOTE(sll): This doesn't work correctly anymore with the interposition
+      // of the new "you haven't changed your code" feedback -- but that might
+      // actually be OK, and even preferable. Needs discussion.
       if (codeHasChanged && messages[previousHintIndex] === previousMessage) {
         newHintIndex++;
       }
@@ -576,6 +579,7 @@ tie.factory('FeedbackGeneratorService', [
         return '';
       }
     };
+
     /**
      * Returns the Feedback object associated with a given user submission
      * not including the reinforcement.
@@ -588,8 +592,8 @@ tie.factory('FeedbackGeneratorService', [
      * @returns {Feedback}
      * @private
      */
-    var _getFeedbackWithoutReinforcement = function(
-        tasks, codeEvalResult, rawCodeLineIndexes) {
+    var _getFeedbackWithoutReinforcement = function(  // eslint-disable-line complexity
+        tasks, codeEvalResult, rawCodeLineIndexes, previousFeedbackDetails) {
 
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
@@ -607,6 +611,21 @@ tie.factory('FeedbackGeneratorService', [
         var observedOutputs = codeEvalResult.getObservedOutputs();
         var performanceTestResults = codeEvalResult.getPerformanceTestResults();
         var codeHasChanged = _hasCodeChanged(codeEvalResult);
+
+        if (!codeHasChanged) {
+          var previousSnapshot = TranscriptService.getMostRecentSnapshot();
+          if (previousSnapshot) {
+            var previousFeedback = previousSnapshot.getFeedback();
+            var currentFeedback = FeedbackObjectFactory.create(
+              previousFeedback.getFeedbackCategory());
+            currentFeedback.appendTextParagraph([
+              "It looks like you haven't changed your code. Try addressing ",
+              "the error before you run again."
+            ].join(''));
+            currentFeedback.setHintIndex(previousFeedback.getHintIndex());
+            return currentFeedback;
+          }
+        }
 
         for (var i = 0; i < tasks.length; i++) {
           var buggyOutputTests = tasks[i].getBuggyOutputTests();
@@ -627,13 +646,27 @@ tie.factory('FeedbackGeneratorService', [
             }
           });
 
+          var skipToCorrectness = false;
+
           for (var j = 0; j < buggyOutputTests.length; j++) {
             if (buggyOutputTestResults[i][j]) {
+              // If the details match the previous feedback details then skip to
+              // correctness tests as well.
+              if (previousFeedbackDetails !== null &&
+                  previousFeedbackDetails[0] ===
+                    FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+                  previousFeedbackDetails[1] ===
+                    buggyOutputTests[j].getBuggyFunctionName()) {
+                skipToCorrectness = true;
+                break;
+              }
+
               var feedback = _getBuggyOutputTestFeedback(
                 buggyOutputTests[j], codeHasChanged);
               // Null feedback indicates that we've run out of hints and should
               // provide correctness-test output feedback instead.
               if (!feedback) {
+                skipToCorrectness = true;
                 break;
               }
 
@@ -641,15 +674,27 @@ tie.factory('FeedbackGeneratorService', [
             }
           }
 
-          for (j = 0; j < suiteLevelTests.length; j++) {
-            if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-              feedback = _getSuiteLevelTestFeedback(
-                suiteLevelTests[j], codeHasChanged);
-              if (!feedback) {
-                break;
-              }
+          if (!skipToCorrectness) {
+            for (j = 0; j < suiteLevelTests.length; j++) {
+              if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+                // If the details match the previous feedback details then skip
+                // to correctness tests as well.
+                if (previousFeedbackDetails !== null &&  // eslint-disable-line max-depth
+                    previousFeedbackDetails[0] ===
+                      FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+                    previousFeedbackDetails[1] ===
+                      String(i) + ':' + String(j)) {
+                  break;
+                }
 
-              return feedback;
+                feedback = _getSuiteLevelTestFeedback(
+                  suiteLevelTests[j], codeHasChanged);
+                if (!feedback) {  // eslint-disable-line max-depth
+                  break;
+                }
+
+                return feedback;
+              }
             }
           }
 
@@ -687,6 +732,57 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
+    // Returns a list: first element is feedback type, second element
+    // (optional) is a key giving more details:
+    // - If first element is "buggy output" then the key is the
+    //   buggyFunctionName
+    // - If first element is "suite-level test" then the key is [task index,
+    //   suite-level-test index]
+    //
+    // It's guaranteed that the input code is code that, in a past run, has
+    // gotten to the "correctness" stage, meaning it passes syntax checks,
+    // runtime error checks, timeout checks, etc.
+    var getOldFeedbackDetails = function(tasks, codeEvalResult) {
+      var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
+      var observedOutputs = codeEvalResult.getObservedOutputs();
+
+      for (var i = 0; i < tasks.length; i++) {
+        var buggyOutputTests = tasks[i].getBuggyOutputTests();
+        var suiteLevelTests = tasks[i].getSuiteLevelTests();
+        var testSuites = tasks[i].getTestSuites();
+
+        var passingSuiteIds = [];
+        testSuites.forEach(function(suite, suiteIndex) {
+          var testCases = suite.getTestCases();
+          var observedSuiteOutputs = observedOutputs[i][suiteIndex];
+          var allTestCasesPass = testCases.every(function(testCase, index) {
+            return testCase.matchesOutput(observedSuiteOutputs[index]);
+          });
+
+          if (allTestCasesPass) {
+            passingSuiteIds.push(suite.getId());
+          }
+        });
+
+        for (var j = 0; j < buggyOutputTests.length; j++) {
+          if (buggyOutputTestResults[i][j]) {
+            return [
+              FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE,
+              buggyOutputTests[j].getBuggyFunctionName()];
+          }
+        }
+
+        for (j = 0; j < suiteLevelTests.length; j++) {
+          if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+            return [
+              FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE,
+              String(i) + ':' + String(j)];
+          }
+        }
+      }
+      return null;
+    };
+
     return {
       /**
        * Returns the Feedback and Reinforcement associated with a user's
@@ -713,8 +809,25 @@ tie.factory('FeedbackGeneratorService', [
           _resetCounters();
         }
 
+        // If most recent feedback is "correctness", then:
+        //   Get the previous "observed outputs" and see what buggy output
+        //   (keyed by buggyFunctionName) or suite-level stuff (keyed by
+        //   hashing passing/failing suites) it triggers.
+        // If current observed output triggers the same thing, then go to next
+        // step in correctness.
+        var previousSnapshot = TranscriptService.getMostRecentSnapshot();
+        var previousFeedbackDetails = null;
+        if (previousSnapshot) {
+          var previousFeedback = previousSnapshot.getFeedback();
+          if (previousFeedback.getFeedbackCategory() ===
+              FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+            previousFeedbackDetails = getOldFeedbackDetails(
+              tasks, previousSnapshot.getCodeEvalResult());
+          }
+        }
+
         var feedback = _getFeedbackWithoutReinforcement(
-          tasks, codeEvalResult, rawCodeLineIndexes);
+          tasks, codeEvalResult, rawCodeLineIndexes, previousFeedbackDetails);
         feedback.setTipParagraphs(tipParagraphs);
         if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
           feedback.setReinforcement(
