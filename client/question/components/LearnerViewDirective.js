@@ -122,7 +122,13 @@ tie.directive('learnerView', [function() {
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  Run
+                  I'm done!
+                </button>
+                <button class="tie-run-button tie-button protractor-test-run-code-btn"
+                    ng-class="{'active': !nextButtonIsShown}"
+                    ng-click="submitCode(editorContents.code)"
+                    ng-disabled="nextButtonIsShown">
+                  I need help
                 </button>
               </div>
             </div>
