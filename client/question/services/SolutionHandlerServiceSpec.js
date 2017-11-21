@@ -18,6 +18,8 @@
 
 describe('SolutionHandlerService', function() {
   var SUPPORTED_PYTHON_LIBS;
+  var PythonCodeRunnerService;
+  var ServerHandlerService;
   var SolutionHandlerService;
   var TaskObjectFactory;
   var orderedTasks;
@@ -105,6 +107,8 @@ describe('SolutionHandlerService', function() {
 
   // Mock tasks for preprocessing.
   beforeEach(inject(function($injector) {
+    PythonCodeRunnerService = $injector.get('PythonCodeRunnerService');
+    ServerHandlerService = $injector.get('ServerHandlerService');
     SolutionHandlerService = $injector.get('SolutionHandlerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
@@ -291,6 +295,18 @@ describe('SolutionHandlerService', function() {
               });
             });
           });
+        }
+      );
+    });
+
+    describe("warmUpServer", function() {
+      it('should call through PythonCodeRunnerService.warmUpServer',
+        function(done) {
+          spyOn(PythonCodeRunnerService, 'warmUpServer');
+          spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+          SolutionHandlerService.warmUpServer();
+          expect(PythonCodeRunnerService.warmUpServer).toHaveBeenCalled();
+          done();
         }
       );
     });

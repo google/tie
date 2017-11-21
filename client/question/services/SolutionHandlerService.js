@@ -20,11 +20,13 @@
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory', 'TipsGeneratorService',
+  'PythonCodeRunnerService', 'TranscriptService', 'CodeSubmissionObjectFactory',
+  'TipsGeneratorService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory, TipsGeneratorService) {
+      PythonCodeRunnerService, TranscriptService, CodeSubmissionObjectFactory,
+      TipsGeneratorService) {
     // Caches the index of the first failed task in the most recent submission
     // that passes syntax checks. This is initialized to zero because, at the
     // outset (before the user even submits any code), none of the tasks are
@@ -47,6 +49,12 @@ tie.factory('SolutionHandlerService', [
     };
 
     return {
+      /**
+       * Sends a request to warm up the server's execution pipeline.
+       */
+      warmUpServer: function() {
+        PythonCodeRunnerService.warmUpServer();
+      },
       /**
        * Asynchronously returns a Promise with a Feedback object associated
        * with the code submission and the test results.

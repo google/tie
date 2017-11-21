@@ -159,6 +159,15 @@ tie.factory('PythonCodeRunnerService', [
 
     return {
       /**
+       * Sends a quick snippet of code to warm up a server's execution pipeline.
+       *
+       */
+      warmUpServer: function() {
+        if (ServerHandlerService.doesServerExist()) {
+          _compileCodeAsync('print hello world');
+        }
+      },
+      /**
        * Asynchronously compiles the given Python code.
        *
        * @param {string} code
