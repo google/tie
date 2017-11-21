@@ -45,6 +45,19 @@ describe('PythonCodeRunnerService', function() {
       ['linear']];
   }));
 
+  describe("warmUpServer", function() {
+    it('should call through and send code to the backend',
+      function(done) {
+        $httpBackend.expectPOST('/ajax/compile_code').respond(
+          HTTP_STATUS_CODE_OK, {});
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        PythonCodeRunnerService.warmUpServer();
+        $httpBackend.flush();
+        done();
+      }
+    );
+  });
+
   describe('compileCodeAsync', function() {
 
     it('sends a POST request to the backend to compile code', function() {
