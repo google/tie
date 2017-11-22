@@ -91,7 +91,7 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
     'Would your code work for the following input?',
     'How about the following input? Would your code still work?',
     'What would happen if you run your code with this input?',
-    'Consider the input below. How would you code handle it?',
+    'Consider the input below. How would your code handle it?',
     'Have you considered input such as the following?'
   ],
   EXPECTED_OUTPUT: [
