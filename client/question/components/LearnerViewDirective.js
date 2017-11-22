@@ -25,13 +25,13 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window" ng-class="{'night-mode': isInDarkMode}">
+              <div class="tie-question-window">
                 <h3 class="tie-question-title">{{title}}</h3>
                 <div class="tie-previous-instructions">
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
                     <div ng-repeat="instruction in previousInstruction track by $index">
                       <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                      <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                     <hr>
                   </div>
@@ -39,7 +39,7 @@ tie.directive('learnerView', [function() {
                 <div class="tie-instructions">
                   <div ng-repeat="instruction in instructions">
                     <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                    <pre class="tie-question-code" ng-class="{'night-mode': isInDarkMode}" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                   </div>
                 </div>
                 <div>
@@ -72,15 +72,14 @@ tie.directive('learnerView', [function() {
                     </li>
                   </div>
                   <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                    <div class="tie-dot tie-dot-1" ng-class="{'night-mode': isInDarkMode}"></div>
-                    <div class="tie-dot tie-dot-2" ng-class="{'night-mode': isInDarkMode}"></div>
-                    <div class="tie-dot tie-dot-3" ng-class="{'night-mode': isInDarkMode}"></div>
+                    <div class="tie-dot tie-dot-1"></div>
+                    <div class="tie-dot tie-dot-2"></div>
+                    <div class="tie-dot tie-dot-3"></div>
                   </div>
                   <br>
                 </div>
               </div>
               <select class="tie-select-menu" name="theme-select"
-                      ng-class="{'night-mode': isInDarkMode}"
                       ng-change="changeTheme(theme)" ng-model="theme"
                       ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
@@ -104,18 +103,17 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu" ng-class="{'night-mode': isInDarkMode}">
+                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button" ng-class="{'night-mode': isInDarkMode}">
-                  <a class="tie-primer-link" ng-class="{'night-mode': isInDarkMode}" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
+                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button">
+                  <a class="tie-primer-link" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 </button>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
-                    ng-class="{'night-mode': isInDarkMode}"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
-                <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
+                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
@@ -132,7 +130,7 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
-            <div class="tie-options-row" ng-class="{'night-mode': isInDarkMode}">
+            <div class="tie-options-row">
               <ul>
                 <li class="tie-about-button">
                   <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
@@ -225,14 +223,14 @@ tie.directive('learnerView', [function() {
           margin-top: 10px;
           margin-left: 10px;
         }
-        .tie-code-auto-save.night-mode {
+        .night-mode .tie-code-auto-save {
           color: #E0E0E0;
         }
         .tie-code-reset, .tie-python-primer {
           float: left;
           margin-top: 10px;
         }
-        .tie-code-reset.night-mode, .tie-python-primer.night-mode {
+        .night-mode .tie-code-reset, .night-mode .tie-python-primer {
           background-color: #333a42;
           color: white;
         }
@@ -289,7 +287,7 @@ tie.directive('learnerView', [function() {
           height: 100%;
           margin-top: 18px;
         }
-        .tie-dot.night-mode {
+        .night-mode .tie-dot {
           background-color: #E0E0E0;
         }
         .tie-dot-2 {
@@ -319,7 +317,7 @@ tie.directive('learnerView', [function() {
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
-        .tie-feedback-window.night-mode {
+        .night-mode .tie-feedback-window {
           background-color: #37474F;
           color: #E0E0E0;
           font-size: 14px;
@@ -399,7 +397,7 @@ tie.directive('learnerView', [function() {
           padding: 5px;
           text-decoration: none;
         }
-        .tie-options-row.night-mode a {
+        .night-mode .tie-options-row a {
           color: #E0E0E0;
         }
         .tie-options-row li {
@@ -421,7 +419,7 @@ tie.directive('learnerView', [function() {
           color: black;
           text-decoration: none;
         }
-        .tie-primer-link.night-mode {
+        .night-mode .tie-primer-link {
           color: white;
         }
         .tie-privacy-button {
@@ -454,11 +452,8 @@ tie.directive('learnerView', [function() {
           white-space: pre-wrap;
           word-wrap: break-word;
         }
-        .tie-question-code.night-mode {
-          background: #212121;
-        }
-        .tie-question-code.night-mode {
-          background-color: #333;
+        .night-mode .tie-question-code {
+          background: #333;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
@@ -489,7 +484,7 @@ tie.directive('learnerView', [function() {
           resize: both;
           width: 548px;
         }
-        .tie-question-window.night-mode {
+        .night-mode .tie-question-window {
           background-color: #333A42;
           color: #E0E0E0;
         }
@@ -521,14 +516,14 @@ tie.directive('learnerView', [function() {
         .tie-select-menu:hover {
           border-color: #e4e4e4;
         }
-        .tie-select-menu.night-mode {
+        .night-mode .tie-select-menu {
           background-color: #333a42;
           color: white;
         }
         .CodeMirror-line.tie-syntax-error-line {
           background: #FBC2C4;
         }
-        .tie-wrapper.night-mode .CodeMirror-line.tie-syntax-error-line {
+        .tie-wrapper.night-mode  .CodeMirror-line.tie-syntax-error-line {
           background: #891111;
         }
         .tie-wrapper {
