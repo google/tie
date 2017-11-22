@@ -118,11 +118,17 @@ tie.directive('learnerView', [function() {
                 <div class="tie-code-auto-save" ng-class="{'night-mode': isInDarkMode}" ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
+                <button class="tie-run-button tie-button tie-button-green"
+                    ng-class="{'active': !nextButtonIsShown}"
+                    ng-click="submitCode(editorContents.code)"
+                    ng-disabled="nextButtonIsShown">
+                  I think I'm done
+                </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  Run
+                  I need help
                 </button>
               </div>
             </div>
@@ -176,12 +182,34 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .tie-button-blue {
-          background-color: rgb(66, 133, 244);
+          background-color: rgb(110, 150, 190);
           color: #ffffff;
         }
         .tie-button-blue:hover {
-          background-color: rgb(50, 120, 240);
+          background-color: rgb(50, 133, 190);
           border: 1px solid rgb(42, 112, 232);
+        }
+        .night-mode .tie-button-blue {
+          background-color: rgb(70, 90, 110);
+          color: #ffffff;
+        }
+        .night-mode .tie-button-blue:hover {
+          background-color: rgb(85, 115, 150);
+        }
+        .tie-button-green {
+          background-color: rgb(110, 150, 90);
+          color: #ffffff;
+        }
+        .tie-button-green:hover {
+          background-color: rgb(50, 133, 90);
+          border: 1px solid rgb(42, 112, 132);
+        }
+        .night-mode .tie-button-green {
+          background-color: rgb(70, 90, 10);
+          color: #ffffff;
+        }
+        .night-mode .tie-button-green:hover {
+          background-color: rgb(85, 115, 50);
         }
         .tie-button-red {
           background-color: #ef5350;
