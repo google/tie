@@ -98,7 +98,7 @@ tie.directive('learnerView', [function() {
                   <div ng-if="codeEditorIsShown" class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                                    ng-model="editorContents.code"
-                                   ng-change="autosave()"
+                                   ng-change="onCodeChange()"
                                    class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
@@ -539,17 +539,19 @@ tie.directive('learnerView', [function() {
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
-      'SessionIdService', 'SECONDS_TO_MILLISECONDS', 'DEFAULT_AUTOSAVE_SECONDS',
-      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
-      'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
+      'SessionIdService', 'SECONDS_TO_MILLISECONDS',
+      'CODE_CHANGE_DEBOUNCE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS',
+      'SERVER_URL', 'DEFAULT_QUESTION_ID', 'FEEDBACK_CATEGORIES',
+      'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
           EventHandlerService, LocalStorageService, ServerHandlerService,
-          SessionIdService, SECONDS_TO_MILLISECONDS, DEFAULT_AUTOSAVE_SECONDS,
-          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
-          FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
+          SessionIdService, SECONDS_TO_MILLISECONDS,
+          CODE_CHANGE_DEBOUNCE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS,
+          SERVER_URL, DEFAULT_QUESTION_ID, FEEDBACK_CATEGORIES,
+          DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -645,12 +647,13 @@ tie.directive('learnerView', [function() {
         $scope.privacyModalIsDisplayed = false;
 
         /**
-         * Is used to store the Autosave promise such that it can later be
-         * cancelled.
+         * Stores a promise for the $interval process that automatically
+         * retriggers the codeChangeEvent, so that that process can be
+         * cancelled later.
          *
-         * @type {Promise}
+         * @type {Promise|null}
          */
-        var autosaveCancelPromise;
+        $scope.codeChangeLoopPromise = null;
 
         /**
          * String to store the code being cached.
@@ -1100,39 +1103,39 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * If autosave is on, this function automatically saves the user's code
-         * to the browser's local storage.
+         * Called when a user code change is detected, with a minimum time of
+         * CODE_CHANGE_DEBOUNCE_SECONDS between intervals.
          */
-        $scope.autosave = function() {
-          if (!LocalStorageService.isAvailable()) {
-            return;
-          }
-
-          if (!$scope.autosaveOn) {
-            $scope.autosaveOn = true;
-            autosaveCancelPromise = $interval(function() {
+        $scope.onCodeChange = function() {
+          if ($scope.codeChangeLoopPromise === null) {
+            $scope.codeChangeLoopPromise = $interval(function() {
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
-                // No code change, stop autosave loop.
-                stopAutosave();
-              } else {
-                // Code change detected, notify user, save code,
-                // update code cache and continue this loop.
-                storeCodeAndUpdateCachedCode(
-                  $scope.currentQuestionId,
-                  $scope.editorContents.code,
-                  language);
-                triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+                // No code change, stop the onCodeChange loop.
+                $interval.cancel($scope.codeChangeLoopPromise);
+                $scope.codeChangeLoopPromise = null;
+                return;
               }
-            }, DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS);
+
+              // Code change detected. Actually do the operations that should
+              // be triggered by a code change, such as autosaving.
+              // TODO(sll): Add code to trigger unprompted feedback here.
+              $scope.autosaveCode();
+            }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);
           }
         };
 
         /**
-         * Sets the system to not automatically save user code.
+         * Saves the user's code to the browser's local storage.
          */
-        var stopAutosave = function() {
-          $scope.autosaveOn = false;
-          $interval.cancel(autosaveCancelPromise);
+        $scope.autosaveCode = function() {
+          if (!LocalStorageService.isAvailable()) {
+            return;
+          }
+          storeCodeAndUpdateCachedCode(
+            $scope.currentQuestionId,
+            $scope.editorContents.code,
+            language);
+          triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
         };
 
         /**

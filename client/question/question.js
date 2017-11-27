@@ -733,7 +733,7 @@ tie.constant('SECONDS_TO_MILLISECONDS', 1000);
  * @type {number}
  * @constant
  */
-tie.constant('DEFAULT_AUTOSAVE_SECONDS', 5);
+tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 
 /**
  * Default time in seconds between calls to SendEventBatch.

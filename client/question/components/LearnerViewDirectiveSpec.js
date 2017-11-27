@@ -44,7 +44,7 @@ describe('LearnerViewDirective', function() {
   var LANGUAGE = 'python';
 
   var SECONDS_TO_MILLISECONDS;
-  var DEFAULT_AUTOSAVE_SECONDS;
+  var CODE_CHANGE_DEBOUNCE_SECONDS;
   var DELTA_MILLISECONDS = 100;
   var AUTOSAVE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
@@ -53,7 +53,7 @@ describe('LearnerViewDirective', function() {
 
   beforeEach(inject(function(
       $compile, $rootScope, $injector, _QuestionDataService_,
-      _SECONDS_TO_MILLISECONDS_, _DEFAULT_AUTOSAVE_SECONDS_, _$location_,
+      _SECONDS_TO_MILLISECONDS_, _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_,
       _EventHandlerService_, _FeedbackObjectFactory_) {
     $scope = $rootScope.$new();
 
@@ -74,9 +74,9 @@ describe('LearnerViewDirective', function() {
     FeedbackObjectFactory = _FeedbackObjectFactory_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
-    DEFAULT_AUTOSAVE_SECONDS = _DEFAULT_AUTOSAVE_SECONDS_;
+    CODE_CHANGE_DEBOUNCE_SECONDS = _CODE_CHANGE_DEBOUNCE_SECONDS_;
     AUTOSAVE_MILLISECONDS =
-      DEFAULT_AUTOSAVE_SECONDS * SECONDS_TO_MILLISECONDS;
+      CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS;
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
     localStorage.clear();
@@ -103,14 +103,14 @@ describe('LearnerViewDirective', function() {
     };
 
     it('should only activate autosave once', function() {
-      expect(!$scope.autosaveOn).toBe(true);
+      expect($scope.codeChangeLoopPromise).toBe(null);
       var question = QuestionDataService.getQuestion(QUESTION_ID);
       var starterCode = question.getStarterCode(LANGUAGE);
       // There should be no code stored in localStorage
       // before autosave is triggered.
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(null);
-      $scope.autosave();
+      $scope.onCodeChange();
       checkAutosaveDetail(QUESTION_ID, starterCode);
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(starterCode);
@@ -120,21 +120,21 @@ describe('LearnerViewDirective', function() {
     // displayed for 1 second. Then, the autosave text should be gone but the
     // autosave is still running. At 10 seconds, cachedCode will be compared
     // to $scope.editorContents.code, since they are the same, autosave will
-    // stop. Thus, at 10.1 seconds, autosave should be canceled and autosaveOn
-    // should be false.
+    // stop. Thus, at 10.1 seconds, autosave should be canceled and
+    // $scope.codeChangeLoopPromise should be null.
     var checkAutosaveDetail = function(questionId, starterCode) {
-      expect($scope.autosaveOn).toBe(true);
+      expect($scope.codeChangeLoopPromise).not.toBe(null);
       // Flush 4900 milliseconds -- time: 4.9s
       expect($scope.autosaveTextIsDisplayed).toBe(false);
       flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS - DELTA_MILLISECONDS);
-      expect($scope.autosaveOn).toBe(true);
+      expect($scope.codeChangeLoopPromise).not.toBe(null);
       expect(LocalStorageService.loadStoredCode(
         questionId, LANGUAGE)).toEqual(null);
       // Flush 200 milliseconds -- time: 5.1s
       flushIntervalAndTimeout(2 * DELTA_MILLISECONDS);
       expect(LocalStorageService.loadStoredCode(
         questionId, LANGUAGE)).toEqual(starterCode);
-      expect($scope.autosaveOn).toBe(true);
+      expect($scope.codeChangeLoopPromise).not.toBe(null);
       expect($scope.autosaveTextIsDisplayed).toBe(true);
       // Flush 1000 milliseconds -- time: 6.1s
       flushIntervalAndTimeout(SECONDS_TO_MILLISECONDS);
@@ -142,18 +142,18 @@ describe('LearnerViewDirective', function() {
       // Flush 4000 milliseconds -- time: 10.1s
       flushIntervalAndTimeout(4 * SECONDS_TO_MILLISECONDS);
       expect($scope.autosaveTextIsDisplayed).toBe(false);
-      expect($scope.autosaveOn).toBe(false);
+      expect($scope.codeChangeLoopPromise).toBe(null);
     };
 
     it('should store the latest code into localStorage', function() {
       // Repeat 1 - 20 times
       var repeatTimes = Math.floor(Math.random() * AUTOSAVE_REPEAT_RANGE) + 1;
-      expect(!$scope.autosaveOn).toBe(true);
-      // There should be no code stored in local storage
-      // before autosave is triggerred.
+      expect($scope.codeChangeLoopPromise).toBe(null);
+      // There should be no code stored in local storage before autosave is
+      // triggered.
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(null);
-      $scope.autosave();
+      $scope.onCodeChange();
       var randomCodes;
       for (var j = 0; j < repeatTimes; j++) {
         randomCodes = generateRandomChars(NUM_CHARS_CODE);
@@ -164,7 +164,7 @@ describe('LearnerViewDirective', function() {
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
       flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
       expect($scope.autosaveTextIsDisplayed).toBe(false);
-      expect($scope.autosaveOn).toBe(false);
+      expect($scope.codeChangeLoopPromise).toBe(null);
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
     });
