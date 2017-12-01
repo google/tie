@@ -42,14 +42,6 @@ tie.factory('FeedbackObjectFactory', [
       }
 
       /**
-       * List of FeedbackParagraph objects to be shown as tips.
-       *
-       * @type {Array}
-       * @private
-       */
-      this._tipParagraphs = [];
-
-      /**
        * List of FeedbackParagraph objects associated with this feedback.
        *
        * @type {Array}
@@ -83,14 +75,12 @@ tie.factory('FeedbackObjectFactory', [
 
     // Instance methods.
     /**
-     * Retrieves the list of tips and paragraphs associated with this Feedback
-     * object.
+     * Retrieves the list of paragraphs associated with this Feedback object.
      *
-     * @returns {Array} An array of FeedbackParagraph objects, comprising tips
-     *   followed by feedback.
+     * @returns {Array} An array of FeedbackParagraph objects.
      */
     Feedback.prototype.getParagraphs = function() {
-      return this._tipParagraphs.concat(this._feedbackParagraphs);
+      return this._feedbackParagraphs;
     };
 
     /**
@@ -101,16 +91,6 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.isAnswerCorrect = function() {
       return this._feedbackCategory === FEEDBACK_CATEGORIES.SUCCESSFUL;
-    };
-
-    /**
-     * Sets the list of tip paragraphs that are included with this feedback.
-     *
-     * @param {Array} tipParagraphs List of FeedbackParagraph objects
-     *   representing tips to prepend to the feedback shown to the learner.
-     */
-    Feedback.prototype.setTipParagraphs = function(tipParagraphs) {
-      this._tipParagraphs = angular.copy(tipParagraphs);
     };
 
     /**

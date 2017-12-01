@@ -28,6 +28,7 @@ describe('question.js', function() {
   var FEEDBACK_TYPE_EXPECTED_OUTPUT;
   var FEEDBACK_TYPE_OUTPUT_ENABLED;
   var CORRECTNESS_FEEDBACK_TEXT;
+  var ALL_SUPPORTED_LANGUAGES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -47,6 +48,7 @@ describe('question.js', function() {
     FEEDBACK_TYPE_OUTPUT_ENABLED =
       $injector.get('FEEDBACK_TYPE_OUTPUT_ENABLED');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
+    ALL_SUPPORTED_LANGUAGES = $injector.get('ALL_SUPPORTED_LANGUAGES');
   }));
 
   describe('WRONG_LANGUAGE_ERRORS', function() {
@@ -69,16 +71,12 @@ describe('question.js', function() {
 
   describe('SYSTEM_GENERATED_TIPS', function() {
     it('should have the correct keys and valid values', function() {
-      SYSTEM_GENERATED_TIPS.python.forEach(function(tip) {
-        expect(typeof tip.type).toBe('string');
-        expect(typeof tip.regExString).toBe('string');
-        expect(Array.isArray(tip.feedbackParagraphs)).toBe(true);
-
-        tip.feedbackParagraphs.forEach(function(paragraph) {
-          expect(typeof paragraph.type).toEqual('string');
-          expect(ALLOWED_PARAGRAPH_TYPES.indexOf(paragraph.type) !== -1).toBe(
-            true);
-          expect(typeof paragraph.content).toEqual('string');
+      ALL_SUPPORTED_LANGUAGES.forEach(function(language) {
+        expect(SYSTEM_GENERATED_TIPS.hasOwnProperty(language));
+        SYSTEM_GENERATED_TIPS[language].forEach(function(tip) {
+          expect(typeof tip.type).toBe('string');
+          expect(typeof tip.regexString).toBe('string');
+          expect(typeof tip.message).toBe('string');
         });
       });
     });

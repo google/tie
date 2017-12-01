@@ -147,7 +147,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[[false], [false]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          [], taskWithTwoSuites, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithTwoSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
@@ -183,7 +183,7 @@ describe('ReinforcementGeneratorService', function() {
         'some code', 'some output', [[[false], [false], [false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
-        [], taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
+        taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
@@ -212,7 +212,7 @@ describe('ReinforcementGeneratorService', function() {
         'some code', 'some output', [[[false], [false], [false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
-        [], taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
+        taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       var reinforcement = ReinforcementGeneratorService.getReinforcement(
@@ -250,7 +250,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[[true], [true], [true]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          [], taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
 
@@ -291,7 +291,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[[false], [false], [false]]],
           [], [], null, null);
         var feedback = FeedbackGeneratorService.getFeedback(
-          [], taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
         var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
@@ -306,7 +306,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[[true], [false], [false]]],
           [], [], null, null);
         feedback = FeedbackGeneratorService.getFeedback(
-          [], taskWithThreeSuites, codeEvalResult2, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult2, [0, 1, 2, 3, 4]);
         TranscriptService.recordSnapshot(null, codeEvalResult2, feedback);
 
         pastFailedCases = feedback.getReinforcement().getPastFailedCases();
@@ -322,7 +322,7 @@ describe('ReinforcementGeneratorService', function() {
           'some code', 'some output', [[[true], [true], [false]]],
           [], [], null, null);
         feedback = FeedbackGeneratorService.getFeedback(
-          [], taskWithThreeSuites, codeEvalResult3, [0, 1, 2, 3, 4]);
+          taskWithThreeSuites, codeEvalResult3, [0, 1, 2, 3, 4]);
 
         TranscriptService.recordSnapshot(null, codeEvalResult3, feedback);
 
@@ -355,7 +355,7 @@ describe('ReinforcementGeneratorService', function() {
         'some code', 'some output', [[[false, false, false]]],
         [], [], null, null);
       var feedback = FeedbackGeneratorService.getFeedback(
-        [], taskWithThreeCases, codeEvalResult, [0, 1, 2, 3, 4]);
+        taskWithThreeCases, codeEvalResult, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       var pastFailedCases = feedback.getReinforcement().getPastFailedCases();
@@ -370,7 +370,7 @@ describe('ReinforcementGeneratorService', function() {
         'some code', 'some output', [[[true, false, false]]],
         [], [], null, null);
       feedback = FeedbackGeneratorService.getFeedback(
-        [], taskWithThreeCases, codeEvalResult2, [0, 1, 2, 3, 4]);
+        taskWithThreeCases, codeEvalResult2, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult2, feedback);
 
@@ -387,7 +387,7 @@ describe('ReinforcementGeneratorService', function() {
         'some code', 'some output', [[[true, true, false]]],
         [], [], null, null);
       feedback = FeedbackGeneratorService.getFeedback(
-        [], taskWithThreeCases, codeEvalResult3, [0, 1, 2, 3, 4]);
+        taskWithThreeCases, codeEvalResult3, [0, 1, 2, 3, 4]);
 
       TranscriptService.recordSnapshot(null, codeEvalResult3, feedback);
 

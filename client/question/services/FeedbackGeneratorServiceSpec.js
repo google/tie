@@ -21,7 +21,6 @@ describe('FeedbackGeneratorService', function() {
   var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
-  var FeedbackParagraphObjectFactory;
   var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var SuiteLevelTestObjectFactory;
@@ -51,8 +50,6 @@ describe('FeedbackGeneratorService', function() {
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
-    FeedbackParagraphObjectFactory = $injector.get(
-      'FeedbackParagraphObjectFactory');
     ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
@@ -593,7 +590,7 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-        [], 'some error');
+        'some error');
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
 
@@ -601,6 +598,28 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe('some error');
+    });
+
+    it('should correctly append language unfamiliarity feedback if ' +
+       'consecutiveUnfamiliarityLanguageCounter reaches the ' +
+       'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
+      var errorString = 'some error';
+
+      var feedback;
+
+      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
+        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+          errorString);
+      }
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toEqual('some error');
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toEqual(
+        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          LANGUAGE_PYTHON));
     });
   });
 
@@ -612,7 +631,7 @@ describe('FeedbackGeneratorService', function() {
         'testInput');
 
       var feedback = FeedbackGeneratorService.getFeedback(
-        [], questionMock, codeEvalResult, []);
+        questionMock, codeEvalResult, []);
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
 
@@ -925,7 +944,7 @@ describe('FeedbackGeneratorService', function() {
         'some code', 'some output', [], [], ['not linear'], null, null);
 
       var feedback = FeedbackGeneratorService.getFeedback(
-        [], testTask, codeEvalResult, []);
+        testTask, codeEvalResult, []);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
@@ -969,28 +988,6 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should correctly append language unfamiliarity feedback if ' +
-       'consecutiveUnfamiliarityLanguageCounter reaches the ' +
-       'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
-      var errorString = 'some error';
-
-      var feedback;
-
-      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-          [], errorString);
-      }
-
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isSyntaxErrorParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('some error');
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toEqual(
-        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
-          LANGUAGE_PYTHON));
-    });
-
-    it('should correctly append language unfamiliarity feedback if ' +
        'consecutiveSameRuntimeErrorCounter reaches the ' +
        'UNFAMILIARITY_THRESHOLD count', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
@@ -1001,7 +998,7 @@ describe('FeedbackGeneratorService', function() {
 
       for (var i = 0; i <= UNFAMILIARITY_THRESHOLD; i++) {
         feedback = FeedbackGeneratorService.getFeedback(
-          [], testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
+          testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       }
 
@@ -1325,45 +1322,6 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService.getPrereqFailureFeedback(prereqFailure);
       }).toThrow();
     });
-  });
-
-  describe('tips', function() {
-    it('should include tips passed in when returning feedback', function() {
-      var tip = FeedbackParagraphObjectFactory.fromDict({
-        type: 'text',
-        content: 'a tip'
-      });
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], ['not linear'], null, null);
-
-      var feedback = FeedbackGeneratorService.getFeedback(
-        [tip], testTask, codeEvalResult, []);
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('a tip');
-    });
-
-    it(
-      'should include tips passed in when returning syntax error feedback',
-      function() {
-        var tip = FeedbackParagraphObjectFactory.fromDict({
-          type: 'text',
-          content: 'a tip'
-        });
-        var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-          [tip], 'some error');
-        expect(feedback.getFeedbackCategory()).toEqual(
-          FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-
-        var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(2);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toEqual('a tip');
-        expect(paragraphs[1].isSyntaxErrorParagraph()).toBe(true);
-        expect(paragraphs[1].getContent()).toBe('some error');
-      }
-    );
   });
 
   describe('_getRandomInt', function() {

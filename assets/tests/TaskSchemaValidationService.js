@@ -239,10 +239,10 @@ tie.factory('TaskSchemaValidationService', [
         return ALL_SUPPORTED_LANGUAGES.every(function(language) {
           var tips = task.getTips(language);
           return tips.every(function(tip) {
-            var regexString = tip.getRegexString();
+            var regexp = tip.getRegexp();
             var message = tip.getMessage();
             return (
-              Boolean(regexString) && angular.isString(regexString) &&
+              Boolean(regexp) && (regexp instanceof RegExp) &&
               Boolean(message) && angular.isString(message));
           });
         });
