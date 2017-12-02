@@ -562,6 +562,15 @@ tie.directive('learnerView', [function() {
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
 
         /**
+         * Number of milliseconds for TIE to wait before showing unprompted
+         * feedback.
+         *
+         * @type {number}
+         * @constant
+         */
+        var DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK = 1000;
+
+        /**
          * Array of strings containing the ids of the allowed question sets.
          *
          * @type {Array}
@@ -1130,9 +1139,13 @@ tie.directive('learnerView', [function() {
               if (potentialFeedbackParagraphs !== null) {
                 // Note that, for simplicity, unprompted feedback is currently
                 // not persisted in local storage.
-                $scope.feedbackStorage.push({
-                  feedbackParagraphs: potentialFeedbackParagraphs
-                });
+                $scope.loadingIndicatorIsShown = true;
+                $timeout(function() {
+                  $scope.feedbackStorage.push({
+                    feedbackParagraphs: potentialFeedbackParagraphs
+                  });
+                  $scope.loadingIndicatorIsShown = false;
+                }, DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK);
               }
             }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);
           }
