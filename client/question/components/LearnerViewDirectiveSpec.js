@@ -171,7 +171,7 @@ describe('LearnerViewDirective', function() {
     });
   });
 
-  fdescribe('onCodeChange', function() {
+  describe('onCodeChange', function() {
     var $interval;
     var $timeout;
     var UnpromptedFeedbackManagerService;
