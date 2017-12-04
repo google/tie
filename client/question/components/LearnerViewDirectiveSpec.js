@@ -174,7 +174,6 @@ describe('LearnerViewDirective', function() {
   fdescribe('onCodeChange', function() {
     var $interval;
     var $timeout;
-    var LocalStorageService;
     var UnpromptedFeedbackManagerService;
     var FeedbackParagraphObjectFactory;
     beforeEach(inject(function(
