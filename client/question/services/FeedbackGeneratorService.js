@@ -693,8 +693,6 @@ tie.factory('FeedbackGeneratorService', [
        * code submission and their test results. This also includes feedback
        * for print statements.
        *
-       * @param {Array} tipParagraphs A list of FeedbackParagraph objects
-       *   representing tips to include in the feedback.
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
        * @param {CodeEvalResult} codeEvalResult Test results for this submission
@@ -702,8 +700,7 @@ tie.factory('FeedbackGeneratorService', [
        *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getFeedback: function(
-          tipParagraphs, tasks, codeEvalResult, rawCodeLineIndexes) {
+      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
         // If the user receives the same error message increment the same error
         // counter.
         if (previousRuntimeErrorString &&
@@ -715,7 +712,6 @@ tie.factory('FeedbackGeneratorService', [
 
         var feedback = _getFeedbackWithoutReinforcement(
           tasks, codeEvalResult, rawCodeLineIndexes);
-        feedback.setTipParagraphs(tipParagraphs);
         if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
           feedback.setReinforcement(
             ReinforcementGeneratorService.getReinforcement(
@@ -730,19 +726,16 @@ tie.factory('FeedbackGeneratorService', [
       /**
        * Returns the Feedback object for the given syntax error string.
        *
-       * @param {Array} tipParagraphs A list of FeedbackParagraph objects
-       *   representing tips to include in the feedback.
        * @param {string} errorString
        * @returns {Feedback}
        */
-      getSyntaxErrorFeedback: function(tipParagraphs, errorString) {
+      getSyntaxErrorFeedback: function(errorString) {
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
         previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-        feedback.setTipParagraphs(tipParagraphs);
         feedback.appendSyntaxErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);

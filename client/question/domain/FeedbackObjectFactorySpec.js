@@ -24,7 +24,6 @@ describe('FeedbackObjectFactory', function() {
   var FEEDBACK_CATEGORIES;
 
   var FeedbackObjectFactory;
-  var FeedbackParagraphObjectFactory;
   var feedback;
 
   beforeEach(module('tie'));
@@ -36,8 +35,6 @@ describe('FeedbackObjectFactory', function() {
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-    FeedbackParagraphObjectFactory = $injector.get(
-      'FeedbackParagraphObjectFactory');
     feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
   }));
 
@@ -68,35 +65,6 @@ describe('FeedbackObjectFactory', function() {
         feedback.appendCodeParagraph("code");
       };
       expect(errorFunction).toThrowError(Error);
-    });
-  });
-
-  describe('setTipParagraphs', function() {
-    it('should prepend tip paragraphs to feedback', function() {
-      feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-      feedback.appendTextParagraph('testA');
-
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('testA');
-
-      feedback.setTipParagraphs([]);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('testA');
-
-      feedback.setTipParagraphs([FeedbackParagraphObjectFactory.fromDict({
-        type: 'text',
-        content: 'tip'
-      })]);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(2);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('tip');
-      expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toEqual('testA');
     });
   });
 

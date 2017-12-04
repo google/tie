@@ -539,19 +539,19 @@ tie.directive('learnerView', [function() {
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
-      'SessionIdService', 'SECONDS_TO_MILLISECONDS',
-      'CODE_CHANGE_DEBOUNCE_SECONDS', 'DISPLAY_AUTOSAVE_TEXT_SECONDS',
-      'SERVER_URL', 'DEFAULT_QUESTION_ID', 'FEEDBACK_CATEGORIES',
-      'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
+      'SessionIdService', 'UnpromptedFeedbackManagerService',
+      'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
+      'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
+      'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, ReinforcementObjectFactory,
           EventHandlerService, LocalStorageService, ServerHandlerService,
-          SessionIdService, SECONDS_TO_MILLISECONDS,
-          CODE_CHANGE_DEBOUNCE_SECONDS, DISPLAY_AUTOSAVE_TEXT_SECONDS,
-          SERVER_URL, DEFAULT_QUESTION_ID, FEEDBACK_CATEGORIES,
-          DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
+          SessionIdService, UnpromptedFeedbackManagerService,
+          SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
+          DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
+          FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -560,6 +560,15 @@ tie.directive('learnerView', [function() {
          * @constant
          */
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+
+        /**
+         * Number of milliseconds for TIE to wait before showing unprompted
+         * feedback.
+         *
+         * @type {number}
+         * @constant
+         */
+        var DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK = 1000;
 
         /**
          * Array of strings containing the ids of the allowed question sets.
@@ -643,7 +652,7 @@ tie.directive('learnerView', [function() {
           code: ''
         };
 
-        // The privacy modal is not diplayed by default.
+        // The privacy modal is not displayed by default.
         $scope.privacyModalIsDisplayed = false;
 
         /**
@@ -818,6 +827,8 @@ tie.directive('learnerView', [function() {
           SessionIdService.resetSessionId();
           question = QuestionDataService.getQuestion(questionId);
           tasks = question.getTasks();
+          UnpromptedFeedbackManagerService.reset(tasks);
+
           currentTaskIndex = 0;
           cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
@@ -1118,8 +1129,24 @@ tie.directive('learnerView', [function() {
 
               // Code change detected. Actually do the operations that should
               // be triggered by a code change, such as autosaving.
-              // TODO(sll): Add code to trigger unprompted feedback here.
               $scope.autosaveCode();
+
+              // Check for unprompted feedback to add to the feedback log.
+              var potentialFeedbackParagraphs = (
+                UnpromptedFeedbackManagerService.runTipsCheck(
+                  language, $scope.editorContents.code,
+                  tasks[currentTaskIndex].getId()));
+              if (potentialFeedbackParagraphs !== null) {
+                // Note that, for simplicity, unprompted feedback is currently
+                // not persisted in local storage.
+                $scope.loadingIndicatorIsShown = true;
+                $timeout(function() {
+                  $scope.feedbackStorage.push({
+                    feedbackParagraphs: potentialFeedbackParagraphs
+                  });
+                  $scope.loadingIndicatorIsShown = false;
+                }, DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK);
+              }
             }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);
           }
         };

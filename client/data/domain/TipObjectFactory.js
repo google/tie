@@ -27,12 +27,12 @@ tieData.factory('TipObjectFactory', [
      */
     var Tip = function(tipDict) {
       /**
-       * The regex string to test the student's code against.
+       * The regexp to test the student's code against.
        *
-       * @type: {string}
+       * @type: {Regex}
        * @private
        */
-      this._regexString = tipDict.regexString;
+      this._regexp = new RegExp(tipDict.regexString);
 
       /**
        * The message to show the learner when the tip is triggered.
@@ -46,12 +46,12 @@ tieData.factory('TipObjectFactory', [
     // Instance methods.
 
     /**
-     * A getter for the _regexString property.
+     * A getter for the _regexp property.
      *
-     * @returns {string}
+     * @returns {Regex}
      */
-    Tip.prototype.getRegexString = function() {
-      return this._regexString;
+    Tip.prototype.getRegexp = function() {
+      return this._regexp;
     };
 
     /**
@@ -61,6 +61,19 @@ tieData.factory('TipObjectFactory', [
      */
     Tip.prototype.getMessage = function() {
       return this._message;
+    };
+
+    /**
+     * Whether the given lines of code trigger the tip.
+     *
+     * @param {Array<string>} codeLines The lines of code to examine.
+     * @returns {boolean}
+     */
+    Tip.prototype.isTriggeredBy = function(codeLines) {
+      var that = this;
+      return codeLines.some(function(line) {
+        return line.search(that._regexp) !== -1;
+      });
     };
 
     // Static class methods.

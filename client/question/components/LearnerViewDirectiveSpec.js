@@ -46,7 +46,7 @@ describe('LearnerViewDirective', function() {
   var SECONDS_TO_MILLISECONDS;
   var CODE_CHANGE_DEBOUNCE_SECONDS;
   var DELTA_MILLISECONDS = 100;
-  var AUTOSAVE_MILLISECONDS;
+  var CODE_CHANGE_DEBOUNCE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
 
   var QUESTION_ID = 'reverseWords';
@@ -75,7 +75,7 @@ describe('LearnerViewDirective', function() {
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     CODE_CHANGE_DEBOUNCE_SECONDS = _CODE_CHANGE_DEBOUNCE_SECONDS_;
-    AUTOSAVE_MILLISECONDS =
+    CODE_CHANGE_DEBOUNCE_MILLISECONDS =
       CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS;
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
@@ -126,7 +126,8 @@ describe('LearnerViewDirective', function() {
       expect($scope.codeChangeLoopPromise).not.toBe(null);
       // Flush 4900 milliseconds -- time: 4.9s
       expect($scope.autosaveTextIsDisplayed).toBe(false);
-      flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS - DELTA_MILLISECONDS);
+      flushIntervalAndTimeout(
+        CODE_CHANGE_DEBOUNCE_MILLISECONDS - DELTA_MILLISECONDS);
       expect($scope.codeChangeLoopPromise).not.toBe(null);
       expect(LocalStorageService.loadStoredCode(
         questionId, LANGUAGE)).toEqual(null);
@@ -158,15 +159,52 @@ describe('LearnerViewDirective', function() {
       for (var j = 0; j < repeatTimes; j++) {
         randomCodes = generateRandomChars(NUM_CHARS_CODE);
         $scope.editorContents.code = randomCodes;
-        flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
+        flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
       }
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
-      flushIntervalAndTimeout(AUTOSAVE_MILLISECONDS);
+      flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
       expect($scope.autosaveTextIsDisplayed).toBe(false);
       expect($scope.codeChangeLoopPromise).toBe(null);
       expect(LocalStorageService.loadStoredCode(
         QUESTION_ID, LANGUAGE)).toEqual(randomCodes);
+    });
+  });
+
+  describe('onCodeChange', function() {
+    var $interval;
+    var $timeout;
+    var UnpromptedFeedbackManagerService;
+    var FeedbackParagraphObjectFactory;
+    beforeEach(inject(function(
+        _$interval_, _$timeout_, _UnpromptedFeedbackManagerService_,
+        _FeedbackParagraphObjectFactory_) {
+      $interval = _$interval_;
+      $timeout = _$timeout_;
+      UnpromptedFeedbackManagerService = _UnpromptedFeedbackManagerService_;
+      FeedbackParagraphObjectFactory = _FeedbackParagraphObjectFactory_;
+      spyOn(UnpromptedFeedbackManagerService, 'runTipsCheck').and.returnValue([
+        FeedbackParagraphObjectFactory.fromDict({
+          type: 'text',
+          content: '[some unprompted feedback]'
+        })
+      ]);
+    }));
+
+    var flushIntervalAndTimeout = function(timeToFlush) {
+      $interval.flush(timeToFlush);
+      $timeout.flush(timeToFlush);
+    };
+
+    it('should add unprompted feedback to the feedback log', function() {
+      expect($scope.feedbackStorage.length).toBe(0);
+      expect($scope.codeChangeLoopPromise).toBe(null);
+      $scope.onCodeChange();
+      $scope.editorContents.code = 'new code';
+      flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
+      expect($scope.feedbackStorage.length).toBe(1);
+      expect($scope.feedbackStorage[0].feedbackParagraphs[0].getContent()).toBe(
+        '[some unprompted feedback]');
     });
   });
 
