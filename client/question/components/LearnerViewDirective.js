@@ -25,7 +25,7 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window">
+              <div class="tie-question-window" ng-show="!MonospaceDisplayModalService.isDisplayed()">
                 <h3 class="tie-question-title">{{title}}</h3>
                 <div class="tie-previous-instructions">
                   <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -55,8 +55,7 @@ tie.directive('learnerView', [function() {
                         <code-snippet content="paragraph.getContent()"></code-snippet>
                       </span>
                       <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                        <syntax-error-snippet content="paragraph.getContent()"
-                                              on-state-change="scrollToBottomOfFeedbackWindow()">
+                        <syntax-error-snippet content="paragraph.getContent()">
                         </syntax-error-snippet>
                       </span>
                       <span ng-if="paragraph.isOutputParagraph()">
@@ -79,6 +78,12 @@ tie.directive('learnerView', [function() {
                   <br>
                 </div>
               </div>
+
+              <div class="tie-question-window" style="border: 1px solid #444; padding: 0;" ng-show="MonospaceDisplayModalService.isDisplayed()">
+                <monospace-display-modal title="title" content="content">
+                </monospace-display-modal>
+              </div>
+
               <select class="tie-select-menu" name="theme-select"
                       ng-change="changeTheme(theme)" ng-model="theme"
                       ng-options="i.themeName as i.themeName for i in themes">
@@ -145,6 +150,7 @@ tie.directive('learnerView', [function() {
       </div>
       <privacy-modal is-displayed="privacyModalIsDisplayed">
       </privacy-modal>
+
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -540,6 +546,7 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
       'SessionIdService', 'UnpromptedFeedbackManagerService',
+      'MonospaceDisplayModalService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
@@ -549,6 +556,7 @@ tie.directive('learnerView', [function() {
           FeedbackObjectFactory, ReinforcementObjectFactory,
           EventHandlerService, LocalStorageService, ServerHandlerService,
           SessionIdService, UnpromptedFeedbackManagerService,
+          MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
@@ -711,6 +719,8 @@ tie.directive('learnerView', [function() {
          */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
+        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -1071,6 +1081,7 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.submitCode = function(code) {
+          MonospaceDisplayModalService.hideModal();
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
