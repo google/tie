@@ -20,55 +20,22 @@ tie.directive('outputSnippet', [function() {
   return {
     restrict: 'E',
     scope: {
-      getContent: '&content',
-      onStateChange: '&onStateChange'
+      getContent: '&content'
     },
     template: `
       <div class="output-toggle-container">
-        <a href class="toggle" ng-click="toggleOutput()">
-          {{outputIsShown ? 'Hide' : 'Display'}} output
-        </a>
-      </div>
-      <div class="output-container" ng-show="outputIsShown">
-        <span ng-repeat="line in snippetLines">
-          <span class="snippet-line">{{line}}</span>
-          <br>
-        </span>
+        You can click on <a href ng-click="openOutputModal()">this link</a>
+        to display the output. We recommend that you do not rely on this.
       </div>
       <style>
-        output-snippet .output-container {
-          background: #333;
-          color: #eee;
-          font-family: monospace;
-          font-size: 12px;
-          margin-top: 10px;
-          padding: 2px 10px;
-          width: 95%;
-        }
         output-snippet .output-toggle-container {
-          margin-top: -30px;
           padding-bottom: 15px;
-        }
-        output-snippet .snippet-line {
-          color: #ef9a9a;
-          line-height: 24px;
-          word-wrap: break-word;
-        }
-        output-snippet .toggle {
-          color: #F44336;
-          display: inline-block;
-          float: right;
-          font-size: 12px;
-          margin-right: 8px;
-          text-decoration: none;
-        }
-        output-snippet .toggle:hover {
-          text-decoration: underline;
         }
       </style>
     `,
     controller: [
-      '$scope', function($scope) {
+      '$scope', 'MonospaceDisplayModalService',
+      function($scope, MonospaceDisplayModalService) {
         /**
          * Array of strings used to represent the output snippet lines to be
          * presented in the UI.
@@ -85,12 +52,11 @@ tie.directive('outputSnippet', [function() {
         $scope.outputIsShown = false;
 
         /**
-         * Used to switch between states of whether user code output is
-         * displayed or not.
+         * Opens a modal with the printed output.
          */
-        $scope.toggleOutput = function() {
-          $scope.outputIsShown = !$scope.outputIsShown;
-          $scope.onStateChange();
+        $scope.openOutputModal = function() {
+          MonospaceDisplayModalService.showModal(
+            'Code Output', $scope.snippetLines);
         };
 
         /**

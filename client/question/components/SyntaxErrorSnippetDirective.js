@@ -20,15 +20,19 @@ tie.directive('syntaxErrorSnippet', [function() {
   return {
     restrict: 'E',
     scope: {
-      getContent: '&content',
-      onStateChange: '&onStateChange'
+      getContent: '&content'
     },
     template: `
       <div>
-        Looks like your code has a syntax error.
-        <a href class="toggle" ng-click="toggleSyntaxErrorHint()">
-          {{syntaxErrorIsShown ? 'Hide' : 'Display'}} error details
-        </a>
+        <p>
+          It looks like your code has a syntax error. Try to figure out what the
+          error is.
+        </p>
+        <p>
+          If you cannot figure out the problem, you can click on
+          <a href class="toggle" ng-click="openSyntaxErrorModal()">this link</a>
+          to display the error message.
+        </p>
       </div>
       <div class="error-container" ng-show="syntaxErrorIsShown">
         <span ng-repeat="line in snippetLines">
@@ -37,18 +41,6 @@ tie.directive('syntaxErrorSnippet', [function() {
         </span>
       </div>
       <style>
-        syntax-error-snippet .toggle {
-          color: #F44336;
-          display: inline-block;
-          float: right;
-          font-size: 12px;
-          margin-right: 8px;
-          text-decoration: none;
-        }
-        syntax-error-snippet .toggle:hover {
-          text-decoration: underline;
-        }
-
         syntax-error-snippet .error-container {
           background: #333;
           color: #eee;
@@ -66,7 +58,8 @@ tie.directive('syntaxErrorSnippet', [function() {
       </style>
     `,
     controller: [
-      '$scope', function($scope) {
+      '$scope', 'MonospaceDisplayModalService',
+      function($scope, MonospaceDisplayModalService) {
         /**
          * Array of strings used to represent the code snippet lines to be
          * presented in the UI.
@@ -83,12 +76,11 @@ tie.directive('syntaxErrorSnippet', [function() {
         $scope.syntaxErrorIsShown = false;
 
         /**
-         * Used to switch between states of when a syntax error is being shown
-         * or not.
+         * Opens a modal with the syntax error.
          */
-        $scope.toggleSyntaxErrorHint = function() {
-          $scope.syntaxErrorIsShown = !$scope.syntaxErrorIsShown;
-          $scope.onStateChange();
+        $scope.openSyntaxErrorModal = function() {
+          MonospaceDisplayModalService.showModal(
+            'Error Message', $scope.snippetLines);
         };
 
         /**
