@@ -76,7 +76,8 @@ tie.directive('monospaceDisplayModal', [function() {
           background: #fff;
           color: #111;
           font-family: monospace;
-          font-size: 14px;
+          /* This should match the font-size and font-family in the coding area. */
+          font-size: 13px;
           height: 100%;
           position: relative;
         }

@@ -43,7 +43,13 @@ tie.directive('learnerView', [function() {
                   </div>
                 </div>
                 <div>
-                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage track by $index">
+                  <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                    <div class="tie-dot tie-dot-1"></div>
+                    <div class="tie-dot tie-dot-2"></div>
+                    <div class="tie-dot tie-dot-3"></div>
+                  </div>
+                  <br>
+                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$first}" ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
                     <hr>
                     <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
                         class="tie-feedback-paragraph"
@@ -64,22 +70,10 @@ tie.directive('learnerView', [function() {
                       </span>
                     </p>
                   </div>
-                  <div class="tie-reinforcement">
-                    <li ng-repeat="bullet in reinforcementBullets">
-                      <img class="tie-bullet-img" ng-src="../../assets/images/{{bullet.getImgName()}}">
-                      <span class="tie-bullet-text">{{bullet.getContent()}}</span>
-                    </li>
-                  </div>
-                  <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                    <div class="tie-dot tie-dot-1"></div>
-                    <div class="tie-dot tie-dot-2"></div>
-                    <div class="tie-dot tie-dot-3"></div>
-                  </div>
-                  <br>
                 </div>
               </div>
 
-              <div class="tie-question-window" style="border: 1px solid #444; padding: 0;" ng-show="MonospaceDisplayModalService.isDisplayed()">
+              <div class="tie-question-window" style="border: 1px solid #d3d3d3; padding: 0;" ng-show="MonospaceDisplayModalService.isDisplayed()">
                 <monospace-display-modal title="title" content="content">
                 </monospace-display-modal>
               </div>
@@ -303,12 +297,8 @@ tie.directive('learnerView', [function() {
           -webkit-animation-delay: 0.2s;
         }
         .tie-feedback {
-          opacity: .4;
-          transition: all 200ms;
-        }
-        .tie-feedback:hover {
           opacity: 1;
-          transition: all 400ms;
+          transition: all 200ms;
         }
         .tie-feedback-error-string {
           color: #F44336;
@@ -965,7 +955,7 @@ tie.directive('learnerView', [function() {
           if (!ServerHandlerService.doesServerExist()) {
             $scope.$apply();
           }
-          $scope.scrollToBottomOfFeedbackWindow();
+          $scope.scrollToTopOfFeedbackWindow();
 
           // Store the most recent feedback and reinforcement bullets.
           storeLatestFeedback();
@@ -1045,10 +1035,10 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Sets the question window to scroll to the bottom.
+         * Sets the question window to scroll to the top.
          */
-        $scope.scrollToBottomOfFeedbackWindow = function() {
-          questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
+        $scope.scrollToTopOfFeedbackWindow = function() {
+          questionWindowDiv.scrollTop = 0;
         };
 
         /**

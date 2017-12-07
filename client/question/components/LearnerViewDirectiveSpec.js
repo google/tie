@@ -402,7 +402,7 @@ describe('LearnerViewDirective', function() {
 
   describe('setFeedback', function() {
     it('should create events for code submission', function() {
-      spyOn($scope, 'scrollToBottomOfFeedbackWindow');
+      spyOn($scope, 'scrollToTopOfFeedbackWindow');
       spyOn(EventHandlerService, 'createCodeSubmitEvent');
       var code = [
         'def myFunction(arg):',
