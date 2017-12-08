@@ -22,15 +22,15 @@ tie.directive('monospaceDisplayModal', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="container">
+      <div class="tie-monospace-modal-container">
         <header>
-          <div class="table-cell title">
+          <div class="tie-monospace-modal-table-cell tie-monospace-modal-title">
             {{title}}
           </div>
         </header>
-        <div class="body">
-          <div class="table-cell content-container">
-            <div class="content">
+        <div class="tie-monospace-modal-body">
+          <div class="tie-monospace-modal-table-cell tie-monospace-modal-content-container">
+            <div class="tie-monospace-modal-content">
               <div ng-repeat="line in contentLines track by $index">
                 {{line}}
               </div>
@@ -38,8 +38,8 @@ tie.directive('monospaceDisplayModal', [function() {
           </div>
         </div>
         <footer>
-          <div class="table-cell action-button-container">
-            <button class="tie-button-blue action-button"
+          <div class="tie-monospace-modal-table-cell tie-monospace-modal-action-button-container">
+            <button class="tie-button-blue tie-monospace-modal-action-button"
                     ng-click="closeModal()">
               <span>Close</span>
             </button>
@@ -48,31 +48,37 @@ tie.directive('monospaceDisplayModal', [function() {
       </div>
 
       <style>
-        monospace-display-modal .container {
+        monospace-display-modal .tie-monospace-modal-container {
           display: table;
           margin: 0;
           height: 100%;
           width: 100%;
         }
         monospace-display-modal header,
-        monospace-display-modal .body,
+        monospace-display-modal .tie-monospace-modal-body,
         monospace-display-modal footer {
           display: table-row;
         }
         monospace-display-modal header, monospace-display-modal footer {
           background: #eee;
         }
-        monospace-display-modal .table-cell {
+        .night-mode monospace-display-modal header,
+        .night-mode monospace-display-modal footer {
+          background: #444;
+          color: #ccc;
+        }
+
+        monospace-display-modal .tie-monospace-modal-table-cell {
           display: table-cell;
           padding: 10px;
         }
 
-        monospace-display-modal .title {
+        monospace-display-modal .tie-monospace-modal-title {
           font-size: 18px;
           font-weight: bold;
           text-align: center;
         }
-        monospace-display-modal .content-container {
+        monospace-display-modal .tie-monospace-modal-content-container {
           background: #fff;
           color: #111;
           font-family: monospace;
@@ -81,7 +87,11 @@ tie.directive('monospaceDisplayModal', [function() {
           height: 100%;
           position: relative;
         }
-        monospace-display-modal .content {
+        .night-mode monospace-display-modal .tie-monospace-modal-content-container {
+          background: #333a42;
+          color: #eee;
+        }
+        monospace-display-modal .tie-monospace-modal-content {
           bottom: 0;
           left: 0;
           overflow: auto;
@@ -90,11 +100,11 @@ tie.directive('monospaceDisplayModal', [function() {
           right: 0;
           top: 0;
         }
-        monospace-display-modal .action-button-container {
+        monospace-display-modal .tie-monospace-modal-action-button-container {
           height: 18px;
           position: relative;
         }
-        monospace-display-modal .action-button {
+        monospace-display-modal .tie-monospace-modal-action-button {
           border-radius: 4px;
           border-style: none;
           bottom: 6px;
