@@ -26,7 +26,7 @@ tie.directive('learnerView', [function() {
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
               <div class="tie-question-window" ng-show="!MonospaceDisplayModalService.isDisplayed()">
-                <div style="padding: 10px;">
+                <div class="tie-question-container">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -460,6 +460,9 @@ tie.directive('learnerView', [function() {
         }
         .night-mode .tie-question-code {
           background: #333;
+        }
+        .tie-question-container {
+          padding: 10px;
         }
         .tie-question-title {
           color: rgb(66, 133, 244);
