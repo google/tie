@@ -24,6 +24,20 @@ tie.factory('EventHandlerService', [
      * @type [Event]
      */
     var _currentEventBatch = [];
+    var _currentSessionId = null;
+    var _currentQuestionId = null;
+    var _currentQuestionVersion = null;
+
+    /**
+     * Stores the current question state as service-level variables.
+     *
+     */
+    var initEventHandlerServiceState = function(
+      sessionId, questionId, questionVersion) {
+      _currentSessionId = sessionId;
+      _currentQuestionId = questionId;
+      _currentQuestionVersion = questionVersion;
+    };
 
     /**
      * Submits the current batch of event data to TIE's backend.
@@ -53,20 +67,28 @@ tie.factory('EventHandlerService', [
 
     return {
       _getCurrentEventBatchLength: getCurrentEventBatchLength,
-
+      initEventHandlerServiceState: initEventHandlerServiceState,
       sendCurrentEventBatch: sendCurrentEventBatch,
 
       /**
        * Submits data to TIE's backend to create a SessionPauseEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} taskId Id of the task being paused.
        *
        */
-      createSessionPauseEvent: function(sessionId) {
-        if (ServerHandlerService.doesServerExist()) {
+      createSessionPauseEvent: function(taskId) {
+        // Checking for null here in the off chance that a user pauses
+        // before the question is loaded, creating a minor race condition.
+        if (ServerHandlerService.doesServerExist() &&
+            _currentSessionId !== null &&
+            _currentQuestionId !== null &&
+            _currentQuestionVersion !== null) {
           _currentEventBatch.push({
             type: 'SessionPauseEvent',
             data: {
-              sessionId: sessionId,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
+              taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -76,15 +98,23 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a SessionResumeEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} taskId Id of the task being resumed.
        *
        */
-      createSessionResumeEvent: function(sessionId) {
-        if (ServerHandlerService.doesServerExist()) {
+      createSessionResumeEvent: function(taskId) {
+        // Checking for null here in the off chance that a user pauses
+        // before the question is loaded, creating a minor race condition.
+        if (ServerHandlerService.doesServerExist() &&
+            _currentSessionId !== null &&
+            _currentQuestionId !== null &&
+            _currentQuestionVersion !== null) {
           _currentEventBatch.push({
             type: 'SessionResumeEvent',
             data: {
-              sessionId: sessionId,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
+              taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -93,21 +123,16 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits a QuestionStartEvent to TIE's backend.
-       * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question
-       *  being attempted.
        *
        */
-      createQuestionStartEvent: function(
-        sessionId, questionId, questionVersion) {
+      createQuestionStartEvent: function() {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'QuestionStartEvent',
             data: {
-              sessionId: sessionId,
-              questionId: questionId,
-              questionVersion: questionVersion,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -116,21 +141,16 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a QuestionCompleteEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question
-       *  being attempted.
        *
        */
-      createQuestionCompleteEvent: function(
-        sessionId, questionId, questionVersion) {
+      createQuestionCompleteEvent: function() {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'QuestionCompleteEvent',
             data: {
-              sessionId: sessionId,
-              questionId: questionId,
-              questionVersion: questionVersion,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -140,22 +160,17 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a TaskStartEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question
-       *  being attempted.
        * @param {string} taskId ID of the task being attempted.
        *
        */
-      createTaskStartEvent: function(
-        sessionId, questionId, questionVersion, taskId) {
+      createTaskStartEvent: function(taskId) {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'TaskStartEvent',
             data: {
-              sessionId: sessionId,
-              questionId: questionId,
-              questionVersion: questionVersion,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -165,22 +180,17 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a TaskCompleteEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
-       * @param {string} questionId ID of the question being attempted.
-       * @param {string} questionVersion Version number of the question
-       *  being attempted.
        * @param {string} taskId ID of the task being attempted.
        *
        */
-      createTaskCompleteEvent: function(
-        sessionId, questionId, questionVersion, taskId) {
+      createTaskCompleteEvent: function(taskId) {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'TaskCompleteEvent',
             data: {
-              sessionId: sessionId,
-              questionId: questionId,
-              questionVersion: questionVersion,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -190,15 +200,14 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a CodeResetEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
        *
        */
-      createCodeResetEvent: function(sessionId) {
+      createCodeResetEvent: function() {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'CodeResetEvent',
             data: {
-              sessionId: sessionId,
+              sessionId: _currentSessionId,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -207,7 +216,7 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
-       * @param {string} sessionId Unique ID for a user's question session.
+       * @param {string} taskId ID of the task being attempted.
        * @param [{string}] feedbackParagraphs The feedback shown to the user.
        * @param {string} feedbackCategory The type of feedback shown to the
        *   user.
@@ -215,12 +224,15 @@ tie.factory('EventHandlerService', [
        *
        */
       createCodeSubmitEvent: function(
-          sessionId, feedbackParagraphs, feedbackCategory, code) {
+          taskId, feedbackParagraphs, feedbackCategory, code) {
         if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'CodeSubmitEvent',
             data: {
-              sessionId: sessionId,
+              sessionId: _currentSessionId,
+              questionId: _currentQuestionId,
+              questionVersion: _currentQuestionVersion,
+              taskId: taskId,
               feedbackParagraphs: feedbackParagraphs,
               feedbackCategory: feedbackCategory,
               code: code,
