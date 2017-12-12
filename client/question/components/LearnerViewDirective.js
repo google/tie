@@ -48,28 +48,35 @@ tie.directive('learnerView', [function() {
                       <div class="tie-dot tie-dot-1"></div>
                       <div class="tie-dot tie-dot-2"></div>
                       <div class="tie-dot tie-dot-3"></div>
+                      <br>
                     </div>
-                    <br>
-                    <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$first}" ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
-                      <hr>
-                      <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
-                          class="tie-feedback-paragraph"
-                          ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
-                        <span ng-if="paragraph.isTextParagraph()">
-                          {{paragraph.getContent()}}
-                        </span>
-                        <span ng-if="paragraph.isCodeParagraph()">
-                          <code-snippet content="paragraph.getContent()"></code-snippet>
-                        </span>
-                        <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                          <syntax-error-snippet content="paragraph.getContent()">
-                          </syntax-error-snippet>
-                        </span>
-                        <span ng-if="paragraph.isOutputParagraph()">
-                          <output-snippet content="paragraph.getContent()">
-                          </output-snippet>
-                        </span>
-                      </p>
+                    <div ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
+                      <div class="tie-speech-balloon-container">
+                        <div class="tie-speech-balloon tie-left-speech-balloon" ng-class="{'tie-most-recent-feedback':$first}">
+                          <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
+                              class="tie-feedback-paragraph"
+                              ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                            <span ng-if="paragraph.isTextParagraph()">
+                              {{paragraph.getContent()}}
+                            </span>
+                            <span ng-if="paragraph.isCodeParagraph()">
+                              <code-snippet content="paragraph.getContent()"></code-snippet>
+                            </span>
+                            <span ng-if="paragraph.isSyntaxErrorParagraph()">
+                              <syntax-error-snippet content="paragraph.getContent()">
+                              </syntax-error-snippet>
+                            </span>
+                            <span ng-if="paragraph.isOutputParagraph()">
+                              <output-snippet content="paragraph.getContent()">
+                              </output-snippet>
+                            </span>
+                          </p>
+                        </div>
+                        <div class="tie-speech-balloon-tail-container tie-left-speech-balloon-tail">
+                          <div class="tie-left-speech-balloon-tail-outer"></div>
+                          <div class="tie-left-speech-balloon-tail-inner"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -285,9 +292,10 @@ tie.directive('learnerView', [function() {
           margin-top: 3px;
           width: 4px;
         }
-        .tie-dot-container{
+        .tie-dot-container {
           height: 100%;
           margin-top: 18px;
+          padding-left: 18px;
         }
         .night-mode .tie-dot {
           background-color: #E0E0E0;
@@ -298,15 +306,54 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
-        .tie-feedback {
-          opacity: 1;
-          transition: all 200ms;
+        .tie-speech-balloon-container {
+          clear: right;
+          overflow: auto;
+          transition: margin-top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
+                      opacity 0.15s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
         }
-        .tie-feedback a {
+        .tie-speech-balloon {
+          background-color: white;
+          border: 1px solid #c3c0c0;
+          border-radius: 10px;
+          max-width: calc(100% - 20px);
+          margin: 10px 0;
+          min-height: 1em;
+          min-width: 1em;
+          padding: 0 12px;
+          transition: background-color 2s cubic-bezier(0.4, 0.0, 0.2, 1) 1.5s;
+          width: fit-content;
+        }
+        .tie-left-speech-balloon {
+          float: left;
+        }
+        .tie-left-speech-balloon-tail {
+          clear: left;
+          float: left;
+        }
+        .tie-left-speech-balloon-tail-outer {
+          border-bottom: 8px solid transparent;
+          border-left: 13px solid #c3c0c0;
+          height: 0;
+          margin-left: 18px;
+          margin-top: -11px;
+          width: 0;
+        }
+        .tie-left-speech-balloon-tail-inner {
+          border-bottom: 8px solid transparent;
+          border-left: 13px solid white;
+          height: 0;
+          margin-left: 19px;
+          margin-top: -10px;
+          transition: border-left-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition-delay: 1s;
+          width:  0;
+        }
+        .tie-left-speech-balloon a {
           /* Style visited links the same as unvisited links. */
           color: #0000ee;
         }
-        .night-mode .tie-feedback a {
+        .night-mode .tie-left-speech-balloon a {
           /* Style visited links the same as unvisited links. */
           color: #8b8bff;
         }
