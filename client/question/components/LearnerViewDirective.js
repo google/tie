@@ -484,7 +484,7 @@ tie.directive('learnerView', [function() {
         .tie-question-window {
           background-color: #FFFFF7;
           font-size: 14px;
-          height: 508px;
+          height: 528px;
           max-width: 700px;
           min-height: 300px;
           min-width: 400px;
