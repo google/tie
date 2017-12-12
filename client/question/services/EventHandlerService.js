@@ -32,11 +32,20 @@ tie.factory('EventHandlerService', [
      * Stores the current question state as service-level variables.
      *
      */
-    var initEventHandlerServiceState = function(
-      sessionId, questionId, questionVersion) {
+    var init = function(sessionId, questionId, questionVersion) {
       _currentSessionId = sessionId;
       _currentQuestionId = questionId;
       _currentQuestionVersion = questionVersion;
+    };
+
+    /**
+     * Checks to see if the EventHandler state is properly initialized.
+     *
+     */
+    var isInitialized = function() {
+      return (
+        _currentSessionId !== null && _currentQuestionId !== null &&
+        _currentQuestionVersion !== null);
     };
 
     /**
@@ -44,12 +53,17 @@ tie.factory('EventHandlerService', [
      *
      */
     var sendCurrentEventBatch = function() {
-      if (getCurrentEventBatchLength() === 0) {
-        // No point in sending an empty batch.
+      // Checking for null here in the off chance that a user pauses
+      // before the question is loaded, creating a minor race condition.
+      if (getCurrentEventBatchLength() === 0 || !isInitialized()) {
+        // No point in sending an empty batch, either.
         return null;
       }
       var data = {
         events: _currentEventBatch,
+        sessionId: _currentSessionId,
+        questionId: _currentQuestionId,
+        questionVersion: _currentQuestionVersion,
         timeSentToBackendMsec: (new Date()).getTime()
       };
       return $http.post('/ajax/event/send_event_batch', data).then(
@@ -67,7 +81,7 @@ tie.factory('EventHandlerService', [
 
     return {
       _getCurrentEventBatchLength: getCurrentEventBatchLength,
-      initEventHandlerServiceState: initEventHandlerServiceState,
+      init: init,
       sendCurrentEventBatch: sendCurrentEventBatch,
 
       /**
@@ -76,18 +90,10 @@ tie.factory('EventHandlerService', [
        *
        */
       createSessionPauseEvent: function(taskId) {
-        // Checking for null here in the off chance that a user pauses
-        // before the question is loaded, creating a minor race condition.
-        if (ServerHandlerService.doesServerExist() &&
-            _currentSessionId !== null &&
-            _currentQuestionId !== null &&
-            _currentQuestionVersion !== null) {
+        if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'SessionPauseEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -102,18 +108,10 @@ tie.factory('EventHandlerService', [
        *
        */
       createSessionResumeEvent: function(taskId) {
-        // Checking for null here in the off chance that a user pauses
-        // before the question is loaded, creating a minor race condition.
-        if (ServerHandlerService.doesServerExist() &&
-            _currentSessionId !== null &&
-            _currentQuestionId !== null &&
-            _currentQuestionVersion !== null) {
+        if (ServerHandlerService.doesServerExist()) {
           _currentEventBatch.push({
             type: 'SessionResumeEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -130,9 +128,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'QuestionStartEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -148,9 +143,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'QuestionCompleteEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -168,9 +160,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'TaskStartEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -188,9 +177,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'TaskCompleteEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               createdMsec: (new Date()).getTime()
             }
@@ -207,7 +193,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'CodeResetEvent',
             data: {
-              sessionId: _currentSessionId,
               createdMsec: (new Date()).getTime()
             }
           });
@@ -229,9 +214,6 @@ tie.factory('EventHandlerService', [
           _currentEventBatch.push({
             type: 'CodeSubmitEvent',
             data: {
-              sessionId: _currentSessionId,
-              questionId: _currentQuestionId,
-              questionVersion: _currentQuestionVersion,
               taskId: taskId,
               feedbackParagraphs: feedbackParagraphs,
               feedbackCategory: feedbackCategory,

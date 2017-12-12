@@ -872,7 +872,7 @@ tie.directive('learnerView', [function() {
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
-          EventHandlerService.initEventHandlerServiceState(
+          EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
           EventHandlerService.createQuestionStartEvent(
