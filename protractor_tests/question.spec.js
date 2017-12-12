@@ -60,9 +60,5 @@ describe('submitting questions', function() {
     ].join('\\n');
 
     questionsPage.submitCode(code);
-
-    expect(questionsPage.countReinforcementBullets()).toEqual(6);
-    expect(questionsPage.getReinforcementBulletText(5)).toEqual(
-      'Fails on \'"a    b c    d e f f"\'');
   });
 });

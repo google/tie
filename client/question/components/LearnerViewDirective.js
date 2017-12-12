@@ -25,60 +25,61 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window">
-                <h3 class="tie-question-title">{{title}}</h3>
-                <div class="tie-previous-instructions">
-                  <div ng-repeat="previousInstruction in previousInstructions track by $index">
-                    <div ng-repeat="instruction in previousInstruction track by $index">
+              <div class="tie-question-window" ng-show="!MonospaceDisplayModalService.isDisplayed()">
+                <div class="tie-question-container">
+                  <h3 class="tie-question-title">{{title}}</h3>
+                  <div class="tie-previous-instructions">
+                    <div ng-repeat="previousInstruction in previousInstructions track by $index">
+                      <div ng-repeat="instruction in previousInstruction track by $index">
+                        <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                        <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      </div>
+                      <hr>
+                    </div>
+                  </div>
+                  <div class="tie-instructions">
+                    <div ng-repeat="instruction in instructions">
                       <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
                       <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
-                    <hr>
                   </div>
-                </div>
-                <div class="tie-instructions">
-                  <div ng-repeat="instruction in instructions">
-                    <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                    <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                  <div>
+                    <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                      <div class="tie-dot tie-dot-1"></div>
+                      <div class="tie-dot tie-dot-2"></div>
+                      <div class="tie-dot tie-dot-3"></div>
+                    </div>
+                    <br>
+                    <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$first}" ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
+                      <hr>
+                      <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
+                          class="tie-feedback-paragraph"
+                          ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                        <span ng-if="paragraph.isTextParagraph()">
+                          {{paragraph.getContent()}}
+                        </span>
+                        <span ng-if="paragraph.isCodeParagraph()">
+                          <code-snippet content="paragraph.getContent()"></code-snippet>
+                        </span>
+                        <span ng-if="paragraph.isSyntaxErrorParagraph()">
+                          <syntax-error-snippet content="paragraph.getContent()">
+                          </syntax-error-snippet>
+                        </span>
+                        <span ng-if="paragraph.isOutputParagraph()">
+                          <output-snippet content="paragraph.getContent()">
+                          </output-snippet>
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div class="tie-feedback" ng-class="{'tie-most-recent-feedback':$last}" ng-repeat="set in feedbackStorage track by $index">
-                    <hr>
-                    <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
-                        class="tie-feedback-paragraph"
-                        ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
-                      <span ng-if="paragraph.isTextParagraph()">
-                        {{paragraph.getContent()}}
-                      </span>
-                      <span ng-if="paragraph.isCodeParagraph()">
-                        <code-snippet content="paragraph.getContent()"></code-snippet>
-                      </span>
-                      <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                        <syntax-error-snippet content="paragraph.getContent()"
-                                              on-state-change="scrollToBottomOfFeedbackWindow()">
-                        </syntax-error-snippet>
-                      </span>
-                      <span ng-if="paragraph.isOutputParagraph()">
-                        <output-snippet content="paragraph.getContent()">
-                        </output-snippet>
-                      </span>
-                    </p>
-                  </div>
-                  <div class="tie-reinforcement">
-                    <li ng-repeat="bullet in reinforcementBullets">
-                      <img class="tie-bullet-img" ng-src="../../assets/images/{{bullet.getImgName()}}">
-                      <span class="tie-bullet-text">{{bullet.getContent()}}</span>
-                    </li>
-                  </div>
-                  <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                    <div class="tie-dot tie-dot-1"></div>
-                    <div class="tie-dot tie-dot-2"></div>
-                    <div class="tie-dot tie-dot-3"></div>
-                  </div>
-                  <br>
                 </div>
               </div>
+
+              <div class="tie-question-window tie-monospace-modal-container" ng-show="MonospaceDisplayModalService.isDisplayed()">
+                <monospace-display-modal title="title" content="content">
+                </monospace-display-modal>
+              </div>
+
               <select class="tie-select-menu" name="theme-select"
                       ng-change="changeTheme(theme)" ng-model="theme"
                       ng-options="i.themeName as i.themeName for i in themes">
@@ -145,6 +146,7 @@ tie.directive('learnerView', [function() {
       </div>
       <privacy-modal is-displayed="privacyModalIsDisplayed">
       </privacy-modal>
+
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -297,12 +299,16 @@ tie.directive('learnerView', [function() {
           -webkit-animation-delay: 0.2s;
         }
         .tie-feedback {
-          opacity: .4;
+          opacity: 1;
           transition: all 200ms;
         }
-        .tie-feedback:hover {
-          opacity: 1;
-          transition: all 400ms;
+        .tie-feedback a {
+          /* Style visited links the same as unvisited links. */
+          color: #0000ee;
+        }
+        .night-mode .tie-feedback a {
+          /* Style visited links the same as unvisited links. */
+          color: #8b8bff;
         }
         .tie-feedback-error-string {
           color: #F44336;
@@ -455,6 +461,9 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-question-code {
           background: #333;
         }
+        .tie-question-container {
+          padding: 10px;
+        }
         .tie-question-title {
           color: rgb(66, 133, 244);
         }
@@ -475,18 +484,25 @@ tie.directive('learnerView', [function() {
         .tie-question-window {
           background-color: #FFFFF7;
           font-size: 14px;
-          height: 508px;
+          height: 528px;
           max-width: 700px;
           min-height: 300px;
           min-width: 400px;
           overflow: auto;
-          padding: 10px;
+          padding: 0;
           resize: both;
           width: 548px;
         }
         .night-mode .tie-question-window {
           background-color: #333A42;
           color: #E0E0E0;
+        }
+        .tie-question-window.tie-monospace-modal-container {
+          border: 1px solid #d3d3d3;
+          resize: none;
+        }
+        .night-mode .tie-question-window.tie-monospace-modal-container {
+          border: 1px solid #333;
         }
         .tie-run-button {
           float: right;
@@ -540,6 +556,7 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'ReinforcementObjectFactory',
       'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
       'SessionIdService', 'UnpromptedFeedbackManagerService',
+      'MonospaceDisplayModalService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
@@ -549,6 +566,7 @@ tie.directive('learnerView', [function() {
           FeedbackObjectFactory, ReinforcementObjectFactory,
           EventHandlerService, LocalStorageService, ServerHandlerService,
           SessionIdService, UnpromptedFeedbackManagerService,
+          MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
@@ -711,6 +729,8 @@ tie.directive('learnerView', [function() {
          */
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
+
+        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -955,7 +975,7 @@ tie.directive('learnerView', [function() {
           if (!ServerHandlerService.doesServerExist()) {
             $scope.$apply();
           }
-          $scope.scrollToBottomOfFeedbackWindow();
+          $scope.scrollToTopOfFeedbackWindow();
 
           // Store the most recent feedback and reinforcement bullets.
           storeLatestFeedback();
@@ -1035,10 +1055,10 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Sets the question window to scroll to the bottom.
+         * Sets the question window to scroll to the top.
          */
-        $scope.scrollToBottomOfFeedbackWindow = function() {
-          questionWindowDiv.scrollTop = questionWindowDiv.scrollHeight;
+        $scope.scrollToTopOfFeedbackWindow = function() {
+          questionWindowDiv.scrollTop = 0;
         };
 
         /**
@@ -1071,6 +1091,7 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.submitCode = function(code) {
+          MonospaceDisplayModalService.hideModal();
           $scope.loadingIndicatorIsShown = true;
           $timeout(function() {
             $timeout(function() {
