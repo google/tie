@@ -478,21 +478,6 @@ tie.directive('learnerView', [function() {
         .tie-privacy-button {
           float: right;
         }
-        .tie-reinforcement li {
-          list-style: none;
-          margin: 0;
-          margin-top: 1px;
-          position: relative;
-        }
-        .tie-bullet-img {
-          bottom: 1px;
-          height: 15px;
-          position: absolute;
-          width: 15px;
-        }
-        .tie-bullet-text {
-          padding-left: 19px;
-        }
         .tie-question-code {
           background: rgb(242, 242, 242);
           border: 1px solid #ccc;
@@ -600,20 +585,18 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
-      'FeedbackObjectFactory', 'ReinforcementObjectFactory',
-      'EventHandlerService', 'LocalStorageService', 'ServerHandlerService',
-      'SessionIdService', 'UnpromptedFeedbackManagerService',
-      'MonospaceDisplayModalService',
+      'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
+      'ServerHandlerService', 'SessionIdService',
+      'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
-          FeedbackObjectFactory, ReinforcementObjectFactory,
-          EventHandlerService, LocalStorageService, ServerHandlerService,
-          SessionIdService, UnpromptedFeedbackManagerService,
-          MonospaceDisplayModalService,
+          FeedbackObjectFactory, EventHandlerService, LocalStorageService,
+          ServerHandlerService, SessionIdService,
+          UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
@@ -903,18 +886,11 @@ tie.directive('learnerView', [function() {
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          var reinforcement = ReinforcementObjectFactory.create();
-          $scope.reinforcementBullets = reinforcement.getBullets();
           $scope.feedbackStorage = [];
-          var loadedFeedback =
-            LocalStorageService.loadLatestFeedbackAndReinforcement(
-              questionId, language);
+          var loadedFeedback = LocalStorageService.loadLatestFeedback(
+            questionId, language);
           if (loadedFeedback) {
-            $scope.feedbackStorage.push({
-              feedbackParagraphs: loadedFeedback.feedbackParagraphs
-            });
-            $scope.reinforcementBullets =
-              loadedFeedback.reinforcementBullets || [];
+            $scope.feedbackStorage.push(loadedFeedback);
           }
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
@@ -951,14 +927,6 @@ tie.directive('learnerView', [function() {
           for (var i = 0; i < codeLines.length; i++) {
             codeLines[i].classList.remove(CSS_CLASS_SYNTAX_ERROR);
           }
-        };
-
-        /**
-         * Sets the feedbackStorage property in the scope to be an empty array.
-         */
-        var clearFeedback = function() {
-          $scope.feedbackStorage = [];
-          $scope.reinforcementBullets = [];
         };
 
         /**
@@ -1002,21 +970,15 @@ tie.directive('learnerView', [function() {
               $scope.showNextTask();
             }
             $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
-            $scope.reinforcementBullets = [];
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
-            var hasSyntaxError = false;
             for (var i = 0; i < feedbackParagraphs.length; i++) {
               clearAllHighlights();
               if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
-                hasSyntaxError = true;
                 highlightLine(feedbackParagraphs[i].getErrorLineNumber());
                 break;
               }
             }
-            // Updating reinforcement bullets only if no syntax errors.
-            $scope.reinforcementBullets =
-              hasSyntaxError ? [] : feedback.getReinforcement().getBullets();
             $scope.feedbackStorage.push({
               feedbackParagraphs: feedbackParagraphs
             });
@@ -1029,7 +991,6 @@ tie.directive('learnerView', [function() {
           }
           $scope.scrollToTopOfFeedbackWindow();
 
-          // Store the most recent feedback and reinforcement bullets.
           storeLatestFeedback();
         };
 
@@ -1131,7 +1092,7 @@ tie.directive('learnerView', [function() {
             $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = tasks[currentTaskIndex].getInstructions();
             $scope.nextButtonIsShown = false;
-            clearFeedback();
+            $scope.feedbackStorage = [];
             EventHandlerService.createTaskStartEvent(
               SessionIdService.getSessionId(), $scope.currentQuestionId,
               QuestionDataService.getQuestionVersion(),
@@ -1258,10 +1219,9 @@ tie.directive('learnerView', [function() {
         var storeLatestFeedback = function() {
           var latestFeedback =
             $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
-          LocalStorageService.storeLatestFeedbackAndReinforcement(
+          LocalStorageService.storeLatestFeedback(
             $scope.currentQuestionId,
             latestFeedback.feedbackParagraphs,
-            $scope.reinforcementBullets,
             language);
         };
 

@@ -21,7 +21,6 @@ describe('FeedbackGeneratorService', function() {
   var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackGeneratorService;
-  var ReinforcementObjectFactory;
   var PrereqCheckFailureObjectFactory;
   var SuiteLevelTestObjectFactory;
   var TaskObjectFactory;
@@ -50,7 +49,6 @@ describe('FeedbackGeneratorService', function() {
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
-    ReinforcementObjectFactory = $injector.get('ReinforcementObjectFactory');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
     SuiteLevelTestObjectFactory = $injector.get('SuiteLevelTestObjectFactory');
@@ -685,8 +683,6 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-      expect(feedback.getReinforcement()).toEqual(ReinforcementObjectFactory
-        .create());
 
       paragraphs = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true).getParagraphs();
@@ -833,8 +829,6 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
-      expect(feedback.getReinforcement()).toEqual(ReinforcementObjectFactory
-        .create());
 
       // The code is changed. The feedback changes.
       feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
