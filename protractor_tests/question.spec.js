@@ -34,7 +34,7 @@ describe('submitting questions', function() {
     utils.checkForConsoleErrors([]);
   });
 
-  it('should successfully display reinforcement input', function() {
+  it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
 
     questionsPage.get();

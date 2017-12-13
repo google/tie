@@ -18,14 +18,10 @@
  */
 
 tie.factory('FeedbackObjectFactory', [
-  'FeedbackParagraphObjectFactory', 'ReinforcementObjectFactory',
-  'FEEDBACK_CATEGORIES',
-  function(
-      FeedbackParagraphObjectFactory, ReinforcementObjectFactory,
-      FEEDBACK_CATEGORIES) {
+  'FeedbackParagraphObjectFactory', 'FEEDBACK_CATEGORIES',
+  function(FeedbackParagraphObjectFactory, FEEDBACK_CATEGORIES) {
     /**
-     * Feedback objects contain encapsulate all of the information
-     * - including personalized feedback and Reinforcement - that are used to
+     * Feedback objects encapsulate the personalized feedback that is used to
      * provide constructive feedback to the user.
      */
 
@@ -65,12 +61,6 @@ tie.factory('FeedbackObjectFactory', [
        * @private
        */
       this._feedbackCategory = feedbackCategory;
-
-      /**
-       * @type {Reinforcement}
-       * @private
-       */
-      this._reinforcement = ReinforcementObjectFactory.create();
     };
 
     // Instance methods.
@@ -175,26 +165,6 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.getFeedbackCategory = function() {
       return this._feedbackCategory;
-    };
-
-    /**
-     * A getter for the _reinforcement property.
-     * This function should return the Reinforcement object associated with
-     * this feedback.
-     *
-     * @returns {Reinforcement}
-     */
-    Feedback.prototype.getReinforcement = function() {
-      return this._reinforcement;
-    };
-
-    /**
-     * A setter for the _reinforcement property.
-     *
-     * @param {Reinforcement} reinforcement
-     */
-    Feedback.prototype.setReinforcement = function(reinforcement) {
-      this._reinforcement = reinforcement;
     };
 
     /**
