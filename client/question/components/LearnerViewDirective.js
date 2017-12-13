@@ -784,13 +784,14 @@ tie.directive('learnerView', [function() {
           // or SessionResumeEvent, respectively.
           var hiddenAttributeName = (
             $scope.determineHiddenAttributeNameForBrowser());
-          if (hiddenAttributeName !== null) {
+          if (hiddenAttributeName !== null && tasks !== null &&
+              tasks.length > currentTaskIndex) {
             if ($scope.isDocumentHidden(hiddenAttributeName)) {
               EventHandlerService.createSessionPauseEvent(
-                SessionIdService.getSessionId());
+                tasks[currentTaskIndex].getId());
             } else {
               EventHandlerService.createSessionResumeEvent(
-                SessionIdService.getSessionId());
+                tasks[currentTaskIndex].getId());
             }
           }
         };
@@ -918,12 +919,16 @@ tie.directive('learnerView', [function() {
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
+          EventHandlerService.init(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion());
           EventHandlerService.createQuestionStartEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
           EventHandlerService.createTaskStartEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(), currentTaskIndex);
+            QuestionDataService.getQuestionVersion(),
+            tasks[currentTaskIndex].getId());
         };
 
         /**
@@ -1116,7 +1121,8 @@ tie.directive('learnerView', [function() {
         $scope.showNextTask = function() {
           EventHandlerService.createTaskCompleteEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(), currentTaskIndex);
+            QuestionDataService.getQuestionVersion(),
+            tasks[currentTaskIndex].getId());
           if (question.isLastTask(currentTaskIndex)) {
             // TODO(talee): Flesh this out some more.
             alert('Congratulations, you have finished!');
@@ -1128,7 +1134,8 @@ tie.directive('learnerView', [function() {
             clearFeedback();
             EventHandlerService.createTaskStartEvent(
               SessionIdService.getSessionId(), $scope.currentQuestionId,
-              QuestionDataService.getQuestionVersion(), currentTaskIndex);
+              QuestionDataService.getQuestionVersion(),
+              tasks[currentTaskIndex].getId());
           }
         };
 
