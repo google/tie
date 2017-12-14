@@ -167,7 +167,7 @@ describe('QuestionDataServiceServerVersion', function() {
           then: function(callback) {
             return callback(QuestionObject);
           }
-        }
+        };
       });
 
       QuestionDataService.getQuestionAsync('reverseWords').then(function(result) {
