@@ -25,45 +25,60 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window" ng-show="!MonospaceDisplayModalService.isDisplayed()">
+              <div class="tie-question-window"
+                  ng-show="!MonospaceDisplayModalService.isDisplayed()">
                 <div class="tie-question-container">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
-                        <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                        <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                        <p ng-if="instruction.type == 'text'">
+                          {{instruction.content}}
+                        </p>
+                        <pre class="tie-question-code"
+                            ng-if="instruction.type == 'code'">
+                          {{instruction.content}}
+                        </pre>
                       </div>
                       <hr>
                     </div>
                   </div>
                   <div class="tie-instructions">
                     <div ng-repeat="instruction in instructions">
-                      <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
-                      <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
+                      <p ng-if="instruction.type == 'text'">
+                        {{instruction.content}}
+                      </p>
+                      <pre class="tie-question-code"
+                          ng-if="instruction.type == 'code'">
+                        {{instruction.content}}
+                      </pre>
                     </div>
                   </div>
                   <div>
-                    <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
+                    <div class="tie-dot-container"
+                        ng-if="loadingIndicatorIsShown">
                       <div class="tie-dot tie-dot-1"></div>
                       <div class="tie-dot tie-dot-2"></div>
                       <div class="tie-dot tie-dot-3"></div>
                       <br>
                     </div>
-                    <div ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
-                      <div class="tie-speech-balloon-container">
-                        <div class="tie-speech-balloon tie-left-speech-balloon" ng-class="{'tie-most-recent-feedback':$first}">
-                          <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
+                    <div ng-repeat="set in feedbackStorage | reverse">
+                      <div tie-speech-balloon-container>
+                        <div tie-speech-balloon-left>
+                          <p ng-repeat="paragraph in set.feedbackParagraphs track by $index"
+                              ng-if="set.feedbackParagraphs"
                               class="tie-feedback-paragraph"
                               ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                             <span ng-if="paragraph.isTextParagraph()">
                               {{paragraph.getContent()}}
                             </span>
                             <span ng-if="paragraph.isCodeParagraph()">
-                              <code-snippet content="paragraph.getContent()"></code-snippet>
+                              <code-snippet content="paragraph.getContent()">
+                              </code-snippet>
                             </span>
                             <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                              <syntax-error-snippet content="paragraph.getContent()">
+                              <syntax-error-snippet
+                                  content="paragraph.getContent()">
                               </syntax-error-snippet>
                             </span>
                             <span ng-if="paragraph.isOutputParagraph()">
@@ -72,63 +87,67 @@ tie.directive('learnerView', [function() {
                             </span>
                           </p>
                         </div>
-                        <div class="tie-speech-balloon-tail-container tie-left-speech-balloon-tail">
-                          <div class="tie-left-speech-balloon-tail-outer"></div>
-                          <div class="tie-left-speech-balloon-tail-inner"></div>
-                        </div>
+                        <div tie-speech-balloon-tail-left></div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div class="tie-question-window tie-monospace-modal-container" ng-show="MonospaceDisplayModalService.isDisplayed()">
+              <div class="tie-question-window tie-monospace-modal-container"
+                  ng-show="MonospaceDisplayModalService.isDisplayed()">
                 <monospace-display-modal title="title" content="content">
                 </monospace-display-modal>
               </div>
 
               <select class="tie-select-menu" name="theme-select"
-                      ng-change="changeTheme(theme)" ng-model="theme"
-                      ng-options="i.themeName as i.themeName for i in themes">
+                  ng-change="changeTheme(theme)" ng-model="theme"
+                  ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <div class="tie-next-curtain-container" ng-if="nextButtonIsShown">
+                  <div class="tie-next-curtain-container"
+                      ng-if="nextButtonIsShown">
                     <div class="tie-next-curtain"></div>
                     <div class="tie-arrow-highlighter"></div>
                     <div ng-click="showNextTask()" class="tie-next-arrow">
                       <span class="tie-next-button-text">Next</span>
                     </div>
                   </div>
-                  <div ng-if="codeEditorIsShown" class="tie-codemirror-container">
+                  <div ng-if="codeEditorIsShown"
+                      class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                                   ng-model="editorContents.code"
-                                   ng-change="onCodeChange()"
-                                   class="protractor-test-code-input">
+                        ng-model="editorContents.code"
+                        ng-change="onCodeChange()"
+                        class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu">
+                <select ng-if="SERVER_URL" class="tie-select-menu"
+                    name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button">
-                  <a class="tie-primer-link" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
+                <button ng-if="!SERVER_URL"
+                    class="tie-python-primer tie-button">
+                  <a class="tie-primer-link" target="_blank"
+                      ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 </button>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn"
+                    name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
-                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                <div class="tie-code-auto-save"
+                    ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  I think I'm done
+                  I think I&#39m done
                 </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
@@ -306,57 +325,6 @@ tie.directive('learnerView', [function() {
         .tie-dot-3 {
           -webkit-animation-delay: 0.2s;
         }
-        .tie-speech-balloon-container {
-          clear: right;
-          overflow: auto;
-          transition: margin-top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
-                      opacity 0.15s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-        }
-        .tie-speech-balloon {
-          background-color: white;
-          border: 1px solid #c3c0c0;
-          border-radius: 10px;
-          max-width: calc(100% - 20px);
-          margin: 10px 0;
-          min-height: 1em;
-          min-width: 1em;
-          padding: 0 12px;
-          transition: background-color 2s cubic-bezier(0.4, 0.0, 0.2, 1) 1.5s;
-          width: fit-content;
-        }
-        .tie-left-speech-balloon {
-          float: left;
-        }
-        .tie-left-speech-balloon-tail {
-          clear: left;
-          float: left;
-        }
-        .tie-left-speech-balloon-tail-outer {
-          border-bottom: 8px solid transparent;
-          border-left: 13px solid #c3c0c0;
-          height: 0;
-          margin-left: 18px;
-          margin-top: -11px;
-          width: 0;
-        }
-        .tie-left-speech-balloon-tail-inner {
-          border-bottom: 8px solid transparent;
-          border-left: 13px solid white;
-          height: 0;
-          margin-left: 19px;
-          margin-top: -10px;
-          transition: border-left-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-          transition-delay: 1s;
-          width:  0;
-        }
-        .tie-left-speech-balloon a {
-          /* Style visited links the same as unvisited links. */
-          color: #0000ee;
-        }
-        .night-mode .tie-left-speech-balloon a {
-          /* Style visited links the same as unvisited links. */
-          color: #8b8bff;
-        }
         .tie-feedback-error-string {
           color: #F44336;
         }
@@ -398,9 +366,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
-        }
-        .tie-most-recent-feedback {
-          opacity: 1;
         }
         .tie-next-arrow {
           border-bottom: 50px solid transparent;
@@ -594,6 +559,95 @@ tie.directive('learnerView', [function() {
         }
         .tie-wrapper.night-mode {
           background-color: #212121;
+        }
+        .tie-speech-balloon-container {
+          clear: right;
+          margin-top: 12px;
+          overflow: auto;
+          transition: margin-top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
+                      opacity 0.15s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
+        }
+        .tie-speech-balloon {
+          background-color: yellow;
+          border: 1px solid #c3c0c0;
+          border-radius: 10px;
+          -moz-border-radius: 10px;
+          -webkit-border-radius: 10px;
+          max-width: calc(100% - 50px);
+          min-height: 1em;
+          min-width: 1em;
+          padding: 7px;
+          transition: background-color 2s cubic-bezier(0.4, 0.0, 0.2, 1) 1.5s;
+          width: fit-content;
+        }
+        .tie-speech-balloon a {
+          /* Style visited links the same as unvisited links. */
+          color: #0000ee;
+        }
+        .night-mode .tie-speech-balloon a {
+          /* Style visited links the same as unvisited links. */
+          color: #8b8bff;
+        }
+        .tie-speech-balloon-pulse {
+          background-color: white;
+        }
+        .tie-speech-balloon-tail-container {
+          margin-bottom: 2px;
+        }
+        .tie-speech-balloon-left {
+          float: left;
+        }
+        .tie-speech-balloon-tail-left {
+          clear: left;
+          float: left;
+        }
+        .tie-speech-balloon-tail-left-outer {
+          border-bottom: 8px solid transparent;
+          border-left: 13px solid #c3c0c0;
+          height: 0;
+          margin-left: 18px;
+          width:  0;
+        }
+        .tie-speech-balloon-tail-left-inner {
+          border-bottom: 8px solid transparent;
+          border-left: 13px solid yellow;
+          height: 0;
+          margin-left: 19px;
+          margin-top: -10px;
+          transition: border-left-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition-delay: 1s;
+          width:  0;
+        }
+        .tie-speech-balloon-tail-left-pulse {
+          border-left-color: white;
+        }
+        .tie-speech-balloon-right {
+          float: right;
+        }
+        .tie-speech-balloon-tail-right {
+          clear: right;
+          float: right;
+        }
+        .tie-speech-balloon-tail-right-outer {
+          border-bottom: 9px solid transparent;
+          border-right: 13px solid #c3c0c0;
+          height: 0;
+          margin-right: 18px;
+          margin-top: -1px;
+          width:  0;
+        }
+        .tie-speech-balloon-tail-right-inner {
+          border-bottom: 8px solid transparent;
+          border-right: 12px solid yellow;
+          height: 0;
+          margin-right: 19;
+          margin-top: -10px;
+          transition: border-right-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition-delay: 1s;
+          width:  0;
+        }
+        .tie-speech-balloon-tail-right-pulse {
+          border-right-color: white;
         }
       </style>
     `,
