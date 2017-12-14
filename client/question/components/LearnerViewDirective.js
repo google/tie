@@ -739,7 +739,6 @@ tie.directive('learnerView', [function() {
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-
           ConversationLogDataService.clear();
           var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
             questionId, language);
@@ -833,7 +832,6 @@ tie.directive('learnerView', [function() {
                 break;
               }
             }
-
             ConversationLogDataService.addFeedbackBalloon(feedbackParagraphs);
             LocalStorageService.storeLatestFeedback(
               $scope.currentQuestionId, feedbackParagraphs, language);
@@ -947,7 +945,6 @@ tie.directive('learnerView', [function() {
             $scope.nextButtonIsShown = false;
 
             ConversationLogDataService.clear();
-
             EventHandlerService.createTaskStartEvent(
               SessionIdService.getSessionId(), $scope.currentQuestionId,
               QuestionDataService.getQuestionVersion(),
