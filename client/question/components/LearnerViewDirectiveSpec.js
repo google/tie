@@ -83,8 +83,6 @@ describe('LearnerViewDirective', function() {
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
     localStorage.clear();
-
-
   }));
 
   describe('autosave', function() {
