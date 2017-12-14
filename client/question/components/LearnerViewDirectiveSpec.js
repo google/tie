@@ -20,6 +20,7 @@
 describe('LearnerViewDirective', function() {
   var $scope;
   var element;
+  var ConversationLogDataService;
   var QuestionDataService;
   var EventHandlerService;
   var FeedbackObjectFactory;
@@ -54,7 +55,8 @@ describe('LearnerViewDirective', function() {
   beforeEach(inject(function(
       $compile, $rootScope, $injector, _QuestionDataService_,
       _SECONDS_TO_MILLISECONDS_, _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_,
-      _EventHandlerService_, _FeedbackObjectFactory_) {
+      _EventHandlerService_, _FeedbackObjectFactory_,
+      _ConversationLogDataService_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -72,6 +74,7 @@ describe('LearnerViewDirective', function() {
     QuestionDataService = _QuestionDataService_;
     EventHandlerService = _EventHandlerService_;
     FeedbackObjectFactory = _FeedbackObjectFactory_;
+    ConversationLogDataService = _ConversationLogDataService_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     CODE_CHANGE_DEBOUNCE_SECONDS = _CODE_CHANGE_DEBOUNCE_SECONDS_;
@@ -80,8 +83,6 @@ describe('LearnerViewDirective', function() {
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
 
     localStorage.clear();
-
-
   }));
 
   describe('autosave', function() {
@@ -197,13 +198,15 @@ describe('LearnerViewDirective', function() {
     };
 
     it('should add unprompted feedback to the feedback log', function() {
-      expect($scope.feedbackStorage.length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
       expect($scope.codeChangeLoopPromise).toBe(null);
       $scope.onCodeChange();
       $scope.editorContents.code = 'new code';
       flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
-      expect($scope.feedbackStorage.length).toBe(1);
-      expect($scope.feedbackStorage[0].feedbackParagraphs[0].getContent()).toBe(
+      var speechBubblesList = (
+        ConversationLogDataService.getSpeechBalloonsList());
+      expect(speechBubblesList.length).toBe(1);
+      expect(speechBubblesList[0].getFeedbackParagraphs()[0].getContent()).toBe(
         '[some unprompted feedback]');
     });
   });

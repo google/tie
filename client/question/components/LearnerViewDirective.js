@@ -43,42 +43,7 @@ tie.directive('learnerView', [function() {
                       <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                   </div>
-                  <div>
-                    <div class="tie-dot-container" ng-if="loadingIndicatorIsShown">
-                      <div class="tie-dot tie-dot-1"></div>
-                      <div class="tie-dot tie-dot-2"></div>
-                      <div class="tie-dot tie-dot-3"></div>
-                      <br>
-                    </div>
-                    <div ng-repeat="set in feedbackStorage | orderBy:$index:true track by $index">
-                      <div class="tie-speech-balloon-container">
-                        <div class="tie-speech-balloon tie-left-speech-balloon" ng-class="{'tie-most-recent-feedback':$first}">
-                          <p ng-if="set.feedbackParagraphs" ng-repeat="paragraph in set.feedbackParagraphs track by $index"
-                              class="tie-feedback-paragraph"
-                              ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
-                            <span ng-if="paragraph.isTextParagraph()">
-                              {{paragraph.getContent()}}
-                            </span>
-                            <span ng-if="paragraph.isCodeParagraph()">
-                              <code-snippet content="paragraph.getContent()"></code-snippet>
-                            </span>
-                            <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                              <syntax-error-snippet content="paragraph.getContent()">
-                              </syntax-error-snippet>
-                            </span>
-                            <span ng-if="paragraph.isOutputParagraph()">
-                              <output-snippet content="paragraph.getContent()">
-                              </output-snippet>
-                            </span>
-                          </p>
-                        </div>
-                        <div class="tie-speech-balloon-tail-container tie-left-speech-balloon-tail">
-                          <div class="tie-left-speech-balloon-tail-outer"></div>
-                          <div class="tie-left-speech-balloon-tail-inner"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <speech-balloons-container></speech-balloons-container>
                 </div>
               </div>
 
@@ -273,90 +238,6 @@ tie.directive('learnerView', [function() {
           margin: 8px;
           white-space: normal;
         }
-        @-webkit-keyframes tie-dot {
-          from { -webkit-transform: translate(0px, 0px); }
-          10%  { -webkit-transform: translate(0px, -10px); }
-          20%  { -webkit-transform: translate(0px, 0px); }
-          to   { -webkit-transform: translate(0px, 0px); }
-        }
-        .tie-dot {
-          -webkit-animation-name: tie-dot;
-          -webkit-animation-duration: 1.5s;
-          -webkit-animation-iteration-count: infinite;
-          background-color: black;
-          border-radius: 2px;
-          float: left;
-          height: 4px;
-          margin-bottom: 10px;
-          margin-right: 7px;
-          margin-top: 3px;
-          width: 4px;
-        }
-        .tie-dot-container {
-          height: 100%;
-          margin-top: 18px;
-          padding-left: 18px;
-        }
-        .night-mode .tie-dot {
-          background-color: #E0E0E0;
-        }
-        .tie-dot-2 {
-          -webkit-animation-delay: 0.1s;
-        }
-        .tie-dot-3 {
-          -webkit-animation-delay: 0.2s;
-        }
-        .tie-speech-balloon-container {
-          clear: right;
-          overflow: auto;
-          transition: margin-top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
-                      opacity 0.15s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-        }
-        .tie-speech-balloon {
-          background-color: white;
-          border: 1px solid #c3c0c0;
-          border-radius: 10px;
-          max-width: calc(100% - 20px);
-          margin: 10px 0;
-          min-height: 1em;
-          min-width: 1em;
-          padding: 0 12px;
-          transition: background-color 2s cubic-bezier(0.4, 0.0, 0.2, 1) 1.5s;
-          width: fit-content;
-        }
-        .tie-left-speech-balloon {
-          float: left;
-        }
-        .tie-left-speech-balloon-tail {
-          clear: left;
-          float: left;
-        }
-        .tie-left-speech-balloon-tail-outer {
-          border-bottom: 8px solid transparent;
-          border-left: 13px solid #c3c0c0;
-          height: 0;
-          margin-left: 18px;
-          margin-top: -11px;
-          width: 0;
-        }
-        .tie-left-speech-balloon-tail-inner {
-          border-bottom: 8px solid transparent;
-          border-left: 13px solid white;
-          height: 0;
-          margin-left: 19px;
-          margin-top: -10px;
-          transition: border-left-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-          transition-delay: 1s;
-          width:  0;
-        }
-        .tie-left-speech-balloon a {
-          /* Style visited links the same as unvisited links. */
-          color: #0000ee;
-        }
-        .night-mode .tie-left-speech-balloon a {
-          /* Style visited links the same as unvisited links. */
-          color: #8b8bff;
-        }
         .tie-feedback-error-string {
           color: #F44336;
         }
@@ -381,26 +262,12 @@ tie.directive('learnerView', [function() {
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
-        .tie-feedback-paragraph {
-          width: 100%;
-        }
-        .tie-feedback-paragraph-code {
-          background: #333;
-          color: #eee;
-          font-family: monospace;
-          font-size: 12px;
-          padding: 2px 10px;
-          width: 95%;
-        }
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
         }
         .tie-lang-terminal {
           display: inline;
-        }
-        .tie-most-recent-feedback {
-          opacity: 1;
         }
         .tie-next-arrow {
           border-bottom: 50px solid transparent;
@@ -591,6 +458,7 @@ tie.directive('learnerView', [function() {
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
+      'ConversationLogDataService',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -599,7 +467,8 @@ tie.directive('learnerView', [function() {
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
-          FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS) {
+          FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
+          ConversationLogDataService) {
         /**
          * Number of milliseconds for TIE to wait for system to process code
          * submission.
@@ -608,15 +477,6 @@ tie.directive('learnerView', [function() {
          * @constant
          */
         var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
-
-        /**
-         * Number of milliseconds for TIE to wait before showing unprompted
-         * feedback.
-         *
-         * @type {number}
-         * @constant
-         */
-        var DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK = 1000;
 
         /**
          * Array of strings containing the ids of the allowed question sets.
@@ -680,13 +540,6 @@ tie.directive('learnerView', [function() {
          * @type {boolean}
          */
         $scope.codeEditorIsShown = true;
-
-        /**
-         * Location where the feedback for the current question is stored.
-         *
-         * @type {Array}
-         */
-        $scope.feedbackStorage = [];
 
         /**
          * We use an object here to prevent the child scope introduced by ng-if
@@ -886,12 +739,14 @@ tie.directive('learnerView', [function() {
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          $scope.feedbackStorage = [];
-          var loadedFeedback = LocalStorageService.loadLatestFeedback(
+          ConversationLogDataService.clear();
+          var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
             questionId, language);
-          if (loadedFeedback) {
-            $scope.feedbackStorage.push(loadedFeedback);
+          if (loadedFeedbackParagraphs) {
+            ConversationLogDataService.addFeedbackBalloon(
+              loadedFeedbackParagraphs);
           }
+
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
           $scope.nextButtonIsShown = false;
@@ -941,17 +796,17 @@ tie.directive('learnerView', [function() {
               'Click the "Next" button to the right to proceed to the ' +
               'next question.');
           $scope.nextButtonIsShown = true;
-          $scope.feedbackStorage.push({
-            feedbackParagraphs: congratulatoryFeedback.getParagraphs()
-          });
+
+          ConversationLogDataService.addFeedbackBalloon(
+            congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
         };
 
         /**
-         * Sets the feedbackStorage property to the appropriate text according
-         * to the feedback passed into the function.
+         * Sets the feedback to the appropriate text according to the feedback
+         * passed into the function.
          *
          * @param {Feedback} feedback
          * @param {string} code
@@ -962,14 +817,12 @@ tie.directive('learnerView', [function() {
             feedback.getParagraphsAsListOfDicts(),
             feedback.getFeedbackCategory(), code);
 
-          $scope.loadingIndicatorIsShown = false;
           if (feedback.isAnswerCorrect()) {
             if (question.isLastTask(currentTaskIndex)) {
               $scope.completeQuestion();
             } else {
               $scope.showNextTask();
             }
-            $scope.feedbackParagraphs = congratulatoryFeedback.getParagraphs();
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
             for (var i = 0; i < feedbackParagraphs.length; i++) {
@@ -979,9 +832,9 @@ tie.directive('learnerView', [function() {
                 break;
               }
             }
-            $scope.feedbackStorage.push({
-              feedbackParagraphs: feedbackParagraphs
-            });
+            ConversationLogDataService.addFeedbackBalloon(feedbackParagraphs);
+            LocalStorageService.storeLatestFeedback(
+              $scope.currentQuestionId, feedbackParagraphs, language);
           }
 
           // Skulpt processing happens outside an Angular context, so
@@ -990,8 +843,6 @@ tie.directive('learnerView', [function() {
             $scope.$apply();
           }
           $scope.scrollToTopOfFeedbackWindow();
-
-          storeLatestFeedback();
         };
 
         /**
@@ -1092,7 +943,8 @@ tie.directive('learnerView', [function() {
             $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = tasks[currentTaskIndex].getInstructions();
             $scope.nextButtonIsShown = false;
-            $scope.feedbackStorage = [];
+
+            ConversationLogDataService.clear();
             EventHandlerService.createTaskStartEvent(
               SessionIdService.getSessionId(), $scope.currentQuestionId,
               QuestionDataService.getQuestionVersion(),
@@ -1107,19 +959,19 @@ tie.directive('learnerView', [function() {
          */
         $scope.submitCode = function(code) {
           MonospaceDisplayModalService.hideModal();
-          $scope.loadingIndicatorIsShown = true;
+          ConversationLogDataService.addCodeBalloon(code);
+
           $timeout(function() {
-            $timeout(function() {
-              // Tasks from the first to current.
-              var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
-              SolutionHandlerService.processSolutionAsync(
-                orderedTasks, question.getStarterCode(language),
-                code, question.getAuxiliaryCode(language), language
-              ).then(function(feedback) {
-                $scope.setFeedback(feedback, code);
-              });
-            }, DURATION_MSEC_WAIT_FOR_SCROLL);
-          }, 0);
+            // Gather all tasks from the first one up to the current one.
+            var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
+            SolutionHandlerService.processSolutionAsync(
+              orderedTasks, question.getStarterCode(language),
+              code, question.getAuxiliaryCode(language), language
+            ).then(function(feedback) {
+              $scope.setFeedback(feedback, code);
+            });
+          }, DURATION_MSEC_WAIT_FOR_SCROLL);
+
           storeCodeAndUpdateCachedCode(
             $scope.currentQuestionId, code, language);
         };
@@ -1175,13 +1027,8 @@ tie.directive('learnerView', [function() {
               if (potentialFeedbackParagraphs !== null) {
                 // Note that, for simplicity, unprompted feedback is currently
                 // not persisted in local storage.
-                $scope.loadingIndicatorIsShown = true;
-                $timeout(function() {
-                  $scope.feedbackStorage.push({
-                    feedbackParagraphs: potentialFeedbackParagraphs
-                  });
-                  $scope.loadingIndicatorIsShown = false;
-                }, DURATION_MSEC_WAIT_FOR_UNPROMPTED_FEEDBACK);
+                ConversationLogDataService.addFeedbackBalloon(
+                  potentialFeedbackParagraphs);
               }
             }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);
           }
@@ -1211,18 +1058,6 @@ tie.directive('learnerView', [function() {
         var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
           LocalStorageService.storeCode(questionId, code, lang);
           cachedCode = code;
-        };
-
-        /**
-         * Stores the user's latest feedback to local storage.
-         */
-        var storeLatestFeedback = function() {
-          var latestFeedback =
-            $scope.feedbackStorage[$scope.feedbackStorage.length - 1];
-          LocalStorageService.storeLatestFeedback(
-            $scope.currentQuestionId,
-            latestFeedback.feedbackParagraphs,
-            language);
         };
 
         $scope.initQuestionSet(questionSetId);
