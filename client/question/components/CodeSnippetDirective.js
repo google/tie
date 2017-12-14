@@ -27,7 +27,7 @@ tie.directive('codeSnippet', [function() {
         <span class="tie-code-snippet-line">{{line}}</span>
         <br>
       </span>
-      <span ng-if="abbreviatedSnippetLines.length <= 3">
+      <span ng-if="abbreviatedSnippetLines.length <= MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
         <a href ng-click="openCodeModal()">View full code</a>
       </span>
       <style>
@@ -41,6 +41,9 @@ tie.directive('codeSnippet', [function() {
     controller: [
       '$scope', 'MonospaceDisplayModalService',
       function($scope, MonospaceDisplayModalService) {
+        // The maximum number of lines to show in the abbreviated code snippet.
+        $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET = 3;
+
         /**
          * Array of strings that represents the lines in the code snippets that
          * need to be shown.
@@ -74,7 +77,8 @@ tie.directive('codeSnippet', [function() {
           var htmlFormattedContent = newValue.replace(/ /g, '\u00A0');
           $scope.snippetLines = htmlFormattedContent.split('\n');
 
-          if ($scope.snippetLines.length <= 3) {
+          if ($scope.snippetLines.length <=
+              $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET) {
             $scope.abbreviatedSnippetLines = angular.copy($scope.snippetLines);
           } else {
             $scope.abbreviatedSnippetLines = [
