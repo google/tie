@@ -29,16 +29,8 @@ var QuestionsPage = function() {
    *
    * @type {Array}
    */
-  var feedbackParagraphs = element.all(by.repeater(
-    'paragraph in set.feedbackParagraphs'));
-
-  /**
-   * Set of all of the greeting paragraphs rendered in the DOM.
-   *
-   * @type {Array}
-   */
-  var greetingParagraphs = element.all(by.repeater(
-    'paragraph in greetingParagraphs track by $index'));
+  var feedbackParagraphs = element.all(by.css(
+    '.protractor-test-feedback-paragraph'));
 
   /**
    * DOM element where the reset code button is.

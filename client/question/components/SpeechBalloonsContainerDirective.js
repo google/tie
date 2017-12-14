@@ -33,7 +33,7 @@ tie.directive('speechBalloonsContainer', [function() {
             <div ng-if="balloon.isDisplayedOnLeft()">
               <div class="tie-speech-balloon tie-left-speech-balloon" ng-class="{'tie-most-recent-feedback':$first}">
                 <p ng-repeat="paragraph in balloon.getFeedbackParagraphs() track by $index"
-                   class="tie-feedback-paragraph"
+                   class="tie-feedback-paragraph protractor-test-feedback-paragraph"
                    ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="paragraph.isTextParagraph()">
                     {{paragraph.getContent()}}
