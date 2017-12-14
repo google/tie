@@ -126,3 +126,55 @@ describe('QuestionDataService', function() {
   });
 });
 
+describe('QuestionDataServiceServerVersion', function() {
+  var QuestionDataService;
+  var QuestionObjectFactory; 
+  var questionId = 'bloop';
+  var QuestionObject;
+
+  beforeEach(module('tie'));
+  beforeEach(module('tieData'));
+  module('tieConfig', function($provide) {
+    $provide.constant('SERVER_URL', 'test.com');
+  });
+  beforeEach(inject(function($injector) {
+    QuestionDataService = $injector.get('QuestionDataService');
+    QuestionDataService.initCurrentQuestionSet('strings');
+    ServerHandlerService = $injector.get('ServerHandlerService');
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    QuestionObject = QuestionObjectFactory.create({
+      title: "title",
+      starterCode: "starterCode",
+      auxiliaryCode: "AUXILIARY_CODE",
+      tasks: []
+    });
+  }));
+
+
+  describe('getQuestionsAsync', function() {
+
+    it('should error if questionId does not exist', function() {
+      expect(function() {
+        QuestionDataService.getQuestionAsync(questionId);
+      }).toThrowError('The current question set does not contain a question with ID: ' +
+            questionId);
+    });
+
+    it('should correctly get the question data', function(done) {
+      spyOn(QuestionDataService, 'getQuestionAsync').and.callFake(function() {
+        return {
+          then: function(callback) {
+            return callback(QuestionObject);
+          }
+        }
+      });
+
+      QuestionDataService.getQuestionAsync('reverseWords').then(function(result) {
+        expect(result).toBe(QuestionObject);
+        done();
+      });
+    });
+
+  });
+});
