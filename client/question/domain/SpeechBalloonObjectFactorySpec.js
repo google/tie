@@ -19,8 +19,6 @@
 describe('SpeechBalloonObjectFactory', function() {
   var SpeechBalloonObjectFactory;
   var FeedbackParagraphObjectFactory;
-  var feedbackBalloon;
-  var codeBalloon;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {

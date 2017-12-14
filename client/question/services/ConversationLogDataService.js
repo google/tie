@@ -17,18 +17,11 @@
  */
 
 tie.factory('ConversationLogDataService', [
-  '$timeout', 'SpeechBalloonObjectFactory',
-  function($timeout, SpeechBalloonObjectFactory) {
+  '$timeout', 'SpeechBalloonObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+  function(
+      $timeout, SpeechBalloonObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
     var speechBalloons = [];
     var numBalloonsPending = 0;
-
-    /**
-     * Number of milliseconds for TIE to wait before showing feedback.
-     *
-     * @type {number}
-     * @constant
-     */
-    var DURATION_MSEC_WAIT_FOR_FEEDBACK = 1000;
 
     return {
       /**

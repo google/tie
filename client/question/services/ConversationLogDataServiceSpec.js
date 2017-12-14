@@ -19,6 +19,7 @@
 describe('ConversationLogDataService', function() {
   var ConversationLogDataService;
   var FeedbackParagraphObjectFactory;
+  var DURATION_MSEC_WAIT_FOR_FEEDBACK;
   var $timeout;
 
   beforeEach(module('tie'));
@@ -26,6 +27,8 @@ describe('ConversationLogDataService', function() {
     ConversationLogDataService = $injector.get('ConversationLogDataService');
     FeedbackParagraphObjectFactory = $injector.get(
       'FeedbackParagraphObjectFactory');
+    DURATION_MSEC_WAIT_FOR_FEEDBACK = $injector.get(
+      'DURATION_MSEC_WAIT_FOR_FEEDBACK');
     $timeout = _$timeout_;
   }));
 
@@ -43,7 +46,7 @@ describe('ConversationLogDataService', function() {
       expect(ConversationLogDataService.isNewBalloonPending()).toBe(true);
       expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
 
-      $timeout.flush(1000);
+      $timeout.flush(DURATION_MSEC_WAIT_FOR_FEEDBACK);
       expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(1);
     });
 
