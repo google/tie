@@ -725,7 +725,7 @@ tie.directive('learnerView', [function() {
          * Loads the feedback, tasks, and stored code and initializes
          * the event services.
          */
-        var initQuestionData = function(questionId, question) {
+        var initQuestionData = function(questionId) {
           tasks = question.getTasks();
           UnpromptedFeedbackManagerService.reset(tasks);
           currentTaskIndex = 0;
@@ -765,12 +765,12 @@ tie.directive('learnerView', [function() {
          */
         $scope.loadQuestion = function(questionId) {
           SessionIdService.resetSessionId();
-          if(SERVER_URL) {
+          if (SERVER_URL) {
             try {
               QuestionDataService.getQuestionAsync(questionId).then(
                 function(response) {
                   question = response;
-                  initQuestionData(questionId, question);
+                  initQuestionData(questionId);
                 });
             } catch (error) {
               alert('An error occured while retrieving the question. ' +
@@ -779,7 +779,7 @@ tie.directive('learnerView', [function() {
             }
           } else {
             question = QuestionDataService.getQuestion(questionId);
-            initQuestionData(questionId, question);
+            initQuestionData(questionId);
           }
         };
 

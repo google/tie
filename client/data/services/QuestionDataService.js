@@ -21,7 +21,7 @@ tieData.factory('QuestionDataService', [
   'QuestionObjectFactory', 'QuestionSetObjectFactory', 'ServerHandlerService',
   '$http',
   function(
-    QuestionObjectFactory, QuestionSetObjectFactory, ServerHandlerService, 
+    QuestionObjectFactory, QuestionSetObjectFactory, ServerHandlerService,
     $http) {
     /** @type {null|QuestionSet} */
     var currentQuestionSet = null;
@@ -36,28 +36,29 @@ tieData.factory('QuestionDataService', [
       initCurrentQuestionSet: function(questionSetId) {
         if (ServerHandlerService.doesServerExist()) {
           currentQuestionSet = QuestionSetObjectFactory.create(
-              {
-            introductionParagraphs: [
-              'Greetings!',
-              'This set of questions focuses on string manipulation.',
-              [
-                "Let's get started! You'll see the first question to your " +
-                "right. Code a solution in the coding window below and hit " +
-                "\"Run\", and I will provide you with feedback."
-              ].join('')
-            ],
-            questionIds: [
-              'reverseWords',
-              'checkBalancedParentheses',
-              'findMostCommonCharacter',
-              'isPalindrome',
-              'internationalization',
-              'runLengthEncoding'
-            ]
-          });
+            {
+              introductionParagraphs: [
+                'Greetings!',
+                'This set of questions focuses on string manipulation.',
+                [
+                  "Let's get started! You'll see the first question to your " +
+                  "right. Code a solution in the coding window below and hit " +
+                  "\"Run\", and I will provide you with feedback."
+                ].join('')
+              ],
+              questionIds: [
+                'reverseWords',
+                'checkBalancedParentheses',
+                'findMostCommonCharacter',
+                'isPalindrome',
+                'internationalization',
+                'runLengthEncoding'
+              ]
+            });
         } else {
           if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
-            throw Error('Could not find question set with ID: ' + questionSetId);
+            throw Error(
+              'Could not find question set with ID: ' + questionSetId);
           }
           currentQuestionSet = QuestionSetObjectFactory.create(
             globalData.questionSets[questionSetId]);
@@ -105,15 +106,15 @@ tieData.factory('QuestionDataService', [
             questionId);
         }
         return $http.post('/ajax/get_question_data', {
-            'questionId': questionId,
-          }).then(
-            function(responseData) {
-              return QuestionObjectFactory.create(
-                  responseData.data.question_data);
-            }, function(errorResponse) {
-              throw Error(errorResponse);
-            }
-          );
+          questionId: questionId
+        }).then(
+          function(responseData) {
+            return QuestionObjectFactory.create(
+                responseData.data.question_data);
+          }, function(errorResponse) {
+            throw Error(errorResponse);
+          }
+        );
       },
       /**
        * Returns the question's user friendly title.
