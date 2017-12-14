@@ -34,6 +34,8 @@ tieData.factory('QuestionDataService', [
        * @param {string} questionSetId
        */
       initCurrentQuestionSet: function(questionSetId) {
+        // Currently, hardcoding set of questions when pulling from the server.
+        // TODO(talee): Find a way to make this not hard coded.
         if (ServerHandlerService.doesServerExist()) {
           currentQuestionSet = QuestionSetObjectFactory.create(
             {

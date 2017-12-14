@@ -498,7 +498,7 @@ tie.directive('learnerView', [function() {
          * Sets a local variable language to the value of the constant
          * LANGUAGE_PYTHON.
          *
-         * @type: {string}
+         * @type {string}
          */
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -773,7 +773,7 @@ tie.directive('learnerView', [function() {
                   initQuestionData(questionId);
                 });
             } catch (error) {
-              alert('An error occured while retrieving the question. ' +
+              alert('An error occurred while retrieving the question. ' +
                   'Try refreshing or downloading and running the client ' +
                   'version at https://github.com/google/tie .');
             }
