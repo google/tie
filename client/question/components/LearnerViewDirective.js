@@ -770,7 +770,13 @@ tie.directive('learnerView', [function() {
         var highlightLine = function(lineNumber) {
           var actualLineNumber = lineNumber - 1;
           var codeLines = document.querySelectorAll('.CodeMirror-line');
-          codeLines[actualLineNumber].classList.add(CSS_CLASS_SYNTAX_ERROR);
+          // This check is needed in cases where the code is something like
+          // "def methodName(s):". The syntax error refers to the follow-up
+          // line (since the function declaration has no body), but that line
+          // is empty so we can't highlight it.
+          if (actualLineNumber < codeLines.length) {
+            codeLines[actualLineNumber].classList.add(CSS_CLASS_SYNTAX_ERROR);
+          }
         };
 
         /**
