@@ -132,6 +132,7 @@ describe('QuestionDataServiceServerVersion', function() {
   var QuestionObject;
   var questionId = 'bloop';
   var $httpBackend = null;
+  var serverSuccessCode = 200;
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
@@ -164,14 +165,15 @@ describe('QuestionDataServiceServerVersion', function() {
     });
 
     it('should correctly get the question data', function(done) {
-      $httpBackend.expect('POST', '/ajax/get_question_data').respond(200, 
+      $httpBackend.expect('POST', '/ajax/get_question_data').respond(
+        serverSuccessCode, 
         {
           question_data: {
             title: "title",
             starterCode: "starterCode",
             auxiliaryCode: "AUXILIARY_CODE",
             tasks: []
-          },
+          }
         }
       );
       QuestionDataService.getQuestionAsync('reverseWords').then(

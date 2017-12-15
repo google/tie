@@ -22,8 +22,7 @@ tieData.factory('QuestionDataService', [
   'ServerHandlerService',
   function(
     $http, QuestionObjectFactory, QuestionSetObjectFactory,
-    ServerHandlerService,
-    ) {
+    ServerHandlerService) {
     /** @type {null|QuestionSet} */
     var currentQuestionSet = null;
 
