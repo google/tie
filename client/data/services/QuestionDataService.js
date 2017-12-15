@@ -111,7 +111,6 @@ tieData.factory('QuestionDataService', [
           questionId: questionId
         }).then(
           function(responseData) {
-            console.log(responseData);
             return QuestionObjectFactory.create(
                 responseData.data.question_data);
           }, function(errorResponse) {

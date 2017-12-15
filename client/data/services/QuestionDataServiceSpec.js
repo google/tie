@@ -166,8 +166,9 @@ describe('QuestionDataServiceServerVersion', function() {
 
     it('should correctly get the question data', function(done) {
       $httpBackend.expect('POST', '/ajax/get_question_data').respond(
-        serverSuccessCode, 
+        serverSuccessCode,
         {
+          // eslint-disable-next-line camelcase
           question_data: {
             title: "title",
             starterCode: "starterCode",
