@@ -131,6 +131,7 @@ describe('QuestionDataServiceServerVersion', function() {
   var QuestionObjectFactory;
   var QuestionObject;
   var questionId = 'bloop';
+  var $httpBackend = null;
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
@@ -138,6 +139,7 @@ describe('QuestionDataServiceServerVersion', function() {
     $provide.constant('SERVER_URL', 'test.com');
   });
   beforeEach(inject(function($injector) {
+    $httpBackend = $injector.get('$httpBackend');
     QuestionDataService = $injector.get('QuestionDataService');
     QuestionDataService.initCurrentQuestionSet('strings');
     QuestionObjectFactory = $injector.get(
@@ -162,20 +164,23 @@ describe('QuestionDataServiceServerVersion', function() {
     });
 
     it('should correctly get the question data', function(done) {
-      spyOn(QuestionDataService, 'getQuestionAsync').and.callFake(function() {
-        return {
-          then: function(callbackFunction) {
-            return callbackFunction(QuestionObject);
-          }
-        };
-      });
-
+      $httpBackend.expect('POST', '/ajax/get_question_data').respond(200, 
+        {
+          question_data: {
+            title: "title",
+            starterCode: "starterCode",
+            auxiliaryCode: "AUXILIARY_CODE",
+            tasks: []
+          },
+        }
+      );
       QuestionDataService.getQuestionAsync('reverseWords').then(
         function(result) {
-          expect(result).toBe(QuestionObject);
+          expect(result).toEqual(QuestionObject);
           done();
         }
       );
+      $httpBackend.flush(1);
     });
 
   });

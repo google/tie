@@ -18,11 +18,12 @@
  */
 
 tieData.factory('QuestionDataService', [
-  'QuestionObjectFactory', 'QuestionSetObjectFactory', 'ServerHandlerService',
-  '$http',
+  '$http', 'QuestionObjectFactory', 'QuestionSetObjectFactory',
+  'ServerHandlerService',
   function(
-    QuestionObjectFactory, QuestionSetObjectFactory, ServerHandlerService,
-    $http) {
+    $http, QuestionObjectFactory, QuestionSetObjectFactory,
+    ServerHandlerService,
+    ) {
     /** @type {null|QuestionSet} */
     var currentQuestionSet = null;
 
@@ -111,6 +112,7 @@ tieData.factory('QuestionDataService', [
           questionId: questionId
         }).then(
           function(responseData) {
+            console.log(responseData);
             return QuestionObjectFactory.create(
                 responseData.data.question_data);
           }, function(errorResponse) {
