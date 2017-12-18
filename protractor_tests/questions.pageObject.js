@@ -29,16 +29,8 @@ var QuestionsPage = function() {
    *
    * @type {Array}
    */
-  var feedbackParagraphs = element.all(by.repeater(
-    'paragraph in set.feedbackParagraphs'));
-
-  /**
-   * Set of all of the greeting paragraphs rendered in the DOM.
-   *
-   * @type {Array}
-   */
-  var greetingParagraphs = element.all(by.repeater(
-    'paragraph in greetingParagraphs track by $index'));
+  var feedbackParagraphs = element.all(by.css(
+    '.protractor-test-feedback-paragraph'));
 
   /**
    * DOM element where the reset code button is.
@@ -53,14 +45,6 @@ var QuestionsPage = function() {
    * @type {DOM Element}
    */
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
-
-  /**
-   * Set of all Reinforcement bullets rendered in the DOM.
-   *
-   * @type {Array}
-   */
-  var reinforcementBullets = element.all(by.repeater(
-    'bullet in reinforcementBullets'));
 
   /**
    * Retrieves the TIE homepage
@@ -114,26 +98,6 @@ var QuestionsPage = function() {
    */
   this.getFeedbackParagraphText = function(index) {
     return feedbackParagraphs.get(index).getText();
-  };
-
-  /**
-   * Returns the number of Reinforcement bullets rendered in the DOM.
-   *
-   * @returns {number}
-   */
-  this.countReinforcementBullets = function() {
-    return reinforcementBullets.count();
-  };
-
-  /**
-   * Returns the content of the reinforcement bullet at the given index in the
-   * Reinforcement bullet array.
-   *
-   * @param {number} index
-   * @returns {string}
-   */
-  this.getReinforcementBulletText = function(index) {
-    return reinforcementBullets.get(index).getText();
   };
 };
 

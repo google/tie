@@ -71,8 +71,8 @@ describe('LocalStorageService', function() {
           LocalStorageService.storeCode(questionId,
             sampleQuestionCodes[index], LANGUAGE);
           var key = questionId + ":" + LANGUAGE + ":code";
-          expect(localStorage.getItem(key)).toEqual(VERSION + ":" +
-            sampleQuestionCodes[index]);
+          expect(localStorage.getItem(key)).toEqual(
+            VERSION + ":" + sampleQuestionCodes[index]);
         });
       });
     });
@@ -139,15 +139,10 @@ describe('LocalStorageService', function() {
   describe('FeedbackStorage', function() {
     var QUESTION_ID = 'questionid';
     var feedbackSet1 = [];
-    var reinforcementBullets = [];
     var feedbackToStore = {};
-    var feedbackSet1Dict = [];
-    var reinforcementBulletsDict = [];
 
     beforeEach(inject(function($injector) {
       var FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
-      var ReinforcementBulletObjectFactory =
-        $injector.get('ReinforcementBulletObjectFactory');
 
       var FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
       var feedbackObject = FeedbackObjectFactory.create(
@@ -156,63 +151,41 @@ describe('LocalStorageService', function() {
       feedbackObject.appendCodeParagraph('code1');
       feedbackSet1 = feedbackObject.getParagraphs();
 
-      var bullet1 = ReinforcementBulletObjectFactory.createPassedBullet(
-        'passes on abcd');
-      var bullet2 = ReinforcementBulletObjectFactory.createFailedBullet(
-        'fails on something else');
-
-      reinforcementBullets = [bullet1, bullet2];
-
-      feedbackSet1Dict = feedbackSet1.map(function(paragraph) {
+      feedbackToStore = feedbackSet1.map(function(paragraph) {
         return paragraph.toDict();
       });
-
-      reinforcementBulletsDict = reinforcementBullets.map(function(bullet) {
-        return ReinforcementBulletObjectFactory.toDict(bullet);
-      });
-
-      feedbackToStore = {
-        feedbackParagraphs: feedbackSet1Dict,
-        reinforcementBullets: reinforcementBulletsDict
-      };
-
     }));
 
     describe('storeFeedback', function() {
-      it('should store feedback and reinforcement bullets', function() {
+      it('should store feedback', function() {
         expect(localStorage.length).toEqual(0);
-        LocalStorageService.storeLatestFeedbackAndReinforcement(QUESTION_ID,
-          feedbackSet1, reinforcementBullets, LANGUAGE);
-        var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
-        var fromJsonObject = angular.fromJson(localStorage.getItem(key));
-        expect(fromJsonObject.feedbackParagraphs).toEqual(feedbackSet1Dict);
-        expect(fromJsonObject.reinforcementBullets)
-          .toEqual(reinforcementBulletsDict);
+        LocalStorageService.storeLatestFeedback(
+          QUESTION_ID, feedbackSet1, LANGUAGE);
+        var key = QUESTION_ID + ":" + LANGUAGE + ":feedbackv1";
+        var retrievedObject = angular.fromJson(localStorage.getItem(key));
+        expect(retrievedObject).toEqual(feedbackToStore);
       });
     });
 
     describe('loadFeedback', function() {
-      it('should load feedback and reinforcement bullets', function() {
+      it('should load feedback', function() {
         expect(localStorage.length).toEqual(0);
-        var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
+        var key = QUESTION_ID + ":" + LANGUAGE + ":feedbackv1";
         localStorage.setItem(key, angular.toJson(feedbackToStore));
-        expect(LocalStorageService.loadLatestFeedbackAndReinforcement(
-          QUESTION_ID, LANGUAGE)).toEqual({
-            feedbackParagraphs: feedbackSet1,
-            reinforcementBullets: reinforcementBullets
-          });
+        expect(LocalStorageService.loadLatestFeedback(QUESTION_ID, LANGUAGE))
+          .toEqual(feedbackSet1);
       });
 
       it('should fail to retrieve feedback and return null', function() {
         expect(localStorage.length).toEqual(0);
-        expect(LocalStorageService.loadLatestFeedbackAndReinforcement(
+        expect(LocalStorageService.loadLatestFeedback(
           QUESTION_ID, FAILED_LANGUAGE)).toEqual(null);
       });
     });
 
     describe('clearLocalStorageFeedback', function() {
       it('should clear feedback from localStorage', function() {
-        var key = QUESTION_ID + ":" + LANGUAGE + ":feedback";
+        var key = QUESTION_ID + ":" + LANGUAGE + ":feedbackv1";
         localStorage.setItem(key, angular.toJson(feedbackToStore));
         expect(localStorage.getItem(key)).toEqual(
           angular.toJson(feedbackToStore));

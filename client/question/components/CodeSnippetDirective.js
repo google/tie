@@ -23,19 +23,27 @@ tie.directive('codeSnippet', [function() {
       getContent: '&content'
     },
     template: `
-      <span ng-repeat="line in snippetLines">
+      <span ng-repeat="line in abbreviatedSnippetLines track by $index">
         <span class="tie-code-snippet-line">{{line}}</span>
         <br>
       </span>
+      <span ng-if="abbreviatedSnippetLines.length <= MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
+        <a href ng-click="openCodeModal()">View full code</a>
+      </span>
       <style>
         .tie-code-snippet-line {
+          font-family: monospace;
           line-height: 24px;
           word-wrap: break-word;
         }
       </style>
     `,
     controller: [
-      '$scope', function($scope) {
+      '$scope', 'MonospaceDisplayModalService',
+      function($scope, MonospaceDisplayModalService) {
+        // The maximum number of lines to show in the abbreviated code snippet.
+        $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET = 3;
+
         /**
          * Array of strings that represents the lines in the code snippets that
          * need to be shown.
@@ -45,6 +53,22 @@ tie.directive('codeSnippet', [function() {
         $scope.snippetLines = [];
 
         /**
+         * Array of strings that represents the abbreviated version of the
+         * snippet lines.
+         *
+         * @type {Array}
+         */
+        $scope.abbreviatedSnippetLines = [];
+
+        /**
+         * Opens a modal with the full code.
+         */
+        $scope.openCodeModal = function() {
+          MonospaceDisplayModalService.showModal(
+            'Code History', $scope.snippetLines);
+        };
+
+        /**
          * Used to change the code snippet whenever the feedback changes.
          */
         $scope.$watch($scope.getContent, function(newValue) {
@@ -52,6 +76,17 @@ tie.directive('codeSnippet', [function() {
           // not get collapsed into a single one.
           var htmlFormattedContent = newValue.replace(/ /g, '\u00A0');
           $scope.snippetLines = htmlFormattedContent.split('\n');
+
+          if ($scope.snippetLines.length <=
+              $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET) {
+            $scope.abbreviatedSnippetLines = angular.copy($scope.snippetLines);
+          } else {
+            $scope.abbreviatedSnippetLines = [
+              $scope.snippetLines[0],
+              $scope.snippetLines[1],
+              '...'
+            ];
+          }
         });
       }
     ]

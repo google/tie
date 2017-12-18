@@ -23,13 +23,16 @@ tie.directive('tieSpeechBalloonContainer', [function() {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloonContainer = el[0];
       speechBalloonContainer.className = "tie-speech-balloon-container";
-      speechBalloonContainer.style.marginTop =
-          '-' + speechBalloonContainer.offsetHeight.toString() + 'px';
       speechBalloonContainer.style.opacity = "0";
       speechBalloonContainer.style.transition = "unset";
-      window.setTimeout(
-        function() {
+      speechBalloonContainer.style.display = "none";
+      window.setTimeout(function() {
+        speechBalloonContainer.style.display = "block";
+        speechBalloonContainer.style.marginTop =
+            '-' + speechBalloonContainer.offsetHeight.toString() + 'px';
+        window.setTimeout(function() {
           speechBalloonContainer.removeAttribute("style");
+        }, 0);
       }, 0);
     }
   };
@@ -42,9 +45,8 @@ tie.directive('tieSpeechBalloonLeft', [function() {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloon = el[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-left";
-      window.setTimeout(
-        function() {
-          speechBalloon.classList.add("tie-speech-balloon-pulse");
+      window.setTimeout(function() {
+        speechBalloon.classList.add("tie-speech-balloon-pulse");
       }, 0);
     }
   };
@@ -57,9 +59,8 @@ tie.directive('tieSpeechBalloonRight', [function() {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloon = el[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-right";
-      window.setTimeout(
-        function() {
-          speechBalloon.classList.add("tie-speech-balloon-pulse");
+      window.setTimeout(function() {
+        speechBalloon.classList.add("tie-speech-balloon-pulse");
       }, 0);
     }
   };
@@ -82,10 +83,9 @@ tie.directive('tieSpeechBalloonTailLeft', [function() {
       speechBalloonTailContainer.appendChild(speechBalloonTailLeftOuter);
       speechBalloonTailContainer.appendChild(speechBalloonTailLeftInner);
       speechBalloonTailContainer.classList.add('tie-speech-balloon-tail-left');
-      window.setTimeout(
-        function() {
-          speechBalloonTailLeftInner.classList.add(
-              "tie-speech-balloon-tail-left-pulse");
+      window.setTimeout(function() {
+        speechBalloonTailLeftInner.classList.add(
+            "tie-speech-balloon-tail-left-pulse");
       }, 0);
     }
   };
@@ -108,10 +108,9 @@ tie.directive('tieSpeechBalloonTailRight', [function() {
       speechBalloonTailContainer.appendChild(speechBalloonTailRightOuter);
       speechBalloonTailContainer.appendChild(speechBalloonTailRightInner);
       speechBalloonTailContainer.classList.add('tie-speech-balloon-tail-right');
-      window.setTimeout(
-        function() {
-          speechBalloonTailRightInner.classList.add(
-              "tie-speech-balloon-tail-right-pulse");
+      window.setTimeout(function() {
+        speechBalloonTailRightInner.classList.add(
+            "tie-speech-balloon-tail-right-pulse");
       }, 0);
     }
   };

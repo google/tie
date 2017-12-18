@@ -82,6 +82,15 @@ tie.constant('FEEDBACK_TYPE_EXPECTED_OUTPUT', 'EXPECTED_OUTPUT');
 tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
 
 /**
+ * Number of milliseconds for TIE to wait before showing feedback.
+ *
+ * @type {number}
+ * @constant
+ */
+// eslint-disable-next-line no-magic-numbers
+tie.constant('DURATION_MSEC_WAIT_FOR_FEEDBACK', 1400);
+
+/**
  * Object containing variations on feedback text for different scenarios.
  *
  * @type {Object.<string, Array.<string>>}

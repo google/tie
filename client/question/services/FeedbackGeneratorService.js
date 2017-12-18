@@ -19,7 +19,7 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'TranscriptService', 'ReinforcementGeneratorService',
+  'FeedbackObjectFactory', 'TranscriptService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
@@ -33,7 +33,7 @@ tie.factory('FeedbackGeneratorService', [
   'FEEDBACK_TYPE_INPUT_TO_TRY', 'FEEDBACK_TYPE_EXPECTED_OUTPUT',
   'FEEDBACK_TYPE_OUTPUT_ENABLED', 'CORRECTNESS_FEEDBACK_TEXT',
   function(
-    FeedbackObjectFactory, TranscriptService, ReinforcementGeneratorService,
+    FeedbackObjectFactory, TranscriptService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
@@ -576,9 +576,9 @@ tie.factory('FeedbackGeneratorService', [
         return '';
       }
     };
+
     /**
-     * Returns the Feedback object associated with a given user submission
-     * not including the reinforcement.
+     * Returns the Feedback object associated with a given user submission.
      *
      * @param {Array} tasks Tasks associated with the problem that include
      *    the tests the user's code must pass.
@@ -588,9 +588,7 @@ tie.factory('FeedbackGeneratorService', [
      * @returns {Feedback}
      * @private
      */
-    var _getFeedbackWithoutReinforcement = function(
-        tasks, codeEvalResult, rawCodeLineIndexes) {
-
+    var _getMainFeedback = function(tasks, codeEvalResult, rawCodeLineIndexes) {
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         // We want to catch and handle a timeout error uniquely, rather than
@@ -689,9 +687,8 @@ tie.factory('FeedbackGeneratorService', [
 
     return {
       /**
-       * Returns the Feedback and Reinforcement associated with a user's
-       * code submission and their test results. This also includes feedback
-       * for print statements.
+       * Returns the feedback associated with a user's code submission and
+       * their test results.
        *
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
@@ -710,13 +707,8 @@ tie.factory('FeedbackGeneratorService', [
           _resetCounters();
         }
 
-        var feedback = _getFeedbackWithoutReinforcement(
+        var feedback = _getMainFeedback(
           tasks, codeEvalResult, rawCodeLineIndexes);
-        if (tasks.length > 0 && !codeEvalResult.getErrorString()) {
-          feedback.setReinforcement(
-            ReinforcementGeneratorService.getReinforcement(
-              tasks[tasks.length - 1], codeEvalResult));
-        }
 
         _applyThresholdUpdates(feedback);
         previousRuntimeErrorString = codeEvalResult.getErrorString();

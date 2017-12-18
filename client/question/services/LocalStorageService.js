@@ -16,9 +16,8 @@
  *    to the browser's localStorage.
  */
 
-tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
-  'ReinforcementBulletObjectFactory',
-  function(FeedbackParagraphObjectFactory, ReinforcementBulletObjectFactory) {
+tie.factory('LocalStorageService', [
+  'FeedbackParagraphObjectFactory', function(FeedbackParagraphObjectFactory) {
     // In some browsers, localStorage is not available and its
     // invocation throws an error.
     var localStorageIsAvailable = false;
@@ -47,7 +46,7 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
      * @returns {string}
      */
     var getLocalStorageKeyForFeedback = function(questionId, language) {
-      return questionId + ":" + language + ":feedback";
+      return questionId + ":" + language + ":feedbackv1";
     };
 
     return {
@@ -131,48 +130,37 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
       },
 
       /**
-       * Takes the paragraphs and reinforcement bullets, converts them to
-       * dicts, and then parses the combined object into JSON for storage.
+       * Takes the feedback paragraphs, converts them to dicts, and then parses
+       * the combined object into JSON for storage.
        *
        * @param {string} questionId
        * @param {Array} feedback
-       * @param {Array} reinforcement
        * @param {string} language
        */
-      storeLatestFeedbackAndReinforcement: function(
-          questionId, feedback, reinforcement, language) {
+      storeLatestFeedback: function(questionId, feedback, language) {
         if (!localStorageIsAvailable) {
           return;
         }
 
         var localStorageKey = getLocalStorageKeyForFeedback(
           questionId, language);
-        var feedbackWithReinforcement = {};
+        var feedbackParagraphs = feedback.map(function(paragraph) {
+          return paragraph.toDict();
+        });
 
-        feedbackWithReinforcement.feedbackParagraphs = feedback.map(
-          function(paragraph) {
-            return paragraph.toDict();
-          }
-        );
-        feedbackWithReinforcement.reinforcementBullets = reinforcement.map(
-          function(bullet) {
-            return ReinforcementBulletObjectFactory.toDict(bullet);
-          }
-        );
-
-        localStorage.setItem(localStorageKey,
-          angular.toJson(feedbackWithReinforcement));
+        localStorage.setItem(
+          localStorageKey, angular.toJson(feedbackParagraphs));
       },
 
       /**
        * Loads the feedback and parses it into JSON, and then reconstructs
-       * the feedback paragraphs & reinforcement bullets fron the JSON object
+       * the feedback paragraphs from the JSON object.
        *
        * @param {string} questionId
        * @param {string} language
        * @returns {Object}
        */
-      loadLatestFeedbackAndReinforcement: function(questionId, language) {
+      loadLatestFeedback: function(questionId, language) {
         if (!localStorageIsAvailable) {
           return null;
         }
@@ -183,27 +171,11 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
         if (storedFeedback === null) {
           return null;
         }
+
         var rawFeedback = angular.fromJson(storedFeedback);
-
-        var reconstructedFeedback = [];
-        reconstructedFeedback = rawFeedback.feedbackParagraphs.map(
-          function(paragraph) {
-            return FeedbackParagraphObjectFactory.fromDict(paragraph);
-          }
-        );
-        var reconstructedReinforcement = [];
-        if (rawFeedback.reinforcementBullets) {
-          reconstructedReinforcement = rawFeedback.reinforcementBullets.map(
-            function(bullets) {
-              return ReinforcementBulletObjectFactory.fromDict(bullets);
-            }
-          );
-        }
-
-        return {
-          feedbackParagraphs: reconstructedFeedback,
-          reinforcementBullets: reconstructedReinforcement
-        };
+        return rawFeedback.map(function(paragraph) {
+          return FeedbackParagraphObjectFactory.fromDict(paragraph);
+        });
       },
 
       clearLocalStorageFeedback: function(questionId, language) {
@@ -217,4 +189,3 @@ tie.factory('LocalStorageService', ['FeedbackParagraphObjectFactory',
     };
   }
 ]);
-
