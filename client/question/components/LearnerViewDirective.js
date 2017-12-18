@@ -202,7 +202,7 @@ tie.directive('learnerView', [function() {
           float: left;
           margin-top: 10px;
         }
-        .night-mode .tie-code-reset, .night-mode {
+        .night-mode .tie-code-reset {
           background-color: #333a42;
           color: white;
         }
