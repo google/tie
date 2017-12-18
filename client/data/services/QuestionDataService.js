@@ -111,11 +111,10 @@ tieData.factory('QuestionDataService', [
           questionId: questionId
         }).then(
           function(responseData) {
-            console.log(responseData);
             return QuestionObjectFactory.create(
                 responseData.data.question_data);
-          }, function(errorResponse) {
-            throw Error(errorResponse);
+          }, function() {
+            throw Error('There was an error in retrieving the question.');
           }
         );
       },
