@@ -18,8 +18,11 @@
  */
 
 tieData.factory('QuestionDataService', [
-  'QuestionObjectFactory', 'QuestionSetObjectFactory',
-  function(QuestionObjectFactory, QuestionSetObjectFactory) {
+  '$http', 'QuestionObjectFactory', 'QuestionSetObjectFactory',
+  'ServerHandlerService',
+  function(
+    $http, QuestionObjectFactory, QuestionSetObjectFactory,
+    ServerHandlerService) {
     /** @type {null|QuestionSet} */
     var currentQuestionSet = null;
 
@@ -31,11 +34,37 @@ tieData.factory('QuestionDataService', [
        * @param {string} questionSetId
        */
       initCurrentQuestionSet: function(questionSetId) {
-        if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
-          throw Error('Could not find question set with ID: ' + questionSetId);
+        // Currently, hardcoding set of questions when pulling from the server.
+        // TODO(talee): Find a way to make this not hard coded.
+        if (ServerHandlerService.doesServerExist()) {
+          currentQuestionSet = QuestionSetObjectFactory.create(
+            {
+              introductionParagraphs: [
+                'Greetings!',
+                'This set of questions focuses on string manipulation.',
+                [
+                  "Let's get started! You'll see the first question to your " +
+                  "right. Code a solution in the coding window below and hit " +
+                  "\"Run\", and I will provide you with feedback."
+                ].join('')
+              ],
+              questionIds: [
+                'reverseWords',
+                'checkBalancedParentheses',
+                'findMostCommonCharacter',
+                'isPalindrome',
+                'internationalization',
+                'runLengthEncoding'
+              ]
+            });
+        } else {
+          if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
+            throw Error(
+              'Could not find question set with ID: ' + questionSetId);
+          }
+          currentQuestionSet = QuestionSetObjectFactory.create(
+            globalData.questionSets[questionSetId]);
         }
-        currentQuestionSet = QuestionSetObjectFactory.create(
-          globalData.questionSets[questionSetId]);
       },
       /**
        * A getter for the currentQuestionSet property. Returns null if property
@@ -64,6 +93,30 @@ tieData.factory('QuestionDataService', [
             questionId);
         }
         return QuestionObjectFactory.create(globalData.questions[questionId]);
+      },
+      /**
+       * Asynchronous call to get the data for a question with the given
+       * question ID.
+       *
+       * @param {string} questionId
+       * @returns {callback}
+       */
+      getQuestionAsync: function(questionId) {
+        if (!currentQuestionSet.hasQuestionId(questionId)) {
+          throw Error(
+            'The current question set does not contain a question with ID: ' +
+            questionId);
+        }
+        return $http.post('/ajax/get_question_data', {
+          questionId: questionId
+        }).then(
+          function(responseData) {
+            return QuestionObjectFactory.create(
+                responseData.data.question_data);
+          }, function() {
+            throw Error('There was an error in retrieving the question.');
+          }
+        );
       },
       /**
        * Returns the question's user friendly title.

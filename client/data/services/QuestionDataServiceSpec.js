@@ -126,3 +126,82 @@ describe('QuestionDataService', function() {
   });
 });
 
+describe('QuestionDataServiceServerVersion', function() {
+  var QuestionDataService;
+  var QuestionObjectFactory;
+  var QuestionObject;
+  var questionId = 'bloop';
+  var $httpBackend = null;
+  var serverSuccessCode = 200;
+  var serverErrorCode = 500;
+
+  beforeEach(module('tie'));
+  beforeEach(module('tieData'));
+  beforeEach(function() {
+    module('tieConfig', function($provide) {
+      $provide.constant('SERVER_URL', 'test.com');
+    });
+  });
+  beforeEach(inject(function($injector) {
+    $httpBackend = $injector.get('$httpBackend');
+    QuestionDataService = $injector.get('QuestionDataService');
+    QuestionDataService.initCurrentQuestionSet('strings');
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    QuestionObject = QuestionObjectFactory.create({
+      title: "title",
+      starterCode: "starterCode",
+      auxiliaryCode: "AUXILIARY_CODE",
+      tasks: []
+    });
+  }));
+
+
+  describe('getQuestionsAsync', function() {
+
+    it('should error if questionId does not exist', function() {
+      expect(function() {
+        QuestionDataService.getQuestionAsync(questionId);
+      }).toThrowError(
+        'The current question set does not contain a question with ID: ' +
+         questionId);
+    });
+
+    it('should correctly get the question data', function(done) {
+      $httpBackend.expect('POST', '/ajax/get_question_data').respond(
+        serverSuccessCode,
+        {
+          // eslint-disable-next-line camelcase
+          question_data: {
+            title: "title",
+            starterCode: "starterCode",
+            auxiliaryCode: "AUXILIARY_CODE",
+            tasks: []
+          }
+        }
+      );
+      QuestionDataService.getQuestionAsync('reverseWords').then(
+        function(result) {
+          expect(result).toEqual(QuestionObject);
+          done();
+        }
+      );
+      $httpBackend.flush(1);
+    });
+
+    it('should throw an error if async call returns an error', function(done) {
+      $httpBackend.expect('POST', '/ajax/get_question_data').respond(
+        serverErrorCode, {}
+      );
+      QuestionDataService.getQuestionAsync('reverseWords').then(
+        function() {
+          // Nothing happens because it errors out.
+        }, function(error) {
+        expect(error).toEqual(
+          Error('There was an error in retrieving the question.'));
+        done();
+      });
+      $httpBackend.flush(1);
+    });
+  });
+});
