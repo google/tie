@@ -497,7 +497,7 @@ tie.directive('learnerView', [function() {
          * Sets a local variable language to the value of the constant
          * LANGUAGE_PYTHON.
          *
-         * @type: {string}
+         * @type {string}
          */
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -721,17 +721,12 @@ tie.directive('learnerView', [function() {
         }
 
         /**
-         * Initializes the appropriate values in $scope for the question
-         * instructions, stored code, starter code and feedback.
-         *
-         * @param {string} questionId ID of question whose data will be loaded
+         * Loads the feedback, tasks, and stored code and initializes
+         * the event services.
          */
-        $scope.loadQuestion = function(questionId) {
-          SessionIdService.resetSessionId();
-          question = QuestionDataService.getQuestion(questionId);
+        var initQuestionData = function(questionId) {
           tasks = question.getTasks();
           UnpromptedFeedbackManagerService.reset(tasks);
-
           currentTaskIndex = 0;
           cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
@@ -759,6 +754,32 @@ tie.directive('learnerView', [function() {
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
+        };
+
+        /**
+         * Initializes the appropriate values in $scope for the question
+         * instructions, stored code, starter code and feedback.
+         *
+         * @param {string} questionId ID of question whose data will be loaded
+         */
+        $scope.loadQuestion = function(questionId) {
+          SessionIdService.resetSessionId();
+          if (SERVER_URL) {
+            try {
+              QuestionDataService.getQuestionAsync(questionId).then(
+                function(response) {
+                  question = response;
+                  initQuestionData(questionId);
+                });
+            } catch (error) {
+              alert('An error occurred while retrieving the question. ' +
+                  'Try refreshing or downloading and running the client ' +
+                  'version at https://github.com/google/tie .');
+            }
+          } else {
+            question = QuestionDataService.getQuestion(questionId);
+            initQuestionData(questionId);
+          }
         };
 
         /**
