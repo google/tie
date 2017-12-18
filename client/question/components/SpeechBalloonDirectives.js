@@ -16,7 +16,7 @@
  * @fileoverview Directive for displaying speech balloons.
  */
 
-tie.directive('tieSpeechBalloonContainer', [function() {
+tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
     link: function(scope, el, attributes) {
@@ -26,11 +26,11 @@ tie.directive('tieSpeechBalloonContainer', [function() {
       speechBalloonContainer.style.opacity = "0";
       speechBalloonContainer.style.transition = "unset";
       speechBalloonContainer.style.display = "none";
-      window.setTimeout(function() {
+      $timeout(function() {
         speechBalloonContainer.style.display = "block";
         speechBalloonContainer.style.marginTop =
             '-' + speechBalloonContainer.offsetHeight.toString() + 'px';
-        window.setTimeout(function() {
+        $timeout(function() {
           speechBalloonContainer.removeAttribute("style");
         }, 0);
       }, 0);
@@ -38,37 +38,57 @@ tie.directive('tieSpeechBalloonContainer', [function() {
   };
 }]);
 
-tie.directive('tieSpeechBalloonLeft', [function() {
+tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
     link: function(scope, el, attributes) {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloon = el[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-left";
-      window.setTimeout(function() {
+      $timeout(function() {
         speechBalloon.classList.add("tie-speech-balloon-pulse");
       }, 0);
     }
   };
 }]);
 
-tie.directive('tieSpeechBalloonRight', [function() {
+tie.directive('tieSpeechBalloonRight', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
     link: function(scope, el, attributes) {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloon = el[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-right";
-      window.setTimeout(function() {
+      $timeout(function() {
         speechBalloon.classList.add("tie-speech-balloon-pulse");
       }, 0);
     }
   };
 }]);
 
-tie.directive('tieSpeechBalloonTailLeft', [function() {
+tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
+    template: `
+      <div tie-speech-balloon-container
+          class="tie-speech-balloon-container" style="">
+        <div ng-if="balloon.isDisplayedOnLeft()" class="ng-scope">
+          <div tie-speech-balloon-left class="tie-speech-balloon tie-speech-balloon-left tie-speech-balloon-pulse">
+                <!-- ngRepeat: paragraph in balloon.getFeedbackParagraphs() track by $index --><p ng-repeat="paragraph in balloon.getFeedbackParagraphs() track by $index" class="tie-feedback-paragraph protractor-test-feedback-paragraph ng-scope" ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
+                  <!-- ngIf: paragraph.isTextParagraph() --><span ng-if="paragraph.isTextParagraph()" class="ng-binding ng-scope">
+                    We noticed that you're using a print statement within your code. Since you will not be able to use such statements in a technical interview, TIE does not support this feature. We encourage you to instead step through your code by hand.
+                  </span><!-- end ngIf: paragraph.isTextParagraph() -->
+                  <!-- ngIf: paragraph.isCodeParagraph() -->
+                  <!-- ngIf: paragraph.isSyntaxErrorParagraph() -->
+                  <!-- ngIf: paragraph.isOutputParagraph() -->
+                </p><!-- end ngRepeat: paragraph in balloon.getFeedbackParagraphs() track by $index -->
+              </div>
+              <div tie-speech-balloon-tail-left="" class="tie-speech-balloon-tail-container tie-speech-balloon-tail-left"><div class="tie-speech-balloon-tail-left-outer"></div><div class="tie-speech-balloon-tail-left-inner tie-speech-balloon-tail-left-pulse"></div></div>
+            </div><!-- end ngIf: balloon.isDisplayedOnLeft() -->
+            <!-- ngIf: !balloon.isDisplayedOnLeft() -->
+          </div>
+      
+    `,
     link: function(scope, el, attributes) {
       if (el[0].nodeName !== "DIV") { return; }
       var speechBalloonTailContainer = el[0];
@@ -83,7 +103,7 @@ tie.directive('tieSpeechBalloonTailLeft', [function() {
       speechBalloonTailContainer.appendChild(speechBalloonTailLeftOuter);
       speechBalloonTailContainer.appendChild(speechBalloonTailLeftInner);
       speechBalloonTailContainer.classList.add('tie-speech-balloon-tail-left');
-      window.setTimeout(function() {
+      $timeout(function() {
         speechBalloonTailLeftInner.classList.add(
             "tie-speech-balloon-tail-left-pulse");
       }, 0);
@@ -91,7 +111,7 @@ tie.directive('tieSpeechBalloonTailLeft', [function() {
   };
 }]);
 
-tie.directive('tieSpeechBalloonTailRight', [function() {
+tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
     link: function(scope, el, attributes) {
@@ -108,7 +128,7 @@ tie.directive('tieSpeechBalloonTailRight', [function() {
       speechBalloonTailContainer.appendChild(speechBalloonTailRightOuter);
       speechBalloonTailContainer.appendChild(speechBalloonTailRightInner);
       speechBalloonTailContainer.classList.add('tie-speech-balloon-tail-right');
-      window.setTimeout(function() {
+      $timeout(function() {
         speechBalloonTailRightInner.classList.add(
             "tie-speech-balloon-tail-right-pulse");
       }, 0);

@@ -62,7 +62,6 @@ tie.directive('learnerView', [function() {
                 <monospace-display-modal title="title" content="content">
                 </monospace-display-modal>
               </div>
-
               <select class="tie-select-menu" name="theme-select"
                   ng-change="changeTheme(theme)" ng-model="theme"
                   ng-options="i.themeName as i.themeName for i in themes">
@@ -465,7 +464,6 @@ tie.directive('learnerView', [function() {
         .tie-wrapper.night-mode {
           background-color: #212121;
         }
-
         @-webkit-keyframes tie-dot {
           from { -webkit-transform: translate(0px, 0px); }
           10%  { -webkit-transform: translate(0px, -10px); }
@@ -514,7 +512,6 @@ tie.directive('learnerView', [function() {
           border: 3px solid transparent;
           border-radius: 7px;
         }
-
       </style>
     `,
     controller: [
@@ -930,7 +927,7 @@ tie.directive('learnerView', [function() {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
-          window.setTimeout(function() {
+          $timeout(function() {
             $scope.isTieThemeSet = true;
           }, 0);
         };
