@@ -79,9 +79,7 @@ tie.directive('learnerView', [function() {
                 <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button ng-if="!SERVER_URL" class="tie-python-primer tie-button">
-                  <a class="tie-primer-link" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
-                </button>
+                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
@@ -204,7 +202,7 @@ tie.directive('learnerView', [function() {
           float: left;
           margin-top: 10px;
         }
-        .night-mode .tie-code-reset, .night-mode .tie-python-primer {
+        .night-mode .tie-code-reset {
           background-color: #333a42;
           color: white;
         }
@@ -336,8 +334,9 @@ tie.directive('learnerView', [function() {
           opacity: 0.5;
         }
         .tie-primer-link {
-          color: black;
-          text-decoration: none;
+          color: blue;
+          font-size: 12px;
+          padding: 4px 10px 0px 4px;
         }
         .night-mode .tie-primer-link {
           color: white;
