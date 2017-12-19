@@ -116,7 +116,7 @@ tie.directive('learnerView', [function() {
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  I need help
+                  Check my code
                 </button>
               </div>
             </div>
