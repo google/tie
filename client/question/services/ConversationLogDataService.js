@@ -32,7 +32,7 @@ tie.factory('ConversationLogDataService', [
         $timeout(function() {
           speechBalloons.unshift(
               SpeechBalloonObjectFactory.createFeedbackBalloon(
-              feedbackParagraphs));
+                  feedbackParagraphs));
           numBalloonsPending--;
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
       },
@@ -41,7 +41,7 @@ tie.factory('ConversationLogDataService', [
        */
       addCodeBalloon: function(submittedCode) {
         speechBalloons.unshift(
-          SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
+            SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
       },
       /**
        * Clears the feedback log.
