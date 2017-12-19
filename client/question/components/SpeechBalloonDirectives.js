@@ -46,7 +46,7 @@ tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
     link: function(scope, iElement) {
       if (iElement[0].nodeName !== "DIV") {
         return;
-       }
+      }
       var speechBalloon = iElement[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-left";
       $timeout(function() {
