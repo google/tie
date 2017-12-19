@@ -92,13 +92,8 @@ tie.directive('learnerView', [function() {
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button ng-if="!SERVER_URL"
-                    class="tie-python-primer tie-button">
-                  <a class="tie-primer-link" target="_blank"
-                      ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
-                </button>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn"
-                    name="code-reset"
+                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
                     ng-click="resetCode()">
                   Reset Code
                 </button>
@@ -221,7 +216,7 @@ tie.directive('learnerView', [function() {
           float: left;
           margin-top: 10px;
         }
-        .night-mode .tie-code-reset, .night-mode .tie-python-primer {
+        .night-mode .tie-code-reset {
           background-color: #333a42;
           color: white;
         }
@@ -353,8 +348,9 @@ tie.directive('learnerView', [function() {
           opacity: 0.5;
         }
         .tie-primer-link {
-          color: black;
-          text-decoration: none;
+          color: blue;
+          font-size: 12px;
+          padding: 4px 10px 0px 4px;
         }
         .night-mode .tie-primer-link {
           color: white;
@@ -557,7 +553,7 @@ tie.directive('learnerView', [function() {
          * Sets a local variable language to the value of the constant
          * LANGUAGE_PYTHON.
          *
-         * @type: {string}
+         * @type {string}
          */
         var language = LANGUAGE_PYTHON;
         // TODO(sll): Generalize this to dynamically select a question set
@@ -781,19 +777,12 @@ tie.directive('learnerView', [function() {
         }
 
         /**
-         * Initializes the appropriate values in $scope for the question
-         * instructions, stored code, starter code and feedback.
-         *
-         * @param {string} questionId ID of question whose data will be loaded
+         * Loads the feedback, tasks, and stored code and initializes
+         * the event services.
          */
-        $scope.loadQuestion = function(questionId) {
-          $scope.isTieThemeSet = true;
-
-          SessionIdService.resetSessionId();
-          question = QuestionDataService.getQuestion(questionId);
+        var initQuestionData = function(questionId) {
           tasks = question.getTasks();
           UnpromptedFeedbackManagerService.reset(tasks);
-
           currentTaskIndex = 0;
           cachedCode = LocalStorageService.loadStoredCode(
             questionId, language);
@@ -821,6 +810,33 @@ tie.directive('learnerView', [function() {
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
+        };
+
+        /**
+         * Initializes the appropriate values in $scope for the question
+         * instructions, stored code, starter code and feedback.
+         *
+         * @param {string} questionId ID of question whose data will be loaded
+         */
+        $scope.loadQuestion = function(questionId) {
+          $scope.isTieThemeSet = true;
+          SessionIdService.resetSessionId();
+          if (SERVER_URL) {
+            try {
+              QuestionDataService.getQuestionAsync(questionId).then(
+                function(response) {
+                  question = response;
+                  initQuestionData(questionId);
+                });
+            } catch (error) {
+              alert('An error occurred while retrieving the question. ' +
+                  'Try refreshing or downloading and running the client ' +
+                  'version at https://github.com/google/tie .');
+            }
+          } else {
+            question = QuestionDataService.getQuestion(questionId);
+            initQuestionData(questionId);
+          }
         };
 
         /**
