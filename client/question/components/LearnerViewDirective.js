@@ -27,8 +27,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-question-ui">
               <div class="tie-question-window"
                   ng-show="!MonospaceDisplayModalService.isDisplayed()">
-                <div class="tie-question-container"
-                    ng-class="{'tie-theme-set': isTieThemeSet}">
+                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -820,7 +819,10 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         $scope.loadQuestion = function(questionId) {
-          $scope.isTieThemeSet = true;
+          // pulseAnimationEnabled is set to false to prevent balloon pulse
+          // animation when switching from light to dark mode and vise versa.
+          // This is set to false in resetCode.
+          $scope.pulseAnimationEnabled = true;
           SessionIdService.resetSessionId();
           if (SERVER_URL) {
             try {
@@ -937,7 +939,7 @@ tie.directive('learnerView', [function() {
          * @param {string} newTheme
          */
         $scope.changeTheme = function(newTheme) {
-          $scope.isTieThemeSet = false;
+          $scope.pulseAnimationEnabled = false;
           if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
@@ -947,7 +949,7 @@ tie.directive('learnerView', [function() {
             $scope.codeMirrorOptions.theme = 'default';
           }
           $timeout(function() {
-            $scope.isTieThemeSet = true;
+            $scope.pulseAnimationEnabled = true;
           }, 0);
         };
 

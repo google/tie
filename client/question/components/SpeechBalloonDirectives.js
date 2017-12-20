@@ -13,16 +13,13 @@
 // limitations under the License.
 
 /**
- * @fileoverview Directive for displaying speech balloons.
+ * @fileoverview Directives for displaying speech balloons.
  */
 
 tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
   return {
-    restrict: 'A',
+    restrict: 'E',
     link: function(scope, iElement) {
-      if (iElement[0].nodeName !== "DIV") {
-        return;
-      }
       var speechBalloonContainer = iElement[0];
       speechBalloonContainer.className = "tie-speech-balloon-container";
       speechBalloonContainer.style.opacity = "0";
@@ -42,15 +39,12 @@ tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
 
 tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
   return {
-    restrict: 'A',
+    restrict: 'E',
     link: function(scope, iElement) {
-      if (iElement[0].nodeName !== "DIV") {
-        return;
-      }
       var speechBalloon = iElement[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-left";
       $timeout(function() {
-        speechBalloon.classList.add("tie-speech-balloon-pulse");
+        speechBalloon.addClass("tie-speech-balloon-pulse");
       }, 0);
     }
   };
@@ -58,15 +52,12 @@ tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
 
 tie.directive('tieSpeechBalloonRight', ['$timeout', function($timeout) {
   return {
-    restrict: 'A',
+    restrict: 'E',
     link: function(scope, iElement) {
-      if (iElement[0].nodeName !== "DIV") {
-        return;
-      }
       var speechBalloon = iElement[0];
       speechBalloon.className = "tie-speech-balloon tie-speech-balloon-right";
       $timeout(function() {
-        speechBalloon.classList.add("tie-speech-balloon-pulse");
+        speechBalloon.addClass("tie-speech-balloon-pulse");
       }, 0);
     }
   };
@@ -74,7 +65,7 @@ tie.directive('tieSpeechBalloonRight', ['$timeout', function($timeout) {
 
 tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
   return {
-    restrict: 'A',
+    restrict: 'E',
     template: `
       <div class="tie-speech-balloon-tail-container tie-speech-balloon-tail-left">
         <div class="tie-speech-balloon-tail-left-outer"></div>
@@ -85,7 +76,7 @@ tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
       var speechBalloonTailLeftInner = iElement[0].getElementsByClassName(
           'tie-speech-balloon-tail-left-inner')[0];
       $timeout(function() {
-        speechBalloonTailLeftInner.classList.add(
+        speechBalloonTailLeftInner.addClass(
             "tie-speech-balloon-tail-left-pulse");
       }, 0);
     }
@@ -94,7 +85,7 @@ tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
 
 tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
   return {
-    restrict: 'A',
+    restrict: 'E',
     template: `
       <div class="tie-speech-balloon-tail-container tie-speech-balloon-tail-right">      
         <div class="tie-speech-balloon-tail-right-outer"></div>
@@ -105,7 +96,7 @@ tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
       var speechBalloonTailRightInner = iElement[0].getElementsByClassName(
           'tie-speech-balloon-tail-right-inner')[0];
       $timeout(function() {
-        speechBalloonTailRightInner.classList.add(
+        speechBalloonTailRightInner.addClass(
             "tie-speech-balloon-tail-right-pulse");
       }, 0);
     }

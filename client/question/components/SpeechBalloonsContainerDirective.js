@@ -23,9 +23,9 @@ tie.directive('speechBalloonsContainer', [function() {
     template: `
       <div>
         <div ng-repeat="balloon in $parent.speechBalloonsList">
-          <div tie-speech-balloon-container>
+          <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
-              <div tie-speech-balloon-left>
+              <tie-speech-balloon-left>
                 <p ng-repeat="paragraph in balloon.getFeedbackParagraphs() track by $index" class="tie-feedback-paragraph protractor-test-feedback-paragraph" ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="paragraph.isTextParagraph()">
                     {{paragraph.getContent()}}
@@ -43,19 +43,19 @@ tie.directive('speechBalloonsContainer', [function() {
                     </output-snippet>
                   </span>
                 </p>
-              </div>
-              <div tie-speech-balloon-tail-left></div>
+              </tie-speech-balloon-left>
+              <tie-speech-balloon-tail-left></tie-speech-balloon-tail-left>
             </div>
             <div ng-if="!balloon.isDisplayedOnLeft()">
-              <div tie-speech-balloon-right>
+              <tie-speech-balloon-right>
                 <p ng-repeat="paragraph in balloon.getFeedbackParagraphs() track by $index"
                     class="tie-feedback-paragraph tie-feedback-paragraph-code">
                   <code-snippet content="paragraph.getContent()"></code-snippet>
                 </p>
-              </div>
-              <div tie-speech-balloon-tail-right></div>
+              </tie-speech-balloon-right>
+              <tie-speech-balloon-tail-right></tie-speech-balloon-tail-right>
             </div>
-          </div>
+          </tie-speech-balloon-container>
         </div>
       </div>
 
@@ -70,6 +70,7 @@ tie.directive('speechBalloonsContainer', [function() {
         }
         .tie-speech-balloon-container {
           clear: right;
+          display: block;
           margin-top: 12px;
           overflow: auto;
           transition: margin-top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
@@ -87,7 +88,7 @@ tie.directive('speechBalloonsContainer', [function() {
           padding: 7px;
           width: fit-content;
         }
-        .tie-theme-set .tie-speech-balloon {
+        .pulse-animation-enabled .tie-speech-balloon {
           transition: background-color 2s cubic-bezier(0.4, 0.0, 0.2, 1) 1.5s;
         }
         .night-mode .tie-speech-balloon {
@@ -133,7 +134,7 @@ tie.directive('speechBalloonsContainer', [function() {
           margin-top: -10px;
           width:  0;
         }
-        .tie-theme-set .tie-speech-balloon-tail-left-inner {
+        .pulse-animation-enabled .tie-speech-balloon-tail-left-inner {
           transition: border-left-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1) 1s;
         }
         .night-mode .tie-speech-balloon-tail-left-inner {
@@ -168,7 +169,7 @@ tie.directive('speechBalloonsContainer', [function() {
           margin-top: -10px;
           width:  0;
         }
-        .tie-theme-set .tie-speech-balloon-tail-right-inner {
+        .pulse-animation-enabled .tie-speech-balloon-tail-right-inner {
           transition: border-right-color 2.5s cubic-bezier(0.4, 0.0, 0.2, 1) 1s;
         }
         .night-mode .tie-speech-balloon-tail-right-inner {
