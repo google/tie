@@ -819,9 +819,9 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         $scope.loadQuestion = function(questionId) {
-          // pulseAnimationEnabled is set to false to prevent balloon pulse
-          // animation when switching from light to dark mode and vise versa.
-          // This is set to false in resetCode.
+          // The pulseAnimationEnabled var is set to false to prevent balloon
+          // pulse animation when switching from light to dark mode and
+          // vise versa. This is set to false in resetCode.
           $scope.pulseAnimationEnabled = true;
           SessionIdService.resetSessionId();
           if (SERVER_URL) {
