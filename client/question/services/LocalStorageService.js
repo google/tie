@@ -124,8 +124,7 @@ tie.factory('LocalStorageService', [
           return;
         }
 
-        var localStorageKey = getLocalStorageKeyForCode(
-          questionId, language);
+        var localStorageKey = getLocalStorageKeyForCode(questionId, language);
         localStorage.removeItem(localStorageKey);
       },
 

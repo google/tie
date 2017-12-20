@@ -93,8 +93,7 @@ tie.directive('learnerView', [function() {
                   <option value="Python" selected>Python</option>
                 </select>
                 <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
-                    ng-click="resetCode()">
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()">
                   Reset Code
                 </button>
                 <div class="tie-code-auto-save"
@@ -533,6 +532,8 @@ tie.directive('learnerView', [function() {
 
         $scope.ConversationLogDataService = ConversationLogDataService;
 
+        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
+
         /**
          * Array of strings containing the ids of the allowed question sets.
          *
@@ -556,6 +557,7 @@ tie.directive('learnerView', [function() {
          * @type {string}
          */
         var language = LANGUAGE_PYTHON;
+
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         /**
@@ -668,7 +670,6 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
-        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -837,6 +838,8 @@ tie.directive('learnerView', [function() {
             question = QuestionDataService.getQuestion(questionId);
             initQuestionData(questionId);
           }
+          $scope.speechBalloonsList =
+              ConversationLogDataService.getSpeechBalloonsList();
         };
 
         /**
@@ -1066,6 +1069,8 @@ tie.directive('learnerView', [function() {
          * question to its original state.
          */
         $scope.resetCode = function() {
+          $scope.speechBalloonsList =
+              ConversationLogDataService.getSpeechBalloonsList();
           LocalStorageService.clearLocalStorageCode(
             $scope.currentQuestionId, language);
           EventHandlerService.createCodeResetEvent(

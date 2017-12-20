@@ -22,7 +22,7 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
-        <div ng-repeat="balloon in speechBalloonsList">
+        <div ng-repeat="balloon in $parent.speechBalloonsList">
           <div tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
               <div tie-speech-balloon-left>
@@ -186,8 +186,6 @@ tie.directive('speechBalloonsContainer', [function() {
       '$scope', 'ConversationLogDataService',
       function($scope, ConversationLogDataService) {
         $scope.ConversationLogDataService = ConversationLogDataService;
-        $scope.speechBalloonsList =
-            ConversationLogDataService.getSpeechBalloonsList();
       }
     ]
   };
