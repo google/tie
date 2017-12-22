@@ -88,7 +88,7 @@ tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
  * @constant
  */
 // eslint-disable-next-line no-magic-numbers
-tie.constant('DURATION_MSEC_WAIT_FOR_FEEDBACK', 1000);
+tie.constant('DURATION_MSEC_WAIT_FOR_FEEDBACK', 1400);
 
 /**
  * Object containing variations on feedback text for different scenarios.

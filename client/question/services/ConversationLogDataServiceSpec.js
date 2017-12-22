@@ -34,7 +34,7 @@ describe('ConversationLogDataService', function() {
 
   describe('addFeedbackBalloon', function() {
     it('should add a new feedback balloon with a delay', function() {
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
       expect(ConversationLogDataService.isNewBalloonPending()).toBe(false);
 
       ConversationLogDataService.addFeedbackBalloon([
@@ -44,27 +44,27 @@ describe('ConversationLogDataService', function() {
         })
       ]);
       expect(ConversationLogDataService.isNewBalloonPending()).toBe(true);
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
 
       $timeout.flush(DURATION_MSEC_WAIT_FOR_FEEDBACK);
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(1);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(1);
     });
 
     it('should add a new code balloon without a delay', function() {
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
       expect(ConversationLogDataService.isNewBalloonPending()).toBe(false);
 
       ConversationLogDataService.addCodeBalloon('some code');
       expect(ConversationLogDataService.isNewBalloonPending()).toBe(false);
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(1);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(1);
     });
 
     it('should clear the list', function() {
       ConversationLogDataService.addCodeBalloon('some code');
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(1);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(1);
 
       ConversationLogDataService.clear();
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
     });
   });
 });

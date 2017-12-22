@@ -198,13 +198,13 @@ describe('LearnerViewDirective', function() {
     };
 
     it('should add unprompted feedback to the feedback log', function() {
-      expect(ConversationLogDataService.getSpeechBalloonsList().length).toBe(0);
+      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
       expect($scope.codeChangeLoopPromise).toBe(null);
       $scope.onCodeChange();
       $scope.editorContents.code = 'new code';
       flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
       var speechBubblesList = (
-        ConversationLogDataService.getSpeechBalloonsList());
+        ConversationLogDataService.getSpeechBalloonList());
       expect(speechBubblesList.length).toBe(1);
       expect(speechBubblesList[0].getFeedbackParagraphs()[0].getContent()).toBe(
         '[some unprompted feedback]');

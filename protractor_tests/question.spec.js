@@ -27,7 +27,7 @@ describe('submitting questions', function() {
     questionsPage.resetCode();
     questionsPage.runCode();
 
-    browser.sleep(1500);
+    browser.sleep(2000);
     expect(questionsPage.countFeedbackParagraphs()).toEqual(2);
   });
 

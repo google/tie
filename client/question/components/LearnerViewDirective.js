@@ -25,13 +25,16 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window" ng-show="!MonospaceDisplayModalService.isDisplayed()">
-                <div class="tie-question-container">
+              <div class="tie-question-window"
+                  ng-show="!MonospaceDisplayModalService.isDisplayed()">
+                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
-                        <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                        <p ng-if="instruction.type == 'text'">
+                          {{instruction.content}}
+                        </p>
                         <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                       </div>
                       <hr>
@@ -39,65 +42,69 @@ tie.directive('learnerView', [function() {
                   </div>
                   <div class="tie-instructions">
                     <div ng-repeat="instruction in instructions">
-                      <p ng-if="instruction.type == 'text'">{{instruction.content}}</p>
+                      <p ng-if="instruction.type == 'text'">
+                        {{instruction.content}}
+                      </p>
                       <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                   </div>
                   <speech-balloons-container></speech-balloons-container>
                 </div>
               </div>
-
-              <div class="tie-question-window tie-monospace-modal-container" ng-show="MonospaceDisplayModalService.isDisplayed()">
+              <div class="tie-question-window tie-monospace-modal-container"
+                  ng-show="MonospaceDisplayModalService.isDisplayed()">
                 <monospace-display-modal title="title" content="content">
                 </monospace-display-modal>
               </div>
-
               <select class="tie-select-menu" name="theme-select"
-                      ng-change="changeTheme(theme)" ng-model="theme"
-                      ng-options="i.themeName as i.themeName for i in themes">
+                  ng-change="changeTheme(theme)" ng-model="theme"
+                  ng-options="i.themeName as i.themeName for i in themes">
                 <option style="display: none" value="">Theme</option>
               </select>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <div class="tie-next-curtain-container" ng-if="nextButtonIsShown">
+                  <div class="tie-next-curtain-container"
+                      ng-if="nextButtonIsShown">
                     <div class="tie-next-curtain"></div>
                     <div class="tie-arrow-highlighter"></div>
                     <div ng-click="showNextTask()" class="tie-next-arrow">
                       <span class="tie-next-button-text">Next</span>
                     </div>
                   </div>
-                  <div ng-if="codeEditorIsShown" class="tie-codemirror-container">
+                  <div ng-if="codeEditorIsShown"
+                      class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                                   ng-model="editorContents.code"
-                                   ng-change="onCodeChange()"
-                                   class="protractor-test-code-input">
+                        ng-model="editorContents.code"
+                        ng-change="onCodeChange()"
+                        class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL" class="tie-select-menu" name="lang-select-menu">
+                <select ng-if="SERVER_URL" class="tie-select-menu"
+                    name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
                 <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset"
-                    ng-click="resetCode()">
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()">
                   Reset Code
                 </button>
-                <div class="tie-code-auto-save" ng-show="autosaveTextIsDisplayed">
+                <div class="tie-code-auto-save"
+                    ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  I think I'm done
+                  I think I&#39m done
                 </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
                     ng-class="{'active': !nextButtonIsShown}"
                     ng-click="submitCode(editorContents.code)"
                     ng-disabled="nextButtonIsShown">
-                  I need help
+                  Check my code
                 </button>
               </div>
             </div>
@@ -446,6 +453,18 @@ tie.directive('learnerView', [function() {
         .tie-wrapper.night-mode {
           background-color: #212121;
         }
+        .night-mode ::-webkit-scrollbar {
+          background-color: #555555;
+        }
+        .night-mode ::-webkit-scrollbar-corner {
+          background-color: #3c3c4b;
+        }
+        .night-mode ::-webkit-scrollbar-thumb {
+          background-color: #888888;
+          background-clip: content-box;
+          border: 3px solid transparent;
+          border-radius: 7px;
+        }
       </style>
     `,
     controller: [
@@ -468,14 +487,8 @@ tie.directive('learnerView', [function() {
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           ConversationLogDataService) {
-        /**
-         * Number of milliseconds for TIE to wait for system to process code
-         * submission.
-         *
-         * @type {number}
-         * @constant
-         */
-        var DURATION_MSEC_WAIT_FOR_SCROLL = 20;
+
+        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         /**
          * Array of strings containing the ids of the allowed question sets.
@@ -500,6 +513,7 @@ tie.directive('learnerView', [function() {
          * @type {string}
          */
         var language = LANGUAGE_PYTHON;
+
         // TODO(sll): Generalize this to dynamically select a question set
         // based on user input.
         /**
@@ -612,7 +626,6 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
-        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -763,6 +776,10 @@ tie.directive('learnerView', [function() {
          * @param {string} questionId ID of question whose data will be loaded
          */
         $scope.loadQuestion = function(questionId) {
+          // The pulseAnimationEnabled var is set to false to prevent balloon
+          // pulse animation when switching from light to dark mode and
+          // vise versa. This is set to false in resetCode.
+          $scope.pulseAnimationEnabled = true;
           SessionIdService.resetSessionId();
           if (SERVER_URL) {
             try {
@@ -877,6 +894,7 @@ tie.directive('learnerView', [function() {
          * @param {string} newTheme
          */
         $scope.changeTheme = function(newTheme) {
+          $scope.pulseAnimationEnabled = false;
           if (newTheme === 'Dark') {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
@@ -885,6 +903,9 @@ tie.directive('learnerView', [function() {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
+          $timeout(function() {
+            $scope.pulseAnimationEnabled = true;
+          }, 0);
         };
 
         /**
@@ -987,16 +1008,14 @@ tie.directive('learnerView', [function() {
           MonospaceDisplayModalService.hideModal();
           ConversationLogDataService.addCodeBalloon(code);
 
-          $timeout(function() {
-            // Gather all tasks from the first one up to the current one.
-            var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
-            SolutionHandlerService.processSolutionAsync(
-              orderedTasks, question.getStarterCode(language),
-              code, question.getAuxiliaryCode(language), language
-            ).then(function(feedback) {
-              $scope.setFeedback(feedback, code);
-            });
-          }, DURATION_MSEC_WAIT_FOR_SCROLL);
+          // Gather all tasks from the first one up to the current one.
+          var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, question.getStarterCode(language),
+            code, question.getAuxiliaryCode(language), language
+          ).then(function(feedback) {
+            $scope.setFeedback(feedback, code);
+          });
 
           storeCodeAndUpdateCachedCode(
             $scope.currentQuestionId, code, language);
