@@ -22,6 +22,11 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
+        <div class="tie-dot-container" ng-class="{'tie-display-dots': ConversationLogDataService.isNewBalloonPending()}"}>
+          <div class="tie-dot tie-dot-1"></div>
+          <div class="tie-dot tie-dot-2"></div>
+          <div class="tie-dot tie-dot-3"></div>
+        </div>
         <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" track by $index>
           <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">

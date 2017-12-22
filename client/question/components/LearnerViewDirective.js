@@ -48,11 +48,6 @@ tie.directive('learnerView', [function() {
                       <pre class="tie-question-code" ng-if="instruction.type == 'code'">{{instruction.content}}</pre>
                     </div>
                   </div>
-                  <div class="tie-dot-container" ng-class="{'tie-display-dots': ConversationLogDataService.isNewBalloonPending()}"}>
-                    <div class="tie-dot tie-dot-1"></div>
-                    <div class="tie-dot tie-dot-2"></div>
-                    <div class="tie-dot tie-dot-3"></div>
-                  </div>
                   <speech-balloons-container></speech-balloons-container>
                 </div>
               </div>
