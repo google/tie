@@ -65,6 +65,42 @@ tie.directive('speechBalloonsContainer', [function() {
       </div>
 
       <style>
+        @-webkit-keyframes tie-dot {
+          from { -webkit-transform: translate(0px, 0px); }
+          10%  { -webkit-transform: translate(0px, -10px); }
+          20%  { -webkit-transform: translate(0px, 0px); }
+          to   { -webkit-transform: translate(0px, 0px); }
+        }
+        .tie-dot {
+          -webkit-animation-name: tie-dot;
+          -webkit-animation-duration: 1.5s;
+          -webkit-animation-iteration-count: infinite;
+          background-color: black;
+          border-radius: 2px;
+          float: left;
+          height: 4px;
+          margin-right: 7px;
+          margin-top: 3px;
+          width: 4px;
+        }
+        .tie-dot-container {
+          display: inline-block;
+          height: 10px;
+          opacity: 0;
+          padding-left: 5px;
+        }
+        .night-mode .tie-dot {
+          background-color: #E0E0E0;
+        }
+        .tie-dot-2 {
+          -webkit-animation-delay: 0.1s;
+        }
+        .tie-dot-3 {
+          -webkit-animation-delay: 0.2s;
+        }
+        .tie-display-dots {
+          opacity: 1;
+        }
         .tie-feedback-paragraph {
           width: 100%;
         }
