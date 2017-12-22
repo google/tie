@@ -24,16 +24,16 @@ tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
       var speechBalloonContainerElement = element[0];
       var speechBalloonContainer =
           angular.element(speechBalloonContainerElement);
-      speechBalloonContainer.addClass("tie-speech-balloon-container");
-      speechBalloonContainerElement.style.opacity = "0";
-      speechBalloonContainerElement.style.transition = "unset";
-      speechBalloonContainerElement.style.display = "none";
+      speechBalloonContainer.addClass('tie-speech-balloon-container');
+      speechBalloonContainerElement.style.opacity = '0';
+      speechBalloonContainerElement.style.transition = 'unset';
+      speechBalloonContainerElement.style.display = 'none';
       $timeout(function() {
-        speechBalloonContainerElement.style.display = "block";
+        speechBalloonContainerElement.style.display = 'block';
         speechBalloonContainerElement.style.marginTop =
             '-' + speechBalloonContainerElement.offsetHeight.toString() + 'px';
         $timeout(function() {
-          speechBalloonContainerElement.removeAttribute("style");
+          speechBalloonContainerElement.removeAttribute('style');
         }, 0);
       }, 0);
     }
@@ -46,9 +46,9 @@ tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
     scope: {},
     link: function(scope, element) {
       var speechBalloon = angular.element(element[0]);
-      speechBalloon.addClass("tie-speech-balloon tie-speech-balloon-left");
+      speechBalloon.addClass('tie-speech-balloon tie-speech-balloon-left');
       $timeout(function() {
-        speechBalloon.addClass("tie-speech-balloon-pulse");
+        speechBalloon.addClass('tie-speech-balloon-pulse');
       }, 0);
     }
   };
@@ -60,9 +60,9 @@ tie.directive('tieSpeechBalloonRight', ['$timeout', function($timeout) {
     scope: {},
     link: function(scope, element) {
       var speechBalloon = angular.element(element[0]);
-      speechBalloon.addClass("tie-speech-balloon tie-speech-balloon-right");
+      speechBalloon.addClass('tie-speech-balloon tie-speech-balloon-right');
       $timeout(function() {
-        speechBalloon.addClass("tie-speech-balloon-pulse");
+        speechBalloon.addClass('tie-speech-balloon-pulse');
       }, 0);
     }
   };
@@ -73,9 +73,9 @@ tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-speech-balloon-tail-container tie-speech-balloon-tail-left">
-        <div class="tie-speech-balloon-tail-left-outer"></div>
-        <div class="tie-speech-balloon-tail-left-inner"></div>
+      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-left'>
+        <div class='tie-speech-balloon-tail-left-outer'></div>
+        <div class='tie-speech-balloon-tail-left-inner'></div>
       </div>
     `,
     link: function(scope, element) {
@@ -84,7 +84,7 @@ tie.directive('tieSpeechBalloonTailLeft', ['$timeout', function($timeout) {
           'tie-speech-balloon-tail-left-inner')[0]);
       $timeout(function() {
         speechBalloonTailLeftInner.addClass(
-            "tie-speech-balloon-tail-left-pulse");
+            'tie-speech-balloon-tail-left-pulse');
       }, 0);
     }
   };
@@ -95,9 +95,9 @@ tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-speech-balloon-tail-container tie-speech-balloon-tail-right">      
-        <div class="tie-speech-balloon-tail-right-outer"></div>
-        <div class="tie-speech-balloon-tail-right-inner"></div>
+      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-right'>      
+        <div class='tie-speech-balloon-tail-right-outer'></div>
+        <div class='tie-speech-balloon-tail-right-inner'></div>
       </div>
     `,
     link: function(scope, element) {
@@ -106,7 +106,7 @@ tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
           'tie-speech-balloon-tail-right-inner')[0]);
       $timeout(function() {
         speechBalloonTailRightInner.addClass(
-            "tie-speech-balloon-tail-right-pulse");
+            'tie-speech-balloon-tail-right-pulse');
       }, 0);
     }
   };
