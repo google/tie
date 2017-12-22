@@ -488,8 +488,6 @@ tie.directive('learnerView', [function() {
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           ConversationLogDataService) {
 
-        $scope.ConversationLogDataService = ConversationLogDataService;
-
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         /**
