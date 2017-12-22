@@ -20,48 +20,51 @@ tie.factory('ConversationLogDataService', [
   '$timeout', 'SpeechBalloonObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
   function(
       $timeout, SpeechBalloonObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
-    var speechBalloons = [];
-    var numBalloonsPending = 0;
+    var data = {
+      speechBalloonList: [],
+      numBalloonsPending: 0
+    };
 
     return {
       /**
        * Adds a new feedback balloon to the beginning of the list.
        */
       addFeedbackBalloon: function(feedbackParagraphs) {
-        numBalloonsPending++;
+        data.numBalloonsPending++;
         $timeout(function() {
-          speechBalloons.unshift(
+          data.speechBalloonList.unshift(
               SpeechBalloonObjectFactory.createFeedbackBalloon(
                   feedbackParagraphs));
-          numBalloonsPending--;
+          data.numBalloonsPending--;
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
       },
       /**
        * Adds a new code balloon to the beginning of the list.
        */
       addCodeBalloon: function(submittedCode) {
-        speechBalloons.unshift(
+        data.speechBalloonList.unshift(
             SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
       },
       /**
        * Clears the feedback log.
        */
       clear: function() {
-        speechBalloons = [];
-        numBalloonsPending = 0;
+        data.speechBalloonList = [];
+        data.numBalloonsPending = 0;
       },
       /**
        * Returns whether a new balloon is pending.
        */
       isNewBalloonPending: function() {
-        return numBalloonsPending > 0;
+        return data.numBalloonsPending > 0;
       },
       /**
        * Returns a bindable reference to the list of speech balloons.
        */
-      getSpeechBalloonsList: function() {
-        return speechBalloons;
-      }
+      getSpeechBalloonList: function() {
+        return data.speechBalloonList;
+      },
+      data: data
     };
   }
 ]);

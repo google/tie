@@ -22,7 +22,7 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
-        <div ng-repeat="balloon in $parent.speechBalloonsList">
+        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" track by $index>
           <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
               <tie-speech-balloon-left>
@@ -85,7 +85,8 @@ tie.directive('speechBalloonsContainer', [function() {
           max-width: calc(100% - 50px);
           min-height: 1em;
           min-width: 1em;
-          padding: 7px;
+          padding-left: 10px;
+          padding-right: 10px;
           width: fit-content;
         }
         .pulse-animation-enabled .tie-speech-balloon {

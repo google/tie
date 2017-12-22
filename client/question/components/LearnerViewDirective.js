@@ -840,8 +840,6 @@ tie.directive('learnerView', [function() {
             question = QuestionDataService.getQuestion(questionId);
             initQuestionData(questionId);
           }
-          $scope.speechBalloonsList =
-              ConversationLogDataService.getSpeechBalloonsList();
         };
 
         /**
@@ -1071,8 +1069,6 @@ tie.directive('learnerView', [function() {
          * question to its original state.
          */
         $scope.resetCode = function() {
-          $scope.speechBalloonsList =
-              ConversationLogDataService.getSpeechBalloonsList();
           LocalStorageService.clearLocalStorageCode(
             $scope.currentQuestionId, language);
           EventHandlerService.createCodeResetEvent(
