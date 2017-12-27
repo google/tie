@@ -53,7 +53,7 @@ tie.directive('learnerView', [function() {
               </div>
               <div class="tie-question-window tie-monospace-modal-container"
                   ng-show="MonospaceDisplayModalService.isDisplayed()">
-                <monospace-display-modal title="title" content="content">
+                <monospace-display-modal content="content">
                 </monospace-display-modal>
               </div>
               <select class="tie-select-menu" name="theme-select"

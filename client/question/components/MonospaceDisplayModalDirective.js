@@ -41,7 +41,7 @@ tie.directive('monospaceDisplayModal', [function() {
           <div class="tie-monospace-modal-table-cell tie-monospace-modal-action-button-container">
             <button class="tie-button-blue tie-monospace-modal-action-button"
                     ng-click="closeModal()">
-              <span>Close</span>
+              <span>Dismiss</span>
             </button>
           </div>
         </footer>
@@ -49,10 +49,15 @@ tie.directive('monospaceDisplayModal', [function() {
 
       <style>
         monospace-display-modal .tie-monospace-modal-container {
+          border: 1px solid #d0d0d0;
+          box-shadow: 0px 1px 7px #d0d0d0;
           display: table;
-          margin: 0;
-          height: 100%;
-          width: 100%;
+          height: calc(100% - 109px);
+          margin-left: -1px;
+          margin-top: -1px;
+          position: absolute;
+          transition: margin-top 0.25s linear;
+          width: calc(100% - 783px);
         }
         monospace-display-modal header,
         monospace-display-modal .tie-monospace-modal-body,
@@ -74,8 +79,9 @@ tie.directive('monospaceDisplayModal', [function() {
         }
 
         monospace-display-modal .tie-monospace-modal-title {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
+          padding: 4px;
           text-align: center;
         }
         monospace-display-modal .tie-monospace-modal-content-container {
@@ -110,7 +116,7 @@ tie.directive('monospaceDisplayModal', [function() {
           bottom: 6px;
           cursor: pointer;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 14px;
+          font-size: 12px;
           height: 24px;
           padding: 1px 6px;
           position: absolute;
