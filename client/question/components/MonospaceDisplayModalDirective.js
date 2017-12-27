@@ -52,9 +52,9 @@ tie.directive('monospaceDisplayModal', [function() {
           border: 1px solid #d0d0d0;
           box-shadow: 0px 1px 7px #d0d0d0;
           display: table;
-          height: calc(100% - 109px);
+          height: calc(100% - 80px);
           margin-left: -1px;
-          margin-top: -1px;
+          margin-top: -30px;
           position: absolute;
           transition: margin-top 0.25s linear;
           width: calc(100% - 783px);
@@ -80,8 +80,7 @@ tie.directive('monospaceDisplayModal', [function() {
 
         monospace-display-modal .tie-monospace-modal-title {
           font-size: 16px;
-          font-weight: bold;
-          padding: 4px;
+          padding: 5px;
           text-align: center;
         }
         monospace-display-modal .tie-monospace-modal-content-container {
@@ -101,7 +100,7 @@ tie.directive('monospaceDisplayModal', [function() {
           bottom: 0;
           left: 0;
           overflow: auto;
-          padding: 10px;
+          padding: 4px;
           position: absolute;
           right: 0;
           top: 0;
