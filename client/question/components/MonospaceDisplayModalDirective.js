@@ -126,20 +126,21 @@ tie.directive('monospaceDisplayModal', [function() {
         }
       </style>
     `,
-    controller: [
-      '$scope', '$window', 'MonospaceDisplayModalService',
-      function($scope, $window, MonospaceDisplayModalService) {
+    controller: ['$scope', '$window', 'MonospaceDisplayModalService',
+        'FEEDBACK_MODAL_HEIGHT_OFFSET',
+      function($scope, $window, MonospaceDisplayModalService,
+          FEEDBACK_MODAL_HEIGHT_OFFSET) {
         MonospaceDisplayModalService.registerCallback(function() {
-          $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
           $scope.title = MonospaceDisplayModalService.getTitle();
           $scope.contentLines = MonospaceDisplayModalService.getContentLines();
           var questionWindowDiv =
               document.getElementsByClassName('tie-question-window')[0];
           var modalWidth = questionWindowDiv.offsetWidth;
           var modalHeight = questionWindowDiv.offsetHeight;
-          var modalContainerDiv = document.getElementsByClassName('tie-monospace-modal-container')[0];
+          var modalContainerDiv = document.getElementsByClassName(
+              'tie-monospace-modal-container')[0];
           modalContainerDiv.style.width = modalWidth.toString() + 'px';
-          modalContainerDiv.style.height = (modalHeight + 66).toString() + 'px';
+          modalContainerDiv.style.height = (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET).toString() + 'px';
         });
 
         /**

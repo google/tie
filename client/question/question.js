@@ -791,3 +791,11 @@ tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
  * @constant
  */
 tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
+
+/**
+ * Height offset needed by modal to cover feedback buttons.
+ *
+ * @type {number}
+ * @constant
+ */
+tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', 66);
