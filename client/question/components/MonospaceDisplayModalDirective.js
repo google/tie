@@ -48,15 +48,17 @@ tie.directive('monospaceDisplayModal', [function() {
       </div>
 
       <style>
+        monospace-display-modal {
+          position: absolute;
+          top: 9px;
+          transition: top 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
         monospace-display-modal .tie-monospace-modal-container {
           border: 1px solid #d0d0d0;
           box-shadow: 0px 1px 7px #d0d0d0;
           display: table;
           height: calc(100% - 80px);
-          margin-left: -1px;
-          margin-top: -30px;
           position: absolute;
-          transition: margin-top 0.25s linear;
           width: calc(100% - 783px);
         }
         monospace-display-modal header,
@@ -128,8 +130,16 @@ tie.directive('monospaceDisplayModal', [function() {
       '$scope', '$window', 'MonospaceDisplayModalService',
       function($scope, $window, MonospaceDisplayModalService) {
         MonospaceDisplayModalService.registerCallback(function() {
+          $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
           $scope.title = MonospaceDisplayModalService.getTitle();
           $scope.contentLines = MonospaceDisplayModalService.getContentLines();
+          var questionWindowDiv =
+              document.getElementsByClassName('tie-question-window')[0];
+          var modalWidth = questionWindowDiv.offsetWidth;
+          var modalHeight = questionWindowDiv.offsetHeight;
+          var modalContainerDiv = document.getElementsByClassName('tie-monospace-modal-container')[0];
+          modalContainerDiv.style.width = modalWidth.toString() + 'px';
+          modalContainerDiv.style.height = (modalHeight + 66).toString() + 'px';
         });
 
         /**

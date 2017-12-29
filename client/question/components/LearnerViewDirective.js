@@ -25,8 +25,7 @@ tie.directive('learnerView', [function() {
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
-              <div class="tie-question-window"
-                  ng-show="!MonospaceDisplayModalService.isDisplayed()">
+              <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
@@ -50,10 +49,9 @@ tie.directive('learnerView', [function() {
                   </div>
                   <speech-balloons-container></speech-balloons-container>
                 </div>
-              </div>
-              <div class="tie-question-window tie-monospace-modal-container"
-                  ng-show="MonospaceDisplayModalService.isDisplayed()">
-                <monospace-display-modal content="content">
+                <monospace-display-modal
+                    ng-show="MonospaceDisplayModalService.isDisplayed()"
+                    content="content">
                 </monospace-display-modal>
               </div>
               <select class="tie-select-menu" name="theme-select"

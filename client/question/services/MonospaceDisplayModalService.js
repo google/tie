@@ -21,7 +21,6 @@ tie.factory('MonospaceDisplayModalService', [
     // These are null if and only if the modal is hidden.
     var currentContentLines = null;
     var currentTitle = null;
-
     var onModalOpenCallbacks = [];
 
     return {
