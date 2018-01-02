@@ -798,4 +798,15 @@ tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
  * @type {number}
  * @constant
  */
-tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', 66);
+var FEEDBACK_MODAL_HEIGHT_OFFSET = 66;
+tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
+
+/**
+ * Height offset needed by modal to hide from view when dismissed.
+ *
+ * @type {number}
+ * @constant
+ */
+var FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET = 34;
+tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
+    FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET);
