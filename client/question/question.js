@@ -792,12 +792,28 @@ tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
  */
 tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
 
-/**
- * Timeout delay needed to allow smooth scrolling animation to work properly
- * on non-MacOS systems.
+/*
+ * Height offset needed by modal to cover feedback buttons.
  *
  * @type {number}
  * @constant
+ */
+var FEEDBACK_MODAL_HEIGHT_OFFSET = 66;
+tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
+
+/**
+ * Height offset needed by modal to completely hide from view when dismissed.
+ *
+ * @type {number}
+ * @constant
+ */
+var FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET = 34;
+tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
+    FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET);
+
+/**
+ * Timeout delay needed to allow smooth scrolling animation to work properly
+ * on non-MacOS systems.
  */
 var DELAY_STYLE_REMOVAL = 20;
 tie.constant('DELAY_STYLE_REMOVAL', DELAY_STYLE_REMOVAL);
