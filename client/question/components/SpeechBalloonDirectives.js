@@ -98,7 +98,7 @@ tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
     restrict: 'E',
     scope: {},
     template: `
-      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-right'>      
+      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-right'>
         <div class='tie-speech-balloon-tail-right-outer'></div>
         <div class='tie-speech-balloon-tail-right-inner'></div>
       </div>
