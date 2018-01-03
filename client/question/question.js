@@ -802,7 +802,7 @@ var FEEDBACK_MODAL_HEIGHT_OFFSET = 66;
 tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
 
 /**
- * Height offset needed by modal to hide from view when dismissed.
+ * Height offset needed by modal to completely hide from view when dismissed.
  *
  * @type {number}
  * @constant

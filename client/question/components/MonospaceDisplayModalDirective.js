@@ -141,22 +141,26 @@ tie.directive('monospaceDisplayModal', [function() {
         MonospaceDisplayModalService.registerCallback(function() {
           $scope.title = MonospaceDisplayModalService.getTitle();
           $scope.contentLines = MonospaceDisplayModalService.getContentLines();
+
           var questionWindowDiv =
               document.getElementsByClassName('tie-question-window')[0];
-          var modalWidth = questionWindowDiv.offsetWidth;
-          var modalHeight = questionWindowDiv.offsetHeight;
+          var monospaceDisplayModalElement =
+              document.getElementsByTagName('monospace-display-modal')[0];
           var modalContainerDiv = document.getElementsByClassName(
               'tie-monospace-modal-container')[0];
-          modalContainerDiv.style.width = modalWidth.toString() + 'px';
+
+          var modalWidth = questionWindowDiv.offsetWidth;
+          var modalHeight = questionWindowDiv.offsetHeight;
           var modalTopOffsetString =
               (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET).toString() + 'px';
-          modalContainerDiv.style.height = modalTopOffsetString;
           var modalHideTopOffsetString =
               '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
               FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
-          var monospaceDisplayModalElement =
-              document.getElementsByTagName('monospace-display-modal')[0];
+
+          modalContainerDiv.style.width = modalWidth.toString() + 'px';
+          modalContainerDiv.style.height = modalTopOffsetString;
           monospaceDisplayModalElement.style.top = modalHideTopOffsetString;
+
           $timeout(function() {
             monospaceDisplayModalElement.style.top = "";
             monospaceDisplayModalElement.classList.add(
@@ -170,15 +174,18 @@ tie.directive('monospaceDisplayModal', [function() {
         $scope.closeModal = function() {
           var questionWindowDiv =
               document.getElementsByClassName('tie-question-window')[0];
+          var monospaceDisplayModalElement =
+              document.getElementsByTagName('monospace-display-modal')[0];
+
           var modalHeight = questionWindowDiv.offsetHeight;
           var modalHideTopOffsetString =
               '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
               FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
-          var monospaceDisplayModalElement =
-              document.getElementsByTagName('monospace-display-modal')[0];
+
           monospaceDisplayModalElement.style.top = modalHideTopOffsetString;
           monospaceDisplayModalElement.classList.remove(
               'tie-feedback-modal-displayed');
+
           window.setTimeout(function() {
             MonospaceDisplayModalService.hideModal();
           }, 0);
