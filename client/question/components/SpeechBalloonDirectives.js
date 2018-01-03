@@ -32,7 +32,7 @@ tie.directive('tieSpeechBalloonContainer', ['$timeout', 'DELAY_STYLE_REMOVAL',
         $timeout(function() {
           speechBalloonContainerElement.style.display = 'block';
           speechBalloonContainerElement.style.marginTop =
-              '-' + speechBalloonContainerElement.offsetHeight.toString() + 
+              '-' + speechBalloonContainerElement.offsetHeight.toString() +
               'px';
           $timeout(function() {
             speechBalloonContainerElement.removeAttribute('style');
