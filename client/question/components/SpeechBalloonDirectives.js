@@ -16,29 +16,32 @@
  * @fileoverview Directives for displaying speech balloons.
  */
 
-tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
-  return {
-    restrict: 'E',
-    scope: {},
-    link: function(scope, element) {
-      var speechBalloonContainerElement = element[0];
-      var speechBalloonContainer =
-          angular.element(speechBalloonContainerElement);
-      speechBalloonContainer.addClass('tie-speech-balloon-container');
-      speechBalloonContainerElement.style.opacity = '0';
-      speechBalloonContainerElement.style.transition = 'unset';
-      speechBalloonContainerElement.style.display = 'none';
-      $timeout(function() {
-        speechBalloonContainerElement.style.display = 'block';
-        speechBalloonContainerElement.style.marginTop =
-            '-' + speechBalloonContainerElement.offsetHeight.toString() + 'px';
+tie.directive('tieSpeechBalloonContainer', ['$timeout', 'DELAY_STYLE_REMOVAL',
+  function($timeout, DELAY_STYLE_REMOVAL) {
+    return {
+      restrict: 'E',
+      scope: {},
+      link: function(scope, element) {
+        var speechBalloonContainerElement = element[0];
+        var speechBalloonContainer =
+            angular.element(speechBalloonContainerElement);
+        speechBalloonContainer.addClass('tie-speech-balloon-container');
+        speechBalloonContainerElement.style.opacity = '0';
+        speechBalloonContainerElement.style.transition = 'unset';
+        speechBalloonContainerElement.style.display = 'none';
         $timeout(function() {
-          speechBalloonContainerElement.removeAttribute('style');
+          speechBalloonContainerElement.style.display = 'block';
+          speechBalloonContainerElement.style.marginTop =
+              '-' + speechBalloonContainerElement.offsetHeight.toString() +
+              'px';
+          $timeout(function() {
+            speechBalloonContainerElement.removeAttribute('style');
+          }, DELAY_STYLE_REMOVAL);
         }, 0);
-      }, 0);
-    }
-  };
-}]);
+      }
+    };
+  }
+]);
 
 tie.directive('tieSpeechBalloonLeft', ['$timeout', function($timeout) {
   return {
@@ -95,7 +98,7 @@ tie.directive('tieSpeechBalloonTailRight', ['$timeout', function($timeout) {
     restrict: 'E',
     scope: {},
     template: `
-      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-right'>      
+      <div class='tie-speech-balloon-tail-container tie-speech-balloon-tail-right'>
         <div class='tie-speech-balloon-tail-right-outer'></div>
         <div class='tie-speech-balloon-tail-right-inner'></div>
       </div>

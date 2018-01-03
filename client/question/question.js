@@ -810,3 +810,13 @@ tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
 var FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET = 34;
 tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
     FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET);
+
+/**
+ * Timeout delay needed to allow smooth scrolling animation to work properly
+ * on non-MacOS systems.
+ *
+ * @type {number}
+ * @constant
+ */
+var DELAY_STYLE_REMOVAL = 20;
+tie.constant('DELAY_STYLE_REMOVAL', DELAY_STYLE_REMOVAL);
