@@ -34,7 +34,7 @@ tie.directive('tieSpeechBalloonContainer', ['$timeout', function($timeout) {
             '-' + speechBalloonContainerElement.offsetHeight.toString() + 'px';
         $timeout(function() {
           speechBalloonContainerElement.removeAttribute('style');
-        }, 0);
+        }, 20);
       }, 0);
     }
   };
