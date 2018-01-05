@@ -76,21 +76,17 @@ tie.directive('learnerView', [function() {
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()">
                   Reset Code
                 </button>
+                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
                 <div class="tie-code-auto-save"
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green"
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn"
                     ng-click="submitCode(editorContents.code)">
                   I think I&#39m done
-                </button>
-                <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
-                    ng-click="submitCode(editorContents.code)">
-                  Check my code
                 </button>
               </div>
             </div>
@@ -144,27 +140,6 @@ tie.directive('learnerView', [function() {
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
-        .tie-button-blue {
-          background-color: #448AFF;
-          color: #ffffff;
-        }
-        .tie-button-blue:hover {
-          background-color: #2979FF;
-          border: 1px solid #2962FF;
-        }
-        .tie-button-blue:active {
-          background-color: #2962FF;
-        }
-        .night-mode .tie-button-blue {
-          background-color: rgb(70, 90, 110);
-          color: #ffffff;
-        }
-        .night-mode .tie-button-blue:hover {
-          border-color: #e4e4e4;
-        }
-        .night-mode .tie-button-blue:active {
-          background-color: rgb(62, 81, 99);
-        }
         .tie-button-green {
           background-color: rgb(110, 150, 90);
           color: #ffffff;
@@ -188,8 +163,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
+          font-size: 13px;
           float: left;
-          margin-top: 10px;
+          margin-top: 14px;
           margin-left: 10px;
         }
         .night-mode .tie-code-auto-save {
@@ -360,6 +336,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
+          margin-right: 0px;
           margin-top: 10px;
           position: relative;
         }
