@@ -63,14 +63,6 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <div class="tie-next-curtain-container"
-                      ng-if="nextButtonIsShown">
-                    <div class="tie-next-curtain"></div>
-                    <div class="tie-arrow-highlighter"></div>
-                    <div ng-click="showNextTask()" class="tie-next-arrow">
-                      <span class="tie-next-button-text">Next</span>
-                    </div>
-                  </div>
                   <div ng-if="codeEditorIsShown"
                       class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
@@ -93,15 +85,13 @@ tie.directive('learnerView', [function() {
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
-                    ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(editorContents.code)"
-                    ng-disabled="nextButtonIsShown">
+                    ng-class="active"
+                    ng-click="submitCode(editorContents.code)">
                   I think I&#39m done
                 </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
-                    ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(editorContents.code)"
-                    ng-disabled="nextButtonIsShown">
+                    ng-class="active"
+                    ng-click="submitCode(editorContents.code)">
                   Check my code
                 </button>
               </div>
@@ -754,7 +744,6 @@ tie.directive('learnerView', [function() {
 
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
-          $scope.nextButtonIsShown = false;
           EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
@@ -833,10 +822,6 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.clear();
           congratulatoryFeedback.appendTextParagraph(
               "Good work! You've completed this question.");
-          congratulatoryFeedback.appendTextParagraph(
-              'Click the "Next" button to the right to proceed to the ' +
-              'next question.');
-          $scope.nextButtonIsShown = true;
 
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
@@ -987,7 +972,6 @@ tie.directive('learnerView', [function() {
             currentTaskIndex++;
             $scope.previousInstructions.push($scope.instructions);
             $scope.instructions = tasks[currentTaskIndex].getInstructions();
-            $scope.nextButtonIsShown = false;
 
             ConversationLogDataService.clear();
             EventHandlerService.createTaskStartEvent(
