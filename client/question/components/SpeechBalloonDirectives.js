@@ -16,8 +16,8 @@
  * @fileoverview Directives for displaying speech balloons.
  */
 
-tie.directive('tieSpeechBalloonContainer', ['$timeout', 'DELAY_STYLE_REMOVAL',
-  function($timeout, DELAY_STYLE_REMOVAL) {
+tie.directive('tieSpeechBalloonContainer', ['$timeout', 'DELAY_STYLE_CHANGES',
+  function($timeout, DELAY_STYLE_CHANGES) {
     return {
       restrict: 'E',
       scope: {},
@@ -36,7 +36,7 @@ tie.directive('tieSpeechBalloonContainer', ['$timeout', 'DELAY_STYLE_REMOVAL',
               'px';
           $timeout(function() {
             speechBalloonContainerElement.removeAttribute('style');
-          }, DELAY_STYLE_REMOVAL);
+          }, DELAY_STYLE_CHANGES);
         }, 0);
       }
     };

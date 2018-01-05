@@ -812,11 +812,11 @@ tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
     FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET);
 
 /**
- * Timeout delay needed to allow smooth scrolling animation to work properly
- * on non-MacOS systems.
+ * Timeout delay needed to allow animation to work properly on non-MacOS
+ * systems. Used when a timeout of 0 is not sufficient.
  *
  * @type {number}
  * @constant
  */
-var DELAY_STYLE_REMOVAL = 20;
-tie.constant('DELAY_STYLE_REMOVAL', DELAY_STYLE_REMOVAL);
+var DELAY_STYLE_CHANGES = 20;
+tie.constant('DELAY_STYLE_CHANGES', DELAY_STYLE_CHANGES);
