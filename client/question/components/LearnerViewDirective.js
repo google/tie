@@ -166,15 +166,15 @@ tie.directive('learnerView', [function() {
           background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
-          background-color: #689F38;
+          background-color: rgb(110, 150, 90);
           color: #ffffff;
         }
         .tie-button-green:hover {
-          background-color: #558B2F;
-          border: 1px solid #33691E;
+          background-color: rgb(102, 140, 84);
+          border: 1px solid rgb(92, 127, 76);
         }
         .tie-button-green:active {
-          background-color: #33691E;
+          background-color: rgb(92, 127, 76);
         }
         .night-mode .tie-button-green {
           background-color: rgb(70, 90, 10);
