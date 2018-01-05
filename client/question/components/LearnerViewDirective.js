@@ -474,7 +474,7 @@ tie.directive('learnerView', [function() {
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
-      'ConversationLogDataService',
+      'ConversationLogDataService', 'DELAY_STYLE_CHANGES',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -484,7 +484,7 @@ tie.directive('learnerView', [function() {
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
-          ConversationLogDataService) {
+          ConversationLogDataService, DELAY_STYLE_CHANGES) {
 
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
@@ -903,7 +903,7 @@ tie.directive('learnerView', [function() {
           }
           $timeout(function() {
             $scope.pulseAnimationEnabled = true;
-          }, 0);
+          }, DELAY_STYLE_CHANGES);
         };
 
         /**
