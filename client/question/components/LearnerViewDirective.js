@@ -145,34 +145,46 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .tie-button-blue {
-          background-color: rgb(110, 150, 190);
+          background-color: #448AFF;
           color: #ffffff;
         }
         .tie-button-blue:hover {
-          background-color: rgb(50, 133, 190);
-          border: 1px solid rgb(42, 112, 232);
+          background-color: #2979FF;
+          border: 1px solid #2962FF;
+        }
+        .tie-button-blue:active {
+          background-color: #2962FF;
         }
         .night-mode .tie-button-blue {
           background-color: rgb(70, 90, 110);
           color: #ffffff;
         }
         .night-mode .tie-button-blue:hover {
-          background-color: rgb(85, 115, 150);
+          border-color: #e4e4e4;
+        }
+        .night-mode .tie-button-blue:active {
+          background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
-          background-color: rgb(110, 150, 90);
+          background-color: #689F38;
           color: #ffffff;
         }
         .tie-button-green:hover {
-          background-color: rgb(50, 133, 90);
-          border: 1px solid rgb(42, 112, 132);
+          background-color: #558B2F;
+          border: 1px solid #33691E;
+        }
+        .tie-button-green:active {
+          background-color: #33691E;
         }
         .night-mode .tie-button-green {
           background-color: rgb(70, 90, 10);
           color: #ffffff;
         }
         .night-mode .tie-button-green:hover {
-          background-color: rgb(85, 115, 50);
+          border-color: #e4e4e4;
+        }
+        .night-mode .tie-button-green:active {
+          background-color: rgb(61, 79, 8);
         }
         .tie-button-red {
           background-color: #ef5350;
@@ -355,9 +367,6 @@ tie.directive('learnerView', [function() {
           border: 1px solid #333;
         }
         .tie-run-button {
-          background-color: rgb(42, 112, 232);
-          border: 1px solid rgb(32, 100, 200);
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
           float: right;
           margin-top: 10px;
           position: relative;
