@@ -186,14 +186,6 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-button-green:active {
           background-color: rgb(61, 79, 8);
         }
-        .tie-button-red {
-          background-color: #ef5350;
-          color: #ffffff;
-        }
-        .tie-button-red:hover {
-          background-color: #f44336;
-          border: 1px solid #e53935;
-        }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
           float: left;
