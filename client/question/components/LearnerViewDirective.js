@@ -85,12 +85,10 @@ tie.directive('learnerView', [function() {
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
-                    ng-class="active"
                     ng-click="submitCode(editorContents.code)">
                   I think I&#39m done
                 </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
-                    ng-class="active"
                     ng-click="submitCode(editorContents.code)">
                   Check my code
                 </button>
@@ -262,47 +260,6 @@ tie.directive('learnerView', [function() {
         .tie-lang-terminal {
           display: inline;
         }
-        .tie-next-arrow {
-          border-bottom: 50px solid transparent;
-          border-left: 75px solid rgb(0, 165, 0);
-          border-top: 50px solid transparent;
-          cursor: pointer;
-          height: 0;
-          left: calc(50% - 20px);
-          position: absolute;
-          top: calc(50% - 50px);
-          width: 0;
-        }
-        .tie-next-arrow:hover {
-          border-left: 75px solid rgb(32, 142, 64);
-        }
-        .tie-next-arrow:active {
-          border-left: 75px solid rgb(16, 128, 32);
-        }
-        .tie-next-button-text {
-          color: white;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 16px;
-          right: -36px;
-          padding-left: 2px;
-          position: absolute;
-          top: calc(50% - 12px);
-          vertical-align: middle;
-          width: 100px;
-        }
-        .tie-next-curtain {
-          background-color: rgb(200, 200, 200);
-          height: 100%;
-          opacity: 0.5;
-          width: 100%;
-        }
-        .tie-next-curtain-container {
-          height: 100%;
-          position: absolute;
-          top: 0;
-          width: 100%;
-          z-index: 4;
-        }
         .tie-options-row a {
           color: #696969;
           display: block;
@@ -398,16 +355,14 @@ tie.directive('learnerView', [function() {
           border: 1px solid #333;
         }
         .tie-run-button {
+          background-color: rgb(42, 112, 232);
+          border: 1px solid rgb(32, 100, 200);
+          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
           float: right;
           margin-top: 10px;
           position: relative;
         }
         .tie-run-button:hover {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-        }
-        .tie-run-button:active {
-          background-color: rgb(42, 112, 232);
-          border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
@@ -965,20 +920,16 @@ tie.directive('learnerView', [function() {
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
-          if (question.isLastTask(currentTaskIndex)) {
-            // TODO(talee): Flesh this out some more.
-            alert('Congratulations, you have finished!');
-          } else {
-            currentTaskIndex++;
-            $scope.previousInstructions.push($scope.instructions);
-            $scope.instructions = tasks[currentTaskIndex].getInstructions();
 
-            ConversationLogDataService.clear();
-            EventHandlerService.createTaskStartEvent(
-              SessionIdService.getSessionId(), $scope.currentQuestionId,
-              QuestionDataService.getQuestionVersion(),
-              tasks[currentTaskIndex].getId());
-          }
+          currentTaskIndex++;
+          $scope.previousInstructions.push($scope.instructions);
+          $scope.instructions = tasks[currentTaskIndex].getInstructions();
+
+          ConversationLogDataService.clear();
+          EventHandlerService.createTaskStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion(),
+            tasks[currentTaskIndex].getId());
         };
 
         /**
