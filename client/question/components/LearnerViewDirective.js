@@ -63,14 +63,6 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <div class="tie-next-curtain-container"
-                      ng-if="nextButtonIsShown">
-                    <div class="tie-next-curtain"></div>
-                    <div class="tie-arrow-highlighter"></div>
-                    <div ng-click="showNextTask()" class="tie-next-arrow">
-                      <span class="tie-next-button-text">Next</span>
-                    </div>
-                  </div>
                   <div ng-if="codeEditorIsShown"
                       class="tie-codemirror-container">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
@@ -93,15 +85,11 @@ tie.directive('learnerView', [function() {
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green"
-                    ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(editorContents.code)"
-                    ng-disabled="nextButtonIsShown">
+                    ng-click="submitCode(editorContents.code)">
                   I think I&#39m done
                 </button>
                 <button class="tie-run-button tie-button tie-button-blue protractor-test-run-code-btn"
-                    ng-class="{'active': !nextButtonIsShown}"
-                    ng-click="submitCode(editorContents.code)"
-                    ng-disabled="nextButtonIsShown">
+                    ng-click="submitCode(editorContents.code)">
                   Check my code
                 </button>
               </div>
@@ -157,42 +145,46 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .tie-button-blue {
-          background-color: rgb(110, 150, 190);
+          background-color: #448AFF;
           color: #ffffff;
         }
         .tie-button-blue:hover {
-          background-color: rgb(50, 133, 190);
-          border: 1px solid rgb(42, 112, 232);
+          background-color: #2979FF;
+          border: 1px solid #2962FF;
+        }
+        .tie-button-blue:active {
+          background-color: #2962FF;
         }
         .night-mode .tie-button-blue {
           background-color: rgb(70, 90, 110);
           color: #ffffff;
         }
         .night-mode .tie-button-blue:hover {
-          background-color: rgb(85, 115, 150);
+          border-color: #e4e4e4;
+        }
+        .night-mode .tie-button-blue:active {
+          background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
           background-color: rgb(110, 150, 90);
           color: #ffffff;
         }
         .tie-button-green:hover {
-          background-color: rgb(50, 133, 90);
-          border: 1px solid rgb(42, 112, 132);
+          background-color: rgb(102, 140, 84);
+          border: 1px solid rgb(92, 127, 76);
+        }
+        .tie-button-green:active {
+          background-color: rgb(92, 127, 76);
         }
         .night-mode .tie-button-green {
           background-color: rgb(70, 90, 10);
           color: #ffffff;
         }
         .night-mode .tie-button-green:hover {
-          background-color: rgb(85, 115, 50);
+          border-color: #e4e4e4;
         }
-        .tie-button-red {
-          background-color: #ef5350;
-          color: #ffffff;
-        }
-        .tie-button-red:hover {
-          background-color: #f44336;
-          border: 1px solid #e53935;
+        .night-mode .tie-button-green:active {
+          background-color: rgb(61, 79, 8);
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -271,47 +263,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
-        }
-        .tie-next-arrow {
-          border-bottom: 50px solid transparent;
-          border-left: 75px solid rgb(0, 165, 0);
-          border-top: 50px solid transparent;
-          cursor: pointer;
-          height: 0;
-          left: calc(50% - 20px);
-          position: absolute;
-          top: calc(50% - 50px);
-          width: 0;
-        }
-        .tie-next-arrow:hover {
-          border-left: 75px solid rgb(32, 142, 64);
-        }
-        .tie-next-arrow:active {
-          border-left: 75px solid rgb(16, 128, 32);
-        }
-        .tie-next-button-text {
-          color: white;
-          font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 16px;
-          right: -36px;
-          padding-left: 2px;
-          position: absolute;
-          top: calc(50% - 12px);
-          vertical-align: middle;
-          width: 100px;
-        }
-        .tie-next-curtain {
-          background-color: rgb(200, 200, 200);
-          height: 100%;
-          opacity: 0.5;
-          width: 100%;
-        }
-        .tie-next-curtain-container {
-          height: 100%;
-          position: absolute;
-          top: 0;
-          width: 100%;
-          z-index: 4;
         }
         .tie-options-row a {
           color: #696969;
@@ -413,11 +364,6 @@ tie.directive('learnerView', [function() {
           position: relative;
         }
         .tie-run-button:hover {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
-        }
-        .tie-run-button:active {
-          background-color: rgb(42, 112, 232);
-          border: 1px solid rgb(32, 100, 200);
           box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
@@ -754,7 +700,6 @@ tie.directive('learnerView', [function() {
 
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
-          $scope.nextButtonIsShown = false;
           EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
@@ -833,10 +778,6 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.clear();
           congratulatoryFeedback.appendTextParagraph(
               "Good work! You've completed this question.");
-          congratulatoryFeedback.appendTextParagraph(
-              'Click the "Next" button to the right to proceed to the ' +
-              'next question.');
-          $scope.nextButtonIsShown = true;
 
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
@@ -980,21 +921,16 @@ tie.directive('learnerView', [function() {
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
-          if (question.isLastTask(currentTaskIndex)) {
-            // TODO(talee): Flesh this out some more.
-            alert('Congratulations, you have finished!');
-          } else {
-            currentTaskIndex++;
-            $scope.previousInstructions.push($scope.instructions);
-            $scope.instructions = tasks[currentTaskIndex].getInstructions();
-            $scope.nextButtonIsShown = false;
 
-            ConversationLogDataService.clear();
-            EventHandlerService.createTaskStartEvent(
-              SessionIdService.getSessionId(), $scope.currentQuestionId,
-              QuestionDataService.getQuestionVersion(),
-              tasks[currentTaskIndex].getId());
-          }
+          currentTaskIndex++;
+          $scope.previousInstructions.push($scope.instructions);
+          $scope.instructions = tasks[currentTaskIndex].getInstructions();
+
+          ConversationLogDataService.clear();
+          EventHandlerService.createTaskStartEvent(
+            SessionIdService.getSessionId(), $scope.currentQuestionId,
+            QuestionDataService.getQuestionVersion(),
+            tasks[currentTaskIndex].getId());
         };
 
         /**
