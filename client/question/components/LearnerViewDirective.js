@@ -140,26 +140,26 @@ tie.directive('learnerView', [function() {
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
-        .tie-button-blue {		
-          background-color: #448AFF;		
-          color: #ffffff;		
-        }		
-        .tie-button-blue:hover {		
-          background-color: #2979FF;		
-          border: 1px solid #2962FF;		
-        }		
-        .tie-button-blue:active {		
-          background-color: #2962FF;		
-        }		
-        .night-mode .tie-button-blue {		
-          background-color: rgb(70, 90, 110);		
-          color: #ffffff;		
-        }		
-        .night-mode .tie-button-blue:hover {		
-          border-color: #e4e4e4;		
-        }		
-        .night-mode .tie-button-blue:active {		
-          background-color: rgb(62, 81, 99);		
+        .tie-button-blue {
+          background-color: #448AFF;
+          color: #ffffff;
+        }
+        .tie-button-blue:hover {
+          background-color: #2979FF;
+          border: 1px solid #2962FF;
+        }
+        .tie-button-blue:active {
+          background-color: #2962FF;
+        }
+        .night-mode .tie-button-blue {
+          background-color: rgb(70, 90, 110);
+          color: #ffffff;
+        }
+        .night-mode .tie-button-blue:hover {
+          border-color: #e4e4e4;
+        }
+        .night-mode .tie-button-blue:active {
+          background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
           background-color: rgb(110, 150, 90);
