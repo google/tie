@@ -55,7 +55,7 @@ tie.directive('learnerView', [function() {
                 </monospace-display-modal>
               </div>
               <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
-                  Reset Feedback
+                Reset Feedback
               </button>
               <select class="tie-select-menu" name="theme-select"
                   ng-change="changeTheme(theme)" ng-model="theme"
@@ -956,7 +956,7 @@ tie.directive('learnerView', [function() {
           ConversationLogDataService.clear();
           LocalStorageService.clearLocalStorageFeedback(
             $scope.currentQuestionId, language);
-        }
+        };
 
         /**
          * Displays a notification for the given number of seconds to let the
