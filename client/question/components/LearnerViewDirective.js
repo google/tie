@@ -319,7 +319,7 @@ tie.directive('learnerView', [function() {
           padding: 10px;
         }
         .tie-question-title {
-          color: rgb(66, 133, 244);
+          color: rgb(0, 0, 0);
         }
         .tie-question-ui {
           vertical-align: top;
@@ -385,6 +385,10 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-select-menu {
           background-color: #333a42;
           color: white;
+        }
+        .CodeMirror-linenumber {
+          /* Increase the contrast of the line numbers from the background. */
+          color: #111;
         }
         .CodeMirror-line.tie-syntax-error-line {
           background: #FBC2C4;
