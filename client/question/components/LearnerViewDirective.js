@@ -54,6 +54,9 @@ tie.directive('learnerView', [function() {
                     content="content">
                 </monospace-display-modal>
               </div>
+              <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
+                Reset Feedback
+              </button>
               <select class="tie-select-menu" name="theme-select"
                   ng-change="changeTheme(theme)" ng-model="theme"
                   ng-options="i.themeName as i.themeName for i in themes">
@@ -135,7 +138,7 @@ tie.directive('learnerView', [function() {
           height: 24px;
           margin-right: 10px;
           padding: 1px 6px;
-          width: 100px;
+          width: 104px;
         }
         .tie-button:hover {
           border: 1px solid #e4e4e4;
@@ -688,7 +691,6 @@ tie.directive('learnerView', [function() {
           $scope.title = question.getTitle();
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          ConversationLogDataService.clear();
           var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
             questionId, language);
           if (loadedFeedbackParagraphs) {
@@ -960,9 +962,21 @@ tie.directive('learnerView', [function() {
         $scope.resetCode = function() {
           LocalStorageService.clearLocalStorageCode(
             $scope.currentQuestionId, language);
+          LocalStorageService.clearLocalStorageFeedback(
+            $scope.currentQuestionId, language);
           EventHandlerService.createCodeResetEvent(
             SessionIdService.getSessionId());
           $scope.loadQuestion($scope.currentQuestionId);
+        };
+
+        /**
+         * Clears the feedback in the window, and deletes the feedback
+         * from local storage for the current question.
+         */
+        $scope.resetFeedback = function() {
+          ConversationLogDataService.clear();
+          LocalStorageService.clearLocalStorageFeedback(
+            $scope.currentQuestionId, language);
         };
 
         /**
