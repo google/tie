@@ -22,15 +22,17 @@ tie.factory('PythonPrereqCheckService', [
   'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
   'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
   'WRONG_LANGUAGE_ERRORS', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
-  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'CLASS_NAME_AUXILIARY_CODE',
-  'CLASS_NAME_SYSTEM_CODE',
+  'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
+  'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL', 'CLASS_NAME_AUXILIARY_CODE',
+  'CLASS_NAME_SYSTEM_CODE', 'CLASS_NAME_STUDENT_CODE',
   function(
       PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
       PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
       PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
       WRONG_LANGUAGE_ERRORS, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
-      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
-      CLASS_NAME_SYSTEM_CODE) {
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL,
+      PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
+      CLASS_NAME_SYSTEM_CODE, CLASS_NAME_STUDENT_CODE) {
 
     /**
      * Returns a list of lines in the code that do not contain strings, in
@@ -226,6 +228,20 @@ tie.factory('PythonPrereqCheckService', [
       return (auxiliaryClassRegEx.exec(code) !== null);
     };
 
+    /**
+     * Returns whether the user tries to call the StudentCode class or its
+     * methods in the given code.
+     *
+     * @param {string} code
+     * @returns {boolean}
+     */
+    var hasInvalidStudentClassCalls = function(code) {
+      var studentClassRegEx = new RegExp('\\b' + CLASS_NAME_STUDENT_CODE +
+        '\\b');
+
+      return (studentClassRegEx.exec(code) !== null);
+    };
+
     return {
       /**
        * Checks if the code does not meet any prerequisite conditions and, if
@@ -258,6 +274,11 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL, null, null);
         }
 
+        if (hasInvalidStudentClassCalls(code)) {
+          return PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL, null, null);
+        }
+
         // Verify no unsupported libraries are imported.
         var importedLibraries = getImportedLibraries(code);
         var unsupportedImports = getUnsupportedImports(importedLibraries);
@@ -284,6 +305,7 @@ tie.factory('PythonPrereqCheckService', [
       getNonStringLines: getNonStringLines,
       getUnsupportedImports: getUnsupportedImports,
       hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
+      hasInvalidStudentClassCalls: hasInvalidStudentClassCalls,
       hasInvalidSystemClassCalls: hasInvalidSystemClassCalls
     };
   }

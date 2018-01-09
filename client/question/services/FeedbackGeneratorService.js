@@ -22,7 +22,8 @@ tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory', 'TranscriptService',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
+  'CLASS_NAME_STUDENT_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
   'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
   'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
@@ -36,7 +37,8 @@ tie.factory('FeedbackGeneratorService', [
     FeedbackObjectFactory, TranscriptService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
-    CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT,
+    CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE,
+    CLASS_NAME_STUDENT_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
     PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
     ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
@@ -627,6 +629,7 @@ tie.factory('FeedbackGeneratorService', [
 
           for (var j = 0; j < buggyOutputTests.length; j++) {
             if (buggyOutputTestResults[i][j]) {
+
               var feedback = _getBuggyOutputTestFeedback(
                 buggyOutputTests[j], codeHasChanged);
               // Null feedback indicates that we've run out of hints and should
@@ -819,6 +822,18 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendCodeParagraph([
             'ForbiddenNamespaceError: It looks you\'re using the ' +
             CLASS_NAME_SYSTEM_CODE + ' class or its methods, which is ',
+            'forbidden. Please resubmit without using this class.'
+          ].join(''));
+        } else if (prereqCheckFailure.hasInvalidStudentCodeCall()) {
+          feedback = FeedbackObjectFactory.create(
+            FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK);
+          feedback.appendTextParagraph([
+            'Looks like your code had a runtime error. Here is the error ',
+            'message: '
+          ].join(''));
+          feedback.appendCodeParagraph([
+            'ForbiddenNamespaceError: It looks you\'re trying to call the ' +
+            CLASS_NAME_STUDENT_CODE + ' class or its methods, which is ',
             'forbidden. Please resubmit without using this class.'
           ].join(''));
         } else {

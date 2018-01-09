@@ -533,6 +533,30 @@ describe('PythonPrereqCheckService', function() {
     );
   });
 
+  describe('hasInvalidStudentClassCalls', function() {
+    it('returns true when the user tries to use StudentCode class or methods',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return StudentCode.matchParentheses(arg)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidStudentClassCalls(code))
+          .toBe(true);
+      }
+    );
+
+    it('returns false when there are no StudentCode calls',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidStudentClassCalls(code))
+          .toBe(false);
+      }
+    );
+  });
+
   describe('checkCode', function() {
     it(['returns the correct PrereqCheckFailureObject when starter code is ',
       'missing'].join(''), function() {

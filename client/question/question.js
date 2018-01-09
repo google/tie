@@ -579,6 +579,16 @@ tie.constant(
   'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'invalidAuxiliaryCode');
 
 /**
+ * Pre-requisite check error type to see if the user tried to use an
+ * StudentCode method in their code submission.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant(
+  'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL', 'invalidStudentCode');
+
+/**
   Dictionary of the customized runtime error feedback messages
   - `checker` function checks to see if the error matches with the type of
     feedback message
