@@ -433,8 +433,8 @@ tie.directive('learnerView', [function() {
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           ConversationLogDataService, DELAY_STYLE_CHANGES) {
 
-        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
         $scope.ConversationLogDataService = ConversationLogDataService;
+        $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         /**
          * Array of strings containing the ids of the allowed question sets.
