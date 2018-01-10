@@ -88,7 +88,7 @@ tie.directive('learnerView', [function() {
                   Saving code...
                 </div>
                 <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn"
-                    ng-click="submitCode(editorContents.code)">
+                    ng-click="submitCode(editorContents.code)" ng-disabled="ConversationLogDataService.isNewBalloonPending()">
                   I think I&#39m done
                 </button>
               </div>
@@ -437,6 +437,7 @@ tie.directive('learnerView', [function() {
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           ConversationLogDataService, DELAY_STYLE_CHANGES) {
 
+        $scope.ConversationLogDataService = ConversationLogDataService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         /**
