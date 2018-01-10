@@ -65,7 +65,7 @@ tie.directive('codeSnippet', [function() {
          */
         $scope.openCodeModal = function() {
           MonospaceDisplayModalService.showModal(
-            'Code History', $scope.snippetLines);
+            'Previous Submission', $scope.snippetLines);
         };
 
         /**
