@@ -1078,7 +1078,7 @@ describe('FeedbackGeneratorService', function() {
         var paragraphs = feedback.getParagraphs();
         expect(paragraphs[0].getContent()).toEqual([
           'Please keep your code within the existing predefined functions ',
-          'or define your own helper functions if you need to',
+          'or define your own helper functions if you need to ',
           '-- we cannot process code in the global scope.'
         ].join(' '));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
