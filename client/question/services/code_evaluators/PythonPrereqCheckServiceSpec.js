@@ -84,6 +84,18 @@ describe('PythonPrereqCheckService', function() {
           .toBe(true);
       }
      );
+    it('correctly returns false if there is a comment in the global scope',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return arg',
+          '# still need to call myFunction("arg")',
+          ''
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkGlobalCallsPresent(code))
+          .toBe(false);
+      }
+     );
   });
 
   describe('extractTopLevelFunctionLines', function() {

@@ -107,7 +107,8 @@ tie.factory('PythonPrereqCheckService', [
       for (var i = 0; i < codeLines.length; i++) {
         var line = rightTrim(codeLines[i]);
         var VALID_LINE_PATTERN = /(^\s+)|(^def)|(^import)/;
-        if (line.search(VALID_LINE_PATTERN) === -1 && line !== '') {
+        if (line.search(VALID_LINE_PATTERN) === -1 && line !== '' &&
+            !line.startsWith('#')) {
           return true;
         }
       }
