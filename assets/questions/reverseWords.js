@@ -463,9 +463,9 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       testSuiteIdsThatMustFail: ['SAMPLE_INPUT'],
       messages: [
         [
-          "That code doesn't seem to work. Try taking a look at the sample ",
-          "inputs and outputs, then walk through your code to see what might ",
-          "be wrong."
+          "That code doesn't seem to work as intended. Try taking a look at ",
+          "the sample inputs and outputs, then walk through your code to see ",
+          "what might be wrong."
         ].join('')
       ]
     }, {
