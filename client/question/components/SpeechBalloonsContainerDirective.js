@@ -27,7 +27,7 @@ tie.directive('speechBalloonsContainer', [function() {
           <div class="tie-dot tie-dot-2"></div>
           <div class="tie-dot tie-dot-3"></div>
         </div>
-        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList track by $index" aria-live="assertive">
+        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" aria-live="assertive">
           <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
               <tie-speech-balloon-left>
