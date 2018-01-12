@@ -321,6 +321,9 @@ tie.directive('learnerView', [function() {
         .tie-question-title {
           color: #212121;
         }
+        .night-mode .tie-question-title {
+          color: #ececec;
+        }
         .tie-question-ui {
           vertical-align: top;
         }
