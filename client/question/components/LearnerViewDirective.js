@@ -137,11 +137,15 @@ tie.directive('learnerView', [function() {
           font-size: 12px;
           height: 24px;
           margin-right: 10px;
+          outline: none;
           padding: 1px 6px;
           width: 104px;
         }
         .tie-button:hover {
           border: 1px solid #e4e4e4;
+        }
+        .tie-button:active {
+          border-color: #8080ff;
         }
         .tie-button-blue {
           background-color: #448AFF;
