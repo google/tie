@@ -39,7 +39,7 @@ tie.directive('monospaceDisplayModal', [function() {
         </div>
         <footer>
           <div class="tie-monospace-modal-table-cell tie-monospace-modal-action-button-container">
-            <button class="tie-button-blue tie-monospace-modal-action-button"
+            <button class="tie-button tie-button-blue tie-monospace-modal-action-button"
                     ng-click="closeModal()">
               <span>Dismiss</span>
             </button>
