@@ -145,7 +145,7 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .tie-button:active {
-          border-color: #8080ff;
+          border-color: #a0a0a0;
         }
         .tie-button-blue {
           background-color: #448AFF;
