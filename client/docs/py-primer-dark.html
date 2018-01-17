@@ -92,7 +92,7 @@
     </p>
     <p>
       Reading through the document from top to bottom will give you a quick
-      overview. 
+      overview.
     </p>
     <p>
       Or you can just skip to specific sections listed below:
@@ -179,14 +179,16 @@
       <h2>Creating Comments</h2>
       <h3>Multi-line comments</h3>
       <p>
-        Triple double quotation marks (""") are used to define multi-line
-        string literals and can be used for multi-line comments. 
+        Triple double quotation marks (<span class="fixed-font">"""</span>) are
+        used to define multi-line string literals and can be used for
+        multi-line comments.
       </p>
       <pre>    <span class="string">""" A multi-line comment in Python. Can also be used to create multi-line
     string literals, which can be assigned to variables. """</span></pre>
       <h3>Single-line comments</h3>
       <p>
-        A hash character (#) is used to define a single-line comment.
+        A hash character (<span class="fixed-font">#</span>) is used to define
+        a single-line comment.
       </p>
       <pre>    <span class="single-line-comment"># A single line comment in Python</span></pre>
     </div>
@@ -194,8 +196,8 @@
       <h2>Declaring Variables</h2>
       <p>
         You declare variables simply by assigning to them. You do not use the
-        'var' keyword to declare variables.
-      </p> 
+        <span class="fixed-font">var</span> keyword to declare variables.
+      </p>
       <pre>    <span class="strikethrough"><span class="general-text">var foo = <span class="string">'bar'</span></span></span>
     foo = <span class="string">'bar'</span></pre>
     </div>
@@ -236,7 +238,8 @@
       <pre>    <span class="general-statements">if</span> example_input == <span class="number">1</span>:
         <span class="general-statements">return</span> <span class="string">'Number 1! Whoohoo!'</span></pre>
       <p>
-        Else if and else statements are as follows:
+        <span class="fixed-font">else if</span> and
+        <span class="fixed-font">else</span> statements are as follows:
       </p>
       <pre>    <span class="general-statements">if</span> example_input == <span class="number">1</span>:
         <span class="general-statements">return</span> <span class="string">'Number 1! Whoohoo!'</span>
@@ -251,12 +254,13 @@
       <h2>For Loops</h2>
       <p>
         The following are examples of how you can write for loops.
-      </p> 
+      </p>
       <h3>Iterable objects</h3>
       <p>
-        If an object is iterable, you can simply use the 'for ... in' pattern:
+        If an object is iterable, you can simply use the
+        &nbsp;<span class="fixed-font">for ... in</span>&nbsp; pattern:
       </p>
-      <pre>    iterable_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] 
+      <pre>    iterable_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
 
     <span class="general-statements">for</span> item <span class="general-statements">in</span> iterable_list:
         number_of_items += <span class="number">1</span></pre>
@@ -270,14 +274,13 @@
       <h3>Generating ranges for use in for loops</h3>
       <p>
         The following defines a range using the length of a string (which is
-        not iterable by itself, since it's an int). The below is equivalent to 
-        a &nbsp;&nbsp;<span class="fixed-font">for (var i = 0; i &lt;
-        some_length; i++)</span>&nbsp;&nbsp; pattern that you might use in
-        other languages.
+        not iterable by itself, since it's an int). The below is equivalent to
+        a &nbsp;<span class="fixed-font">for (var i = 0; i &lt; some_length;
+        i++)</span>&nbsp; pattern that you might use in other languages.
       </p>
       <pre>    <span class="general-statements">for</span> i <span class="general-statements">in</span> <span class="method-type">range</span>(<span class="number">0</span>, <span class="method-type">len</span>(<span class="string">'hello'</span>)):
         number_of_iterations += <span class="number">1</span></pre>
-    </div> 
+    </div>
     <div id="while-loops">
       <h2>While Loops</h2>
       <p>
@@ -347,7 +350,7 @@
       <h2>Dictionaries (Associative Arrays)</h2>
       <p>
         Python dictionaries may be referred to as associative arrays in other
-        languages. The following lists basic actions you can perform on a 
+        languages. The following lists basic actions you can perform on a
         dictionary.
       </p>
       <h3>Declaring</h3>
