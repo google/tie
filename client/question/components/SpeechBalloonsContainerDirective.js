@@ -47,6 +47,9 @@ tie.directive('speechBalloonsContainer', [function() {
                     <output-snippet content="paragraph.getContent()">
                     </output-snippet>
                   </span>
+                  <span ng-if="paragraph.isImageParagraph()">
+                    <img class="tie-question-completion-image" ng-src="../../assets/images/{{paragraph.getContent()}}">
+                  </span>
                 </p>
               </tie-speech-balloon-left>
               <tie-speech-balloon-tail-left></tie-speech-balloon-tail-left>
@@ -108,6 +111,9 @@ tie.directive('speechBalloonsContainer', [function() {
           font-size: 12px;
           padding-right: 8px;
           width: 95%;
+        }
+        .tie-question-completion-image {
+          height: 180px;
         }
         .tie-speech-balloon-container {
           clear: right;

@@ -130,6 +130,16 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
+     * Appends an ImageParagraph of type image to the _paragraphs Array.
+     *
+     * @param {string} imageFilename name of the image file.
+     */
+    Feedback.prototype.appendImageParagraph = function(imageFilename) {
+      this._feedbackParagraphs.push(
+        FeedbackParagraphObjectFactory.createImageParagraph(imageFilename));
+    };
+
+    /**
      * Clears all FeedbackParagraph objects from the _paragraphs property.
      */
     Feedback.prototype.clear = function() {

@@ -330,6 +330,14 @@ tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 tie.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
 
 /**
+ * FeedbackParagraph type for displaying an image.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_IMAGE', 'image');
+
+/**
  * Constant for the number of times that a user can make a mistake (i.e.
  * same error, syntax error, etc.) until we prompt them to look at the
  * primer.
