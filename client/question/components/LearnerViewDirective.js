@@ -798,6 +798,7 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.clear();
           congratulatoryFeedback.appendTextParagraph(
               "Good work! You've completed this question.");
+          congratulatoryFeedback.appendImageParagraph('congrats_cake.gif');
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
