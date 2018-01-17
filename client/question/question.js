@@ -330,6 +330,14 @@ tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
 tie.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
 
 /**
+ * FeedbackParagraph type for displaying an image.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('PARAGRAPH_TYPE_IMAGE', 'image');
+
+/**
  * Constant for the number of times that a user can make a mistake (i.e.
  * same error, syntax error, etc.) until we prompt them to look at the
  * primer.
@@ -579,6 +587,16 @@ tie.constant(
   'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL', 'invalidAuxiliaryCode');
 
 /**
+ * Pre-requisite check error type to see if the user tried to use an
+ * StudentCode method in their code submission.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant(
+  'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL', 'invalidStudentCode');
+
+/**
   Dictionary of the customized runtime error feedback messages
   - `checker` function checks to see if the error matches with the type of
     feedback message
@@ -791,3 +809,32 @@ tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
  * @constant
  */
 tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
+
+/**
+ * Height offset needed by modal to cover feedback buttons.
+ *
+ * @type {number}
+ * @constant
+ */
+var FEEDBACK_MODAL_HEIGHT_OFFSET = 66;
+tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
+
+/**
+ * Height offset needed by modal to completely hide from view when dismissed.
+ *
+ * @type {number}
+ * @constant
+ */
+var FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET = 34;
+tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
+    FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET);
+
+/**
+ * Timeout delay needed to allow animation to work properly on non-MacOS
+ * systems. Used when a timeout of 0 is not sufficient.
+ *
+ * @type {number}
+ * @constant
+ */
+var DELAY_STYLE_CHANGES = 20;
+tie.constant('DELAY_STYLE_CHANGES', DELAY_STYLE_CHANGES);

@@ -84,6 +84,18 @@ describe('PythonPrereqCheckService', function() {
           .toBe(true);
       }
      );
+    it('correctly returns false if there is a comment in the global scope',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return arg',
+          '# still need to call myFunction("arg")',
+          ''
+        ].join('\n');
+        expect(PythonPrereqCheckService.checkGlobalCallsPresent(code))
+          .toBe(false);
+      }
+     );
   });
 
   describe('extractTopLevelFunctionLines', function() {
@@ -528,6 +540,30 @@ describe('PythonPrereqCheckService', function() {
           '    return arg'
         ].join('\n');
         expect(PythonPrereqCheckService.hasInvalidAuxiliaryClassCalls(code))
+          .toBe(false);
+      }
+    );
+  });
+
+  describe('hasInvalidStudentClassCalls', function() {
+    it('returns true when the user tries to use StudentCode class or methods',
+      function() {
+        var code = [
+          'def myFunction(arg):',
+          '    return StudentCode.matchParentheses(arg)'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidStudentClassCalls(code))
+          .toBe(true);
+      }
+    );
+
+    it('returns false when there are no StudentCode calls',
+      function() {
+        var code = [
+          'def myFunction(arg)',
+          '    return arg'
+        ].join('\n');
+        expect(PythonPrereqCheckService.hasInvalidStudentClassCalls(code))
           .toBe(false);
       }
     );

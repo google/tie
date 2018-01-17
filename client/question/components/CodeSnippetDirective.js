@@ -33,7 +33,7 @@ tie.directive('codeSnippet', [function() {
       <style>
         .tie-code-snippet-line {
           font-family: monospace;
-          line-height: 24px;
+          line-height: 16px;
           word-wrap: break-word;
         }
       </style>
@@ -65,7 +65,7 @@ tie.directive('codeSnippet', [function() {
          */
         $scope.openCodeModal = function() {
           MonospaceDisplayModalService.showModal(
-            'Code History', $scope.snippetLines);
+            'Previous Code', $scope.snippetLines);
         };
 
         /**

@@ -27,7 +27,7 @@ tie.directive('speechBalloonsContainer', [function() {
           <div class="tie-dot tie-dot-2"></div>
           <div class="tie-dot tie-dot-3"></div>
         </div>
-        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" track by $index>
+        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" aria-live="assertive">
           <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
               <tie-speech-balloon-left>
@@ -46,6 +46,9 @@ tie.directive('speechBalloonsContainer', [function() {
                   <span ng-if="paragraph.isOutputParagraph()">
                     <output-snippet content="paragraph.getContent()">
                     </output-snippet>
+                  </span>
+                  <span ng-if="paragraph.isImageParagraph()">
+                    <img class="tie-question-completion-image" ng-src="../../assets/images/{{paragraph.getContent()}}">
                   </span>
                 </p>
               </tie-speech-balloon-left>
@@ -108,6 +111,9 @@ tie.directive('speechBalloonsContainer', [function() {
           font-size: 12px;
           padding-right: 8px;
           width: 95%;
+        }
+        .tie-question-completion-image {
+          height: 180px;
         }
         .tie-speech-balloon-container {
           clear: right;

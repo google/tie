@@ -22,11 +22,13 @@ tie.factory('PrereqCheckFailureObjectFactory', [
   'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
   'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
   'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
+  'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL',
   function(
       PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
       PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
       PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
-      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL) {
+      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL,
+      PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL) {
     /**
      * PrereqCheckFailure encapsulates all of the data necessary to represent
      * one prerequisite check failure that a student's code submission can
@@ -126,6 +128,17 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      */
     PrereqCheckFailure.prototype.hasInvalidAuxiliaryCodeCall = function() {
       return (this._type === PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL);
+    };
+
+    /**
+     * Checks to see if the error is due to the user trying to utilize the
+     * StudentCode class/method in their submission.
+     *
+     * @returns {boolean} Indicates if this failure is of type "invalid
+     * studentcode call"
+     */
+    PrereqCheckFailure.prototype.hasInvalidStudentCodeCall = function() {
+      return (this._type === PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL);
     };
 
     /**

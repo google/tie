@@ -36,6 +36,7 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_WRONG_LANG;
   var PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL;
   var PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL;
+  var PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL;
   var LANGUAGE_PYTHON;
   var FEEDBACK_CATEGORIES;
   var PYTHON_PRIMER_BUTTON_NAME;
@@ -69,6 +70,8 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL');
     PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL = $injector.get(
       'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL');
+    PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL = $injector.get(
+      'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL');
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
@@ -1074,7 +1077,8 @@ describe('FeedbackGeneratorService', function() {
         expect(feedback.isAnswerCorrect()).toEqual(false);
         var paragraphs = feedback.getParagraphs();
         expect(paragraphs[0].getContent()).toEqual([
-          'Please keep your code within the existing predefined functions',
+          'Please keep your code within the existing predefined functions ',
+          'or define your own helper functions if you need to ',
           '-- we cannot process code in the global scope.'
         ].join(' '));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -1300,6 +1304,30 @@ describe('FeedbackGeneratorService', function() {
           'ForbiddenNamespaceError: It looks you\'re using the System class ',
           'or its methods, which is forbidden. Please resubmit without ',
           'using this class.'
+        ].join(''));
+        expect(paragraphs[1].isCodeParagraph()).toBe(true);
+        expect(feedback.getFeedbackCategory()).toEqual(
+          FEEDBACK_CATEGORIES.FAILS_FORBIDDEN_NAMESPACE_CHECK);
+      }
+    );
+
+    it('should return the correct info if it has an invalid StudentCode call',
+      function() {
+        var prereqFailure = PrereqCheckFailureObjectFactory.create(
+            PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL, null, null);
+        var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+            prereqFailure);
+        expect(feedback.isAnswerCorrect()).toEqual(false);
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs[0].getContent()).toEqual([
+          'Looks like your code had a runtime error. Here is the error',
+          'message: '
+        ].join(' '));
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[1].getContent()).toEqual([
+          'ForbiddenNamespaceError: It looks you\'re trying to call the ',
+          'StudentCode class or its methods, which is forbidden. Please ',
+          'resubmit without using this class.'
         ].join(''));
         expect(paragraphs[1].isCodeParagraph()).toBe(true);
         expect(feedback.getFeedbackCategory()).toEqual(

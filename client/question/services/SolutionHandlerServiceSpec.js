@@ -275,7 +275,6 @@ describe('SolutionHandlerService', function() {
               auxiliaryCode, 'python'
             ).then(function(feedback2) {
               expect(feedback2.isAnswerCorrect()).toEqual(false);
-              // The code has not changed, so the message stays the same.
               expect(feedback2.getParagraphs()[0].getContent()).toEqual([
                 "It looks like you haven't changed your code. Try addressing ",
                 "the error before you run again."
@@ -322,7 +321,8 @@ describe('SolutionHandlerService', function() {
           ).then(function(feedback) {
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[0].getContent()).toEqual([
-              'Please keep your code within the existing predefined functions',
+              'Please keep your code within the existing predefined functions ',
+              'or define your own helper functions if you need to ',
               '-- we cannot process code in the global scope.'
             ].join(' '));
             done();

@@ -22,10 +22,12 @@ describe('FeedbackParagraphObjectFactory', function() {
   var errorDict;
   var codeDict;
   var outputDict;
+  var imageDict;
   var textParagraph;
   var errorParagraph;
   var codeParagraph;
   var outputParagraph;
+  var imageParagraph;
 
 
   beforeEach(module('tie'));
@@ -49,6 +51,10 @@ describe('FeedbackParagraphObjectFactory', function() {
       type: 'output',
       content: 'nhoJ ,olleH'
     };
+    imageDict = {
+      type: 'image',
+      content: 'image.png'
+    };
 
     textParagraph = FeedbackParagraphObjectFactory
       .createTextParagraph('Could you fix this?');
@@ -59,6 +65,8 @@ describe('FeedbackParagraphObjectFactory', function() {
         'ZeroDivisionError: integer division or modulo by zero on line 5');
     outputParagraph = FeedbackParagraphObjectFactory
       .createOutputParagraph('nhoJ ,olleH');
+    imageParagraph = FeedbackParagraphObjectFactory
+      .createImageParagraph('image.png');
 
   }));
 
@@ -72,6 +80,8 @@ describe('FeedbackParagraphObjectFactory', function() {
         .toEqual(codeParagraph);
       expect(FeedbackParagraphObjectFactory.fromDict(outputDict))
         .toEqual(outputParagraph);
+      expect(FeedbackParagraphObjectFactory.fromDict(imageDict))
+        .toEqual(imageParagraph);
     });
 
     it('should return null if the dict has undefined type', function() {
@@ -90,6 +100,7 @@ describe('FeedbackParagraphObjectFactory', function() {
       expect(errorParagraph.toDict()).toEqual(errorDict);
       expect(codeParagraph.toDict()).toEqual(codeDict);
       expect(outputParagraph.toDict()).toEqual(outputDict);
+      expect(imageParagraph.toDict()).toEqual(imageDict);
     });
   });
 

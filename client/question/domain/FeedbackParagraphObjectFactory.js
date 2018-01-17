@@ -20,8 +20,10 @@
 tie.factory('FeedbackParagraphObjectFactory', [
   'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE',
   'PARAGRAPH_TYPE_SYNTAX_ERROR', 'PARAGRAPH_TYPE_OUTPUT',
+  'PARAGRAPH_TYPE_IMAGE',
   function(PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_CODE,
-    PARAGRAPH_TYPE_SYNTAX_ERROR, PARAGRAPH_TYPE_OUTPUT) {
+    PARAGRAPH_TYPE_SYNTAX_ERROR, PARAGRAPH_TYPE_OUTPUT,
+    PARAGRAPH_TYPE_IMAGE) {
     /**
      * FeedbackParagraph objects have all of the information necessary
      * to represent one paragraph of feedback (code-, text-, or error-based) in
@@ -93,6 +95,14 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
+     * Checks if the Paragraph is a paragraph with an image.
+     *
+     * @returns {boolean}
+     */
+    FeedbackParagraph.prototype.isImageParagraph = function() {
+      return this._type === PARAGRAPH_TYPE_IMAGE;
+    };
+    /**
      * A getter for the _content property.
      *
      * @returns {string}
@@ -132,6 +142,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
       } else if (this.isOutputParagraph()) {
         feedbackParagraphDict.type = PARAGRAPH_TYPE_OUTPUT;
+      } else if (this.isImageParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_IMAGE;
       } else {
         // If undefined type, return null.
         return null;
@@ -155,7 +167,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
     /**
      * Returns a FeedbackParagraph made up of code given in the parameter.
      *
-     * @param {string} code Code to be in the paragraph
+     * @param {string} code Code to be in the paragraph.
      * @returns {FeedbackParagraph}
      */
     FeedbackParagraph.createCodeParagraph = function(code) {
@@ -175,11 +187,21 @@ tie.factory('FeedbackParagraphObjectFactory', [
     /**
      * Returns a FeedbackParagraph comprising of output from user code.
      *
-     * @param {string} output Output to be in the paragraph
+     * @param {string} output Output to be in the paragraph.
      * @returns {FeedbackParagraph}
      */
     FeedbackParagraph.createOutputParagraph = function(output) {
       return new FeedbackParagraph(PARAGRAPH_TYPE_OUTPUT, output);
+    };
+
+    /**
+     * Returns a FeedbackParagraph comprising of an image file name.
+     *
+     * @param {string} image Name of the image.
+     * @returns {FeedbackParagraph}
+     */
+    FeedbackParagraph.createImageParagraph = function(image) {
+      return new FeedbackParagraph(PARAGRAPH_TYPE_IMAGE, image);
     };
 
     /**
@@ -198,6 +220,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         return (this.createSyntaxErrorParagraph(dict.content));
       } else if (dict.type === PARAGRAPH_TYPE_OUTPUT) {
         return (this.createOutputParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_IMAGE) {
+        return (this.createImageParagraph(dict.content));
       }
       return null;
     };

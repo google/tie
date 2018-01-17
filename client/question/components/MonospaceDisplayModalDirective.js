@@ -39,20 +39,33 @@ tie.directive('monospaceDisplayModal', [function() {
         </div>
         <footer>
           <div class="tie-monospace-modal-table-cell tie-monospace-modal-action-button-container">
-            <button class="tie-button-blue tie-monospace-modal-action-button"
+            <button class="tie-button tie-button-blue tie-monospace-modal-action-button"
                     ng-click="closeModal()">
-              <span>Close</span>
+              <span>Dismiss</span>
             </button>
           </div>
         </footer>
       </div>
 
       <style>
+        monospace-display-modal {
+          position: absolute;
+          transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .tie-feedback-modal-displayed {
+          top: 9px;
+        }
         monospace-display-modal .tie-monospace-modal-container {
+          border: 1px solid #d0d0d0;
+          box-shadow: 0px 1px 7px #d0d0d0;
           display: table;
-          margin: 0;
-          height: 100%;
-          width: 100%;
+          height: calc(100% - 80px);
+          position: absolute;
+          width: calc(100% - 783px);
+        }
+        .night-mode monospace-display-modal .tie-monospace-modal-container {
+          border-color: #505050;
+          box-shadow: 0px 1px 20px #000000;
         }
         monospace-display-modal header,
         monospace-display-modal .tie-monospace-modal-body,
@@ -74,8 +87,8 @@ tie.directive('monospaceDisplayModal', [function() {
         }
 
         monospace-display-modal .tie-monospace-modal-title {
-          font-size: 18px;
-          font-weight: bold;
+          font-size: 16px;
+          padding: 5px;
           text-align: center;
         }
         monospace-display-modal .tie-monospace-modal-content-container {
@@ -95,7 +108,7 @@ tie.directive('monospaceDisplayModal', [function() {
           bottom: 0;
           left: 0;
           overflow: auto;
-          padding: 10px;
+          padding: 4px;
           position: absolute;
           right: 0;
           top: 0;
@@ -110,7 +123,7 @@ tie.directive('monospaceDisplayModal', [function() {
           bottom: 6px;
           cursor: pointer;
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
-          font-size: 14px;
+          font-size: 12px;
           height: 24px;
           padding: 1px 6px;
           position: absolute;
@@ -119,19 +132,63 @@ tie.directive('monospaceDisplayModal', [function() {
         }
       </style>
     `,
-    controller: [
-      '$scope', '$window', 'MonospaceDisplayModalService',
-      function($scope, $window, MonospaceDisplayModalService) {
+    controller: ['$scope', '$timeout', '$window',
+      'MonospaceDisplayModalService', 'FEEDBACK_MODAL_HEIGHT_OFFSET',
+      'FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
+      function($scope, $timeout, $window,
+          MonospaceDisplayModalService, FEEDBACK_MODAL_HEIGHT_OFFSET,
+          FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET) {
         MonospaceDisplayModalService.registerCallback(function() {
           $scope.title = MonospaceDisplayModalService.getTitle();
           $scope.contentLines = MonospaceDisplayModalService.getContentLines();
+
+          var questionWindowDiv =
+              document.getElementsByClassName('tie-question-window')[0];
+          var monospaceDisplayModalElement =
+              document.getElementsByTagName('monospace-display-modal')[0];
+          var modalContainerDiv = document.getElementsByClassName(
+              'tie-monospace-modal-container')[0];
+
+          var modalWidth = questionWindowDiv.offsetWidth;
+          var modalHeight = questionWindowDiv.offsetHeight;
+          var modalTopOffsetString =
+              (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET).toString() + 'px';
+          var modalHideTopOffsetString =
+              '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
+              FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
+
+          modalContainerDiv.style.width = modalWidth.toString() + 'px';
+          modalContainerDiv.style.height = modalTopOffsetString;
+          monospaceDisplayModalElement.style.top = modalHideTopOffsetString;
+
+          $timeout(function() {
+            monospaceDisplayModalElement.style.top = "";
+            monospaceDisplayModalElement.classList.add(
+                'tie-feedback-modal-displayed');
+          }, 0);
         });
 
         /**
          *  Close the modal.
          */
         $scope.closeModal = function() {
-          MonospaceDisplayModalService.hideModal();
+          var questionWindowDiv =
+              document.getElementsByClassName('tie-question-window')[0];
+          var monospaceDisplayModalElement =
+              document.getElementsByTagName('monospace-display-modal')[0];
+
+          var modalHeight = questionWindowDiv.offsetHeight;
+          var modalHideTopOffsetString =
+              '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
+              FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
+
+          monospaceDisplayModalElement.style.top = modalHideTopOffsetString;
+          monospaceDisplayModalElement.classList.remove(
+              'tie-feedback-modal-displayed');
+
+          window.setTimeout(function() {
+            MonospaceDisplayModalService.hideModal();
+          }, 0);
         };
       }
     ]
