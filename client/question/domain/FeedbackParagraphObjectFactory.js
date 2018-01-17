@@ -202,7 +202,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
      */
     FeedbackParagraph.createImageParagraph = function(image) {
       return new FeedbackParagraph(PARAGRAPH_TYPE_IMAGE, image);
-    }
+    };
 
     /**
      * Returns a FeedbackParagraph created from a dict.
