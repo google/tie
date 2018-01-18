@@ -145,7 +145,7 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .night-mode .tie-button:hover {
-          border-color: #646464; 
+          border-color: #646464;
         }
         .night-mode .tie-button:active {
           border-color: #c1c1c1;
@@ -823,6 +823,11 @@ tie.directive('learnerView', [function() {
             feedback.getFeedbackCategory(), code);
 
           if (feedback.isAnswerCorrect()) {
+            // If the feedback is correct, create a TaskCompleteEvent first.
+            EventHandlerService.createTaskCompleteEvent(
+              SessionIdService.getSessionId(), $scope.currentQuestionId,
+              QuestionDataService.getQuestionVersion(),
+              tasks[currentTaskIndex].getId());
             if (question.isLastTask(currentTaskIndex)) {
               $scope.completeQuestion();
             } else {
@@ -936,15 +941,9 @@ tie.directive('learnerView', [function() {
 
         /**
          * Changes the UI to show the next task and its instructions for the
-         * given question. If the user just finished the last task, then
-         * it shows a congratulatory alert.
+         * given question.
          */
         $scope.showNextTask = function() {
-          EventHandlerService.createTaskCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
-            tasks[currentTaskIndex].getId());
-
           currentTaskIndex++;
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
