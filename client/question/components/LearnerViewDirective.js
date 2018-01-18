@@ -812,7 +812,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           EventHandlerService.createCodeSubmitEvent(
-            tasks[currentTaskIndex].getId()
+            tasks[currentTaskIndex].getId(),
             feedback.getParagraphsAsListOfDicts(),
             feedback.getFeedbackCategory(), code);
 
