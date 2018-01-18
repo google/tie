@@ -817,6 +817,9 @@ tie.directive('learnerView', [function() {
             feedback.getFeedbackCategory(), code);
 
           if (feedback.isAnswerCorrect()) {
+            // If the feedback is correct, create a TaskCompleteEvent first.
+            EventHandlerService.createTaskCompleteEvent(
+              tasks[currentTaskIndex].getId());
             if (question.isLastTask(currentTaskIndex)) {
               $scope.completeQuestion();
             } else {
@@ -930,13 +933,9 @@ tie.directive('learnerView', [function() {
 
         /**
          * Changes the UI to show the next task and its instructions for the
-         * given question. If the user just finished the last task, then
-         * it shows a congratulatory alert.
+         * given question.
          */
         $scope.showNextTask = function() {
-          EventHandlerService.createTaskCompleteEvent(
-            tasks[currentTaskIndex].getId());
-
           currentTaskIndex++;
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
