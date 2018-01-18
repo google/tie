@@ -723,12 +723,8 @@ tie.directive('learnerView', [function() {
           EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
-          EventHandlerService.createQuestionStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -804,9 +800,7 @@ tie.directive('learnerView', [function() {
 
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
-          EventHandlerService.createQuestionCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionCompleteEvent();
         };
 
         /**
@@ -818,15 +812,13 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           EventHandlerService.createCodeSubmitEvent(
-            SessionIdService.getSessionId(),
+            tasks[currentTaskIndex].getId(),
             feedback.getParagraphsAsListOfDicts(),
             feedback.getFeedbackCategory(), code);
 
           if (feedback.isAnswerCorrect()) {
             // If the feedback is correct, create a TaskCompleteEvent first.
             EventHandlerService.createTaskCompleteEvent(
-              SessionIdService.getSessionId(), $scope.currentQuestionId,
-              QuestionDataService.getQuestionVersion(),
               tasks[currentTaskIndex].getId());
             if (question.isLastTask(currentTaskIndex)) {
               $scope.completeQuestion();
@@ -950,8 +942,6 @@ tie.directive('learnerView', [function() {
 
           ConversationLogDataService.clear();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -986,8 +976,7 @@ tie.directive('learnerView', [function() {
             $scope.currentQuestionId, language);
           LocalStorageService.clearLocalStorageFeedback(
             $scope.currentQuestionId, language);
-          EventHandlerService.createCodeResetEvent(
-            SessionIdService.getSessionId());
+          EventHandlerService.createCodeResetEvent();
           $scope.loadQuestion($scope.currentQuestionId);
         };
 
