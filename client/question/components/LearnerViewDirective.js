@@ -145,7 +145,7 @@ tie.directive('learnerView', [function() {
           border: 1px solid #e4e4e4;
         }
         .night-mode .tie-button:hover {
-          border-color: #646464; 
+          border-color: #646464;
         }
         .night-mode .tie-button:active {
           border-color: #c1c1c1;
@@ -723,12 +723,8 @@ tie.directive('learnerView', [function() {
           EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
-          EventHandlerService.createQuestionStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -804,9 +800,7 @@ tie.directive('learnerView', [function() {
 
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
-          EventHandlerService.createQuestionCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionCompleteEvent();
         };
 
         /**
@@ -818,7 +812,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           EventHandlerService.createCodeSubmitEvent(
-            SessionIdService.getSessionId(),
+            tasks[currentTaskIndex].getId()
             feedback.getParagraphsAsListOfDicts(),
             feedback.getFeedbackCategory(), code);
 
@@ -941,8 +935,6 @@ tie.directive('learnerView', [function() {
          */
         $scope.showNextTask = function() {
           EventHandlerService.createTaskCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
 
           currentTaskIndex++;
@@ -951,8 +943,6 @@ tie.directive('learnerView', [function() {
 
           ConversationLogDataService.clear();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -987,8 +977,7 @@ tie.directive('learnerView', [function() {
             $scope.currentQuestionId, language);
           LocalStorageService.clearLocalStorageFeedback(
             $scope.currentQuestionId, language);
-          EventHandlerService.createCodeResetEvent(
-            SessionIdService.getSessionId());
+          EventHandlerService.createCodeResetEvent();
           $scope.loadQuestion($scope.currentQuestionId);
         };
 
