@@ -802,6 +802,11 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
+          LocalStorageService.storeLatestFeedback(
+              $scope.currentQuestionId,
+              congratulatoryFeedback.getParagraphs(),
+              language);
+
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent(
