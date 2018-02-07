@@ -176,26 +176,26 @@ tie.directive('learnerView', [function() {
           background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
-          background-color: rgb(110, 150, 90);
+          background-color: #3C5C14;
           border: none;
           color: #ffffff;
           outline: none;
         }
         .tie-button-green:hover {
-          background-color: rgb(102, 140, 84);
+          border-color: #82bf36;
         }
         .tie-button-green:active {
-          background-color: rgb(92, 127, 76);
+          background-color: #265221;
         }
         .night-mode .tie-button-green {
-          background-color: rgb(70, 90, 10);
+          background-color: #3C5C14;
           color: #ffffff;
         }
         .night-mode .tie-button-green:hover {
           border-color: #e4e4e4;
         }
         .night-mode .tie-button-green:active {
-          background-color: rgb(61, 79, 8);
+          background-color: #265221;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -378,9 +378,6 @@ tie.directive('learnerView', [function() {
           margin-right: 0px;
           margin-top: 10px;
           position: relative;
-        }
-        .tie-run-button:hover {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
           background-color: #ffffff;
