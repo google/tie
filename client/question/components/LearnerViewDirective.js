@@ -26,7 +26,9 @@ tie.directive('learnerView', [function() {
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
               <div class="tie-question-window">
-                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
+                <div class="tie-question-container"
+                     ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}"
+                     ng-hide="MonospaceDisplayModalService.isDisplayed()">
                   <h3 class="tie-question-title">{{title}}</h3>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -54,14 +56,16 @@ tie.directive('learnerView', [function() {
                     content="content">
                 </monospace-display-modal>
               </div>
-              <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
-                Reset Feedback
-              </button>
-              <select class="tie-select-menu" name="theme-select"
-                  ng-change="changeTheme(theme)" ng-model="theme"
-                  ng-options="i.themeName as i.themeName for i in themes">
-                <option style="display: none" value="">Theme</option>
-              </select>
+              <div ng-hide="MonospaceDisplayModalService.isDisplayed()">
+                <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
+                  Reset Feedback
+                </button>
+                <select class="tie-select-menu" name="theme-select"
+                    ng-change="changeTheme(theme)" ng-model="theme"
+                    ng-options="i.themeName as i.themeName for i in themes">
+                  <option style="display: none" value="">Theme</option>
+                </select>
+              </div>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
