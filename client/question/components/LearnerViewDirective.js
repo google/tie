@@ -57,11 +57,13 @@ tie.directive('learnerView', [function() {
               <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
                 Reset Feedback
               </button>
-              <select class="tie-select-menu" name="theme-select"
-                  ng-change="changeTheme(theme)" ng-model="theme"
-                  ng-options="i.themeName as i.themeName for i in themes">
-                <option style="display: none" value="">Theme</option>
-              </select>
+              <span>
+                <label class="tie-select-menu-label" for="themeSelector">Theme:</label>
+                <select class="tie-select-menu" id="themeSelector" name="theme-select"
+                    ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
+                    ng-options="i.themeName as i.themeName for i in themes">
+                </select>
+              </span>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -375,9 +377,19 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-right: 0px;
+          margin-right: 0;
           margin-top: 10px;
           position: relative;
+        }
+        .tie-select-menu-label {
+          color: black;
+          float: left;
+          font-size: 13px;
+          margin-top: 10px;
+          padding: 5px;
+        }
+        .night-mode .tie-select-menu-label {
+          color: white;
         }
         .tie-select-menu {
           background-color: #ffffff;
@@ -499,15 +511,25 @@ tie.directive('learnerView', [function() {
           $scope.questionSetIds.push(dict);
         });
 
+        var THEME_NAME_LIGHT = 'Light';
+        var THEME_NAME_DARK = 'Dark';
+
         /**
          * Defines the accepted UI Themes for the editor.
          *
          * @type {Array}
          */
         $scope.themes = [
-          {themeName: 'Light'},
-          {themeName: 'Dark'}
+          {themeName: THEME_NAME_LIGHT},
+          {themeName: THEME_NAME_DARK}
         ];
+
+        /**
+         * The currently-selected theme name.
+         *
+         * @type {Object}
+         */
+        $scope.currentThemeName = THEME_NAME_LIGHT;
 
         /**
          * Defines if the code's editor is rendered in the UI.
