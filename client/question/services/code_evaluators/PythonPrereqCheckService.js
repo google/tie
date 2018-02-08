@@ -65,18 +65,28 @@ tie.factory('PythonPrereqCheckService', [
     var detectAndGetWrongLanguageType = function(code) {
       var codeLines = getNonStringLines(code);
 
+      var rawCodeArray = code.split('\n');
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
 
         if (error.allowMultiline) {
           if (code.search(regexp) !== -1) {
-            return error.errorName;
+            var errorFirstLine = code.search(regexp);
+            for (var j = 0; errorFirstLine > 0; j++) {
+              var sub = rawCodeArray[j].length;
+              errorFirstLine -= sub;
+            }
+            error.errorLine = errorFirstLine;
+            return error;
           }
         } else {
-          for (var j = 0; j < codeLines.length; j++) {
-            if (codeLines[j].search(regexp) !== -1) {
-              return error.errorName;
+          for (var k = 0; k < codeLines.length; k++) {
+            if (codeLines[k].search(regexp) !== -1) {
+              error.errorLine = rawCodeArray.findIndex(function(el) {
+                return el === codeLines[k];
+              }) + 1;
+              return error;
             }
           }
         }
@@ -288,10 +298,11 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
-        var wrongLangErrorName = detectAndGetWrongLanguageType(code);
-        if (wrongLangErrorName !== null) {
+        var wrongLangError = detectAndGetWrongLanguageType(code);
+        if (wrongLangError !== null) {
           return PrereqCheckFailureObjectFactory.create(
-              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangErrorName);
+              PREREQ_CHECK_TYPE_WRONG_LANG, null, null,
+              wrongLangError.errorName, wrongLangError.errorLine);
         }
 
         // Otherwise, code passed all pre-requisite checks.
