@@ -57,13 +57,10 @@ tie.directive('learnerView', [function() {
               <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
                 Reset Feedback
               </button>
-              <span>
-                <label class="tie-select-menu-label" for="themeSelector">Theme:</label>
-                <select class="tie-select-menu" id="themeSelector" name="theme-select"
-                    ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
-                    ng-options="i.themeName as i.themeName for i in themes">
-                </select>
-              </span>
+              <select class="tie-select-menu" id="themeSelector" name="theme-select"
+                  ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
+                  ng-options="i.themeName as i.themeName for i in themes">
+              </select>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
@@ -381,16 +378,6 @@ tie.directive('learnerView', [function() {
           margin-top: 10px;
           position: relative;
         }
-        .tie-select-menu-label {
-          color: black;
-          float: left;
-          font-size: 13px;
-          margin-top: 10px;
-          padding: 5px;
-        }
-        .night-mode .tie-select-menu-label {
-          color: white;
-        }
         .tie-select-menu {
           background-color: #ffffff;
           border: 1px solid transparent;
@@ -511,8 +498,8 @@ tie.directive('learnerView', [function() {
           $scope.questionSetIds.push(dict);
         });
 
-        var THEME_NAME_LIGHT = 'Light';
-        var THEME_NAME_DARK = 'Dark';
+        var THEME_NAME_LIGHT = 'Light Theme';
+        var THEME_NAME_DARK = 'Dark Theme';
 
         /**
          * Defines the accepted UI Themes for the editor.
