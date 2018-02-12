@@ -57,10 +57,9 @@ tie.directive('learnerView', [function() {
               <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
                 Reset Feedback
               </button>
-              <select class="tie-select-menu" name="theme-select"
-                  ng-change="changeTheme(theme)" ng-model="theme"
+              <select class="tie-select-menu" id="themeSelector" name="theme-select"
+                  ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
                   ng-options="i.themeName as i.themeName for i in themes">
-                <option style="display: none" value="">Theme</option>
               </select>
             </div>
             <div class="tie-coding-ui">
@@ -375,7 +374,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-right: 0px;
+          margin-right: 0;
           margin-top: 10px;
           position: relative;
         }
@@ -499,15 +498,25 @@ tie.directive('learnerView', [function() {
           $scope.questionSetIds.push(dict);
         });
 
+        var THEME_NAME_LIGHT = 'Light Theme';
+        var THEME_NAME_DARK = 'Dark Theme';
+
         /**
          * Defines the accepted UI Themes for the editor.
          *
          * @type {Array}
          */
         $scope.themes = [
-          {themeName: 'Light'},
-          {themeName: 'Dark'}
+          {themeName: THEME_NAME_LIGHT},
+          {themeName: THEME_NAME_DARK}
         ];
+
+        /**
+         * The currently-selected theme name.
+         *
+         * @type {Object}
+         */
+        $scope.currentThemeName = THEME_NAME_LIGHT;
 
         /**
          * Defines if the code's editor is rendered in the UI.
@@ -856,11 +865,11 @@ tie.directive('learnerView', [function() {
          */
         $scope.changeTheme = function(newTheme) {
           $scope.pulseAnimationEnabled = false;
-          if (newTheme === 'Dark') {
+          if (newTheme === THEME_NAME_DARK) {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if (newTheme === 'Light') {
+          if (newTheme === THEME_NAME_LIGHT) {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
