@@ -865,11 +865,11 @@ tie.directive('learnerView', [function() {
          */
         $scope.changeTheme = function(newTheme) {
           $scope.pulseAnimationEnabled = false;
-          if (newTheme === 'Dark') {
+          if (newTheme === THEME_NAME_DARK) {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if (newTheme === 'Light') {
+          if (newTheme === THEME_NAME_LIGHT) {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
