@@ -66,7 +66,9 @@ tie.directive('learnerView', [function() {
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
                   <div ng-if="codeEditorIsShown"
-                      class="tie-codemirror-container">
+                      class="tie-codemirror-container" tabindex="0"
+                      ng-keypress="onKeypressCodemirrorContainer($event)"
+                      ng-focus="onFocusCodemirrorContainer()">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                         ng-model="editorContents.code"
                         ng-change="onCodeChange()"
@@ -105,6 +107,11 @@ tie.directive('learnerView', [function() {
           </div>
         </div>
       </div>
+
+      <div aria-live="assertive">
+        <div role="alert" ng-if="ariaLiveMessage.text">{{ariaLiveMessage.text}}</div>
+      </div>
+
       <privacy-modal is-displayed="privacyModalIsDisplayed">
       </privacy-modal>
 
@@ -451,6 +458,15 @@ tie.directive('learnerView', [function() {
         $scope.ConversationLogDataService = ConversationLogDataService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
+        var KEY_CODE_ENTER = 13;
+
+        var ARIA_LIVE_MESSAGE_RANDOM_ID_RANGE = 10000;
+        var ARIA_LIVE_MESSAGE_TIMEOUT_MILLISECONDS = 2000;
+        var ARIA_LIVE_MESSAGE_CODEMIRROR_CONTAINER_FOCUSED = (
+          'Press Enter to access the code editor.');
+        var ARIA_LIVE_MESSAGE_CODEMIRROR_ENTERED = (
+          'Press Escape to exit the code editor.');
+
         /**
          * Array of strings containing the ids of the allowed question sets.
          *
@@ -510,6 +526,20 @@ tie.directive('learnerView', [function() {
           {themeName: THEME_NAME_LIGHT},
           {themeName: THEME_NAME_DARK}
         ];
+
+        /**
+         * The ARIA alert message to show temporarily, as well as a random
+         * integer generated to uniquely identify when it was first shown. When
+         * the time comes for the message to be removed, the random identifier
+         * is used to verify first that the removed message matches the
+         * originally-added one.
+         *
+         * @type {string}
+         */
+        $scope.ariaLiveMessage = {
+          text: '',
+          randomIdentifier: -1
+        };
 
         /**
          * The currently-selected theme name.
@@ -597,6 +627,22 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
+        /**
+         * Shows an aria-live message alert for 2 seconds.
+         *
+         * @param {string} message The message to show.
+         */
+        var showAriaLiveMessage = function(messageText) {
+          var randomInt = Math.random(ARIA_LIVE_MESSAGE_RANDOM_ID_RANGE);
+          $scope.ariaLiveMessage.text = messageText;
+          $scope.ariaLiveMessage.randomIdentifier = randomInt;
+          $timeout(function() {
+            if ($scope.ariaLiveMessage.randomIdentifier === randomInt) {
+              $scope.ariaLiveMessage.text = '';
+              $scope.ariaLiveMessage.randomIdentifier = -1;
+            }
+          }, ARIA_LIVE_MESSAGE_TIMEOUT_MILLISECONDS);
+        };
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -909,11 +955,17 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Stores the CodeMirror editor instance.
+         */
+        var codemirrorEditorInstance = null;
+
+        /**
          * Sets the options that are needed to run codeMirror correctly.
          *
          * @type {{autofocus: boolean, extraKeys: {Tab: Tab},
          *    indentUnit: number, lineNumbers: boolean, matchBrackets: boolean,
-         *    mode: *, smartIndent: boolean, tabSize: number, theme: string}}
+         *    mode: *, onLoad: function, smartIndent: boolean, tabSize: number,
+         *    theme: string}}
          */
         $scope.codeMirrorOptions = {
           autofocus: true,
@@ -924,15 +976,39 @@ tie.directive('learnerView', [function() {
               // Move the cursor to the end of the selection.
               var endSelectionPos = cm.getDoc().getCursor('head');
               cm.getDoc().setCursor(endSelectionPos);
+            },
+            Esc: function() {
+              document.getElementsByClassName(
+                'tie-codemirror-container')[0].focus();
             }
           },
           indentUnit: 4,
           lineNumbers: true,
           matchBrackets: true,
           mode: LANGUAGE_PYTHON,
+          onLoad: function(editorInstance) {
+            codemirrorEditorInstance = editorInstance;
+          },
           smartIndent: true,
           tabSize: 4,
+          tabindex: -1,
           theme: 'default'
+        };
+
+        $scope.onKeypressCodemirrorContainer = function(evt) {
+          if (evt.keyCode === KEY_CODE_ENTER) {
+            // Enter key is pressed.
+            evt.preventDefault();
+            evt.stopPropagation();
+            if (codemirrorEditorInstance) {
+              codemirrorEditorInstance.focus();
+              showAriaLiveMessage(ARIA_LIVE_MESSAGE_CODEMIRROR_ENTERED);
+            }
+          }
+        };
+
+        $scope.onFocusCodemirrorContainer = function() {
+          showAriaLiveMessage(ARIA_LIVE_MESSAGE_CODEMIRROR_CONTAINER_FOCUSED);
         };
 
         /**
