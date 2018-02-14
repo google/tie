@@ -17,13 +17,17 @@
  */
 
 var QuestionsPage = require('./questions.pageObject.js');
-var utils = require('./utils.js');
+var utils = browser.params.utils;
 
 describe('submitting questions', function() {
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
 
+    var setting = browser.waitForAngularEnabled();
+    browser.waitForAngularEnabled(!setting);
     questionsPage.get();
+    utils.prepareEnvironment();
+    browser.waitForAngularEnabled(setting);
     questionsPage.resetCode();
     questionsPage.runCode();
 
@@ -38,7 +42,11 @@ describe('submitting questions', function() {
   it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
 
+    var setting = browser.waitForAngularEnabled();
+    browser.waitForAngularEnabled(!setting);
     questionsPage.get();
+    utils.prepareEnvironment();
+    browser.waitForAngularEnabled(setting);
     questionsPage.resetCode();
 
     var code = [

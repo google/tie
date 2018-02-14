@@ -58,4 +58,9 @@ var checkForConsoleErrors = function(errorsToIgnore) {
   });
 };
 
+// This function doesn't need to do anything in the client version, but it's
+// useful to have a method in case we need to do any setup.
+var prepareEnvironment = function(){};
+
+exports.prepareEnvironment = prepareEnvironment;
 exports.checkForConsoleErrors = checkForConsoleErrors;

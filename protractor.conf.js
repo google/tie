@@ -29,5 +29,8 @@ exports.config = {
     // (we'll get ‘not allowed local resource’ error), so we replace resetUrl with one
     // with the file: protocol (this particular one will open system's root folder)
     browser.resetUrl = 'file://';
+  },
+  params: {
+    utils: require('./protractor_tests/utils.js')
   }
 };
