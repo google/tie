@@ -102,6 +102,12 @@ tie.directive('learnerView', [function() {
                 <li class="tie-privacy-button" ng-click="onPrivacyClick()">
                   <a href="#">Privacy</a>
                 </li>
+                <li class="tie-leave-feedback-button"
+                    title="Click to leave your feedback about TIE">
+                  <a href="https://goo.gl/zkNuLs" target="_blank">
+                    Leave Feedback
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -282,6 +288,9 @@ tie.directive('learnerView', [function() {
         .tie-lang-terminal {
           display: inline;
         }
+        .tie-leave-feedback-button {
+          float: right;
+        }
         .tie-options-row a {
           color: #696969;
           display: block;
@@ -316,7 +325,7 @@ tie.directive('learnerView', [function() {
           color: white;
         }
         .tie-privacy-button {
-          float: right;
+          float: left;
         }
         .tie-question-code {
           background: rgb(242, 242, 242);
