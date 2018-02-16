@@ -27,7 +27,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-question-ui">
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
-                  <h3 class="tie-question-title">{{title}}</h3>
+                  <h1 class="tie-question-title">{{title}}</h1>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
@@ -347,6 +347,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-question-title {
           color: #212121;
+          font-size: 18px;
         }
         .night-mode .tie-question-title {
           color: #ececec;
