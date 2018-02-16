@@ -18,8 +18,8 @@ module.exports = function(config) {
       'third_party/angular-cookies-1.6.1/angular-cookies.min.js',
       'third_party/codemirror-5.19.0/lib/codemirror.js',
       'third_party/codemirror-5.19.0/mode/python/python.js',
-      'third_party/skulpt-c14015/skulpt.min.js',
-      'third_party/skulpt-c14015/skulpt-stdlib.js',
+      'third_party/skulpt-12272b/skulpt.min.js',
+      'third_party/skulpt-12272b/skulpt-stdlib.js',
       'third_party/ui-codemirror-0.3.0/ui-codemirror.min.js',
       // Need to explicitly specify question.js first due to the files being
       // loaded in descending order.
