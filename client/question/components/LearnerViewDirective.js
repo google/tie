@@ -72,6 +72,13 @@ tie.directive('learnerView', [function() {
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                         ng-model="editorContents.code"
                         ng-change="onCodeChange()"
+                        ng-if="!accessibleMode"
+                        class="protractor-test-code-input">
+                    </ui-codemirror>
+                    <ui-codemirror ui-codemirror-opts="accessibleCodeMirrorOptions"
+                        ng-model="editorContents.code"
+                        ng-change="onCodeChange()"
+                        ng-if="accessibleMode"
                         class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
@@ -579,6 +586,11 @@ tie.directive('learnerView', [function() {
         // The privacy modal is not displayed by default.
         $scope.privacyModalIsDisplayed = false;
 
+        // Whether to show the more accessible version of the CodeMirror
+        // editor. "Accessible mode" is triggered by the user tabbing to the
+        // editor.
+        $scope.accessibleMode = false;
+
         /**
          * Stores a promise for the $interval process that automatically
          * retriggers the codeChangeEvent, so that that process can be
@@ -969,40 +981,54 @@ tie.directive('learnerView', [function() {
         var codemirrorEditorInstance = null;
 
         /**
-         * Sets the options that are needed to run codeMirror correctly.
+         * Returns a copy of the options that are needed to run codeMirror
+         * correctly.
          *
-         * @type {{autofocus: boolean, extraKeys: {Tab: Tab},
-         *    indentUnit: number, lineNumbers: boolean, matchBrackets: boolean,
-         *    mode: *, onLoad: function, smartIndent: boolean, tabSize: number,
-         *    theme: string}}
+         * @param {boolean} enableAccessibility Whether to return the
+         * configuration that is optimized for accessible usage.
          */
-        $scope.codeMirrorOptions = {
-          autofocus: true,
-          extraKeys: {
-            Tab: function(cm) {
-              var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-              cm.replaceSelection(spaces);
-              // Move the cursor to the end of the selection.
-              var endSelectionPos = cm.getDoc().getCursor('head');
-              cm.getDoc().setCursor(endSelectionPos);
+        var getCodemirrorOptions = function(enableAccessibility) {
+          var basicOptions = {
+            autofocus: true,
+            extraKeys: {
+              Tab: function(cm) {
+                var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+                cm.replaceSelection(spaces);
+                // Move the cursor to the end of the selection.
+                var endSelectionPos = cm.getDoc().getCursor('head');
+                cm.getDoc().setCursor(endSelectionPos);
+              },
+              Esc: function() {
+                document.getElementsByClassName(
+                  'tie-codemirror-container')[0].focus();
+              }
             },
-            Esc: function() {
-              document.getElementsByClassName(
-                'tie-codemirror-container')[0].focus();
-            }
-          },
-          indentUnit: 4,
-          lineNumbers: true,
-          matchBrackets: true,
-          mode: LANGUAGE_PYTHON,
-          onLoad: function(editorInstance) {
-            codemirrorEditorInstance = editorInstance;
-          },
-          smartIndent: true,
-          tabSize: 4,
-          tabindex: -1,
-          theme: 'default'
+            indentUnit: 4,
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: LANGUAGE_PYTHON,
+            onLoad: function(editorInstance) {
+              codemirrorEditorInstance = editorInstance;
+            },
+            smartIndent: true,
+            tabSize: 4,
+            tabindex: -1,
+            theme: 'default'
+          };
+
+          if (enableAccessibility) {
+            // Note that this option cannot be changed while the CodeMirror
+            // instance is running. This mode has some disadvantages for
+            // sighted users, e.g. mouse highlighting in the CodeMirror area is
+            // not visible.
+            basicOptions.inputStyle = 'contenteditable';
+          }
+
+          return angular.copy(basicOptions);
         };
+
+        $scope.codeMirrorOptions = getCodemirrorOptions(false);
+        $scope.accessibleCodeMirrorOptions = getCodemirrorOptions(true);
 
         $scope.onKeypressCodemirrorContainer = function(evt) {
           if (evt.keyCode === KEY_CODE_ENTER) {
@@ -1017,6 +1043,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.onFocusCodemirrorContainer = function() {
+          $scope.accessibleMode = true;
           showAriaLiveMessage(ARIA_LIVE_MESSAGE_CODEMIRROR_CONTAINER_FOCUSED);
         };
 
