@@ -16,23 +16,26 @@
  * @fileoverview End-to-end tests for loading all pages.
  */
 
-var QuestionsPage = require('./questions.pageObject.js');
+var QuestionsPage = browser.params.questionsPage;
 var utils = browser.params.utils;
 
 describe('submitting questions', function() {
+
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
 
-    var setting = browser.waitForAngularEnabled();
-    browser.waitForAngularEnabled(!setting);
+    browser.waitForAngularEnabled(false);
+    utils.setUpPage();
     questionsPage.get();
+
+    browser.sleep(2000);
     utils.prepareEnvironment();
-    browser.waitForAngularEnabled(setting);
+    browser.waitForAngularEnabled(true);
     questionsPage.resetCode();
     questionsPage.runCode();
 
     browser.sleep(2000);
-    expect(questionsPage.countFeedbackParagraphs()).toEqual(2);
+    expect(questionsPage.countFeedbackParagraphs()).toEqual(1);
   });
 
   afterEach(function() {
@@ -42,11 +45,13 @@ describe('submitting questions', function() {
   it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
 
-    var setting = browser.waitForAngularEnabled();
-    browser.waitForAngularEnabled(!setting);
+    browser.waitForAngularEnabled(false);
+    utils.setUpPage();
     questionsPage.get();
+
+    browser.sleep(2000);
     utils.prepareEnvironment();
-    browser.waitForAngularEnabled(setting);
+    browser.waitForAngularEnabled(true);
     questionsPage.resetCode();
 
     var code = [

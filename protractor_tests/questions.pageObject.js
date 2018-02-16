@@ -50,7 +50,7 @@ var QuestionsPage = function() {
    * Retrieves the TIE homepage
    */
   this.get = function() {
-    browser.get('/client/question/question.html?qid=findMostCommonCharacter');
+    browser.get(browser.params.questionUrl);
   };
 
   /**
