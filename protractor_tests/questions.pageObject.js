@@ -47,6 +47,22 @@ var QuestionsPage = function() {
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
   /**
+   * Performs boilerplate actions to get and set up the questions page.
+   *
+   * @param {object} browser
+   */
+  this.setUp = function(browser) {
+    var utils = browser.params.utils;
+    browser.waitForAngularEnabled(false);
+    utils.setUpPage();
+    this.get();
+
+    browser.sleep(2000);
+    utils.prepareEnvironment();
+    browser.waitForAngularEnabled(true);
+  };
+
+  /**
    * Retrieves the TIE homepage
    */
   this.get = function() {

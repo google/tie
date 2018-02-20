@@ -23,14 +23,7 @@ describe('submitting questions', function() {
 
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
-
-    browser.waitForAngularEnabled(false);
-    utils.setUpPage();
-    questionsPage.get();
-
-    browser.sleep(2000);
-    utils.prepareEnvironment();
-    browser.waitForAngularEnabled(true);
+    questionsPage.setUp(browser);
     questionsPage.resetCode();
     questionsPage.runCode();
 
@@ -44,14 +37,7 @@ describe('submitting questions', function() {
 
   it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
-
-    browser.waitForAngularEnabled(false);
-    utils.setUpPage();
-    questionsPage.get();
-
-    browser.sleep(2000);
-    utils.prepareEnvironment();
-    browser.waitForAngularEnabled(true);
+    questionsPage.setUp(browser);
     questionsPage.resetCode();
 
     var code = [
