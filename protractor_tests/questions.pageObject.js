@@ -49,9 +49,8 @@ var QuestionsPage = function() {
   /**
    * Performs boilerplate actions to get and set up the questions page.
    *
-   * @param {object} browser
    */
-  this.setUp = function(browser) {
+  this.setUp = function() {
     var utils = browser.params.utils;
     browser.waitForAngularEnabled(false);
     utils.setUpPage();

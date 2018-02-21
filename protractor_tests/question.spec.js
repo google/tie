@@ -23,7 +23,7 @@ describe('submitting questions', function() {
 
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
-    questionsPage.setUp(browser);
+    questionsPage.setUp();
     questionsPage.resetCode();
     questionsPage.runCode();
 
@@ -37,7 +37,7 @@ describe('submitting questions', function() {
 
   it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
-    questionsPage.setUp(browser);
+    questionsPage.setUp();
     questionsPage.resetCode();
 
     var code = [
