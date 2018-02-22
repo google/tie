@@ -485,14 +485,6 @@ tie.directive('learnerView', [function() {
           'Press Escape to exit the code editor.');
 
         /**
-         * Array of strings containing the ids of the allowed question sets.
-         *
-         * @type {Array}
-         * @constant
-         */
-        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
-
-        /**
          * Name of the class for styling highlighted syntax errors.
          *
          * @type {string}
@@ -507,29 +499,6 @@ tie.directive('learnerView', [function() {
          * @type {string}
          */
         var language = LANGUAGE_PYTHON;
-
-        // TODO(sll): Generalize this to dynamically select a question set
-        // based on user input.
-        /**
-         * String of the id of the current question set of that in the user is
-         * working in.
-         *
-         * @type {string}
-         */
-        var questionSetId = 'strings';
-
-        /**
-         * Array of strings identifying the Ids of the accepted question sets
-         * used in TIE.
-         *
-         * @type {Array}
-         */
-        $scope.questionSetIds = [];
-        // Sets $scope.questionSetIds to the values in ALLOWED_QUESTION_SET_IDS
-        ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
-          var dict = {questionSetId: id};
-          $scope.questionSetIds.push(dict);
-        });
 
         var THEME_NAME_LIGHT = 'Light Theme';
         var THEME_NAME_DARK = 'Dark Theme';
@@ -609,8 +578,7 @@ tie.directive('learnerView', [function() {
         var cachedCode;
 
         /**
-         * Stores the feedback to be shown when the user completes the entire
-         * question set.
+         * Stores the feedback to be shown when the user completes a question.
          *
          * @type {Feedback}
          */
@@ -815,19 +783,20 @@ tie.directive('learnerView', [function() {
           $scope.pulseAnimationEnabled = true;
           SessionIdService.resetSessionId();
           if (SERVER_URL) {
-            try {
-              QuestionDataService.getQuestionAsync(questionId).then(
-                function(response) {
-                  question = response;
-                  initQuestionData(questionId);
-                });
-            } catch (error) {
-              alert('An error occurred while retrieving the question. ' +
-                  'Try refreshing or downloading and running the client ' +
-                  'version at https://github.com/google/tie .');
-            }
+            QuestionDataService.getQuestionAsync(questionId).then(
+              function(response) {
+                question = response;
+                initQuestionData(questionId);
+              },
+              function(errorResponse) {
+                $scope.loadQuestion(DEFAULT_QUESTION_ID);
+              }
+            );
           } else {
             question = QuestionDataService.getQuestion(questionId);
+            if (!question) {
+              question = QuestionDataService.getQuestion(DEFAULT_QUESTION_ID);
+            }
             initQuestionData(questionId);
           }
         };
@@ -952,28 +921,6 @@ tie.directive('learnerView', [function() {
         $scope.getPythonPrimerUrl = function() {
           var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
           return '../docs/py-primer-' + primerTheme + '.html';
-        };
-
-        /**
-         * Initializes the questionSet property of $scope to be a new question
-         * set with the id given in newQuestionSetId.
-         *
-         * @param {string} newQuestionSetId
-         */
-        $scope.initQuestionSet = function(newQuestionSetId) {
-          QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
-          $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
-            newQuestionSetId);
-          $scope.autosaveTextIsDisplayed = false;
-          // If there isn't a specified qid, use the default. If there is one,
-          // but it doesn't exist, use the default.
-          $scope.currentQuestionId =
-            $location.search().qid || DEFAULT_QUESTION_ID;
-          try {
-            $scope.loadQuestion($scope.currentQuestionId);
-          } catch (Error) {
-            $scope.loadQuestion(DEFAULT_QUESTION_ID);
-          }
         };
 
         /**
@@ -1186,7 +1133,12 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        $scope.initQuestionSet(questionSetId);
+        $scope.autosaveTextIsDisplayed = false;
+        // If there isn't a specified qid, use the default. If there is one,
+        // but it doesn't exist, use the default.
+        $scope.currentQuestionId = (
+          $location.search().qid || DEFAULT_QUESTION_ID);
+        $scope.loadQuestion($scope.currentQuestionId);
 
         // If server version, and the user has not accepted the privacy policy,
         // show them the privacy modal.

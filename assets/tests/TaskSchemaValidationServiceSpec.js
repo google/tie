@@ -29,16 +29,11 @@ describe('TaskSchemaValidationService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    globalData.questionSets.all = {};
-    globalData.questionSets.all.questionIds = QUESTION_IDS;
-    globalData.questionSets.all.introductionParagraphs = [];
-
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
     TaskSchemaValidationService = $injector.get('TaskSchemaValidationService');
 
-    QuestionDataService.initCurrentQuestionSet('all');
     questions = QUESTION_IDS.map(function(questionId) {
       return QuestionDataService.getQuestion(questionId);
     });

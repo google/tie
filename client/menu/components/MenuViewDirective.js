@@ -29,7 +29,7 @@ tieMenu.directive('menuView', [function() {
           Click below to get started on a coding exercise:
         </div>
       </div>
-      <div class="tie-menu-question-list-wrapper"> 
+      <div class="tie-menu-question-list-wrapper">
         <div ng-repeat="questionId in questionIds">
           <menu-question-card question-id="{{questionId}}"></menu-question-card>
         </div>
@@ -59,22 +59,15 @@ tieMenu.directive('menuView', [function() {
     `,
     controller: ['$scope', 'QuestionDataService',
       function($scope, QuestionDataService) {
-        // Currently only getting the set of string questions.
-        var currentQuestionSetId = 'strings';
-
         // The titles of the questions this menu page is displaying.
-        $scope.questionIds = [];
-
-        /**
-         * Given the question set id, retrieves the individual question ids
-         * from that set and sets it to the respective scope variable.
-         */
-        $scope.loadQuestions = function(questionSetId) {
-          $scope.questionIds =
-            QuestionDataService.initAndGetQuestionIdsFromSet(questionSetId);
-        };
-
-        $scope.loadQuestions(currentQuestionSetId);
+        $scope.questionIds = [
+          'reverseWords',
+          'checkBalancedParentheses',
+          'findMostCommonCharacter',
+          'isPalindrome',
+          'internationalization',
+          'runLengthEncoding'
+        ];
       }
     ]
   };

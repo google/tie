@@ -18,79 +18,19 @@
  */
 
 tieData.factory('QuestionDataService', [
-  '$http', 'QuestionObjectFactory', 'QuestionSetObjectFactory',
-  'ServerHandlerService',
-  function(
-    $http, QuestionObjectFactory, QuestionSetObjectFactory,
-    ServerHandlerService) {
-    /** @type {null|QuestionSet} */
-    var currentQuestionSet = null;
-
+  '$http', 'QuestionObjectFactory',
+  function($http, QuestionObjectFactory) {
     return {
       /**
-       * Initiatlizes the currentQuestionSet property to contain the QuestionSet
-       * the user is currently using.
-       *
-       * @param {string} questionSetId
-       */
-      initCurrentQuestionSet: function(questionSetId) {
-        // Currently, hardcoding set of questions when pulling from the server.
-        // TODO(talee): Find a way to make this not hard coded.
-        if (ServerHandlerService.doesServerExist()) {
-          currentQuestionSet = QuestionSetObjectFactory.create(
-            {
-              introductionParagraphs: [
-                'Greetings!',
-                'This set of questions focuses on string manipulation.',
-                [
-                  "Let's get started! You'll see the first question to your " +
-                  "right. Code a solution in the coding window below and hit " +
-                  "\"Run\", and I will provide you with feedback."
-                ].join('')
-              ],
-              questionIds: [
-                'reverseWords',
-                'checkBalancedParentheses',
-                'findMostCommonCharacter',
-                'isPalindrome',
-                'internationalization',
-                'runLengthEncoding'
-              ]
-            });
-        } else {
-          if (!globalData.questionSets.hasOwnProperty(questionSetId)) {
-            throw Error(
-              'Could not find question set with ID: ' + questionSetId);
-          }
-          currentQuestionSet = QuestionSetObjectFactory.create(
-            globalData.questionSets[questionSetId]);
-        }
-      },
-      /**
-       * A getter for the currentQuestionSet property. Returns null if property
-       * is not initialized yet.
-       *
-       * @returns {null|QuestionSet}
-       */
-      getCurrentQuestionSet: function() {
-        if (!currentQuestionSet) {
-          throw Error('No question set has been initialized.');
-        }
-        return currentQuestionSet;
-      },
-      /**
-       * Returns the Question in the QuestionSet with the given question ID.
-       * If the questionId does not correspond to a Question in the QuestionSet,
-       * then function throws an Error.
+       * Returns the Question with the given question ID. If the questionId
+       * does not correspond to a Question, the function throws an Error.
        *
        * @param {string} questionId
        * @returns {Question}
        */
       getQuestion: function(questionId) {
-        if (!currentQuestionSet.hasQuestionId(questionId)) {
-          throw Error(
-            'The current question set does not contain a question with ID: ' +
-            questionId);
+        if (!globalData.questions.hasOwnProperty(questionId)) {
+          throw Error('There is no question with ID: ' + questionId);
         }
         return QuestionObjectFactory.create(globalData.questions[questionId]);
       },
@@ -102,11 +42,6 @@ tieData.factory('QuestionDataService', [
        * @returns {callback}
        */
       getQuestionAsync: function(questionId) {
-        if (!currentQuestionSet.hasQuestionId(questionId)) {
-          throw Error(
-            'The current question set does not contain a question with ID: ' +
-            questionId);
-        }
         return $http.post('/ajax/get_question_data', {
           questionId: questionId
         }).then(
@@ -160,17 +95,6 @@ tieData.factory('QuestionDataService', [
           }
         }
         return constructedInstructions;
-      },
-      /**
-       * Returns an array of question ids of the current question set
-       * after initializing it. Throws an error if cannot initialize.
-       *
-       * @param {string} questionSetId
-       * @returns {Array}
-       */
-      initAndGetQuestionIdsFromSet(questionSetId) {
-        this.initCurrentQuestionSet(questionSetId);
-        return currentQuestionSet.getQuestionIds();
       }
     };
   }
