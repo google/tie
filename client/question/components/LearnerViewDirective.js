@@ -788,7 +788,7 @@ tie.directive('learnerView', [function() {
                 question = response;
                 initQuestionData(questionId);
               },
-              function(errorResponse) {
+              function() {
                 $scope.loadQuestion(DEFAULT_QUESTION_ID);
               }
             );

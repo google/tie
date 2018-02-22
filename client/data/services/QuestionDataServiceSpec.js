@@ -18,7 +18,6 @@
 
 describe('QuestionDataService', function() {
   var QuestionDataService;
-  var QUESTION_IDS = Object.keys(globalData.questions);
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
@@ -76,7 +75,6 @@ describe('QuestionDataServiceServerVersion', function() {
   var QuestionDataService;
   var QuestionObjectFactory;
   var QuestionObject;
-  var questionId = 'bloop';
   var $httpBackend = null;
   var serverSuccessCode = 200;
   var serverErrorCode = 500;

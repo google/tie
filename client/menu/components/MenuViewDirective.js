@@ -57,8 +57,8 @@ tieMenu.directive('menuView', [function() {
         }
       </style>
     `,
-    controller: ['$scope', 'QuestionDataService',
-      function($scope, QuestionDataService) {
+    controller: ['$scope',
+      function($scope) {
         // The titles of the questions this menu page is displaying.
         $scope.questionIds = [
           'reverseWords',
