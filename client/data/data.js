@@ -24,14 +24,7 @@ window.globalData = {
    *
    * @type {dict}
    */
-  questions: {},
-
-  /**
-   * Question set data will be stored here, keyed by question set ID.
-   *
-   * @type {dict}
-   */
-  questionSets: {}
+  questions: {}
 };
 
 window.tieData = angular.module('tieData', []);
