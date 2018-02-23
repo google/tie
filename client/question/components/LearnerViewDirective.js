@@ -111,7 +111,7 @@ tie.directive('learnerView', [function() {
                 </li>
                 <li class="tie-leave-feedback-button"
                     title="Click to leave your feedback about TIE">
-                  <a href="https://goo.gl/zkNuLs" target="_blank">
+                  <a href="https://goo.gl/CcfCq4" target="_blank">
                     Leave Feedback
                   </a>
                 </li>
