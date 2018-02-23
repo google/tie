@@ -158,7 +158,7 @@ tie.directive('learnerView', [function() {
           margin-right: 10px;
           outline: none;
           padding: 1px 6px;
-          width: 104px;
+          width: 120px;
         }
         .tie-button:hover {
           border: 1px solid #e4e4e4;
