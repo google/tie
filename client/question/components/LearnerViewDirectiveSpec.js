@@ -242,13 +242,11 @@ describe('LearnerViewDirective', function() {
   describe('loadNextTask', function() {
 
     it('should create events for tasks', function() {
-      spyOn(EventHandlerService, 'createTaskCompleteEvent');
       spyOn(EventHandlerService, 'createTaskStartEvent');
 
       $scope.loadQuestion('checkBalancedParentheses');
       $scope.currentTaskIndex = 0;
       $scope.showNextTask();
-      expect(EventHandlerService.createTaskCompleteEvent).toHaveBeenCalled();
       expect(EventHandlerService.createTaskStartEvent).toHaveBeenCalled();
       $scope.loadQuestion(QUESTION_ID);
     });
@@ -417,6 +415,21 @@ describe('LearnerViewDirective', function() {
         FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.RUNTIME_ERROR),
         code);
       expect(EventHandlerService.createCodeSubmitEvent).toHaveBeenCalled();
+    });
+
+    it('should create an event for task completion', function() {
+      spyOn($scope, 'scrollToTopOfFeedbackWindow');
+      spyOn(EventHandlerService, 'createTaskCompleteEvent');
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $scope.setFeedback(
+        FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL),
+        code);
+      expect(EventHandlerService.createTaskCompleteEvent).toHaveBeenCalled();
     });
   });
 });

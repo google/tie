@@ -27,7 +27,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-question-ui">
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
-                  <h3 class="tie-question-title">{{title}}</h3>
+                  <h1 class="tie-question-title">{{title}}</h1>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
@@ -57,20 +57,28 @@ tie.directive('learnerView', [function() {
               <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
                 Reset Feedback
               </button>
-              <select class="tie-select-menu" name="theme-select"
-                  ng-change="changeTheme(theme)" ng-model="theme"
+              <select class="tie-select-menu" id="themeSelector" name="theme-select"
+                  ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
                   ng-options="i.themeName as i.themeName for i in themes">
-                <option style="display: none" value="">Theme</option>
               </select>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
                   <div ng-if="codeEditorIsShown"
-                      class="tie-codemirror-container">
+                      class="tie-codemirror-container" tabindex="0"
+                      ng-keypress="onKeypressCodemirrorContainer($event)"
+                      ng-focus="onFocusCodemirrorContainer()">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
                         ng-model="editorContents.code"
                         ng-change="onCodeChange()"
+                        ng-if="!accessibleMode"
+                        class="protractor-test-code-input">
+                    </ui-codemirror>
+                    <ui-codemirror ui-codemirror-opts="accessibleCodeMirrorOptions"
+                        ng-model="editorContents.code"
+                        ng-change="onCodeChange()"
+                        ng-if="accessibleMode"
                         class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
@@ -101,11 +109,22 @@ tie.directive('learnerView', [function() {
                 <li class="tie-privacy-button" ng-click="onPrivacyClick()">
                   <a href="#">Privacy</a>
                 </li>
+                <li class="tie-leave-feedback-button"
+                    title="Click to leave your feedback about TIE">
+                  <a href="https://goo.gl/CcfCq4" target="_blank">
+                    Leave Feedback
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+
+      <div aria-live="assertive">
+        <div role="alert" ng-if="ariaLiveMessage.text">{{ariaLiveMessage.text}}</div>
+      </div>
+
       <privacy-modal is-displayed="privacyModalIsDisplayed">
       </privacy-modal>
 
@@ -139,13 +158,13 @@ tie.directive('learnerView', [function() {
           margin-right: 10px;
           outline: none;
           padding: 1px 6px;
-          width: 104px;
+          width: 120px;
         }
         .tie-button:hover {
           border: 1px solid #e4e4e4;
         }
         .night-mode .tie-button:hover {
-          border-color: #646464; 
+          border-color: #646464;
         }
         .night-mode .tie-button:active {
           border-color: #c1c1c1;
@@ -176,26 +195,26 @@ tie.directive('learnerView', [function() {
           background-color: rgb(62, 81, 99);
         }
         .tie-button-green {
-          background-color: rgb(110, 150, 90);
+          background-color: #3C5C14;
           border: none;
           color: #ffffff;
           outline: none;
         }
         .tie-button-green:hover {
-          background-color: rgb(102, 140, 84);
+          border-color: #82bf36;
         }
         .tie-button-green:active {
-          background-color: rgb(92, 127, 76);
+          background-color: #265221;
         }
         .night-mode .tie-button-green {
-          background-color: rgb(70, 90, 10);
+          background-color: #3C5C14;
           color: #ffffff;
         }
         .night-mode .tie-button-green:hover {
           border-color: #e4e4e4;
         }
         .night-mode .tie-button-green:active {
-          background-color: rgb(61, 79, 8);
+          background-color: #265221;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -276,6 +295,9 @@ tie.directive('learnerView', [function() {
         .tie-lang-terminal {
           display: inline;
         }
+        .tie-leave-feedback-button {
+          float: right;
+        }
         .tie-options-row a {
           color: #696969;
           display: block;
@@ -310,7 +332,7 @@ tie.directive('learnerView', [function() {
           color: white;
         }
         .tie-privacy-button {
-          float: right;
+          float: left;
         }
         .tie-question-code {
           background: rgb(242, 242, 242);
@@ -332,6 +354,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-question-title {
           color: #212121;
+          font-size: 18px;
         }
         .night-mode .tie-question-title {
           color: #ececec;
@@ -375,12 +398,9 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-right: 0px;
+          margin-right: 0;
           margin-top: 10px;
           position: relative;
-        }
-        .tie-run-button:hover {
-          box-shadow: inset 0 1px 2px rgba(0,0,0.3);
         }
         .tie-select-menu {
           background-color: #ffffff;
@@ -455,13 +475,14 @@ tie.directive('learnerView', [function() {
         $scope.ConversationLogDataService = ConversationLogDataService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
-        /**
-         * Array of strings containing the ids of the allowed question sets.
-         *
-         * @type {Array}
-         * @constant
-         */
-        var ALLOWED_QUESTION_SET_IDS = ['strings', 'other', 'all'];
+        var KEY_CODE_ENTER = 13;
+
+        var ARIA_LIVE_MESSAGE_RANDOM_ID_RANGE = 10000;
+        var ARIA_LIVE_MESSAGE_TIMEOUT_MILLISECONDS = 2000;
+        var ARIA_LIVE_MESSAGE_CODEMIRROR_CONTAINER_FOCUSED = (
+          'Press Enter to access the code editor.');
+        var ARIA_LIVE_MESSAGE_CODEMIRROR_ENTERED = (
+          'Press Escape to exit the code editor.');
 
         /**
          * Name of the class for styling highlighted syntax errors.
@@ -479,28 +500,8 @@ tie.directive('learnerView', [function() {
          */
         var language = LANGUAGE_PYTHON;
 
-        // TODO(sll): Generalize this to dynamically select a question set
-        // based on user input.
-        /**
-         * String of the id of the current question set of that in the user is
-         * working in.
-         *
-         * @type {string}
-         */
-        var questionSetId = 'strings';
-
-        /**
-         * Array of strings identifying the Ids of the accepted question sets
-         * used in TIE.
-         *
-         * @type {Array}
-         */
-        $scope.questionSetIds = [];
-        // Sets $scope.questionSetIds to the values in ALLOWED_QUESTION_SET_IDS
-        ALLOWED_QUESTION_SET_IDS.forEach(function(id) {
-          var dict = {questionSetId: id};
-          $scope.questionSetIds.push(dict);
-        });
+        var THEME_NAME_LIGHT = 'Light Theme';
+        var THEME_NAME_DARK = 'Dark Theme';
 
         /**
          * Defines the accepted UI Themes for the editor.
@@ -508,9 +509,30 @@ tie.directive('learnerView', [function() {
          * @type {Array}
          */
         $scope.themes = [
-          {themeName: 'Light'},
-          {themeName: 'Dark'}
+          {themeName: THEME_NAME_LIGHT},
+          {themeName: THEME_NAME_DARK}
         ];
+
+        /**
+         * The ARIA alert message to show temporarily, as well as a random
+         * integer generated to uniquely identify when it was first shown. When
+         * the time comes for the message to be removed, the random identifier
+         * is used to verify first that the removed message matches the
+         * originally-added one.
+         *
+         * @type {string}
+         */
+        $scope.ariaLiveMessage = {
+          text: '',
+          randomIdentifier: -1
+        };
+
+        /**
+         * The currently-selected theme name.
+         *
+         * @type {Object}
+         */
+        $scope.currentThemeName = THEME_NAME_LIGHT;
 
         /**
          * Defines if the code's editor is rendered in the UI.
@@ -534,6 +556,11 @@ tie.directive('learnerView', [function() {
         // The privacy modal is not displayed by default.
         $scope.privacyModalIsDisplayed = false;
 
+        // Whether to show the more accessible version of the CodeMirror
+        // editor. "Accessible mode" is triggered by the user tabbing to the
+        // editor.
+        $scope.accessibleMode = false;
+
         /**
          * Stores a promise for the $interval process that automatically
          * retriggers the codeChangeEvent, so that that process can be
@@ -551,8 +578,7 @@ tie.directive('learnerView', [function() {
         var cachedCode;
 
         /**
-         * Stores the feedback to be shown when the user completes the entire
-         * question set.
+         * Stores the feedback to be shown when the user completes a question.
          *
          * @type {Feedback}
          */
@@ -591,6 +617,22 @@ tie.directive('learnerView', [function() {
         var questionWindowDiv =
             document.getElementsByClassName('tie-question-window')[0];
 
+        /**
+         * Shows an aria-live message alert for 2 seconds.
+         *
+         * @param {string} message The message to show.
+         */
+        var showAriaLiveMessage = function(messageText) {
+          var randomInt = Math.random(ARIA_LIVE_MESSAGE_RANDOM_ID_RANGE);
+          $scope.ariaLiveMessage.text = messageText;
+          $scope.ariaLiveMessage.randomIdentifier = randomInt;
+          $timeout(function() {
+            if ($scope.ariaLiveMessage.randomIdentifier === randomInt) {
+              $scope.ariaLiveMessage.text = '';
+              $scope.ariaLiveMessage.randomIdentifier = -1;
+            }
+          }, ARIA_LIVE_MESSAGE_TIMEOUT_MILLISECONDS);
+        };
 
         $scope.onVisibilityChange = function() {
           // When a user changes tabs (or comes back), add a SessionPause
@@ -723,12 +765,8 @@ tie.directive('learnerView', [function() {
           EventHandlerService.init(
             SessionIdService.getSessionId(), $scope.currentQuestionId,
             QuestionDataService.getQuestionVersion());
-          EventHandlerService.createQuestionStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -745,19 +783,20 @@ tie.directive('learnerView', [function() {
           $scope.pulseAnimationEnabled = true;
           SessionIdService.resetSessionId();
           if (SERVER_URL) {
-            try {
-              QuestionDataService.getQuestionAsync(questionId).then(
-                function(response) {
-                  question = response;
-                  initQuestionData(questionId);
-                });
-            } catch (error) {
-              alert('An error occurred while retrieving the question. ' +
-                  'Try refreshing or downloading and running the client ' +
-                  'version at https://github.com/google/tie .');
-            }
+            QuestionDataService.getQuestionAsync(questionId).then(
+              function(response) {
+                question = response;
+                initQuestionData(questionId);
+              },
+              function() {
+                $scope.loadQuestion(DEFAULT_QUESTION_ID);
+              }
+            );
           } else {
             question = QuestionDataService.getQuestion(questionId);
+            if (!question) {
+              question = QuestionDataService.getQuestion(DEFAULT_QUESTION_ID);
+            }
             initQuestionData(questionId);
           }
         };
@@ -802,11 +841,14 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
+          LocalStorageService.storeLatestFeedback(
+              $scope.currentQuestionId,
+              congratulatoryFeedback.getParagraphs(),
+              language);
+
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
-          EventHandlerService.createQuestionCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+          EventHandlerService.createQuestionCompleteEvent();
         };
 
         /**
@@ -818,11 +860,14 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           EventHandlerService.createCodeSubmitEvent(
-            SessionIdService.getSessionId(),
+            tasks[currentTaskIndex].getId(),
             feedback.getParagraphsAsListOfDicts(),
             feedback.getFeedbackCategory(), code);
 
           if (feedback.isAnswerCorrect()) {
+            // If the feedback is correct, create a TaskCompleteEvent first.
+            EventHandlerService.createTaskCompleteEvent(
+              tasks[currentTaskIndex].getId());
             if (question.isLastTask(currentTaskIndex)) {
               $scope.completeQuestion();
             } else {
@@ -857,11 +902,11 @@ tie.directive('learnerView', [function() {
          */
         $scope.changeTheme = function(newTheme) {
           $scope.pulseAnimationEnabled = false;
-          if (newTheme === 'Dark') {
+          if (newTheme === THEME_NAME_DARK) {
             $scope.isInDarkMode = true;
             $scope.codeMirrorOptions.theme = 'material';
           }
-          if (newTheme === 'Light') {
+          if (newTheme === THEME_NAME_LIGHT) {
             $scope.isInDarkMode = false;
             $scope.codeMirrorOptions.theme = 'default';
           }
@@ -879,52 +924,75 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Initializes the questionSet property of $scope to be a new question
-         * set with the id given in newQuestionSetId.
-         *
-         * @param {string} newQuestionSetId
+         * Stores the CodeMirror editor instance.
          */
-        $scope.initQuestionSet = function(newQuestionSetId) {
-          QuestionDataService.initCurrentQuestionSet(newQuestionSetId);
-          $scope.questionSet = QuestionDataService.getCurrentQuestionSet(
-            newQuestionSetId);
-          $scope.autosaveTextIsDisplayed = false;
-          // If there isn't a specified qid, use the default. If there is one,
-          // but it doesn't exist, use the default.
-          $scope.currentQuestionId =
-            $location.search().qid || DEFAULT_QUESTION_ID;
-          try {
-            $scope.loadQuestion($scope.currentQuestionId);
-          } catch (Error) {
-            $scope.loadQuestion(DEFAULT_QUESTION_ID);
+        var codemirrorEditorInstance = null;
+
+        /**
+         * Returns a copy of the options that are needed to run codeMirror
+         * correctly.
+         *
+         * @param {boolean} enableAccessibility Whether to return the
+         * configuration that is optimized for accessible usage.
+         */
+        var getCodemirrorOptions = function(enableAccessibility) {
+          var basicOptions = {
+            autofocus: true,
+            extraKeys: {
+              Tab: function(cm) {
+                var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+                cm.replaceSelection(spaces);
+                // Move the cursor to the end of the selection.
+                var endSelectionPos = cm.getDoc().getCursor('head');
+                cm.getDoc().setCursor(endSelectionPos);
+              },
+              Esc: function() {
+                document.getElementsByClassName(
+                  'tie-codemirror-container')[0].focus();
+              }
+            },
+            indentUnit: 4,
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: LANGUAGE_PYTHON,
+            onLoad: function(editorInstance) {
+              codemirrorEditorInstance = editorInstance;
+            },
+            smartIndent: true,
+            tabSize: 4,
+            tabindex: -1,
+            theme: 'default'
+          };
+
+          if (enableAccessibility) {
+            // Note that this option cannot be changed while the CodeMirror
+            // instance is running. This mode has some disadvantages for
+            // sighted users, e.g. mouse highlighting in the CodeMirror area is
+            // not visible.
+            basicOptions.inputStyle = 'contenteditable';
+          }
+
+          return angular.copy(basicOptions);
+        };
+
+        $scope.codeMirrorOptions = getCodemirrorOptions(false);
+        $scope.accessibleCodeMirrorOptions = getCodemirrorOptions(true);
+
+        $scope.onKeypressCodemirrorContainer = function(evt) {
+          if (evt.keyCode === KEY_CODE_ENTER) {
+            // Enter key is pressed.
+            evt.preventDefault();
+            evt.stopPropagation();
+            if (codemirrorEditorInstance) {
+              codemirrorEditorInstance.focus();
+              showAriaLiveMessage(ARIA_LIVE_MESSAGE_CODEMIRROR_ENTERED);
+            }
           }
         };
 
-        /**
-         * Sets the options that are needed to run codeMirror correctly.
-         *
-         * @type {{autofocus: boolean, extraKeys: {Tab: Tab},
-         *    indentUnit: number, lineNumbers: boolean, matchBrackets: boolean,
-         *    mode: *, smartIndent: boolean, tabSize: number, theme: string}}
-         */
-        $scope.codeMirrorOptions = {
-          autofocus: true,
-          extraKeys: {
-            Tab: function(cm) {
-              var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-              cm.replaceSelection(spaces);
-              // Move the cursor to the end of the selection.
-              var endSelectionPos = cm.getDoc().getCursor('head');
-              cm.getDoc().setCursor(endSelectionPos);
-            }
-          },
-          indentUnit: 4,
-          lineNumbers: true,
-          matchBrackets: true,
-          mode: LANGUAGE_PYTHON,
-          smartIndent: true,
-          tabSize: 4,
-          theme: 'default'
+        $scope.onFocusCodemirrorContainer = function() {
+          $scope.accessibleMode = true;
+          showAriaLiveMessage(ARIA_LIVE_MESSAGE_CODEMIRROR_CONTAINER_FOCUSED);
         };
 
         /**
@@ -936,23 +1004,15 @@ tie.directive('learnerView', [function() {
 
         /**
          * Changes the UI to show the next task and its instructions for the
-         * given question. If the user just finished the last task, then
-         * it shows a congratulatory alert.
+         * given question.
          */
         $scope.showNextTask = function() {
-          EventHandlerService.createTaskCompleteEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
-            tasks[currentTaskIndex].getId());
-
           currentTaskIndex++;
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
 
           ConversationLogDataService.clear();
           EventHandlerService.createTaskStartEvent(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion(),
             tasks[currentTaskIndex].getId());
         };
 
@@ -987,8 +1047,7 @@ tie.directive('learnerView', [function() {
             $scope.currentQuestionId, language);
           LocalStorageService.clearLocalStorageFeedback(
             $scope.currentQuestionId, language);
-          EventHandlerService.createCodeResetEvent(
-            SessionIdService.getSessionId());
+          EventHandlerService.createCodeResetEvent();
           $scope.loadQuestion($scope.currentQuestionId);
         };
 
@@ -1074,7 +1133,12 @@ tie.directive('learnerView', [function() {
           cachedCode = code;
         };
 
-        $scope.initQuestionSet(questionSetId);
+        $scope.autosaveTextIsDisplayed = false;
+        // If there isn't a specified qid, use the default. If there is one,
+        // but it doesn't exist, use the default.
+        $scope.currentQuestionId = (
+          $location.search().qid || DEFAULT_QUESTION_ID);
+        $scope.loadQuestion($scope.currentQuestionId);
 
         // If server version, and the user has not accepted the privacy policy,
         // show them the privacy modal.

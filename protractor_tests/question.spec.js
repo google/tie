@@ -16,19 +16,19 @@
  * @fileoverview End-to-end tests for loading all pages.
  */
 
-var QuestionsPage = require('./questions.pageObject.js');
-var utils = require('./utils.js');
+var QuestionsPage = browser.params.questionsPage;
+var utils = browser.params.utils;
 
 describe('submitting questions', function() {
+
   it('should successfully submit wrong code to a task', function() {
     var questionsPage = new QuestionsPage();
-
-    questionsPage.get();
+    questionsPage.setUp();
     questionsPage.resetCode();
     questionsPage.runCode();
 
     browser.sleep(2000);
-    expect(questionsPage.countFeedbackParagraphs()).toEqual(2);
+    expect(questionsPage.countFeedbackParagraphs()).toEqual(1);
   });
 
   afterEach(function() {
@@ -37,8 +37,7 @@ describe('submitting questions', function() {
 
   it('should successfully submit code', function() {
     var questionsPage = new QuestionsPage();
-
-    questionsPage.get();
+    questionsPage.setUp();
     questionsPage.resetCode();
 
     var code = [
