@@ -18,81 +18,43 @@
 
 describe('QuestionDataService', function() {
   var QuestionDataService;
-  var QUESTION_IDS = Object.keys(globalData.questions);
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
-    globalData.questionSets.all = {};
-    globalData.questionSets.all.questionIds = QUESTION_IDS;
-    globalData.questionSets.all.introductionParagraphs = [];
-
     QuestionDataService = $injector.get('QuestionDataService');
   }));
 
-  describe('initCurrentQuestionSet', function() {
-    it('should throw an error if the question set id does not exist',
-    function() {
-      expect(function() {
-        QuestionDataService.initCurrentQuestionSet('argleblargle');
-      }).toThrowError('Could not find question set with ID: argleblargle');
-    });
-  });
-
-  describe('getCurrentQuestionSet', function() {
-    it('should correctly get current question set', function() {
-      QuestionDataService.initCurrentQuestionSet('all');
-      var questionSet = QuestionDataService.getCurrentQuestionSet('all');
-
-      expect(questionSet.getQuestionIds()).toEqual(QUESTION_IDS);
-    });
-
-    it('should throw an error if the question set id does not exist',
-    function() {
-      expect(function() {
-        QuestionDataService.getCurrentQuestionSet('argleblargle');
-      }).toThrowError('No question set has been initialized.');
-    });
-  });
-
   describe('getQuestion', function() {
     it('should throw an error if the question id does not exist', function() {
-      QuestionDataService.initCurrentQuestionSet('all');
       expect(function() {
         QuestionDataService.getQuestion('');
-      }).toThrowError(
-      'The current question set does not contain a question with ID: ');
+      }).toThrowError('There is no question with ID: ');
     });
   });
 
   describe('getQuestionTitle', function() {
     it('should get the title of a question', function() {
-      QuestionDataService.initCurrentQuestionSet('strings');
       var title = globalData.questions.isPalindrome.title;
       expect(QuestionDataService.getQuestionTitle('isPalindrome'))
         .toEqual(title);
     });
 
     it('should throw an error if the question does not exist', function() {
-      QuestionDataService.initCurrentQuestionSet('strings');
       expect(function() {
         QuestionDataService.getQuestionTitle('lemon');
-      }).toThrowError(
-        'The current question set does not contain a question with ID: lemon');
+      }).toThrowError('There is no question with ID: lemon');
     });
   });
 
   describe('getQuestionVersion', function() {
     it('should return 1 exclusively, for now', function() {
-      QuestionDataService.initCurrentQuestionSet('strings');
-      expect(QuestionDataService.getQuestionVersion())
-        .toEqual(1);
+      expect(QuestionDataService.getQuestionVersion()).toEqual(1);
     });
   });
 
   describe('getQuestionPreviewInstructions', function() {
     it('should get the title of a question', function() {
-      QuestionDataService.initCurrentQuestionSet('strings');
       expect(QuestionDataService
         .getQuestionPreviewInstructions('checkBalancedParentheses'))
         .toEqual('For this question, you will implement the isBalanced ' +
@@ -102,26 +64,9 @@ describe('QuestionDataService', function() {
     });
 
     it('should throw an error if the question does not exist', function() {
-      QuestionDataService.initCurrentQuestionSet('strings');
       expect(function() {
         QuestionDataService.getQuestionPreviewInstructions('grape');
-      }).toThrowError(
-        'The current question set does not contain a question with ID: grape');
-    });
-  });
-
-  describe('initAndGetQuestionIdsFromSet', function() {
-    it('should throw an error if the question set id does not exist',
-    function() {
-      expect(function() {
-        QuestionDataService.initAndGetQuestionIdsFromSet('humbug');
-      }).toThrowError('Could not find question set with ID: humbug');
-    });
-
-    it('should correctly get current question set after initializing',
-    function() {
-      expect(QuestionDataService.initAndGetQuestionIdsFromSet('all'))
-        .toEqual(QUESTION_IDS);
+      }).toThrowError('There is no question with ID: grape');
     });
   });
 });
@@ -130,7 +75,6 @@ describe('QuestionDataServiceServerVersion', function() {
   var QuestionDataService;
   var QuestionObjectFactory;
   var QuestionObject;
-  var questionId = 'bloop';
   var $httpBackend = null;
   var serverSuccessCode = 200;
   var serverErrorCode = 500;
@@ -145,7 +89,6 @@ describe('QuestionDataServiceServerVersion', function() {
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
     QuestionDataService = $injector.get('QuestionDataService');
-    QuestionDataService.initCurrentQuestionSet('strings');
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');
     QuestionObject = QuestionObjectFactory.create({
@@ -156,17 +99,7 @@ describe('QuestionDataServiceServerVersion', function() {
     });
   }));
 
-
   describe('getQuestionsAsync', function() {
-
-    it('should error if questionId does not exist', function() {
-      expect(function() {
-        QuestionDataService.getQuestionAsync(questionId);
-      }).toThrowError(
-        'The current question set does not contain a question with ID: ' +
-         questionId);
-    });
-
     it('should correctly get the question data', function(done) {
       $httpBackend.expect('POST', '/ajax/get_question_data').respond(
         serverSuccessCode,
