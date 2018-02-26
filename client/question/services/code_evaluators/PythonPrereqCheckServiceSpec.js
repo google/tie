@@ -255,7 +255,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual(
+      expect(prereqFailureType.getErrorName()).toEqual(
         "incrementOp");
     });
 
@@ -268,7 +268,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual(
+      expect(prereqFailureType.getErrorName()).toEqual(
         "decrementOp");
     });
 
@@ -281,7 +281,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('javaComment');
+      expect(prereqFailureType.getErrorName()).toEqual('javaComment');
     });
 
     it('correctly returns "javaComment" when ' +
@@ -295,7 +295,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('javaComment');
+      expect(prereqFailureType.getErrorName()).toEqual('javaComment');
     });
 
     it('correctly returns "switch" when the ' +
@@ -310,7 +310,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('switch');
+      expect(prereqFailureType.getErrorName()).toEqual('switch');
     });
 
     it('correctly returns "elseIf" when the ' +
@@ -325,7 +325,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('elseIf');
+      expect(prereqFailureType.getErrorName()).toEqual('elseIf');
     });
 
     it('correctly returns "booleans" when the ' +
@@ -337,8 +337,8 @@ describe('PythonPrereqCheckService', function() {
         ''
       ].join('\n');
       expect(
-        PythonPrereqCheckService.detectAndGetWrongLanguageType(code).errorName
-      ).toEqual('booleans');
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+        .getErrorName()).toEqual('booleans');
 
       code = [
         'def myFunction(arg):',
@@ -347,8 +347,8 @@ describe('PythonPrereqCheckService', function() {
         ''
       ].join('\n');
       expect(
-        PythonPrereqCheckService.detectAndGetWrongLanguageType(code).errorName
-      ).toEqual('booleans');
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+        .getErrorName()).toEqual('booleans');
 
       code = [
         'def myFunction(arg):',
@@ -357,8 +357,8 @@ describe('PythonPrereqCheckService', function() {
         ''
       ].join('\n');
       expect(
-        PythonPrereqCheckService.detectAndGetWrongLanguageType(code).errorName
-      ).toEqual('booleans');
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+        .getErrorName()).toEqual('booleans');
 
       code = [
         'def myFunction(arg):',
@@ -367,8 +367,8 @@ describe('PythonPrereqCheckService', function() {
         ''
       ].join('\n');
       expect(
-        PythonPrereqCheckService.detectAndGetWrongLanguageType(code).errorName
-      ).toEqual('booleans');
+        PythonPrereqCheckService.detectAndGetWrongLanguageType(code)
+        .getErrorName()).toEqual('booleans');
 
       code = [
         'def myFunction(arg):',
@@ -391,7 +391,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('push');
+      expect(prereqFailureType.getErrorName()).toEqual('push');
     });
 
     it('correctly returns "catch" when the ' +
@@ -406,7 +406,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('catch');
+      expect(prereqFailureType.getErrorName()).toEqual('catch');
     });
 
     it('correctly returns "doWhile" when the ' +
@@ -420,7 +420,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('doWhile');
+      expect(prereqFailureType.getErrorName()).toEqual('doWhile');
     });
 
     it('correctly returns "cImport" when the ' +
@@ -434,7 +434,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('cImport');
+      expect(prereqFailureType.getErrorName()).toEqual('cImport');
     });
 
     it('correctly returns "andOp" when the ' +
@@ -448,7 +448,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('andOp');
+      expect(prereqFailureType.getErrorName()).toEqual('andOp');
     });
 
     it('correctly returns "orOp" when the ' +
@@ -462,7 +462,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('orOp');
+      expect(prereqFailureType.getErrorName()).toEqual('orOp');
     });
 
     it('correctly returns "notOp" when the ' +
@@ -475,7 +475,7 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType.errorName).toEqual('notOp');
+      expect(prereqFailureType.getErrorName()).toEqual('notOp');
     });
 
     it('ignores lines with strings for non-multiline checks', function() {

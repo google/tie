@@ -51,7 +51,7 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      * @constructor
      */
     var PrereqCheckFailure = function(
-        type, badImports, starterCode, wrongLangKey, errorLine) {
+        type, badImports, starterCode, wrongLangKey, errorLineNumber) {
       /**
        * Indicates what type of failure occurred.
        *
@@ -89,12 +89,12 @@ tie.factory('PrereqCheckFailureObjectFactory', [
 
       /**
        * Line number that correlates to error that triggered.
-       * Should be null if error type does not supply a line number
+       * Should be null if error type does not supply a line number.
        *
        * @type {integer | null}
        * @private
        */
-      this._errorLine = errorLine;
+      this._errorLineNumber = errorLineNumber;
     };
 
     // Instance methods.
@@ -253,21 +253,22 @@ tie.factory('PrereqCheckFailureObjectFactory', [
     };
 
     /**
-     * A getter for the _errorLine property.
+     * A getter for the _errorLineNumber property.
      *
      * @returns {string}
      */
-    PrereqCheckFailure.prototype.getErrorLine = function() {
-      return this._errorLine;
+    PrereqCheckFailure.prototype.geterrorLineNumber = function() {
+      return this._errorLineNumber;
     };
 
     /**
-     * A setter for the _errorLine property.
+     * A setter for the _errorLineNumber property.
      *
-     * @param {integer} errorLine to set the _errorLine property to.
+     * @param {integer} errorLine to set the _errorLineNumber property to.
      */
-    PrereqCheckFailure.prototype.setErrorLine = function(errorLine) {
-      this._errorLine = errorLine;
+    PrereqCheckFailure.prototype.seterrorLineNumber = function(
+      errorLineNumber) {
+      this._errorLineNumber = errorLineNumber;
     };
 
     // Static class methods.
@@ -286,10 +287,10 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      * @returns {PrereqCheckFailure}
      */
     PrereqCheckFailure.create = function(
-        type, badImports, starterCode, wrongLangErrorName, errorLine) {
+        type, badImports, starterCode, wrongLangErrorName, errorLineNumber) {
       var errorName = wrongLangErrorName || null;
       return new PrereqCheckFailure(
-        type, badImports, starterCode, errorName, errorLine);
+        type, badImports, starterCode, errorName, errorLineNumber);
     };
 
     return PrereqCheckFailure;
