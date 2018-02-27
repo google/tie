@@ -60,7 +60,7 @@ describe('PrereqCheckErrorObjectFactory', function() {
     it('return name and null line number for non-notOp errors', function() {
       errorName = 'andOp';
       var PrereqCheckMultilineError = PrereqCheckErrorObjectFactory.create(
-      errorName, errorLineNumber);
+      errorName, negativeErrorLineNumber);
 
       expect(PrereqCheckMultilineError.getErrorName()).toEqual(errorName);
       expect(PrereqCheckMultilineError.getErrorLineNumber()).toBeNull();
