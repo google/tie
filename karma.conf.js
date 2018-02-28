@@ -14,6 +14,7 @@ module.exports = function(config) {
     // List of files / patterns to load in the browser.
     files: [
       'third_party/angular-1.6.1/angular.min.js',
+      'third_party/angular-1.6.1/angular-aria.min.js',
       'third_party/angular-1.6.1/angular-mocks.js',
       'third_party/angular-cookies-1.6.1/angular-cookies.min.js',
       'third_party/codemirror-5.19.0/lib/codemirror.js',

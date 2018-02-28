@@ -17,7 +17,7 @@
  */
 
 window.tie = angular.module('tie',
-  ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies']);
+  ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies', 'ngAria']);
 
 /**
  * String used to label test suites that contain sample input and output

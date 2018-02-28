@@ -24,9 +24,9 @@ tie.directive('monospaceDisplayModal', [function() {
     template: `
       <div class="tie-monospace-modal-container">
         <header>
-          <div class="tie-monospace-modal-table-cell tie-monospace-modal-title">
+          <h1 class="tie-monospace-modal-table-cell tie-monospace-modal-title">
             {{title}}
-          </div>
+          </h1>
         </header>
         <div class="tie-monospace-modal-body">
           <div class="tie-monospace-modal-table-cell tie-monospace-modal-content-container">
@@ -186,7 +186,7 @@ tie.directive('monospaceDisplayModal', [function() {
           monospaceDisplayModalElement.classList.remove(
               'tie-feedback-modal-displayed');
 
-          window.setTimeout(function() {
+          $timeout(function() {
             MonospaceDisplayModalService.hideModal();
           }, 0);
         };
