@@ -24,18 +24,32 @@ tie.directive('outputSnippet', [function() {
     },
     template: `
       <div class="output-toggle-container">
-        You can click on <a href ng-click="openOutputModal()">this link</a>
+        You can click on
+        <a href ng-click="openOutputModal()" ng-if="!isModalOpen()"">this link</a>
+        <span ng-if="isModalOpen()">this link</span>
         to display the output. We recommend that you do not rely on this.
       </div>
       <style>
         output-snippet .output-toggle-container {
           padding-bottom: 15px;
         }
+        output-snippet .disabled-link {
+          color: #ccc;
+          pointer-events: none;
+        }
       </style>
     `,
     controller: [
       '$scope', 'MonospaceDisplayModalService',
       function($scope, MonospaceDisplayModalService) {
+        /**
+         * Function to tell whether the monospace display modal is currently
+         * open.
+         *
+         * @type {function}
+         */
+        $scope.isModalOpen = MonospaceDisplayModalService.isDisplayed;
+
         /**
          * Array of strings used to represent the output snippet lines to be
          * presented in the UI.

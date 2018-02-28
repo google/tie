@@ -30,7 +30,8 @@ tie.directive('syntaxErrorSnippet', [function() {
         </p>
         <p>
           If you cannot figure out the problem, you can click on
-          <a href class="toggle" ng-click="openSyntaxErrorModal()">this link</a>
+          <a href ng-click="openSyntaxErrorModal()" ng-if="!isModalOpen()">this link</a>
+          <span ng-if="isModalOpen()">this link</span>
           to display the error message.
         </p>
       </div>
@@ -60,6 +61,14 @@ tie.directive('syntaxErrorSnippet', [function() {
     controller: [
       '$scope', 'MonospaceDisplayModalService',
       function($scope, MonospaceDisplayModalService) {
+        /**
+         * Function to tell whether the monospace display modal is currently
+         * open.
+         *
+         * @type {function}
+         */
+        $scope.isModalOpen = MonospaceDisplayModalService.isDisplayed;
+
         /**
          * Array of strings used to represent the code snippet lines to be
          * presented in the UI.
