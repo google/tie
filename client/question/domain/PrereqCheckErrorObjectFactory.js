@@ -18,7 +18,8 @@
  */
 
 tie.factory('PrereqCheckErrorObjectFactory', [
-  function() {
+  'PREREQ_CHECK_TYPE_WRONG_LANG',
+  function(PREREQ_CHECK_TYPE_WRONG_LANG) {
     /**
      * PrereqCheckError objects are used to store information related to Prereq
      errors.
@@ -48,6 +49,15 @@ tie.factory('PrereqCheckErrorObjectFactory', [
        * @private
        */
       this._errorLineNumber = errorLineNumber;
+
+      /**
+       * Indicates what type of failure occurred. Defaults to the only errorType
+       * currently tracked.
+       *
+       * @type {string}
+       * @private
+       */
+      this._errorType = PREREQ_CHECK_TYPE_WRONG_LANG;
     };
 
     /**
@@ -74,7 +84,7 @@ tie.factory('PrereqCheckErrorObjectFactory', [
      * @returns {string}
      */
     PrereqCheckError.prototype.getErrorLineNumber = function() {
-      return (this._errorLineNumber < 0) ? null : this._errorLineNumber;
+      return this._errorLineNumber;
     };
 
     /**
@@ -93,9 +103,6 @@ tie.factory('PrereqCheckErrorObjectFactory', [
      * @returns {PrereqCheckError}
      */
     PrereqCheckError.create = function(errorName, errorLineNumber) {
-      if (errorLineNumber < 0 && errorName === 'notOp') {
-        return null;
-      }
       return new PrereqCheckError(errorName, errorLineNumber);
     };
 

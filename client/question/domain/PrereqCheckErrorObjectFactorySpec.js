@@ -47,23 +47,4 @@ describe('PrereqCheckErrorObjectFactory', function() {
       expect(PrereqCheckError.getErrorName()).toEqual('notOp');
     });
   });
-
-  describe('nullMultilineReturn', function() {
-    var negativeErrorLineNumber = -5;
-    it('should return null if error is a multiline notOp', function() {
-      var PrereqCheckMultilineError = PrereqCheckErrorObjectFactory.create(
-      errorName, negativeErrorLineNumber);
-
-      expect(PrereqCheckMultilineError).toBeNull();
-    });
-
-    it('return name and null line number for non-notOp errors', function() {
-      errorName = 'andOp';
-      var PrereqCheckMultilineError = PrereqCheckErrorObjectFactory.create(
-      errorName, negativeErrorLineNumber);
-
-      expect(PrereqCheckMultilineError.getErrorName()).toEqual(errorName);
-      expect(PrereqCheckMultilineError.getErrorLineNumber()).toBeNull();
-    });
-  });
 });

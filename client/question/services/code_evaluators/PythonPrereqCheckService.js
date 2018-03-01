@@ -56,6 +56,29 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     /**
+     * Processes studentCode and converts all single quote + double quote str
+     * to filler character "x".
+     * This is to preserve character length for error checks.
+     *
+     * @param {string} [code] The code to convert
+     * @return {string} code where all 'foo' & "bar" converted to xxxxx & xxxxx
+     */
+    var obscureStringLines = function(code) {
+      var regexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
+      var matches;
+      var obscureCode;
+      var startIndex = 0;
+
+      while ((matches = regexp.exec(code)) !== null) {
+        var matchLength = matches[0].length;
+        obscureCode += code.slice(startIndex, (regexp.lastIndex - matchLength));
+        obscureCode = obscureCode.padEnd(obscureCode.length + matchLength, 'x');
+        startIndex = regexp.lastIndex;
+      }
+      return obscureCode;
+    };
+
+    /**
      * Checks if the given code uses any syntax that isn't valid in Python
      * but is specific to languages like C/C++ and Java.
      *
@@ -65,31 +88,25 @@ tie.factory('PythonPrereqCheckService', [
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var codeLines = getNonStringLines(code);
+      var rawCodeArray = obscureStringLines(code).split('\n');
 
-      var rawCodeArray = code.split('\n');
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
-        var firstErrorCharIndex = code.search(regexp);
-        var errorLine = null;
 
+        // Lookup character location of error
+        var firstErrorCharIndex = code.search(regexp);
         if (firstErrorCharIndex !== -1) {
-          // Match found, Subtract each line.length until error line pops.
-          for (var j = 0; firstErrorCharIndex > 0; j++) {
-            var sub = rawCodeArray[j].length;
-            firstErrorCharIndex -= sub;
+          var errorLine = null;
+
+          // After regex matches an error, loop through codelines
+          for (var l = 0; firstErrorCharIndex >= 0; l++) {
+            // Subtract l.length from firstErrorCharIndex.
+            // At/below 0: index === linenumber. Subtract +1 for newline char.
+            firstErrorCharIndex -= (rawCodeArray[l].length + 1);
           }
-          errorLine = firstErrorCharIndex;
-          // Walk through codelines, if regexp matches, return matched line.
-          for (var k = 0; k < codeLines.length; k++) {
-            if (codeLines[k].search(regexp) !== -1) {
-              errorLine = rawCodeArray.findIndex(
-                function(el) {
-                  return el === codeLines[k];
-                }) + 1;
-            }
-          }
+          errorLine = l;
+
           return PrereqCheckErrorObjectFactory.create(
             error.errorName, errorLine);
         }
