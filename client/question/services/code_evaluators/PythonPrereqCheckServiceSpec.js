@@ -493,7 +493,33 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType).toEqual(null);
+      expect(prereqFailureType).toEqual(
+        jasmine.objectContaining({
+          _errorName: 'notOp',
+          _errorLineNumber: 2,
+          _errorType: 'wrongLang'
+        }));
+    });
+  });
+
+  describe('obscureStringCharacters', function() {
+    it('obscure strings to test while preserving character length', function() {
+
+      var code = [
+        'def myFunction(arg):',
+        '    if "!arg":',
+        '        return arg',
+        '',
+        '    if (!arg + "abc"):',
+        '        return arg',
+        ''
+      ].join('\n');
+      var obscureCode =
+        PythonPrereqCheckService.obscureStringCharacters(code);
+
+      expect(code.length).toEqual(obscureCode.length);
+      expect(obscureCode).toContain('if xxxxxx');
+      expect(obscureCode).toContain('if (!arg + xxxxx):');
     });
   });
 

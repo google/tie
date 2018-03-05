@@ -31,7 +31,8 @@ describe('PrereqCheckErrorObjectFactory', function() {
     it('should generate an object with name and line number', function() {
       var TestObject = {
         _errorName: 'notOp',
-        _errorLineNumber: 2
+        _errorLineNumber: 2,
+        _errorType: 'wrongLang'
       };
       var PrereqCheckError = PrereqCheckErrorObjectFactory.create(
         errorName, errorLineNumber);

@@ -63,18 +63,22 @@ tie.factory('PythonPrereqCheckService', [
      * @param {string} [code] The code to convert
      * @return {string} code where all 'foo' & "bar" converted to xxxxx & xxxxx
      */
-    var obscureStringLines = function(code) {
+    var obscureStringCharacters = function(code) {
       var regexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
-      var matches;
-      var obscureCode;
-      var startIndex = 0;
+      var matches = [];
+      var obscureCode = '';
+      var pointer = 0;
 
       while ((matches = regexp.exec(code)) !== null) {
-        var matchLength = matches[0].length;
-        obscureCode += code.slice(startIndex, (regexp.lastIndex - matchLength));
-        obscureCode = obscureCode.padEnd(obscureCode.length + matchLength, 'x');
-        startIndex = regexp.lastIndex;
+        if (matches[0]) {
+          var matchLength = matches[0].length;
+          obscureCode += code.slice(pointer, (regexp.lastIndex - matchLength));
+          obscureCode = obscureCode.padEnd(
+            obscureCode.length + matchLength, 'x');
+          pointer = regexp.lastIndex;
+        }
       }
+      obscureCode += code.slice(pointer, code.length);
       return obscureCode;
     };
 
@@ -88,7 +92,7 @@ tie.factory('PythonPrereqCheckService', [
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var rawCodeArray = obscureStringLines(code).split('\n');
+      var rawCodeArray = obscureStringCharacters(code).split('\n');
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
@@ -336,6 +340,7 @@ tie.factory('PythonPrereqCheckService', [
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
       getNonStringLines: getNonStringLines,
+      obscureStringCharacters: obscureStringCharacters,
       getUnsupportedImports: getUnsupportedImports,
       hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
       hasInvalidStudentClassCalls: hasInvalidStudentClassCalls,
