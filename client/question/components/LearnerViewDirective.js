@@ -26,8 +26,7 @@ tie.directive('learnerView', [function() {
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
               <div class="tie-question-window">
-                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}"
-                     ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
+                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -62,7 +61,8 @@ tie.directive('learnerView', [function() {
                   Reset Feedback
                 </button>
                 <select class="tie-select-menu"
-                    id="themeSelector" name="theme-select"
+                    id="themeSelector"
+                    name="theme-select"
                     ng-change="changeTheme(currentThemeName)"
                     ng-model="currentThemeName"
                     ng-options="i.themeName as i.themeName for i in themes"
@@ -74,7 +74,8 @@ tie.directive('learnerView', [function() {
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
                   <div ng-if="codeEditorIsShown"
-                      class="tie-codemirror-container" tabindex="0"
+                      class="tie-codemirror-container"
+                      tabindex="0"
                       ng-keypress="onKeypressCodemirrorContainer($event)"
                       ng-focus="onFocusCodemirrorContainer()">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
@@ -91,7 +92,8 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL" class="tie-select-menu"
+                <select ng-if="SERVER_URL"
+                    class="tie-select-menu"
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
