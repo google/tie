@@ -497,9 +497,9 @@ describe('FeedbackGeneratorService', function() {
         expect(feedbackString).toEqual(
           [
             "Unfortunately Python doesn't support directly assigning ",
-            "characters in a string. If you need to do so, try splitting the ",
-            "string, removing the old characters, and adding new ones. ",
-            "If you need a refresher on string manipulation, check out ",
+            "characters in a string. If you need to do so, try slicing the ",
+            "string and adding new characters instead of assigning them. ",
+            "If you need a refresher on slicing, check out ",
             "the primer."
           ].join('');
         );
