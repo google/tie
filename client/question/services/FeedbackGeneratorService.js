@@ -248,7 +248,8 @@ tie.factory('FeedbackGeneratorService', [
 
     /**
      * Returns a boolean representing whether the student's code has changed
-     * from the previous attempt.
+     * from the previous attempt. By default, we assume that the code has
+     * changed.
      *
      * @param {CodeEvalResult} codeEvalResult
      * @returns {boolean}
@@ -258,8 +259,8 @@ tie.factory('FeedbackGeneratorService', [
       var lastSnapshot = (
         TranscriptService.getTranscript().getMostRecentSnapshot());
       return (
-        lastSnapshot !== null &&
-        lastSnapshot.getCodeEvalResult() !== null &&
+        lastSnapshot === null ||
+        lastSnapshot.getCodeEvalResult() === null ||
         !codeEvalResult.hasSamePreprocessedCodeAs(
           lastSnapshot.getCodeEvalResult()));
     };
