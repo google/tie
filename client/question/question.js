@@ -621,10 +621,12 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
           " item assignment");
     },
     generateMessage: function() {
-      return ["Unfortunately Python doesn't support directly assigning ",
-        "characters in a string. If you need to do so, try splicing the ",
-        "string and reassigning the characters that way. If you need a ",
-        "refresher on splicing, check out the primer."].join('');
+      return [
+        "Unfortunately Python doesn't support directly assigning ",
+        "characters in a string. If you need to do so, try slicing the ",
+        "string and adding new characters instead of assigning them. ",
+        "If you need a refresher on slicing, check out the primer."
+      ].join('');
     }
   }, {
     // Error where user tries to concatenate a string with a non-string
