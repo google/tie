@@ -136,7 +136,7 @@
         <span class="names">example_variable</span> = <span class="string">'Hello '</span> + <span class="string">'world!'</span>
 
         <span class="general-statements">if</span> <span class="names">example_input</span> == <span class="string">'Say something!'</span>:
-            <span class="general-statements">return</span> example_variable
+            <span class="general-statements">return</span> <span class="names">example_variable</span>
 
         <span class="general-statements">elif</span> <span class="method-type">type</span>(<span class="names">example_input</span>) <span class="general-statements">is</span> <span class="method-type">list</span>:
 
@@ -170,10 +170,10 @@
         <span class="names">return_value</span> = <span class="string">''</span>
 
         <span class="general-statements">if</span> <span class="names">example_input</span> == <span class="string">'Say something!'</span>:
-        <span class="strikethrough"><span class="general-text">return_value = variable_one + </span><span class="string">' :-('</span></span> <span class="single-line-comment"># Error--must indent the code block</span>
-            return_value = variable_one + <span class="string">' :-)'</span>
+        <span class="strikethrough"><span class="names">return_value</span><span class="general-text"> = </span><span class="names">variable_one</span><span class="general-text"> + </span><span class="string">' :-('</span></span> <span class="single-line-comment"># Error--must indent the code block</span>
+            <span class="names">return_value</span><span class="general-text"> = </span><span class="names">variable_one</span><span class="general-text"> + </span><span class="string">' :-)'</span>
 
-        <span class="general-statements">return</span> return_value</pre>
+        <span class="general-statements">return</span> <span class="names">return_value</span></pre>
     </div>
     <div id="comments">
       <h2>Creating Comments</h2>
@@ -198,17 +198,17 @@
         You declare variables simply by assigning to them. You do not use the
         <span class="fixed-font">var</span> keyword to declare variables.
       </p>
-      <pre>    <span class="strikethrough"><span class="general-text">var foo = <span class="string">'bar'</span></span></span>
-    foo = <span class="string">'bar'</span></pre>
+      <pre>    <span class="strikethrough"><span class="general-text">var </span><span class="names">foo</span> = <span class="string">'bar'</span></span>
+    <span class="names">foo</span> = <span class="string">'bar'</span></pre>
     </div>
     <div id="methods">
       <h2>Defining Methods or Functions</h2>
       <p>
         The following is how you define a method or function:
       </p>
-      <pre>    <span class="general-statements">def</span> <span class="function-name">exampleMethod</span>(example_input):
+      <pre>    <span class="general-statements">def</span> <span class="function-name">exampleMethod</span>(<span class="names">example_input</span>):
         <span class="single-line-comment"># Your code goes here</span>
-        foo = <span class="string">'bar'</span></pre>
+        <span class="names">foo</span> = <span class="string">'bar'</span></pre>
     </div>
     <div id="comparisons">
       <h2>Comparisons</h2>
@@ -221,13 +221,13 @@
         &nbsp;<span class="fixed-font">&gt=</span>&nbsp; are used to compare
         values:
       </p>
-      <pre>    some_variable[<span class="number">0</span>] == <span class="string">'blah'</span></pre>
+      <pre>    <span class="names">some_variable</span>[<span class="number">0</span>] == <span class="string">'blah'</span></pre>
       <p>
         &nbsp;<span class="fixed-font">is</span>&nbsp; and
         &nbsp;<span class="fixed-font">is not</span>&nbsp; are used to compare
         identities:
       </p>
-      <pre>    some_variable <span class="general-statements">is</span> <span class="method-type">list</span></pre>
+      <pre>    <span class="names">some_variable</span> <span class="general-statements">is</span> <span class="method-type">list</span></pre>
     </div>
     <div id="if-statements">
       <h2>If Statements</h2>
@@ -235,17 +235,17 @@
         The following is how you write an <span class="fixed-font">if</span>
         statement:
       </p>
-      <pre>    <span class="general-statements">if</span> example_input == <span class="number">1</span>:
+      <pre>    <span class="general-statements">if</span> <span class="names">example_input</span> == <span class="number">1</span>:
         <span class="general-statements">return</span> <span class="string">'Number 1! Whoohoo!'</span></pre>
       <p>
         <span class="fixed-font">else if</span> and
         <span class="fixed-font">else</span> statements are as follows:
       </p>
-      <pre>    <span class="general-statements">if</span> example_input == <span class="number">1</span>:
+      <pre>    <span class="general-statements">if</span> <span class="names">example_input</span> == <span class="number">1</span>:
         <span class="general-statements">return</span> <span class="string">'Number 1! Whoohoo!'</span>
 
-    <span class="general-statements">elif</span> <span class="method-type">type</span>(example_input) <span class="general-statements">is</span> <span class="method-type">list</span>:
-        <span class="general-statements">return</span> <span class="string">'It's a list! Yay!'</span>
+    <span class="general-statements">elif</span> <span class="method-type">type</span>(<span class="names">example_input</span>) <span class="general-statements">is</span> <span class="method-type">list</span>:
+        <span class="general-statements">return</span> <span class="string">'It is a list! Yay!'</span>
 
     <span class="general-statements">else</span>:
         <span class="general-statements">return</span> <span class="string">'Nothing! Hooray!'</span></pre>
@@ -260,17 +260,21 @@
         If an object is iterable, you can simply use the
         &nbsp;<span class="fixed-font">for ... in</span>&nbsp; pattern:
       </p>
-      <pre>    iterable_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+      <pre>    <span class="names">iterable_list</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
 
-    <span class="general-statements">for</span> item <span class="general-statements">in</span> iterable_list:
-        number_of_items += <span class="number">1</span></pre>
+    <span class="general-statements">for</span> <span class="names">item</span> <span class="general-statements">in</span> <span class="names">iterable_list</span>:
+        <span class="names">number_of_items</span> += <span class="number">1</span></pre>
       <h3>Using set ranges</h3>
       <p>
         You can specify a set range to iterate over. In the example below, the
         loop iterates 3 times (0 to 2).
       </p>
-      <pre>     <span class="general-statements">for</span> i <span class="general-statements">in</span> <span class="method-type">range</span>(<span class="number">0</span>, <span class="number">3</span>):
-        number_of_iterations += <span class="number">1</span></pre>
+      <pre>     <span class="general-statements">for</span> <span class="names">i</span> <span class="general-statements">in</span> <span class="method-type">range</span>(<span class="number">0</span>, <span class="number">3</span>):
+        <span class="names">number_of_iterations</span> += <span class="number">1</span></pre>
+      <p>
+        In the above example, you can use 'i' as the index variable name
+        (e.g., as the index when iterating over a list).
+      </p>
       <h3>Generating ranges for use in for loops</h3>
       <p>
         The following defines a range using the length of a string (which is
@@ -278,8 +282,8 @@
         a &nbsp;<span class="fixed-font">for (var i = 0; i &lt; some_length;
         i++)</span>&nbsp; pattern that you might use in other languages.
       </p>
-      <pre>    <span class="general-statements">for</span> i <span class="general-statements">in</span> <span class="method-type">range</span>(<span class="number">0</span>, <span class="method-type">len</span>(<span class="string">'hello'</span>)):
-        number_of_iterations += <span class="number">1</span></pre>
+      <pre>    <span class="general-statements">for</span> <span class="names">i</span> <span class="general-statements">in</span> <span class="method-type">range</span>(<span class="number">0</span>, <span class="method-type">len</span>(<span class="string">'hello'</span>)):
+        <span class="names">number_of_iterations</span> += <span class="number">1</span></pre>
     </div>
     <div id="while-loops">
       <h2>While Loops</h2>
@@ -287,7 +291,7 @@
         The following is how you write while loops:
       </p>
       <pre>    <span class="general-statements">while True</span>:
-        count_to_infinity += <span class="number">1</span></pre>
+        <span class="names">count_to_infinity</span> += <span class="number">1</span></pre>
     </div>
     <div id="strings">
       <h2>Using Strings</h2>
@@ -295,26 +299,48 @@
       <pre>    <span class="names">singular</span> = <span class="string">'word'</span>
     <span class="names">plural</span> = <span class="names">singular</span> + <span class="string">'s'</span>  <span class="single-line-comment"># plural = 'words'</span></pre>
       <h3>Finding length of strings</h3>
-      <pre>    length_of_string = <span class="method-type">len</span>(<span class="string">'hello'</span>)  <span class="single-line-comment"># length_of_string == 5</span></pre>
+      <pre>    <span class="names">length_of_string</span> = <span class="method-type">len</span>(<span class="string">'hello'</span>)  <span class="single-line-comment"># length_of_string == 5</span></pre>
       <h3>Checking character type</h3>
       <p>
         The following returns true for strings of length >= 1.
       </p>
-      <pre>    some_string.isalnum()  <span class="single-line-comment"># Returns True if entire string is alphanumeric</span>
+      <pre>    <span class="names">some_string</span>.<span class="property">isalnum</span>()  <span class="single-line-comment"># Returns True if entire string is alphanumeric</span>
 
-    some_string.isalpha()  <span class="single-line-comment"># Returns True if entire string is alphabetic</span>
+    <span class="names">some_string</span>.<span class="property">isalpha</span>()  <span class="single-line-comment"># Returns True if entire string is alphabetic</span>
 
-    some_string.isdigit()  <span class="single-line-comment"># Returns True if entire string consists of digits</span>
+    <span class="names">some_string</span>.<span class="property">isdigit</span>()  <span class="single-line-comment"># Returns True if entire string consists of digits</span>
 
-    some_string.isspace()  <span class="single-line-comment"># Returns True if string contains only whitespaces</span></pre>
-      <h3>Splitting strings</h3>
-      <pre>    <span class="string">'1::2'</span>.split(<span class="string">':'</span>)  <span class="single-line-comment"># Returns ['1', '', '2'])</span></pre>
-      <h3>Joining strings</h3>
-      <pre>    <span class="string">' bar '</span>.join([<span class="string">'foo'</span>, <span class="string">'baz'</span>])  <span class="single-line-comment"># Returns 'foo bar baz'</span></pre>
+    <span class="names">some_string</span>.<span class="property">isspace</span>()  <span class="single-line-comment"># Returns True if string contains only whitespaces</span></pre>
       <h3>Checking for substring</h3>
       <pre>    <span class="string">'hello'</span> <span class="general-statements">in</span> <span class="string">'hello world'</span>  <span class="single-line-comment"># Returns True, since 'hello' is in 'hello world'</span>
 
     <span class="string">'hello'</span> <span class="general-statements">not in</span> <span class="string">'hello world'</span>  <span class="single-line-comment"># Returns False</span></pre>
+      <h3>Splitting</h3>
+      <pre>    <span class="string">'1::2'</span>.<span class="property">split</span>(<span class="string">':'</span>)  <span class="single-line-comment"># Returns ['1', '', '2'])</span></pre>
+      <h3>Joining</h3>
+      <pre>    <span class="string">' bar '</span>.<span class="property">join</span>([<span class="string">'foo'</span>, <span class="string">'baz'</span>])  <span class="single-line-comment"># Returns 'foo bar baz'</span></pre>
+      <h3>Slicing</h3>
+      <pre>    <span class="names">some_string</span> = <span class="string">"hello world"</span>
+    <span class="names">some_string</span>[<span class="number">1</span>:<span class="number">2</span>]  <span class="single-line-comment"># 'e'</span>
+
+    <span class="names">some_string</span>[<span class="number">1</span>:<span class="number">1</span>]  <span class="single-line-comment"># ''</span>
+
+    <span class="names">some_string</span>[<span class="number">4</span>:<span class="number">7</span>]  <span class="single-line-comment"># 'o w'</span>
+
+    <span class="names">some_string</span>[<span class="number">4</span>:]  <span class="single-line-comment"># 'o world'</span>
+
+    <span class="names">some_string</span>[:<span class="number">7</span>]  <span class="single-line-comment"># 'hello w'</span>
+
+    <span class="names">some_string</span>[-<span class="number">3</span>:]  <span class="single-line-comment"># 'rld'</span>
+
+    <span class="names">some_string</span>[:-<span class="number">3</span>]  <span class="single-line-comment"># 'hello wo'</span></pre>
+      <h3>Splicing</h3>
+      <p>
+        Because Python strings are immutable, there is no splice method for
+        strings. You can, however, do this:
+      </p>
+      <pre>    <span class="names">string1</span> = <span class="string">"foo bar baz"</span>
+    <span class="names">string2</span> = <span class="names">string1</span>[:<span class="number">4</span>] + <span class="string">'qux'</span> + <span class="names">string1</span>[<span class="number">7</span>:]  <span class="single-line-comment"># 'foo qux baz'</span></pre>
     </div>
     <div id="lists">
       <h2>Lists (Variable-Length Arrays)</h2>
@@ -324,27 +350,27 @@
         list.
       </p>
       <h3>Declaring</h3>
-      <pre>    example_list = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>, <span class="number">42</span>]</pre>
+      <pre>    <span class="names">example_list</span> = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>, <span class="number">42</span>]</pre>
       <h3>Appending</h3>
-      <pre>    example_list.append(<span class="string">'hello world'</span>)</pre>
+      <pre>    <span class="names">example_list</span>.<span class="property">append</span>(<span class="string">'hello world'</span>)</pre>
       <h3>Inserting</h3>
-      <pre>    example_list.insert(<span class="number">2</span>, <span class="string">'answer'</span>)  <span class="single-line-comment"># Inserts 'answer' at position 2</span>
+      <pre>    <span class="names">example_list</span>.<span class="property">insert</span>(<span class="number">2</span>, <span class="string">'answer'</span>)  <span class="single-line-comment"># Inserts 'answer' at position 2</span>
 </pre>
       <h3>Popping</h3>
-      <pre>    last_item = example_list.pop()  <span class="single-line-comment"># Removes and returns last item on list</span>
+      <pre>    <span class="names">last_item</span> = <span class="names">example_list</span>.<span class="property">pop</span>()  <span class="single-line-comment"># Removes and returns last item on list</span>
 
-    item_at_2 = example_list.pop(<span class="number">2</span>)  <span class="single-line-comment"># Removes and returns item at position 2</span>
+    <span class="names">item_at_2</span> = <span class="names">example_list</span>.<span class="property">pop</span>(<span class="number">2</span>)  <span class="single-line-comment"># Removes and returns item at position 2</span>
 </pre>
       <h3>Reversing a list</h3>
-      <pre>    example_list.reverse()  <span class="single-line-comment"># In-place reversal (modifies example_list)</span></pre>
+      <pre>    <span class="names">example_list</span>.<span class="property">reverse</span>()  <span class="single-line-comment"># In-place reversal (modifies example_list)</span></pre>
       <h3>Returning list length</h3>
-      <pre>    <span class="method-type">len</span>(example_list)</pre>
+      <pre>    <span class="method-type">len</span>(<span class="names">example_list</span>)</pre>
       <h3>Deleting</h3>
-      <pre>    <span class="general-statements">del</span> example_list[<span class="number">1</span>]  <span class="single-line-comment"># Deletes item at index 1 (del reduces list length)</span>
+      <pre>    <span class="general-statements">del</span> <span class="names">example_list</span>[<span class="number">1</span>]  <span class="single-line-comment"># Deletes item at index 1 (del reduces list length)</span>
 
-    <span class="general-statements">del</span> example_list[<span class="number">1</span>:<span class="number">2</span>]  <span class="single-line-comment"># Deletes items from index 1 to index 2</span>
+    <span class="general-statements">del</span> <span class="names">example_list</span>[<span class="number">1</span>:<span class="number">2</span>]  <span class="single-line-comment"># Deletes items from index 1 to index 2</span>
 
-    <span class="general-statements">del</span> example_list[:]  <span class="single-line-comment"># Deletes everything from list (list now zero length)</span></pre>
+    <span class="general-statements">del</span> <span class="names">example_list</span>[:]  <span class="single-line-comment"># Deletes everything from list (list now zero length)</span></pre>
     </div>
     <div id="dictionaries">
       <h2>Dictionaries (Associative Arrays)</h2>
@@ -354,13 +380,13 @@
         dictionary.
       </p>
       <h3>Declaring</h3>
-      <pre>    size_abbreviations = {<span class="string">'small'</span>: <span class="string">'S'</span>, <span class="string">'medium'</span>: <span class="string">'M'</span>, <span class="string">'large'</span>: <span class="string">'L'</span>}</pre>
+      <pre>    <span class="names">size_abbreviations</span> = {<span class="string">'small'</span>: <span class="string">'S'</span>, <span class="string">'medium'</span>: <span class="string">'M'</span>, <span class="string">'large'</span>: <span class="string">'L'</span>}</pre>
       <h3>Returning values</h3>
-      <pre>    my_size = size_abbreviations[<span class="string">'medium'</span>]  <span class="single-line-comment"># Returns 'M'</span></pre>
+      <pre>    <span class="names">my_size</span> = <span class="names">size_abbreviations</span>[<span class="string">'medium'</span>]  <span class="single-line-comment"># Returns 'M'</span></pre>
       <h3>Adding / assigning values to elements</h3>
-      <pre>    size_abbreviations[<span class="string">'extra large'</span>] = <span class="string">'XL'</span>  <span class="single-line-comment"># Adds this element to dictionary</span></pre>
+      <pre>    <span class="names">size_abbreviations</span>[<span class="string">'extra large'</span>] = <span class="string">'XL'</span>  <span class="single-line-comment"># Adds this element to dictionary</span></pre>
       <h3>Removing elements</h3>
-      <pre>    <span class="general-statements">del</span> size_abbreviations[<span class="string">'medium'</span>] <span class="single-line-comment"># Removes 'medium':'M' pair from dictionary</span></pre>
+      <pre>    <span class="general-statements">del</span> <span class="names">size_abbreviations</span>[<span class="string">'medium'</span>] <span class="single-line-comment"># Removes 'medium':'M' pair from dictionary</span></pre>
     </div>
 
 
@@ -370,20 +396,20 @@
         The following lists basic actions you can perform on a set.
       </p>
       <h3>Constructor</h3>
-      <pre>    a_set = <span class="method-type">set</span>()  <span class="single-line-comment"># Creates an empty set</span></pre>
+      <pre>    <span class="names">a_set</span> = <span class="method-type">set</span>()  <span class="single-line-comment"># Creates an empty set</span></pre>
       <h3>Adding to a set</h3>
-      <pre>    a_set.add(<span class="string">'hello'</span>)</pre>
+      <pre>    <span class="names">a_set</span>.<span class="property">add</span>(<span class="string">'hello'</span>)</pre>
       <h3>Removing from a set</h3>
-      <pre>    a_set.remove(<span class="string">'hello'</span>)</pre>
+      <pre>    <span class="names">a_set</span>.<span class="property">remove</span>(<span class="string">'hello'</span>)</pre>
       <h3>Clearing a set</h3>
-      <pre>    a_set.clear()  <span class="single-line-comment"># Removes all elements from the set</span></pre>
+      <pre>    <span class="names">a_set</span>.<span class="property">clear</span>()  <span class="single-line-comment"># Removes all elements from the set</span></pre>
       <h3>Creating a set from a list</h3>
-      <pre>    set_from_list = <span class="method-type">set</span>([<span class="string">'apples'</span>, <span class="string">'oranges'</span>])</pre>
+      <pre>    <span class="names">set_from_list</span> = <span class="method-type">set</span>([<span class="string">'apples'</span>, <span class="string">'oranges'</span>])</pre>
       <h3>Checking for items in a set</h3>
-      <pre>    <span class="general-statements">if</span> <span class="string">'apples'</span> <span class="general-statements">in</span> set_from_list:
+      <pre>    <span class="general-statements">if</span> <span class="string">'apples'</span> <span class="general-statements">in</span> <span class="names">set_from_list</span>:
         <span class="method-type">return</span>(<span class="string">'yes, we have apples!'</span>)
 
-    <span class="general-statements">if</span> <span class="string">'pineapple'</span> <span class="general-statements">not in</span> set_from_list:
+    <span class="general-statements">if</span> <span class="string">'pineapple'</span> <span class="general-statements">not in</span> <span class="names">set_from_list</span>:
         <span class="method-type">return</span>(<span class="string">'but no pineapples for you!'</span>)</pre>
     </div>
     <br>
