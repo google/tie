@@ -28,10 +28,11 @@ tie.directive('codeSnippet', [function() {
         <br>
       </span>
       <span ng-if="abbreviatedSnippetLines.length <= MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
-        <a href ng-click="openCodeModal()">View full code</a>
+        <a href ng-click="openCodeModal()" ng-if="!isModalOpen()">View full code</a>
+        <span ng-if="isModalOpen()">View full code</span>
       </span>
       <style>
-        .tie-code-snippet-line {
+        code-snippet .tie-code-snippet-line {
           font-family: monospace;
           line-height: 16px;
           word-wrap: break-word;
@@ -41,6 +42,14 @@ tie.directive('codeSnippet', [function() {
     controller: [
       '$scope', 'MonospaceDisplayModalService',
       function($scope, MonospaceDisplayModalService) {
+        /**
+         * Function to tell whether the monospace display modal is currently
+         * open.
+         *
+         * @type {function}
+         */
+        $scope.isModalOpen = MonospaceDisplayModalService.isDisplayed;
+
         // The maximum number of lines to show in the abbreviated code snippet.
         $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET = 3;
 

@@ -495,10 +495,12 @@ describe('FeedbackGeneratorService', function() {
             FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
-          ["Unfortunately Python doesn't support directly assigning ",
-            "characters in a string. If you need to do so, try splicing the ",
-            "string and reassigning the characters that way. If you need a ",
-            "refresher on splicing, check out the primer."].join('')
+          [
+            "Unfortunately Python doesn't support directly assigning ",
+            "characters in a string. If you need to do so, try slicing the ",
+            "string and adding new characters instead of assigning them. ",
+            "If you need a refresher on slicing, check out the primer."
+          ].join('')
         );
       }
     );

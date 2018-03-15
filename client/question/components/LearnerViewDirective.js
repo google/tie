@@ -26,7 +26,7 @@ tie.directive('learnerView', [function() {
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
               <div class="tie-question-window">
-                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}">
+                <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
                   <div class="tie-previous-instructions">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
@@ -54,19 +54,28 @@ tie.directive('learnerView', [function() {
                     content="content">
                 </monospace-display-modal>
               </div>
-              <button class="tie-code-reset tie-button" ng-click="resetFeedback()">
-                Reset Feedback
-              </button>
-              <select class="tie-select-menu" id="themeSelector" name="theme-select"
-                  ng-change="changeTheme(currentThemeName)" ng-model="currentThemeName"
-                  ng-options="i.themeName as i.themeName for i in themes">
-              </select>
+              <div ng-hide="MonospaceDisplayModalService.isDisplayed()">
+                <button class="tie-code-reset tie-button"
+                    ng-click="resetFeedback()"
+                    title="Click to clear all feedback">
+                  Reset Feedback
+                </button>
+                <select class="tie-select-menu"
+                    id="themeSelector"
+                    name="theme-select"
+                    ng-change="changeTheme(currentThemeName)"
+                    ng-model="currentThemeName"
+                    ng-options="i.themeName as i.themeName for i in themes"
+                    title="Change between light and dark themes">
+                </select>
+              </div>
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
                   <div ng-if="codeEditorIsShown"
-                      class="tie-codemirror-container" tabindex="0"
+                      class="tie-codemirror-container"
+                      tabindex="0"
                       ng-keypress="onKeypressCodemirrorContainer($event)"
                       ng-focus="onFocusCodemirrorContainer()">
                     <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
@@ -75,29 +84,29 @@ tie.directive('learnerView', [function() {
                         ng-if="!accessibleMode"
                         class="protractor-test-code-input">
                     </ui-codemirror>
-                    <ui-codemirror ui-codemirror-opts="accessibleCodeMirrorOptions"
-                        ng-model="editorContents.code"
+                    <ui-codemirror ng-model="editorContents.code"
+                        ui-codemirror-opts="accessibleCodeMirrorOptions"
                         ng-change="onCodeChange()"
                         ng-if="accessibleMode"
                         class="protractor-test-code-input">
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL" class="tie-select-menu"
+                <select ng-if="SERVER_URL"
+                    class="tie-select-menu"
                     name="lang-select-menu">
                   <option value="Python" selected>Python</option>
                 </select>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()">
+                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
                   Reset Code
                 </button>
-                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}">New to python?</a>
+                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}" title="Click to view a short introduction to Python">New to Python?</a>
                 <div class="tie-code-auto-save"
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn"
-                    ng-click="submitCode(editorContents.code)" ng-disabled="ConversationLogDataService.isNewBalloonPending()">
-                  I think I&#39m done
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="ConversationLogDataService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                  Get Feedback
                 </button>
               </div>
             </div>
@@ -112,7 +121,7 @@ tie.directive('learnerView', [function() {
                 <li class="tie-leave-feedback-button"
                     title="Click to leave your feedback about TIE">
                   <a href="https://goo.gl/CcfCq4" target="_blank">
-                    Leave Feedback
+                    Leave feedback about TIE
                   </a>
                 </li>
               </ul>
@@ -970,6 +979,7 @@ tie.directive('learnerView', [function() {
             // sighted users, e.g. mouse highlighting in the CodeMirror area is
             // not visible.
             basicOptions.inputStyle = 'contenteditable';
+            basicOptions.autofocus = false;
           }
 
           return angular.copy(basicOptions);
