@@ -480,7 +480,6 @@ tie.factory('FeedbackGeneratorService', [
             throw Error(
               'Line number index out of range: ' + preprocessedCodeLineIndex);
           }
-
           if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
             console.error(
               'Runtime error on line ' + preprocessedCodeLineIndex +
