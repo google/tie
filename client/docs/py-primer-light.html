@@ -316,15 +316,18 @@
       <pre>    <span class="string">' bar '</span>.<span class="property">join</span>([<span class="string">'foo'</span>, <span class="string">'baz'</span>])  <span class="single-line-comment"># Returns 'foo bar baz'</span></pre>
       <h3>Slicing</h3>
       <pre>    <span class="names">some_string</span> = <span class="string">"hello world"</span>
+
+    <span class="names">some_string</span>[<span class="number">1</span>]    <span class="single-line-comment"># 'e'</span>
+
     <span class="names">some_string</span>[<span class="number">1</span>:<span class="number">2</span>]  <span class="single-line-comment"># 'e'</span>
 
     <span class="names">some_string</span>[<span class="number">1</span>:<span class="number">1</span>]  <span class="single-line-comment"># ''</span>
 
     <span class="names">some_string</span>[<span class="number">4</span>:<span class="number">7</span>]  <span class="single-line-comment"># 'o w'</span>
 
-    <span class="names">some_string</span>[<span class="number">4</span>:]  <span class="single-line-comment"># 'o world'</span>
+    <span class="names">some_string</span>[<span class="number">4</span>:]   <span class="single-line-comment"># 'o world'</span>
 
-    <span class="names">some_string</span>[:<span class="number">7</span>]  <span class="single-line-comment"># 'hello w'</span>
+    <span class="names">some_string</span>[:<span class="number">7</span>]   <span class="single-line-comment"># 'hello w'</span>
 
     <span class="names">some_string</span>[-<span class="number">3</span>:]  <span class="single-line-comment"># 'rld'</span>
 

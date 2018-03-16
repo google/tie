@@ -886,7 +886,7 @@ tie.directive('learnerView', [function() {
             var feedbackParagraphs = feedback.getParagraphs();
             for (var i = 0; i < feedbackParagraphs.length; i++) {
               clearAllHighlights();
-              if (feedbackParagraphs[i].isSyntaxErrorParagraph()) {
+              if (feedbackParagraphs[i].isErrorParagraph()) {
                 highlightLine(feedbackParagraphs[i].getErrorLineNumber());
                 break;
               }

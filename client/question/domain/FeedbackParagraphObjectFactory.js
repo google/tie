@@ -19,10 +19,10 @@
 
 tie.factory('FeedbackParagraphObjectFactory', [
   'PARAGRAPH_TYPE_TEXT', 'PARAGRAPH_TYPE_CODE',
-  'PARAGRAPH_TYPE_SYNTAX_ERROR', 'PARAGRAPH_TYPE_OUTPUT',
+  'PARAGRAPH_TYPE_ERROR', 'PARAGRAPH_TYPE_OUTPUT',
   'PARAGRAPH_TYPE_IMAGE',
   function(PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_CODE,
-    PARAGRAPH_TYPE_SYNTAX_ERROR, PARAGRAPH_TYPE_OUTPUT,
+    PARAGRAPH_TYPE_ERROR, PARAGRAPH_TYPE_OUTPUT,
     PARAGRAPH_TYPE_IMAGE) {
     /**
      * FeedbackParagraph objects have all of the information necessary
@@ -49,7 +49,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
       this._type = type;
 
       /**
-       * Property holds the text/code/output/Syntax Error description for
+       * Property holds the text/code/output/error description for
        * this object.
        *
        * @type {string}
@@ -78,11 +78,11 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Checks if the Paragraph is a paragraph with a syntax error in it.
+     * Checks if the Paragraph is a paragraph with an error in it.
      * @returns {boolean}
      */
-    FeedbackParagraph.prototype.isSyntaxErrorParagraph = function() {
-      return this._type === PARAGRAPH_TYPE_SYNTAX_ERROR;
+    FeedbackParagraph.prototype.isErrorParagraph = function() {
+      return this._type === PARAGRAPH_TYPE_ERROR;
     };
 
     /**
@@ -117,7 +117,7 @@ tie.factory('FeedbackParagraphObjectFactory', [
      * @returns {number}
      */
     FeedbackParagraph.prototype.getErrorLineNumber = function() {
-      if (this.isSyntaxErrorParagraph()) {
+      if (this.isErrorParagraph()) {
         var errorContentArray = this.getContent().split(' ');
         return parseInt(errorContentArray[errorContentArray.length - 1], 10);
       } else {
@@ -138,8 +138,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         feedbackParagraphDict.type = PARAGRAPH_TYPE_TEXT;
       } else if (this.isCodeParagraph()) {
         feedbackParagraphDict.type = PARAGRAPH_TYPE_CODE;
-      } else if (this.isSyntaxErrorParagraph()) {
-        feedbackParagraphDict.type = PARAGRAPH_TYPE_SYNTAX_ERROR;
+      } else if (this.isErrorParagraph()) {
+        feedbackParagraphDict.type = PARAGRAPH_TYPE_ERROR;
       } else if (this.isOutputParagraph()) {
         feedbackParagraphDict.type = PARAGRAPH_TYPE_OUTPUT;
       } else if (this.isImageParagraph()) {
@@ -175,13 +175,13 @@ tie.factory('FeedbackParagraphObjectFactory', [
     };
 
     /**
-     * Returns a FeedbackParagraph with a Syntax Error's description in it.
+     * Returns a FeedbackParagraph with an error description in it.
      *
      * @param {string} error Error description to be in the paragraph.
      * @returns {FeedbackParagraph}
      */
-    FeedbackParagraph.createSyntaxErrorParagraph = function(error) {
-      return new FeedbackParagraph(PARAGRAPH_TYPE_SYNTAX_ERROR, error);
+    FeedbackParagraph.createErrorParagraph = function(error) {
+      return new FeedbackParagraph(PARAGRAPH_TYPE_ERROR, error);
     };
 
     /**
@@ -216,8 +216,8 @@ tie.factory('FeedbackParagraphObjectFactory', [
         return (this.createTextParagraph(dict.content));
       } else if (dict.type === PARAGRAPH_TYPE_CODE) {
         return (this.createCodeParagraph(dict.content));
-      } else if (dict.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
-        return (this.createSyntaxErrorParagraph(dict.content));
+      } else if (dict.type === PARAGRAPH_TYPE_ERROR) {
+        return (this.createErrorParagraph(dict.content));
       } else if (dict.type === PARAGRAPH_TYPE_OUTPUT) {
         return (this.createOutputParagraph(dict.content));
       } else if (dict.type === PARAGRAPH_TYPE_IMAGE) {
