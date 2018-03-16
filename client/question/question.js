@@ -313,13 +313,12 @@ tie.constant('PARAGRAPH_TYPE_TEXT', 'text');
 tie.constant('PARAGRAPH_TYPE_CODE', 'code');
 
 /**
- * FeedbackParagraph type that will render text to bring attention to a syntax
- * error.
+ * FeedbackParagraph type that will render text to bring attention to an error.
  *
  * @type {string}
  * @constant
  */
-tie.constant('PARAGRAPH_TYPE_SYNTAX_ERROR', 'error');
+tie.constant('PARAGRAPH_TYPE_ERROR', 'error');
 
 /**
  * FeedbackParagraph type for displaying user code output.

@@ -59,7 +59,7 @@ describe('FeedbackParagraphObjectFactory', function() {
     textParagraph = FeedbackParagraphObjectFactory
       .createTextParagraph('Could you fix this?');
     errorParagraph = FeedbackParagraphObjectFactory
-      .createSyntaxErrorParagraph('SyntaxError: bad input on line 2');
+      .createErrorParagraph('SyntaxError: bad input on line 2');
     codeParagraph = FeedbackParagraphObjectFactory
       .createCodeParagraph(
         'ZeroDivisionError: integer division or modulo by zero on line 5');

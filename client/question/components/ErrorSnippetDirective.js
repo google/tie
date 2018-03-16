@@ -13,10 +13,10 @@
 // limitations under the License.
 
 /**
- * @fileoverview Directive for showing syntax error snippets.
+ * @fileoverview Directive for showing syntax and runtime error snippets.
  */
 
-tie.directive('syntaxErrorSnippet', [function() {
+tie.directive('errorSnippet', [function() {
   return {
     restrict: 'E',
     scope: {
@@ -24,10 +24,6 @@ tie.directive('syntaxErrorSnippet', [function() {
     },
     template: `
       <div>
-        <p>
-          It looks like your code has a syntax error. Try to figure out what the
-          error is.
-        </p>
         <p>
           If you cannot figure out the problem, you can click on
           <a href ng-click="openSyntaxErrorModal()" ng-if="!isModalOpen()">this link</a>

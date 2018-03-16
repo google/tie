@@ -39,9 +39,9 @@ tie.directive('speechBalloonsContainer', [function() {
                     <code-snippet content="paragraph.getContent()">
                     </code-snippet>
                   </span>
-                  <span ng-if="paragraph.isSyntaxErrorParagraph()">
-                    <syntax-error-snippet content="paragraph.getContent()">
-                    </syntax-error-snippet>
+                  <span ng-if="paragraph.isErrorParagraph()">
+                    <error-snippet content="paragraph.getContent()">
+                    </error-snippet>
                   </span>
                   <span ng-if="paragraph.isOutputParagraph()">
                     <output-snippet content="paragraph.getContent()">

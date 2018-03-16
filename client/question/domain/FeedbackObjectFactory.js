@@ -107,14 +107,14 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * Appends a FeedbackParagraph of type SyntaxError to the _paragraphs
+     * Appends a FeedbackParagraph of type error to the _paragraphs
      * Array.
      *
-     * @param {string} text String describing the syntax error.
+     * @param {string} text String describing the error.
      */
-    Feedback.prototype.appendSyntaxErrorParagraph = function(text) {
+    Feedback.prototype.appendErrorParagraph = function(text) {
       this._feedbackParagraphs.push(
-        FeedbackParagraphObjectFactory.createSyntaxErrorParagraph(text));
+        FeedbackParagraphObjectFactory.createErrorParagraph(text));
     };
 
     /**
