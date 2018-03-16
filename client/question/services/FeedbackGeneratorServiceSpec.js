@@ -601,7 +601,9 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe('It looks like your code has a syntax error. Try to figure out what the error is.');
+      expect(paragraphs[0].getContent()).toBe(
+          'It looks like your code has a syntax error. ' +
+          'Try to figure out what the error is.');
       expect(paragraphs[1].getContent()).toBe('some error');
     });
 
@@ -619,7 +621,9 @@ describe('FeedbackGeneratorService', function() {
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('It looks like your code has a syntax error. Try to figure out what the error is.');
+      expect(paragraphs[0].getContent()).toEqual(
+          'It looks like your code has a syntax error. ' +
+          'Try to figure out what the error is.');
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toEqual('some error');
       expect(paragraphs[2].isTextParagraph()).toBe(true);
