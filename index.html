@@ -62,6 +62,20 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     .small {
       font-size: 14px;
     }
+    .additional-info {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #ccc;
+    }
+    .answer {
+      padding-left: 40px;
+    }
+    .answer-list {
+      padding-left: 60px;
+    }
+    .underline {
+      text-decoration: underline;
+    }
     .notes {
       margin-top: 48px;
       padding-top: 16px;
@@ -91,7 +105,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 <body>
   <div class="container">
       <h1>Technical Interview Exercises (Beta)</h1>
-      <p>Use Technical Interview Exercises (TIE) to practice technical problem solving using real code.<br>Get real-time, conversational feedback as you progress toward a solution.</p>
+      <p>Use Technical Interview Exercises (TIE) to practice solving problems using real code.<br>Get conversational feedback as you progress toward a solution.</p>
       <video autoplay="" loop="">
         <source src="./assets/short-tie-demo.mp4" type="video/mp4">
       </video>
@@ -99,18 +113,68 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       <ol>
         <li><a onclick="handleOutboundLinkClicks('app-download')" href="https://github.com/google/tie/archive/v0.1.1-beta.zip">Download the zip file</a> <sup>*</sup></li>
         <li>Unzip the zip file</li>
-        <li>Open the file client/question/question.html in a web browser</li>
-        <li>Use the coding window on the right to code a solution and click "I think I'm done" if you think you have answer (repeat until you solve the question)</li>
+        <li>In the unzipped folder, open the file client/question/question.html in a web browser</li>
+        <li>Use the coding window on the right to code a solution and click "Get Feedback" whenever you would like feedback</li>
       </ol>
       <p>To stop the TIE application, simply close the browser window. To remove TIE from your computer, delete the downloaded files from steps 1 and 2.</p>
       <p class="small"><sup>*</sup> By downloading and using TIE, you agree to the terms contained in the <a onclick="handleOutboundLinkClicks('tie-license-file')" href="https://github.com/google/tie/blob/master/LICENSE">TIE LICENSE file</a>.</p>
-
       <div class="feedback">
         <img src="./assets/feedback_grey600_48dp.png" alt="Feedback icon" width="48">
         <h3>Help us improve</h3>
         <p>The TIE team values your feedback! Let us know what you think using our <a onclick="handleOutboundLinkClicks('feedback-form')" href="https://goo.gl/wbHZHX">feedback form</a>. We hope to hear from you!</p>
       </div>
-
+      <div class="additional-info">
+        <h2>Troubleshooting</h2>
+        <p class="question">
+          "The download link doesn't work."
+        </p>
+        <p class="answer">
+          If the link above does not work, try opening <a onclick="handleOutboundLinkClicks('tie-releases-page')" href="https://github.com/google/tie/releases">https://github.com/google/tie/releases</a> and under the latest (newest) version, click "Source code (zip)".
+        </p>
+        <p class="question">
+          "I can't open the question.html file."
+        </p>
+        <p class="answer">
+          <span class="underline">Chromebook users</span>: Chromebooks may not be able to unzip files by default. To enable this on Chromebooks:
+        </p>
+        <ol class="answer-list">
+            <li>In your browser, go to chrome://flags</li>
+            <li>Scroll down to "New ZIP unpacker" and select "Disabled"</li>
+            <li>Use the "RESTART NOW" button to restart the browser or go to chrome://restart</li>
+            <li>Try the "How to get started" instructions again</li>
+        </ol>
+        <p class="answer">
+          <span class="underline">Non-Chromebook users</span>: Make sure your browser is up-to-date. We have seen cases where browsers stop opening local html files but are able to after updating to the latest version.
+        </p>
+        <p class="question">
+          "I see some other bug."
+        </p>
+        <p class="answer">
+          You may leave a description of your problem <a onclick="handleOutboundLinkClicks('tie-bug-form')" href="https://docs.google.com/forms/d/e/1FAIpQLScmt4wi9WyHrS8hsQ2ui3CqtTcxWkfiCOsNP3NYUyF0Q8sBQA/viewform">here</a>. Please do not include any personal or sensitive information. Although we will do our best to look into the issue, we will not be able contact you or respond to you directly.
+        </p>
+        <h2>Frequently Asked Questions</h2>
+        <p class="question">
+          "Why is there only one question? Will there be more?"
+        </p>
+        <p class="answer">
+          The TIE team is currently focused on getting the user experience right and prioritizing features that make TIE unique, such as the feedback it provides to users. We hope to add more questions in the future.
+        </p>
+        <p class="question">
+          "Why does everything look so plain? Why doesn't it look like a Google product?"
+        </p>
+        <p class="answer">
+          This version of TIE is open source, and while it is being developed by Google employees, it is not an official Google product. We want to maintain a simple user interface while focusing on features that enhance the interactive user experience.
+        </p>
+        <p class="question">
+          "Why did you create TIE?"
+        </p>
+        <p class="answer">
+          We think users might find it helpful to have a tool that tries to emulate the interaction that one may experience during a coding interview at places like Google--specifically, trying to come up with code to solve a problem while getting tips and prompts from the interviewer.
+        </p>
+        <p class="answer">
+          In general, we believe hands-on practice is one of the best ways to learn and cement learning. People don't always have someone sitting next to them to help out when they get stuck. TIE can provide users with guidance as they work to solve coding challenges.
+        </p>
+      </div>
       <div class="notes">
         <p><strong>Notes</strong>:</p>
         <ul>
