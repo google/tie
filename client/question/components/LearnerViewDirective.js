@@ -113,7 +113,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-options-row">
               <ul>
                 <li class="tie-about-button">
-                  <a target="_blank" href="https://github.com/google/tie/blob/master/README.md">About TIE</a>
+                  <a target="_blank" href="https://google.github.io/tie/">About TIE</a>
                 </li>
                 <li class="tie-privacy-button" ng-click="onPrivacyClick()">
                   <a href="#">Privacy</a>
