@@ -24,7 +24,7 @@ tie.factory('FeedbackGeneratorService', [
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
   'CLASS_NAME_STUDENT_CODE', 'PARAGRAPH_TYPE_TEXT',
-  'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_SYNTAX_ERROR',
+  'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_ERROR',
   'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
   'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
   'FEEDBACK_CATEGORIES', 'TEST_SUITE_ID_SAMPLE_INPUT',
@@ -39,7 +39,7 @@ tie.factory('FeedbackGeneratorService', [
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE,
     CLASS_NAME_STUDENT_CODE, PARAGRAPH_TYPE_TEXT,
-    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_SYNTAX_ERROR,
+    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_ERROR,
     PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
     ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
     FEEDBACK_CATEGORIES, TEST_SUITE_ID_SAMPLE_INPUT,
@@ -484,7 +484,6 @@ tie.factory('FeedbackGeneratorService', [
             throw Error(
               'Line number index out of range: ' + preprocessedCodeLineIndex);
           }
-
           if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
             console.error(
               'Runtime error on line ' + preprocessedCodeLineIndex +
@@ -502,9 +501,8 @@ tie.factory('FeedbackGeneratorService', [
           fixedErrorString, LANGUAGE_PYTHON);
       if (feedbackString === null) {
         feedback.appendTextParagraph(
-          "Looks like your code had a runtime error" + inputClause +
-          ". Here's the trace:");
-        feedback.appendCodeParagraph(fixedErrorString);
+          "Looks like your code had a runtime error" + inputClause + ".");
+        feedback.appendErrorParagraph(fixedErrorString);
       } else {
         feedback.appendTextParagraph(feedbackString);
       }
@@ -844,7 +842,10 @@ tie.factory('FeedbackGeneratorService', [
         previousRuntimeErrorString = '';
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-        feedback.appendSyntaxErrorParagraph(errorString);
+        feedback.appendTextParagraph(
+          'It looks like your code has a syntax error. ' +
+          'Try to figure out what the error is.');
+        feedback.appendErrorParagraph(errorString);
 
         _applyThresholdUpdates(feedback);
         return feedback;
@@ -908,8 +909,11 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendTextParagraph(paragraph.content);
                 } else if (paragraph.type === PARAGRAPH_TYPE_CODE) {
                   feedback.appendCodeParagraph(paragraph.content);
-                } else if (paragraph.type === PARAGRAPH_TYPE_SYNTAX_ERROR) {
-                  feedback.appendSyntaxErrorParagraph(paragraph.content);
+                } else if (paragraph.type === PARAGRAPH_TYPE_ERROR) {
+                  feedback.appendTextParagraph(
+                    'It looks like your code has a syntax error. ' +
+                    'Try to figure out what the error is.');
+                  feedback.appendErrorParagraph(paragraph.content);
                 }
               });
             }

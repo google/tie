@@ -19,7 +19,7 @@
 describe('FeedbackObjectFactory', function() {
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
-  var PARAGRAPH_TYPE_SYNTAX_ERROR;
+  var PARAGRAPH_TYPE_ERROR;
   var PARAGRAPH_TYPE_OUTPUT;
   var PARAGRAPH_TYPE_IMAGE;
   var FEEDBACK_CATEGORIES;
@@ -31,7 +31,7 @@ describe('FeedbackObjectFactory', function() {
   beforeEach(inject(function($injector) {
     PARAGRAPH_TYPE_TEXT = $injector.get('PARAGRAPH_TYPE_TEXT');
     PARAGRAPH_TYPE_CODE = $injector.get('PARAGRAPH_TYPE_CODE');
-    PARAGRAPH_TYPE_SYNTAX_ERROR = $injector.get('PARAGRAPH_TYPE_SYNTAX_ERROR');
+    PARAGRAPH_TYPE_ERROR = $injector.get('PARAGRAPH_TYPE_ERROR');
     PARAGRAPH_TYPE_OUTPUT = $injector.get('PARAGRAPH_TYPE_OUTPUT');
     PARAGRAPH_TYPE_IMAGE = $injector.get('PARAGRAPH_TYPE_IMAGE');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
@@ -103,7 +103,7 @@ describe('FeedbackObjectFactory', function() {
     it('should return an array of paragraphs as dictionaries', function() {
       feedback.appendTextParagraph('This');
       feedback.appendCodeParagraph('is');
-      feedback.appendSyntaxErrorParagraph('fine');
+      feedback.appendErrorParagraph('fine');
       feedback.appendOutputParagraph(':-)');
       feedback.appendImageParagraph('image.png');
       var dictionaries = feedback.getParagraphsAsListOfDicts();
@@ -113,7 +113,7 @@ describe('FeedbackObjectFactory', function() {
       expect(dictionaries[1].content).toEqual('is');
       expect(dictionaries[1].type).toEqual(PARAGRAPH_TYPE_CODE);
       expect(dictionaries[2].content).toEqual('fine');
-      expect(dictionaries[2].type).toEqual(PARAGRAPH_TYPE_SYNTAX_ERROR);
+      expect(dictionaries[2].type).toEqual(PARAGRAPH_TYPE_ERROR);
       expect(dictionaries[3].content).toEqual(':-)');
       expect(dictionaries[3].type).toEqual(PARAGRAPH_TYPE_OUTPUT);
       expect(dictionaries[4].content).toEqual('image.png');
@@ -125,7 +125,7 @@ describe('FeedbackObjectFactory', function() {
     it('should clear all paragraphs in the current feedback', function() {
       feedback.appendTextParagraph('text');
       feedback.appendCodeParagraph('code');
-      feedback.appendSyntaxErrorParagraph('error');
+      feedback.appendErrorParagraph('error');
       feedback.appendOutputParagraph('output');
       feedback.clear();
       expect(feedback.getParagraphs.length).toEqual(0);

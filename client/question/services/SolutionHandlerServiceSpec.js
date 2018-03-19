@@ -385,7 +385,7 @@ describe('SolutionHandlerService', function() {
           auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(feedback.isAnswerCorrect()).toEqual(false);
-          expect(feedback.getParagraphs()[0].getContent().startsWith(
+          expect(feedback.getParagraphs()[1].getContent().startsWith(
             'SyntaxError:')).toEqual(true);
           done();
         });
