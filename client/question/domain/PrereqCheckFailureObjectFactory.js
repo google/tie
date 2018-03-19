@@ -257,7 +257,7 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      *
      * @returns {string}
      */
-    PrereqCheckFailure.prototype.geterrorLineNumber = function() {
+    PrereqCheckFailure.prototype.getErrorLineNumber = function() {
       return this._errorLineNumber;
     };
 
@@ -266,7 +266,7 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      *
      * @param {integer} errorLine to set the _errorLineNumber property to.
      */
-    PrereqCheckFailure.prototype.seterrorLineNumber = function(
+    PrereqCheckFailure.prototype.setErrorLineNumber = function(
       errorLineNumber) {
       this._errorLineNumber = errorLineNumber;
     };

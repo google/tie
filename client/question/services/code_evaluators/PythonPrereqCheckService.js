@@ -56,30 +56,25 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     /**
-     * Processes studentCode and converts all single quote + double quote str
-     * to filler character "x".
+     * Processes studentCode and converts all escaped characters, then all
+     * single quote + double quote str to filler character "x".
      * This is to preserve character length for error checks.
      *
      * @param {string} [code] The code to convert
      * @return {string} code where all 'foo' & "bar" converted to xxxxx & xxxxx
      */
-    var obscureStringCharacters = function(code) {
+    var getObscuredCode = function(code) {
+      var escapeRegexp = new RegExp(/\\[\w,',",\\]/, 'g');
       var regexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
-      var matches = [];
-      var obscureCode = '';
-      var pointer = 0;
 
-      while ((matches = regexp.exec(code)) !== null) {
-        if (matches[0]) {
-          var matchLength = matches[0].length;
-          obscureCode += code.slice(pointer, (regexp.lastIndex - matchLength));
-          obscureCode = obscureCode.padEnd(
-            obscureCode.length + matchLength, 'x');
-          pointer = regexp.lastIndex;
-        }
-      }
-      obscureCode += code.slice(pointer, code.length);
-      return obscureCode;
+      /**
+       * Replace method callback converts regex matches with 'x'
+       */
+      var obscure = function(match) {
+        return ''.padStart(match.length, 'x');
+      };
+
+      return code.replace(escapeRegexp, obscure).replace(regexp, obscure);
     };
 
     /**
@@ -92,27 +87,27 @@ tie.factory('PythonPrereqCheckService', [
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var rawCodeArray = obscureStringCharacters(code).split('\n');
+      var rawCodeArray = getObscuredCode(code).split('\n');
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
 
         // Lookup character location of error
-        var firstErrorCharIndex = code.search(regexp);
-        if (firstErrorCharIndex !== -1) {
-          var errorLine = null;
+        var firstErrorColumnNumber = code.search(regexp);
+        if (firstErrorColumnNumber !== -1) {
+          var firstErrorLineNumber = null;
 
           // After regex matches an error, loop through codelines
-          for (var l = 0; firstErrorCharIndex >= 0; l++) {
+          for (var l = 0; firstErrorColumnNumber >= 0; l++) {
             // Subtract l.length from firstErrorCharIndex.
             // At/below 0: index === linenumber. Subtract +1 for newline char.
-            firstErrorCharIndex -= (rawCodeArray[l].length + 1);
+            firstErrorColumnNumber -= (rawCodeArray[l].length + 1);
           }
-          errorLine = l;
+          firstErrorLineNumber = l;
 
           return PrereqCheckErrorObjectFactory.create(
-            error.errorName, errorLine);
+            error.errorName, firstErrorLineNumber);
         }
       }
       return null;
@@ -340,7 +335,7 @@ tie.factory('PythonPrereqCheckService', [
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
       getNonStringLines: getNonStringLines,
-      obscureStringCharacters: obscureStringCharacters,
+      getObscuredCode: getObscuredCode,
       getUnsupportedImports: getUnsupportedImports,
       hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
       hasInvalidStudentClassCalls: hasInvalidStudentClassCalls,

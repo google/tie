@@ -24,27 +24,36 @@ describe('PrereqCheckErrorObjectFactory', function() {
     PrereqCheckErrorObjectFactory = $injector.get(
       'PrereqCheckErrorObjectFactory');
   }));
-  var errorName = 'notOp';
-  var errorLineNumber = 2;
+  var error = {
+    errorName: 'notOp',
+    errorLineNumber: 2
+  };
 
   describe('create', function() {
     it('should generate an object with name and line number', function() {
-      var TestObject = {
-        _errorName: 'notOp',
-        _errorLineNumber: 2,
-        _errorType: 'wrongLang'
-      };
-      var PrereqCheckError = PrereqCheckErrorObjectFactory.create(
-        errorName, errorLineNumber);
+      var newErrorName = 'andOp';
+      var newErrorLineNumber = 35;
+      var PrereqCheckError;
+      PrereqCheckError = PrereqCheckErrorObjectFactory.create(
+        error.errorName, error.errorLineNumber);
 
-      expect(PrereqCheckError).toEqual(jasmine.objectContaining(TestObject));
+      expect(PrereqCheckError.getErrorName()).toEqual(error.errorName);
+      expect(PrereqCheckError.getErrorLineNumber()).toEqual(
+        error.errorLineNumber);
+
+      PrereqCheckError.setErrorName(newErrorName);
+      PrereqCheckError.setErrorLineNumber(newErrorLineNumber);
+
+      expect(PrereqCheckError.getErrorName()).toEqual(newErrorName);
+      expect(PrereqCheckError.getErrorLineNumber()).toEqual(newErrorLineNumber);
     });
   });
 
   describe('getErrorName', function() {
     it('should return string from error object', function() {
-      var PrereqCheckError = PrereqCheckErrorObjectFactory.create(
-        errorName, errorLineNumber);
+      var PrereqCheckError;
+      PrereqCheckError = PrereqCheckErrorObjectFactory.create(
+        error.errorName, error.errorLineNumber);
       expect(PrereqCheckError.getErrorName()).toEqual('notOp');
     });
   });

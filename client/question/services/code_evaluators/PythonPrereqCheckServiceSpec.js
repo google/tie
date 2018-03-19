@@ -503,6 +503,35 @@ describe('PythonPrereqCheckService', function() {
   });
 
   describe('obscureStringCharacters', function() {
+    it('obscure escaped characters', function() {
+
+      var backslash = "\\\\";
+      var backslashedBackslash = "\\\\\\\\";
+      var singlequotes = '\\\'\\\'\\\'';
+      var doublequotes = "\\\"\\\"\\\"";
+      var mixed = '\\\' hello world\\\'s \\\'';
+
+      expect(PythonPrereqCheckService.getObscuredCode(backslash))
+        .toEqual('xx');
+      expect(PythonPrereqCheckService.getObscuredCode(backslashedBackslash))
+        .toEqual('xxxx');
+      expect(PythonPrereqCheckService.getObscuredCode(singlequotes))
+        .toEqual('xxxxxx');
+      expect(PythonPrereqCheckService.getObscuredCode(doublequotes))
+        .toEqual('xxxxxx');
+      expect(PythonPrereqCheckService.getObscuredCode(mixed))
+        .toEqual('xx hello worldxxs xx');
+    });
+
+    it('obscure escaped characters, preserve character length', function() {
+
+      var varLine = 'test_var = \\\'1\\\' + \\\'1\\\'';
+      var obscuredVarLine = PythonPrereqCheckService.getObscuredCode(varLine);
+
+      expect(obscuredVarLine).toEqual("test_var = xx1xx + xx1xx");
+      expect(obscuredVarLine.length).toEqual(varLine.length);
+    });
+
     it('obscure strings to test while preserving character length', function() {
 
       var code = [
@@ -515,7 +544,7 @@ describe('PythonPrereqCheckService', function() {
         ''
       ].join('\n');
       var obscureCode =
-        PythonPrereqCheckService.obscureStringCharacters(code);
+        PythonPrereqCheckService.getObscuredCode(code);
 
       expect(code.length).toEqual(obscureCode.length);
       expect(obscureCode).toContain('if xxxxxx');
