@@ -26,35 +26,67 @@ describe('PrereqCheckErrorObjectFactory', function() {
   }));
   var error = {
     errorName: 'notOp',
-    errorLineNumber: 2
+    errorLineNumber: 2,
+    errorColumnNumber: 20
   };
+  var PrereqCheckError;
 
   describe('create', function() {
-    it('should generate an object with name and line number', function() {
-      var newErrorName = 'andOp';
-      var newErrorLineNumber = 35;
-      var PrereqCheckError;
+    it('should generate an object with name, line & column number', function() {
       PrereqCheckError = PrereqCheckErrorObjectFactory.create(
-        error.errorName, error.errorLineNumber);
+        error.errorName, error.errorLineNumber, error.errorColumnNumber);
 
       expect(PrereqCheckError.getErrorName()).toEqual(error.errorName);
       expect(PrereqCheckError.getErrorLineNumber()).toEqual(
         error.errorLineNumber);
+      expect(PrereqCheckError.getErrorColumnNumber()).toEqual(
+        error.errorColumnNumber);
+    });
+
+    it('should result in a fixed errorType', function() {
+      expect(PrereqCheckError._errorType).toEqual('wrongLang');
+    });
+  });
+
+  describe('errorName', function() {
+    it('getErrorName should return string from error object', function() {
+      expect(PrereqCheckError.getErrorName()).toEqual('notOp');
+    });
+
+    it('setErrorName should update error object', function() {
+      var newErrorName = 'andOp';
 
       PrereqCheckError.setErrorName(newErrorName);
-      PrereqCheckError.setErrorLineNumber(newErrorLineNumber);
-
       expect(PrereqCheckError.getErrorName()).toEqual(newErrorName);
+    });
+  });
+
+  describe('errorLine', function() {
+    it('getErrorLine should return integer from error object', function() {
+      expect(PrereqCheckError.getErrorLineNumber()).toEqual(
+        error.errorLineNumber);
+    });
+
+    it('setErrorLine should update error object', function() {
+      var newErrorLineNumber = 35;
+
+      PrereqCheckError.setErrorLineNumber(newErrorLineNumber);
       expect(PrereqCheckError.getErrorLineNumber()).toEqual(newErrorLineNumber);
     });
   });
 
-  describe('getErrorName', function() {
-    it('should return string from error object', function() {
-      var PrereqCheckError;
-      PrereqCheckError = PrereqCheckErrorObjectFactory.create(
-        error.errorName, error.errorLineNumber);
-      expect(PrereqCheckError.getErrorName()).toEqual('notOp');
+  describe('errorColumn', function() {
+    it('getErrorLine should return integer from error object', function() {
+      expect(PrereqCheckError.getErrorColumnNumber()).toEqual(
+        error.errorColumnNumber);
+    });
+
+    it('setErrorColumn should update error object', function() {
+      var newErrorColumnNumber = 12;
+
+      PrereqCheckError.setErrorColumnNumber(newErrorColumnNumber);
+      expect(PrereqCheckError.getErrorColumnNumber()).toEqual(
+        newErrorColumnNumber);
     });
   });
 });

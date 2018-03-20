@@ -478,10 +478,10 @@ describe('PythonPrereqCheckService', function() {
       expect(prereqFailureType.getErrorName()).toEqual('notOp');
     });
 
-    it('ignores lines with strings for non-multiline checks', function() {
+    it('interpret lines with strings for non-multiline checks', function() {
       // This tests one "if" clause that does not have an error, and another
-      // "if" clause that does have a legitimate error. In both cases, these
-      // are left as-is.
+      // "if" clause that does have a legitimate error. The first is technically
+      // a string, and ignored. The second is flagged.
       var code = [
         'def myFunction(arg):',
         '    if "!arg":',
@@ -493,12 +493,14 @@ describe('PythonPrereqCheckService', function() {
       ].join('\n');
       var prereqFailureType =
         PythonPrereqCheckService.detectAndGetWrongLanguageType(code);
-      expect(prereqFailureType).toEqual(
-        jasmine.objectContaining({
-          _errorName: 'notOp',
-          _errorLineNumber: 2,
-          _errorType: 'wrongLang'
-        }));
+
+      expect(prereqFailureType.getErrorName()).toEqual('notOp');
+      expect(prereqFailureType.getErrorLineNumber()).toEqual(
+        prereqFailureType._errorLineNumber);
+      expect(prereqFailureType.getErrorColumnNumber()).toEqual(
+        prereqFailureType._errorColumnNumber);
+      expect(prereqFailureType._errorType).toEqual('wrongLang');
+
     });
   });
 
@@ -509,7 +511,9 @@ describe('PythonPrereqCheckService', function() {
       var backslashedBackslash = "\\\\\\\\";
       var singlequotes = '\\\'\\\'\\\'';
       var doublequotes = "\\\"\\\"\\\"";
-      var mixed = '\\\' hello world\\\'s \\\'';
+      var mixed = '  \\\' hello world\\\'s \\\'  ';
+      var newLine = '\\n';
+      var tabChar = '\\t';
 
       expect(PythonPrereqCheckService.getObscuredCode(backslash))
         .toEqual('xx');
@@ -520,7 +524,11 @@ describe('PythonPrereqCheckService', function() {
       expect(PythonPrereqCheckService.getObscuredCode(doublequotes))
         .toEqual('xxxxxx');
       expect(PythonPrereqCheckService.getObscuredCode(mixed))
-        .toEqual('xx hello worldxxs xx');
+        .toEqual('  xx hello worldxxs xx  ');
+      expect(PythonPrereqCheckService.getObscuredCode(newLine))
+        .toEqual('xx');
+      expect(PythonPrereqCheckService.getObscuredCode(tabChar))
+        .toEqual('xx');
     });
 
     it('obscure escaped characters, preserve character length', function() {

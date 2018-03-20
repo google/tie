@@ -30,7 +30,8 @@ tie.factory('PrereqCheckErrorObjectFactory', [
      *
      * @constructor
      */
-    var PrereqCheckError = function(errorName, errorLineNumber) {
+    var PrereqCheckError = function(errorName, errorLineNumber,
+      errorColumnNumber) {
       /**
        * String standing for key in WRONG_LANGUAGE_ERRORS that correlates to
        * error that triggered.
@@ -49,6 +50,14 @@ tie.factory('PrereqCheckErrorObjectFactory', [
        * @private
        */
       this._errorLineNumber = errorLineNumber;
+
+      /**
+       * Column number that correlates to error that triggered.
+       *
+       * @type {integer}
+       * @private
+       */
+      this._errorColumnNumber = errorColumnNumber;
 
       /**
        * Indicates what type of failure occurred. Defaults to the only errorType
@@ -96,14 +105,35 @@ tie.factory('PrereqCheckErrorObjectFactory', [
       this._errorLineNumber = newLineNumber;
     };
 
+    /**
+     * A getter for the _errorColumnNumber property.
+     *
+     * @returns {string}
+     */
+    PrereqCheckError.prototype.getErrorColumnNumber = function() {
+      return this._errorColumnNumber;
+    };
+
+    /**
+     * A setter for the _errorColumnNumber property.
+     *
+     * @param {integer} errorLine to set the _errorColumnNumber property to.
+     */
+    PrereqCheckError.prototype.setErrorColumnNumber = function(
+      newColumnNumber) {
+      this._errorColumnNumber = newColumnNumber;
+    };
+
     // Static class methods.
     /**
      * Returns a new PrereqCheckError object.
      *
      * @returns {PrereqCheckError}
      */
-    PrereqCheckError.create = function(errorName, errorLineNumber) {
-      return new PrereqCheckError(errorName, errorLineNumber);
+    PrereqCheckError.create = function(
+        errorName, errorLineNumber, errorColumnNumber) {
+      return new PrereqCheckError(
+        errorName, errorLineNumber, errorColumnNumber);
     };
 
     return PrereqCheckError;

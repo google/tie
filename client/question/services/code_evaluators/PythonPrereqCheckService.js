@@ -87,14 +87,15 @@ tie.factory('PythonPrereqCheckService', [
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var rawCodeArray = getObscuredCode(code).split('\n');
+      var obscuredCode = getObscuredCode(code);
+      var rawCodeArray = code.split('\n');
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
 
         // Lookup character location of error
-        var firstErrorColumnNumber = code.search(regexp);
+        var firstErrorColumnNumber = obscuredCode.search(regexp);
         if (firstErrorColumnNumber !== -1) {
           var firstErrorLineNumber = null;
 
@@ -104,10 +105,14 @@ tie.factory('PythonPrereqCheckService', [
             // At/below 0: index === linenumber. Subtract +1 for newline char.
             firstErrorColumnNumber -= (rawCodeArray[l].length + 1);
           }
-          firstErrorLineNumber = l;
+
+          if (l !== undefined) {
+            firstErrorLineNumber = l;
+            firstErrorColumnNumber += rawCodeArray[l - 1].length;
+          }
 
           return PrereqCheckErrorObjectFactory.create(
-            error.errorName, firstErrorLineNumber);
+            error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
         }
       }
       return null;
@@ -322,7 +327,8 @@ tie.factory('PythonPrereqCheckService', [
           return PrereqCheckFailureObjectFactory.create(
               PREREQ_CHECK_TYPE_WRONG_LANG, null, null,
               wrongLangError.getErrorName(),
-              wrongLangError.getErrorLineNumber());
+              wrongLangError.getErrorLineNumber(),
+              wrongLangError.getErrorColumnNumber());
         }
 
         // Otherwise, code passed all pre-requisite checks.
