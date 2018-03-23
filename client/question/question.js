@@ -16,8 +16,9 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-window.tie = angular.module('tie',
-  ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies', 'ngAria']);
+window.tie = angular.module('tie', [
+  'ui.codemirror', 'tieConfig', 'tieData', 'ngCookies', 'ngAria', 'ngSanitize'
+]);
 
 /**
  * String used to label test suites that contain sample input and output
