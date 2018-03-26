@@ -13,8 +13,12 @@
 // limitations under the License.
 
 /**
+<<<<<<< HEAD
  * @fileoverview Directive for showing text with Markdown links. Only links to
  *   HTTPS resources or the Python primer are permitted.
+=======
+ * @fileoverview Directive for showing text with Markdown links.
+>>>>>>> b667131e6d2a876cab7b1d6874397346fda45300
  */
 
 tie.directive('textWithMarkdownLinksSnippet', [function() {
