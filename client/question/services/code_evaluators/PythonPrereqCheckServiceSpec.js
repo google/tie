@@ -505,7 +505,7 @@ describe('PythonPrereqCheckService', function() {
   });
 
   describe('obscureStringCharacters', function() {
-    it('obscure escaped characters', function() {
+    it('obscures escaped characters', function() {
 
       var backslash = "\\\\";
       var backslashedBackslash = "\\\\\\\\";
@@ -531,7 +531,7 @@ describe('PythonPrereqCheckService', function() {
         .toEqual('xx');
     });
 
-    it('obscure escaped characters, preserve character length', function() {
+    it('obscures escaped characters, preserving character length', function() {
 
       var varLine = 'test_var = \\\'1\\\' + \\\'1\\\'';
       var obscuredVarLine = PythonPrereqCheckService.getObscuredCode(varLine);

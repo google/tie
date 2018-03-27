@@ -44,9 +44,8 @@ tie.factory('PrereqCheckErrorObjectFactory', [
 
       /**
        * Line number that correlates to error that triggered.
-       * Should be null if error type does not supply a line number.
        *
-       * @type {integer | null}
+       * @type {integer}
        * @private
        */
       this._errorLineNumber = errorLineNumber;

@@ -97,19 +97,18 @@ tie.factory('PythonPrereqCheckService', [
         // Lookup character location of error
         var firstErrorColumnNumber = obscuredCode.search(regexp);
         if (firstErrorColumnNumber !== -1) {
-          var firstErrorLineNumber = null;
+          var firstErrorLineNumber = 0;
 
           // After regex matches an error, loop through codelines
           for (var l = 0; firstErrorColumnNumber >= 0; l++) {
             // Subtract l.length from firstErrorCharIndex.
             // At/below 0: index === linenumber. Subtract +1 for newline char.
             firstErrorColumnNumber -= (rawCodeArray[l].length + 1);
+            firstErrorLineNumber++;
           }
 
-          if (l !== undefined) {
-            firstErrorLineNumber = l;
-            firstErrorColumnNumber += rawCodeArray[l - 1].length;
-          }
+          firstErrorColumnNumber += rawCodeArray[
+            firstErrorLineNumber - 1].length;
 
           return PrereqCheckErrorObjectFactory.create(
             error.errorName, firstErrorLineNumber, firstErrorColumnNumber);

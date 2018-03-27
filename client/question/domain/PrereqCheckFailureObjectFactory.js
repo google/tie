@@ -51,7 +51,8 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      * @constructor
      */
     var PrereqCheckFailure = function(
-        type, badImports, starterCode, wrongLangKey, errorLineNumber) {
+        type, badImports, starterCode, wrongLangKey, errorLineNumber,
+        errorColumnNumber) {
       /**
        * Indicates what type of failure occurred.
        *
@@ -89,12 +90,19 @@ tie.factory('PrereqCheckFailureObjectFactory', [
 
       /**
        * Line number that correlates to error that triggered.
-       * Should be null if error type does not supply a line number.
        *
-       * @type {integer | null}
+       * @type {integer}
        * @private
        */
       this._errorLineNumber = errorLineNumber;
+
+      /**
+       * Column number that correlates to error that triggered.
+       *
+       * @type {integer}
+       * @private
+       */
+      this._errorColumnNumber = errorColumnNumber;
     };
 
     // Instance methods.
@@ -271,6 +279,27 @@ tie.factory('PrereqCheckFailureObjectFactory', [
       this._errorLineNumber = errorLineNumber;
     };
 
+
+    /**
+     * A getter for the _errorColumnNumber property.
+     *
+     * @returns {string}
+     */
+    PrereqCheckFailure.prototype.getErrorColumnNumber = function() {
+      return this._errorColumnNumber;
+    };
+
+    /**
+     * A setter for the _errorColumnNumber property.
+     *
+     * @param {integer} errorLine to set the _errorColumnNumber property to.
+     */
+    PrereqCheckFailure.prototype.setErrorColumnNumber = function(
+      newColumnNumber) {
+      this._errorColumnNumber = newColumnNumber;
+    };
+
+
     // Static class methods.
     /**
      * Returns a PrereqCheckFailure object with the properties given in the
@@ -287,10 +316,12 @@ tie.factory('PrereqCheckFailureObjectFactory', [
      * @returns {PrereqCheckFailure}
      */
     PrereqCheckFailure.create = function(
-        type, badImports, starterCode, wrongLangErrorName, errorLineNumber) {
+        type, badImports, starterCode, wrongLangErrorName, errorLineNumber,
+        errorColumnNumber) {
       var errorName = wrongLangErrorName || null;
       return new PrereqCheckFailure(
-        type, badImports, starterCode, errorName, errorLineNumber);
+        type, badImports, starterCode, errorName, errorLineNumber,
+        errorColumnNumber);
     };
 
     return PrereqCheckFailure;
