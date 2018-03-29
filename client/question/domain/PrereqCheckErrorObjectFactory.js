@@ -30,8 +30,8 @@ tie.factory('PrereqCheckErrorObjectFactory', [
      *
      * @constructor
      */
-    var PrereqCheckError = function(errorName, errorLineNumber,
-      errorColumnNumber) {
+    var PrereqCheckError = function(
+      errorName, errorLineNumber, errorColumnNumber) {
       /**
        * String standing for key in WRONG_LANGUAGE_ERRORS that correlates to
        * error that triggered.

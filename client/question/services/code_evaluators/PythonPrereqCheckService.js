@@ -64,8 +64,8 @@ tie.factory('PythonPrereqCheckService', [
      * @return {string} code where all 'foo' & "bar" converted to xxxxx & xxxxx
      */
     var getObscuredCode = function(code) {
-      var escapeRegexp = new RegExp(/\\[\w,',",\\]/, 'g');
-      var regexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
+      var escapeRegexp = new RegExp(/\\[\w'"\\]/, 'g');
+      var stringRegexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
 
       /**
        * Replace method callback converts regex matches with 'x'
@@ -74,7 +74,7 @@ tie.factory('PythonPrereqCheckService', [
         return ''.padStart(match.length, 'x');
       };
 
-      return code.replace(escapeRegexp, obscure).replace(regexp, obscure);
+      return code.replace(escapeRegexp, obscure).replace(stringRegexp, obscure);
     };
 
     /**
@@ -95,19 +95,20 @@ tie.factory('PythonPrereqCheckService', [
         var regexp = new RegExp(error.regExString);
 
         // Lookup character location of error
-        var firstErrorColumnNumber = obscuredCode.search(regexp);
-        if (firstErrorColumnNumber !== -1) {
+        var firstErrorCharNumber = obscuredCode.search(regexp);
+        if (firstErrorCharNumber !== -1) {
           var firstErrorLineNumber = 0;
 
           // After regex matches an error, loop through codelines
-          for (var l = 0; firstErrorColumnNumber >= 0; l++) {
-            // Subtract l.length from firstErrorCharIndex.
-            // At/below 0: index === linenumber. Subtract +1 for newline char.
-            firstErrorColumnNumber -= (rawCodeArray[l].length + 1);
+          for (var l = 0; firstErrorCharNumber >= 0; l++) {
+            // Subtract line length from corresponding firstErrorCharNumber.
+            // When below 0: index === linenumber. Subtract +1 for newline char.
+            firstErrorCharNumber -= (rawCodeArray[l].length + 1);
             firstErrorLineNumber++;
           }
 
-          firstErrorColumnNumber += rawCodeArray[
+          // Add line length to the >0 firstErrorColumnNumber
+          var firstErrorColumnNumber = firstErrorCharNumber + rawCodeArray[
             firstErrorLineNumber - 1].length;
 
           return PrereqCheckErrorObjectFactory.create(
