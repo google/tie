@@ -12,12 +12,12 @@ limited. We plan to add more content and features as we develop towards version
 
 ## User setup
 
-1. From https://github.com/google/tie/, click on the green "Clone or download"
-button then click "Download ZIP"
+1. From [https://github.com/google/tie/](https://github.com/google/tie/), click on the green ``Clone or download``
+button then click ``Download ZIP``
 2. Unzip the zip file
-3. Open the file client/question/question.html in a web browser
-4. Use the coding window on the right to code a solution and click "I think I'm
-done" if you think you have answer (repeat until you solve the question)
+3. Open the file ``client/question/question.html`` in a web browser
+4. Use the coding window on the right to code a solution and click ``I think I'm
+done`` if you think you have answer (repeat until you solve the question)
 5. To stop the TIE application, simply close the browser window
 6. To remove TIE from your computer, delete the downloaded files from steps 1
 and 2
