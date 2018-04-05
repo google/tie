@@ -21,7 +21,7 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode}">
+      <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode()}">
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
@@ -61,8 +61,6 @@ tie.directive('learnerView', [function() {
                   Reset Feedback
                 </button>
                 <select class="tie-select-menu"
-                    id="themeSelector"
-                    name="theme-select"
                     ng-change="changeTheme(currentThemeName)"
                     ng-model="currentThemeName"
                     ng-options="i.themeName as i.themeName for i in themes"
@@ -464,22 +462,24 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
-      'ServerHandlerService', 'SessionIdService',
+      'ServerHandlerService', 'SessionIdService', 'CurrentThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
-      'ConversationLogDataService', 'DELAY_STYLE_CHANGES',
+      'ConversationLogDataService', 'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT',
+      'THEME_NAME_DARK',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
-          ServerHandlerService, SessionIdService,
+          ServerHandlerService, SessionIdService, CurrentThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
-          ConversationLogDataService, DELAY_STYLE_CHANGES) {
+          ConversationLogDataService, DELAY_STYLE_CHANGES, THEME_NAME_LIGHT,
+          THEME_NAME_DARK) {
 
         $scope.ConversationLogDataService = ConversationLogDataService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
@@ -509,8 +509,20 @@ tie.directive('learnerView', [function() {
          */
         var language = LANGUAGE_PYTHON;
 
-        var THEME_NAME_LIGHT = 'Light Theme';
-        var THEME_NAME_DARK = 'Dark Theme';
+        /**
+         * Gets the initial theme name for display in the UI.
+         */
+        $scope.currentThemeName = CurrentThemeNameService.getCurrentThemeName();
+
+        /**
+         * Provides the URL to the appropriately themed python primer file.
+         */
+        $scope.getPythonPrimerUrl = CurrentThemeNameService.getPythonPrimerUrl;
+        /**
+         * A function that returns a boolean indicating whether the current
+         * mode is "dark mode".
+         */
+        $scope.isInDarkMode = CurrentThemeNameService.isInDarkMode;
 
         /**
          * Defines the accepted UI Themes for the editor.
@@ -535,13 +547,6 @@ tie.directive('learnerView', [function() {
           text: '',
           randomIdentifier: -1
         };
-
-        /**
-         * The currently-selected theme name.
-         *
-         * @type {Object}
-         */
-        $scope.currentThemeName = THEME_NAME_LIGHT;
 
         /**
          * Defines if the code's editor is rendered in the UI.
@@ -909,27 +914,17 @@ tie.directive('learnerView', [function() {
          *
          * @param {string} newTheme
          */
-        $scope.changeTheme = function(newTheme) {
+        $scope.changeTheme = function(newThemeName) {
           $scope.pulseAnimationEnabled = false;
-          if (newTheme === THEME_NAME_DARK) {
-            $scope.isInDarkMode = true;
+          if (newThemeName === THEME_NAME_DARK) {
             $scope.codeMirrorOptions.theme = 'material';
-          }
-          if (newTheme === THEME_NAME_LIGHT) {
-            $scope.isInDarkMode = false;
+          } else {
             $scope.codeMirrorOptions.theme = 'default';
           }
+          CurrentThemeNameService.setThemeName(newThemeName);
           $timeout(function() {
             $scope.pulseAnimationEnabled = true;
           }, DELAY_STYLE_CHANGES);
-        };
-
-        /**
-         * Provides the URL to the appropriately themed python primer file.
-         */
-        $scope.getPythonPrimerUrl = function() {
-          var primerTheme = $scope.isInDarkMode ? 'dark' : 'light';
-          return '../docs/py-primer-' + primerTheme + '.html';
         };
 
         /**
