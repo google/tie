@@ -31,20 +31,20 @@ describe('ThemeNameService', function() {
   describe('setThemeName', function() {
     it('should correctly set and retrieve the theme name', function() {
       ThemeNameService.setThemeName(THEME_NAME_LIGHT);
-      expect(ThemeNameService.getThemeName()).toEqual(THEME_NAME_LIGHT);
+      expect(ThemeNameService.getCurrentThemeName()).toEqual(THEME_NAME_LIGHT);
 
       ThemeNameService.setThemeName(THEME_NAME_DARK);
-      expect(ThemeNameService.getThemeName()).toEqual(THEME_NAME_DARK);
+      expect(ThemeNameService.getCurrentThemeName()).toEqual(THEME_NAME_DARK);
     });
   });
 
   describe('isInDarkMode', function() {
     it('should correctly identify whether the theme is dark mode', function() {
       ThemeNameService.setThemeName(THEME_NAME_LIGHT);
-      expect(ThemeNameService.isInDarkMode()).toBe(false);
+      expect(ThemeNameService.isDarkModeEnabled()).toBe(false);
 
       ThemeNameService.setThemeName(THEME_NAME_DARK);
-      expect(ThemeNameService.isInDarkMode()).toBe(true);
+      expect(ThemeNameService.isDarkModeEnabled()).toBe(true);
     });
   });
 
