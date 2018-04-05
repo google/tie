@@ -21,7 +21,7 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-wrapper" ng-class="{'night-mode': isInDarkMode()}">
+      <div class="tie-wrapper" ng-class="{'night-mode': isDarkModeEnabled()}">
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
             <div class="tie-question-ui">
@@ -462,7 +462,7 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
-      'ServerHandlerService', 'SessionIdService', 'CurrentThemeNameService',
+      'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
@@ -473,7 +473,7 @@ tie.directive('learnerView', [function() {
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
-          ServerHandlerService, SessionIdService, CurrentThemeNameService,
+          ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
@@ -512,17 +512,17 @@ tie.directive('learnerView', [function() {
         /**
          * Gets the initial theme name for display in the UI.
          */
-        $scope.currentThemeName = CurrentThemeNameService.getCurrentThemeName();
+        $scope.currentThemeName = ThemeNameService.getCurrentThemeName();
 
         /**
          * Provides the URL to the appropriately themed python primer file.
          */
-        $scope.getPythonPrimerUrl = CurrentThemeNameService.getPythonPrimerUrl;
+        $scope.getPythonPrimerUrl = ThemeNameService.getPythonPrimerUrl;
         /**
          * A function that returns a boolean indicating whether the current
          * mode is "dark mode".
          */
-        $scope.isInDarkMode = CurrentThemeNameService.isInDarkMode;
+        $scope.isDarkModeEnabled = ThemeNameService.isDarkModeEnabled;
 
         /**
          * Defines the accepted UI Themes for the editor.
@@ -921,7 +921,7 @@ tie.directive('learnerView', [function() {
           } else {
             $scope.codeMirrorOptions.theme = 'default';
           }
-          CurrentThemeNameService.setThemeName(newThemeName);
+          ThemeNameService.setThemeName(newThemeName);
           $timeout(function() {
             $scope.pulseAnimationEnabled = true;
           }, DELAY_STYLE_CHANGES);

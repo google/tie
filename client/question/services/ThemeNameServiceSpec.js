@@ -13,51 +13,49 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for the CurrentThemeNameService.
+ * @fileoverview Unit tests for the ThemeNameService.
  */
 
-describe('CurrentThemeNameService', function() {
-  var CurrentThemeNameService;
+describe('ThemeNameService', function() {
+  var ThemeNameService;
   var THEME_NAME_LIGHT;
   var THEME_NAME_DARK;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    CurrentThemeNameService = $injector.get('CurrentThemeNameService');
+    ThemeNameService = $injector.get('ThemeNameService');
     THEME_NAME_LIGHT = $injector.get('THEME_NAME_LIGHT');
     THEME_NAME_DARK = $injector.get('THEME_NAME_DARK');
   }));
 
   describe('setThemeName', function() {
-    it('should correctly set and retrieve the current theme name', function() {
-      CurrentThemeNameService.setThemeName(THEME_NAME_LIGHT);
-      expect(CurrentThemeNameService.getCurrentThemeName()).toEqual(
-        THEME_NAME_LIGHT);
+    it('should correctly set and retrieve the theme name', function() {
+      ThemeNameService.setThemeName(THEME_NAME_LIGHT);
+      expect(ThemeNameService.getThemeName()).toEqual(THEME_NAME_LIGHT);
 
-      CurrentThemeNameService.setThemeName(THEME_NAME_DARK);
-      expect(CurrentThemeNameService.getCurrentThemeName()).toEqual(
-        THEME_NAME_DARK);
+      ThemeNameService.setThemeName(THEME_NAME_DARK);
+      expect(ThemeNameService.getThemeName()).toEqual(THEME_NAME_DARK);
     });
   });
 
   describe('isInDarkMode', function() {
     it('should correctly identify whether the theme is dark mode', function() {
-      CurrentThemeNameService.setThemeName(THEME_NAME_LIGHT);
-      expect(CurrentThemeNameService.isInDarkMode()).toBe(false);
+      ThemeNameService.setThemeName(THEME_NAME_LIGHT);
+      expect(ThemeNameService.isInDarkMode()).toBe(false);
 
-      CurrentThemeNameService.setThemeName(THEME_NAME_DARK);
-      expect(CurrentThemeNameService.isInDarkMode()).toBe(true);
+      ThemeNameService.setThemeName(THEME_NAME_DARK);
+      expect(ThemeNameService.isInDarkMode()).toBe(true);
     });
   });
 
   describe('getPythonPrimerUrl', function() {
     it('should correctly get the appropriate Python primer URL', function() {
-      CurrentThemeNameService.setThemeName(THEME_NAME_LIGHT);
-      expect(CurrentThemeNameService.getPythonPrimerUrl()).toBe(
+      ThemeNameService.setThemeName(THEME_NAME_LIGHT);
+      expect(ThemeNameService.getPythonPrimerUrl()).toBe(
         '../docs/py-primer-light.html');
 
-      CurrentThemeNameService.setThemeName(THEME_NAME_DARK);
-      expect(CurrentThemeNameService.getPythonPrimerUrl()).toBe(
+      ThemeNameService.setThemeName(THEME_NAME_DARK);
+      expect(ThemeNameService.getPythonPrimerUrl()).toBe(
         '../docs/py-primer-dark.html');
     });
   });

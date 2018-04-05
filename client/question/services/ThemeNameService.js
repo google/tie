@@ -18,28 +18,26 @@
 tie.constant('THEME_NAME_LIGHT', 'Light Theme');
 tie.constant('THEME_NAME_DARK', 'Dark Theme');
 
-tie.factory('CurrentThemeNameService', [
+tie.factory('ThemeNameService', [
   'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
   function(THEME_NAME_LIGHT, THEME_NAME_DARK) {
-    var data = {
-      currentThemeName: THEME_NAME_LIGHT
-    };
+    var currentThemeName = THEME_NAME_LIGHT;
 
     return {
       setThemeName: function(newThemeName) {
-        data.currentThemeName = newThemeName;
+        currentThemeName = newThemeName;
       },
       getCurrentThemeName: function() {
-        return data.currentThemeName;
+        return currentThemeName;
       },
-      isInDarkMode: function() {
-        return data.currentThemeName === THEME_NAME_DARK;
+      isDarkModeEnabled: function() {
+        return currentThemeName === THEME_NAME_DARK;
       },
       /**
        * Provides the URL to the appropriately themed python primer file.
        */
       getPythonPrimerUrl: function() {
-        var primerTheme = this.isInDarkMode() ? 'dark' : 'light';
+        var primerTheme = this.isDarkModeEnabled() ? 'dark' : 'light';
         return '../docs/py-primer-' + primerTheme + '.html';
       }
     };
