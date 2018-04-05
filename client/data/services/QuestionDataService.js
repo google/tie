@@ -18,22 +18,9 @@
  */
 
 tieData.factory('QuestionDataService', [
-  '$http', 'QuestionObjectFactory',
-  function($http, QuestionObjectFactory) {
+  '$q', '$http', 'QuestionObjectFactory', 'SERVER_URL',
+  function($q, $http, QuestionObjectFactory, SERVER_URL) {
     return {
-      /**
-       * Returns the Question with the given question ID. If the questionId
-       * does not correspond to a Question, the function throws an Error.
-       *
-       * @param {string} questionId
-       * @returns {Question}
-       */
-      getQuestion: function(questionId) {
-        if (!globalData.questions.hasOwnProperty(questionId)) {
-          throw Error('There is no question with ID: ' + questionId);
-        }
-        return QuestionObjectFactory.create(globalData.questions[questionId]);
-      },
       /**
        * Asynchronous call to get the data for a question with the given
        * question ID.
@@ -41,60 +28,29 @@ tieData.factory('QuestionDataService', [
        * @param {string} questionId
        * @returns {callback}
        */
-      getQuestionAsync: function(questionId) {
-        return $http.post('/ajax/get_question_data', {
-          questionId: questionId
-        }).then(
-          function(responseData) {
-            return QuestionObjectFactory.create(
-                responseData.data.question_data);
-          }, function() {
-            throw Error('There was an error in retrieving the question.');
+      fetchQuestionAsync: function(questionId) {
+        if (SERVER_URL) {
+          return $http.post('/ajax/get_question_data', {
+            questionId: questionId
+          }).then(
+            function(responseData) {
+              return QuestionObjectFactory.create(
+                  responseData.data.question_data);
+            }, function() {
+              throw Error('There was an error in retrieving the question.');
+            }
+          );
+        } else {
+          if (!globalData.questions.hasOwnProperty(questionId)) {
+            throw Error('There is no question with ID: ' + questionId);
           }
-        );
-      },
-      /**
-       * Returns the question's user friendly title.
-       *
-       * @param {string} questionId
-       * @returns {string}
-       */
-      getQuestionTitle: function(questionId) {
-        var question = this.getQuestion(questionId);
-        return question.getTitle();
-      },
-      /**
-       * Returns the question's version.
-       * Currently always returns 1, as question versioning isn't implemented
-       * yet.
-       * TODO(eyurko): Return correct question version, once implemented.
-       *
-       * @returns {int} Currently the number 1.
-       */
-      getQuestionVersion: function() {
-        return 1;
-      },
-      /**
-       * Returns the question's shortened instructions, which includes
-       * only the text content in the first task (ignores code blocks).
-       *
-       * @param {string} questionId
-       * @returns {string} concatenated string of all the text segments
-       */
-      getQuestionPreviewInstructions(questionId) {
-        var question = this.getQuestion(questionId);
-        var instructionsForFirstTask = question.getTasks()[0].getInstructions();
-        var constructedInstructions = '';
 
-        // We only need to grab the text portions of these instructions
-        // for the preview content.
-        for (var i = 0; i < instructionsForFirstTask.length; i++) {
-          if (instructionsForFirstTask[i].type === 'text') {
-            constructedInstructions +=
-              instructionsForFirstTask[i].content + ' ';
-          }
+          var question = QuestionObjectFactory.create(
+            globalData.questions[questionId]);
+          var deferred = $q.defer();
+          deferred.resolve(question);
+          return deferred.promise;
         }
-        return constructedInstructions;
       }
     };
   }

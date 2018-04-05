@@ -32,11 +32,12 @@ describe('QuestionSchemaValidationService', function() {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
-    QuestionSchemaValidationService =
-        $injector.get('QuestionSchemaValidationService');
+    QuestionObjectFactory = $injector.get('QuestionObjectFactory');
+    QuestionSchemaValidationService = $injector.get(
+      'QuestionSchemaValidationService');
 
     questions = QUESTION_IDS.map(function(questionId) {
-      return QuestionDataService.getQuestion(questionId);
+      return QuestionObjectFactory.create(globalData.questions[questionId]);
     });
   }));
 

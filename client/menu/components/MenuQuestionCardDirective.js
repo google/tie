@@ -69,9 +69,15 @@ tieMenu.directive('menuQuestionCard', [function() {
     `,
     controller: ['$scope', 'QuestionDataService',
       function($scope, QuestionDataService) {
-        $scope.title = QuestionDataService.getQuestionTitle($scope.questionId);
-        $scope.textInstructions =
-          QuestionDataService.getQuestionPreviewInstructions($scope.questionId);
+        var questionPromise = QuestionDataService.fetchQuestionAsync(
+          $scope.questionId);
+
+        questionPromise.then(function(question) {
+          $scope.title = question.getTitle();
+
+          var firstTask = question.getTasks()[0];
+          $scope.textInstructions = firstTask.getTextInstructions();
+        });
       }
     ]
   };

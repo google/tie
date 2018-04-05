@@ -20,11 +20,11 @@
 tieData.factory('TaskObjectFactory', [
   'TipObjectFactory', 'TestSuiteObjectFactory', 'BuggyOutputTestObjectFactory',
   'SuiteLevelTestObjectFactory', 'PerformanceTestObjectFactory',
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
+  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE', 'PARAGRAPH_TYPE_TEXT',
   function(
       TipObjectFactory, TestSuiteObjectFactory, BuggyOutputTestObjectFactory,
       SuiteLevelTestObjectFactory, PerformanceTestObjectFactory,
-      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE) {
+      CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE, PARAGRAPH_TYPE_TEXT) {
     /**
      * Task objects represent a single task for the user to complete for a
      * question. This includes all of the information, skills, and testing
@@ -187,6 +187,27 @@ tieData.factory('TaskObjectFactory', [
      */
     Task.prototype.getInstructions = function() {
       return this._instructions;
+    };
+
+    /**
+     * A getter for the text part of the instructions. Used for the summary
+     * card in the Menu page.
+     *
+     * @returns {Array}
+     */
+    Task.prototype.getTextInstructions = function() {
+      var instructions = this._instructions;
+
+      var textInstructions = '';
+      // We only need to grab the text portions of these instructions
+      // for the preview content.
+      for (var i = 0; i < instructions.length; i++) {
+        if (instructions[i].type === PARAGRAPH_TYPE_TEXT) {
+          textInstructions += instructions[i].content + ' ';
+        }
+      }
+
+      return textInstructions;
     };
 
     /**

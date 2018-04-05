@@ -32,10 +32,11 @@ describe('TaskSchemaValidationService', function() {
     // Used for testing the validator. Values will be inserted during the tests
     // so that we don't have to redefine the dict every time.
     QuestionDataService = $injector.get('QuestionDataService');
+    QuestionObjectFactory = $injector.get('QuestionObjectFactory');
     TaskSchemaValidationService = $injector.get('TaskSchemaValidationService');
 
     questions = QUESTION_IDS.map(function(questionId) {
-      return QuestionDataService.getQuestion(questionId);
+      return QuestionObjectFactory.create(globalData.questions[questionId]);
     });
   }));
 

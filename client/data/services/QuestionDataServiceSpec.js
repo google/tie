@@ -18,55 +18,36 @@
 
 describe('QuestionDataService', function() {
   var QuestionDataService;
+  var QuestionObjectFactory;
+  var QuestionObject;
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
     QuestionDataService = $injector.get('QuestionDataService');
+    QuestionObjectFactory = $injector.get('QuestionObjectFactory');
+    QuestionObject = QuestionObjectFactory.create({
+      title: "title",
+      starterCode: "starterCode",
+      auxiliaryCode: "AUXILIARY_CODE",
+      tasks: []
+    });
   }));
 
-  describe('getQuestion', function() {
+  describe('fetchQuestionAsync', function() {
+    it('should correctly get the question data', function(done) {
+      QuestionDataService.fetchQuestionAsync('reverseWords').then(
+        function(result) {
+          expect(result).toEqual(QuestionObject);
+          done();
+        }
+      );
+    });
+
     it('should throw an error if the question id does not exist', function() {
       expect(function() {
-        QuestionDataService.getQuestion('');
+        QuestionDataService.fetchQuestionAsync('');
       }).toThrowError('There is no question with ID: ');
-    });
-  });
-
-  describe('getQuestionTitle', function() {
-    it('should get the title of a question', function() {
-      var title = globalData.questions.isPalindrome.title;
-      expect(QuestionDataService.getQuestionTitle('isPalindrome'))
-        .toEqual(title);
-    });
-
-    it('should throw an error if the question does not exist', function() {
-      expect(function() {
-        QuestionDataService.getQuestionTitle('lemon');
-      }).toThrowError('There is no question with ID: lemon');
-    });
-  });
-
-  describe('getQuestionVersion', function() {
-    it('should return 1 exclusively, for now', function() {
-      expect(QuestionDataService.getQuestionVersion()).toEqual(1);
-    });
-  });
-
-  describe('getQuestionPreviewInstructions', function() {
-    it('should get the title of a question', function() {
-      expect(QuestionDataService
-        .getQuestionPreviewInstructions('checkBalancedParentheses'))
-        .toEqual('For this question, you will implement the isBalanced ' +
-                 'function. It takes a string of only parentheses as input ' +
-                 'and returns True if for every open parentheses there is a ' +
-                 'matching closing parentheses, and False otherwise. ');
-    });
-
-    it('should throw an error if the question does not exist', function() {
-      expect(function() {
-        QuestionDataService.getQuestionPreviewInstructions('grape');
-      }).toThrowError('There is no question with ID: grape');
     });
   });
 });
@@ -89,8 +70,7 @@ describe('QuestionDataServiceServerVersion', function() {
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
     QuestionDataService = $injector.get('QuestionDataService');
-    QuestionObjectFactory = $injector.get(
-      'QuestionObjectFactory');
+    QuestionObjectFactory = $injector.get('QuestionObjectFactory');
     QuestionObject = QuestionObjectFactory.create({
       title: "title",
       starterCode: "starterCode",
@@ -99,7 +79,7 @@ describe('QuestionDataServiceServerVersion', function() {
     });
   }));
 
-  describe('getQuestionsAsync', function() {
+  describe('fetchQuestionAsync', function() {
     it('should correctly get the question data', function(done) {
       $httpBackend.expect('POST', '/ajax/get_question_data').respond(
         serverSuccessCode,
@@ -113,7 +93,7 @@ describe('QuestionDataServiceServerVersion', function() {
           }
         }
       );
-      QuestionDataService.getQuestionAsync('reverseWords').then(
+      QuestionDataService.fetchQuestionAsync('reverseWords').then(
         function(result) {
           expect(result).toEqual(QuestionObject);
           done();
@@ -126,7 +106,7 @@ describe('QuestionDataServiceServerVersion', function() {
       $httpBackend.expect('POST', '/ajax/get_question_data').respond(
         serverErrorCode, {}
       );
-      QuestionDataService.getQuestionAsync('reverseWords').then(
+      QuestionDataService.fetchQuestionAsync('reverseWords').then(
         function() {
           // Nothing happens because it errors out.
         }, function(error) {

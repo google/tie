@@ -24,6 +24,7 @@ describe('LearnerViewDirective', function() {
   var QuestionDataService;
   var EventHandlerService;
   var FeedbackObjectFactory;
+  var QuestionObjectFactory;
   var FEEDBACK_CATEGORIES;
   var $location;
 
@@ -55,7 +56,7 @@ describe('LearnerViewDirective', function() {
   beforeEach(inject(function(
       $compile, $rootScope, $injector, _QuestionDataService_,
       _SECONDS_TO_MILLISECONDS_, _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_,
-      _EventHandlerService_, _FeedbackObjectFactory_,
+      _EventHandlerService_, _FeedbackObjectFactory_, _QuestionObjectFactory_,
       _ConversationLogDataService_) {
     $scope = $rootScope.$new();
 
@@ -74,6 +75,7 @@ describe('LearnerViewDirective', function() {
     QuestionDataService = _QuestionDataService_;
     EventHandlerService = _EventHandlerService_;
     FeedbackObjectFactory = _FeedbackObjectFactory_;
+    QuestionObjectFactory = _QuestionObjectFactory_;
     ConversationLogDataService = _ConversationLogDataService_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
@@ -105,7 +107,8 @@ describe('LearnerViewDirective', function() {
 
     it('should only activate autosave once', function() {
       expect($scope.codeChangeLoopPromise).toBe(null);
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var question = QuestionObjectFactory.create(
+        globalData.questions[QUESTION_ID]);
       var starterCode = question.getStarterCode(LANGUAGE);
       // There should be no code stored in localStorage
       // before autosave is triggered.
@@ -218,7 +221,8 @@ describe('LearnerViewDirective', function() {
       });
       spyOn(EventHandlerService, 'createCodeResetEvent');
 
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var question = QuestionObjectFactory.create(
+        globalData.questions[QUESTION_ID]);
       var starterCode = question.getStarterCode(LANGUAGE);
       $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
       expect(starterCode).not.toEqual($scope.editorContents.code);
