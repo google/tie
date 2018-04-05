@@ -18,21 +18,23 @@
  */
 
 tie.factory('PythonPrereqCheckService', [
-  'PrereqCheckFailureObjectFactory', 'PREREQ_CHECK_TYPE_BAD_IMPORT',
-  'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE', 'SUPPORTED_PYTHON_LIBS',
-  'PREREQ_CHECK_TYPE_GLOBAL_CODE', 'PREREQ_CHECK_TYPE_WRONG_LANG',
-  'WRONG_LANGUAGE_ERRORS', 'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
+  'PrereqCheckErrorObjectFactory', 'PrereqCheckFailureObjectFactory',
+  'PREREQ_CHECK_TYPE_BAD_IMPORT', 'PREREQ_CHECK_TYPE_MISSING_STARTER_CODE',
+  'SUPPORTED_PYTHON_LIBS', 'PREREQ_CHECK_TYPE_GLOBAL_CODE',
+  'PREREQ_CHECK_TYPE_WRONG_LANG', 'WRONG_LANGUAGE_ERRORS',
+  'PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL',
   'PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL',
   'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_SYSTEM_CODE', 'CLASS_NAME_STUDENT_CODE',
   function(
-      PrereqCheckFailureObjectFactory, PREREQ_CHECK_TYPE_BAD_IMPORT,
-      PREREQ_CHECK_TYPE_MISSING_STARTER_CODE, SUPPORTED_PYTHON_LIBS,
-      PREREQ_CHECK_TYPE_GLOBAL_CODE, PREREQ_CHECK_TYPE_WRONG_LANG,
-      WRONG_LANGUAGE_ERRORS, PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
-      PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL,
-      PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
-      CLASS_NAME_SYSTEM_CODE, CLASS_NAME_STUDENT_CODE) {
+    PrereqCheckErrorObjectFactory, PrereqCheckFailureObjectFactory,
+    PREREQ_CHECK_TYPE_BAD_IMPORT, PREREQ_CHECK_TYPE_MISSING_STARTER_CODE,
+    SUPPORTED_PYTHON_LIBS, PREREQ_CHECK_TYPE_GLOBAL_CODE,
+    PREREQ_CHECK_TYPE_WRONG_LANG, WRONG_LANGUAGE_ERRORS,
+    PREREQ_CHECK_TYPE_INVALID_SYSTEM_CALL,
+    PREREQ_CHECK_TYPE_INVALID_AUXILIARYCODE_CALL,
+    PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL, CLASS_NAME_AUXILIARY_CODE,
+    CLASS_NAME_SYSTEM_CODE, CLASS_NAME_STUDENT_CODE) {
 
     /**
      * Returns a list of lines in the code that do not contain strings, in
@@ -54,6 +56,28 @@ tie.factory('PythonPrereqCheckService', [
     };
 
     /**
+     * Processes studentCode and converts all escaped characters, then all
+     * single quote + double quote str to filler character "x".
+     * This is to preserve character length for error checks.
+     *
+     * @param {string} [code] The code to convert
+     * @return {string} code where all 'foo' & "bar" converted to xxxxx & xxxxx
+     */
+    var getObscuredCode = function(code) {
+      var escapeRegexp = new RegExp(/\\[\w'"\\]/, 'g');
+      var stringRegexp = new RegExp(/'([^']*)'|"([^"]*)"/, 'g');
+
+      /**
+       * Replace method callback converts regex matches with 'x'
+       */
+      var obscure = function(match) {
+        return ''.padStart(match.length, 'x');
+      };
+
+      return code.replace(escapeRegexp, obscure).replace(stringRegexp, obscure);
+    };
+
+    /**
      * Checks if the given code uses any syntax that isn't valid in Python
      * but is specific to languages like C/C++ and Java.
      *
@@ -63,22 +87,32 @@ tie.factory('PythonPrereqCheckService', [
      *    WRONG_LANGUAGE_ERRORS.
      */
     var detectAndGetWrongLanguageType = function(code) {
-      var codeLines = getNonStringLines(code);
+      var obscuredCode = getObscuredCode(code);
+      var rawCodeArray = code.split('\n');
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
 
-        if (error.allowMultiline) {
-          if (code.search(regexp) !== -1) {
-            return error.errorName;
+        // Lookup character location of error
+        var firstErrorCharNumber = obscuredCode.search(regexp);
+        if (firstErrorCharNumber !== -1) {
+          var firstErrorLineNumber = 0;
+
+          // After regex matches an error, loop through codelines
+          for (var l = 0; firstErrorCharNumber >= 0; l++) {
+            // Subtract line length from corresponding firstErrorCharNumber.
+            // When below 0: index === linenumber. Subtract +1 for newline char.
+            firstErrorCharNumber -= (rawCodeArray[l].length + 1);
+            firstErrorLineNumber++;
           }
-        } else {
-          for (var j = 0; j < codeLines.length; j++) {
-            if (codeLines[j].search(regexp) !== -1) {
-              return error.errorName;
-            }
-          }
+
+          // Add line length to the >0 firstErrorColumnNumber
+          var firstErrorColumnNumber = firstErrorCharNumber + rawCodeArray[
+            firstErrorLineNumber - 1].length;
+
+          return PrereqCheckErrorObjectFactory.create(
+            error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
         }
       }
       return null;
@@ -288,10 +322,13 @@ tie.factory('PythonPrereqCheckService', [
             PREREQ_CHECK_TYPE_BAD_IMPORT, unsupportedImports, null);
         }
 
-        var wrongLangErrorName = detectAndGetWrongLanguageType(code);
-        if (wrongLangErrorName !== null) {
+        var wrongLangError = detectAndGetWrongLanguageType(code);
+        if (wrongLangError !== null) {
           return PrereqCheckFailureObjectFactory.create(
-              PREREQ_CHECK_TYPE_WRONG_LANG, null, null, wrongLangErrorName);
+              PREREQ_CHECK_TYPE_WRONG_LANG, null, null,
+              wrongLangError.getErrorName(),
+              wrongLangError.getErrorLineNumber(),
+              wrongLangError.getErrorColumnNumber());
         }
 
         // Otherwise, code passed all pre-requisite checks.
@@ -304,6 +341,7 @@ tie.factory('PythonPrereqCheckService', [
       extractTopLevelFunctionLines: extractTopLevelFunctionLines,
       getImportedLibraries: getImportedLibraries,
       getNonStringLines: getNonStringLines,
+      getObscuredCode: getObscuredCode,
       getUnsupportedImports: getUnsupportedImports,
       hasInvalidAuxiliaryClassCalls: hasInvalidAuxiliaryClassCalls,
       hasInvalidStudentClassCalls: hasInvalidStudentClassCalls,
