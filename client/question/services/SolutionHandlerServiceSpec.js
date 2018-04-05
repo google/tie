@@ -56,12 +56,7 @@ describe('SolutionHandlerService', function() {
       ]
     }],
     suiteLevelTests: [],
-    performanceTests: [{
-      inputDataAtom: 'meow ',
-      transformationFunctionName: 'System.extendString',
-      expectedPerformance: 'linear',
-      evaluationFunctionName: 'mockMainFunction'
-    }]
+    performanceTests: []
   }, {
     instructions: [''],
     prerequisiteSkills: [''],
