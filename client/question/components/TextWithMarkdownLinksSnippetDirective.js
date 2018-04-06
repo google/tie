@@ -42,19 +42,24 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
               var goesToPrimer = (p2.indexOf('../docs/py-primer-') === 0);
+
+              var targetUrl = null;
               if (goesToPrimer) {
                 var pythonPrimerUrl = ThemeNameService.getPythonPrimerUrl();
 
                 var hashIndex = p2.indexOf('#');
-                if (p2.indexOf('#') !== -1) {
-                  p2 = pythonPrimerUrl + p2.substring(hashIndex);
+                if (p2.indexOf('#') === -1) {
+                  targetUrl = pythonPrimerUrl;
                 } else {
-                  p2 = pythonPrimerUrl;
+                  targetUrl = pythonPrimerUrl + p2.substring(hashIndex);
                 }
+              } else {
+                targetUrl = p2;
               }
 
               if (startsWithHttps || goesToPrimer) {
-                return '<a href="' + p2 + '" target="_blank">' + p1 + '</a>';
+                return (
+                  '<a href="' + targetUrl + '" target="_blank">' + p1 + '</a>');
               } else {
                 return '';
               }
