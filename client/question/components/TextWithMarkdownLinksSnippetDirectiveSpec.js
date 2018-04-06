@@ -21,9 +21,14 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
   var parentScope;
   var scope;
   var template;
+  var ThemeNameService;
+  var THEME_NAME_DARK;
 
   beforeEach(module('tie'));
-  beforeEach(inject(function($compile, $rootScope) {
+  beforeEach(inject(function($injector, $compile, $rootScope) {
+    ThemeNameService = $injector.get('ThemeNameService');
+    THEME_NAME_DARK = $injector.get('THEME_NAME_DARK');
+
     parentScope = $rootScope.$new();
     parentScope.parentContent = '';
     template = $compile(
@@ -70,6 +75,33 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
       scope.$digest();
       expect(template.html()).toContain(
         'abc <a href="../docs/py-primer-light.html" target="_blank">def</a>');
+    });
+
+    it('should interpolate primer links based on current theme', function() {
+      expect(ThemeNameService.isDarkModeEnabled()).toEqual(false);
+
+      parentScope.parentContent = 'abc [def](../docs/py-primer-light.html)';
+      scope.$digest();
+      expect(template.html()).toContain(
+        'abc <a href="../docs/py-primer-light.html" target="_blank">def</a>');
+
+      parentScope.parentContent = 'abc [def](../docs/py-primer-light.html#a)';
+      scope.$digest();
+      expect(template.html()).toContain(
+        'abc <a href="../docs/py-primer-light.html#a" target="_blank">def</a>');
+
+      ThemeNameService.setThemeName(THEME_NAME_DARK);
+      expect(ThemeNameService.isDarkModeEnabled()).toEqual(true);
+
+      parentScope.parentContent = 'abc [def](../docs/py-primer-light.html)';
+      scope.$digest();
+      expect(template.html()).toContain(
+        'abc <a href="../docs/py-primer-dark.html" target="_blank">def</a>');
+
+      parentScope.parentContent = 'abc [def](../docs/py-primer-light.html#a)';
+      scope.$digest();
+      expect(template.html()).toContain(
+        'abc <a href="../docs/py-primer-dark.html#a" target="_blank">def</a>');
     });
 
     it('should reject badly-formatted links', function() {

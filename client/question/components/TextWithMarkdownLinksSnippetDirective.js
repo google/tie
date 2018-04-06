@@ -29,8 +29,8 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
       <span ng-bind-html="unsafeHtmlWithLinks"></span>
     `,
     controller: [
-      '$scope',
-      function($scope) {
+      '$scope', 'ThemeNameService',
+      function($scope, ThemeNameService) {
         $scope.$watch($scope.getContent, function(newValue) {
           // First, strip out all tags in the content.
           var strippedValue = newValue.replace(/<[^>]+>/g, '');
@@ -42,6 +42,17 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
               var goesToPrimer = (p2.indexOf('../docs/py-primer-') === 0);
+              if (goesToPrimer) {
+                var pythonPrimerUrl = ThemeNameService.getPythonPrimerUrl();
+
+                var hashIndex = p2.indexOf('#');
+                if (p2.indexOf('#') !== -1) {
+                  p2 = pythonPrimerUrl + p2.substring(hashIndex);
+                } else {
+                  p2 = pythonPrimerUrl;
+                }
+              }
+
               if (startsWithHttps || goesToPrimer) {
                 return '<a href="' + p2 + '" target="_blank">' + p1 + '</a>';
               } else {
