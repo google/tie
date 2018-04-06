@@ -19,35 +19,36 @@
 describe('QuestionDataService', function() {
   var QuestionDataService;
   var QuestionObjectFactory;
-  var QuestionObject;
+  // In the Karma test environment, the deferred promise gets resolved only
+  // when $rootScope.$digest() is called.
+  var $rootScope;
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
   beforeEach(inject(function($injector) {
+    $rootScope = $injector.get('$rootScope');
     QuestionDataService = $injector.get('QuestionDataService');
     QuestionObjectFactory = $injector.get('QuestionObjectFactory');
-    QuestionObject = QuestionObjectFactory.create({
-      title: "title",
-      starterCode: "starterCode",
-      auxiliaryCode: "AUXILIARY_CODE",
-      tasks: []
-    });
   }));
 
   describe('fetchQuestionAsync', function() {
     it('should correctly get the question data', function(done) {
       QuestionDataService.fetchQuestionAsync('reverseWords').then(
         function(result) {
-          expect(result).toEqual(QuestionObject);
+          expect(result instanceof QuestionObjectFactory).toBe(true);
+          expect(result.getTitle()).toEqual('Reverse Words');
           done();
         }
       );
+      $rootScope.$digest();
     });
 
-    it('should throw an error if the question id does not exist', function() {
-      expect(function() {
-        QuestionDataService.fetchQuestionAsync('');
-      }).toThrowError('There is no question with ID: ');
+    it('should return null if the question id does not exist', function(done) {
+      QuestionDataService.fetchQuestionAsync('').then(function(result) {
+        expect(result).toBe(null);
+        done();
+      });
+      $rootScope.$digest();
     });
   });
 });
@@ -55,7 +56,7 @@ describe('QuestionDataService', function() {
 describe('QuestionDataServiceServerVersion', function() {
   var QuestionDataService;
   var QuestionObjectFactory;
-  var QuestionObject;
+  var mockQuestionObject;
   var $httpBackend = null;
   var serverSuccessCode = 200;
   var serverErrorCode = 500;
@@ -71,7 +72,7 @@ describe('QuestionDataServiceServerVersion', function() {
     $httpBackend = $injector.get('$httpBackend');
     QuestionDataService = $injector.get('QuestionDataService');
     QuestionObjectFactory = $injector.get('QuestionObjectFactory');
-    QuestionObject = QuestionObjectFactory.create({
+    mockQuestionObject = QuestionObjectFactory.create({
       title: "title",
       starterCode: "starterCode",
       auxiliaryCode: "AUXILIARY_CODE",
@@ -95,7 +96,7 @@ describe('QuestionDataServiceServerVersion', function() {
       );
       QuestionDataService.fetchQuestionAsync('reverseWords').then(
         function(result) {
-          expect(result).toEqual(QuestionObject);
+          expect(result).toEqual(mockQuestionObject);
           done();
         }
       );

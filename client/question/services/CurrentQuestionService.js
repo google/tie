@@ -33,15 +33,15 @@ tie.factory('CurrentQuestionService', [
         var questionPromise = QuestionDataService.fetchQuestionAsync(
           questionId);
         questionPromise.then(function(question) {
-          if (!question) {
+          if (question) {
+            cachedQuestion = question;
+            successCallback();
+          } else {
             // If the question ID in the URL is invalid, revert to using the
             // default question ID.
             questionId = DEFAULT_QUESTION_ID;
             that.init(successCallback);
-          } else {
-            cachedQuestion = question;
           }
-          successCallback();
         });
       },
       getCurrentQuestionId: function() {

@@ -18,8 +18,8 @@
  */
 
 tieData.factory('QuestionDataService', [
-  '$q', '$http', 'QuestionObjectFactory', 'SERVER_URL',
-  function($q, $http, QuestionObjectFactory, SERVER_URL) {
+  '$q', '$http', '$log', 'QuestionObjectFactory', 'SERVER_URL',
+  function($q, $http, $log, QuestionObjectFactory, SERVER_URL) {
     return {
       /**
        * Asynchronous call to get the data for a question with the given
@@ -41,13 +41,15 @@ tieData.factory('QuestionDataService', [
             }
           );
         } else {
-          if (!globalData.questions.hasOwnProperty(questionId)) {
-            throw Error('There is no question with ID: ' + questionId);
+          var deferred = $q.defer();
+          var question = null;
+          if (globalData.questions.hasOwnProperty(questionId)) {
+            question = QuestionObjectFactory.create(
+              globalData.questions[questionId]);
+          } else {
+            $log.error('There is no question with ID: ' + questionId);
           }
 
-          var question = QuestionObjectFactory.create(
-            globalData.questions[questionId]);
-          var deferred = $q.defer();
           deferred.resolve(question);
           return deferred.promise;
         }
