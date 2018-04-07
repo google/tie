@@ -296,47 +296,6 @@ tie.constant('PREREQ_CHECK_TYPE_GLOBAL_CODE', 'globalCode');
 tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG', 'wrongLang');
 
 /**
- * FeedbackParagraph type that will be rendered to look like a normal text
- * paragraph.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PARAGRAPH_TYPE_TEXT', 'text');
-
-/**
- * FeedbackParagraph type that will render text to look like code.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PARAGRAPH_TYPE_CODE', 'code');
-
-/**
- * FeedbackParagraph type that will render text to bring attention to an error.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PARAGRAPH_TYPE_ERROR', 'error');
-
-/**
- * FeedbackParagraph type for displaying user code output.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
-
-/**
- * FeedbackParagraph type for displaying an image.
- *
- * @type {string}
- * @constant
- */
-tie.constant('PARAGRAPH_TYPE_IMAGE', 'image');
-
-/**
  * Constant for the number of times that a user can make a mistake (i.e.
  * same error, syntax error, etc.) until we prompt them to look at the
  * primer.
