@@ -579,10 +579,10 @@ tie.directive('learnerView', [function() {
         $scope.codeChangeLoopPromise = null;
 
         /**
-         * String to store the code being cached locally (this code may not
-         * have been submitted yet). This is used to detect a local code
-         * change so that we can show appropriate feedback if the learner is
-         * going down a rabbit-hole.
+         * String to store the code being cached within this directive
+         * controller (this code may not have been submitted yet). This is used
+         * to detect a local code change so that we can show appropriate
+         * feedback if the learner is going down a rabbit-hole.
          *
          * @type {string}
          */

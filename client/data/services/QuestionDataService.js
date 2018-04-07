@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview Service for retrieving question data from static storage and
- * maintaining a copy in the frontend.
+ * @fileoverview Stateless service for retrieving question data from static
+ * storage, given a question ID.
  */
 
 tieData.factory('QuestionDataService', [

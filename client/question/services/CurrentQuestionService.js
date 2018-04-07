@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview A service that maintains details of the current question.
+ * @fileoverview A service that maintains details of the currently-active
+ * question in the learner view.
  */
 
 tie.factory('CurrentQuestionService', [
