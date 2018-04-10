@@ -71,8 +71,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-coding-terminal">
-                  <div ng-if="codeEditorIsShown"
-                      class="tie-codemirror-container"
+                  <div class="tie-codemirror-container"
                       tabindex="0"
                       ng-keypress="onKeypressCodemirrorContainer($event)"
                       ng-focus="onFocusCodemirrorContainer()">
@@ -464,6 +463,7 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
+      'CurrentQuestionService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
@@ -475,6 +475,7 @@ tie.directive('learnerView', [function() {
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
+          CurrentQuestionService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
@@ -549,13 +550,6 @@ tie.directive('learnerView', [function() {
         };
 
         /**
-         * Defines if the code's editor is rendered in the UI.
-         *
-         * @type {boolean}
-         */
-        $scope.codeEditorIsShown = true;
-
-        /**
          * We use an object here to prevent the child scope introduced by ng-if
          * from shadowing the parent scope.
          *
@@ -585,7 +579,10 @@ tie.directive('learnerView', [function() {
         $scope.codeChangeLoopPromise = null;
 
         /**
-         * String to store the code being cached.
+         * String to store the code being cached within this directive
+         * controller (this code may not have been submitted yet). This is used
+         * to detect a local code change so that we can show appropriate
+         * feedback if the learner is going down a rabbit-hole.
          *
          * @type {string}
          */
@@ -598,21 +595,6 @@ tie.directive('learnerView', [function() {
          */
         var congratulatoryFeedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SUCCESSFUL, true);
-
-        /**
-         * Stores the current question that the user is working on.
-         *
-         * @type {Question|*}
-         */
-        var question = null;
-
-        /**
-         * Array of Task objects that stores the tasks that the user must
-         * complete for the current question.
-         *
-         * @type {Array}
-         */
-        var tasks = null;
 
         /**
          * Stores the index of the task that the user is currently trying to
@@ -649,6 +631,9 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.onVisibilityChange = function() {
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var tasks = question.getTasks();
+
           // When a user changes tabs (or comes back), add a SessionPause
           // or SessionResumeEvent, respectively.
           var hiddenAttributeName = (
@@ -755,16 +740,30 @@ tie.directive('learnerView', [function() {
         }
 
         /**
-         * Loads the feedback, tasks, and stored code and initializes
-         * the event services.
+         * Initializes the appropriate values in $scope for the question
+         * instructions, stored code, starter code and feedback.
          */
-        var initQuestionData = function(questionId) {
-          tasks = question.getTasks();
-          UnpromptedFeedbackManagerService.reset(tasks);
+        var initLearnerViewDirective = function() {
+          // The pulseAnimationEnabled var is set to false to prevent balloon
+          // pulse animation when switching from light to dark mode and
+          // vise versa. This is set to false in resetCode.
+          $scope.pulseAnimationEnabled = true;
+          SessionIdService.resetSessionId();
+
+          // Load the feedback, tasks, and stored code and initialize the
+          // event services.
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var tasks = question.getTasks();
           currentTaskIndex = 0;
-          cachedCode = LocalStorageService.loadStoredCode(
-            questionId, language);
+
           $scope.title = question.getTitle();
+
+          $scope.instructions = tasks[currentTaskIndex].getInstructions();
+          $scope.previousInstructions = [];
+
+          UnpromptedFeedbackManagerService.reset(tasks);
+          cachedCode = LocalStorageService.loadStoredCode(questionId, language);
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
           var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
@@ -774,45 +773,12 @@ tie.directive('learnerView', [function() {
               loadedFeedbackParagraphs);
           }
 
-          $scope.instructions = tasks[currentTaskIndex].getInstructions();
-          $scope.previousInstructions = [];
           EventHandlerService.init(
-            SessionIdService.getSessionId(), $scope.currentQuestionId,
-            QuestionDataService.getQuestionVersion());
+            SessionIdService.getSessionId(), questionId,
+            CurrentQuestionService.getCurrentQuestionVersion());
           EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
-        };
-
-        /**
-         * Initializes the appropriate values in $scope for the question
-         * instructions, stored code, starter code and feedback.
-         *
-         * @param {string} questionId ID of question whose data will be loaded
-         */
-        $scope.loadQuestion = function(questionId) {
-          // The pulseAnimationEnabled var is set to false to prevent balloon
-          // pulse animation when switching from light to dark mode and
-          // vise versa. This is set to false in resetCode.
-          $scope.pulseAnimationEnabled = true;
-          SessionIdService.resetSessionId();
-          if (SERVER_URL) {
-            QuestionDataService.getQuestionAsync(questionId).then(
-              function(response) {
-                question = response;
-                initQuestionData(questionId);
-              },
-              function() {
-                $scope.loadQuestion(DEFAULT_QUESTION_ID);
-              }
-            );
-          } else {
-            question = QuestionDataService.getQuestion(questionId);
-            if (!question) {
-              question = QuestionDataService.getQuestion(DEFAULT_QUESTION_ID);
-            }
-            initQuestionData(questionId);
-          }
         };
 
         /**
@@ -855,10 +821,9 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
           LocalStorageService.storeLatestFeedback(
-              $scope.currentQuestionId,
-              congratulatoryFeedback.getParagraphs(),
-              language);
+              questionId, congratulatoryFeedback.getParagraphs(), language);
 
           ConversationLogDataService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
@@ -873,6 +838,9 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.setFeedback = function(feedback, code) {
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
+          var tasks = question.getTasks();
           EventHandlerService.createCodeSubmitEvent(
             tasks[currentTaskIndex].getId(),
             feedback.getParagraphsAsListOfDicts(),
@@ -898,7 +866,7 @@ tie.directive('learnerView', [function() {
             }
             ConversationLogDataService.addFeedbackBalloon(feedbackParagraphs);
             LocalStorageService.storeLatestFeedback(
-              $scope.currentQuestionId, feedbackParagraphs, language);
+              questionId, feedbackParagraphs, language);
           }
 
           // Skulpt processing happens outside an Angular context, so
@@ -1012,6 +980,9 @@ tie.directive('learnerView', [function() {
          * given question.
          */
         $scope.showNextTask = function() {
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var tasks = question.getTasks();
+
           currentTaskIndex++;
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
@@ -1031,6 +1002,9 @@ tie.directive('learnerView', [function() {
           ConversationLogDataService.addCodeBalloon(code);
 
           // Gather all tasks from the first one up to the current one.
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
+          var tasks = question.getTasks();
           var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
@@ -1039,8 +1013,7 @@ tie.directive('learnerView', [function() {
             $scope.setFeedback(feedback, code);
           });
 
-          storeCodeAndUpdateCachedCode(
-            $scope.currentQuestionId, code, language);
+          storeCodeAndUpdateCachedCode(questionId, code, language);
         };
 
         /**
@@ -1048,12 +1021,14 @@ tie.directive('learnerView', [function() {
          * question to its original state.
          */
         $scope.resetCode = function() {
-          LocalStorageService.clearLocalStorageCode(
-            $scope.currentQuestionId, language);
-          LocalStorageService.clearLocalStorageFeedback(
-            $scope.currentQuestionId, language);
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
+          var question = CurrentQuestionService.getCurrentQuestion();
+
+          storeCodeAndUpdateCachedCode(
+            questionId, question.getStarterCode(language), language);
+          LocalStorageService.clearLocalStorageFeedback(questionId, language);
           EventHandlerService.createCodeResetEvent();
-          $scope.loadQuestion($scope.currentQuestionId);
+          initLearnerViewDirective();
         };
 
         /**
@@ -1061,9 +1036,9 @@ tie.directive('learnerView', [function() {
          * from local storage for the current question.
          */
         $scope.resetFeedback = function() {
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
           ConversationLogDataService.clear();
-          LocalStorageService.clearLocalStorageFeedback(
-            $scope.currentQuestionId, language);
+          LocalStorageService.clearLocalStorageFeedback(questionId, language);
         };
 
         /**
@@ -1084,6 +1059,9 @@ tie.directive('learnerView', [function() {
          * CODE_CHANGE_DEBOUNCE_SECONDS between intervals.
          */
         $scope.onCodeChange = function() {
+          var question = CurrentQuestionService.getCurrentQuestion();
+          var tasks = question.getTasks();
+
           if ($scope.codeChangeLoopPromise === null) {
             $scope.codeChangeLoopPromise = $interval(function() {
               if (angular.equals(cachedCode, $scope.editorContents.code)) {
@@ -1119,10 +1097,9 @@ tie.directive('learnerView', [function() {
           if (!LocalStorageService.isAvailable()) {
             return;
           }
+          var questionId = CurrentQuestionService.getCurrentQuestionId();
           storeCodeAndUpdateCachedCode(
-            $scope.currentQuestionId,
-            $scope.editorContents.code,
-            language);
+            questionId, $scope.editorContents.code, language);
           triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
         };
 
@@ -1139,11 +1116,7 @@ tie.directive('learnerView', [function() {
         };
 
         $scope.autosaveTextIsDisplayed = false;
-        // If there isn't a specified qid, use the default. If there is one,
-        // but it doesn't exist, use the default.
-        $scope.currentQuestionId = (
-          $location.search().qid || DEFAULT_QUESTION_ID);
-        $scope.loadQuestion($scope.currentQuestionId);
+        CurrentQuestionService.init(initLearnerViewDirective);
 
         // If server version, and the user has not accepted the privacy policy,
         // show them the privacy modal.

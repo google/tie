@@ -21,9 +21,9 @@ describe('LearnerViewDirective', function() {
   var $scope;
   var element;
   var ConversationLogDataService;
-  var QuestionDataService;
   var EventHandlerService;
   var FeedbackObjectFactory;
+  var QuestionObjectFactory;
   var FEEDBACK_CATEGORIES;
   var $location;
 
@@ -50,12 +50,12 @@ describe('LearnerViewDirective', function() {
   var CODE_CHANGE_DEBOUNCE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
 
-  var QUESTION_ID = 'reverseWords';
+  var QUESTION_ID = 'checkBalancedParentheses';
 
   beforeEach(inject(function(
-      $compile, $rootScope, $injector, _QuestionDataService_,
-      _SECONDS_TO_MILLISECONDS_, _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_,
-      _EventHandlerService_, _FeedbackObjectFactory_,
+      $compile, $rootScope, $injector, _SECONDS_TO_MILLISECONDS_,
+      _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_, _EventHandlerService_,
+      _FeedbackObjectFactory_, _QuestionObjectFactory_,
       _ConversationLogDataService_) {
     $scope = $rootScope.$new();
 
@@ -64,17 +64,25 @@ describe('LearnerViewDirective', function() {
     // it.
     // TODO (mengchaowang): Refactor learnerViewDirective controller to a
     // separate controller instead of anonymous controller.
+
+    // Initialize a question ID that has more than one task.
     $location = _$location_;
+    $location.search('qid', 'checkBalancedParentheses');
+
+    EventHandlerService = _EventHandlerService_;
+    FeedbackObjectFactory = _FeedbackObjectFactory_;
+    QuestionObjectFactory = _QuestionObjectFactory_;
+    ConversationLogDataService = _ConversationLogDataService_;
+
+    // Set up spies to instrument EventHandlerService.
+    spyOn(EventHandlerService, 'createQuestionStartEvent');
+    spyOn(EventHandlerService, 'createTaskStartEvent');
+
     element = angular.element('<learner-view></learner-view>');
     element = $compile(element)($scope);
     $scope = element.isolateScope();
     $rootScope.$digest();
     $scope.$digest();
-
-    QuestionDataService = _QuestionDataService_;
-    EventHandlerService = _EventHandlerService_;
-    FeedbackObjectFactory = _FeedbackObjectFactory_;
-    ConversationLogDataService = _ConversationLogDataService_;
 
     SECONDS_TO_MILLISECONDS = _SECONDS_TO_MILLISECONDS_;
     CODE_CHANGE_DEBOUNCE_SECONDS = _CODE_CHANGE_DEBOUNCE_SECONDS_;
@@ -105,7 +113,8 @@ describe('LearnerViewDirective', function() {
 
     it('should only activate autosave once', function() {
       expect($scope.codeChangeLoopPromise).toBe(null);
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var question = QuestionObjectFactory.create(
+        globalData.questions[QUESTION_ID]);
       var starterCode = question.getStarterCode(LANGUAGE);
       // There should be no code stored in localStorage
       // before autosave is triggered.
@@ -213,12 +222,11 @@ describe('LearnerViewDirective', function() {
 
   describe('resetCode', function() {
     it('should reset code to starter code', function() {
-      spyOn($location, 'search').and.returnValue({
-        qid: QUESTION_ID
-      });
       spyOn(EventHandlerService, 'createCodeResetEvent');
+      localStorage.clear();
 
-      var question = QuestionDataService.getQuestion(QUESTION_ID);
+      var question = QuestionObjectFactory.create(
+        globalData.questions[QUESTION_ID]);
       var starterCode = question.getStarterCode(LANGUAGE);
       $scope.editorContents.code = generateRandomChars(NUM_CHARS_CODE);
       expect(starterCode).not.toEqual($scope.editorContents.code);
@@ -236,27 +244,16 @@ describe('LearnerViewDirective', function() {
       expect(
         EventHandlerService.createQuestionCompleteEvent).toHaveBeenCalled();
     });
-
   });
 
-  describe('loadNextTask', function() {
-
-    it('should create events for tasks', function() {
-      spyOn(EventHandlerService, 'createTaskStartEvent');
-
-      $scope.loadQuestion('checkBalancedParentheses');
+  describe('events', function() {
+    it('should create events when next task is shown', function() {
       $scope.currentTaskIndex = 0;
       $scope.showNextTask();
       expect(EventHandlerService.createTaskStartEvent).toHaveBeenCalled();
-      $scope.loadQuestion(QUESTION_ID);
     });
-  });
 
-  describe('loadQuestion', function() {
     it('should create events for questionStart', function() {
-      spyOn(EventHandlerService, 'createQuestionStartEvent');
-
-      $scope.loadQuestion(QUESTION_ID);
       expect(EventHandlerService.createQuestionStartEvent).toHaveBeenCalled();
     });
   });

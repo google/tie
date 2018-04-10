@@ -44,3 +44,44 @@ tieData.constant('CLASS_NAME_AUXILIARY_CODE', 'AuxiliaryCode');
  * @constant
  */
 tieData.constant('CLASS_NAME_SYSTEM_CODE', 'System');
+
+/**
+ * FeedbackParagraph type that will be rendered to look like a normal text
+ * paragraph.
+ *
+ * @type {string}
+ * @constant
+ */
+tieData.constant('PARAGRAPH_TYPE_TEXT', 'text');
+
+/**
+ * FeedbackParagraph type that will render text to look like code.
+ *
+ * @type {string}
+ * @constant
+ */
+tieData.constant('PARAGRAPH_TYPE_CODE', 'code');
+
+/**
+ * FeedbackParagraph type that will render text to bring attention to an error.
+ *
+ * @type {string}
+ * @constant
+ */
+tieData.constant('PARAGRAPH_TYPE_ERROR', 'error');
+
+/**
+ * FeedbackParagraph type for displaying user code output.
+ *
+ * @type {string}
+ * @constant
+ */
+tieData.constant('PARAGRAPH_TYPE_OUTPUT', 'output');
+
+/**
+ * FeedbackParagraph type for displaying an image.
+ *
+ * @type {string}
+ * @constant
+ */
+tieData.constant('PARAGRAPH_TYPE_IMAGE', 'image');

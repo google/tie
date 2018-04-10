@@ -69,9 +69,23 @@ tieMenu.directive('menuQuestionCard', [function() {
     `,
     controller: ['$scope', 'QuestionDataService',
       function($scope, QuestionDataService) {
-        $scope.title = QuestionDataService.getQuestionTitle($scope.questionId);
-        $scope.textInstructions =
-          QuestionDataService.getQuestionPreviewInstructions($scope.questionId);
+        var MAX_DESCRIPTION_LENGTH = 280;
+
+        var questionPromise = QuestionDataService.fetchQuestionAsync(
+          $scope.questionId);
+
+        questionPromise.then(function(question) {
+          $scope.title = question.getTitle();
+
+          var firstTask = question.getTasks()[0];
+          var fullInstructions = firstTask.getTextInstructions();
+          if (fullInstructions.length > MAX_DESCRIPTION_LENGTH) {
+            $scope.textInstructions = (
+              fullInstructions.substring(0, MAX_DESCRIPTION_LENGTH) + '...');
+          } else {
+            $scope.textInstructions = fullInstructions;
+          }
+        });
       }
     ]
   };

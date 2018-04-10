@@ -16,4 +16,4 @@
  * @fileoverview Adds an importable configuration file for the TIE menu page.
  */
 
-window.tieMenu = angular.module('tieMenu', ['tieData']);
+window.tieMenu = angular.module('tieMenu', ['tieConfig', 'tieData']);

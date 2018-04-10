@@ -29,12 +29,29 @@ describe('TaskObjectFactory', function() {
       title: 'title',
       starterCode: 'starterCode',
       tasks: [{
+        instructions: [{
+          content: 'For this question, you will implement isBalanced().',
+          type: 'text'
+        }, {
+          content: 'Input: "(())"\nOutput: True',
+          type: 'code'
+        }],
         outputFunctionName: 'AuxiliaryCode.lettersOnly',
         testSuites: [],
         buggyOutputTests: [],
         suiteLevelTests: [],
         performanceTests: []
       }, {
+        instructions: [{
+          content: 'some code',
+          type: 'code'
+        }, {
+          content: 'abc',
+          type: 'text'
+        }, {
+          content: 'def',
+          type: 'text'
+        }],
         outputFunctionName: 'System.extendString',
         testSuites: [],
         buggyOutputTests: [],
@@ -52,5 +69,14 @@ describe('TaskObjectFactory', function() {
         expect(question.getTasks()[1].getOutputFunctionNameWithoutClass())
           .toEqual('extendString');
       });
+  });
+
+  describe('getTextInstructions', function() {
+    it('should get the text instructions for a task', function() {
+      expect(question.getTasks()[0].getTextInstructions())
+        .toEqual('For this question, you will implement isBalanced(). ');
+      expect(question.getTasks()[1].getTextInstructions())
+        .toEqual('abc def ');
+    });
   });
 });
