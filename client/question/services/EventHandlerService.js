@@ -151,6 +151,22 @@ tie.factory('EventHandlerService', [
       },
 
       /**
+       * Submits data to TIE's backend to create a SessionInvalidEvent.
+       *
+       */
+      createSessionInvalidEvent: function() {
+        if (ServerHandlerService.doesServerExist()) {
+          _currentEventBatch.push({
+            type: 'SessionInvalidEvent',
+            data: {
+              createdMsec: (new Date()).getTime()
+            }
+          });
+          sendCurrentEventBatch();
+        }
+      },
+
+      /**
        * Submits data to TIE's backend to create a TaskStartEvent.
        * @param {string} taskId ID of the task being attempted.
        *

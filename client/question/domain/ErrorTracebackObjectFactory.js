@@ -28,6 +28,13 @@ tie.factory('ErrorTracebackObjectFactory', [
     var LINE_DELIMITER_PYTHON = ', line ';
 
     /**
+     * A generic server error message.
+     */
+
+    var SERVER_ERROR_MESSAGE = (
+      'A server error occurred. Please refresh the page.');
+
+    /**
      * Constructor for ErrorTraceback
      *
      * @param {string} errorMessage string describing the error
@@ -75,7 +82,8 @@ tie.factory('ErrorTracebackObjectFactory', [
      * @returns {string}
      */
     ErrorTraceback.prototype.getErrorString = function() {
-      if (this._errorMessage.indexOf('TimeLimitError') === 0) {
+      if (this._errorMessage.indexOf('TimeLimitError') === 0 ||
+        this._errorMessage === SERVER_ERROR_MESSAGE) {
         return this._errorMessage;
       }
       return this._errorMessage + ' on line ' + this._getFirstTracebackLine();
@@ -92,6 +100,16 @@ tie.factory('ErrorTracebackObjectFactory', [
      */
     ErrorTraceback.create = function(errorMessage, tracebackCoordinates) {
       return new ErrorTraceback(errorMessage, tracebackCoordinates);
+    };
+
+    /**
+     * Returns an ErrorTraceback object from a server error.
+     *
+     * @returns {ErrorTraceback}
+     */
+    ErrorTraceback.fromServerError = function() {
+      return ErrorTraceback.create(SERVER_ERROR_MESSAGE,
+        TracebackCoordinatesObjectFactory.create(0, 0));
     };
 
     /**

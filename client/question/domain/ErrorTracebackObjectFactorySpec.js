@@ -52,6 +52,14 @@ describe('ErrorTracebackObjectFactory', function() {
     });
   });
 
+  describe('fromServerError', function() {
+    it('should return the correct message for a server error', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
+      expect(errorTraceback.getErrorString()
+        ).toEqual('A server error occurred. Please refresh the page.');
+    });
+  });
+
   describe('fromPythonError', function() {
     it('should return correct traceback for Python runtime errors', function() {
       var expectedLineNumber = 28;

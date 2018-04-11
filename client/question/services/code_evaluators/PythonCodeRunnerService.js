@@ -18,12 +18,12 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'ServerHandlerService', 'VARNAME_OBSERVED_OUTPUTS',
+  'ServerHandlerService', 'EventHandlerService', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      ServerHandlerService, VARNAME_OBSERVED_OUTPUTS,
+      ServerHandlerService, EventHandlerService, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
     /** @type {number} @const */
@@ -115,6 +115,14 @@ tie.factory('PythonCodeRunnerService', [
       return $http.post('/ajax/compile_code', data).then(
         function(response) {
           return _processCodeCompilationServerResponse(response.data, code);
+        },
+        function(unused_error) {
+          // A server error occurred, so we need to invalidate the session.
+          EventHandlerService.createSessionInvalidEvent();
+
+          var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
+          return CodeEvalResultObjectFactory.create(
+            code, '', [], [], [], errorTraceback, '');
         }
       );
     };
@@ -134,6 +142,14 @@ tie.factory('PythonCodeRunnerService', [
       return $http.post('/ajax/run_code', data).then(
         function(response) {
           return _processCodeExecutionServerResponse(response.data, code);
+        },
+        function(unused_error) {
+          // A server error occurred, so we need to invalidate the session.
+          EventHandlerService.createSessionInvalidEvent();
+
+          var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
+          return CodeEvalResultObjectFactory.create(
+            code, '', [], [], [], errorTraceback, '');
         }
       );
     };
