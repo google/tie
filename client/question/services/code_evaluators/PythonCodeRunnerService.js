@@ -116,7 +116,7 @@ tie.factory('PythonCodeRunnerService', [
         function(response) {
           return _processCodeCompilationServerResponse(response.data, code);
         },
-        function(unused_error) {
+        function() {
           // A server error occurred, so we need to invalidate the session.
           EventHandlerService.createSessionInvalidEvent();
 
@@ -143,7 +143,7 @@ tie.factory('PythonCodeRunnerService', [
         function(response) {
           return _processCodeExecutionServerResponse(response.data, code);
         },
-        function(unused_error) {
+        function() {
           // A server error occurred, so we need to invalidate the session.
           EventHandlerService.createSessionInvalidEvent();
 
