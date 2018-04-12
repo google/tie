@@ -68,11 +68,15 @@ tie.factory('ErrorTracebackObjectFactory', [
      * Returns the line number in the first error traceback coordinates. This
      * generally means the line in the student code where the error is coming
      * from.
+     * If no TracebackCoordinates are available, this will return null.
      *
      * @returns {ErrorTraceback}
      * @private
      */
     ErrorTraceback.prototype._getFirstTracebackLine = function() {
+      if (!this._tracebackCoordinates) {
+        return null;
+      }
       return this._tracebackCoordinates[0].getLineNumber();
     };
 
@@ -83,7 +87,8 @@ tie.factory('ErrorTracebackObjectFactory', [
      */
     ErrorTraceback.prototype.getErrorString = function() {
       if (this._errorMessage.indexOf('TimeLimitError') === 0 ||
-        this._errorMessage === SERVER_ERROR_MESSAGE) {
+        this._errorMessage === SERVER_ERROR_MESSAGE ||
+        !this._tracebackCoordinates) {
         return this._errorMessage;
       }
       return this._errorMessage + ' on line ' + this._getFirstTracebackLine();
@@ -108,8 +113,7 @@ tie.factory('ErrorTracebackObjectFactory', [
      * @returns {ErrorTraceback}
      */
     ErrorTraceback.fromServerError = function() {
-      return ErrorTraceback.create(SERVER_ERROR_MESSAGE,
-        TracebackCoordinatesObjectFactory.create(0, 0));
+      return ErrorTraceback.create(SERVER_ERROR_MESSAGE, null);
     };
 
     /**
