@@ -59,6 +59,21 @@ describe('EventHandlerService', function() {
       });
   });
 
+  describe('createSessionInvalidEvent', function() {
+
+    it('creates a SessionInvalidEvent + sends the event batch to the backend',
+      function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/send_event_batch').respond(
+          HTTP_STATUS_CODE_OK, {});
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(0);
+        EventHandlerService.createSessionInvalidEvent();
+        $httpBackend.flush();
+      });
+  });
+
 
   describe('createSessionResumeEvent', function() {
 

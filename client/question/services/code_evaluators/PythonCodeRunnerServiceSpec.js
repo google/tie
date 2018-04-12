@@ -25,6 +25,7 @@ describe('PythonCodeRunnerService', function() {
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
   var HTTP_STATUS_CODE_OK = 200;
+  var HTTP_STATUS_CODE_SERVER_ERROR = 500;
 
   beforeEach(module('tie', function($provide) {
     $provide.constant('SERVER_URL', 'http://katamari.com');
@@ -62,6 +63,26 @@ describe('PythonCodeRunnerService', function() {
       PythonCodeRunnerService.compileCodeAsync(code);
       $httpBackend.flush();
     });
+
+    it('returns an error if there was a server error', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $httpBackend.expectPOST('/ajax/compile_code').respond(
+        HTTP_STATUS_CODE_SERVER_ERROR, {});
+      spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+      spyOn(PythonCodeRunnerService,
+        '_processCodeCompilationServerResponse').and.returnValue(null);
+      PythonCodeRunnerService.compileCodeAsync(code).then(
+        function(result) {
+          expect(result.getErrorString()).toEqual(
+            'A server error occurred. Please refresh the page.');
+        });
+      $httpBackend.flush();
+    });
   });
 
   describe('runCodeAsync', function() {
@@ -79,6 +100,24 @@ describe('PythonCodeRunnerService', function() {
       spyOn(PythonCodeRunnerService,
         '_processCodeExecutionServerResponse').and.returnValue(null);
       PythonCodeRunnerService.runCodeAsync(code);
+      $httpBackend.flush();
+    });
+
+    it('returns an error if there was a server error', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      $httpBackend.expectPOST('/ajax/run_code').respond(
+        HTTP_STATUS_CODE_SERVER_ERROR, {});
+      spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+      PythonCodeRunnerService.runCodeAsync(code).then(
+        function(result) {
+          expect(result.getErrorString()).toEqual(
+            'A server error occurred. Please refresh the page.');
+        });
       $httpBackend.flush();
     });
   });

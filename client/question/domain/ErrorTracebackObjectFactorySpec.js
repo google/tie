@@ -28,6 +28,50 @@ describe('ErrorTracebackObjectFactory', function() {
       'TracebackCoordinatesObjectFactory');
   }));
 
+  describe('getErrorString', function() {
+    it('should return correct error string', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+      'ZeroDivisionError: integer division or modulo by zero',
+      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var errorString = (
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
+
+      expect(errorTraceback.getErrorString()).toEqual(errorString);
+    });
+
+    it('should return correct error string for TimeLimitErrors', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+        'TimeLimitError: Your code takes, like, forever to run',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+
+      var skulptErrorMock = {
+        msg: 'TimeLimitError: Your code takes, like, forever to run ',
+        traceback: [{
+          lineno: 5,
+          colno: 1
+        }],
+        toString: function() {
+          return this.msg;
+        }
+      };
+
+      expect(
+        ErrorTracebackObjectFactory.fromSkulptError(skulptErrorMock)
+          .getErrorString()
+      ).toEqual(errorTraceback.getErrorString());
+    });
+
+    it('should return correct error string if no TracebackCoordinates',
+      function() {
+        var errorString = (
+          'ZeroDivisionError: integer division or modulo by zero');
+        var errorTraceback = ErrorTracebackObjectFactory.create(
+          errorString, null);
+
+        expect(errorTraceback.getErrorString()).toEqual(errorString);
+      });
+  });
+
   describe('fromSkulptError', function() {
     it('should return correct traceback for Skulpt errors', function() {
       var errorTraceback = ErrorTracebackObjectFactory.create(
@@ -49,6 +93,14 @@ describe('ErrorTracebackObjectFactory', function() {
         ErrorTracebackObjectFactory.fromSkulptError(skulptErrorMock)
           .getErrorString()
       ).toEqual(errorTraceback.getErrorString());
+    });
+  });
+
+  describe('fromServerError', function() {
+    it('should return the correct message for a server error', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
+      expect(errorTraceback.getErrorString()
+        ).toEqual('A server error occurred. Please refresh the page.');
     });
   });
 
