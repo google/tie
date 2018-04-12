@@ -41,8 +41,8 @@ describe('ErrorTracebackObjectFactory', function() {
 
     it('should return correct error string for TimeLimitErrors', function() {
       var errorTraceback = ErrorTracebackObjectFactory.create(
-      'TimeLimitError: Your code takes, like, forever to run',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+        'TimeLimitError: Your code takes, like, forever to run',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
 
       var skulptErrorMock = {
         msg: 'TimeLimitError: Your code takes, like, forever to run ',
