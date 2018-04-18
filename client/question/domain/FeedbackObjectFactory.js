@@ -61,6 +61,14 @@ tie.factory('FeedbackObjectFactory', [
        * @private
        */
       this._feedbackCategory = feedbackCategory;
+
+      /**
+       * Line number that correlates to error that triggered.
+       *
+       * @type {integer}
+       * @private
+       */
+      this._errorLineNumber = null;
     };
 
     // Instance methods.
@@ -175,6 +183,24 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.getFeedbackCategory = function() {
       return this._feedbackCategory;
+    };
+
+    /**
+     * A getter for the _errorLineNumber property.
+     *
+     * @returns {string}
+     */
+    Feedback.prototype.getErrorLineNumber = function() {
+      return this._errorLineNumber;
+    };
+
+    /**
+     * A setter for the _errorLineNumber property.
+     *
+     * @param {integer} errorLine to set the _errorLineNumber property to.
+     */
+    Feedback.prototype.setErrorLineNumber = function(newLineNumber) {
+      this._errorLineNumber = newLineNumber;
     };
 
     /**
