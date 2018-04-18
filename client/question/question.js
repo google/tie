@@ -16,8 +16,9 @@
  * @fileoverview Basic configuration for the TIE application.
  */
 
-window.tie = angular.module('tie',
-  ['ui.codemirror', 'tieConfig', 'tieData', 'ngCookies', 'ngAria']);
+window.tie = angular.module('tie', [
+  'ui.codemirror', 'tieConfig', 'tieData', 'ngCookies', 'ngAria', 'ngSanitize'
+]);
 
 /**
  * String used to label test suites that contain sample input and output
@@ -583,7 +584,8 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
         "Unfortunately Python doesn't support directly assigning ",
         "characters in a string. If you need to do so, try slicing the ",
         "string and adding new characters instead of assigning them. ",
-        "If you need a refresher on slicing, check out the primer."
+        "If you need a refresher on slicing, check out the ",
+        "[primer](../docs/py-primer-light.html#strings)."
       ].join('');
     }
   }, {
