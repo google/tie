@@ -143,7 +143,7 @@ tie.factory('ErrorTracebackObjectFactory', [
       // Split the error string by newlines for easier processing.
       var splitErrorMessage = pythonError.trim().split(/\r?\n/);
       var errorMessage = splitErrorMessage[splitErrorMessage.length - 1];
-      if (splitErrorMessage.length === 1) {
+      if (pythonError.trim().match(/line +d/) === null) {
         // There's no line or column number included in this error.
         return ErrorTraceback.create(errorMessage, null);
       }
