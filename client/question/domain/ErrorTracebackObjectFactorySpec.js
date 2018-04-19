@@ -128,6 +128,18 @@ NameError: global name 'potato' is not defined`;
       ).toEqual(errorTraceback.getErrorString());
     });
 
+    it('should return correct traceback for Python timeout errors', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+      'TimeLimitError: Your code ran real slow, my dude.', null);
+
+      var pythonError = `TimeLimitError: Your code ran real slow, my dude.`;
+
+      expect(
+        ErrorTracebackObjectFactory.fromPythonError(pythonError)
+          .getErrorString()
+      ).toEqual(errorTraceback.getErrorString());
+    });
+
     it('should return correct traceback for Python syntax errors', function() {
       var expectedLineNumber = 8;
       var expectedColumnNumber = 17;
