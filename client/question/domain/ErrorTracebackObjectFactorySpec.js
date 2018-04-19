@@ -130,7 +130,7 @@ NameError: global name 'potato' is not defined`;
 
     it('should return correct traceback for Python timeout errors', function() {
       var errorTraceback = ErrorTracebackObjectFactory.create(
-      'TimeLimitError: Your code ran real slow, my dude.', null);
+        'TimeLimitError: Your code ran real slow, my dude.', null);
 
       var pythonError = `TimeLimitError: Your code ran real slow, my dude.`;
 
