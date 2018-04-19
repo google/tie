@@ -143,6 +143,10 @@ tie.factory('ErrorTracebackObjectFactory', [
       // Split the error string by newlines for easier processing.
       var splitErrorMessage = pythonError.trim().split(/\r?\n/);
       var errorMessage = splitErrorMessage[splitErrorMessage.length - 1];
+      if (pythonError.trim().match(/line \d+/) === null) {
+        // There's no line or column number included in this error.
+        return ErrorTraceback.create(errorMessage, null);
+      }
       var lineNumber = null;
       // Python error tracebacks use the last two lines to show the line of code
       // and the error (and sometimes a ^ indicating where the error occurred.
