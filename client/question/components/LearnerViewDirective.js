@@ -884,11 +884,11 @@ tie.directive('learnerView', [function() {
             }
           } else {
             var feedbackParagraphs = feedback.getParagraphs();
-            var errorLine = feedback.getErrorLineNumber();
+            var errorLineNumber = feedback.getErrorLineNumber();
             for (var i = 0; i < feedbackParagraphs.length; i++) {
               clearAllHighlights();
-              if (errorLine !== null) {
-                highlightLine(errorLine);
+              if (errorLineNumber !== null) {
+                highlightLine(errorLineNumber);
                 break;
               }
             }

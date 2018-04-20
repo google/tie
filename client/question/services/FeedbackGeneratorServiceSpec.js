@@ -1384,4 +1384,61 @@ describe('FeedbackGeneratorService', function() {
       }
     );
   });
+
+  describe('prereqCheck errorLineNumber', function() {
+    it('should return null when there are no errors', function() {
+      var starterCode = [
+        'def myFunction(arg):',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, starterCode, 'notOp');
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+
+      expect(feedback.getErrorLineNumber()).toBeNull();
+    });
+
+    it('should return append the errorStr', function() {
+      var incrementErrorCode = [
+        'def myFunction(arg):',
+        '    arg++',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, incrementErrorCode, 'incrementOp',
+        2, 4);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+      var paragraphs = feedback.getParagraphs();
+
+      expect(feedback.getErrorLineNumber()).toBe(2);
+      expect(paragraphs[1].getContent()).toBe('(See line 2 of the code.)');
+    });
+
+    it('only return first errorLineNumber when multiple errors', function() {
+      var incrementErrorCode = [
+        'def myFunction(arg):',
+        '    arg = arg / 2',
+        '    arg--',
+        '    return arg',
+        'def myFunction2(arg):',
+        '    arg++',
+        '    return arg',
+        ''
+      ].join('\n');
+
+      var prereqFailure = PrereqCheckFailureObjectFactory.create(
+        PREREQ_CHECK_TYPE_WRONG_LANG, null, incrementErrorCode, 'decrementOp',
+        3, 4);
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure);
+
+      expect(feedback.getErrorLineNumber()).toBe(3);
+    });
+  });
 });

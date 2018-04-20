@@ -197,7 +197,7 @@ tie.factory('FeedbackObjectFactory', [
     /**
      * A setter for the _errorLineNumber property.
      *
-     * @param {integer} errorLine to set the _errorLineNumber property to.
+     * @param {integer} newLineNumber to set the _errorLineNumber property to.
      */
     Feedback.prototype.setErrorLineNumber = function(newLineNumber) {
       this._errorLineNumber = newLineNumber;
