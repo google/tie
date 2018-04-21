@@ -20,11 +20,11 @@
 tie.factory('SolutionHandlerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'TranscriptService', 'CodeSubmissionObjectFactory', 'LearnerSessionService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory) {
+      TranscriptService, CodeSubmissionObjectFactory, LearnerSessionService) {
     return {
       /**
        * Asynchronously returns a Promise with a Feedback object associated
@@ -52,6 +52,8 @@ tie.factory('SolutionHandlerService', [
             potentialPrereqCheckFailure);
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
+          LearnerSessionService.addNewArchivedSubmission(
+            studentCode, feedback.getParagraphs());
           return Promise.resolve(feedback);
         } else {
           // Next, run the raw code to detect syntax errors. If any exist, we
@@ -64,6 +66,8 @@ tie.factory('SolutionHandlerService', [
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
+              LearnerSessionService.addNewArchivedSubmission(
+                studentCode, feedback.getParagraphs());
               return feedback;
             }
 
@@ -83,6 +87,8 @@ tie.factory('SolutionHandlerService', [
                 codeSubmission.getRawCodeLineIndexes());
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
+              LearnerSessionService.addNewArchivedSubmission(
+                studentCode, feedback.getParagraphs());
               return feedback;
             });
           });
