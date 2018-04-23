@@ -202,5 +202,33 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
       expect(codeEvalResult.getErrorInput()).toEqual(null);
     });
+
+    it('returns a CodeEvalResult with syntax error post-compile', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      responseDict.stderr = [
+        'Traceback (most recent call last):',
+        '  File "main.py", line 54, in <module>',
+        '    StudentCode().fmcc, all_tasks_test_inputs[0][0]))',
+        '  File "main.py", line 19, in runTest',
+        '    output = func(input)',
+        '  File "main.py", line 28, in fmcc',
+        '    return ["abc"]xx',
+        'SyntaxError: invalid syntax, friend'
+      ].join('\n');
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeCompilationServerResponse(
+          responseDict, code));
+      expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
+      expect(codeEvalResult.getObservedOutputs()).toEqual(null);
+      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
+      expect(codeEvalResult.getErrorString()).toEqual(
+        'SyntaxError: invalid syntax, friend on line 28');
+      expect(codeEvalResult.getErrorInput()).toEqual(null);
+    });
   });
 });

@@ -128,9 +128,13 @@ tie.factory('PythonCodeRunnerService', [
     };
 
     var _processCodeCompilationServerResponse = function(responseData, code) {
-      // We have no response data, since it's just a compile step.
+      var errorTraceback = null;
+      if (responseData.stderr) {
+        errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
+          responseData.stderr);
+      }
       return CodeEvalResultObjectFactory.create(
-          code, responseData.stdout, null, null, null, null, null);
+          code, responseData.stdout, null, null, null, errorTraceback, null);
     };
 
     var _runCodeAsync = function(code) {
