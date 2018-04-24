@@ -67,25 +67,26 @@ describe('PythonCodeRunnerService', function() {
     it('processes a compile-time syntax error', function() {
       var code = [
         'def myFunction(arg):',
-        '    result = arg.rstrip()',
+        '    result = arg.rstrip()x',
         '    return result',
         ''
       ].join('\n');
       responseDict.stderr = [
         'Traceback (most recent call last):',
-        '  File "main.py", line 54, in <module>',
-        '    StudentCode().fmcc, all_tasks_test_inputs[0][0]))',
-        '  File "main.py", line 19, in runTest',
-        '    output = func(input)',
-        '  File "main.py", line 28, in fmcc',
-        '    return 2 / 0',
-        'ZeroDivisionError: integer division or modulo by zero'
+        '  File "main.py", line 2',
+        '    result = arg.rstrip()x',
+        'SyntaxError: invalid syntax'
       ].join('\n');
       $httpBackend.expectPOST('/ajax/compile_code').respond(
         HTTP_STATUS_CODE_OK, responseDict);
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeCompilationServerResponse').and.returnValue(null);
+      PythonCodeRunnerService.compileCodeAsync(code).then(
+        function(result) {
+          expect(result.getErrorString()).toEqual(
+            'SyntaxError: invalid syntax on line 2');
+        });
       PythonCodeRunnerService.compileCodeAsync(code);
       $httpBackend.flush();
     });
@@ -100,8 +101,6 @@ describe('PythonCodeRunnerService', function() {
       $httpBackend.expectPOST('/ajax/compile_code').respond(
         HTTP_STATUS_CODE_SERVER_ERROR, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
-      spyOn(PythonCodeRunnerService,
-        '_processCodeCompilationServerResponse').and.returnValue(null);
       PythonCodeRunnerService.compileCodeAsync(code).then(
         function(result) {
           expect(result.getErrorString()).toEqual(
