@@ -80,8 +80,6 @@ describe('PythonCodeRunnerService', function() {
       $httpBackend.expectPOST('/ajax/compile_code').respond(
         HTTP_STATUS_CODE_OK, responseDict);
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
-      spyOn(PythonCodeRunnerService,
-        '_processCodeCompilationServerResponse').and.returnValue(null);
       PythonCodeRunnerService.compileCodeAsync(code).then(
         function(result) {
           expect(result.getErrorString()).toEqual(
