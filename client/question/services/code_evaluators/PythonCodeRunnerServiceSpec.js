@@ -64,6 +64,31 @@ describe('PythonCodeRunnerService', function() {
       $httpBackend.flush();
     });
 
+    it('processes a compile-time syntax error', function() {
+      var code = [
+        'def myFunction(arg):',
+        '    result = arg.rstrip()x',
+        '    return result',
+        ''
+      ].join('\n');
+      responseDict.stderr = [
+        'Traceback (most recent call last):',
+        '  File "main.py", line 2',
+        '    result = arg.rstrip()x',
+        'SyntaxError: invalid syntax'
+      ].join('\n');
+      $httpBackend.expectPOST('/ajax/compile_code').respond(
+        HTTP_STATUS_CODE_OK, responseDict);
+      spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+      PythonCodeRunnerService.compileCodeAsync(code).then(
+        function(result) {
+          expect(result.getErrorString()).toEqual(
+            'SyntaxError: invalid syntax on line 2');
+        });
+      PythonCodeRunnerService.compileCodeAsync(code);
+      $httpBackend.flush();
+    });
+
     it('returns an error if there was a server error', function() {
       var code = [
         'def myFunction(arg):',
@@ -74,8 +99,6 @@ describe('PythonCodeRunnerService', function() {
       $httpBackend.expectPOST('/ajax/compile_code').respond(
         HTTP_STATUS_CODE_SERVER_ERROR, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
-      spyOn(PythonCodeRunnerService,
-        '_processCodeCompilationServerResponse').and.returnValue(null);
       PythonCodeRunnerService.compileCodeAsync(code).then(
         function(result) {
           expect(result.getErrorString()).toEqual(
@@ -200,6 +223,34 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
       expect(codeEvalResult.getObservedOutputs()).toEqual(null);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
+      expect(codeEvalResult.getErrorInput()).toEqual(null);
+    });
+
+    it('returns a CodeEvalResult with syntax error post-compile', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      responseDict.stderr = [
+        'Traceback (most recent call last):',
+        '  File "main.py", line 54, in <module>',
+        '    StudentCode().fmcc, all_tasks_test_inputs[0][0]))',
+        '  File "main.py", line 19, in runTest',
+        '    output = func(input)',
+        '  File "main.py", line 28, in fmcc',
+        '    return ["abc"]xx',
+        'SyntaxError: invalid syntax, friend'
+      ].join('\n');
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeCompilationServerResponse(
+          responseDict, code));
+      expect(codeEvalResult.getPerformanceTestResults()).toEqual(null);
+      expect(codeEvalResult.getObservedOutputs()).toEqual(null);
+      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
+      expect(codeEvalResult.getErrorString()).toEqual(
+        'SyntaxError: invalid syntax, friend on line 28');
       expect(codeEvalResult.getErrorInput()).toEqual(null);
     });
   });
