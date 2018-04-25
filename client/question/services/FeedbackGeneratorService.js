@@ -595,7 +595,8 @@ tie.factory('FeedbackGeneratorService', [
         // integrate it into the existing feedback pipeline.
         if (errorString.startsWith('TimeLimitError')) {
           return _getTimeoutErrorFeedback();
-        } else if (errorString.startsWith('ExternalError: RangeError')) {
+        } else if (errorString.startsWith('ExternalError: RangeError') ||
+          errorString.includes('maximum recursion depth exceeded')) {
           return _getInfiniteLoopFeedback();
         } else {
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
