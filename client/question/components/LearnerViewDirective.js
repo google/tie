@@ -200,6 +200,18 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-button-blue:active {
           background-color: rgb(62, 81, 99);
         }
+        .tie-button-red {
+          background-color: #d8d8d8;
+          border: none;
+          color: #000000;
+          outline: none;
+        }
+        .tie-button-red:hover {
+          background-color: #bdbdbd;
+        }
+        .tie-button-red:active {
+          background-color: #b0b0b0;
+        }
         .tie-button-green {
           background-color: #3C5C14;
           border: none;
