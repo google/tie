@@ -597,7 +597,7 @@ tie.factory('FeedbackGeneratorService', [
           return _getTimeoutErrorFeedback();
         } else if (errorString.startsWith('ExternalError: RangeError') ||
           errorString.includes('maximum recursion depth exceeded')) {
-            return _getInfiniteLoopFeedback();
+          return _getInfiniteLoopFeedback();
         } else {
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         }
