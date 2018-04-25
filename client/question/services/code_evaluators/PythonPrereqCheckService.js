@@ -89,8 +89,8 @@ tie.factory('PythonPrereqCheckService', [
     var detectAndGetWrongLanguageType = function(code) {
       var obscuredCode = getObscuredCode(code);
       var rawCodeArray = code.split('\n');
-      var lowestErrorCharNumber;
-      var firstError;
+      var lowestErrorCharNumber = 10000;
+      var firstError = null;
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
@@ -103,7 +103,7 @@ tie.factory('PythonPrereqCheckService', [
         // check to find lowest number.
         if (errorCharNumber > -1) {
           if (firstError && errorCharNumber > lowestErrorCharNumber) {
-            break;
+            continue;
           }
 
           var firstErrorLineNumber = 0;
@@ -122,7 +122,7 @@ tie.factory('PythonPrereqCheckService', [
             firstErrorLineNumber - 1].length;
 
           firstError = PrereqCheckErrorObjectFactory.create(
-          error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
+           error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
         }
       }
       if (firstError) {
