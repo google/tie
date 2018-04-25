@@ -89,31 +89,44 @@ tie.factory('PythonPrereqCheckService', [
     var detectAndGetWrongLanguageType = function(code) {
       var obscuredCode = getObscuredCode(code);
       var rawCodeArray = code.split('\n');
+      var lowestErrorCharNumber;
+      var firstError;
 
       for (var i = 0; i < WRONG_LANGUAGE_ERRORS.python.length; i++) {
         var error = WRONG_LANGUAGE_ERRORS.python[i];
         var regexp = new RegExp(error.regExString);
 
         // Lookup character location of error
-        var firstErrorCharNumber = obscuredCode.search(regexp);
-        if (firstErrorCharNumber !== -1) {
+        var errorCharNumber = obscuredCode.search(regexp);
+
+        // Regex search returns -1 for no match. Use reverse King-of-the-hill
+        // check to find lowest number.
+        if (errorCharNumber > -1) {
+          if (firstError && errorCharNumber > lowestErrorCharNumber) {
+            break;
+          }
+
           var firstErrorLineNumber = 0;
+          lowestErrorCharNumber = errorCharNumber;
 
           // After regex matches an error, loop through codelines
-          for (var l = 0; firstErrorCharNumber >= 0; l++) {
+          for (var l = 0; errorCharNumber >= 0; l++) {
             // Subtract line length from corresponding firstErrorCharNumber.
             // When below 0: index === linenumber. Subtract +1 for newline char.
-            firstErrorCharNumber -= (rawCodeArray[l].length + 1);
+            errorCharNumber -= (rawCodeArray[l].length + 1);
             firstErrorLineNumber++;
           }
 
           // Add line length to the >0 firstErrorColumnNumber
-          var firstErrorColumnNumber = firstErrorCharNumber + rawCodeArray[
+          var firstErrorColumnNumber = errorCharNumber + rawCodeArray[
             firstErrorLineNumber - 1].length;
 
-          return PrereqCheckErrorObjectFactory.create(
-            error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
+          firstError = PrereqCheckErrorObjectFactory.create(
+          error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
         }
+      }
+      if (firstError) {
+        return firstError;
       }
       return null;
     };
