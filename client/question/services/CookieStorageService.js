@@ -33,7 +33,7 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
             expires: expiryDate,
             // "secure: true" means that this cookie is only accessible via a
             // secure connection. This means that any http:// sessions will not
-            // save the cookie, but https:// will.
+            // be able to retrieve the cookie, but https:// will.
             secure: true
           });
       },
@@ -46,7 +46,7 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
           {
             // "secure: true" means that this cookie is only accessible via a
             // secure connection. This means that any http:// sessions will not
-            // save the cookie, but https:// will.
+            // be able to retrieve the cookie, but https:// will.
             secure: true
           });
       },
