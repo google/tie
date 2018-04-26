@@ -806,10 +806,9 @@ tie.factory('FeedbackGeneratorService', [
 
               var errorLineNumber = prereqCheckFailure.getErrorLineNumber();
               if (errorLineNumber) {
-                var errorStr = '(See line ' + errorLineNumber +
-                  ' of the code.)';
                 feedback.setErrorLineNumber(errorLineNumber);
-                feedback.appendTextParagraph(errorStr);
+                feedback.appendTextParagraph('(See line ' + errorLineNumber +
+                  ' of the code.)');
               }
             }
           });

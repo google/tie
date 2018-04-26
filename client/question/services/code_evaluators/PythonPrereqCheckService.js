@@ -102,7 +102,7 @@ tie.factory('PythonPrereqCheckService', [
         // Regex search returns -1 for no match. Use reverse King-of-the-hill
         // check to find lowest number.
         if (errorCharNumber > -1) {
-          if (firstError && errorCharNumber > lowestErrorCharNumber) {
+          if (firstError && errorCharNumber >= lowestErrorCharNumber) {
             continue;
           }
 
@@ -122,7 +122,7 @@ tie.factory('PythonPrereqCheckService', [
             firstErrorLineNumber - 1].length;
 
           firstError = PrereqCheckErrorObjectFactory.create(
-           error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
+            error.errorName, firstErrorLineNumber, firstErrorColumnNumber);
         }
       }
       if (firstError) {
