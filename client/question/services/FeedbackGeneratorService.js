@@ -804,6 +804,13 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendErrorParagraph(paragraph.content);
                 }
               });
+
+              var errorLineNumber = prereqCheckFailure.getErrorLineNumber();
+              if (errorLineNumber) {
+                feedback.setErrorLineNumber(errorLineNumber);
+                feedback.appendTextParagraph('(See line ' + errorLineNumber +
+                  ' of the code.)');
+              }
             }
           });
         } else if (prereqCheckFailure.hasInvalidAuxiliaryCodeCall()) {

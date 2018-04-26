@@ -350,6 +350,31 @@ describe('SolutionHandlerService', function() {
           done();
         });
       });
+
+      it('should return 1st errorLineNumber, when multiple errors',
+        function(done) {
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return True',
+            'def myFunction(arg):',
+            '    arg = arg / 2',
+            '    arg--',
+            '    return arg',
+            'def myFunction2(arg):',
+            '    arg++',
+            '    return arg',
+            ''
+          ].join('\n');
+
+          SolutionHandlerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode,
+            auxiliaryCode, 'python'
+          ).then(function(feedback) {
+            expect(feedback.isAnswerCorrect()).toEqual(false);
+            expect(feedback.getErrorLineNumber()).toBe(5);
+            done();
+          });
+        });
     });
 
     describe('potentialSyntaxError', function() {
