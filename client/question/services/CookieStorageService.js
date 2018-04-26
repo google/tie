@@ -31,6 +31,9 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
         $cookies.put(PRIVACY_COOKIE_NAME, 'true',
           {
             expires: expiryDate,
+            // secure: true means that this cookie is only accessible via a
+            // secure connection. This means that any http:// sessions will not
+            // save the cookie, but https:// will.
             secure: true
           });
       },
@@ -41,6 +44,9 @@ tie.factory('CookieStorageService', ['$cookies', 'PRIVACY_COOKIE_LIFETIME_DAYS',
       setTransientPrivacyCookie: function() {
         $cookies.put(PRIVACY_COOKIE_NAME, 'true',
           {
+            // secure: true means that this cookie is only accessible via a
+            // secure connection. This means that any http:// sessions will not
+            // save the cookie, but https:// will.
             secure: true
           });
       },
