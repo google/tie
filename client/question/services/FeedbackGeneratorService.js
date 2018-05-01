@@ -453,6 +453,23 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Returns the Feedback related to a server error.
+     *
+     * @returns {Feedback}
+     * @private
+     */
+    var _getServerErrorFeedback = function() {
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.SERVER_ERROR);
+      feedback.appendTextParagraph([
+        'A server error has occurred. We are looking into it ',
+        'and will fix it as quickly as possible. We apologize ',
+        'for the inconvenience.'
+      ].join(''));
+      return feedback;
+    };
+
+    /**
      * Returns the Feedback object associated with a runtime error when running
      * the user code.
      *
@@ -598,6 +615,8 @@ tie.factory('FeedbackGeneratorService', [
         } else if (errorString.startsWith('ExternalError: RangeError') ||
           errorString.includes('maximum recursion depth exceeded')) {
           return _getInfiniteLoopFeedback();
+        } else if (errorString.startsWith('A server error occurred.')) {
+          return _getServerErrorFeedback();
         } else {
           return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
         }
@@ -866,6 +885,7 @@ tie.factory('FeedbackGeneratorService', [
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
+      _getServerErrorFeedback: _getServerErrorFeedback,
       _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRandomInt: _getRandomInt,
       _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,

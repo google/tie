@@ -349,6 +349,23 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
+  describe('_getServerErrorFeedback', function() {
+    it('should return an error if the server returns an error', function() {
+      var feedback = FeedbackGeneratorService._getServerErrorFeedback();
+      var paragraphs = feedback.getParagraphs();
+
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.SERVER_ERROR);
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'A server error has occurred. We are looking into it ',
+        'and will fix it as quickly as possible. We apologize ',
+        'for the inconvenience.'
+      ].join(''));
+    });
+  });
+
   describe('_getUnfamiliarLanguageFeedback', function() {
     it('should return the string for the text feedback for python', function() {
       var feedbackString = FeedbackGeneratorService
