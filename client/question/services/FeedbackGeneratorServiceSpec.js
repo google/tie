@@ -404,6 +404,26 @@ describe('FeedbackGeneratorService', function() {
         'ZeroDivisionError: integer division or modulo by zero on line 5');
     });
 
+    it('should return an error if a server runtime error occurred', function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code', 'some output', [], [], [], sampleErrorTraceback);
+
+      var feedback = FeedbackGeneratorService._getRuntimeErrorFeedback(
+        codeEvalResult, [0, 1, 2, 3, 4]);
+      var paragraphs = feedback.getParagraphs();
+
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+      expect(paragraphs.length).toEqual(2);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'Looks like your code had a runtime error when we ran it.'
+      ].join(''));
+      expect(paragraphs[1].isErrorParagraph()).toBe(true);
+      expect(paragraphs[1].getContent()).toBe(
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
+    });
+
     it('should throw an error if the line number index is less than 0',
       function() {
         var buggyErrorTraceback = ErrorTracebackObjectFactory.create(

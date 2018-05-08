@@ -605,10 +605,11 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
   }, {
     // Error when user tries to use a variable name that is not defined
     checker: function(errorString) {
-      return errorString.startsWith('NameError: ');
+      return errorString.startsWith('NameError:');
     },
     generateMessage: function(errorString) {
-      var nameErrorRegEx = /NameError:\sname\s'(\w+)'\sis\snot\sdefined/;
+      var nameErrorRegEx = (
+        /NameError:\s(?:global\s)?name\s'(\w+)'\sis\snot\sdefined/);
       var found = errorString.match(nameErrorRegEx);
       return ["It looks like " + found[1] + " isn't a declared variable. ",
         "Did you make sure to spell it correctly? And is it correctly ",
