@@ -41,7 +41,7 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
             /\[([^[\]]+)\]\(([^)]+)\)/g,
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
-              var goesToPrimer = (p2.indexOf('../docs/py-primer-') === 0);
+              var goesToPrimer = (p2.indexOf('primer-url') === 0);
 
               var targetUrl = null;
               if (goesToPrimer) {
