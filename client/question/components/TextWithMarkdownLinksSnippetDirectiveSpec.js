@@ -22,13 +22,13 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
   var scope;
   var template;
   var ThemeNameService;
-  var PRIMER_URL_DIRECTORY;
+  var PRIMER_DIRECTORY_URL;
   var THEME_NAME_DARK;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector, $compile, $rootScope) {
     ThemeNameService = $injector.get('ThemeNameService');
-    PRIMER_URL_DIRECTORY = $injector.get('PRIMER_URL_DIRECTORY');
+    PRIMER_DIRECTORY_URL = $injector.get('PRIMER_DIRECTORY_URL');
     THEME_NAME_DARK = $injector.get('THEME_NAME_DARK');
 
     parentScope = $rootScope.$new();
@@ -76,7 +76,7 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
       parentScope.parentContent = 'abc [def](primer-url)';
       scope.$digest();
       expect(template.html()).toContain(
-        'abc <a href="..' + PRIMER_URL_DIRECTORY +
+        'abc <a href="' + PRIMER_DIRECTORY_URL +
         'py-primer-light.html" target="_blank">def</a>');
     });
 
@@ -86,13 +86,13 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
       parentScope.parentContent = 'abc [def](primer-url)';
       scope.$digest();
       expect(template.html()).toContain(
-        'abc <a href="..' + PRIMER_URL_DIRECTORY +
+        'abc <a href="' + PRIMER_DIRECTORY_URL +
         'py-primer-light.html" target="_blank">def</a>');
 
       parentScope.parentContent = 'abc [def](primer-url#a)';
       scope.$digest();
       expect(template.html()).toContain(
-        'abc <a href="..' + PRIMER_URL_DIRECTORY +
+        'abc <a href="' + PRIMER_DIRECTORY_URL +
         'py-primer-light.html#a" target="_blank">def</a>');
 
       ThemeNameService.setThemeName(THEME_NAME_DARK);
@@ -101,13 +101,13 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
       parentScope.parentContent = 'abc [def](primer-url)';
       scope.$digest();
       expect(template.html()).toContain(
-        'abc <a href="..' + PRIMER_URL_DIRECTORY +
+        'abc <a href="' + PRIMER_DIRECTORY_URL +
         'py-primer-dark.html" target="_blank">def</a>');
 
       parentScope.parentContent = 'abc [def](primer-url#a)';
       scope.$digest();
       expect(template.html()).toContain(
-        'abc <a href="..' + PRIMER_URL_DIRECTORY +
+        'abc <a href="' + PRIMER_DIRECTORY_URL +
         'py-primer-dark.html#a" target="_blank">def</a>');
     });
 

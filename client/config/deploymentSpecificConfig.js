@@ -18,4 +18,4 @@
 
 tieConfig.constant('SERVER_URL', null);
 
-tieConfig.constant('PRIMER_URL_DIRECTORY', '/docs/');
+tieConfig.constant('PRIMER_DIRECTORY_URL', '../docs/');

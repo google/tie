@@ -41,6 +41,10 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
             /\[([^[\]]+)\]\(([^)]+)\)/g,
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
+              // The URL for the python primer needs to be special-cased so that
+              // we can dynamically link to the content, as its stored in
+              // different locations depending on whether you're using the open-
+              // source version or a standalone hosted version.
               var goesToPrimer = (p2.indexOf('primer-url') === 0);
 
               var targetUrl = null;

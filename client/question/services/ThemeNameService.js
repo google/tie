@@ -19,8 +19,8 @@ tie.constant('THEME_NAME_LIGHT', 'Light Theme');
 tie.constant('THEME_NAME_DARK', 'Dark Theme');
 
 tie.factory('ThemeNameService', [
-  'PRIMER_URL_DIRECTORY', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
-  function(PRIMER_URL_DIRECTORY, THEME_NAME_LIGHT, THEME_NAME_DARK) {
+  'PRIMER_DIRECTORY_URL', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
+  function(PRIMER_DIRECTORY_URL, THEME_NAME_LIGHT, THEME_NAME_DARK) {
     var currentThemeName = THEME_NAME_LIGHT;
 
     return {
@@ -39,7 +39,7 @@ tie.factory('ThemeNameService', [
       getPythonPrimerUrl: function() {
         var primerTheme = this.isDarkModeEnabled() ? 'dark' : 'light';
         return (
-          '..' + PRIMER_URL_DIRECTORY + 'py-primer-' + primerTheme + '.html');
+          PRIMER_DIRECTORY_URL + 'py-primer-' + primerTheme + '.html');
       }
     };
   }
