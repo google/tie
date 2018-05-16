@@ -111,9 +111,9 @@ tie.directive('privacyModal', [function() {
       </style>
     `,
     controller: ['$scope', '$window', 'CookieStorageService',
-      'ServerHandlerService', 'CLIENT_VERSION_HOMEPAGE_URL',
+      'ServerHandlerService', 'GITHUB_HOMEPAGE_URL',
       function($scope, $window, CookieStorageService,
-        ServerHandlerService, CLIENT_VERSION_HOMEPAGE_URL) {
+        ServerHandlerService, GITHUB_HOMEPAGE_URL) {
         // Need to create this to be able to use ng-model, see below
         // https://stackoverflow.com/questions/12618342/ng-model-does-not-update-controller-value/22768720#22768720
         $scope.modalData = {};
@@ -137,7 +137,7 @@ tie.directive('privacyModal', [function() {
          * Redirects to the GitHub client page.
          */
         $scope.reject = function() {
-          $window.location.href = CLIENT_VERSION_HOMEPAGE_URL;
+          $window.location.href = GITHUB_HOMEPAGE_URL;
         };
 
         /**

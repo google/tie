@@ -586,7 +586,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
         "characters in a string. If you need to do so, try slicing the ",
         "string and adding new characters instead of assigning them. ",
         "If you need a refresher on slicing, check out the ",
-        "[primer](../docs/py-primer-light.html#strings)."
+        "[primer](primer-url#strings)."
       ].join('');
     }
   }, {
@@ -775,12 +775,12 @@ tie.constant('PRIVACY_COOKIE_NAME', 'PRIVACY_POLICY_ACCEPTED');
 tie.constant('MENU_PAGE_URL_FROM_QUESTION_PAGE', '../menu/menu.html');
 
 /**
- * The URL of the client version's homepage.
+ * The URL of the Github project's homepage.
  *
  * @type {string}
  * @constant
  */
-tie.constant('CLIENT_VERSION_HOMEPAGE_URL', 'http://google.github.io/tie');
+tie.constant('GITHUB_HOMEPAGE_URL', 'http://google.github.io/tie');
 
 /**
  * Height offset needed by modal to cover feedback buttons.

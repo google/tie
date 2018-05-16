@@ -18,12 +18,14 @@
 
 describe('ThemeNameService', function() {
   var ThemeNameService;
+  var PRIMER_DIRECTORY_URL;
   var THEME_NAME_LIGHT;
   var THEME_NAME_DARK;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     ThemeNameService = $injector.get('ThemeNameService');
+    PRIMER_DIRECTORY_URL = $injector.get('PRIMER_DIRECTORY_URL');
     THEME_NAME_LIGHT = $injector.get('THEME_NAME_LIGHT');
     THEME_NAME_DARK = $injector.get('THEME_NAME_DARK');
   }));
@@ -52,11 +54,11 @@ describe('ThemeNameService', function() {
     it('should correctly get the appropriate Python primer URL', function() {
       ThemeNameService.setThemeName(THEME_NAME_LIGHT);
       expect(ThemeNameService.getPythonPrimerUrl()).toBe(
-        '../docs/py-primer-light.html');
+        PRIMER_DIRECTORY_URL + 'py-primer-light.html');
 
       ThemeNameService.setThemeName(THEME_NAME_DARK);
       expect(ThemeNameService.getPythonPrimerUrl()).toBe(
-        '../docs/py-primer-dark.html');
+        PRIMER_DIRECTORY_URL + 'py-primer-dark.html');
     });
   });
 });
