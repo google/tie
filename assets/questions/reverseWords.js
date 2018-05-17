@@ -20,7 +20,11 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
   title: 'Reverse Words',
   starterCode: {
     python:
-`def reverseWords(s):
+`# Python version 2.7
+
+def reverseWords(s):
+    # This reverseWords method processes a string (s)
+
     return ""
 `
   },
