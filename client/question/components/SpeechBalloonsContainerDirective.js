@@ -22,7 +22,7 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
-        <div class="tie-dot-container" ng-class="{'tie-display-dots': ConversationLogDataService.isNewBalloonPending()}"}>
+        <div class="tie-dot-container" ng-class="{'tie-display-dots': (ConversationLogDataService.data.speechBalloonList.length > 0 ? ConversationLogDataService.data.speechBalloonList[0].isDisplayedOnRight() : false)}"}>
           <div class="tie-dot tie-dot-1"></div>
           <div class="tie-dot tie-dot-2"></div>
           <div class="tie-dot tie-dot-3"></div>
@@ -77,7 +77,7 @@ tie.directive('speechBalloonsContainer', [function() {
         }
         .tie-dot {
           -webkit-animation-name: tie-dot;
-          -webkit-animation-duration: 1.5s;
+          -webkit-animation-duration: 1.2s;
           -webkit-animation-iteration-count: infinite;
           background-color: black;
           border-radius: 2px;
@@ -92,6 +92,7 @@ tie.directive('speechBalloonsContainer', [function() {
           height: 10px;
           opacity: 0;
           padding-left: 5px;
+          transition-delay: 0.2s;
         }
         .night-mode .tie-dot {
           background-color: #E0E0E0;
@@ -240,3 +241,4 @@ tie.directive('speechBalloonsContainer', [function() {
     ]
   };
 }]);
+

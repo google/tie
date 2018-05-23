@@ -66,4 +66,20 @@ describe('SpeechBalloonObjectFactory', function() {
       expect(codeBalloon.isDisplayedOnLeft()).toBe(false);
     });
   });
+
+  describe('isDisplayedOnRight', function() {
+    it('should correctly determine if a balloon on right is present', function() {
+      var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
+      expect(codeBalloon.isDisplayedOnRight()).toBe(true);
+
+      var feedbackBalloon = SpeechBalloonObjectFactory.createFeedbackBalloon([
+        FeedbackParagraphObjectFactory.fromDict({
+          type: 'text',
+          content: 'hello'
+        })
+        ]);
+      expect(feedbackBalloon.isDisplayedOnRight()).toBe(false);
+    });
+  });
 });
+

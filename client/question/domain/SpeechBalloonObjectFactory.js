@@ -67,6 +67,15 @@ tie.factory('SpeechBalloonObjectFactory', [
       return this._type === SPEECH_BALLOON_TYPE_FEEDBACK;
     };
 
+    /**
+     * Returns whether the code balloon is displayed on the right.
+     *
+     * @returns {boolean}
+     */
+    SpeechBalloon.prototype.isDisplayedOnRight = function() {
+      return this._type === SPEECH_BALLOON_TYPE_CODE;
+    };
+
     // Static class methods.
 
     /**
@@ -97,3 +106,4 @@ tie.factory('SpeechBalloonObjectFactory', [
     return SpeechBalloon;
   }
 ]);
+
