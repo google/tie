@@ -898,7 +898,7 @@ tie.directive('learnerView', [function() {
         $scope.changeTheme = function(newThemeName) {
           $scope.pulseAnimationEnabled = false;
           if (newThemeName === THEME_NAME_DARK) {
-            $scope.codeMirrorOptions.theme = 'material';
+            $scope.codeMirrorOptions.theme = 'mbo';
           } else {
             $scope.codeMirrorOptions.theme = 'default';
           }
