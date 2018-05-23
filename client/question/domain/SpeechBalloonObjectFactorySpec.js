@@ -68,7 +68,7 @@ describe('SpeechBalloonObjectFactory', function() {
   });
 
   describe('isCodeSubmission', function() {
-    it('should determine if code balloon is present on right', function() {
+    it('should determine if current balloon is code submission', function() {
       var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
       expect(codeBalloon.isCodeSubmission()).toBe(true);
 
