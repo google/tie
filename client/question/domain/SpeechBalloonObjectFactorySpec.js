@@ -68,7 +68,7 @@ describe('SpeechBalloonObjectFactory', function() {
   });
 
   describe('isDisplayedOnRight', function() {
-    it('should correctly determine if a balloon on right is present', function() {
+    it('should correctly determine if right balloon is present', function() {
       var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
       expect(codeBalloon.isDisplayedOnRight()).toBe(true);
 
@@ -77,7 +77,7 @@ describe('SpeechBalloonObjectFactory', function() {
           type: 'text',
           content: 'hello'
         })
-        ]);
+      ]);
       expect(feedbackBalloon.isDisplayedOnRight()).toBe(false);
     });
   });
