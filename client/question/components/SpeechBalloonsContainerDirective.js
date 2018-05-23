@@ -22,7 +22,7 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
-        <div class="tie-dot-container" ng-class="{'tie-display-dots': (ConversationLogDataService.data.speechBalloonList.length > 0 ? ConversationLogDataService.data.speechBalloonList[0].isDisplayedOnRight() : false)}"}>
+        <div class="tie-dot-container" ng-class="{'tie-display-dots': ConversationLogDataService.data.speechBalloonList.length > 0 && ConversationLogDataService.data.speechBalloonList[0].isCodeSubmission()}"}>
           <div class="tie-dot tie-dot-1"></div>
           <div class="tie-dot tie-dot-2"></div>
           <div class="tie-dot tie-dot-3"></div>

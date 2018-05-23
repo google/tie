@@ -67,10 +67,10 @@ describe('SpeechBalloonObjectFactory', function() {
     });
   });
 
-  describe('isDisplayedOnRight', function() {
-    it('should correctly determine if right balloon is present', function() {
+  describe('isCodeSubmission', function() {
+    it('should determine if code balloon is present on right', function() {
       var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
-      expect(codeBalloon.isDisplayedOnRight()).toBe(true);
+      expect(codeBalloon.isCodeSubmission()).toBe(true);
 
       var feedbackBalloon = SpeechBalloonObjectFactory.createFeedbackBalloon([
         FeedbackParagraphObjectFactory.fromDict({
@@ -78,7 +78,7 @@ describe('SpeechBalloonObjectFactory', function() {
           content: 'hello'
         })
       ]);
-      expect(feedbackBalloon.isDisplayedOnRight()).toBe(false);
+      expect(feedbackBalloon.isCodeSubmission()).toBe(false);
     });
   });
 });

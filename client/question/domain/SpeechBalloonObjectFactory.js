@@ -72,7 +72,7 @@ tie.factory('SpeechBalloonObjectFactory', [
      *
      * @returns {boolean}
      */
-    SpeechBalloon.prototype.isDisplayedOnRight = function() {
+    SpeechBalloon.prototype.isCodeSubmission = function() {
       return this._type === SPEECH_BALLOON_TYPE_CODE;
     };
 
