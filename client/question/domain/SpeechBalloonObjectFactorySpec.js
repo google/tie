@@ -66,4 +66,20 @@ describe('SpeechBalloonObjectFactory', function() {
       expect(codeBalloon.isDisplayedOnLeft()).toBe(false);
     });
   });
+
+  describe('isCodeSubmission', function() {
+    it('should determine if current balloon is code submission', function() {
+      var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
+      expect(codeBalloon.isCodeSubmission()).toBe(true);
+
+      var feedbackBalloon = SpeechBalloonObjectFactory.createFeedbackBalloon([
+        FeedbackParagraphObjectFactory.fromDict({
+          type: 'text',
+          content: 'hello'
+        })
+      ]);
+      expect(feedbackBalloon.isCodeSubmission()).toBe(false);
+    });
+  });
 });
+
