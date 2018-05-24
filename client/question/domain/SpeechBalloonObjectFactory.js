@@ -68,7 +68,7 @@ tie.factory('SpeechBalloonObjectFactory', [
     };
 
     /**
-     * Returns whether the code balloon is displayed on the right.
+     * Returns whether the current balloon is code submission.
      *
      * @returns {boolean}
      */
@@ -106,4 +106,3 @@ tie.factory('SpeechBalloonObjectFactory', [
     return SpeechBalloon;
   }
 ]);
-
