@@ -102,7 +102,7 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="ConversationLogDataService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -475,26 +475,24 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
-      'CurrentQuestionService',
+      'CurrentQuestionService', 'SessionHistoryService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
-      'ConversationLogDataService', 'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT',
-      'THEME_NAME_DARK',
+      'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
-          CurrentQuestionService,
+          CurrentQuestionService, SessionHistoryService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
-          ConversationLogDataService, DELAY_STYLE_CHANGES, THEME_NAME_LIGHT,
-          THEME_NAME_DARK) {
+          DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK) {
 
-        $scope.ConversationLogDataService = ConversationLogDataService;
+        $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         var KEY_CODE_ENTER = 13;
@@ -781,8 +779,7 @@ tie.directive('learnerView', [function() {
           var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
             questionId, language);
           if (loadedFeedbackParagraphs) {
-            ConversationLogDataService.addFeedbackBalloon(
-              loadedFeedbackParagraphs);
+            SessionHistoryService.addFeedbackBalloon(loadedFeedbackParagraphs);
           }
 
           EventHandlerService.init(
@@ -837,7 +834,7 @@ tie.directive('learnerView', [function() {
           LocalStorageService.storeLatestFeedback(
               questionId, congratulatoryFeedback.getParagraphs(), language);
 
-          ConversationLogDataService.addFeedbackBalloon(
+          SessionHistoryService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent();
         };
@@ -877,7 +874,7 @@ tie.directive('learnerView', [function() {
                 break;
               }
             }
-            ConversationLogDataService.addFeedbackBalloon(feedbackParagraphs);
+            SessionHistoryService.addFeedbackBalloon(feedbackParagraphs);
             LocalStorageService.storeLatestFeedback(
               questionId, feedbackParagraphs, language);
           }
@@ -1000,7 +997,7 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
 
-          ConversationLogDataService.clear();
+          SessionHistoryService.reset();
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
         };
@@ -1012,7 +1009,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.submitCode = function(code) {
           MonospaceDisplayModalService.hideModal();
-          ConversationLogDataService.addCodeBalloon(code);
+          SessionHistoryService.addCodeBalloon(code);
 
           // Gather all tasks from the first one up to the current one.
           var question = CurrentQuestionService.getCurrentQuestion();
@@ -1050,7 +1047,7 @@ tie.directive('learnerView', [function() {
          */
         $scope.resetFeedback = function() {
           var questionId = CurrentQuestionService.getCurrentQuestionId();
-          ConversationLogDataService.clear();
+          SessionHistoryService.clear();
           LocalStorageService.clearLocalStorageFeedback(questionId, language);
         };
 
@@ -1094,9 +1091,7 @@ tie.directive('learnerView', [function() {
                   language, $scope.editorContents.code,
                   tasks[currentTaskIndex].getId()));
               if (potentialFeedbackParagraphs !== null) {
-                // Note that, for simplicity, unprompted feedback is currently
-                // not persisted in local storage.
-                ConversationLogDataService.addFeedbackBalloon(
+                SessionHistoryService.addFeedbackBalloon(
                   potentialFeedbackParagraphs);
               }
             }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);

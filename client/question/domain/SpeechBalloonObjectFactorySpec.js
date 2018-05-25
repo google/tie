@@ -81,5 +81,76 @@ describe('SpeechBalloonObjectFactory', function() {
       expect(feedbackBalloon.isCodeSubmission()).toBe(false);
     });
   });
-});
 
+  describe('toDict', function() {
+    it('should convert a code balloon to a dict', function() {
+      var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('abc');
+      expect(codeBalloon.toDict()).toEqual({
+        type: 'code',
+        feedbackParagraphDicts: [{
+          type: 'code',
+          content: 'abc'
+        }]
+      });
+    });
+
+    it('should convert a feedback balloon to a dict', function() {
+      var feedbackBalloon = SpeechBalloonObjectFactory.createFeedbackBalloon([
+        FeedbackParagraphObjectFactory.fromDict({
+          type: 'text',
+          content: 'hello'
+        })
+      ]);
+      expect(feedbackBalloon.toDict()).toEqual({
+        type: 'feedback',
+        feedbackParagraphDicts: [{
+          type: 'text',
+          content: 'hello'
+        }]
+      });
+    });
+  });
+
+  describe('fromDict', function() {
+    it('should parse a dict representing a code balloon', function() {
+      var codeBalloonDict = {
+        type: 'code',
+        feedbackParagraphDicts: [{
+          type: 'code',
+          content: 'abc'
+        }]
+      };
+
+      var codeBalloon = SpeechBalloonObjectFactory.fromDict(codeBalloonDict);
+      expect(codeBalloon.isCodeSubmission()).toBe(true);
+      expect(codeBalloon.getFeedbackParagraphs().length).toBe(1);
+      expect(codeBalloon.getFeedbackParagraphs()[0].toDict()).toEqual({
+        type: 'code',
+        content: 'abc'
+      });
+
+      expect(codeBalloon.toDict()).toEqual(codeBalloonDict);
+    });
+
+    it('should parse a dict representing a feedback balloon', function() {
+      var feedbackBalloonDict = {
+        type: 'feedback',
+        feedbackParagraphDicts: [{
+          type: 'text',
+          content: 'hello'
+        }]
+      };
+
+      var feedbackBalloon = SpeechBalloonObjectFactory.fromDict(
+        feedbackBalloonDict);
+      expect(feedbackBalloon.isCodeSubmission()).toBe(false);
+      expect(feedbackBalloon.getFeedbackParagraphs().length).toBe(1);
+      expect(feedbackBalloon.getFeedbackParagraphs()[0].toDict()).toEqual({
+        type: 'text',
+        content: 'hello'
+      });
+
+      expect(feedbackBalloon.toDict()).toEqual(feedbackBalloonDict);
+    });
+  });
+});

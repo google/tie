@@ -25,6 +25,11 @@ tie.factory('SpeechBalloonObjectFactory', [
     // A balloon representing feedback given by TIE.
     var SPEECH_BALLOON_TYPE_FEEDBACK = 'feedback';
 
+    var ALLOWED_SPEECH_BALLOON_TYPES = [
+      SPEECH_BALLOON_TYPE_CODE,
+      SPEECH_BALLOON_TYPE_FEEDBACK
+    ];
+
     /**
      * Constructor for SpeechBalloon.
      *
@@ -76,6 +81,24 @@ tie.factory('SpeechBalloonObjectFactory', [
       return this._type === SPEECH_BALLOON_TYPE_CODE;
     };
 
+    /**
+     * Converts the current speech balloon to a raw JavaScript object.
+     *
+     * @returns {object} A JavaScript object representing the speech balloon.
+     */
+    SpeechBalloon.prototype.toDict = function() {
+      return {
+        type: (
+          this.isCodeSubmission() ?
+          SPEECH_BALLOON_TYPE_CODE : SPEECH_BALLOON_TYPE_FEEDBACK),
+        feedbackParagraphDicts: this.getFeedbackParagraphs().map(
+          function(feedbackParagraph) {
+            return feedbackParagraph.toDict();
+          }
+        )
+      };
+    };
+
     // Static class methods.
 
     /**
@@ -101,6 +124,29 @@ tie.factory('SpeechBalloonObjectFactory', [
       var codeParagraphs = [FeedbackParagraphObjectFactory.createCodeParagraph(
         submittedCode)];
       return new SpeechBalloon(SPEECH_BALLOON_TYPE_CODE, codeParagraphs);
+    };
+
+    /**
+     * Creates a SpeechBalloon object from a JavaScript object.
+     *
+     * @param {Object} speechBalloonDict. A JavaScript object representing a
+     *   speech balloon.
+     * @returns {SpeechBalloon}
+     */
+    SpeechBalloon.fromDict = function(speechBalloonDict) {
+      if (ALLOWED_SPEECH_BALLOON_TYPES.indexOf(speechBalloonDict.type) === -1) {
+        throw Error('Invalid speech balloon type: ' + speechBalloonDict.type);
+      }
+
+      return new SpeechBalloon(
+        speechBalloonDict.type,
+        speechBalloonDict.feedbackParagraphDicts.map(
+          function(feedbackParagraphDict) {
+            return FeedbackParagraphObjectFactory.fromDict(
+              feedbackParagraphDict);
+          }
+        )
+      );
     };
 
     return SpeechBalloon;
