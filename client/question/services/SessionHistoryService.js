@@ -11,45 +11,57 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 /**
- * @fileoverview A service that stores and maintains the data used to populate
- * the conversation log in the TIE UI.
+ * @fileoverview A service that maintains a local session transcript of TIE's
+ * code submission and feedback history, used to populate the conversation log
+ * in the TIE UI.
  */
 
-tie.factory('ConversationLogDataService', [
+tie.factory('SessionHistoryService', [
   '$timeout', 'SpeechBalloonObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
   function(
       $timeout, SpeechBalloonObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
     var data = {
-      speechBalloonList: [],
+      // A list of SpeechBalloon objects, from newest to oldest.
+      sessionTranscript: [],
+      // The number of pending speech balloons to add to the transcript.
       numBalloonsPending: 0
     };
 
     return {
+      /**
+       * Returns a bindable reference to the session transcript.
+       */
+      getBindableSessionTranscript: function() {
+        return data.sessionTranscript;
+      },
+      /**
+       * Adds a new code balloon to the beginning of the list.
+       */
+      addCodeBalloon: function(submittedCode) {
+        data.sessionTranscript.unshift(
+          SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
+      },
       /**
        * Adds a new feedback balloon to the beginning of the list.
        */
       addFeedbackBalloon: function(feedbackParagraphs) {
         data.numBalloonsPending++;
         $timeout(function() {
-          data.speechBalloonList.unshift(
-              SpeechBalloonObjectFactory.createFeedbackBalloon(
-                  feedbackParagraphs));
+          data.sessionTranscript.unshift(
+            SpeechBalloonObjectFactory.createFeedbackBalloon(
+              feedbackParagraphs));
           data.numBalloonsPending--;
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
       },
       /**
-       * Adds a new code balloon to the beginning of the list.
+       * Resets the session transcript.
        */
-      addCodeBalloon: function(submittedCode) {
-        data.speechBalloonList.unshift(
-            SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
-      },
-      /**
-       * Clears the feedback log.
-       */
-      clear: function() {
-        data.speechBalloonList = [];
+      reset: function() {
+        // Setting the length of the existing array to 0 allows us to preserve
+        // the binding to data.sessionTranscript.
+        data.sessionTranscript.length = 0;
         data.numBalloonsPending = 0;
       },
       /**
@@ -57,12 +69,6 @@ tie.factory('ConversationLogDataService', [
        */
       isNewBalloonPending: function() {
         return data.numBalloonsPending > 0;
-      },
-      /**
-       * Returns a bindable reference to the list of speech balloons.
-       */
-      getSpeechBalloonList: function() {
-        return data.speechBalloonList;
       },
       data: data
     };

@@ -20,10 +20,10 @@
 describe('LearnerViewDirective', function() {
   var $scope;
   var element;
-  var ConversationLogDataService;
   var EventHandlerService;
   var FeedbackObjectFactory;
   var QuestionObjectFactory;
+  var SessionHistoryService;
   var FEEDBACK_CATEGORIES;
   var $location;
 
@@ -56,7 +56,7 @@ describe('LearnerViewDirective', function() {
       $compile, $rootScope, $injector, _SECONDS_TO_MILLISECONDS_,
       _CODE_CHANGE_DEBOUNCE_SECONDS_, _$location_, _EventHandlerService_,
       _FeedbackObjectFactory_, _QuestionObjectFactory_,
-      _ConversationLogDataService_) {
+      _SessionHistoryService_) {
     $scope = $rootScope.$new();
 
     // The reason why we have to go through this trouble to get $scope
@@ -72,7 +72,7 @@ describe('LearnerViewDirective', function() {
     EventHandlerService = _EventHandlerService_;
     FeedbackObjectFactory = _FeedbackObjectFactory_;
     QuestionObjectFactory = _QuestionObjectFactory_;
-    ConversationLogDataService = _ConversationLogDataService_;
+    SessionHistoryService = _SessionHistoryService_;
 
     // Set up spies to instrument EventHandlerService.
     spyOn(EventHandlerService, 'createQuestionStartEvent');
@@ -207,15 +207,16 @@ describe('LearnerViewDirective', function() {
     };
 
     it('should add unprompted feedback to the feedback log', function() {
-      expect(ConversationLogDataService.getSpeechBalloonList().length).toBe(0);
+      var sessionTranscript = (
+        SessionHistoryService.getBindableSessionTranscript());
+      expect(sessionTranscript.length).toBe(0);
       expect($scope.codeChangeLoopPromise).toBe(null);
+
       $scope.onCodeChange();
       $scope.editorContents.code = 'new code';
       flushIntervalAndTimeout(CODE_CHANGE_DEBOUNCE_MILLISECONDS);
-      var speechBubblesList = (
-        ConversationLogDataService.getSpeechBalloonList());
-      expect(speechBubblesList.length).toBe(1);
-      expect(speechBubblesList[0].getFeedbackParagraphs()[0].getContent()).toBe(
+      expect(sessionTranscript.length).toBe(1);
+      expect(sessionTranscript[0].getFeedbackParagraphs()[0].getContent()).toBe(
         '[some unprompted feedback]');
     });
   });
