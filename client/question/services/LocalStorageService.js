@@ -11,43 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 /**
- * @fileoverview A service that saves student code, feedback, and progress
- *    to the browser's localStorage.
+ * @fileoverview A service that wraps the browser's localStorage object. Note
+ * that localStorage namespacing should be handled by
+ * LocalStorageKeyManagerService instead.
+ *
+ * All values that TIE stores in localStorage are encoded as JSON strings.
  */
 
 tie.factory('LocalStorageService', [
-  'FeedbackParagraphObjectFactory', function(FeedbackParagraphObjectFactory) {
-    // In some browsers, localStorage is not available and its
-    // invocation throws an error.
+  'ServerHandlerService', function(ServerHandlerService) {
     var localStorageIsAvailable = false;
-    try {
-      localStorageIsAvailable = Boolean(localStorage);
-    } catch (e) {
-      localStorageIsAvailable = false;
+    // We only use localStorage in the standalone version of the application.
+    if (!ServerHandlerService.doesServerExist()) {
+      // In some browsers, localStorage is not available and its invocation
+      // throws an error.
+      try {
+        localStorageIsAvailable = Boolean(localStorage);
+      } catch (e) {
+        localStorageIsAvailable = false;
+      }
     }
-
-    /**
-     * Returns the local storage key for a given question.
-     *
-     * @param {string} questionId
-     * @param {string} language
-     * @returns {string}
-     */
-    var getLocalStorageKeyForCode = function(questionId, language) {
-      return questionId + ":" + language + ":code";
-    };
-
-    /**
-     * Returns the local storage key for the feedback.
-     *
-     * @param {string} questionId
-     * @param {string} language
-     * @returns {string}
-     */
-    var getLocalStorageKeyForFeedback = function(questionId, language) {
-      return questionId + ":" + language + ":feedbackv1";
-    };
 
     return {
       /**
@@ -60,129 +45,47 @@ tie.factory('LocalStorageService', [
       },
 
       /**
-       * Stores the code into local storage - so long as local storage is
-       * available.
+       * Deletes an item in local storage.
        *
-       * @param {string} questionId
-       * @param {string} code
-       * @param {string} language
-       */
-      storeCode: function(questionId, code, language) {
-        if (!localStorageIsAvailable) {
-          return;
-        }
-
-        /**
-         * TODO(talee): If we start updating the question, then we need to add a
-         * a way to track which version the question is on, and to check if the
-         * code that was saved was for a previous version, and if so, to let
-         * the user know the question has changed.
-         */
-        var codeWithVersion = "1:" + code;
-
-        var localStorageKey = getLocalStorageKeyForCode(
-          questionId, language);
-        localStorage.setItem(localStorageKey, codeWithVersion);
-      },
-
-      /**
-       * Loads the code from local storage if local storage is available.
-       * If local storage is not available, then it returns null.
+       * @param {string} localStorageKey
        *
-       * @param {string} questionId
-       * @param {string} language
-       * @returns {string|null}
+       * @returns {*} The data corresponding to the key, or null if the item
+       *   does not exist in local storage.
        */
-      loadStoredCode: function(questionId, language) {
+      get: function(localStorageKey) {
         if (!localStorageIsAvailable) {
           return null;
         }
 
-        var localStorageKey = getLocalStorageKeyForCode(
-          questionId, language);
-        var storedCodeWithVersion = localStorage.getItem(localStorageKey);
-
-        if (storedCodeWithVersion === null) {
-          return null;
-        }
-        // TODO(talee): Check version when we start having different ones.
-        var storedCode = storedCodeWithVersion.substring(
-          storedCodeWithVersion.indexOf(':') + 1);
-
-        return storedCode;
+        return angular.fromJson(localStorage.getItem(localStorageKey));
       },
 
       /**
-       * Clears the local storage such that there is no longer any code
-       * stored there.
+       * Saves an item to local storage.
        *
-       * @param {string} questionId
-       * @param {string} language
+       * @param {string} localStorageKey
+       * @param {*} value The value to associate with the key. This value can
+       *   be any standard JavaScript construct that is losslessly
+       *   JSON-serializable.
        */
-      clearLocalStorageCode: function(questionId, language) {
+      put: function(localStorageKey, value) {
         if (!localStorageIsAvailable) {
           return;
         }
 
-        var localStorageKey = getLocalStorageKeyForCode(questionId, language);
-        localStorage.removeItem(localStorageKey);
+        localStorage.setItem(localStorageKey, angular.toJson(value));
       },
 
       /**
-       * Takes the feedback paragraphs, converts them to dicts, and then parses
-       * the combined object into JSON for storage.
+       * Deletes an item in local storage.
        *
-       * @param {string} questionId
-       * @param {Array} feedback
-       * @param {string} language
+       * @param {string} localStorageKey
        */
-      storeLatestFeedback: function(questionId, feedback, language) {
+      delete: function(localStorageKey) {
         if (!localStorageIsAvailable) {
           return;
         }
 
-        var localStorageKey = getLocalStorageKeyForFeedback(
-          questionId, language);
-        var feedbackParagraphs = feedback.map(function(paragraph) {
-          return paragraph.toDict();
-        });
-
-        localStorage.setItem(
-          localStorageKey, angular.toJson(feedbackParagraphs));
-      },
-
-      /**
-       * Loads the feedback and parses it into JSON, and then reconstructs
-       * the feedback paragraphs from the JSON object.
-       *
-       * @param {string} questionId
-       * @param {string} language
-       * @returns {Object}
-       */
-      loadLatestFeedback: function(questionId, language) {
-        if (!localStorageIsAvailable) {
-          return null;
-        }
-
-        var localStorageKey = getLocalStorageKeyForFeedback(
-          questionId, language);
-        var storedFeedback = localStorage.getItem(localStorageKey);
-        if (storedFeedback === null) {
-          return null;
-        }
-
-        var rawFeedback = angular.fromJson(storedFeedback);
-        return rawFeedback.map(function(paragraph) {
-          return FeedbackParagraphObjectFactory.fromDict(paragraph);
-        });
-      },
-
-      clearLocalStorageFeedback: function(questionId, language) {
-        if (!localStorageIsAvailable) {
-          return;
-        }
-        var localStorageKey = getLocalStorageKeyForFeedback(
-          questionId, language);
         localStorage.removeItem(localStorageKey);
       }
     };

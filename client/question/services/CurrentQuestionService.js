@@ -26,6 +26,7 @@ tie.factory('CurrentQuestionService', [
     // TODO(eyurko): Return correct question version, once implemented.
     var questionVersion = 1;
     var cachedQuestion = null;
+    var serviceIsInitialized = false;
 
     return {
       init: function(successCallback) {
@@ -36,14 +37,19 @@ tie.factory('CurrentQuestionService', [
         questionPromise.then(function(question) {
           if (question) {
             cachedQuestion = question;
+            serviceIsInitialized = true;
             successCallback();
           } else {
             // If the question ID in the URL is invalid, revert to using the
             // default question ID.
             questionId = DEFAULT_QUESTION_ID;
+            serviceIsInitialized = true;
             that.init(successCallback);
           }
         });
+      },
+      isInitialized: function() {
+        return serviceIsInitialized;
       },
       getCurrentQuestionId: function() {
         return questionId;
