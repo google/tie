@@ -29,11 +29,11 @@ describe('CurrentQuestionService', function() {
   }));
 
   describe('initialization status', function() {
-    it('should correctly verify initialization status', function(done) {
-      beforeEach(inject(function($injector) {
-        CurrentQuestionService = $injector.get('CurrentQuestionService');
-      }));
+    beforeEach(inject(function($injector) {
+      CurrentQuestionService = $injector.get('CurrentQuestionService');
+    }));
 
+    it('should correctly verify initialization status', function(done) {
       expect(CurrentQuestionService.isInitialized()).toBe(false);
 
       CurrentQuestionService.init(function() {
