@@ -19,9 +19,13 @@
  */
 
 tie.factory('SessionHistoryService', [
-  '$timeout', 'SpeechBalloonObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+  '$timeout', 'CurrentQuestionService', 'LocalStorageService',
+  'LocalStorageKeyManagerService', 'SpeechBalloonObjectFactory',
+  'DURATION_MSEC_WAIT_FOR_FEEDBACK',
   function(
-      $timeout, SpeechBalloonObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
+      $timeout, CurrentQuestionService, LocalStorageService,
+      LocalStorageKeyManagerService, SpeechBalloonObjectFactory,
+      DURATION_MSEC_WAIT_FOR_FEEDBACK) {
     var data = {
       // A list of SpeechBalloon objects, from newest to oldest.
       sessionTranscript: [],
@@ -29,7 +33,38 @@ tie.factory('SessionHistoryService', [
       numBalloonsPending: 0
     };
 
+    var localStorageKey = null;
+
     return {
+      /**
+       * Clears the session history data, and loads it from local storage (if
+       * applicable).
+       */
+      init: function() {
+        if (!CurrentQuestionService.isInitialized()) {
+          throw Error(
+            'CurrentQuestionService must be initialized before ' +
+            'SessionHistoryService');
+        }
+
+        data.sessionTranscript.length = 0;
+        data.numBalloonsPending = 0;
+
+        var questionId = CurrentQuestionService.getCurrentQuestionId();
+        localStorageKey = (
+          LocalStorageKeyManagerService.getSessionHistoryKey(questionId));
+
+        var potentialSessionTranscript = LocalStorageService.get(
+          localStorageKey);
+        if (potentialSessionTranscript !== null) {
+          // Add items manually, in order to preserve the binding on
+          // data.sessionTranscript.
+          potentialSessionTranscript.forEach(function(speechBalloonDict) {
+            data.sessionTranscript.push(
+              SpeechBalloonObjectFactory.fromDict(speechBalloonDict));
+          });
+        }
+      },
       /**
        * Returns a bindable reference to the session transcript.
        */
@@ -42,6 +77,12 @@ tie.factory('SessionHistoryService', [
       addCodeBalloon: function(submittedCode) {
         data.sessionTranscript.unshift(
           SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
+        LocalStorageService.put(
+          localStorageKey,
+          data.sessionTranscript.map(function(speechBalloon) {
+            return speechBalloon.toDict();
+          })
+        );
       },
       /**
        * Adds a new feedback balloon to the beginning of the list.
@@ -53,16 +94,24 @@ tie.factory('SessionHistoryService', [
             SpeechBalloonObjectFactory.createFeedbackBalloon(
               feedbackParagraphs));
           data.numBalloonsPending--;
+
+          LocalStorageService.put(
+            localStorageKey,
+            data.sessionTranscript.map(function(speechBalloon) {
+              return speechBalloon.toDict();
+            })
+          );
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
       },
       /**
-       * Resets the session transcript.
+       * Resets the session transcript and clears it from local storage.
        */
       reset: function() {
         // Setting the length of the existing array to 0 allows us to preserve
         // the binding to data.sessionTranscript.
         data.sessionTranscript.length = 0;
         data.numBalloonsPending = 0;
+        LocalStorageService.delete(localStorageKey);
       },
       /**
        * Returns whether a new balloon is pending.

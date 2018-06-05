@@ -475,7 +475,7 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
-      'CurrentQuestionService', 'SessionHistoryService',
+      'CurrentQuestionService', 'SessionHistoryService', 'AutosaveService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
@@ -486,7 +486,7 @@ tie.directive('learnerView', [function() {
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
-          CurrentQuestionService, SessionHistoryService,
+          CurrentQuestionService, SessionHistoryService, AutosaveService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
@@ -754,6 +754,8 @@ tie.directive('learnerView', [function() {
          * instructions, stored code, starter code and feedback.
          */
         var initLearnerViewDirective = function() {
+          SessionHistoryService.init();
+
           // The pulseAnimationEnabled var is set to false to prevent balloon
           // pulse animation when switching from light to dark mode and
           // vise versa. This is set to false in resetCode.
@@ -773,14 +775,10 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions = [];
 
           UnpromptedFeedbackManagerService.reset(tasks);
-          cachedCode = LocalStorageService.loadStoredCode(questionId, language);
+
+          cachedCode = AutosaveService.getLastSavedCode(language);
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
-            questionId, language);
-          if (loadedFeedbackParagraphs) {
-            SessionHistoryService.addFeedbackBalloon(loadedFeedbackParagraphs);
-          }
 
           EventHandlerService.init(
             SessionIdService.getSessionId(), questionId,
@@ -830,10 +828,6 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          LocalStorageService.storeLatestFeedback(
-              questionId, congratulatoryFeedback.getParagraphs(), language);
-
           SessionHistoryService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent();
@@ -848,7 +842,6 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           var question = CurrentQuestionService.getCurrentQuestion();
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
           var tasks = question.getTasks();
           EventHandlerService.createCodeSubmitEvent(
             tasks[currentTaskIndex].getId(),
@@ -875,8 +868,6 @@ tie.directive('learnerView', [function() {
               }
             }
             SessionHistoryService.addFeedbackBalloon(feedbackParagraphs);
-            LocalStorageService.storeLatestFeedback(
-              questionId, feedbackParagraphs, language);
           }
 
           // Skulpt processing happens outside an Angular context, so
@@ -1013,7 +1004,6 @@ tie.directive('learnerView', [function() {
 
           // Gather all tasks from the first one up to the current one.
           var question = CurrentQuestionService.getCurrentQuestion();
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
           var tasks = question.getTasks();
           var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
           SolutionHandlerService.processSolutionAsync(
@@ -1023,21 +1013,18 @@ tie.directive('learnerView', [function() {
             $scope.setFeedback(feedback, code);
           });
 
-          storeCodeAndUpdateCachedCode(questionId, code, language);
+          $scope.autosaveCode();
         };
 
         /**
-         * Clears the cached code stored in local storage and resets the
-         * question to its original state.
+         * Clears the cached code and the code stored in local storage.
          */
         $scope.resetCode = function() {
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
           var question = CurrentQuestionService.getCurrentQuestion();
-
-          storeCodeAndUpdateCachedCode(
-            questionId, question.getStarterCode(language), language);
-          LocalStorageService.clearLocalStorageFeedback(questionId, language);
+          $scope.editorContents.code = question.getStarterCode(language);
           EventHandlerService.createCodeResetEvent();
+          $scope.autosaveCode();
+
           initLearnerViewDirective();
         };
 
@@ -1046,9 +1033,7 @@ tie.directive('learnerView', [function() {
          * from local storage for the current question.
          */
         $scope.resetFeedback = function() {
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          SessionHistoryService.clear();
-          LocalStorageService.clearLocalStorageFeedback(questionId, language);
+          SessionHistoryService.reset();
         };
 
         /**
@@ -1102,25 +1087,12 @@ tie.directive('learnerView', [function() {
          * Saves the user's code to the browser's local storage.
          */
         $scope.autosaveCode = function() {
-          if (!LocalStorageService.isAvailable()) {
-            return;
-          }
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          storeCodeAndUpdateCachedCode(
-            questionId, $scope.editorContents.code, language);
-          triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
-        };
+          cachedCode = $scope.editorContents.code;
 
-        /**
-         * Stores the user's code to local storage and the cachedCode variable.
-         *
-         * @param {string} questionId
-         * @param {string} code
-         * @param {string} lang
-         */
-        var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
-          LocalStorageService.storeCode(questionId, code, lang);
-          cachedCode = code;
+          if (LocalStorageService.isAvailable()) {
+            AutosaveService.saveCode(language, $scope.editorContents.code);
+            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+          }
         };
 
         $scope.autosaveTextIsDisplayed = false;
