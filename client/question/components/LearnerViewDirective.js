@@ -480,6 +480,7 @@ tie.directive('learnerView', [function() {
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
+      'CODE_RESET_CONFIRMATION_MESSAGE',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -490,7 +491,8 @@ tie.directive('learnerView', [function() {
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
-          DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK) {
+          DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
+          CODE_RESET_CONFIRMATION_MESSAGE) {
 
         $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
@@ -1020,11 +1022,17 @@ tie.directive('learnerView', [function() {
          * Clears the cached code and the code stored in local storage.
          */
         $scope.resetCode = function() {
+          if (currentTaskIndex > 0 &&
+              !window.confirm(CODE_RESET_CONFIRMATION_MESSAGE)) {
+            return;
+          }
+
           var question = CurrentQuestionService.getCurrentQuestion();
           $scope.editorContents.code = question.getStarterCode(language);
           EventHandlerService.createCodeResetEvent();
           $scope.autosaveCode();
 
+          // Resetting code starts a brand-new question session.
           initLearnerViewDirective();
         };
 
