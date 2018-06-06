@@ -810,3 +810,15 @@ tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
  */
 var DELAY_STYLE_CHANGES = 20;
 tie.constant('DELAY_STYLE_CHANGES', DELAY_STYLE_CHANGES);
+
+/**
+ * Message to show when resetting code would also reset the learner's task
+ * progress.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('CODE_RESET_CONFIRMATION_MESSAGE', [
+  'Are you sure you want to reset your code? This will clear all of your ',
+  'existing progress on the question.'
+].join(''));
