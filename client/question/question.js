@@ -251,6 +251,7 @@ tie.constant('SYSTEM_CODE', {
     '        global most_recent_input',
     '        most_recent_input = copy.deepcopy(input)',
     '        output = func(input)',
+    '        print separator',
     '        return output',
     '',
     '    @classmethod',
@@ -723,6 +724,14 @@ tie.constant('SECONDS_TO_MILLISECONDS', 1000);
  */
 tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 
+/** Default user stdOut separator length.
+*
+* @type {number}
+* @constant
+*/
+// eslint-disable-next-line no-magic-numbers
+tie.constant('SEPARATOR_LENGTH', 20);
+
 /**
  * Default time in seconds between calls to SendEventBatch.
  *
@@ -810,15 +819,3 @@ tie.constant('FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
  */
 var DELAY_STYLE_CHANGES = 20;
 tie.constant('DELAY_STYLE_CHANGES', DELAY_STYLE_CHANGES);
-
-/**
- * Message to show when resetting code would also reset the learner's task
- * progress.
- *
- * @type {string}
- * @constant
- */
-tie.constant('CODE_RESET_CONFIRMATION_MESSAGE', [
-  'Are you sure you want to reset your code? This will clear all of your ',
-  'existing progress on the question.'
-].join(''));

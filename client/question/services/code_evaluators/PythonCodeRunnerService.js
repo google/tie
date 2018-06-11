@@ -18,12 +18,14 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'ServerHandlerService', 'EventHandlerService', 'VARNAME_OBSERVED_OUTPUTS',
+  'ServerHandlerService', 'EventHandlerService', 'CurrentQuestionService',
+  'StdOutSeparatorService', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      ServerHandlerService, EventHandlerService, VARNAME_OBSERVED_OUTPUTS,
+      ServerHandlerService, EventHandlerService, CurrentQuestionService,
+      StdOutSeparatorService, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
     /** @type {number} @const */
@@ -89,9 +91,19 @@ tie.factory('PythonCodeRunnerService', [
         }
 
         // The run was successful.
-        return CodeEvalResultObjectFactory.create(
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
           code, outputLines.join('\n'), observedOutputs,
           buggyOutputTestResults, performanceTestResults, null, null);
+        var question = CurrentQuestionService.getCurrentQuestion();
+        if(!question) {
+          return codeEvalResult;
+        }
+        var tasks = question.getTasks();
+        var testToDisplay = codeEvalResult.getIndexOfFirstFailedTest(tasks);
+        outputLines = StdOutSeparatorService.getTestCaseOutputInClient(
+          outputLines, testToDisplay);
+
+        return codeEvalResult;
       }, function(skulptError) {
         var errorInput = null;
         if (Sk.globals.hasOwnProperty(VARNAME_MOST_RECENT_INPUT)) {
@@ -166,12 +178,22 @@ tie.factory('PythonCodeRunnerService', [
             code, '', [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT]);
       } else if (responseData.results) {
-        return CodeEvalResultObjectFactory.create(
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
             code, responseData.stdout,
             responseData.results[VARNAME_OBSERVED_OUTPUTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
             null, null);
+        var question = CurrentQuestionService.getCurrentQuestion();
+        if (!question) {
+          return CodeEvalResult;
+        }
+        var tasks = question.getTasks();
+        var testToDisplay = codeEvalResult.getIndexOfFirstFailedTask(tasks);
+        var stdOutToDisplay = StdOutSeparatorService.getTestCaseOutput(
+          responseData.stdout, testToDisplay);
+          
+        return codeEvalResult;
       } else {
         throw Error('A server error occurred. Please try again.');
       }
