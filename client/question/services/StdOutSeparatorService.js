@@ -36,15 +36,6 @@ tie.factory('StdOutSeparatorService', [
       },
 
       /**
-      * Getter method for the separator.
-      *
-      * @returns {string}
-      */
-      getSeparator: function() {
-        return separator;
-      },
-
-      /**
       * Returns the corresponding stdOut for the given test case number for
       * client version.
       *

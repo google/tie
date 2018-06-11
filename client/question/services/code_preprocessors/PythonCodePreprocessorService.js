@@ -314,6 +314,28 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     /**
+    * Creates and sets the string separator for user print stdOut.
+    *
+    * @returns {string}
+    * @private
+    */
+    var _generateStringSeparator = function() {
+      var chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
+      var separator = '';
+      for (var i = 0; i < SEPARATOR_LENGTH; i++) {
+        var index = Math.floor(Math.random() * chars.length);
+        separator += chars.charAt(index);
+      }
+      StdOutSeparatorService.setSeparator(separator);
+
+      var separatorCode = [
+        'separator = "' + separator + '"',
+        ''
+      ].join('\n');
+      return separatorCode;
+    }
+
+    /**
      * Creates and returns the code necessary to run all correctness tests.
      *
      * @param {Array} allTasksTestSuites
@@ -619,6 +641,7 @@ tie.factory('PythonCodePreprocessorService', [
         // Append everything else.
         codeSubmission.append([
           auxiliaryCode,
+          this._generateStringSeparator(),
           this._generateCorrectnessTestCode(
             allTasksTestSuites, allTasksInputFunctionNames,
             allTasksMainFunctionNames, allTasksOutputFunctionNames),
@@ -641,6 +664,7 @@ tie.factory('PythonCodePreprocessorService', [
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
       _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
+      _generateStringSeparator: _generateStringSeparator,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,
