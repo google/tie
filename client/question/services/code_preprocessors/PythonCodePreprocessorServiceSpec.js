@@ -22,6 +22,7 @@ describe('PythonCodePreprocessorService', function() {
   var BuggyOutputTestObjectFactory;
   var TestSuiteObjectFactory;
   var PerformanceTestObjectFactory;
+  var SEPARATOR_LENGTH;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -33,6 +34,7 @@ describe('PythonCodePreprocessorService', function() {
     TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
+    SEPARATOR_LENGTH = $injector.get('SEPARATOR_LENGTH');
   }));
 
   describe('_prepareCodeSubmissionForServerExecution', function() {
@@ -586,6 +588,20 @@ describe('PythonCodePreprocessorService', function() {
         PythonCodePreprocessorService._checkMatchedFunctionForWhitespace(
             code, whitespaceCheckLocation)
       ).toBe(true);
+    });
+  });
+
+  describe('_generateStringSeparator', function() {
+    it('should add string separator to skeleton code', function() {
+      expect(
+        PythonCodePreprocessorService._generateStringSeparator()
+      ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
+    });
+
+    it('should be different across multiple calls', function() {
+      var first = PythonCodePreprocessorService._generateStringSeparator();
+      var second = PythonCodePreprocessorService._generateStringSeparator();
+      expect(first).not.toEqual(second);
     });
   });
 

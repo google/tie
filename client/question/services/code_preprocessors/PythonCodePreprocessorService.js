@@ -333,7 +333,7 @@ tie.factory('PythonCodePreprocessorService', [
         ''
       ].join('\n');
       return separatorCode;
-    }
+    };
 
     /**
      * Creates and returns the code necessary to run all correctness tests.

@@ -190,37 +190,37 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
   /**
-     * Compares the results to the expected values of the test cases, and returns
-     * the test number of the first failed test case. The test number is
-     * independent of tasks and testSuites but rather the overall test case
-     * number.
+     * Compares the results to the expected values of the test cases, and
+     * returns the test number of the first failed test case (0-indexed). The
+     * test number is independent of tasks and testSuites but rather the overall
+     * test case number.
      *
      * @param {Array<Task>} tasks The list of tasks for the current question.
      * @returns {number} The index of the first failed test case, or index of
      * last test case if all test cases passed.
      */
-     CodeEvalResult.prototype.getIndexOfFirstFailedTest = function(tasks) {
-       if (this._observedOutputs === 0) {
-         return 0;
-       }
+    CodeEvalResult.prototype.getIndexOfFirstFailedTest = function(tasks) {
+      if (this._observedOutputs.length === 0) {
+        return 0;
+      }
 
-       var userOutput = this._observedOutputs;
-       var testNum = 0;
-       for (var i = 0; i < userOutput.length; i++) {
-         var testSuites = tasks[i].getTestSuites();
-         for (var j = 0; j < userOutput[i].length; j++) {
-           var testCases = testSuites[j].getTestCases();
-           for (var k = 0; k < userOutput[i][j].length; k++) {
-             if (!testCases[k].matchesOutput(this._observedOutputs[i][j][k])) {
-               return testNum;
-             }
-             testNum += 1;
-           }
-         }
-       }
-       // Returns the number of last test case if all passed.
-       return testNum - 1;
-     };
+      var userOutput = this._observedOutputs;
+      var testNum = 0;
+      for (var i = 0; i < userOutput.length; i++) {
+        var testSuites = tasks[i].getTestSuites();
+        for (var j = 0; j < userOutput[i].length; j++) {
+          var testCases = testSuites[j].getTestCases();
+          for (var k = 0; k < userOutput[i][j].length; k++) {
+            if (!testCases[k].matchesOutput(this._observedOutputs[i][j][k])) {
+              return testNum;
+            }
+            testNum += 1;
+          }
+        }
+      }
+     // Returns the number of last test case if all passed.
+      return testNum - 1;
+    };
 
     /**
      * Returns the observed outputs for the last task that is run. The function

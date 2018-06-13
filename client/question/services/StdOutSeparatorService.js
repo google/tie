@@ -36,12 +36,21 @@ tie.factory('StdOutSeparatorService', [
       },
 
       /**
+      * Getter method for the separator.
+      *
+      * @return {string} .
+      */
+      getSeparator: function() {
+        return separator;
+      },
+
+      /**
       * Returns the corresponding stdOut for the given test case number for
       * client version.
       *
       * @param {Array} stdOut Array of entire stdOut for all test cases.
       * @param {number} testNum Test case number of desired stdOut.
-      * @returns {string}
+      * @returns {Array}
       */
       getTestCaseOutputInClient: function(stdOut, testNum) {
         if (stdOut.length < 1 || stdOut[0] === separator) {
@@ -81,7 +90,7 @@ tie.factory('StdOutSeparatorService', [
        * Returns the corresponding stdOut for given test case number for
        * server version.
        *
-       * @param {Array} stdOut Array of entire stdOut for all test cases.
+       * @param {string} stdOut String of entire stdOut for all test cases.
        * @param {number} testNum Test case number of desired stdOut.
        * @returns {string}
        */

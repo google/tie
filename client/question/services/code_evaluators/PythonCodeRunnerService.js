@@ -95,7 +95,7 @@ tie.factory('PythonCodeRunnerService', [
           code, outputLines.join('\n'), observedOutputs,
           buggyOutputTestResults, performanceTestResults, null, null);
         var question = CurrentQuestionService.getCurrentQuestion();
-        if(!question) {
+        if (!question) {
           return codeEvalResult;
         }
         var tasks = question.getTasks();
@@ -186,13 +186,14 @@ tie.factory('PythonCodeRunnerService', [
             null, null);
         var question = CurrentQuestionService.getCurrentQuestion();
         if (!question) {
-          return CodeEvalResult;
+          return codeEvalResult;
         }
         var tasks = question.getTasks();
         var testToDisplay = codeEvalResult.getIndexOfFirstFailedTask(tasks);
+        // eslint-disable-next-line no-unused-vars
         var stdOutToDisplay = StdOutSeparatorService.getTestCaseOutput(
           responseData.stdout, testToDisplay);
-          
+
         return codeEvalResult;
       } else {
         throw Error('A server error occurred. Please try again.');
