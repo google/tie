@@ -265,9 +265,10 @@ describe('SolutionHandlerService', function() {
               auxiliaryCode, 'python'
             ).then(function(feedback2) {
               expect(feedback2.isAnswerCorrect()).toEqual(false);
-              // The code has not changed, so the message stays the same.
-              expect(feedback2.getParagraphs()[0].getContent()).toEqual(
-                'Mock BuggyOutputTest Message One for task1');
+              expect(feedback2.getParagraphs()[0].getContent()).toEqual([
+                "It looks like you haven't changed your code. Try addressing ",
+                "the error before you run again."
+              ].join(''));
 
               SolutionHandlerService.processSolutionAsync(
                 orderedTasks, starterCode, studentCode2,
@@ -276,8 +277,18 @@ describe('SolutionHandlerService', function() {
                 expect(feedback3.isAnswerCorrect()).toEqual(false);
                 // The code has changed, so the message changes.
                 expect(feedback3.getParagraphs()[0].getContent()).toEqual(
-                  'Mock BuggyOutputTest Message Two for task1');
-                done();
+                   'Mock BuggyOutputTest Message One for task1');
+
+                SolutionHandlerService.processSolutionAsync(
+                  orderedTasks, starterCode, studentCode1,
+                  auxiliaryCode, 'python'
+                ).then(function(feedback4) {
+                  expect(feedback4.isAnswerCorrect()).toEqual(false);
+                  // The code has changed, so the message changes.
+                  expect(feedback4.getParagraphs()[0].getContent()).toEqual(
+                     'Mock BuggyOutputTest Message Two for task1');
+                  done();
+                });
               });
             });
           });
