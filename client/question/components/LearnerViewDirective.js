@@ -89,15 +89,19 @@ tie.directive('learnerView', [function() {
                     </ui-codemirror>
                   </div>
                 </div>
-                <select ng-if="SERVER_URL"
-                    class="tie-select-menu"
-                    name="lang-select-menu">
-                  <option value="Python" selected>Python</option>
-                </select>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
                   Reset Code
                 </button>
-                <p ng-if="language" class="tie-language-note">Language: {{language}}</p>
+                <p class="tie-language-label">Language: {{supportedLanguageCount == 1 ? languageLabel : ""}}</p>
+                <select
+                    ng-if="supportedLanguageCount > 1"
+                    ng-model="codeMirrorOptions.mode"
+                    ng-options="key as value for ( key, value ) in supportedLanguageLabels"
+
+                    class="tie-select-menu"
+                    name="lang-select-menu">
+                </select>
+
                 <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}" title="Click to view a short introduction to Python">New to Python?</a>
                 <div class="tie-code-auto-save"
                     ng-show="autosaveTextIsDisplayed">
@@ -245,7 +249,7 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-code-auto-save {
           color: #E0E0E0;
         }
-        .tie-code-reset, .tie-python-primer, .tie-language-note {
+        .tie-code-reset, .tie-python-primer, .tie-language-label {
           float: left;
           margin-top: 10px;
           margin-bottom: 0;
@@ -348,13 +352,13 @@ tie.directive('learnerView', [function() {
           font-size: 12px;
           padding: 4px 10px 0px 4px;
         }
-        .tie-language-note {
+        .tie-language-label {
           font-size: 12px;
           padding: 4px 10px 0px 4px;
           display: inline-block;
         }
         .night-mode .tie-primer-link,
-        .night-mode .tie-language-note {
+        .night-mode .tie-language-label {
           color: white;
         }
         .tie-privacy-button {
@@ -483,7 +487,8 @@ tie.directive('learnerView', [function() {
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
-      'CurrentQuestionService',
+      'CurrentQuestionService', 'ALL_SUPPORTED_LANGUAGES',
+      'SUPPORTED_LANGUAGE_LABELS',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
@@ -495,7 +500,8 @@ tie.directive('learnerView', [function() {
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
-          CurrentQuestionService,
+          CurrentQuestionService, ALL_SUPPORTED_LANGUAGES,
+          SUPPORTED_LANGUAGE_LABELS,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
@@ -544,6 +550,13 @@ tie.directive('learnerView', [function() {
          * mode is "dark mode".
          */
         $scope.isDarkModeEnabled = ThemeNameService.isDarkModeEnabled;
+
+        /**
+         * A dictionary of labels, keyed by their supported language
+         */
+        $scope.supportedLanguageLabels = SUPPORTED_LANGUAGE_LABELS;
+        $scope.supportedLanguageCount = Object.keys(
+          SUPPORTED_LANGUAGE_LABELS).length;
 
         /**
          * Defines the accepted UI Themes for the editor.
@@ -781,7 +794,8 @@ tie.directive('learnerView', [function() {
 
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
           $scope.previousInstructions = [];
-          $scope.language = getLanguageLabel();
+          $scope.languageLabel = SUPPORTED_LANGUAGE_LABELS[
+            $scope.codeMirrorOptions.mode];
 
           UnpromptedFeedbackManagerService.reset(tasks);
           cachedCode = LocalStorageService.loadStoredCode(questionId, language);
@@ -801,19 +815,6 @@ tie.directive('learnerView', [function() {
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
         };
-
-        /**
-         * Returns a code language label based on global var
-         */
-        var getLanguageLabel = function() {
-          switch(language) {
-            case LANGUAGE_PYTHON:
-              return 'Python 2.7';
-              break;
-            default:
-              return '';
-          }
-        }
 
         /**
          * Highlights the syntax errors in the coding UI
