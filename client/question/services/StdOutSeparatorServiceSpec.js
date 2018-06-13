@@ -35,6 +35,9 @@ describe('StdOutSeparatorService', function() {
     it('should set and retrieve generated separator', function() {
       StdOutSeparatorService.setSeparator('testSeparator');
       expect(StdOutSeparatorService.getSeparator()).toEqual('testSeparator');
+
+      StdOutSeparatorService.setSeparator('secondSeparator');
+      expect(StdOutSeparatorService.getSeparator()).toEqual('secondSeparator');
     });
 
     it('should work if empty string passed in', function() {
@@ -62,7 +65,7 @@ describe('StdOutSeparatorService', function() {
           ['1', '\n', '2', '\n', 'Hi', '\n']);
     });
 
-    it('should work for seond test case', function() {
+    it('should work for second test case', function() {
       StdOutSeparatorService.setSeparator('sep');
       expect(
         StdOutSeparatorService.getTestCaseOutputInClient(stdOut, 1)).toEqual(
@@ -113,7 +116,7 @@ describe('StdOutSeparatorService', function() {
           '1\n2\nHi\n');
     });
 
-    it('should work for seond test case', function() {
+    it('should work for second test case', function() {
       StdOutSeparatorService.setSeparator('sep');
       expect(
         StdOutSeparatorService.getTestCaseOutput(stdOut, 1)).toEqual(
@@ -133,7 +136,7 @@ describe('StdOutSeparatorService', function() {
         'sep\nsep\nsep\n', 1)).toEqual('');
     });
 
-    it('should work for empty stdout array', function() {
+    it('should work for empty stdout string', function() {
       StdOutSeparatorService.setSeparator('sep');
       expect(StdOutSeparatorService.getTestCaseOutput('', 1)).toEqual(
         '');
