@@ -102,7 +102,7 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="processing" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -224,6 +224,12 @@ tie.directive('learnerView', [function() {
         .tie-button-green:active {
           background-color: #265221;
         }
+        .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .tie-button-green[disabled]:hover{
+          border: none;
+        }
         .night-mode .tie-button-green {
           background-color: #3C5C14;
           color: #ffffff;
@@ -233,6 +239,12 @@ tie.directive('learnerView', [function() {
         }
         .night-mode .tie-button-green:active {
           background-color: #265221;
+        }
+        .night-mode .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .night-mode .tie-button-green[disabled]:hover {
+          border: none;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -480,7 +492,7 @@ tie.directive('learnerView', [function() {
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
-      'CODE_RESET_CONFIRMATION_MESSAGE',
+      'CODE_RESET_CONFIRMATION_MESSAGE', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -492,7 +504,7 @@ tie.directive('learnerView', [function() {
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
-          CODE_RESET_CONFIRMATION_MESSAGE) {
+          CODE_RESET_CONFIRMATION_MESSAGE, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
 
         $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
@@ -589,6 +601,13 @@ tie.directive('learnerView', [function() {
          * @type {Promise|null}
          */
         $scope.codeChangeLoopPromise = null;
+
+        /**
+        * Keeps track of whether a current code submission is being run.
+        *
+        * @type {boolean}
+        */
+        $scope.processing = false;
 
         /**
          * String to store the code being cached within this directive
@@ -1001,6 +1020,7 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.submitCode = function(code) {
+          $scope.processing = true;
           MonospaceDisplayModalService.hideModal();
           SessionHistoryService.addCodeBalloon(code);
 
@@ -1013,6 +1033,10 @@ tie.directive('learnerView', [function() {
             code, question.getAuxiliaryCode(language), language
           ).then(function(feedback) {
             $scope.setFeedback(feedback, code);
+          }).then(function() {
+            $timeout(function() {
+              $scope.processing = false;
+            }, DURATION_MSEC_WAIT_FOR_FEEDBACK + DELAY_STYLE_CHANGES);
           });
 
           $scope.autosaveCode();
