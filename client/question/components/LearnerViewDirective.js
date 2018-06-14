@@ -102,7 +102,7 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="processing" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="submissionIsBeingProcessed" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -607,7 +607,7 @@ tie.directive('learnerView', [function() {
         *
         * @type {boolean}
         */
-        $scope.processing = false;
+        $scope.submissionIsBeingProcessed = false;
 
         /**
          * String to store the code being cached within this directive
@@ -1020,7 +1020,7 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.submitCode = function(code) {
-          $scope.processing = true;
+          $scope.submissionIsBeingProcessed = true;
           MonospaceDisplayModalService.hideModal();
           SessionHistoryService.addCodeBalloon(code);
 
@@ -1035,7 +1035,7 @@ tie.directive('learnerView', [function() {
             $scope.setFeedback(feedback, code);
           }).then(function() {
             $timeout(function() {
-              $scope.processing = false;
+              $scope.submissionIsBeingProcessed = false;
             }, DURATION_MSEC_WAIT_FOR_FEEDBACK + DELAY_STYLE_CHANGES);
           });
 
