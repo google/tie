@@ -75,10 +75,6 @@ tie.factory('SessionHistoryService', [
        * Adds a new code balloon to the beginning of the list.
        */
       addCodeBalloon: function(submittedCode) {
-        // The number of balloons pending is increased by assumption that
-        // adding a code balloon implies that a feedback balloon will
-        // later follow.
-        data.numBalloonsPending++;
         data.sessionTranscript.unshift(
           SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
         LocalStorageService.put(
@@ -87,6 +83,9 @@ tie.factory('SessionHistoryService', [
             return speechBalloon.toDict();
           })
         );
+        // We increment the number of balloons here, because adding a
+        // code balloon implies that a feedback balloon will soon follow.
+        data.numBalloonsPending++;
       },
       /**
        * Adds a new feedback balloon to the beginning of the list.

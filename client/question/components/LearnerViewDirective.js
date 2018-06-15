@@ -227,7 +227,7 @@ tie.directive('learnerView', [function() {
         .tie-button-green[disabled] {
           opacity: 0.4;
         }
-        .tie-button-green[disabled]:hover{
+        .tie-button-green[disabled]:hover {
           border: none;
         }
         .night-mode .tie-button-green {

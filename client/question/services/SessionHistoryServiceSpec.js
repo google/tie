@@ -115,6 +115,7 @@ describe('SessionHistoryService', function() {
       expect(
         SessionHistoryService.getBindableSessionTranscript().length
       ).toBe(2);
+      expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
     });
 
     it('should reset the session transcript', function() {
