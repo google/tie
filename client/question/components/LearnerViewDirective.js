@@ -224,6 +224,12 @@ tie.directive('learnerView', [function() {
         .tie-button-green:active {
           background-color: #265221;
         }
+        .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .tie-button-green[disabled]:hover {
+          border: none;
+        }
         .night-mode .tie-button-green {
           background-color: #3C5C14;
           color: #ffffff;
@@ -233,6 +239,12 @@ tie.directive('learnerView', [function() {
         }
         .night-mode .tie-button-green:active {
           background-color: #265221;
+        }
+        .night-mode .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .night-mode .tie-button-green[disabled]:hover {
+          border: none;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
