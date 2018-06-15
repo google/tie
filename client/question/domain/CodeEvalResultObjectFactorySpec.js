@@ -21,7 +21,7 @@ describe('CodeEvalResultObjectFactory', function() {
   var TaskObjectFactory;
 
   var codeEvalResult;
-  var CODE = 'code';
+  var CODE = 'code separator = "abcdefghijklmnopqrst"';
   var OUTPUT = '';
   var OBSERVED_OUTPUTS = [[[true, true]], [[false, false]]];
   var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
@@ -54,7 +54,8 @@ describe('CodeEvalResultObjectFactory', function() {
       ).toBe(true);
 
       var nonMatchingCodeEvalResult = CodeEvalResultObjectFactory.create(
-        'blah blah not same code', 'some output', [], [], [], '', '');
+        'blah blah separator = "bcdefghijklmnopqrstu" not same code', 'some output',
+        [], [], [], '', '');
       expect(
         codeEvalResult.hasSamePreprocessedCodeAs(nonMatchingCodeEvalResult)
       ).toBe(false);

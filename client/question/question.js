@@ -724,13 +724,22 @@ tie.constant('SECONDS_TO_MILLISECONDS', 1000);
  */
 tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 
-/** Default user stdOut separator length.
+/**
+* Default user stdOut separator length.
 *
 * @type {number}
 * @constant
 */
 // eslint-disable-next-line no-magic-numbers
 tie.constant('SEPARATOR_LENGTH', 20);
+
+/**
+* Default line prefix to denote separator.
+*
+* @type {string}
+* @constant
+*/
+tie.constant('SEPARATOR_LINE_PREFIX', 'separator = "');
 
 /**
  * Default time in seconds between calls to SendEventBatch.

@@ -102,7 +102,6 @@ tie.factory('PythonCodeRunnerService', [
         var testToDisplay = codeEvalResult.getIndexOfFirstFailedTest(tasks);
         outputLines = StdOutSeparatorService.getTestCaseOutputInClient(
           outputLines, testToDisplay);
-
         return codeEvalResult;
       }, function(skulptError) {
         var errorInput = null;
