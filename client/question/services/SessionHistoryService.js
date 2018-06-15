@@ -75,6 +75,10 @@ tie.factory('SessionHistoryService', [
        * Adds a new code balloon to the beginning of the list.
        */
       addCodeBalloon: function(submittedCode) {
+        // The number of balloons pending is increased by assumption that
+        // adding a code balloon implies that a feedback balloon will
+        // later follow.
+        data.numBalloonsPending++;
         data.sessionTranscript.unshift(
           SpeechBalloonObjectFactory.createCodeBalloon(submittedCode));
         LocalStorageService.put(
@@ -88,11 +92,13 @@ tie.factory('SessionHistoryService', [
        * Adds a new feedback balloon to the beginning of the list.
        */
       addFeedbackBalloon: function(feedbackParagraphs) {
-        data.numBalloonsPending++;
         $timeout(function() {
           data.sessionTranscript.unshift(
             SpeechBalloonObjectFactory.createFeedbackBalloon(
               feedbackParagraphs));
+          // This signifies that the feedback balloon has been added and
+          // thus completes the code-feedback pairing as there is a feedback
+          // balloon for every code balloon.
           data.numBalloonsPending--;
 
           LocalStorageService.put(

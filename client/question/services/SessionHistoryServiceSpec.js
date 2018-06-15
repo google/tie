@@ -50,7 +50,8 @@ describe('SessionHistoryService', function() {
       });
     });
 
-    it('should add a new code balloon without a delay', function() {
+    it('should add a new code balloon and signify awaiting a feedback balloon',
+    function() {
       expect(
         SessionHistoryService.getBindableSessionTranscript().length
       ).toBe(0);
@@ -61,7 +62,7 @@ describe('SessionHistoryService', function() {
       expect(
         SessionHistoryService.getBindableSessionTranscript().length
       ).toBe(1);
-      expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
+      expect(SessionHistoryService.isNewBalloonPending()).toBe(true);
     });
 
     it('should add a new feedback balloon correctly', function() {
@@ -89,8 +90,16 @@ describe('SessionHistoryService', function() {
 
     it('should add a new feedback balloon with a delay', function() {
       expect(
-        SessionHistoryService.getBindableSessionTranscript().length).toBe(0);
+        SessionHistoryService.getBindableSessionTranscript().length
+      ).toBe(0);
       expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
+
+      SessionHistoryService.addCodeBalloon('some code');
+
+      expect(
+        SessionHistoryService.getBindableSessionTranscript().length
+      ).toBe(1);
+      expect(SessionHistoryService.isNewBalloonPending()).toBe(true);
 
       SessionHistoryService.addFeedbackBalloon([
         FeedbackParagraphObjectFactory.fromDict({
@@ -100,12 +109,12 @@ describe('SessionHistoryService', function() {
       ]);
       expect(SessionHistoryService.isNewBalloonPending()).toBe(true);
       expect(
-        SessionHistoryService.getBindableSessionTranscript().length).toBe(0);
+        SessionHistoryService.getBindableSessionTranscript().length).toBe(1);
 
       $timeout.flush(DURATION_MSEC_WAIT_FOR_FEEDBACK);
       expect(
         SessionHistoryService.getBindableSessionTranscript().length
-      ).toBe(1);
+      ).toBe(2);
     });
 
     it('should reset the session transcript', function() {

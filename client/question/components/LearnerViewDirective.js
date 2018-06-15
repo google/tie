@@ -102,7 +102,7 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="submissionIsBeingProcessed" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -492,7 +492,7 @@ tie.directive('learnerView', [function() {
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
-      'CODE_RESET_CONFIRMATION_MESSAGE', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+      'CODE_RESET_CONFIRMATION_MESSAGE',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -504,7 +504,7 @@ tie.directive('learnerView', [function() {
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
-          CODE_RESET_CONFIRMATION_MESSAGE, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
+          CODE_RESET_CONFIRMATION_MESSAGE) {
 
         $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
@@ -601,13 +601,6 @@ tie.directive('learnerView', [function() {
          * @type {Promise|null}
          */
         $scope.codeChangeLoopPromise = null;
-
-        /**
-        * Keeps track of whether a current code submission is being run.
-        *
-        * @type {boolean}
-        */
-        $scope.submissionIsBeingProcessed = false;
 
         /**
          * String to store the code being cached within this directive
@@ -1020,7 +1013,6 @@ tie.directive('learnerView', [function() {
          * @param {string} code
          */
         $scope.submitCode = function(code) {
-          $scope.submissionIsBeingProcessed = true;
           MonospaceDisplayModalService.hideModal();
           SessionHistoryService.addCodeBalloon(code);
 
@@ -1033,10 +1025,6 @@ tie.directive('learnerView', [function() {
             code, question.getAuxiliaryCode(language), language
           ).then(function(feedback) {
             $scope.setFeedback(feedback, code);
-          }).then(function() {
-            $timeout(function() {
-              $scope.submissionIsBeingProcessed = false;
-            }, DURATION_MSEC_WAIT_FOR_FEEDBACK + DELAY_STYLE_CHANGES);
           });
 
           $scope.autosaveCode();
