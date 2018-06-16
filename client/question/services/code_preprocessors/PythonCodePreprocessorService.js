@@ -398,11 +398,16 @@ tie.factory('PythonCodePreprocessorService', [
         testCode += '\n';
         testCode += [
           '',
+          'def testOutputWithStdOutSeparator(test_input):',
+          '    output = ' + testOutputCode,
+          '    print separator',
+          '    return output',
+          '',
           'task_test_inputs = ' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + ']',
           'task_results = []',
           'for suite_dicts in task_test_inputs:',
           '    suite_results = [',
-          '        ' + testOutputCode,
+          '        testOutputWithStdOutSeparator(test_input)',
           '        for test_input in suite_dicts["inputs"]]',
           '    task_results.append(suite_results)',
           VARNAME_OBSERVED_OUTPUTS + '.append(task_results)'
