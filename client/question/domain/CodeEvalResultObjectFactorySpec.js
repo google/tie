@@ -54,8 +54,8 @@ describe('CodeEvalResultObjectFactory', function() {
       ).toBe(true);
 
       var nonMatchingCodeEvalResult = CodeEvalResultObjectFactory.create(
-        'blah blah separator = "bcdefghijklmnopqrstu" not same code', 'some output',
-        [], [], [], '', '');
+        'blah blah separator = "bcdefghijklmnopqrstu" not same code',
+        'some output', [], [], [], '', '');
       expect(
         codeEvalResult.hasSamePreprocessedCodeAs(nonMatchingCodeEvalResult)
       ).toBe(false);
