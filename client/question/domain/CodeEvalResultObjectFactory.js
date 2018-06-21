@@ -199,37 +199,74 @@ tie.factory('CodeEvalResultObjectFactory', [
 
     /**
      * Compares the results to the expected values of the test cases, and
-     * returns the test number of the first failed test case (0-indexed).
-     * The "test number" is defined as the index of the failed test case in
-     * a list formed by concatenating the test cases for each test suite,
-     * in order.
+     * returns an object containing task, testSuite, testCase index
+     * numbers and overall test number (0-indexed) of the first failed test
+     * case. The overall test number is defined by concatenating all the
+     * test cases together, in order.
      *
      * @param {Array<Task>} tasks The list of tasks for the current question.
-     * @returns {number} The index of the first failed test case, or index of
-     * last test case if all test cases passed.
+     * @returns {*|null} An object containing task, testSuite, test
+     * index numbers, and overall test number of the first failing test
+     * case. Returns null if no tests for the given tasks failed.
      */
     CodeEvalResult.prototype.getIndexOfFirstFailedTest = function(tasks) {
       if (this._observedOutputs.length === 0) {
         return 0;
       }
 
-      var testNum = 0;
+      var overallTestNum = 0;
       for (var i = 0; i < this._observedOutputs.length; i++) {
         var testSuites = tasks[i].getTestSuites();
         for (var j = 0; j < this._observedOutputs[i].length; j++) {
           var testCases = testSuites[j].getTestCases();
           for (var k = 0; k < this._observedOutputs[i][j].length; k++) {
             if (!testCases[k].matchesOutput(this._observedOutputs[i][j][k])) {
-              return testNum;
+              return {
+                taskNum: i,
+                testSuiteNum: j,
+                testNum: k,
+                overallTestNum: overallTestNum
+              };
             }
-            testNum += 1;
+            overallTestNum += 1;
           }
         }
       }
-     // Returns the number of last test case if all passed.
-      return testNum - 1;
+     // Returns null if all test cases passed.
+      return null;
     };
 
+    /**
+     * Returns the output corresponding to the first failed test case, or
+     * the output associated with the last test case of the last task
+     * completed if all tests passed.
+     *
+     * @param {Array} tasks Array of the current question's tasks.
+     * @returns {string}
+     */
+    CodeEvalResult.prototype.getOutputToDisplay = function(tasks) {
+      if (this._output.length === 0) {
+        return '';
+      }
+      var testToDisplay = this.getIndexOfFirstFailedTest(tasks);
+      console.log(testToDisplay);
+
+      // If user passed all tests, display output of the last test case of
+      // the last task that they completed.
+      debugger;
+      if (testToDisplay == null) {
+        var overallNumTests = 0;
+        for (var i = 0; i < this._observedOutputs.length; i++) {
+          for (var j = 0; j < this._observedOutputs[i].length; j++) {
+            for (var k = 0; k < this._observedOutputs[i][j].length; k++) {
+              overallNumTests += 1;
+            }
+          }
+        }
+        return this._output[overallNumTests - 1];
+      }
+      return this._output[testToDisplay.overallTestNum];
+    }
     /**
      * Returns the observed outputs for the last task that is run. The function
      * should return the last subarray in _observedOutputs.
