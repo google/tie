@@ -18,6 +18,12 @@
 
 describe('SolutionHandlerService', function() {
   var SUPPORTED_PYTHON_LIBS;
+  var QuestionObjectFactory;
+  var CurrentQuestionService;
+  var question;
+  var TITLE = "title";
+  var STARTER_CODE = "starterCode";
+  var AUXILIARY_CODE = "auxiliaryCode";
   var SolutionHandlerService;
   var TaskObjectFactory;
   var orderedTasks;
@@ -100,6 +106,17 @@ describe('SolutionHandlerService', function() {
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    CurrentQuestionService = $injector.get('CurrentQuestionService');
+    question = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: taskDict
+    });
+    spyOn(
+      CurrentQuestionService, 'getCurrentQuestion').and.returnValue(question);
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
@@ -131,7 +148,6 @@ describe('SolutionHandlerService', function() {
           '        return True',
           '    return False'
         ].join('\n');
-
         SolutionHandlerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
@@ -460,6 +476,15 @@ describe('SolutionHandlerService', function() {
             allowedOutputs: [false]
           }]
         }];
+        question = QuestionObjectFactory.create({
+          title: TITLE,
+          starterCode: STARTER_CODE,
+          auxiliaryCode: AUXILIARY_CODE,
+          tasks: taskDict
+        });
+        CurrentQuestionService.getCurrentQuestion =
+          jasmine.createSpy().and.returnValue(question);
+
       }));
 
       it('should check all buggy outputs if nothing is ignored',
@@ -476,7 +501,6 @@ describe('SolutionHandlerService', function() {
             '    return input != "task_1_suite_2_test_2"',
             ''
           ].join('\n');
-
           SolutionHandlerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
@@ -543,6 +567,14 @@ describe('SolutionHandlerService', function() {
           testSuiteIdsThatMustFail: ['SUITE2'],
           messages: ['suite_message1']
         }];
+        question = QuestionObjectFactory.create({
+          title: TITLE,
+          starterCode: STARTER_CODE,
+          auxiliaryCode: AUXILIARY_CODE,
+          tasks: taskDict
+        });
+        CurrentQuestionService.getCurrentQuestion =
+          jasmine.createSpy().and.returnValue(question);
       }));
 
       it('should return suite-level feedback if the condition is triggered',

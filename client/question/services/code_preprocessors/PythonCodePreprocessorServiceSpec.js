@@ -591,16 +591,16 @@ describe('PythonCodePreprocessorService', function() {
     });
   });
 
-  describe('_generateStringSeparator', function() {
+  describe('_generateOutputSeparatorCode', function() {
     it('should add string separator to skeleton code', function() {
       expect(
-        PythonCodePreprocessorService._generateStringSeparator()
+        PythonCodePreprocessorService._generateOutputSeparatorCode()
       ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
     });
 
     it('should be different across multiple calls', function() {
-      var first = PythonCodePreprocessorService._generateStringSeparator();
-      var second = PythonCodePreprocessorService._generateStringSeparator();
+      var first = PythonCodePreprocessorService._generateOutputSeparatorCode();
+      var second = PythonCodePreprocessorService._generateOutputSeparatorCode();
       expect(first).not.toEqual(second);
     });
   });

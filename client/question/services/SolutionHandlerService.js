@@ -68,15 +68,15 @@ tie.factory('SolutionHandlerService', [
             }
 
             // If there are no syntax errors, generate a CodeSubmission object
-            // that wraps the student's code into a class and appends some test
-            // code, then run the whole thing.
+            // that wraps the student's code into a class and creates a new
+            // PreprocessedCode object, then runs the whole thing.
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
-            CodePreprocessorDispatcherService.preprocess(
+            var preprocessedCode = CodePreprocessorDispatcherService.preprocess(
               language, codeSubmission, auxiliaryCode, tasks);
 
             return CodeRunnerDispatcherService.runCodeAsync(
-              language, codeSubmission.getPreprocessedCode()
+              language, preprocessedCode
             ).then(function(preprocessedCodeEvalResult) {
               feedback = FeedbackGeneratorService.getFeedback(
                 tasks, preprocessedCodeEvalResult,

@@ -211,7 +211,12 @@ tie.factory('CodeEvalResultObjectFactory', [
      */
     CodeEvalResult.prototype.getIndexOfFirstFailedTest = function(tasks) {
       if (this._observedOutputs.length === 0) {
-        return 0;
+        return {
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 0,
+          overallTestNum: 0
+        };
       }
 
       var overallTestNum = 0;
@@ -249,12 +254,10 @@ tie.factory('CodeEvalResultObjectFactory', [
         return '';
       }
       var testToDisplay = this.getIndexOfFirstFailedTest(tasks);
-      console.log(testToDisplay);
 
       // If user passed all tests, display output of the last test case of
       // the last task that they completed.
-      debugger;
-      if (testToDisplay == null) {
+      if (testToDisplay === null) {
         var overallNumTests = 0;
         for (var i = 0; i < this._observedOutputs.length; i++) {
           for (var j = 0; j < this._observedOutputs[i].length; j++) {
@@ -266,7 +269,7 @@ tie.factory('CodeEvalResultObjectFactory', [
         return this._output[overallNumTests - 1];
       }
       return this._output[testToDisplay.overallTestNum];
-    }
+    };
     /**
      * Returns the observed outputs for the last task that is run. The function
      * should return the last subarray in _observedOutputs.

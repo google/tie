@@ -18,13 +18,15 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'ServerHandlerService', 'StdOutSeparatorService', 'CLASS_NAME_AUXILIARY_CODE',
+  'ServerHandlerService', 'StdOutSeparatorService',
+  'PreprocessedCodeObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_MOST_RECENT_INPUT', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS', 'SEPARATOR_LENGTH',
   function(
-      ServerHandlerService, StdOutSeparatorService, CLASS_NAME_AUXILIARY_CODE,
+      ServerHandlerService, StdOutSeparatorService,
+      PreprocessedCodeObjectFactory, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
@@ -81,6 +83,12 @@ tie.factory('PythonCodePreprocessorService', [
      * @constant
      */
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
+
+    /**
+     * Used to separate the print outputs of different test cases, which are
+     * all combined into one output string after the code is run.
+     */
+    var separator = null;
 
     /**
      * This function converts a JSON variable to a Python variable.
@@ -319,14 +327,14 @@ tie.factory('PythonCodePreprocessorService', [
     * @returns {string}
     * @private
     */
-    var _generateStringSeparator = function() {
+    var _generateOutputSeparatorCode = function() {
       var chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
-      var separator = '';
+      var currentSeparator = '';
       for (var i = 0; i < SEPARATOR_LENGTH; i++) {
         var index = Math.floor(Math.random() * chars.length);
-        separator += chars.charAt(index);
+        currentSeparator += chars.charAt(index);
       }
-      StdOutSeparatorService.setSeparator(separator);
+      separator = currentSeparator;
 
       var separatorCode = [
         'separator = "' + separator + '"',
@@ -351,7 +359,7 @@ tie.factory('PythonCodePreprocessorService', [
       // This returns a list of lists of dicts of input data. Each inner dict
       // represents a test suite (with ID and a list of python-formatted test
       // case inputs). The containing list represents all test suites for a
-      // task, // and the outer list represents all the test suites for all the
+      // task, and the outer list represents all the test suites for all the
       // tasks.
       var allTaskInputs = allTasksTestSuites.map(function(taskTestSuites) {
         return taskTestSuites.map(function(suite) {
@@ -646,7 +654,7 @@ tie.factory('PythonCodePreprocessorService', [
         // Append everything else.
         codeSubmission.append([
           auxiliaryCode,
-          this._generateStringSeparator(),
+          this._generateOutputSeparatorCode(),
           this._generateCorrectnessTestCode(
             allTasksTestSuites, allTasksInputFunctionNames,
             allTasksMainFunctionNames, allTasksOutputFunctionNames),
@@ -661,6 +669,9 @@ tie.factory('PythonCodePreprocessorService', [
         if (ServerHandlerService.doesServerExist()) {
           this._prepareCodeSubmissionForServerExecution(codeSubmission);
         }
+
+        return PreprocessedCodeObjectFactory.create(
+          codeSubmission.getPreprocessedCode(), separator);
       },
 
       // These are seams to allow for Karma testing of the private functions.
@@ -669,7 +680,7 @@ tie.factory('PythonCodePreprocessorService', [
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
       _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
-      _generateStringSeparator: _generateStringSeparator,
+      _generateOutputSeparatorCode: _generateOutputSeparatorCode,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,

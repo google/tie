@@ -26,6 +26,77 @@ describe('PythonCodeRunnerService', function() {
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
   var HTTP_STATUS_CODE_OK = 200;
   var HTTP_STATUS_CODE_SERVER_ERROR = 500;
+  var QuestionObjectFactory;
+  var CurrentQuestionService;
+  var question;
+  var TITLE = "title";
+  var STARTER_CODE = "starterCode";
+  var AUXILIARY_CODE = "auxiliaryCode";
+  var taskDict = [{
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_1_correctness_test_1',
+        allowedOutputs: [true]
+      }, {
+        input: 'task_1_correctness_test_2',
+        allowedOutputs: [true]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task1",
+        "Mock BuggyOutputTest Message Two for task1",
+        "Mock BuggyOutputTest Message Three for task1"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: []
+  }, {
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_2_correctness_test_1',
+        allowedOutputs: [false]
+      }, {
+        input: 'task_2_correctness_test_2',
+        allowedOutputs: [false]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task2",
+        "Mock BuggyOutputTest Message Two for task2",
+        "Mock BuggyOutputTest Message Three for task2"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: []
+  }];
 
   beforeEach(module('tie', function($provide) {
     $provide.constant('SERVER_URL', 'http://katamari.com');
@@ -44,6 +115,17 @@ describe('PythonCodeRunnerService', function() {
       [false, false, false]];
     responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
       ['linear']];
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    CurrentQuestionService = $injector.get('CurrentQuestionService');
+    question = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: taskDict
+    });
+    spyOn(CurrentQuestionService,
+      'getCurrentQuestion').and.returnValue(question);
   }));
 
   describe('compileCodeAsync', function() {

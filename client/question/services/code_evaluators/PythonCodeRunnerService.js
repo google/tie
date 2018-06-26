@@ -18,12 +18,14 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
+  'PreprocessedCodeObjectFactory',
   'ServerHandlerService', 'EventHandlerService', 'CurrentQuestionService',
   'StdOutSeparatorService', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
+      PreprocessedCodeObjectFactory,
       ServerHandlerService, EventHandlerService, CurrentQuestionService,
       StdOutSeparatorService, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
@@ -54,8 +56,19 @@ tie.factory('PythonCodeRunnerService', [
       outputLines.push(line);
     };
 
-    var _runCodeInClient = function(code) {
-      console.log(code);
+    var _runCodeInClient = function(inputCode) {
+      var code;
+      var separator;
+
+      // The input code is a PreprocessedCode object and ready to be run.
+      if (typeof (inputCode) === 'object') {
+        code = inputCode.getPreprocessedCode();
+        separator = inputCode.getSeparator();
+      } else {
+        // This is when the student's code is being compiled.
+        code = inputCode;
+        separator = null;
+      }
       clearOutput();
       Sk.configure({
         output: addOutputLine,
@@ -92,9 +105,8 @@ tie.factory('PythonCodeRunnerService', [
         }
 
         // The run was successful.
-        console.log(outputLines);
-        var standardizedOutput = _standardizeOutputInClient(outputLines);
-        console.log(standardizedOutput);
+        var standardizedOutput = _standardizeOutputInClient(
+          outputLines, separator);
         var codeEvalResult = CodeEvalResultObjectFactory.create(
           code, standardizedOutput, observedOutputs,
           buggyOutputTestResults, performanceTestResults, null, null);
@@ -118,14 +130,13 @@ tie.factory('PythonCodeRunnerService', [
     // Before: array in which each entry was one line of stdOut
     // After: array in which the i-th entry is the string to be displayed for
     // that i-th test case
-    var _standardizeOutputInClient = function(stdOutArray) {
+    var _standardizeOutputInClient = function(stdOutArray, separator) {
       if (stdOutArray.length === 0) {
         return [];
       }
       var standardizedOutput = [];
       var currentStringStartIndex = 0;
       var currentStringEndIndex = 0;
-      var separator = StdOutSeparatorService.getSeparator();
       for (currentStringEndIndex; currentStringEndIndex < stdOutArray.length;
         currentStringEndIndex++) {
         if (stdOutArray[currentStringEndIndex] === separator) {
@@ -206,7 +217,9 @@ tie.factory('PythonCodeRunnerService', [
             code, '', [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT]);
       } else if (responseData.results) {
-        var standardizedOutput = _standardizeServerOutput(responseData.stdout);
+        var separator = StdOutSeparatorService.getSeparator();
+        var standardizedOutput = _standardizeServerOutput(
+          responseData.stdout, separator);
         var codeEvalResult = CodeEvalResultObjectFactory.create(
             code, standardizedOutput,
             responseData.results[VARNAME_OBSERVED_OUTPUTS],
@@ -224,21 +237,23 @@ tie.factory('PythonCodeRunnerService', [
     // Before: string of all stdOut concatenated together.
     // After: array in which the i-th entry is the string corresponding
     // to the stdOut of the i-th test case.
-    var _standardizeServerOutput = function(stdOutString) {
+    var _standardizeServerOutput = function(stdOutString, separator) {
       if (stdOutString.length === 0) {
         return [];
       }
-      var separator = StdOutSeparatorService.getSeparator();
       return stdOutString.split(separator + '\n');
     };
 
     var _displayPrintedOutput = function(codeEvalResult) {
       var question = CurrentQuestionService.getCurrentQuestion();
       var tasks = question.getTasks();
+
+      // TODO: OutputToDisplay is currently unused but will later be passed
+      // to the print output to be displayed.
+      // eslint-disable-next-line no-unused-vars
       var outputToDisplay = codeEvalResult.getOutputToDisplay(tasks);
-      console.log(outputToDisplay);
       // DisplayStdOutService.displayOutput(outputToDisplay);
-    }
+    };
 
     return {
       /**
@@ -258,14 +273,14 @@ tie.factory('PythonCodeRunnerService', [
        * Asynchronously runs the Python code against the given tests for that
        * task.
        *
-       * @param {string} code
+       * @param {PreprocessedCode} preprocessedCode
        * @returns {Promise}
        */
-      runCodeAsync: function(code) {
+      runCodeAsync: function(preprocessedCode) {
         if (ServerHandlerService.doesServerExist()) {
-          return _runCodeAsync(code);
+          return _runCodeAsync(preprocessedCode);
         } else {
-          return _runCodeInClient(code);
+          return _runCodeInClient(preprocessedCode);
         }
       },
       _processCodeCompilationServerResponse: (

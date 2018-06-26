@@ -205,12 +205,17 @@ describe('CodeEvalResultObjectFactory', function() {
             python: []
           },
           testSuites: [{
-            id: 'GENERAL_CASE',
-            humanReadableName: 'the general case',
+            id: 'FIRST_CASE',
+            humanReadableName: 'the first case',
             testCases: [{
               input: 'task_2_correctness_test_1',
               allowedOutputs: [true]
-            }, {
+            }]
+          },
+          {
+            id: 'SECOND_CASE',
+            humanReadableName: 'the second case',
+            testCases: [{
               input: 'task_2_correctness_test_2',
               allowedOutputs: [true]
             }]
@@ -222,73 +227,105 @@ describe('CodeEvalResultObjectFactory', function() {
       ];
 
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, true]], [[true, true]]],
+        CODE, OUTPUT, [[[true, true]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
         ERROR_INPUT);
       expect(codeEvalResult1.getIndexOfFirstFailedTest(tasks))
-        .toEqual(3);
+        .toEqual(null);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, false]], [[true, true]]],
+        CODE, OUTPUT, [[[true, false]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
         ERROR_INPUT);
       expect(codeEvalResult2.getIndexOfFirstFailedTest(tasks))
-        .toEqual(1);
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 1,
+          overallTestNum: 1});
 
       var codeEvalResult3 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, true]], [[false, true]]],
+        CODE, OUTPUT, [[[true, true]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
         ERROR_INPUT);
       expect(codeEvalResult3.getIndexOfFirstFailedTest(tasks))
-        .toEqual(2);
+        .toEqual({
+          taskNum: 1,
+          testSuiteNum: 0,
+          testNum: 0,
+          overallTestNum: 2});
 
       var codeEvalResult4 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, false]], [[false, true]]],
+        CODE, OUTPUT, [[[true, true]], [[true], [false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
         ERROR_INPUT);
       expect(codeEvalResult4.getIndexOfFirstFailedTest(tasks))
-        .toEqual(1);
+        .toEqual({
+          taskNum: 1,
+          testSuiteNum: 1,
+          testNum: 0,
+          overallTestNum: 3});
 
       var codeEvalResult5 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        CODE, OUTPUT, [[[true, false]], [[false], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
       expect(codeEvalResult5.getIndexOfFirstFailedTest(tasks))
-        .toEqual(0);
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 1,
+          overallTestNum: 1});
 
       var codeEvalResult6 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[false, false]], [[false, true]]],
+        CODE, OUTPUT, [[[false, false]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
         ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult6.getIndexOfFirstFailedTest(tasks))
-        .toEqual(0);
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 0,
+          overallTestNum: 0});
 
       var codeEvalResult7 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult7.getIndexOfFirstFailedTest(tasks))
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 0,
+          overallTestNum: 0});
+
+      var codeEvalResult8 = CodeEvalResultObjectFactory.create(
         CODE, OUTPUT, [[[true, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
         ERROR_STRING, ERROR_INPUT);
-      expect(codeEvalResult7.getIndexOfFirstFailedTest(tasks))
-        .toEqual(1);
+      expect(codeEvalResult8.getIndexOfFirstFailedTest(tasks))
+        .toEqual(null);
 
-      var codeEvalResult8 = CodeEvalResultObjectFactory.create(
+      var codeEvalResult9 = CodeEvalResultObjectFactory.create(
         CODE, OUTPUT, [[[true, false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
         ERROR_STRING, ERROR_INPUT);
-      expect(codeEvalResult8.getIndexOfFirstFailedTest(tasks))
-        .toEqual(1);
+      expect(codeEvalResult9.getIndexOfFirstFailedTest(tasks))
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 1,
+          overallTestNum: 1});
 
-      var codeEvalResult9 = CodeEvalResultObjectFactory.create(
+      var codeEvalResult10 = CodeEvalResultObjectFactory.create(
         CODE, OUTPUT, [[[false, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
         ERROR_STRING, ERROR_INPUT);
-      expect(codeEvalResult9.getIndexOfFirstFailedTest(tasks))
-        .toEqual(0);
-
-      var codeEvalResult10 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, true]], [[true, false]]],
-        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
       expect(codeEvalResult10.getIndexOfFirstFailedTest(tasks))
-        .toEqual(3);
+        .toEqual({
+          taskNum: 0,
+          testSuiteNum: 0,
+          testNum: 0,
+          overallTestNum: 0});
     });
   });
 
