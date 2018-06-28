@@ -22,7 +22,7 @@ describe('CodeEvalResultObjectFactory', function() {
 
   var codeEvalResult;
   var CODE = 'code separator = "abcdefghijklmnopqrst"';
-  var OUTPUT = '';
+  var OUTPUT = ['1\nHi\n', '1\nHey\n', '1\nHello\n', '1\nSalutations\n'];
   var OBSERVED_OUTPUTS = [[[true, true]], [[false, false]]];
   var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
   var PERFORMANCE_TEST_RESULTS = [[], []];
@@ -64,7 +64,7 @@ describe('CodeEvalResultObjectFactory', function() {
 
   describe('getOutput', function() {
     it('should correctly get output', function() {
-      expect(codeEvalResult.getOutput()).toMatch(OUTPUT);
+      expect(codeEvalResult.getOutput()).toEqual(OUTPUT);
     });
   });
 
@@ -289,8 +289,7 @@ describe('CodeEvalResultObjectFactory', function() {
           overallTestNum: 0});
 
       var codeEvalResult7 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult7.getIndexOfFirstFailedTest(tasks))
         .toEqual({
           taskNum: 0,
@@ -326,6 +325,136 @@ describe('CodeEvalResultObjectFactory', function() {
           testSuiteNum: 0,
           testNum: 0,
           overallTestNum: 0});
+    });
+  });
+
+  describe('getOutputToDisplay', function() {
+    it('should correctly get the output to display', function() {
+      var tasks = [
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'GENERAL_CASE',
+            humanReadableName: 'the general case',
+            testCases: [{
+              input: 'task_1_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_1_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        }),
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'FIRST_CASE',
+            humanReadableName: 'the first case',
+            testCases: [{
+              input: 'task_2_correctness_test_1',
+              allowedOutputs: [true]
+            }]
+          },
+          {
+            id: 'SECOND_CASE',
+            humanReadableName: 'the second case',
+            testCases: [{
+              input: 'task_2_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        })
+      ];
+
+      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]], [[true], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult1.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[3]);
+
+      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false]], [[true], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult2.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[1]);
+
+      var codeEvalResult3 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]], [[false], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult3.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[2]);
+
+      var codeEvalResult4 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]], [[true], [false]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult4.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[3]);
+
+      var codeEvalResult5 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false]], [[false], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult5.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[1]);
+
+      var codeEvalResult6 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[false, false]], [[false], [true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult6.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[0]);
+
+      var codeEvalResult7 = CodeEvalResultObjectFactory.create(
+        CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult7.getOutputToDisplay(tasks))
+        .toEqual('');
+
+      var codeEvalResult8 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult8.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[1]);
+
+      var codeEvalResult9 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult9.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[1]);
+
+      var codeEvalResult10 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[false, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
+      expect(codeEvalResult10.getOutputToDisplay(tasks))
+        .toEqual(OUTPUT[0]);
     });
   });
 

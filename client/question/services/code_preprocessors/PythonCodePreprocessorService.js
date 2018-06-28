@@ -18,14 +18,14 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'ServerHandlerService', 'StdOutSeparatorService',
+  'ServerHandlerService',
   'PreprocessedCodeObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_MOST_RECENT_INPUT', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_TASK_PERFORMANCE_TEST_RESULTS', 'SEPARATOR_LENGTH',
   function(
-      ServerHandlerService, StdOutSeparatorService,
+      ServerHandlerService,
       PreprocessedCodeObjectFactory, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,

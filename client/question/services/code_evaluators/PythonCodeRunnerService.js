@@ -18,18 +18,20 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'PreprocessedCodeObjectFactory',
-  'ServerHandlerService', 'EventHandlerService', 'CurrentQuestionService',
-  'StdOutSeparatorService', 'VARNAME_OBSERVED_OUTPUTS',
+  'PreprocessedCodeObjectFactory', 'ServerHandlerService',
+  'EventHandlerService', 'CurrentQuestionService',
+  'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
+  'SEPARATOR_LENGTH',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      PreprocessedCodeObjectFactory,
-      ServerHandlerService, EventHandlerService, CurrentQuestionService,
-      StdOutSeparatorService, VARNAME_OBSERVED_OUTPUTS,
+      PreprocessedCodeObjectFactory, ServerHandlerService,
+      EventHandlerService, CurrentQuestionService,
+      VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
-      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
+      VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS,
+      SEPARATOR_LENGTH) {
     /** @type {number} @const */
     var SECONDS_TO_MILLISECONDS = 1000;
     /**
@@ -188,15 +190,18 @@ tie.factory('PythonCodeRunnerService', [
           code, responseData.stdout, null, null, null, errorTraceback, null);
     };
 
-    var _runCodeAsync = function(code) {
+    var _runCodeAsync = function(preprocessedCode) {
       clearOutput();
+      var code = preprocessedCode.getPreprocessedCode();
+      var separator = preprocessedCode.getSeparator();
       var data = {
         code: code,
         language: 'python'
       };
       return $http.post('/ajax/run_code', data).then(
         function(response) {
-          return _processCodeExecutionServerResponse(response.data, code);
+          return _processCodeExecutionServerResponse(
+              response.data, code, separator);
         },
         function() {
           // A server error occurred, so we need to invalidate the session.
@@ -209,7 +214,8 @@ tie.factory('PythonCodeRunnerService', [
       );
     };
 
-    var _processCodeExecutionServerResponse = function(responseData, code) {
+    var _processCodeExecutionServerResponse = function(
+        responseData, code, separator) {
       if (responseData.stderr.length) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
@@ -217,7 +223,6 @@ tie.factory('PythonCodeRunnerService', [
             code, '', [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT]);
       } else if (responseData.results) {
-        var separator = StdOutSeparatorService.getSeparator();
         var standardizedOutput = _standardizeServerOutput(
           responseData.stdout, separator);
         var codeEvalResult = CodeEvalResultObjectFactory.create(
@@ -241,7 +246,13 @@ tie.factory('PythonCodeRunnerService', [
       if (stdOutString.length === 0) {
         return [];
       }
-      return stdOutString.split(separator + '\n');
+      // StdOut will sometimes have extra characters at the end. Cleaning up
+      // the stdout here while also ensuring that the stdOut ends with
+      // a newline character.
+      var lastSeparatorIndex = stdOutString.lastIndexOf(separator);
+      var cleanedStdOutString = stdOutString.slice(
+          0, lastSeparatorIndex + SEPARATOR_LENGTH) + '\n';
+      return cleanedStdOutString.split(separator + '\n');
     };
 
     var _displayPrintedOutput = function(codeEvalResult) {
@@ -285,7 +296,9 @@ tie.factory('PythonCodeRunnerService', [
       },
       _processCodeCompilationServerResponse: (
         _processCodeCompilationServerResponse),
-      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse
+      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse,
+      _standardizeServerOutput: _standardizeServerOutput,
+      _standardizeOutputInClient: _standardizeOutputInClient
     };
   }
 ]);

@@ -29,7 +29,9 @@ tie.factory('CodeEvalResultObjectFactory', [
      * Constructor for CodeEvalResult
      *
      * @param {string} preprocessedCode Unprocessed student code
-     * @param {string} output Stdout resulting from running student code
+     * @param {Array|string} output Stdout resulting from running student code
+     * (array of test outputs if run was successful and empty string if
+     * error occurred)
      * @param {Array} observedOutputs Observed outputs from running the code
      *  against the test cases
      * @param {Array} buggyOutputTestResults Results of Buggy Output tests
@@ -49,7 +51,7 @@ tie.factory('CodeEvalResultObjectFactory', [
       this._preprocessedCode = preprocessedCode;
 
       /**
-       * @type {string}
+       * @type {Array|string}
        * @private
        */
       this._output = output;
@@ -135,10 +137,13 @@ tie.factory('CodeEvalResultObjectFactory', [
 
     /**
      * A getter for the _output property.
-     * The function should return a string of the output for the code that was
-     * run.
+     * The function should return the array of outputs where the i-th
+     * entry in the array corresponds to the output of the i-th overall test
+     * case. Overall test case is defined to be the number of the test case
+     * when all the test cases across all tasks are concatenated into one list.
+     * If an error occurred, output will be an empty string.
      *
-     * @returns {string}
+     * @returns {Array|string}
      */
     CodeEvalResult.prototype.getOutput = function() {
       return this._output;
@@ -250,7 +255,7 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @returns {string}
      */
     CodeEvalResult.prototype.getOutputToDisplay = function(tasks) {
-      if (this._output.length === 0) {
+      if (this._output.length === 0 || this._observedOutputs.length === 0) {
         return '';
       }
       var testToDisplay = this.getIndexOfFirstFailedTest(tasks);
