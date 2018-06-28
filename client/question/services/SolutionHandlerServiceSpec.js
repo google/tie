@@ -17,8 +17,13 @@
  */
 
 describe('SolutionHandlerService', function() {
+  var $q;
+  var $scope;
   var SUPPORTED_PYTHON_LIBS;
   var SolutionHandlerService;
+  var CodeRunnerDispatcherService;
+  var CodeEvalResultObjectFactory;
+  var ErrorTracebackObjectFactory;
   var TaskObjectFactory;
   var orderedTasks;
   var auxiliaryCode;
@@ -94,8 +99,16 @@ describe('SolutionHandlerService', function() {
   beforeEach(module('tie'));
 
   // Mock tasks for preprocessing.
+  beforeEach(inject(function(_$q_, _$rootScope_) {
+    $q = _$q_;
+    $scope = _$rootScope_.$new();
+  }));
+
   beforeEach(inject(function($injector) {
     SolutionHandlerService = $injector.get('SolutionHandlerService');
+    CodeRunnerDispatcherService = $injector.get('CodeRunnerDispatcherService');
+    CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
+    ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
@@ -393,6 +406,35 @@ describe('SolutionHandlerService', function() {
             'SyntaxError:')).toEqual(true);
           done();
         });
+      });
+    });
+
+    describe('potentialServerError', function() {
+      it('should correctly handle a compile-time server error', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    return True'
+        ].join('\n');
+
+        spyOn(CodeRunnerDispatcherService, 'compileCodeAsync').and.callFake(
+          function() {
+            var result = $q.defer();
+            result.resolve(CodeEvalResultObjectFactory.create(
+              '', '', [], [], [], ErrorTracebackObjectFactory.fromServerError(),
+              ''));
+            return result.promise;
+          });
+
+        SolutionHandlerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(feedback) {
+          expect(feedback.isAnswerCorrect()).toEqual(false);
+          expect(feedback.getParagraphs()[0].getContent().startsWith(
+            'A server error has occurred.')).toEqual(true);
+          done();
+        });
+        $scope.$apply();
       });
     });
 
