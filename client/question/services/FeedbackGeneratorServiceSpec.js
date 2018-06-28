@@ -361,7 +361,47 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toBe([
         'A server error has occurred. We are looking into it ',
         'and will fix it as quickly as possible. We apologize ',
-        'for the inconvenience.'
+        'for the inconvenience. Please refresh and try again.\n',
+        'If the problem still has not been resolved, please email ',
+        'tie-team@google.com to escalate.'
+      ].join(''));
+    });
+  });
+
+  describe('_getCompileFeedback', function() {
+    it('should return an error if the server returns an error', function() {
+      var feedback = FeedbackGeneratorService._getCompileFeedback(
+        'A server error occurred.');
+      var paragraphs = feedback.getParagraphs();
+
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.SERVER_ERROR);
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'A server error has occurred. We are looking into it ',
+        'and will fix it as quickly as possible. We apologize ',
+        'for the inconvenience. Please refresh and try again.\n',
+        'If the problem still has not been resolved, please email ',
+        'tie-team@google.com to escalate.'
+      ].join(''));
+    });
+
+    it('should return an error if the server times out', function() {
+      var feedback = FeedbackGeneratorService._getCompileFeedback(
+        'TimeLimitError: Time limit for request exceeded.');
+      var paragraphs = feedback.getParagraphs();
+
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.SERVER_ERROR);
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        'A server error has occurred. We are looking into it ',
+        'and will fix it as quickly as possible. We apologize ',
+        'for the inconvenience. Please refresh and try again.\n',
+        'If the problem still has not been resolved, please email ',
+        'tie-team@google.com to escalate.'
       ].join(''));
     });
   });

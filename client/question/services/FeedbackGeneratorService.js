@@ -464,7 +464,9 @@ tie.factory('FeedbackGeneratorService', [
       feedback.appendTextParagraph([
         'A server error has occurred. We are looking into it ',
         'and will fix it as quickly as possible. We apologize ',
-        'for the inconvenience.'
+        'for the inconvenience. Please refresh and try again.\n',
+        'If the problem still has not been resolved, please email ',
+        'tie-team@google.com to escalate.'
       ].join(''));
       return feedback;
     };
@@ -592,6 +594,46 @@ tie.factory('FeedbackGeneratorService', [
       } else {
         return '';
       }
+    };
+
+    /**
+     * Returns the Feedback object associated with a compilation submission.
+     *
+     * @param {string} errorString A string detailing any errors.
+     * @returns {Feedback}
+     * @private
+     */
+    var _getCompileFeedback = function(errorString) {
+      // If we get a timeout error, here, it's not due to the student's code.
+      // As such, we should throw a server error.
+      if (errorString.startsWith('TimeLimitError') ||
+          errorString.startsWith('A server error occurred.')) {
+        return _getServerErrorFeedback();
+      } else {
+        return getSyntaxErrorFeedback(errorString);
+      }
+    };
+
+    /**
+     * Returns the Feedback object for the given syntax error string.
+     *
+     * @param {string} errorString A string detailing any errors.
+     * @returns {Feedback}
+     */
+    var getSyntaxErrorFeedback = function(errorString) {
+      // If the user receives another syntax error, increment the
+      // language unfamiliarity error counter.
+      _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
+      previousRuntimeErrorString = '';
+      var feedback = FeedbackObjectFactory.create(
+        FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+      feedback.appendTextParagraph(
+        'It looks like your code has a syntax error. ' +
+        'Try to figure out what the error is.');
+      feedback.appendErrorParagraph(errorString);
+
+      _applyThresholdUpdates(feedback);
+      return feedback;
     };
 
     /**
@@ -736,27 +778,7 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
-      /**
-       * Returns the Feedback object for the given syntax error string.
-       *
-       * @param {string} errorString
-       * @returns {Feedback}
-       */
-      getSyntaxErrorFeedback: function(errorString) {
-        // If the user receives another syntax error, increment the
-        // language unfamiliarity error counter.
-        _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-        previousRuntimeErrorString = '';
-        var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-        feedback.appendTextParagraph(
-          'It looks like your code has a syntax error. ' +
-          'Try to figure out what the error is.');
-        feedback.appendErrorParagraph(errorString);
-
-        _applyThresholdUpdates(feedback);
-        return feedback;
-      },
+      getSyntaxErrorFeedback: getSyntaxErrorFeedback,
       /**
        * Returns the appropriate Feedback object for the given Prerequisite
        * Check Failure.
@@ -881,6 +903,7 @@ tie.factory('FeedbackGeneratorService', [
       _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
+      _getCompileFeedback: _getCompileFeedback,
       _getCorrectnessFeedbackString: _getCorrectnessFeedbackString,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,

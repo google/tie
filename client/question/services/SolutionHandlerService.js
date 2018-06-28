@@ -59,10 +59,10 @@ tie.factory('SolutionHandlerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
-            var potentialSyntaxErrorString = codeEvalResult.getErrorString();
-            if (potentialSyntaxErrorString) {
-              feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-                potentialSyntaxErrorString);
+            var potentialErrorString = codeEvalResult.getErrorString();
+            if (potentialErrorString) {
+              feedback = FeedbackGeneratorService._getCompileFeedback(
+                potentialErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return feedback;
             }
