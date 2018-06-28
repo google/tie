@@ -724,7 +724,9 @@ tie.constant('SECONDS_TO_MILLISECONDS', 1000);
 tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 
 /**
-* Default user stdOut separator length.
+* Default user stdOut separator length. A string separator is utilized
+* in splitting the total output into the corresponding outputs for each
+* test case. The separator is in between the output of different test cases.
 *
 * @type {number}
 * @constant
@@ -733,7 +735,7 @@ tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 tie.constant('SEPARATOR_LENGTH', 20);
 
 /**
-* Default line prefix to denote separator.
+* Default line prefix to denote separator code.
 *
 * @type {string}
 * @constant
