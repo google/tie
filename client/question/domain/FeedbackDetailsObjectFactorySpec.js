@@ -28,8 +28,8 @@ describe('FeedbackDetailsObjectFactory', function() {
       'FeedbackDetailsObjectFactory');
   }));
 
-  describe('time-limit error feedback details', function() {
-    it('should create a time-limit feedback details object', function() {
+  describe('time-limit error FeedbackDetails object', function() {
+    it('should create a time-limit FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
@@ -37,8 +37,8 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
-  describe('stack-exceeded error feedback details', function() {
-    it('should create a stack-exceeded feedback details object', function() {
+  describe('stack-exceeded error FeedbackDetails object', function() {
+    it('should create a stack exceeded FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createStackExceededFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
@@ -46,8 +46,8 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
-  describe('server error feedback details', function() {
-    it('should create a server error feedback details object', function() {
+  describe('server error FeedbackDetails object', function() {
+    it('should create a server error FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createServerErrorFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
@@ -55,8 +55,8 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
-  describe('runtime error feedback', function() {
-    it('should create a runtime feedback details object', function() {
+  describe('runtime error FeedbackDetails object', function() {
+    it('should create a runtime error FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
