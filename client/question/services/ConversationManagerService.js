@@ -13,18 +13,48 @@
 // limitations under the License.
 
 /**
- * @fileoverview Service that orchestrates the processing of a user's code
- * submission.
+ * @fileoverview Service that orchestrates TIE's conversation with the learner.
  */
 
-tie.factory('SolutionHandlerService', [
+tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'TranscriptService', 'CodeSubmissionObjectFactory', 'FEEDBACK_CATEGORIES',
+  'FeedbackDetailsObjectFactory',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory) {
+      TranscriptService, CodeSubmissionObjectFactory, FEEDBACK_CATEGORIES,
+      FeedbackDetailsObjectFactory) {
+
+    // TODO(sll): Modify this to also depend on the learner's submission
+    // history.
+
+    /**
+     * Determines the feedback details that fully characterize the feedback
+     * that the learner should receive.
+     *
+     * @returns {FeedbackDetails}
+     */
+    var computeFeedbackDetails = function(codeEvalResult) {
+      var errorString = codeEvalResult.getErrorString();
+      if (errorString) {
+        if (errorString.startsWith('TimeLimitError')) {
+          return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
+        } else if (
+            errorString.startsWith('ExternalError: RangeError') ||
+            errorString.includes('maximum recursion depth exceeded')) {
+          return FeedbackDetailsObjectFactory.createStackExceededFeedback();
+        } else if (errorString.startsWith('A server error occurred.')) {
+          return FeedbackDetailsObjectFactory.createServerErrorFeedback();
+        } else {
+          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback();
+        }
+      }
+
+      return null;
+    };
+
     return {
       /**
        * Asynchronously returns a Promise with a Feedback object associated
@@ -78,9 +108,43 @@ tie.factory('SolutionHandlerService', [
             return CodeRunnerDispatcherService.runCodeAsync(
               language, codeSubmission.getPreprocessedCode()
             ).then(function(preprocessedCodeEvalResult) {
-              feedback = FeedbackGeneratorService.getFeedback(
-                tasks, preprocessedCodeEvalResult,
-                codeSubmission.getRawCodeLineIndexes());
+              var feedbackDetails = computeFeedbackDetails(
+                preprocessedCodeEvalResult);
+
+              // TODO(sll): Remove this case.
+              if (feedbackDetails === null) {
+                feedback = FeedbackGeneratorService.getFeedback(
+                  tasks, preprocessedCodeEvalResult,
+                  codeSubmission.getRawCodeLineIndexes());
+              } else {
+                switch (feedbackDetails.getFeedbackCategory()) {
+                  case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
+                    feedback = (
+                      FeedbackGeneratorService.getTimeoutErrorFeedback());
+                    break;
+                  case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
+                    feedback = (
+                      FeedbackGeneratorService.getStackExceededFeedback());
+                    break;
+                  case FEEDBACK_CATEGORIES.SERVER_ERROR:
+                    feedback = (
+                      FeedbackGeneratorService.getServerErrorFeedback());
+                    break;
+                  case FEEDBACK_CATEGORIES.RUNTIME_ERROR:
+                    feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
+                      preprocessedCodeEvalResult,
+                      codeSubmission.getRawCodeLineIndexes());
+                    break;
+                  case null:
+                    feedback = FeedbackGeneratorService.getFeedback(
+                      tasks, preprocessedCodeEvalResult,
+                      codeSubmission.getRawCodeLineIndexes());
+                    break;
+                  default:
+                    throw Error('Invalid feedback type.');
+                }
+              }
+
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
               return feedback;

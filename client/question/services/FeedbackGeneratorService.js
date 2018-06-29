@@ -398,38 +398,38 @@ tie.factory('FeedbackGeneratorService', [
           CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
       }
       switch (correctnessTestStates[testCaseKey]) {
-      case CORRECTNESS_STATE_STARTING:
-        // Display an input that the learner should use to manually walk
-        // through their code.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_INPUT_DISPLAYED;
-        return feedback;
-      case CORRECTNESS_STATE_INPUT_DISPLAYED:
-        // Display expected output to the user.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
-        feedback.appendCodeParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-          'Expected Output: ' +
-          _jsToHumanReadable(allowedOutputExample));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-        return feedback;
-      default:
-        // Allow the user to display the output of their code.
-        feedback.appendTextParagraph(
-          _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
-        feedback.appendOutputParagraph(
-          'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-          '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-          '\nActual Output: ' + _jsToHumanReadable(observedOutput));
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE;
-        return feedback;
+        case CORRECTNESS_STATE_STARTING:
+          // Display an input that the learner should use to manually walk
+          // through their code.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_INPUT_DISPLAYED;
+          return feedback;
+        case CORRECTNESS_STATE_INPUT_DISPLAYED:
+          // Display expected output to the user.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
+          feedback.appendCodeParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+            'Expected Output: ' +
+            _jsToHumanReadable(allowedOutputExample));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+          return feedback;
+        default:
+          // Allow the user to display the output of their code.
+          feedback.appendTextParagraph(
+            _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
+          feedback.appendOutputParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE;
+          return feedback;
       }
     };
 
@@ -453,76 +453,6 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Returns the Feedback related to a server error.
-     *
-     * @returns {Feedback}
-     * @private
-     */
-    var _getServerErrorFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.SERVER_ERROR);
-      feedback.appendTextParagraph([
-        'A server error has occurred. We are looking into it ',
-        'and will fix it as quickly as possible. We apologize ',
-        'for the inconvenience.'
-      ].join(''));
-      return feedback;
-    };
-
-    /**
-     * Returns the Feedback object associated with a runtime error when running
-     * the user code.
-     *
-     * @param {CodeEvalResult} codeEvalResult Results of running tests on
-     *    user's submission.
-     * @param {Array} rawCodeLineIndexes Should be an array of numbers
-     *    corresponding to the line numbers for the user's submission.
-     * @returns {Feedback}
-     * @private
-     */
-    var _getRuntimeErrorFeedback = function(
-        codeEvalResult, rawCodeLineIndexes) {
-      var errorInput = codeEvalResult.getErrorInput();
-      var inputClause = (
-        ' when evaluating the input ' + _jsToHumanReadable(errorInput));
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.RUNTIME_ERROR);
-
-      var fixedErrorString = codeEvalResult.getErrorString().replace(
-        new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
-          var preprocessedCodeLineIndex = (
-            Number(humanReadableLineNumber) - 1);
-          if (preprocessedCodeLineIndex < 0 ||
-              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
-            throw Error(
-              'Line number index out of range: ' + preprocessedCodeLineIndex);
-          }
-          if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
-            console.error(
-              'Runtime error on line ' + preprocessedCodeLineIndex +
-              ' in the preprocessed code');
-            return 'a line in the test code';
-          } else {
-            return 'line ' + (
-              rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
-          }
-        }
-      );
-
-      // TODO(dianakc): Will need to adjust according to programming language
-      var feedbackString = _getHumanReadableRuntimeFeedback(
-          fixedErrorString, LANGUAGE_PYTHON);
-      if (feedbackString === null) {
-        feedback.appendTextParagraph(
-          "Looks like your code had a runtime error" + inputClause + ".");
-        feedback.appendErrorParagraph(fixedErrorString);
-      } else {
-        feedback.appendTextParagraph(feedbackString);
-      }
-      return feedback;
-    };
-
-    /**
      * Based on passed in error string, will generate the appropriate,
      * informative feedback to be appended to the overall submission feedback.
      *
@@ -538,40 +468,6 @@ tie.factory('FeedbackGeneratorService', [
         }
       });
       return result;
-    };
-
-    /**
-     * Returns the Feedback object associated with a timeout error.
-     *
-     * @returns {Feedback}
-     * @private
-     */
-    var _getTimeoutErrorFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
-      feedback.appendTextParagraph([
-        "Your program's exceeded the time limit (",
-        CODE_EXECUTION_TIMEOUT_SECONDS,
-        " seconds) we've set. Can you try to make it run ",
-        "more efficiently?"
-      ].join(''));
-      return feedback;
-    };
-
-    /**
-     * Returns the Feedback object associated with an Infinite Loop error.
-     *
-     * @returns {Feedback}
-     * @private
-     */
-    var _getInfiniteLoopFeedback = function() {
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
-      feedback.appendTextParagraph([
-        "Looks like your code is hitting an infinite recursive loop.",
-        "Check to see that your recursive calls terminate."
-      ].join(' '));
-      return feedback;
     };
 
     /**
@@ -596,144 +492,101 @@ tie.factory('FeedbackGeneratorService', [
 
     /**
      * Returns the Feedback object associated with a given user submission.
+     * This assumes that the feedback is not of the forms: timeout, syntax
+     * error, server error or runtime error.
      *
      * @param {Array} tasks Tasks associated with the problem that include
      *    the tests the user's code must pass.
      * @param {CodeEvalResult} codeEvalResult Test results for this submission
-     * @param {Array} rawCodeLineIndexes The code line numbers for the user's
-     *    submission. Should be an array of numbers.
      * @returns {Feedback}
      * @private
      */
-    var _getMainFeedback = function(tasks, codeEvalResult, rawCodeLineIndexes) {
-      var errorString = codeEvalResult.getErrorString();
-      if (errorString) {
-        // We want to catch and handle a timeout error uniquely, rather than
-        // integrate it into the existing feedback pipeline.
-        if (errorString.startsWith('TimeLimitError')) {
-          return _getTimeoutErrorFeedback();
-        } else if (errorString.startsWith('ExternalError: RangeError') ||
-          errorString.includes('maximum recursion depth exceeded')) {
-          return _getInfiniteLoopFeedback();
-        } else if (errorString.startsWith('A server error occurred.')) {
-          return _getServerErrorFeedback();
-        } else {
-          return _getRuntimeErrorFeedback(codeEvalResult, rawCodeLineIndexes);
+    var _getMainFeedback = function(tasks, codeEvalResult) {
+      var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
+      var observedOutputs = codeEvalResult.getObservedOutputs();
+      var performanceTestResults = codeEvalResult.getPerformanceTestResults();
+      var codeHasChanged = _hasCodeChanged(codeEvalResult);
+
+      for (var i = 0; i < tasks.length; i++) {
+        var buggyOutputTests = tasks[i].getBuggyOutputTests();
+        var suiteLevelTests = tasks[i].getSuiteLevelTests();
+        var testSuites = tasks[i].getTestSuites();
+        var performanceTests = tasks[i].getPerformanceTests();
+        var passingSuiteIds = codeEvalResult.getPassingSuiteIds(tasks, i);
+
+        for (var j = 0; j < buggyOutputTests.length; j++) {
+          if (buggyOutputTestResults[i][j]) {
+
+            var feedback = _getBuggyOutputTestFeedback(
+              buggyOutputTests[j], codeHasChanged);
+            // Null feedback indicates that we've run out of hints and should
+            // provide correctness-test output feedback instead.
+            if (!feedback) {
+              break;
+            }
+
+            return feedback;
+          }
         }
-      } else {
-        var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
-        var observedOutputs = codeEvalResult.getObservedOutputs();
-        var performanceTestResults = codeEvalResult.getPerformanceTestResults();
-        var codeHasChanged = _hasCodeChanged(codeEvalResult);
 
-        for (var i = 0; i < tasks.length; i++) {
-          var buggyOutputTests = tasks[i].getBuggyOutputTests();
-          var suiteLevelTests = tasks[i].getSuiteLevelTests();
-          var testSuites = tasks[i].getTestSuites();
-          var performanceTests = tasks[i].getPerformanceTests();
-
-          var passingSuiteIds = [];
-          testSuites.forEach(function(suite, suiteIndex) {
-            var testCases = suite.getTestCases();
-            var observedSuiteOutputs = observedOutputs[i][suiteIndex];
-            var allTestCasesPass = testCases.every(function(testCase, index) {
-              return testCase.matchesOutput(observedSuiteOutputs[index]);
-            });
-
-            if (allTestCasesPass) {
-              passingSuiteIds.push(suite.getId());
+        for (j = 0; j < suiteLevelTests.length; j++) {
+          if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+            feedback = _getSuiteLevelTestFeedback(
+              suiteLevelTests[j], codeHasChanged);
+            if (!feedback) {
+              break;
             }
-          });
 
-          for (var j = 0; j < buggyOutputTests.length; j++) {
-            if (buggyOutputTestResults[i][j]) {
-
-              var feedback = _getBuggyOutputTestFeedback(
-                buggyOutputTests[j], codeHasChanged);
-              // Null feedback indicates that we've run out of hints and should
-              // provide correctness-test output feedback instead.
-              if (!feedback) {
-                break;
-              }
-
-              return feedback;
-            }
+            return feedback;
           }
+        }
 
-          for (j = 0; j < suiteLevelTests.length; j++) {
-            if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-              feedback = _getSuiteLevelTestFeedback(
-                suiteLevelTests[j], codeHasChanged);
-              if (!feedback) {
-                break;
-              }
-
-              return feedback;
-            }
-          }
-
-          for (j = 0; j < testSuites.length; j++) {
-            var testCases = testSuites[j].getTestCases();
-            for (var testCaseIndex = 0; testCaseIndex < testCases.length;
-              testCaseIndex++) {
-              var testCase = testCases[testCaseIndex];
-              var testSuiteId = testSuites[j].getId();
-              var observedOutput = observedOutputs[i][j][testCaseIndex];
-              if (!testCase.matchesOutput(observedOutput)) {
-                return _getCorrectnessTestFeedback(
-                  testCase, testSuiteId, testCaseIndex, observedOutput);
-              }
-            }
-          }
-
-          for (j = 0; j < performanceTests.length; j++) {
-            var expectedPerformance = (
-              performanceTests[j].getExpectedPerformance());
-            var observedPerformance = performanceTestResults[i][j];
-
-            if (expectedPerformance !== observedPerformance) {
-              return _getPerformanceTestFeedback(expectedPerformance);
+        for (j = 0; j < testSuites.length; j++) {
+          var testCases = testSuites[j].getTestCases();
+          for (var testCaseIndex = 0; testCaseIndex < testCases.length;
+            testCaseIndex++) {
+            var testCase = testCases[testCaseIndex];
+            var testSuiteId = testSuites[j].getId();
+            var observedOutput = observedOutputs[i][j][testCaseIndex];
+            if (!testCase.matchesOutput(observedOutput)) {
+              return _getCorrectnessTestFeedback(
+                testCase, testSuiteId, testCaseIndex, observedOutput);
             }
           }
         }
 
-        feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
-        feedback.appendTextParagraph([
-          'You\'ve completed all the tasks for this question! Click the ',
-          '"Next" button to move on to the next question.'
-        ].join(''));
-        return feedback;
+        for (j = 0; j < performanceTests.length; j++) {
+          var expectedPerformance = (
+            performanceTests[j].getExpectedPerformance());
+          var observedPerformance = performanceTestResults[i][j];
+
+          if (expectedPerformance !== observedPerformance) {
+            return _getPerformanceTestFeedback(expectedPerformance);
+          }
+        }
       }
+
+      feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
+      feedback.appendTextParagraph([
+        'You\'ve completed all the tasks for this question! Click the ',
+        '"Next" button to move on to the next question.'
+      ].join(''));
+      return feedback;
     };
 
     return {
       /**
        * Returns the feedback associated with a user's code submission and
-       * their test results.
+       * their test results. This assumes that the feedback is not of the
+       * forms: timeout, syntax error, server error or runtime error.
        *
        * @param {Array} tasks Tasks associated with the problem that include
        *    the tests the user's code must pass.
        * @param {CodeEvalResult} codeEvalResult Test results for this submission
-       * @param {Array} rawCodeLineIndexes The code line numbers for the user's
-       *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getFeedback: function(tasks, codeEvalResult, rawCodeLineIndexes) {
-        // If the user receives the same error message increment the same error
-        // counter.
-        if (previousRuntimeErrorString &&
-            previousRuntimeErrorString === codeEvalResult.getErrorString()) {
-          _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
-        } else {
-          _resetCounters();
-        }
-
-        var feedback = _getMainFeedback(
-          tasks, codeEvalResult, rawCodeLineIndexes);
-
-        _applyThresholdUpdates(feedback);
-        previousRuntimeErrorString = codeEvalResult.getErrorString();
-
+      getFeedback: function(tasks, codeEvalResult) {
+        var feedback = _getMainFeedback(tasks, codeEvalResult);
         return feedback;
       },
       /**
@@ -878,19 +731,124 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
+      /**
+       * Returns the Feedback object associated with a timeout error.
+       *
+       * @returns {Feedback}
+       */
+      getTimeoutErrorFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
+        feedback.appendTextParagraph([
+          "Your program's exceeded the time limit (",
+          CODE_EXECUTION_TIMEOUT_SECONDS,
+          " seconds) we've set. Can you try to make it run ",
+          "more efficiently?"
+        ].join(''));
+        return feedback;
+      },
+      /**
+       * Returns the Feedback object associated with an "stack exceeded" error.
+       *
+       * @returns {Feedback}
+       */
+      getStackExceededFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
+        feedback.appendTextParagraph([
+          "Looks like your code is hitting an infinite recursive loop.",
+          "Check to see that your recursive calls terminate."
+        ].join(' '));
+        return feedback;
+      },
+      /**
+       * Returns the Feedback related to a server error.
+       *
+       * @returns {Feedback}
+       */
+      getServerErrorFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SERVER_ERROR);
+        feedback.appendTextParagraph([
+          'A server error has occurred. We are looking into it ',
+          'and will fix it as quickly as possible. We apologize ',
+          'for the inconvenience.'
+        ].join(''));
+        return feedback;
+      },
+      /**
+       * Returns the Feedback object associated with a runtime error when
+       * running the user code.
+       *
+       * @param {CodeEvalResult} codeEvalResult Results of running tests on
+       *    user's submission.
+       * @param {Array} rawCodeLineIndexes The code line numbers for the user's
+       *    submission. Should be an array of numbers.
+       * @returns {Feedback}
+       */
+      getRuntimeErrorFeedback: function(codeEvalResult, rawCodeLineIndexes) {
+        // If the user receives the same error message increment the same error
+        // counter.
+        if (previousRuntimeErrorString &&
+            previousRuntimeErrorString === codeEvalResult.getErrorString()) {
+          _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
+        } else {
+          _resetCounters();
+        }
+
+        var errorInput = codeEvalResult.getErrorInput();
+        var inputClause = (
+          ' when evaluating the input ' + _jsToHumanReadable(errorInput));
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+
+        var fixedErrorString = codeEvalResult.getErrorString().replace(
+          new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
+            var preprocessedCodeLineIndex = (
+              Number(humanReadableLineNumber) - 1);
+            if (preprocessedCodeLineIndex < 0 ||
+                preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+              throw Error(
+                'Line number index out of range: ' + preprocessedCodeLineIndex);
+            }
+            if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+              console.error(
+                'Runtime error on line ' + preprocessedCodeLineIndex +
+                ' in the preprocessed code');
+              return 'a line in the test code';
+            } else {
+              return 'line ' + (
+                rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
+            }
+          }
+        );
+
+        // TODO(dianakc): Will need to adjust according to programming language
+        var feedbackString = _getHumanReadableRuntimeFeedback(
+            fixedErrorString, LANGUAGE_PYTHON);
+        if (feedbackString === null) {
+          feedback.appendTextParagraph(
+            "Looks like your code had a runtime error" + inputClause + ".");
+          feedback.appendErrorParagraph(fixedErrorString);
+        } else {
+          feedback.appendTextParagraph(feedbackString);
+        }
+
+        _applyThresholdUpdates(feedback);
+
+        previousRuntimeErrorString = codeEvalResult.getErrorString();
+
+        return feedback;
+      },
       _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
       _getCorrectnessFeedbackString: _getCorrectnessFeedbackString,
       _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
       _getPerformanceTestFeedback: _getPerformanceTestFeedback,
-      _getInfiniteLoopFeedback: _getInfiniteLoopFeedback,
-      _getServerErrorFeedback: _getServerErrorFeedback,
       _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRandomInt: _getRandomInt,
-      _getRuntimeErrorFeedback: _getRuntimeErrorFeedback,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
-      _getTimeoutErrorFeedback: _getTimeoutErrorFeedback,
       _jsToHumanReadable: _jsToHumanReadable,
       _resetCounters: _resetCounters,
       _updateCounters: _updateCounters

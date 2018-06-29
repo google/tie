@@ -13,12 +13,12 @@
 // limitations under the License.
 
 /**
- * @fileoverview Unit tests for SolutionHandlerService.
+ * @fileoverview Unit tests for ConversationManagerService.
  */
 
-describe('SolutionHandlerService', function() {
+describe('ConversationManagerService', function() {
   var SUPPORTED_PYTHON_LIBS;
-  var SolutionHandlerService;
+  var ConversationManagerService;
   var TaskObjectFactory;
   var orderedTasks;
   var auxiliaryCode;
@@ -95,7 +95,7 @@ describe('SolutionHandlerService', function() {
 
   // Mock tasks for preprocessing.
   beforeEach(inject(function($injector) {
-    SolutionHandlerService = $injector.get('SolutionHandlerService');
+    ConversationManagerService = $injector.get('ConversationManagerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
@@ -132,7 +132,7 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -150,7 +150,7 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -170,7 +170,7 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -191,7 +191,7 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -211,7 +211,7 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -230,7 +230,7 @@ describe('SolutionHandlerService', function() {
           '    return False'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -252,7 +252,7 @@ describe('SolutionHandlerService', function() {
             '    return True or True'
           ].join('\n');
 
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode1,
             auxiliaryCode, 'python'
           ).then(function(feedback1) {
@@ -260,7 +260,7 @@ describe('SolutionHandlerService', function() {
             expect(feedback1.getParagraphs()[0].getContent()).toEqual(
                'Mock BuggyOutputTest Message One for task1');
 
-            SolutionHandlerService.processSolutionAsync(
+            ConversationManagerService.processSolutionAsync(
               orderedTasks, starterCode, studentCode1,
               auxiliaryCode, 'python'
             ).then(function(feedback2) {
@@ -269,7 +269,7 @@ describe('SolutionHandlerService', function() {
               expect(feedback2.getParagraphs()[0].getContent()).toEqual(
                 'Mock BuggyOutputTest Message One for task1');
 
-              SolutionHandlerService.processSolutionAsync(
+              ConversationManagerService.processSolutionAsync(
                 orderedTasks, starterCode, studentCode2,
                 auxiliaryCode, 'python'
               ).then(function(feedback3) {
@@ -294,7 +294,7 @@ describe('SolutionHandlerService', function() {
             'mockMainFunction("input")'
           ].join('\n');
 
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
@@ -310,7 +310,7 @@ describe('SolutionHandlerService', function() {
       );
 
       it('should be correctly handled if missing starter code', function(done) {
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, '',
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -333,7 +333,7 @@ describe('SolutionHandlerService', function() {
           '    return True'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -366,7 +366,7 @@ describe('SolutionHandlerService', function() {
             ''
           ].join('\n');
 
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode,
             auxiliaryCode, 'python'
           ).then(function(feedback) {
@@ -384,7 +384,7 @@ describe('SolutionHandlerService', function() {
           '    return True -'
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -404,7 +404,7 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -423,7 +423,7 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
         ).then(function(feedback) {
@@ -477,7 +477,7 @@ describe('SolutionHandlerService', function() {
             ''
           ].join('\n');
 
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(
@@ -502,7 +502,7 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(feedback.getParagraphs()[0].getContent()).toBe(
@@ -558,7 +558,7 @@ describe('SolutionHandlerService', function() {
             ''
           ].join('\n');
 
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
           ).then(function(feedback) {
             expect(feedback.getParagraphs()[0].getContent()).toBe(
@@ -584,7 +584,7 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(
@@ -608,7 +608,7 @@ describe('SolutionHandlerService', function() {
           ''
         ].join('\n');
 
-        SolutionHandlerService.processSolutionAsync(
+        ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
         ).then(function(feedback) {
           expect(feedback.getParagraphs()[0].getContent()).toBe(
