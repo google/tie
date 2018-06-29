@@ -51,7 +51,9 @@
         "func-name-matching": "error",
         "func-style": "error",
         "id-blacklist": ["error", "cb", "callback"],
-        "indent": ["error", 2],
+        "indent": ["error", 2, {
+            "SwitchCase": 1
+        }],
         "jsx-quotes": "error",
         "key-spacing": "error",
         "keyword-spacing": "error",

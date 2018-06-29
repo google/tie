@@ -483,7 +483,7 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
-      'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
+      'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
@@ -495,7 +495,7 @@ tie.directive('learnerView', [function() {
       'CODE_RESET_CONFIRMATION_MESSAGE',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
-          SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
+          ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
@@ -1020,7 +1020,7 @@ tie.directive('learnerView', [function() {
           var question = CurrentQuestionService.getCurrentQuestion();
           var tasks = question.getTasks();
           var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
             code, question.getAuxiliaryCode(language), language
           ).then(function(feedback) {

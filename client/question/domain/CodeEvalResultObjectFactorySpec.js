@@ -191,5 +191,97 @@ describe('CodeEvalResultObjectFactory', function() {
       expect(codeEvalResult.getErrorString()).toBe(null);
     });
   });
+
+  describe('getPassingSuiteIds', function() {
+    it('should return the correct list of passing suite IDs', function() {
+      var tasks = [
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'TASK1_SUITE1',
+            humanReadableName: 'the general case',
+            testCases: [{
+              input: 'task_1_suite_1_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_1_suite_1_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }, {
+            id: 'TASK1_SUITE2',
+            humanReadableName: 'the second case',
+            testCases: [{
+              input: 'task_1_suite_2_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_1_suite_2_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        }),
+        TaskObjectFactory.create({
+          instructions: [''],
+          prerequisiteSkills: [''],
+          acquiredSkills: [''],
+          inputFunctionName: null,
+          outputFunctionName: null,
+          mainFunctionName: 'mockMainFunction',
+          languageSpecificTips: {
+            python: []
+          },
+          testSuites: [{
+            id: 'TASK2_SUITE1',
+            humanReadableName: 'the general case',
+            testCases: [{
+              input: 'task_2_suite_1_correctness_test_1',
+              allowedOutputs: [true]
+            }, {
+              input: 'task_2_suite_2_correctness_test_2',
+              allowedOutputs: [true]
+            }]
+          }],
+          buggyOutputTests: [],
+          suiteLevelTests: [],
+          performanceTests: []
+        })
+      ];
+
+      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, true], [true, true]], [[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult1.getPassingSuiteIds(tasks, 0)).toEqual(
+        ['TASK1_SUITE1', 'TASK1_SUITE2']);
+      expect(codeEvalResult1.getPassingSuiteIds(tasks, 1)).toEqual(
+        ['TASK2_SUITE1']);
+
+      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[true, false], [true, true]], [[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult2.getPassingSuiteIds(tasks, 0)).toEqual(
+        ['TASK1_SUITE2']);
+      expect(codeEvalResult2.getPassingSuiteIds(tasks, 1)).toEqual(
+        ['TASK2_SUITE1']);
+
+      var codeEvalResult3 = CodeEvalResultObjectFactory.create(
+        CODE, OUTPUT, [[[false, true], [false, true]], [[true, true]]],
+        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
+        ERROR_INPUT);
+      expect(codeEvalResult3.getPassingSuiteIds(tasks, 0)).toEqual([]);
+    });
+  });
 });
 

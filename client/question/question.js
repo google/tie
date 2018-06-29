@@ -822,3 +822,19 @@ tie.constant('CODE_RESET_CONFIRMATION_MESSAGE', [
   'Are you sure you want to reset your code? This will clear all of your ',
   'existing progress on the question.'
 ].join(''));
+
+/**
+ * Constant that denotes the compile-time execution context.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('EXECUTION_CONTEXT_COMPILATION', 'COMPILATION');
+
+/**
+ * Constant that denotes the run-time execution context.
+ *
+ * @type {string}
+ * @constant
+ */
+tie.constant('EXECUTION_CONTEXT_RUN_WITH_TESTS', 'RUN_WITH_TESTS');
