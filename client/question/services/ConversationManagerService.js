@@ -20,23 +20,31 @@ tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
   'TranscriptService', 'CodeSubmissionObjectFactory', 'FEEDBACK_CATEGORIES',
-  'FeedbackDetailsObjectFactory',
+  'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
+  'EXECUTION_CONTEXT_RUN_WITH_TESTS',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory, FEEDBACK_CATEGORIES,
-      FeedbackDetailsObjectFactory) {
+      FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
+      EXECUTION_CONTEXT_RUN_WITH_TESTS) {
 
-    // TODO(sll): Modify this to also depend on the learner's submission
-    // history.
+    // TODO(sll): As new error types are introduced, modify this to also depend
+    // on the learner's "state" (e.g. number of runtime errors, last code
+    // submitted, most recent test failure, etc.).
 
     /**
      * Determines the feedback details that fully characterize the feedback
      * that the learner should receive.
      *
+     * @param {CodeEvalResult} codeEvalResult The evaluation result for the
+     *   learner's code.
+     * @param {string} executionContext The execution context under which the
+     *   learner's code is run (either "compilation" or "run with tests").
+     *
      * @returns {FeedbackDetails}
      */
-    var computeFeedbackDetails = function(codeEvalResult) {
+    var computeFeedbackDetails = function(codeEvalResult, executionContext) {
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         if (errorString.startsWith('TimeLimitError')) {
@@ -48,7 +56,21 @@ tie.factory('ConversationManagerService', [
         } else if (errorString.startsWith('A server error occurred.')) {
           return FeedbackDetailsObjectFactory.createServerErrorFeedback();
         } else {
-          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback();
+          var feedbackDetails = null;
+          switch (executionContext) {
+            case EXECUTION_CONTEXT_RUN_WITH_TESTS:
+              feedbackDetails = (
+                FeedbackDetailsObjectFactory.createRuntimeErrorFeedback());
+              break;
+            case EXECUTION_CONTEXT_COMPILATION:
+              feedbackDetails = (
+                FeedbackDetailsObjectFactory.createSyntaxErrorFeedback());
+              break;
+            default:
+              throw Error('Invalid execution context: ' + executionContext);
+          }
+
+          return feedbackDetails;
         }
       }
 
@@ -89,6 +111,7 @@ tie.factory('ConversationManagerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
+            // TODO(sll): Update this to use computeFeedbackDetails().
             var potentialSyntaxErrorString = codeEvalResult.getErrorString();
             if (potentialSyntaxErrorString) {
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -109,9 +132,10 @@ tie.factory('ConversationManagerService', [
               language, codeSubmission.getPreprocessedCode()
             ).then(function(preprocessedCodeEvalResult) {
               var feedbackDetails = computeFeedbackDetails(
-                preprocessedCodeEvalResult);
+                preprocessedCodeEvalResult, EXECUTION_CONTEXT_RUN_WITH_TESTS);
 
-              // TODO(sll): Remove this case.
+              // TODO(sll): Once all feedback categories have been migrated
+              // here, remove this null case.
               if (feedbackDetails === null) {
                 feedback = FeedbackGeneratorService.getFeedback(
                   tasks, preprocessedCodeEvalResult,
