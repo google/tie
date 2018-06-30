@@ -74,6 +74,10 @@ tie.factory('FeedbackDetailsObjectFactory', [
       return new FeedbackDetails(FEEDBACK_CATEGORIES.RUNTIME_ERROR);
     };
 
+    FeedbackDetails.createSyntaxErrorFeedback = function() {
+      return new FeedbackDetails(FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+    };
+
     return FeedbackDetails;
   }
 ]);
