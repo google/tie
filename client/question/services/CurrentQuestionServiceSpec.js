@@ -28,6 +28,22 @@ describe('CurrentQuestionService', function() {
     $rootScope = $injector.get('$rootScope');
   }));
 
+  describe('initialization status', function() {
+    beforeEach(inject(function($injector) {
+      CurrentQuestionService = $injector.get('CurrentQuestionService');
+    }));
+
+    it('should correctly verify initialization status', function(done) {
+      expect(CurrentQuestionService.isInitialized()).toBe(false);
+
+      CurrentQuestionService.init(function() {
+        expect(CurrentQuestionService.isInitialized()).toBe(true);
+        done();
+      });
+      $rootScope.$digest();
+    });
+  });
+
   describe('behavior for valid question', function() {
     beforeEach(inject(function($injector) {
       // Set up a valid, but non-default, question ID. This must be done

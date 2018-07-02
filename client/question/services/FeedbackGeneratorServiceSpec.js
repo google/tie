@@ -28,7 +28,6 @@ describe('FeedbackGeneratorService', function() {
   var TracebackCoordinatesObjectFactory;
   var TranscriptService;
   var sampleErrorTraceback;
-  var timeLimitErrorTraceback;
   var testTask;
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
@@ -103,10 +102,6 @@ describe('FeedbackGeneratorService', function() {
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
-    timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
-      'TimeLimitError: Program exceeded run time limit.',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
-
     FeedbackGeneratorService._resetCounters();
   }));
 
@@ -333,9 +328,9 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getInfiniteLoopFeedback', function() {
+  describe('getStackExceededFeedback', function() {
     it('should return an error if an infinite loop is detected', function() {
-      var feedback = FeedbackGeneratorService._getInfiniteLoopFeedback();
+      var feedback = FeedbackGeneratorService.getStackExceededFeedback();
       var paragraphs = feedback.getParagraphs();
 
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -349,9 +344,9 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getServerErrorFeedback', function() {
+  describe('getServerErrorFeedback', function() {
     it('should return an error if the server returns an error', function() {
-      var feedback = FeedbackGeneratorService._getServerErrorFeedback();
+      var feedback = FeedbackGeneratorService.getServerErrorFeedback();
       var paragraphs = feedback.getParagraphs();
 
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -381,13 +376,13 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getRuntimeErrorFeedback', function() {
+  describe('getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code', 'some output', [], [], [], sampleErrorTraceback,
         'testInput');
 
-      var feedback = FeedbackGeneratorService._getRuntimeErrorFeedback(
+      var feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
         codeEvalResult, [0, 1, 2, 3, 4]);
       var paragraphs = feedback.getParagraphs();
 
@@ -413,7 +408,7 @@ describe('FeedbackGeneratorService', function() {
           'some code', 'some output', [], [], [], buggyErrorTraceback,
           'testInput');
         expect(function() {
-          FeedbackGeneratorService._getRuntimeErrorFeedback(
+          FeedbackGeneratorService.getRuntimeErrorFeedback(
             codeEvalResult, [0, 1, 2, 3, 4]
           );
         }).toThrow(new Error("Line number index out of range: -1"));
@@ -427,7 +422,7 @@ describe('FeedbackGeneratorService', function() {
           'testInput');
 
       expect(function() {
-        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult, [0]);
+        FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult, [0]);
       }).toThrow();
     });
 
@@ -437,7 +432,7 @@ describe('FeedbackGeneratorService', function() {
           'some code', 'some output', [], [], [], sampleErrorTraceback,
           'testInput');
       expect(function() {
-        FeedbackGeneratorService._getRuntimeErrorFeedback(codeEvalResult,
+        FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult,
             [0, 1, 2, 3]);
       }).toThrow();
     });
@@ -449,7 +444,7 @@ describe('FeedbackGeneratorService', function() {
 
       // This maps line 4 (0-indexed) of the preprocessed code to line 1
       // (0-indexed) of the raw code, which becomes line 2 (when 1-indexed).
-      var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
+      var paragraphs = FeedbackGeneratorService.getRuntimeErrorFeedback(
         codeEvalResult, [0, null, null, null, 1]).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
@@ -470,7 +465,7 @@ describe('FeedbackGeneratorService', function() {
 
       // This maps line 5 (1-indexed) to null, which means that there is no
       // corresponding line in the raw code.
-      var paragraphs = FeedbackGeneratorService._getRuntimeErrorFeedback(
+      var paragraphs = FeedbackGeneratorService.getRuntimeErrorFeedback(
         codeEvalResult, [0, null, null, null, null]).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
@@ -651,15 +646,9 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getTimeoutErrorFeedback', function() {
+  describe('getTimeoutErrorFeedback', function() {
     it('should return a specific error for TimeLimitErrors', function() {
-      var questionMock = {};
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], timeLimitErrorTraceback,
-        'testInput');
-
-      var feedback = FeedbackGeneratorService.getFeedback(
-        questionMock, codeEvalResult, []);
+      var feedback = FeedbackGeneratorService.getTimeoutErrorFeedback();
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
 
@@ -1021,8 +1010,8 @@ describe('FeedbackGeneratorService', function() {
       var feedback;
 
       for (var i = 0; i <= UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getFeedback(
-          testTask, codeEvalResult, [0, 1, 2, 3, 4, 5]);
+        feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
+          codeEvalResult, [0, 1, 2, 3, 4, 5]);
         TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
       }
 

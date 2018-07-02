@@ -15,6 +15,10 @@
 /**
  * @fileoverview Service that maintains a local transcript of the
  * problem-solving session.
+ *
+ * DEPRECATION NOTICE FOR DEVELOPERS: This service will soon be deprecated and
+ * its functionality transferred to ConversationManagerService instead. Please
+ * don't add new functionality to this service in the meantime.
  */
 
 tie.factory('TranscriptService', [

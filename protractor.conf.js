@@ -31,7 +31,7 @@ exports.config = {
     browser.resetUrl = 'file://';
   },
   params: {
-    questionUrl: '/client/question/question.html?qid=reverseWords',
+    questionUrl: '/client/question.html?qid=reverseWords',
     questionsPage: require('./protractor_tests/questions.pageObject.js'),
     utils: require('./protractor_tests/utils.js')
   }

@@ -27,7 +27,7 @@ tie.directive('codeSnippet', [function() {
         <span class="tie-code-snippet-line">{{line}}</span>
         <br>
       </span>
-      <span ng-if="abbreviatedSnippetLines.length <= MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
+      <span ng-if="abbreviatedSnippetLines.length > MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
         <a href ng-click="openCodeModal()" ng-if="!isModalOpen()">View full code</a>
         <span ng-if="isModalOpen()">View full code</span>
       </span>
@@ -93,6 +93,7 @@ tie.directive('codeSnippet', [function() {
             $scope.abbreviatedSnippetLines = [
               $scope.snippetLines[0],
               $scope.snippetLines[1],
+              $scope.snippetLines[2],
               '...'
             ];
           }

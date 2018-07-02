@@ -70,9 +70,9 @@ describe('QuestionSchemaValidationService', function() {
       });
     });
 
-    it('checks that question id contains only chars and digits', function() {
+    it('checks that question id contains only alphabetic chars', function() {
       QUESTION_IDS.forEach(function(questionId, index) {
-        expect(/^\w+$/.test(QUESTION_IDS[index])).toBe(true);
+        expect(/^[a-zA-Z]+$/.test(QUESTION_IDS[index])).toBe(true);
       });
     });
   });

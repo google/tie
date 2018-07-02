@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app="tie" lang="en">
+  <head>
+    <title>Technical Interview Exercises</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="stylesheet" href="../third_party/codemirror-5.19.0/lib/codemirror.css">
+    <link rel="stylesheet" href="../third_party/codemirror-5.19.0/lib/mbo.css">
+    <link rel="stylesheet" href="../assets/base.css">
+    <script src="../third_party/angular-1.6.1/angular.min.js"></script>
+    <script src="../third_party/angular-1.6.1/angular-aria.min.js"></script>
+    <script src="../third_party/angular-1.6.1/angular-sanitize.min.js"></script>
+    <script src="../third_party/angular-cookies-1.6.1/angular-cookies.min.js"></script>
+    <script src="../third_party/codemirror-5.19.0/lib/codemirror.js"></script>
+    <script src="../third_party/codemirror-5.19.0/mode/python/python.js"></script>
+    <script src="../third_party/codemirror-5.19.0/addon/edit/matchbrackets.js"></script>
+    <script src="../third_party/ui-codemirror-0.3.0/ui-codemirror.min.js"></script>
+
+    <script src="config/config.js"></script>
+    <script src="config/deploymentSpecificConfig.js"></script>
+
+    <script src="data/data.js"></script>
+    <script src="data/domain/BuggyOutputTestObjectFactory.js"></script>
+    <script src="data/domain/PerformanceTestObjectFactory.js"></script>
+    <script src="data/domain/QuestionObjectFactory.js"></script>
+    <script src="data/domain/SuiteLevelTestObjectFactory.js"></script>
+    <script src="data/domain/TaskObjectFactory.js"></script>
+    <script src="data/domain/TestCaseObjectFactory.js"></script>
+    <script src="data/domain/TestSuiteObjectFactory.js"></script>
+    <script src="data/domain/TipObjectFactory.js"></script>
+    <script src="data/services/QuestionDataService.js"></script>
+
+    <script src="question/question.js"></script>
+
+    <script src="../assets/questions/bomberman.js"></script>
+    <script src="../assets/questions/checkBalancedParentheses.js"></script>
+    <script src="../assets/questions/findAlphabet.js"></script>
+    <script src="../assets/questions/findBestMeetupLocation.js"></script>
+    <script src="../assets/questions/findClosestValueBst.js"></script>
+    <script src="../assets/questions/findFirstNonRepeatingCharacter.js"></script>
+    <script src="../assets/questions/findMostCommonCharacter.js"></script>
+    <script src="../assets/questions/getStrobogrammaticNumbers.js"></script>
+    <script src="../assets/questions/incrementDecimalCodedNumber.js"></script>
+    <script src="../assets/questions/internationalization.js"></script>
+    <script src="../assets/questions/isPalindrome.js"></script>
+    <script src="../assets/questions/longestSubstring.js"></script>
+    <script src="../assets/questions/reverseWords.js"></script>
+    <script src="../assets/questions/runLengthEncoding.js"></script>
+    <script src="../assets/questions/sortItinerary.js"></script>
+    <script src="../assets/questions/splitStringIntoWords.js"></script>
+
+    <script src="question/components/CodeSnippetDirective.js"></script>
+    <script src="question/components/LearnerViewDirective.js"></script>
+    <script src="question/components/MonospaceDisplayModalDirective.js"></script>
+    <script src="question/components/OutputSnippetDirective.js"></script>
+    <script src="question/components/PrivacyModalDirective.js"></script>
+    <script src="question/components/SpeechBalloonDirectives.js"></script>
+    <script src="question/components/SpeechBalloonsContainerDirective.js"></script>
+    <script src="question/components/TextWithMarkdownLinksSnippetDirective.js"></script>
+    <script src="question/components/ErrorSnippetDirective.js"></script>
+
+    <script src="question/domain/CodeEvalResultObjectFactory.js"></script>
+    <script src="question/domain/CodeSubmissionObjectFactory.js"></script>
+    <script src="question/domain/ErrorTracebackObjectFactory.js"></script>
+    <script src="question/domain/FeedbackDetailsObjectFactory.js"></script>
+    <script src="question/domain/FeedbackObjectFactory.js"></script>
+    <script src="question/domain/FeedbackParagraphObjectFactory.js"></script>
+    <script src="question/domain/PrereqCheckErrorObjectFactory.js"></script>
+    <script src="question/domain/PrereqCheckFailureObjectFactory.js"></script>
+    <script src="question/domain/SnapshotObjectFactory.js"></script>
+    <script src="question/domain/SpeechBalloonObjectFactory.js"></script>
+    <script src="question/domain/TracebackCoordinatesObjectFactory.js"></script>
+    <script src="question/domain/TranscriptObjectFactory.js"></script>
+
+    <script src="question/services/AutosaveService.js"></script>
+    <script src="question/services/ConversationManagerService.js"></script>
+    <script src="question/services/CookieStorageService.js"></script>
+    <script src="question/services/CurrentQuestionService.js"></script>
+    <script src="question/services/EventHandlerService.js"></script>
+    <script src="question/services/FeedbackGeneratorService.js"></script>
+    <script src="question/services/LocalStorageKeyManagerService.js"></script>
+    <script src="question/services/LocalStorageService.js"></script>
+    <script src="question/services/MonospaceDisplayModalService.js"></script>
+    <script src="question/services/ServerHandlerService.js"></script>
+    <script src="question/services/SessionHistoryService.js"></script>
+    <script src="question/services/SessionIdService.js"></script>
+    <script src="question/services/ThemeNameService.js"></script>
+    <script src="question/services/TranscriptService.js"></script>
+    <script src="question/services/UnpromptedFeedbackManagerService.js"></script>
+    <script src="question/services/code_evaluators/CodeRunnerDispatcherService.js"></script>
+    <script src="question/services/code_evaluators/PrereqCheckDispatcherService.js"></script>
+    <script src="question/services/code_evaluators/PythonCodeRunnerService.js"></script>
+    <script src="question/services/code_evaluators/PythonPrereqCheckService.js"></script>
+    <script src="question/services/code_preprocessors/CodePreprocessorDispatcherService.js"></script>
+    <script src="question/services/code_preprocessors/PythonCodePreprocessorService.js"></script>
+  </head>
+  <body>
+    <learner-view></learner-view>
+
+    <!-- Only import Skulpt if there is no server specified. -->
+    <script ng-if="!SERVER_URL" src="../third_party/skulpt-12272b/skulpt.min.js"></script>
+    <script ng-if="!SERVER_URL" src="../third_party/skulpt-12272b/skulpt-stdlib.js"></script>
+  </body>
+</html>

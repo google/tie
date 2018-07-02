@@ -107,7 +107,7 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="ConversationLogDataService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -229,6 +229,12 @@ tie.directive('learnerView', [function() {
         .tie-button-green:active {
           background-color: #265221;
         }
+        .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .tie-button-green[disabled]:hover {
+          border: none;
+        }
         .night-mode .tie-button-green {
           background-color: #3C5C14;
           color: #ffffff;
@@ -238,6 +244,12 @@ tie.directive('learnerView', [function() {
         }
         .night-mode .tie-button-green:active {
           background-color: #265221;
+        }
+        .night-mode .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .night-mode .tie-button-green[disabled]:hover {
+          border: none;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -483,32 +495,32 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
-      'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
+      'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'ALL_SUPPORTED_LANGUAGES',
-      'SUPPORTED_LANGUAGE_LABELS',
+      'SUPPORTED_LANGUAGE_LABELS', 'SessionHistoryService', 'AutosaveService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
-      'ConversationLogDataService', 'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT',
-      'THEME_NAME_DARK',
+      'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
+      'CODE_RESET_CONFIRMATION_MESSAGE',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
-          SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
+          ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, ALL_SUPPORTED_LANGUAGES,
-          SUPPORTED_LANGUAGE_LABELS,
+          SUPPORTED_LANGUAGE_LABELS, SessionHistoryService, AutosaveService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
-          ConversationLogDataService, DELAY_STYLE_CHANGES, THEME_NAME_LIGHT,
-          THEME_NAME_DARK) {
+          DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
+          CODE_RESET_CONFIRMATION_MESSAGE) {
 
-        $scope.ConversationLogDataService = ConversationLogDataService;
+        $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
 
         var KEY_CODE_ENTER = 13;
@@ -777,6 +789,8 @@ tie.directive('learnerView', [function() {
          * instructions, stored code, starter code and feedback.
          */
         var initLearnerViewDirective = function() {
+          SessionHistoryService.init();
+
           // The pulseAnimationEnabled var is set to false to prevent balloon
           // pulse animation when switching from light to dark mode and
           // vise versa. This is set to false in resetCode.
@@ -798,15 +812,10 @@ tie.directive('learnerView', [function() {
             $scope.codeMirrorOptions.mode];
 
           UnpromptedFeedbackManagerService.reset(tasks);
-          cachedCode = LocalStorageService.loadStoredCode(questionId, language);
+
+          cachedCode = AutosaveService.getLastSavedCode(language);
           $scope.editorContents.code = (
             cachedCode || question.getStarterCode(language));
-          var loadedFeedbackParagraphs = LocalStorageService.loadLatestFeedback(
-            questionId, language);
-          if (loadedFeedbackParagraphs) {
-            ConversationLogDataService.addFeedbackBalloon(
-              loadedFeedbackParagraphs);
-          }
 
           EventHandlerService.init(
             SessionIdService.getSessionId(), questionId,
@@ -856,11 +865,7 @@ tie.directive('learnerView', [function() {
           congratulatoryFeedback.appendTextParagraph(
               "(You can continue to submit additional answers, if you wish.)");
 
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          LocalStorageService.storeLatestFeedback(
-              questionId, congratulatoryFeedback.getParagraphs(), language);
-
-          ConversationLogDataService.addFeedbackBalloon(
+          SessionHistoryService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent();
         };
@@ -874,7 +879,6 @@ tie.directive('learnerView', [function() {
          */
         $scope.setFeedback = function(feedback, code) {
           var question = CurrentQuestionService.getCurrentQuestion();
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
           var tasks = question.getTasks();
           EventHandlerService.createCodeSubmitEvent(
             tasks[currentTaskIndex].getId(),
@@ -900,9 +904,7 @@ tie.directive('learnerView', [function() {
                 break;
               }
             }
-            ConversationLogDataService.addFeedbackBalloon(feedbackParagraphs);
-            LocalStorageService.storeLatestFeedback(
-              questionId, feedbackParagraphs, language);
+            SessionHistoryService.addFeedbackBalloon(feedbackParagraphs);
           }
 
           // Skulpt processing happens outside an Angular context, so
@@ -921,7 +923,7 @@ tie.directive('learnerView', [function() {
         $scope.changeTheme = function(newThemeName) {
           $scope.pulseAnimationEnabled = false;
           if (newThemeName === THEME_NAME_DARK) {
-            $scope.codeMirrorOptions.theme = 'material';
+            $scope.codeMirrorOptions.theme = 'mbo';
           } else {
             $scope.codeMirrorOptions.theme = 'default';
           }
@@ -1023,7 +1025,7 @@ tie.directive('learnerView', [function() {
           $scope.previousInstructions.push($scope.instructions);
           $scope.instructions = tasks[currentTaskIndex].getInstructions();
 
-          ConversationLogDataService.clear();
+          SessionHistoryService.reset();
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
         };
@@ -1035,35 +1037,37 @@ tie.directive('learnerView', [function() {
          */
         $scope.submitCode = function(code) {
           MonospaceDisplayModalService.hideModal();
-          ConversationLogDataService.addCodeBalloon(code);
+          SessionHistoryService.addCodeBalloon(code);
 
           // Gather all tasks from the first one up to the current one.
           var question = CurrentQuestionService.getCurrentQuestion();
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
           var tasks = question.getTasks();
           var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
             code, question.getAuxiliaryCode(language), language
           ).then(function(feedback) {
             $scope.setFeedback(feedback, code);
           });
 
-          storeCodeAndUpdateCachedCode(questionId, code, language);
+          $scope.autosaveCode();
         };
 
         /**
-         * Clears the cached code stored in local storage and resets the
-         * question to its original state.
+         * Clears the cached code and the code stored in local storage.
          */
         $scope.resetCode = function() {
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          var question = CurrentQuestionService.getCurrentQuestion();
+          if (currentTaskIndex > 0 &&
+              !window.confirm(CODE_RESET_CONFIRMATION_MESSAGE)) {
+            return;
+          }
 
-          storeCodeAndUpdateCachedCode(
-            questionId, question.getStarterCode(language), language);
-          LocalStorageService.clearLocalStorageFeedback(questionId, language);
+          var question = CurrentQuestionService.getCurrentQuestion();
+          $scope.editorContents.code = question.getStarterCode(language);
           EventHandlerService.createCodeResetEvent();
+          $scope.autosaveCode();
+
+          // Resetting code starts a brand-new question session.
           initLearnerViewDirective();
         };
 
@@ -1072,9 +1076,7 @@ tie.directive('learnerView', [function() {
          * from local storage for the current question.
          */
         $scope.resetFeedback = function() {
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          ConversationLogDataService.clear();
-          LocalStorageService.clearLocalStorageFeedback(questionId, language);
+          SessionHistoryService.reset();
         };
 
         /**
@@ -1117,9 +1119,7 @@ tie.directive('learnerView', [function() {
                   language, $scope.editorContents.code,
                   tasks[currentTaskIndex].getId()));
               if (potentialFeedbackParagraphs !== null) {
-                // Note that, for simplicity, unprompted feedback is currently
-                // not persisted in local storage.
-                ConversationLogDataService.addFeedbackBalloon(
+                SessionHistoryService.addFeedbackBalloon(
                   potentialFeedbackParagraphs);
               }
             }, CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS);
@@ -1130,25 +1130,12 @@ tie.directive('learnerView', [function() {
          * Saves the user's code to the browser's local storage.
          */
         $scope.autosaveCode = function() {
-          if (!LocalStorageService.isAvailable()) {
-            return;
-          }
-          var questionId = CurrentQuestionService.getCurrentQuestionId();
-          storeCodeAndUpdateCachedCode(
-            questionId, $scope.editorContents.code, language);
-          triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
-        };
+          cachedCode = $scope.editorContents.code;
 
-        /**
-         * Stores the user's code to local storage and the cachedCode variable.
-         *
-         * @param {string} questionId
-         * @param {string} code
-         * @param {string} lang
-         */
-        var storeCodeAndUpdateCachedCode = function(questionId, code, lang) {
-          LocalStorageService.storeCode(questionId, code, lang);
-          cachedCode = code;
+          if (LocalStorageService.isAvailable()) {
+            AutosaveService.saveCode(language, $scope.editorContents.code);
+            triggerAutosaveNotification(DISPLAY_AUTOSAVE_TEXT_SECONDS);
+          }
         };
 
         $scope.autosaveTextIsDisplayed = false;

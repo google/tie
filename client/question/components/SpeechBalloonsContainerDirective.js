@@ -22,12 +22,12 @@ tie.directive('speechBalloonsContainer', [function() {
     scope: {},
     template: `
       <div>
-        <div class="tie-dot-container" ng-class="{'tie-display-dots': ConversationLogDataService.isNewBalloonPending()}"}>
+        <div class="tie-dot-container" ng-class="{'tie-display-dots': sessionTranscript.length > 0 && sessionTranscript[0].isCodeSubmission()}"}>
           <div class="tie-dot tie-dot-1"></div>
           <div class="tie-dot tie-dot-2"></div>
           <div class="tie-dot tie-dot-3"></div>
         </div>
-        <div ng-repeat="balloon in ConversationLogDataService.data.speechBalloonList" aria-live="assertive">
+        <div ng-repeat="balloon in sessionTranscript" aria-live="assertive">
           <tie-speech-balloon-container>
             <div ng-if="balloon.isDisplayedOnLeft()">
               <tie-speech-balloon-left>
@@ -77,7 +77,7 @@ tie.directive('speechBalloonsContainer', [function() {
         }
         .tie-dot {
           -webkit-animation-name: tie-dot;
-          -webkit-animation-duration: 1.5s;
+          -webkit-animation-duration: 1.2s;
           -webkit-animation-iteration-count: infinite;
           background-color: black;
           border-radius: 2px;
@@ -92,6 +92,7 @@ tie.directive('speechBalloonsContainer', [function() {
           height: 10px;
           opacity: 0;
           padding-left: 5px;
+          transition-delay: 0.2s;
         }
         .night-mode .tie-dot {
           background-color: #E0E0E0;
@@ -233,10 +234,12 @@ tie.directive('speechBalloonsContainer', [function() {
       </style>
     `,
     controller: [
-      '$scope', 'ConversationLogDataService',
-      function($scope, ConversationLogDataService) {
-        $scope.ConversationLogDataService = ConversationLogDataService;
+      '$scope', 'SessionHistoryService',
+      function($scope, SessionHistoryService) {
+        $scope.sessionTranscript = (
+          SessionHistoryService.getBindableSessionTranscript());
       }
     ]
   };
 }]);
+
