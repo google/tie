@@ -25,30 +25,73 @@ describe('PreprocessedCodeObjectFactory', function() {
       'PreprocessedCodeObjectFactory');
   }));
 
-  describe('getPreprocessedCode', function() {
+  describe('getPreprocessedCodeString', function() {
     it('should retrieve the corresponding preprocessed code', function() {
-      var code = [
-        'def preprocessedCode():',
+      var rawCode = [
+        'def studentCode():',
         '    a = 3',
         '    return a'
       ].join('\n');
+      var preprocessedCode = [
+        'class StudentCode(object):',
+        '    ' + rawCode,
+        '',
+        'class AuxiliaryCode(object):',
+        '    @classmethod',
+        '    def _helperMethods():',
+        '        return True'
+      ].join('\n');
       var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
-        code, 'separator');
+        preprocessedCode, rawCode, 'separator');
 
-      expect(preprocessedCodeObject.getPreprocessedCode()).toEqual(code);
+      expect(preprocessedCodeObject.getPreprocessedCodeString()).toEqual(
+        preprocessedCode);
+    });
+  });
+
+  describe('getRawCode', function() {
+    it('should retrieve the corresponding raw code', function() {
+      var rawCode = [
+        'def studentCode():',
+        '    a = 3',
+        '    return a'
+      ].join('\n');
+      var preprocessedCode = [
+        'class StudentCode(object):',
+        '    ' + rawCode,
+        '',
+        'class AuxiliaryCode(object):',
+        '    @classmethod',
+        '    def _helperMethods():',
+        '        return True'
+      ].join('\n');
+      var separator = 'ABCDEFGHIJKLMNOPQRST';
+      var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
+        preprocessedCode, rawCode, separator);
+
+      expect(preprocessedCodeObject.getRawCode()).toEqual(rawCode);
     });
   });
 
   describe('getSeparator', function() {
     it('should retrieve the corresponding separator', function() {
-      var code = [
-        'def preprocessedCode():',
+      var rawCode = [
+        'def studentCode():',
         '    a = 3',
         '    return a'
       ].join('\n');
+      var preprocessedCode = [
+        'class StudentCode(object):',
+        '    ' + rawCode,
+        '',
+        'class AuxiliaryCode(object):',
+        '    @classmethod',
+        '    def _helperMethods():',
+        '        return True'
+      ].join('\n');
       var separator = 'ABCDEFGHIJKLMNOPQRST';
       var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
-        code, separator);
+        preprocessedCode, rawCode, separator);
 
       expect(preprocessedCodeObject.getSeparator()).toEqual(separator);
     });

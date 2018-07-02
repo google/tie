@@ -43,8 +43,9 @@ describe('SnapshotObjectFactory', function() {
     CodeEvalResultObjectFactory = $injector.get(
       'CodeEvalResultObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(
-      'code', '', [[true, true], [false, false]], [[false], [false]],
-      [[], []], null, 'errorInput'
+      'code separator = "a"', 'code', '',
+      [[true, true], [false, false]], [[false], [false]], [[], []],
+      null, 'errorInput'
     );
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
     feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
@@ -65,7 +66,8 @@ describe('SnapshotObjectFactory', function() {
       snapshot.setCodeEvalResult(codeEvalResult);
       expect(snapshot.getCodeEvalResult()).toEqual(
         CodeEvalResultObjectFactory.create(
-          'code', '', [[true, true], [false, false]], [[false], [false]],
+          'code separator = "a"', 'code', '',
+          [[true, true], [false, false]], [[false], [false]],
           [[], []], null, 'errorInput'
         ));
     });

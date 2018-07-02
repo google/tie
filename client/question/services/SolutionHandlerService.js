@@ -72,11 +72,12 @@ tie.factory('SolutionHandlerService', [
             // PreprocessedCode object, then runs the whole thing.
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
-            var preprocessedCode = CodePreprocessorDispatcherService.preprocess(
-              language, codeSubmission, auxiliaryCode, tasks);
+            var preprocessedCodeObject =
+              CodePreprocessorDispatcherService.preprocess(
+                language, codeSubmission, auxiliaryCode, tasks);
 
             return CodeRunnerDispatcherService.runCodeAsync(
-              language, preprocessedCode
+              language, preprocessedCodeObject
             ).then(function(preprocessedCodeEvalResult) {
               feedback = FeedbackGeneratorService.getFeedback(
                 tasks, preprocessedCodeEvalResult,

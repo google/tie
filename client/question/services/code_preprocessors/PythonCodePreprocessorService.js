@@ -671,7 +671,8 @@ tie.factory('PythonCodePreprocessorService', [
         }
 
         return PreprocessedCodeObjectFactory.create(
-          codeSubmission.getPreprocessedCode(), separator);
+          codeSubmission.getPreprocessedCode(), codeSubmission.getRawCode(),
+          separator);
       },
 
       // These are seams to allow for Karma testing of the private functions.

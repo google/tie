@@ -344,59 +344,29 @@ describe('PythonCodeRunnerService', function() {
     });
   });
 
-  describe('_standardizeServerOutput', function() {
+  describe('_createOutputArray', function() {
     it('should work for task completion stdOut', function() {
       var sep = '12345678901234567890';
       var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep;
-      expect(PythonCodeRunnerService._standardizeServerOutput(
+      expect(PythonCodeRunnerService._createOutputArray(
         stdOut, sep)).toEqual(
-        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n', '']);
+        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
     it('should work for question completion stdOut', function() {
       var sep = '12345678901234567890';
       var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep + 'extraStuff';
-      expect(PythonCodeRunnerService._standardizeServerOutput(
+      expect(PythonCodeRunnerService._createOutputArray(
         stdOut, sep)).toEqual(
-        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n', '']);
+        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
     it('should work for no stdOut', function() {
       var sep = '12345678901234567890';
       var stdOut = sep + '\n' + sep + '\n' + sep + '\n';
-      expect(PythonCodeRunnerService._standardizeServerOutput(
-        stdOut, sep)).toEqual(
-        ['', '', '', '']);
-    });
-  });
-
-  describe('_standardizeOutputInClient', function() {
-    it('should work for task completion stdOut', function() {
-      var sep = '12345678901234567890';
-      var stdOut = ['1', '\n', '2', '\n', 'Hi', '\n', sep, '\n',
-        '1', '\n', '2', '\n', 'Hey', '\n', sep, '\n',
-        '1', '\n', '2', '\n', 'Hello', '\n', sep, '\n'];
-      expect(PythonCodeRunnerService._standardizeOutputInClient(
-        stdOut, sep)).toEqual(
-        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
-    });
-
-    it('should work for question completion stdOut', function() {
-      var sep = '12345678901234567890';
-      var stdOut = ['1', '\n', '2', '\n', 'Hi', '\n', sep, '\n',
-        '1', '\n', '2', '\n', 'Hey', '\n', sep, '\n',
-        '1', '\n', '2', '\n', 'Hello', '\n', sep, '\n', 'extraStuff'];
-      expect(PythonCodeRunnerService._standardizeOutputInClient(
-        stdOut, sep)).toEqual(
-        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
-    });
-
-    it('should work for no stdOut', function() {
-      var sep = '12345678901234567890';
-      var stdOut = [sep, '\n', sep, '\n', sep, '\n'];
-      expect(PythonCodeRunnerService._standardizeOutputInClient(
+      expect(PythonCodeRunnerService._createOutputArray(
         stdOut, sep)).toEqual(
         ['', '', '']);
     });

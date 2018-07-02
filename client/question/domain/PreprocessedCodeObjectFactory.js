@@ -20,24 +20,32 @@
 tie.factory('PreprocessedCodeObjectFactory', [
   function() {
     /**
-     * PreprocessedCode stores the entire preprocessed code as well as the
-     * string separator generated during print output. This string separator
-     * is utilized in splitting the total output into the corresponding
-     * outputs for each test case.
+     * PreprocessedCode stores the entire preprocessed code, raw input code,
+     * and the string separator generated during print output. This string
+     * separator is utilized in splitting the total output into the
+     * corresponding outputs for each test case.
      */
 
     /**
      * Constructor for PreprocessedCode
      *
-     * @param {string} preprocessedCode Preprocessed student code
+     * @param {string} preprocessedCodeString Preprocessed student code
+     * @param {string} rawCode Student's input code
      * @param {string} separator Output separator
      */
-    var PreprocessedCode = function(preprocessedCode, separator) {
+    var PreprocessedCode = function(preprocessedCodeString, rawCode,
+      separator) {
       /**
        * @type {string}
        * @private
        */
-      this._preprocessedCode = preprocessedCode;
+      this._preprocessedCodeString = preprocessedCodeString;
+
+      /**
+       * @type {string}
+       * @private
+       */
+      this._rawCode = rawCode;
 
       /**
        * @type {string}
@@ -49,14 +57,25 @@ tie.factory('PreprocessedCodeObjectFactory', [
     // Instance methods.
 
     /**
-     * A getter for the _preprocessedCode property.
+     * A getter for the _preprocessedCodeString property.
      * It should return a string with code that has already been
      * preprocessed.
      *
      * @returns {string}
      */
-    PreprocessedCode.prototype.getPreprocessedCode = function() {
-      return this._preprocessedCode;
+    PreprocessedCode.prototype.getPreprocessedCodeString = function() {
+      return this._preprocessedCodeString;
+    };
+
+    /**
+     * A getter for the _rawCode property.
+     * It should return a string with the raw input code that the
+     * student submitted.
+     *
+     * @returns {string}
+     */
+    PreprocessedCode.prototype.getRawCode = function() {
+      return this._rawCode;
     };
 
     /**
@@ -75,12 +94,14 @@ tie.factory('PreprocessedCodeObjectFactory', [
      * This method creates and returns a PreprocessedCode object from
      * the params specified.
      *
-     * @param {string} preprocessedCode Preprocessed student code
+     * @param {string} preprocessedCodeString Preprocessed student code
+     * @param {string} rawCode Raw student input code
      * @param {string} separator Output separator
      * @returns {PreprocessedCode}
      */
-    PreprocessedCode.create = function(preprocessedCode, separator) {
-      return new PreprocessedCode(preprocessedCode, separator);
+    PreprocessedCode.create = function(preprocessedCodeString, rawCode,
+      separator) {
+      return new PreprocessedCode(preprocessedCodeString, rawCode, separator);
     };
 
     return PreprocessedCode;
