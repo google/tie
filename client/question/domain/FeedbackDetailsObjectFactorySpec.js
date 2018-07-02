@@ -63,4 +63,13 @@ describe('FeedbackDetailsObjectFactory', function() {
         FEEDBACK_CATEGORIES.RUNTIME_ERROR);
     });
   });
+
+  describe('syntax error FeedbackDetails object', function() {
+    it('should create a syntax error FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback());
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+    });
+  });
 });
