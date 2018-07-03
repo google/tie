@@ -124,8 +124,8 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
       });
   });
 
-  describe('getStdOut', function() {
-    it('should retrive the corresponding stdOut for code with no errors',
+  describe('getStdout', function() {
+    it('should retrive the corresponding stdout for code with no errors',
       function() {
         var codeEvalResult = CodeEvalResultObjectFactory.create(
           PREPROCESSED_CODE, RAW_CODE, OUTPUT,
@@ -138,22 +138,22 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
         var learnerViewSubmissionResult =
           LearnerViewSubmissionResultObjectFactory.create(
             feedback, 'some output');
-        expect(learnerViewSubmissionResult.getStdOut()).toEqual('some output');
+        expect(learnerViewSubmissionResult.getStdout()).toEqual('some output');
 
-        var stdOut = codeEvalResult.getOutputToDisplay(tasks);
+        var stdout = codeEvalResult.getStdoutToDisplay(tasks);
         var learnerViewSubmissionResult1 =
           LearnerViewSubmissionResultObjectFactory.create(
-            feedback, stdOut);
-        expect(learnerViewSubmissionResult1.getStdOut()).toEqual(stdOut);
+            feedback, stdout);
+        expect(learnerViewSubmissionResult1.getStdout()).toEqual(stdout);
       });
 
-    it('should retrieve the corresponding stdOut for error feedback',
+    it('should retrieve the corresponding stdout for error feedback',
       function() {
         var feedback = FeedbackGeneratorService.getTimeoutErrorFeedback();
         var learnerViewSubmissionResult =
           LearnerViewSubmissionResultObjectFactory.create(
             feedback, null);
-        expect(learnerViewSubmissionResult.getStdOut()).toEqual(null);
+        expect(learnerViewSubmissionResult.getStdout()).toEqual(null);
       });
   });
 });

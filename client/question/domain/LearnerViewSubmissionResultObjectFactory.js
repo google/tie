@@ -19,7 +19,7 @@
 
  tie.factory('LearnerViewSubmissionResultObjectFactory', [
    function() {
-     /** LearnerViewSubmissionResult stores the feedback and stdOut for a
+     /** LearnerViewSubmissionResult stores the feedback and stdout for a
       * given code submission. This information is later displayed in
       * the feedback window and print terminal after a learner chooses to
       * submit their code.
@@ -30,9 +30,9 @@
       *
       * @param {Feedback} feedback The feedback generated after running the
       * user code
-      * @param {string} stdOut Output from user code
+      * @param {string} stdout Output from user code
       */
-     var LearnerViewSubmissionResult = function(feedback, stdOut) {
+     var LearnerViewSubmissionResult = function(feedback, stdout) {
        /**
         * @type {Feedback}
         * @private
@@ -43,10 +43,10 @@
         * @type {string}
         * @private
         */
-       this._stdOut = stdOut;
+       this._stdout = stdout;
      };
 
-     // Instance mthods.
+     // Instance methods.
      /**
       * A getter for the _feedback property.
       * It should return a Feedback object with the correct feedback for
@@ -59,16 +59,16 @@
      };
 
      /**
-      * A getter for the _stdOut property.
+      * A getter for the _stdout property.
       * It should return a string with the print output of the code submission.
-      * The stdOut displayed is the output associated with the first failed
+      * The stdout displayed is the output associated with the first failed
       * test. If all tests for the past and current tasks passed, then the
       * output of the last test case of the current task is shown.
       *
       * @returns {string}
       */
-     LearnerViewSubmissionResult.prototype.getStdOut = function() {
-       return this._stdOut;
+     LearnerViewSubmissionResult.prototype.getStdout = function() {
+       return this._stdout;
      };
 
      // Static class methods.
@@ -78,12 +78,12 @@
       *
       * @param {Feedback} feedback The feedback generated after running the
       * user code
-      * @param {string} stdOut Output from user code
+      * @param {string} stdout Output from user code
       * @returns {LearnerViewSubmissionResult}
       */
      LearnerViewSubmissionResult.create = function(
-       feedback, stdOut) {
-       return new LearnerViewSubmissionResult(feedback, stdOut);
+       feedback, stdout) {
+       return new LearnerViewSubmissionResult(feedback, stdout);
      };
 
      return LearnerViewSubmissionResult;

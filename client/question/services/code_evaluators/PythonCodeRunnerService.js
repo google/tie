@@ -106,7 +106,7 @@ tie.factory('PythonCodeRunnerService', [
         // The run was successful.
 
         // The output returned from the run is an array where each line of
-        // stdOut is an entry in the array. Here, the array is converted
+        // stdout is an entry in the array. Here, the array is converted
         // into one consolidated string where it will later be split into
         // the corresponding test cases.
         var consolidatedOutputString = '';
@@ -214,17 +214,17 @@ tie.factory('PythonCodeRunnerService', [
     // Converts the consolidated output string into an array where the
     // i-th entry in the array corresponds to the i-th overall test
     // case.
-    var _createOutputArray = function(stdOutString, separator) {
-      if (stdOutString.length === 0) {
+    var _createOutputArray = function(stdoutString, separator) {
+      if (stdoutString.length === 0) {
         return [];
       }
-      // StdOut will sometimes have extra characters at the end. Cleaning up
+      // Stdout will sometimes have extra characters at the end. Cleaning up
       // the stdout here to remove any extraneous output that comes after
       // the last test case.
-      var lastSeparatorIndex = stdOutString.lastIndexOf(separator);
-      var cleanedStdOutString = stdOutString.slice(
+      var lastSeparatorIndex = stdoutString.lastIndexOf(separator);
+      var cleanedStdoutString = stdoutString.slice(
           0, lastSeparatorIndex);
-      return cleanedStdOutString.split(separator + '\n');
+      return cleanedStdoutString.split(separator + '\n');
     };
 
     return {

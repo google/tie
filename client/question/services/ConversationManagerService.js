@@ -176,9 +176,9 @@ tie.factory('ConversationManagerService', [
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
 
-              var stdOut = preprocessedCodeEvalResult.getOutputToDisplay(tasks);
+              var stdout = preprocessedCodeEvalResult.getStdoutToDisplay(tasks);
               return LearnerViewSubmissionResultObjectFactory.create(
-                feedback, stdOut);
+                feedback, stdout);
             });
           });
         }

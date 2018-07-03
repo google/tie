@@ -641,7 +641,7 @@ describe('PythonCodePreprocessorService', function() {
         '',
         'correctness_test_results = []',
         '',
-        'def testOutputWithStdOutSeparator(test_input):',
+        'def printSeparatorAndGetTestOutput(test_input):',
         '    output = outputFnName(System.runTest(StudentCode().mainFnName, inputFnName(test_input)))',
         '    print separator',
         '    return output',
@@ -650,7 +650,7 @@ describe('PythonCodePreprocessorService', function() {
         'task_results = []',
         'for suite_dicts in task_test_inputs:',
         '    suite_results = [',
-        '        testOutputWithStdOutSeparator(test_input)',
+        '        printSeparatorAndGetTestOutput(test_input)',
         '        for test_input in suite_dicts["inputs"]]',
         '    task_results.append(suite_results)',
         'correctness_test_results.append(task_results)'

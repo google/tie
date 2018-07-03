@@ -334,10 +334,10 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     /**
-    * Generates the separator code that is used to split user stdOut.
+    * Generates the separator code that is used to split user stdout.
     *
     * @param {string} separator The randomly-generated separator that will be
-    * used in separating the stdOut of different test cases.
+    * used in separating the stdout of different test cases.
     * @returns {string}
     * @private
     */
@@ -412,7 +412,7 @@ tie.factory('PythonCodePreprocessorService', [
         testCode += '\n';
         testCode += [
           '',
-          'def testOutputWithStdOutSeparator(test_input):',
+          'def printSeparatorAndGetTestOutput(test_input):',
           '    output = ' + testOutputCode,
           '    print separator',
           '    return output',
@@ -421,7 +421,7 @@ tie.factory('PythonCodePreprocessorService', [
           'task_results = []',
           'for suite_dicts in task_test_inputs:',
           '    suite_results = [',
-          '        testOutputWithStdOutSeparator(test_input)',
+          '        printSeparatorAndGetTestOutput(test_input)',
           '        for test_input in suite_dicts["inputs"]]',
           '    task_results.append(suite_results)',
           VARNAME_OBSERVED_OUTPUTS + '.append(task_results)'
@@ -454,7 +454,6 @@ tie.factory('PythonCodePreprocessorService', [
             (outputFunctionName ? outputFunctionName : 'None')
           ].join(', ') + '))\n');
       });
-
       code += (
         VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
         '.append(' + VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ')\n');
@@ -658,7 +657,7 @@ tie.factory('PythonCodePreprocessorService', [
         codeSubmission.append('');
 
         // Creates a new random string separator that is used in separating
-        // the stdOut of different test cases.
+        // the stdout of different test cases.
         var separator = _generateNewSeparator();
 
         // Append everything else.

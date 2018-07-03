@@ -345,29 +345,29 @@ describe('PythonCodeRunnerService', function() {
   });
 
   describe('_createOutputArray', function() {
-    it('should correctly display stdOut on task completion', function() {
+    it('should correctly display stdout on task completion', function() {
       var sep = '12345678901234567890';
-      var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
+      var stdout = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep;
       expect(PythonCodeRunnerService._createOutputArray(
-        stdOut, sep)).toEqual(
+        stdout, sep)).toEqual(
         ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
-    it('should correctly display stdOut on question completion', function() {
+    it('should correctly display stdout on question completion', function() {
       var sep = '12345678901234567890';
-      var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
+      var stdout = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep + 'extraStuff';
       expect(PythonCodeRunnerService._createOutputArray(
-        stdOut, sep)).toEqual(
+        stdout, sep)).toEqual(
         ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
-    it('should correctly display nothing on no stdOut', function() {
+    it('should correctly display nothing on no stdout', function() {
       var sep = '12345678901234567890';
-      var stdOut = sep + '\n' + sep + '\n' + sep + '\n';
+      var stdout = sep + '\n' + sep + '\n' + sep + '\n';
       expect(PythonCodeRunnerService._createOutputArray(
-        stdOut, sep)).toEqual(
+        stdout, sep)).toEqual(
         ['', '', '']);
     });
   });

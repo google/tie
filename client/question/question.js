@@ -724,7 +724,7 @@ tie.constant('SECONDS_TO_MILLISECONDS', 1000);
 tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 
 /**
-* Default user stdOut separator length. A string separator is utilized
+* Default user stdout separator length. A string separator is utilized
 * in splitting the total output into the corresponding outputs for each
 * test case. The separator is in between the output of different test cases.
 *
@@ -733,14 +733,6 @@ tie.constant('CODE_CHANGE_DEBOUNCE_SECONDS', 5);
 */
 // eslint-disable-next-line no-magic-numbers
 tie.constant('SEPARATOR_LENGTH', 20);
-
-/**
-* Default line prefix to denote separator code.
-*
-* @type {string}
-* @constant
-*/
-tie.constant('SEPARATOR_LINE_PREFIX', 'separator = "');
 
 /**
  * Default time in seconds between calls to SendEventBatch.
