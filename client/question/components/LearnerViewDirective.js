@@ -92,7 +92,7 @@ tie.directive('learnerView', [function() {
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
                   Reset Code
                 </button>
-                <p class="tie-language-label">Language: {{supportedLanguageCount == 1 ? languageLabel : ""}}</p>
+                <p class="tie-language-label">Language: <span ng-if="supportedLanguageCount === 1">{{languageLabel}}</span></p>
                 <select
                     ng-if="supportedLanguageCount > 1"
                     ng-model="codeMirrorOptions.mode"

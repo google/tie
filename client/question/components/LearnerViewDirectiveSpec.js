@@ -432,8 +432,9 @@ describe('LearnerViewDirective', function() {
         ALL_SUPPORTED_LANGUAGES.length);
 
       for (var i = ALL_SUPPORTED_LANGUAGES.length - 1; i >= 0; i--) {
-        var $label = $scope.supportedLanguageLabels[ALL_SUPPORTED_LANGUAGES[i]];
-        expect($label).toBeDefined();
+        var label = $scope.supportedLanguageLabels[ALL_SUPPORTED_LANGUAGES[i]];
+        expect(typeof label).toBe('string');
+        expect(label).toBeTruthy();
       }
     });
   });
