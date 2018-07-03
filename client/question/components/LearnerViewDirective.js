@@ -224,6 +224,12 @@ tie.directive('learnerView', [function() {
         .tie-button-green:active {
           background-color: #265221;
         }
+        .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .tie-button-green[disabled]:hover {
+          border: none;
+        }
         .night-mode .tie-button-green {
           background-color: #3C5C14;
           color: #ffffff;
@@ -233,6 +239,12 @@ tie.directive('learnerView', [function() {
         }
         .night-mode .tie-button-green:active {
           background-color: #265221;
+        }
+        .night-mode .tie-button-green[disabled] {
+          opacity: 0.4;
+        }
+        .night-mode .tie-button-green[disabled]:hover {
+          border: none;
         }
         .tie-code-auto-save {
           font-family: Roboto, 'Helvetica Neue', 'Lucida Grande', sans-serif;
@@ -471,7 +483,7 @@ tie.directive('learnerView', [function() {
     `,
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
-      'SolutionHandlerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
+      'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
@@ -483,7 +495,7 @@ tie.directive('learnerView', [function() {
       'CODE_RESET_CONFIRMATION_MESSAGE',
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
-          SolutionHandlerService, QuestionDataService, LANGUAGE_PYTHON,
+          ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
@@ -1008,7 +1020,7 @@ tie.directive('learnerView', [function() {
           var question = CurrentQuestionService.getCurrentQuestion();
           var tasks = question.getTasks();
           var orderedTasks = tasks.slice(0, currentTaskIndex + 1);
-          SolutionHandlerService.processSolutionAsync(
+          ConversationManagerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
             code, question.getAuxiliaryCode(language), language
           ).then(function(feedback) {

@@ -320,6 +320,35 @@ tie.factory('CodeEvalResultObjectFactory', [
       return this._errorInput;
     };
 
+    /**
+     * Retrieves the IDs of passing test suites for a given task.
+     *
+     * @param {Array<Task>} The list of tasks associated with the problem that
+     *   corresponds to this CodeEvalResult object.
+     * @param {int} taskIndex The index of the task.
+     * @returns {Array<string>} A list of IDs of the passing test suites. If no
+     *   test cases have been run for this task, an empty array is returned.
+     */
+    CodeEvalResult.prototype.getPassingSuiteIds = function(tasks, taskIndex) {
+      var passingSuiteIds = [];
+
+      var that = this;
+      var testSuites = tasks[taskIndex].getTestSuites();
+      testSuites.forEach(function(suite, suiteIndex) {
+        var testCases = suite.getTestCases();
+        var observedSuiteOutputs = that._observedOutputs[taskIndex][suiteIndex];
+        var allTestCasesPass = testCases.every(function(testCase, index) {
+          return testCase.matchesOutput(observedSuiteOutputs[index]);
+        });
+
+        if (allTestCasesPass) {
+          passingSuiteIds.push(suite.getId());
+        }
+      });
+
+      return passingSuiteIds;
+    };
+
     // Static class methods.
     /**
      * This method creates and returns a CodeEvalResult object from the params

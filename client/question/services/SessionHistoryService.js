@@ -83,16 +83,21 @@ tie.factory('SessionHistoryService', [
             return speechBalloon.toDict();
           })
         );
+        // We increment the number of balloons here, because adding a
+        // code balloon implies that a feedback balloon will soon follow.
+        data.numBalloonsPending++;
       },
       /**
        * Adds a new feedback balloon to the beginning of the list.
        */
       addFeedbackBalloon: function(feedbackParagraphs) {
-        data.numBalloonsPending++;
         $timeout(function() {
           data.sessionTranscript.unshift(
             SpeechBalloonObjectFactory.createFeedbackBalloon(
               feedbackParagraphs));
+          // This signifies that the feedback balloon has been added and
+          // thus completes the code-feedback pairing as there is a feedback
+          // balloon for every code balloon.
           data.numBalloonsPending--;
 
           LocalStorageService.put(
