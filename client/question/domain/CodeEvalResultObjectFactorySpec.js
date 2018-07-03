@@ -576,7 +576,8 @@ describe('CodeEvalResultObjectFactory', function() {
       ];
 
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, true], [true, true]],
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
+        [[[true, true], [true, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
         PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult1.getPassingSuiteIds(tasks, 0)).toEqual(
@@ -585,7 +586,8 @@ describe('CodeEvalResultObjectFactory', function() {
         ['TASK2_SUITE1']);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, false], [true, true]],
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
+        [[[true, false], [true, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
         PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult2.getPassingSuiteIds(tasks, 0)).toEqual(
@@ -594,7 +596,8 @@ describe('CodeEvalResultObjectFactory', function() {
         ['TASK2_SUITE1']);
 
       var codeEvalResult3 = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[false, true], [false, true]],
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
+        [[[false, true], [false, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
         ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult3.getPassingSuiteIds(tasks, 0)).toEqual([]);
