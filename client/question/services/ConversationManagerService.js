@@ -20,14 +20,14 @@ tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
   'TranscriptService', 'CodeSubmissionObjectFactory',
-  'FEEDBACK_CATEGORIES',
+  'LearnerViewSubmissionResultObjectFactory', 'FEEDBACK_CATEGORIES',
   'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
   'EXECUTION_CONTEXT_RUN_WITH_TESTS',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory,
-      FEEDBACK_CATEGORIES,
+      LearnerViewSubmissionResultObjectFactory, FEEDBACK_CATEGORIES,
       FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
       EXECUTION_CONTEXT_RUN_WITH_TESTS) {
 
@@ -106,9 +106,8 @@ tie.factory('ConversationManagerService', [
             potentialPrereqCheckFailure);
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
-          return Promise.resolve(feedback);
-          // Return Promise.resolve(
-          //   LearnerViewSubmissionResultObjectFactory.create(feedback, null));
+          return Promise.resolve(
+            LearnerViewSubmissionResultObjectFactory.create(feedback, null));
         } else {
           // Next, run the raw code to detect syntax errors. If any exist, we
           // return a promise with a Feedback object.
@@ -121,9 +120,8 @@ tie.factory('ConversationManagerService', [
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
-              // Return LearnerViewSubmissionResultObjectFactory.create(
-              //   feedback, stdOut);
-              return feedback;
+              return LearnerViewSubmissionResultObjectFactory.create(
+                feedback, null);
             }
 
             // If there are no syntax errors, generate a CodeSubmission object
@@ -178,11 +176,9 @@ tie.factory('ConversationManagerService', [
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
 
-              // Var stdOut =
-              // preprocessedCodeEvalResult.getOutputToDisplay(tasks);
-              // return LearnerViewSubmissionResultObjectFactory.create(
-              //   feedback, stdOut);
-              return feedback;
+              var stdOut = preprocessedCodeEvalResult.getOutputToDisplay(tasks);
+              return LearnerViewSubmissionResultObjectFactory.create(
+                feedback, stdOut);
             });
           });
         }

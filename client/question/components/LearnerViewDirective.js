@@ -1025,7 +1025,8 @@ tie.directive('learnerView', [function() {
           ConversationManagerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
             code, question.getAuxiliaryCode(language), language
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
             $scope.setFeedback(feedback, code);
           });
 

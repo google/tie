@@ -449,10 +449,12 @@ describe('CodeEvalResultObjectFactory', function() {
       expect(codeEvalResult6.getOutputToDisplay(tasks))
         .toEqual(OUTPUT[0]);
 
+      // No observedOutputs which can occur if there is a runtime or
+      // infinite-loop error.
       var codeEvalResult7 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult7.getOutputToDisplay(tasks))
-        .toEqual('');
+        .toEqual(null);
 
       var codeEvalResult8 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OUTPUT, [[[true, true]]],

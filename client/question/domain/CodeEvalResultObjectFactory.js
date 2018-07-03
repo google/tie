@@ -1,4 +1,4 @@
-// Copyright 2017 The TIE Authors. All Rights Reserved.
+  // Copyright 2017 The TIE Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -243,8 +243,8 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @returns {string}
      */
     CodeEvalResult.prototype.getOutputToDisplay = function(tasks) {
-      if (this._output.length === 0 || this._observedOutputs.length === 0) {
-        return '';
+      if (this._observedOutputs.length === 0) {
+        return null;
       }
       var testToDisplay = this.getIndexOfFirstFailedTest(tasks);
 
