@@ -484,7 +484,8 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
-      'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
+      'FeedbackObjectFactory', 'LearnerViewSubmissionResultObjectFactory',
+      'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'SessionHistoryService', 'AutosaveService',
@@ -496,7 +497,8 @@ tie.directive('learnerView', [function() {
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
-          FeedbackObjectFactory, EventHandlerService, LocalStorageService,
+          FeedbackObjectFactory, LearnerViewSubmissionResultObjectFactory,
+          EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, SessionHistoryService, AutosaveService,

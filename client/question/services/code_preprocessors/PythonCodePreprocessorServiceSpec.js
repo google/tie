@@ -591,17 +591,32 @@ describe('PythonCodePreprocessorService', function() {
     });
   });
 
+  describe('_generateNewSeparator', function() {
+    it('should correctly generate a new separator string', function() {
+      expect(
+        PythonCodePreprocessorService._generateNewSeparator()
+      ).toMatch('[A-Za-z]{' + SEPARATOR_LENGTH + '}');
+    });
+
+    it('should create different separators across multiple calls', function() {
+      var first = PythonCodePreprocessorService._generateNewSeparator();
+      var second = PythonCodePreprocessorService._generateNewSeparator();
+      expect(first).not.toEqual(second);
+    });
+
+  });
+
   describe('_generateOutputSeparatorCode', function() {
     it('should add string separator to skeleton code', function() {
       expect(
-        PythonCodePreprocessorService._generateOutputSeparatorCode()
+        PythonCodePreprocessorService._generateOutputSeparatorCode(
+          'abcdefghijklmnopqrst')
       ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
-    });
 
-    it('should be different across multiple calls', function() {
-      var first = PythonCodePreprocessorService._generateOutputSeparatorCode();
-      var second = PythonCodePreprocessorService._generateOutputSeparatorCode();
-      expect(first).not.toEqual(second);
+      expect(
+        PythonCodePreprocessorService._generateOutputSeparatorCode(
+          PythonCodePreprocessorService._generateNewSeparator())
+      ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
     });
   });
 

@@ -342,7 +342,7 @@ describe('CodeEvalResultObjectFactory', function() {
   });
 
   describe('getOutputToDisplay', function() {
-    it('should correctly get the output to display', function() {
+    it("should correctly get the user's output to display", function() {
       var tasks = [
         TaskObjectFactory.create({
           instructions: [''],
@@ -571,27 +571,27 @@ describe('CodeEvalResultObjectFactory', function() {
       ];
 
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, true], [true, true]], [[true, true]]],
-        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        PREPROCESSED_CODE, RAW_CODE, OUTPUT, [[[true, true], [true, true]],
+        [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult1.getPassingSuiteIds(tasks, 0)).toEqual(
         ['TASK1_SUITE1', 'TASK1_SUITE2']);
       expect(codeEvalResult1.getPassingSuiteIds(tasks, 1)).toEqual(
         ['TASK2_SUITE1']);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[true, false], [true, true]], [[true, true]]],
-        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        PREPROCESSED_CODE, RAW_CODE, OUTPUT, [[[true, false], [true, true]],
+        [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult2.getPassingSuiteIds(tasks, 0)).toEqual(
         ['TASK1_SUITE2']);
       expect(codeEvalResult2.getPassingSuiteIds(tasks, 1)).toEqual(
         ['TASK2_SUITE1']);
 
       var codeEvalResult3 = CodeEvalResultObjectFactory.create(
-        CODE, OUTPUT, [[[false, true], [false, true]], [[true, true]]],
-        BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        PREPROCESSED_CODE, RAW_CODE, OUTPUT, [[[false, true], [false, true]],
+        [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
+        ERROR_STRING, ERROR_INPUT);
       expect(codeEvalResult3.getPassingSuiteIds(tasks, 0)).toEqual([]);
     });
   });

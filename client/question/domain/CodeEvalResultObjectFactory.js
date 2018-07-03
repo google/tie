@@ -254,9 +254,7 @@ tie.factory('CodeEvalResultObjectFactory', [
         var overallNumTests = 0;
         for (var i = 0; i < this._observedOutputs.length; i++) {
           for (var j = 0; j < this._observedOutputs[i].length; j++) {
-            for (var k = 0; k < this._observedOutputs[i][j].length; k++) {
-              overallNumTests += 1;
-            }
+            overallNumTests += this._observedOutputs[i][j].length;
           }
         }
         return this._output[overallNumTests - 1];

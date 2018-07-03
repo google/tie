@@ -19,17 +19,17 @@ describe('PythonCodeRunnerService', function() {
   var $httpBackend;
   var PythonCodeRunnerService;
   var ServerHandlerService;
+  var CurrentQuestionService;
   var PreprocessedCodeObjectFactory;
+  var QuestionObjectFactory;
   var responseDict = {};
+  var question;
   var VARNAME_OBSERVED_OUTPUTS = 'correctness_test_results';
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
   var HTTP_STATUS_CODE_OK = 200;
   var HTTP_STATUS_CODE_SERVER_ERROR = 500;
-  var QuestionObjectFactory;
-  var CurrentQuestionService;
-  var question;
   var TITLE = "title";
   var STARTER_CODE = "starterCode";
   var AUXILIARY_CODE = "auxiliaryCode";
@@ -345,7 +345,7 @@ describe('PythonCodeRunnerService', function() {
   });
 
   describe('_createOutputArray', function() {
-    it('should work for task completion stdOut', function() {
+    it('should correctly display stdOut on task completion', function() {
       var sep = '12345678901234567890';
       var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep;
@@ -354,7 +354,7 @@ describe('PythonCodeRunnerService', function() {
         ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
-    it('should work for question completion stdOut', function() {
+    it('should correctly display stdOut on question completion', function() {
       var sep = '12345678901234567890';
       var stdOut = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
         '\n1\n2\nHello\n' + sep + 'extraStuff';
@@ -363,7 +363,7 @@ describe('PythonCodeRunnerService', function() {
         ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
     });
 
-    it('should work for no stdOut', function() {
+    it('should correctly display nothing on no stdOut', function() {
       var sep = '12345678901234567890';
       var stdOut = sep + '\n' + sep + '\n' + sep + '\n';
       expect(PythonCodeRunnerService._createOutputArray(

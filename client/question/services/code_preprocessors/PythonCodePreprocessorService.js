@@ -85,12 +85,6 @@ tie.factory('PythonCodePreprocessorService', [
     var UPPER_BOUND_RATIO_IF_LINEAR = (LARGE_INPUT_SIZE / SMALL_INPUT_SIZE) * 3;
 
     /**
-     * Used to separate the print outputs of different test cases, which are
-     * all combined into one output string after the code is run.
-     */
-    var separator = null;
-
-    /**
      * This function converts a JSON variable to a Python variable.
      *
      * @param {*} jsonVariable
@@ -322,20 +316,32 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     /**
-    * Creates and sets the string separator for user print stdOut.
+     * Generates the random string separator that is used to separate the
+     * print outputs of different test cases, which are
+     * all combined into one output string after the code is run.
+     *
+     * @returns {string}
+     * @private
+     */
+    var _generateNewSeparator = function() {
+      var chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
+      var separator = '';
+      for (var i = 0; i < SEPARATOR_LENGTH; i++) {
+        var index = Math.floor(Math.random() * chars.length);
+        separator += chars.charAt(index);
+      }
+      return separator;
+    };
+
+    /**
+    * Generates the separator code that is used to split user stdOut.
     *
+    * @param {string} separator The randomly-generated separator that will be
+    * used in separating the stdOut of different test cases.
     * @returns {string}
     * @private
     */
-    var _generateOutputSeparatorCode = function() {
-      var chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
-      var currentSeparator = '';
-      for (var i = 0; i < SEPARATOR_LENGTH; i++) {
-        var index = Math.floor(Math.random() * chars.length);
-        currentSeparator += chars.charAt(index);
-      }
-      separator = currentSeparator;
-
+    var _generateOutputSeparatorCode = function(separator) {
       var separatorCode = [
         'separator = "' + separator + '"',
         ''
@@ -651,10 +657,14 @@ tie.factory('PythonCodePreprocessorService', [
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');
 
+        // Creates a new random string separator that is used in separating
+        // the stdOut of different test cases.
+        var separator = _generateNewSeparator();
+
         // Append everything else.
         codeSubmission.append([
           auxiliaryCode,
-          this._generateOutputSeparatorCode(),
+          this._generateOutputSeparatorCode(separator),
           this._generateCorrectnessTestCode(
             allTasksTestSuites, allTasksInputFunctionNames,
             allTasksMainFunctionNames, allTasksOutputFunctionNames),
@@ -681,6 +691,7 @@ tie.factory('PythonCodePreprocessorService', [
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
       _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
+      _generateNewSeparator: _generateNewSeparator,
       _generateOutputSeparatorCode: _generateOutputSeparatorCode,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,

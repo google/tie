@@ -19,13 +19,15 @@
 tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory', 'FEEDBACK_CATEGORIES',
+  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'FEEDBACK_CATEGORIES',
   'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
   'EXECUTION_CONTEXT_RUN_WITH_TESTS',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory, FEEDBACK_CATEGORIES,
+      TranscriptService, CodeSubmissionObjectFactory,
+      FEEDBACK_CATEGORIES,
       FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
       EXECUTION_CONTEXT_RUN_WITH_TESTS) {
 
@@ -105,6 +107,8 @@ tie.factory('ConversationManagerService', [
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
           return Promise.resolve(feedback);
+          // Return Promise.resolve(
+          //   LearnerViewSubmissionResultObjectFactory.create(feedback, null));
         } else {
           // Next, run the raw code to detect syntax errors. If any exist, we
           // return a promise with a Feedback object.
@@ -117,6 +121,8 @@ tie.factory('ConversationManagerService', [
               feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
                 potentialSyntaxErrorString);
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
+              // Return LearnerViewSubmissionResultObjectFactory.create(
+              //   feedback, stdOut);
               return feedback;
             }
 
@@ -125,13 +131,13 @@ tie.factory('ConversationManagerService', [
             // code, then run the whole thing.
             var codeSubmission = CodeSubmissionObjectFactory.create(
               studentCode.trim());
-            var preprocessedCodeObject = CodePreprocessorDispatcherService.preprocess(
-              language, codeSubmission, auxiliaryCode, tasks);
+            var preprocessedCodeObject =
+              CodePreprocessorDispatcherService.preprocess(
+                language, codeSubmission, auxiliaryCode, tasks);
 
             return CodeRunnerDispatcherService.runCodeAsync(
               language, preprocessedCodeObject
             ).then(function(preprocessedCodeEvalResult) {
-              console.log(preprocessedCodeEvalResult.getOutputToDisplay(tasks));
               var feedbackDetails = computeFeedbackDetails(
                 preprocessedCodeEvalResult, EXECUTION_CONTEXT_RUN_WITH_TESTS);
 
@@ -169,9 +175,13 @@ tie.factory('ConversationManagerService', [
                     throw Error('Invalid feedback type.');
                 }
               }
-
               TranscriptService.recordSnapshot(
                 null, preprocessedCodeEvalResult, feedback);
+
+              // Var stdOut =
+              // preprocessedCodeEvalResult.getOutputToDisplay(tasks);
+              // return LearnerViewSubmissionResultObjectFactory.create(
+              //   feedback, stdOut);
               return feedback;
             });
           });
