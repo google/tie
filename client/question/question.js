@@ -514,17 +514,19 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
  * @type {{}}
  */
 tie.constant('SYSTEM_GENERATED_TIPS', {
-  python: [{
-    // Included a print statement
-    type: 'print',
-    regexString: '\\bprint\\b',
-    message: [
-      'We noticed that you\'re using a print statement within your code. ',
-      'Since you will not be able to use such statements in a technical ',
-      'interview, TIE does not support this feature. We encourage you to ',
-      'instead step through your code by hand.'
-    ].join('')
-  }]
+  python: []
+  // The system generated tip when stdout is disabled.
+  // python: [{
+  //   // Included a print statement
+  //   type: 'print',
+  //   regexString: '\\bprint\\b',
+  //   message: [
+  //     'We noticed that you\'re using a print statement within your code. ',
+  //     'Since you will not be able to use such statements in a technical ',
+  //     'interview, TIE does not support this feature. We encourage you to ',
+  //     'instead step through your code by hand.'
+  //   ].join('')
+  // }]
 });
 
 /**

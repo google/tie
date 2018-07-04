@@ -106,24 +106,34 @@ describe('UnpromptedFeedbackManagerService', function() {
 
       // The first check does not trigger any feedback.
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
-        LANGUAGE_PYTHON, 'import print', taskId)).toBe(null);
+        LANGUAGE_PYTHON, 'import regex', taskId)).toBe(null);
 
       // Two issues are found in the second check, but only one is surfaced.
       var feedbackParagraphs = UnpromptedFeedbackManagerService.runTipsCheck(
-        LANGUAGE_PYTHON, 'import print', taskId);
+        LANGUAGE_PYTHON, 'import regex', taskId);
+      expect(feedbackParagraphs.length).toBe(1);
+      expect(feedbackParagraphs[0].isTextParagraph()).toBe(true);
+      expect(feedbackParagraphs[0].getContent()).toMatch(
+        'You don\'t need to use regexes for this question.');
+
+      // When the regex issue is fixed, the import issue is surfaced.
+      feedbackParagraphs = UnpromptedFeedbackManagerService.runTipsCheck(
+        LANGUAGE_PYTHON, 'import', taskId);
       expect(feedbackParagraphs.length).toBe(1);
       expect(feedbackParagraphs[0].isTextParagraph()).toBe(true);
       expect(feedbackParagraphs[0].getContent()).toBe(
         'For this question, you do not need to import libraries.');
+    });
 
-      // When the import issue is fixed, the print issue (a system-level check)
-      // is surfaced.
-      feedbackParagraphs = UnpromptedFeedbackManagerService.runTipsCheck(
-        LANGUAGE_PYTHON, 'print', taskId);
-      expect(feedbackParagraphs.length).toBe(1);
-      expect(feedbackParagraphs[0].isTextParagraph()).toBe(true);
-      expect(feedbackParagraphs[0].getContent()).toMatch(
-        'We noticed that you\'re using a print statement');
+    it('should not trigger a warning for print statements', function() {
+      UnpromptedFeedbackManagerService.reset(tasks);
+
+      // The first check does not trigger any feedback.
+      expect(UnpromptedFeedbackManagerService.runTipsCheck(
+        LANGUAGE_PYTHON, 'print', taskId)).toBe(null);
+      // Printing is supported, so once again nothing is triggered.
+      expect(UnpromptedFeedbackManagerService.runTipsCheck(
+        LANGUAGE_PYTHON, 'print', taskId)).toBe(null);
     });
   });
 });

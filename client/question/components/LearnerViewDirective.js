@@ -70,23 +70,29 @@ tie.directive('learnerView', [function() {
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
-                <div class="tie-coding-terminal">
-                  <div class="tie-codemirror-container"
-                      tabindex="0"
-                      ng-keypress="onKeypressCodemirrorContainer($event)"
-                      ng-focus="onFocusCodemirrorContainer()">
-                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                        ng-model="editorContents.code"
-                        ng-change="onCodeChange()"
-                        ng-if="!accessibleMode"
-                        class="protractor-test-code-input">
-                    </ui-codemirror>
-                    <ui-codemirror ng-model="editorContents.code"
-                        ui-codemirror-opts="accessibleCodeMirrorOptions"
-                        ng-change="onCodeChange()"
-                        ng-if="accessibleMode"
-                        class="protractor-test-code-input">
-                    </ui-codemirror>
+                <div class="tie-user-terminal">
+                  <div class="tie-coding-terminal">
+                    <div class="tie-codemirror-container"
+                        tabindex="0"
+                        ng-keypress="onKeypressCodemirrorContainer($event)"
+                        ng-focus="onFocusCodemirrorContainer()">
+                      <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                          ng-model="editorContents.code"
+                          ng-change="onCodeChange()"
+                          ng-if="!accessibleMode"
+                          class="protractor-test-code-input">
+                      </ui-codemirror>
+                      <ui-codemirror ng-model="editorContents.code"
+                          ui-codemirror-opts="accessibleCodeMirrorOptions"
+                          ng-change="onCodeChange()"
+                          ng-if="accessibleMode"
+                          class="protractor-test-code-input">
+                      </ui-codemirror>
+                    </div>
+                  </div>
+                  <div class="tie-print-terminal">
+                  <h1 class="tie-print-title"> Printed Output </h1>
+                  <div class="tie-stdout">{{stdout}}</div>
                   </div>
                 </div>
                 <select ng-if="SERVER_URL"
@@ -274,7 +280,7 @@ tie.directive('learnerView', [function() {
         .tie-coding-terminal {
           display: flex;
           font-size: 13px;
-          height: 528px;
+          height: 338px;
           position: relative;
           width: 662px;
         }
@@ -293,6 +299,48 @@ tie.directive('learnerView', [function() {
           display: inline-block;
           margin: 8px;
           white-space: normal;
+        }
+        .tie-print-title {
+          padding-top: 3px;
+          text-align: center;
+          font-size: 18px;
+        }
+        .night-mode .tie-print-title {
+          padding-top: 3px;
+          text-align: center;
+          font-size: 18px;
+          color: #ffffff;
+        }
+        .tie-print-terminal {
+          background-color: #ffffff;
+          overflow: auto;
+          margin-top: 8px;
+          height: 182px;
+          width: 662px;
+        }
+        .night-mode .tie-print-terminal {
+          background-color: #2c2c2c;
+          overflow: auto;
+          margin-top: 8px;
+          height: 182px;
+          width: 662px;
+        }
+        .tie-stdout {
+          line-height: 1.2em;
+          font-size: 13px;
+          font-family: monospace;
+          white-space: pre-wrap;
+          padding-left: 6%;
+          padding-bottom: 12px;
+        }
+        .night-mode .tie-stdout {
+          line-height: 1.2em;
+          font-size: 13px;
+          font-family: monospace;
+          white-space: pre-wrap;
+          padding-left: 6%;
+          color: #ffffff;
+          padding-bottom: 12px;
         }
         .tie-feedback-error-string {
           color: #F44336;
@@ -1028,6 +1076,7 @@ tie.directive('learnerView', [function() {
           ).then(function(learnerViewSubmissionResult) {
             var feedback = learnerViewSubmissionResult.getFeedback();
             $scope.setFeedback(feedback, code);
+            $scope.stdout = learnerViewSubmissionResult.getStdout();
           });
 
           $scope.autosaveCode();
