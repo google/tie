@@ -19,13 +19,85 @@ describe('PythonCodeRunnerService', function() {
   var $httpBackend;
   var PythonCodeRunnerService;
   var ServerHandlerService;
+  var CurrentQuestionService;
+  var PreprocessedCodeObjectFactory;
+  var QuestionObjectFactory;
   var responseDict = {};
+  var question;
   var VARNAME_OBSERVED_OUTPUTS = 'correctness_test_results';
   var VARNAME_BUGGY_OUTPUT_TEST_RESULTS = 'buggy_output_test_results';
   var VARNAME_PERFORMANCE_TEST_RESULTS = 'performance_test_results';
   var VARNAME_MOST_RECENT_INPUT = 'most_recent_input';
   var HTTP_STATUS_CODE_OK = 200;
   var HTTP_STATUS_CODE_SERVER_ERROR = 500;
+  var TITLE = "title";
+  var STARTER_CODE = "starterCode";
+  var AUXILIARY_CODE = "auxiliaryCode";
+  var taskDict = [{
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_1_correctness_test_1',
+        allowedOutputs: [true]
+      }, {
+        input: 'task_1_correctness_test_2',
+        allowedOutputs: [true]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task1",
+        "Mock BuggyOutputTest Message Two for task1",
+        "Mock BuggyOutputTest Message Three for task1"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: []
+  }, {
+    instructions: [''],
+    prerequisiteSkills: [''],
+    acquiredSkills: [''],
+    inputFunctionName: null,
+    outputFunctionName: null,
+    mainFunctionName: 'mockMainFunction',
+    languageSpecificTips: {
+      python: []
+    },
+    testSuites: [{
+      id: 'GENERAL_CASE',
+      humanReadableName: 'the general case',
+      testCases: [{
+        input: 'task_2_correctness_test_1',
+        allowedOutputs: [false]
+      }, {
+        input: 'task_2_correctness_test_2',
+        allowedOutputs: [false]
+      }]
+    }],
+    buggyOutputTests: [{
+      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
+      ignoredTestSuiteIds: [],
+      messages: [
+        "Mock BuggyOutputTest Message One for task2",
+        "Mock BuggyOutputTest Message Two for task2",
+        "Mock BuggyOutputTest Message Three for task2"
+      ]
+    }],
+    suiteLevelTests: [],
+    performanceTests: []
+  }];
 
   beforeEach(module('tie', function($provide) {
     $provide.constant('SERVER_URL', 'http://katamari.com');
@@ -34,6 +106,8 @@ describe('PythonCodeRunnerService', function() {
     $httpBackend = $injector.get('$httpBackend');
     PythonCodeRunnerService = $injector.get('PythonCodeRunnerService');
     ServerHandlerService = $injector.get('ServerHandlerService');
+    PreprocessedCodeObjectFactory = $injector.get(
+      'PreprocessedCodeObjectFactory');
     responseDict.stdout = 'hello world!';
     responseDict.stderr = '';
     responseDict.results = {};
@@ -44,6 +118,17 @@ describe('PythonCodeRunnerService', function() {
       [false, false, false]];
     responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
       ['linear']];
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    CurrentQuestionService = $injector.get('CurrentQuestionService');
+    question = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: taskDict
+    });
+    spyOn(CurrentQuestionService,
+      'getCurrentQuestion').and.returnValue(question);
   }));
 
   describe('compileCodeAsync', function() {
@@ -122,7 +207,9 @@ describe('PythonCodeRunnerService', function() {
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
       spyOn(PythonCodeRunnerService,
         '_processCodeExecutionServerResponse').and.returnValue(null);
-      PythonCodeRunnerService.runCodeAsync(code);
+      var preprocessedCode = PreprocessedCodeObjectFactory.create(
+        code, 'separator');
+      PythonCodeRunnerService.runCodeAsync(preprocessedCode);
       $httpBackend.flush();
     });
 
@@ -136,7 +223,9 @@ describe('PythonCodeRunnerService', function() {
       $httpBackend.expectPOST('/ajax/run_code').respond(
         HTTP_STATUS_CODE_SERVER_ERROR, {});
       spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
-      PythonCodeRunnerService.runCodeAsync(code).then(
+      var preprocessedCode = PreprocessedCodeObjectFactory.create(
+        code, 'separator');
+      PythonCodeRunnerService.runCodeAsync(preprocessedCode).then(
         function(result) {
           expect(result.getErrorString()).toEqual(
             'A server error occurred. Please refresh the page.');
@@ -252,6 +341,34 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getErrorString()).toEqual(
         'SyntaxError: invalid syntax, friend on line 28');
       expect(codeEvalResult.getErrorInput()).toEqual(null);
+    });
+  });
+
+  describe('_createOutputArray', function() {
+    it('should correctly display stdout on task completion', function() {
+      var sep = '12345678901234567890';
+      var stdout = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
+        '\n1\n2\nHello\n' + sep;
+      expect(PythonCodeRunnerService._createOutputArray(
+        stdout, sep)).toEqual(
+        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
+    });
+
+    it('should correctly display stdout on question completion', function() {
+      var sep = '12345678901234567890';
+      var stdout = '1\n2\nHi\n' + sep + '\n1\n2\nHey\n' + sep +
+        '\n1\n2\nHello\n' + sep + 'extraStuff';
+      expect(PythonCodeRunnerService._createOutputArray(
+        stdout, sep)).toEqual(
+        ['1\n2\nHi\n', '1\n2\nHey\n', '1\n2\nHello\n']);
+    });
+
+    it('should correctly display nothing on no stdout', function() {
+      var sep = '12345678901234567890';
+      var stdout = sep + '\n' + sep + '\n' + sep + '\n';
+      expect(PythonCodeRunnerService._createOutputArray(
+        stdout, sep)).toEqual(
+        ['', '', '']);
     });
   });
 });

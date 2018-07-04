@@ -18,17 +18,19 @@
  */
 
 tie.factory('PythonCodePreprocessorService', [
-  'ServerHandlerService', 'CLASS_NAME_AUXILIARY_CODE',
+  'ServerHandlerService',
+  'PreprocessedCodeObjectFactory', 'CLASS_NAME_AUXILIARY_CODE',
   'CLASS_NAME_STUDENT_CODE', 'SYSTEM_CODE', 'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_MOST_RECENT_INPUT', 'VARNAME_BUGGY_OUTPUT_TEST_RESULTS',
   'VARNAME_PERFORMANCE_TEST_RESULTS', 'VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS',
-  'VARNAME_TASK_PERFORMANCE_TEST_RESULTS',
+  'VARNAME_TASK_PERFORMANCE_TEST_RESULTS', 'SEPARATOR_LENGTH',
   function(
-      ServerHandlerService, CLASS_NAME_AUXILIARY_CODE,
+      ServerHandlerService,
+      PreprocessedCodeObjectFactory, CLASS_NAME_AUXILIARY_CODE,
       CLASS_NAME_STUDENT_CODE, SYSTEM_CODE, VARNAME_OBSERVED_OUTPUTS,
       VARNAME_MOST_RECENT_INPUT, VARNAME_BUGGY_OUTPUT_TEST_RESULTS,
       VARNAME_PERFORMANCE_TEST_RESULTS, VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS,
-      VARNAME_TASK_PERFORMANCE_TEST_RESULTS) {
+      VARNAME_TASK_PERFORMANCE_TEST_RESULTS, SEPARATOR_LENGTH) {
     /**
      * Used to determine the definition of a function
      * @type {RegExp}
@@ -314,6 +316,40 @@ tie.factory('PythonCodePreprocessorService', [
     };
 
     /**
+     * Generates the random string separator that is used to separate the
+     * print outputs of different test cases, which are
+     * all combined into one output string after the code is run.
+     *
+     * @returns {string}
+     * @private
+     */
+    var _generateNewSeparator = function() {
+      var chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
+      var separator = '';
+      for (var i = 0; i < SEPARATOR_LENGTH; i++) {
+        var index = Math.floor(Math.random() * chars.length);
+        separator += chars.charAt(index);
+      }
+      return separator;
+    };
+
+    /**
+    * Generates the separator code that is used to split user stdout.
+    *
+    * @param {string} separator The randomly-generated separator that will be
+    * used in separating the stdout of different test cases.
+    * @returns {string}
+    * @private
+    */
+    var _generateOutputSeparatorCode = function(separator) {
+      var separatorCode = [
+        'separator = "' + separator + '"',
+        ''
+      ].join('\n');
+      return separatorCode;
+    };
+
+    /**
      * Creates and returns the code necessary to run all correctness tests.
      *
      * @param {Array} allTasksTestSuites
@@ -329,7 +365,7 @@ tie.factory('PythonCodePreprocessorService', [
       // This returns a list of lists of dicts of input data. Each inner dict
       // represents a test suite (with ID and a list of python-formatted test
       // case inputs). The containing list represents all test suites for a
-      // task, // and the outer list represents all the test suites for all the
+      // task, and the outer list represents all the test suites for all the
       // tasks.
       var allTaskInputs = allTasksTestSuites.map(function(taskTestSuites) {
         return taskTestSuites.map(function(suite) {
@@ -376,11 +412,16 @@ tie.factory('PythonCodePreprocessorService', [
         testCode += '\n';
         testCode += [
           '',
+          'def printSeparatorAndGetTestOutput(test_input):',
+          '    output = ' + testOutputCode,
+          '    print separator',
+          '    return output',
+          '',
           'task_test_inputs = ' + VARNAME_ALL_TASKS_TEST_INPUTS + '[' + i + ']',
           'task_results = []',
           'for suite_dicts in task_test_inputs:',
           '    suite_results = [',
-          '        ' + testOutputCode,
+          '        printSeparatorAndGetTestOutput(test_input)',
           '        for test_input in suite_dicts["inputs"]]',
           '    task_results.append(suite_results)',
           VARNAME_OBSERVED_OUTPUTS + '.append(task_results)'
@@ -413,7 +454,6 @@ tie.factory('PythonCodePreprocessorService', [
             (outputFunctionName ? outputFunctionName : 'None')
           ].join(', ') + '))\n');
       });
-
       code += (
         VARNAME_BUGGY_OUTPUT_TEST_RESULTS +
         '.append(' + VARNAME_TASK_BUGGY_OUTPUT_TEST_RESULTS + ')\n');
@@ -616,9 +656,14 @@ tie.factory('PythonCodePreprocessorService', [
         // This newline separates the student code from the auxiliary code.
         codeSubmission.append('');
 
+        // Creates a new random string separator that is used in separating
+        // the stdout of different test cases.
+        var separator = _generateNewSeparator();
+
         // Append everything else.
         codeSubmission.append([
           auxiliaryCode,
+          this._generateOutputSeparatorCode(separator),
           this._generateCorrectnessTestCode(
             allTasksTestSuites, allTasksInputFunctionNames,
             allTasksMainFunctionNames, allTasksOutputFunctionNames),
@@ -633,6 +678,10 @@ tie.factory('PythonCodePreprocessorService', [
         if (ServerHandlerService.doesServerExist()) {
           this._prepareCodeSubmissionForServerExecution(codeSubmission);
         }
+
+        return PreprocessedCodeObjectFactory.create(
+          codeSubmission.getPreprocessedCode(), codeSubmission.getRawCode(),
+          separator);
       },
 
       // These are seams to allow for Karma testing of the private functions.
@@ -641,6 +690,8 @@ tie.factory('PythonCodePreprocessorService', [
       _addClassWrappingToHelperFunctions: (
         _addClassWrappingToHelperFunctions),
       _checkMatchedFunctionForWhitespace: _checkMatchedFunctionForWhitespace,
+      _generateNewSeparator: _generateNewSeparator,
+      _generateOutputSeparatorCode: _generateOutputSeparatorCode,
       _generateCorrectnessTestCode: _generateCorrectnessTestCode,
       _generateBuggyOutputTestCode: _generateBuggyOutputTestCode,
       _generatePerformanceTestCode: _generatePerformanceTestCode,

@@ -18,16 +18,24 @@
 
 describe('CodeRunnerDispatcherService', function() {
   var CodeRunnerDispatcherService;
+  var PreprocessedCodeObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     CodeRunnerDispatcherService = $injector.get('CodeRunnerDispatcherService');
+    PreprocessedCodeObjectFactory = $injector.get(
+      'PreprocessedCodeObjectFactory');
   }));
 
   describe('pythonCodeRunnerService', function() {
     it('should throw an error if passed a non-Python language', function() {
+      var code = 'some code';
+      var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
+        code, code, 'separator');
+
       var errorFunction = function() {
-        CodeRunnerDispatcherService.runCodeAsync('java', 'some code');
+        CodeRunnerDispatcherService.runCodeAsync('java',
+          preprocessedCodeObject);
       };
       expect(errorFunction).toThrow();
     });
@@ -37,8 +45,10 @@ describe('CodeRunnerDispatcherService', function() {
         'while True:',
         "    print 'a'"
       ].join('\n');
-
-      CodeRunnerDispatcherService.runCodeAsync('python', code).then(
+      var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
+        code, code, 'separator');
+      CodeRunnerDispatcherService.runCodeAsync('python',
+        preprocessedCodeObject).then(
         function(rawCodeEvalResult) {
           expect(rawCodeEvalResult.getErrorString()).toBe(
             'TimeLimitError: Program exceeded run time limit.');
@@ -53,7 +63,10 @@ describe('CodeRunnerDispatcherService', function() {
         "    return forgetToIgnoreSpaces(string + 'b')",
         "forgetToIgnoreSpaces('a')"
       ].join('\n');
-      CodeRunnerDispatcherService.runCodeAsync("python", code).then(
+      var preprocessedCodeObject = PreprocessedCodeObjectFactory.create(
+        code, code, 'separator');
+      CodeRunnerDispatcherService.runCodeAsync("python",
+        preprocessedCodeObject).then(
         function(rawCodeEvalResult) {
           expect(rawCodeEvalResult.getErrorString()).toBe([
             'ExternalError: RangeError: Maximum call stack size ',

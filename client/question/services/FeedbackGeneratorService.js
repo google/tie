@@ -260,7 +260,7 @@ tie.factory('FeedbackGeneratorService', [
       return (
         lastSnapshot !== null &&
         lastSnapshot.getCodeEvalResult() !== null &&
-        !codeEvalResult.hasSamePreprocessedCodeAs(
+        !codeEvalResult.hasSameRawCodeAs(
           lastSnapshot.getCodeEvalResult()));
     };
 
