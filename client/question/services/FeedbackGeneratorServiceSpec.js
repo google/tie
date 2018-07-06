@@ -606,7 +606,8 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback, null);
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
         codeEvalResult);
@@ -628,7 +629,8 @@ describe('FeedbackGeneratorService', function() {
        'consecutiveUnfamiliarityLanguageCounter reaches the ' +
        'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback, null);
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
 
       var feedback;
       for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
