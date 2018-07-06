@@ -22,6 +22,7 @@ describe('PythonCodePreprocessorService', function() {
   var BuggyOutputTestObjectFactory;
   var TestSuiteObjectFactory;
   var PerformanceTestObjectFactory;
+  var SEPARATOR_LENGTH;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -33,6 +34,7 @@ describe('PythonCodePreprocessorService', function() {
     TestSuiteObjectFactory = $injector.get('TestSuiteObjectFactory');
     PerformanceTestObjectFactory = $injector.get(
       'PerformanceTestObjectFactory');
+    SEPARATOR_LENGTH = $injector.get('SEPARATOR_LENGTH');
   }));
 
   describe('_prepareCodeSubmissionForServerExecution', function() {
@@ -589,6 +591,35 @@ describe('PythonCodePreprocessorService', function() {
     });
   });
 
+  describe('_generateNewSeparator', function() {
+    it('should correctly generate a new separator string', function() {
+      expect(
+        PythonCodePreprocessorService._generateNewSeparator()
+      ).toMatch('[A-Za-z]{' + SEPARATOR_LENGTH + '}');
+    });
+
+    it('should create different separators across multiple calls', function() {
+      var first = PythonCodePreprocessorService._generateNewSeparator();
+      var second = PythonCodePreprocessorService._generateNewSeparator();
+      expect(first).not.toEqual(second);
+    });
+
+  });
+
+  describe('_generateOutputSeparatorCode', function() {
+    it('should add string separator to skeleton code', function() {
+      expect(
+        PythonCodePreprocessorService._generateOutputSeparatorCode(
+          'abcdefghijklmnopqrst')
+      ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
+
+      expect(
+        PythonCodePreprocessorService._generateOutputSeparatorCode(
+          PythonCodePreprocessorService._generateNewSeparator())
+      ).toMatch('separator = "[A-Za-z]{' + SEPARATOR_LENGTH + '}"');
+    });
+  });
+
   describe('_generateCorrectnessTestCode', function() {
     it('should add correctness test code to skeleton code', function() {
       var testSuites = [TestSuiteObjectFactory.create({
@@ -610,11 +641,16 @@ describe('PythonCodePreprocessorService', function() {
         '',
         'correctness_test_results = []',
         '',
+        'def printSeparatorAndGetTestOutput(test_input):',
+        '    output = outputFnName(System.runTest(StudentCode().mainFnName, inputFnName(test_input)))',
+        '    print separator',
+        '    return output',
+        '',
         'task_test_inputs = all_tasks_test_inputs[0]',
         'task_results = []',
         'for suite_dicts in task_test_inputs:',
         '    suite_results = [',
-        '        outputFnName(System.runTest(StudentCode().mainFnName, inputFnName(test_input)))',
+        '        printSeparatorAndGetTestOutput(test_input)',
         '        for test_input in suite_dicts["inputs"]]',
         '    task_results.append(suite_results)',
         'correctness_test_results.append(task_results)'

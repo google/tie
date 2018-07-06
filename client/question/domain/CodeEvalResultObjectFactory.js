@@ -27,8 +27,18 @@ tie.factory('CodeEvalResultObjectFactory', [
     /**
      * Constructor for CodeEvalResult
      *
-     * @param {string} preprocessedCode Unprocessed student code
-     * @param {string} output Stdout resulting from running student code
+     * @param {string} preprocessedCode Preprocessed submitted code
+     * @param {string} rawCode Raw student input code
+     * @param {Array<string>|null} observedStdouts Stdout resulting from
+     * running the student code where the array has the i-th entry
+     * corresponding to the stdout of the i-th overall test case. Overall test
+     * case is defined to be the number of the test case when all test cases
+     * across all tasks are concatenated into one list. If an error ocurred,
+     * the corresponding stdout will be null.
+     * The number of elements in the array will match the number of test cases
+     * that were executed (which is all tests up until the last test of
+     * the current task or up until the first test that error'ed,
+     * whichever comes first).
      * @param {Array} observedOutputs Observed outputs from running the code
      *  against the test cases
      * @param {Array} buggyOutputTestResults Results of Buggy Output tests
@@ -39,8 +49,9 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @constructor
      */
     var CodeEvalResult = function(
-        preprocessedCode, output, observedOutputs, buggyOutputTestResults,
-        performanceTestResults, errorTraceback, errorInput) {
+        preprocessedCode, rawCode, observedStdouts, observedOutputs,
+        buggyOutputTestResults, performanceTestResults, errorTraceback,
+        errorInput) {
       /**
        * @type {string}
        * @private
@@ -51,7 +62,13 @@ tie.factory('CodeEvalResultObjectFactory', [
        * @type {string}
        * @private
        */
-      this._output = output;
+      this._rawCode = rawCode;
+
+      /**
+       * @type {Array<string>|null}
+       * @private
+       */
+      this._observedStdouts = observedStdouts;
 
       /**
        * @type {Array}
@@ -97,28 +114,44 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
-     * Returns a boolean indicating whether the preprocessed code in this
-     * object matches the preprocessed code in the given CodeEvalResult.
+     * A getter for the _rawCode property.
+     * It should return a string with the raw code that the student inputted.
+     *
+     * @returns {string}
+     */
+    CodeEvalResult.prototype.getRawCode = function() {
+      return this._rawCode;
+    };
+
+    /**
+     * Returns a boolean indicating whether the raw code in this
+     * object matches the raw code in the given CodeEvalResult.
      *
      * @param {CodeEvalResult} otherCodeEvalResult
      *
      * @returns {boolean}
      */
-    CodeEvalResult.prototype.hasSamePreprocessedCodeAs = function(
+    CodeEvalResult.prototype.hasSameRawCodeAs = function(
         otherCodeEvalResult) {
-      return (
-        this._preprocessedCode === otherCodeEvalResult.getPreprocessedCode());
+      return this._rawCode === otherCodeEvalResult.getRawCode();
     };
 
     /**
-     * A getter for the _output property.
-     * The function should return a string of the output for the code that was
-     * run.
+     * A getter for the _observedStdouts property.
+     * The function should return the array of stdouts where the i-th
+     * entry in the array corresponds to the output of the i-th overall test
+     * case. Overall test case is defined to be the number of the test case
+     * when all the test cases across all tasks are concatenated into one list.
+     * If an error occurred, the corresponding output will be null.
+     * The number of elements in the array will match the number of test cases
+     * that were executed (which is all tests up until the last test of
+     * the current task or up until the first test that error'ed,
+     * whichever comes first).
      *
-     * @returns {string}
+     * @returns {Array<string>|null}
      */
-    CodeEvalResult.prototype.getOutput = function() {
-      return this._output;
+    CodeEvalResult.prototype.getObservedStdouts = function() {
+      return this._observedStdouts;
     };
 
     /**
@@ -174,6 +207,65 @@ tie.factory('CodeEvalResultObjectFactory', [
       return null;
     };
 
+    /**
+     * Compares the results to the expected values of the test cases, and
+     * returns the overall test number (0-indexed) of the first failed test
+     * case. The overall test number is defined by concatenating all the
+     * test cases together, in order.
+     *
+     * @param {Array<Task>} tasks The list of tasks for the current question.
+     * @returns {number|null} The overall test number of the test case that
+     * failed. Returns null if no tests for the past or current tasks failed.
+     */
+    CodeEvalResult.prototype.getIndexOfFirstFailedTest = function(tasks) {
+      if (this._observedOutputs.length === 0) {
+        return 0;
+      }
+
+      var overallTestNum = 0;
+      for (var i = 0; i < this._observedOutputs.length; i++) {
+        var testSuites = tasks[i].getTestSuites();
+        for (var j = 0; j < this._observedOutputs[i].length; j++) {
+          var testCases = testSuites[j].getTestCases();
+          for (var k = 0; k < this._observedOutputs[i][j].length; k++) {
+            if (!testCases[k].matchesOutput(this._observedOutputs[i][j][k])) {
+              return overallTestNum;
+            }
+            overallTestNum += 1;
+          }
+        }
+      }
+      // Returns null if all test cases passed.
+      return null;
+    };
+
+    /**
+     * Returns the stdout corresponding to the first failed test case, or
+     * the output associated with the last test case of the last task
+     * completed if all tests passed.
+     *
+     * @param {Array} tasks Array of the current question's tasks.
+     * @returns {string}
+     */
+    CodeEvalResult.prototype.getStdoutToDisplay = function(tasks) {
+      if (this._observedOutputs.length === 0) {
+        return null;
+      }
+      var testToDisplay = this.getIndexOfFirstFailedTest(tasks);
+
+      // If user passed all tests, display output of the last test case of
+      // the last task that they completed.
+      if (testToDisplay === null) {
+        var overallNumTests = 0;
+        for (var i = 0; i < this._observedOutputs.length; i++) {
+          for (var j = 0; j < this._observedOutputs[i].length; j++) {
+            overallNumTests += this._observedOutputs[i][j].length;
+          }
+        }
+        return this._observedStdouts[overallNumTests - 1];
+      }
+      return this._observedStdouts[testToDisplay];
+    };
     /**
      * Returns the observed outputs for the last task that is run. The function
      * should return the last subarray in _observedOutputs.
@@ -266,7 +358,9 @@ tie.factory('CodeEvalResultObjectFactory', [
      * specified.
      *
      * @param {string} preprocessedCode Preprocessed submitted code
-     * @param {string} output Stdout resulting from running student code
+     * @param {string} rawCode Raw student input code
+     * @param {Array<string>} observedStdouts Stdout array resulting from
+     * running student code
      * @param {Array} observedOutputs Observed outputs from running the code
      *  against the test cases
      * @param {Array} buggyOutputTestResults Buggy test results
@@ -276,11 +370,13 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @returns {CodeEvalResult}
      */
     CodeEvalResult.create = function(
-        preprocessedCode, output, observedOutputs, buggyOutputTestResults,
-        performanceTestResults, errorTraceback, errorInput) {
+        preprocessedCode, rawCode, observedStdouts, observedOutputs,
+        buggyOutputTestResults, performanceTestResults, errorTraceback,
+        errorInput) {
       return new CodeEvalResult(
-        preprocessedCode, output, observedOutputs, buggyOutputTestResults,
-        performanceTestResults, errorTraceback, errorInput);
+        preprocessedCode, rawCode, observedStdouts, observedOutputs,
+        buggyOutputTestResults, performanceTestResults, errorTraceback,
+        errorInput);
     };
 
     return CodeEvalResult;

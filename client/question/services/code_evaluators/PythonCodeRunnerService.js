@@ -18,12 +18,16 @@
 
 tie.factory('PythonCodeRunnerService', [
   '$http', 'CodeEvalResultObjectFactory', 'ErrorTracebackObjectFactory',
-  'ServerHandlerService', 'EventHandlerService', 'VARNAME_OBSERVED_OUTPUTS',
+  'PreprocessedCodeObjectFactory', 'ServerHandlerService',
+  'EventHandlerService', 'CurrentQuestionService',
+  'VARNAME_OBSERVED_OUTPUTS',
   'VARNAME_BUGGY_OUTPUT_TEST_RESULTS', 'VARNAME_PERFORMANCE_TEST_RESULTS',
   'VARNAME_MOST_RECENT_INPUT', 'CODE_EXECUTION_TIMEOUT_SECONDS',
   function(
       $http, CodeEvalResultObjectFactory, ErrorTracebackObjectFactory,
-      ServerHandlerService, EventHandlerService, VARNAME_OBSERVED_OUTPUTS,
+      PreprocessedCodeObjectFactory, ServerHandlerService,
+      EventHandlerService, CurrentQuestionService,
+      VARNAME_OBSERVED_OUTPUTS,
       VARNAME_BUGGY_OUTPUT_TEST_RESULTS, VARNAME_PERFORMANCE_TEST_RESULTS,
       VARNAME_MOST_RECENT_INPUT, CODE_EXECUTION_TIMEOUT_SECONDS) {
     /** @type {number} @const */
@@ -52,7 +56,18 @@ tie.factory('PythonCodeRunnerService', [
       outputLines.push(line);
     };
 
-    var _runCodeInClient = function(code) {
+    var _compileCode = function(code) {
+      return _runCodeInClient(code, code, null);
+    };
+
+    var _runPreprocessedCode = function(preprocessedCodeObject) {
+      return _runCodeInClient(
+        preprocessedCodeObject.getPreprocessedCodeString(),
+        preprocessedCodeObject.getRawCode(),
+        preprocessedCodeObject.getSeparator());
+    };
+
+    var _runCodeInClient = function(codeToExecute, rawCode, separator) {
       clearOutput();
       Sk.configure({
         output: addOutputLine,
@@ -66,7 +81,7 @@ tie.factory('PythonCodeRunnerService', [
         }
       });
       return Sk.misceval.asyncToPromise(function() {
-        return Sk.importMainWithBody('<stdin>', false, code, true);
+        return Sk.importMainWithBody('<stdin>', false, codeToExecute, true);
       }).then(function() {
         var observedOutputs = [];
         var buggyOutputTestResults = [];
@@ -89,8 +104,19 @@ tie.factory('PythonCodeRunnerService', [
         }
 
         // The run was successful.
+
+        // The output returned from the run is an array where each line of
+        // stdout is an entry in the array. Here, the array is converted
+        // into one consolidated string where it will later be split into
+        // the corresponding test cases.
+        var consolidatedOutputString = '';
+        for (var i = 0; i < outputLines.length; i++) {
+          consolidatedOutputString += outputLines[i];
+        }
+        var standardizedOutput = _createOutputArray(
+          consolidatedOutputString, separator);
         return CodeEvalResultObjectFactory.create(
-          code, outputLines.join('\n'), observedOutputs,
+          codeToExecute, rawCode, standardizedOutput, observedOutputs,
           buggyOutputTestResults, performanceTestResults, null, null);
       }, function(skulptError) {
         var errorInput = null;
@@ -102,7 +128,7 @@ tie.factory('PythonCodeRunnerService', [
         var errorTraceback = ErrorTracebackObjectFactory.fromSkulptError(
           skulptError);
         return CodeEvalResultObjectFactory.create(
-          code, '', [], [], [], errorTraceback, errorInput);
+          codeToExecute, rawCode, null, [], [], [], errorTraceback, errorInput);
       });
     };
 
@@ -122,7 +148,7 @@ tie.factory('PythonCodeRunnerService', [
 
           var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
           return CodeEvalResultObjectFactory.create(
-            code, '', [], [], [], errorTraceback, '');
+            code, code, null, [], [], [], errorTraceback, '');
         }
       );
     };
@@ -134,18 +160,23 @@ tie.factory('PythonCodeRunnerService', [
           responseData.stderr);
       }
       return CodeEvalResultObjectFactory.create(
-          code, responseData.stdout, null, null, null, errorTraceback, null);
+          code, code, responseData.stdout, null, null, null, errorTraceback,
+          null);
     };
 
-    var _runCodeAsync = function(code) {
+    var _runCodeAsync = function(preprocessedCode) {
       clearOutput();
+      var codeToExecute = preprocessedCode.getPreprocessedCodeString();
+      var rawCode = preprocessedCode.getRawCode();
+      var separator = preprocessedCode.getSeparator();
       var data = {
-        code: code,
+        code: codeToExecute,
         language: 'python'
       };
       return $http.post('/ajax/run_code', data).then(
         function(response) {
-          return _processCodeExecutionServerResponse(response.data, code);
+          return _processCodeExecutionServerResponse(
+              response.data, codeToExecute, rawCode, separator);
         },
         function() {
           // A server error occurred, so we need to invalidate the session.
@@ -153,21 +184,24 @@ tie.factory('PythonCodeRunnerService', [
 
           var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
           return CodeEvalResultObjectFactory.create(
-            code, '', [], [], [], errorTraceback, '');
+            codeToExecute, rawCode, null, [], [], [], errorTraceback, '');
         }
       );
     };
 
-    var _processCodeExecutionServerResponse = function(responseData, code) {
+    var _processCodeExecutionServerResponse = function(
+        responseData, codeToExecute, rawCode, separator) {
       if (responseData.stderr.length) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
         return CodeEvalResultObjectFactory.create(
-            code, '', [], [], [], errorTraceback,
+            codeToExecute, rawCode, null, [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT]);
       } else if (responseData.results) {
+        var standardizedOutput = _createOutputArray(
+          responseData.stdout, separator);
         return CodeEvalResultObjectFactory.create(
-            code, responseData.stdout,
+            codeToExecute, rawCode, standardizedOutput,
             responseData.results[VARNAME_OBSERVED_OUTPUTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
@@ -175,6 +209,22 @@ tie.factory('PythonCodeRunnerService', [
       } else {
         throw Error('A server error occurred. Please try again.');
       }
+    };
+
+    // Converts the consolidated output string into an array where the
+    // i-th entry in the array corresponds to the i-th overall test
+    // case.
+    var _createOutputArray = function(stdoutString, separator) {
+      if (stdoutString.length === 0) {
+        return [];
+      }
+      // Stdout will sometimes have extra characters at the end. Cleaning up
+      // the stdout here to remove any extraneous output that comes after
+      // the last test case.
+      var lastSeparatorIndex = stdoutString.lastIndexOf(separator);
+      var cleanedStdoutString = stdoutString.slice(
+          0, lastSeparatorIndex);
+      return cleanedStdoutString.split(separator + '\n');
     };
 
     return {
@@ -188,26 +238,27 @@ tie.factory('PythonCodeRunnerService', [
         if (ServerHandlerService.doesServerExist()) {
           return _compileCodeAsync(code);
         } else {
-          return _runCodeInClient(code);
+          return _compileCode(code);
         }
       },
       /**
        * Asynchronously runs the Python code against the given tests for that
        * task.
        *
-       * @param {string} code
+       * @param {PreprocessedCode} preprocessedCode
        * @returns {Promise}
        */
-      runCodeAsync: function(code) {
+      runCodeAsync: function(preprocessedCode) {
         if (ServerHandlerService.doesServerExist()) {
-          return _runCodeAsync(code);
+          return _runCodeAsync(preprocessedCode);
         } else {
-          return _runCodeInClient(code);
+          return _runPreprocessedCode(preprocessedCode);
         }
       },
       _processCodeCompilationServerResponse: (
         _processCodeCompilationServerResponse),
-      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse
+      _processCodeExecutionServerResponse: _processCodeExecutionServerResponse,
+      _createOutputArray: _createOutputArray
     };
   }
 ]);

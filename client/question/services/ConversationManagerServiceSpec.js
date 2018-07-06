@@ -19,12 +19,18 @@
 describe('ConversationManagerService', function() {
   var SUPPORTED_PYTHON_LIBS;
   var ConversationManagerService;
+  var CurrentQuestionService;
+  var QuestionObjectFactory;
   var TaskObjectFactory;
+  var question;
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
   var FEEDBACK_TYPE_INPUT_TO_TRY;
   var CORRECTNESS_FEEDBACK_TEXT;
+  var TITLE = "title";
+  var STARTER_CODE = "starterCode";
+  var AUXILIARY_CODE = "auxiliaryCode";
   var taskDict = [{
     instructions: [''],
     prerequisiteSkills: [''],
@@ -100,6 +106,17 @@ describe('ConversationManagerService', function() {
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
+    QuestionObjectFactory = $injector.get(
+      'QuestionObjectFactory');
+    CurrentQuestionService = $injector.get('CurrentQuestionService');
+    question = QuestionObjectFactory.create({
+      title: TITLE,
+      starterCode: STARTER_CODE,
+      auxiliaryCode: AUXILIARY_CODE,
+      tasks: taskDict
+    });
+    spyOn(
+      CurrentQuestionService, 'getCurrentQuestion').and.returnValue(question);
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
@@ -135,8 +152,33 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(true);
+          expect(stdout).toBe('');
+          done();
+        });
+      });
+
+      it('should contain the correct stdout upon question ' +
+          'completion', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print(input)',
+          '    if len(input) > 0 and input[:6] == "task_1":',
+          '        return True',
+          '    return False'
+        ].join('\n');
+
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
+          expect(feedback.isAnswerCorrect()).toEqual(true);
+          expect(stdout).toBe('task_2_correctness_test_2\n');
           done();
         });
       });
@@ -153,13 +195,40 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
               "Input: \"task_1_correctness_test_2\"");
+          expect(stdout).toBe('');
           done();
         });
       });
+
+      it('should contain the correct stdout for task completion',
+        function(done) {
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    print(input)',
+            '    if len(input) > 0 and input == "task_1_correctness_test_1":',
+            '        return True',
+            '    return False'
+          ].join('\n');
+
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode,
+            auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
+            expect(feedback.isAnswerCorrect()).toEqual(false);
+            expect(feedback.getParagraphs()[1].getContent()).toEqual(
+                "Input: \"task_1_correctness_test_2\"");
+            expect(stdout).toBe('task_1_correctness_test_2\n');
+            done();
+          });
+        });
 
       it('should check both task1 and task2 to ' +
           'verify that the learner fails on task2', function(done) {
@@ -173,10 +242,37 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
              "Input: \"task_2_correctness_test_1\"");
+          expect(stdout).toBe('');
+          done();
+        });
+      });
+
+      it('should contain the correct stdout if first test of second ' +
+          'task failed', function(done) {
+        var studentCode = [
+          'def mockMainFunction(input):',
+          '    print(input)',
+          '    if len(input) > 0 and input == "task_2_correctness_test_2":',
+          '        return False',
+          '    return True'
+        ].join('\n');
+
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode,
+          auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
+          expect(feedback.isAnswerCorrect()).toEqual(false);
+          expect(feedback.getParagraphs()[1].getContent()).toEqual(
+             "Input: \"task_2_correctness_test_1\"");
+          expect(stdout).toBe('task_2_correctness_test_1\n');
           done();
         });
       });
@@ -194,13 +290,40 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
               "Input: \"task_1_correctness_test_1\"");
+          expect(stdout).toBe('');
           done();
         });
       });
+
+      it('should contain the correct stdout if first test failed',
+        function(done) {
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    print(input)',
+            '    if len(input) > 0 and input[-1] == "1":',
+            '        return False',
+            '    return True'
+          ].join('\n');
+
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode,
+            auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
+            expect(feedback.isAnswerCorrect()).toEqual(false);
+            expect(feedback.getParagraphs()[1].getContent()).toEqual(
+                "Input: \"task_1_correctness_test_1\"");
+            expect(stdout).toBe('task_1_correctness_test_1\n');
+            done();
+          });
+        });
     });
 
     describe("buggyOutputTests", function() {
@@ -214,10 +337,13 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual(
              "Mock BuggyOutputTest Message One for task1");
+          expect(stdout).toBe('');
           done();
         });
       });
@@ -233,10 +359,13 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent()).toEqual(
              "Input: \"task_1_correctness_test_1\"");
+          expect(stdout).toBe('');
           done();
         });
       });
@@ -255,28 +384,37 @@ describe('ConversationManagerService', function() {
           ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode1,
             auxiliaryCode, 'python'
-          ).then(function(feedback1) {
+          ).then(function(learnerViewSubmissionResult1) {
+            var feedback1 = learnerViewSubmissionResult1.getFeedback();
+            var stdout1 = learnerViewSubmissionResult1.getStdout();
             expect(feedback1.isAnswerCorrect()).toEqual(false);
             expect(feedback1.getParagraphs()[0].getContent()).toEqual(
                'Mock BuggyOutputTest Message One for task1');
+            expect(stdout1).toBe('');
 
             ConversationManagerService.processSolutionAsync(
               orderedTasks, starterCode, studentCode1,
               auxiliaryCode, 'python'
-            ).then(function(feedback2) {
+            ).then(function(learnerViewSubmissionResult2) {
+              var feedback2 = learnerViewSubmissionResult2.getFeedback();
+              var stdout2 = learnerViewSubmissionResult2.getStdout();
               expect(feedback2.isAnswerCorrect()).toEqual(false);
               // The code has not changed, so the message stays the same.
               expect(feedback2.getParagraphs()[0].getContent()).toEqual(
                 'Mock BuggyOutputTest Message One for task1');
+              expect(stdout2).toBe('');
 
               ConversationManagerService.processSolutionAsync(
                 orderedTasks, starterCode, studentCode2,
                 auxiliaryCode, 'python'
-              ).then(function(feedback3) {
+              ).then(function(learnerViewSubmissionResult3) {
+                var feedback3 = learnerViewSubmissionResult3.getFeedback();
+                var stdout3 = learnerViewSubmissionResult3.getStdout();
                 expect(feedback3.isAnswerCorrect()).toEqual(false);
                 // The code has changed, so the message changes.
                 expect(feedback3.getParagraphs()[0].getContent()).toEqual(
                   'Mock BuggyOutputTest Message Two for task1');
+                expect(stdout3).toBe('');
                 done();
               });
             });
@@ -297,13 +435,16 @@ describe('ConversationManagerService', function() {
           ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode,
             auxiliaryCode, 'python'
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getParagraphs()[0].getContent()).toEqual([
               'Please keep your code within the existing predefined functions ',
               'or define your own helper functions if you need to ',
               '-- we cannot process code in the global scope.'
             ].join(' '));
+            expect(stdout).toBe(null);
             done();
           });
         }
@@ -313,7 +454,9 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, '',
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
             'It looks like you deleted or modified the starter code!  Our ',
@@ -322,6 +465,7 @@ describe('ConversationManagerService', function() {
             'over.  Or, you can copy the starter code below:'
           ].join(''));
           expect(feedback.getParagraphs()[1].getContent()).toEqual(starterCode);
+          expect(stdout).toBe(null);
           done();
         });
       });
@@ -336,7 +480,9 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
             "It looks like you're importing an external library. However, the ",
@@ -347,6 +493,7 @@ describe('ConversationManagerService', function() {
             'Here is a list of libraries we currently support:\n');
           expect(feedback.getParagraphs()[3].getContent()).toEqual(
             SUPPORTED_PYTHON_LIBS.join(', '));
+          expect(stdout).toBe(null);
           done();
         });
       });
@@ -369,9 +516,12 @@ describe('ConversationManagerService', function() {
           ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode,
             auxiliaryCode, 'python'
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
             expect(feedback.isAnswerCorrect()).toEqual(false);
             expect(feedback.getErrorLineNumber()).toBe(5);
+            expect(stdout).toBe(null);
             done();
           });
         });
@@ -387,10 +537,13 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.isAnswerCorrect()).toEqual(false);
           expect(feedback.getParagraphs()[1].getContent().startsWith(
             'SyntaxError:')).toEqual(true);
+          expect(stdout).toBe(null);
           done();
         });
       });
@@ -403,15 +556,17 @@ describe('ConversationManagerService', function() {
           '    return mockMainFunction(input)',
           ''
         ].join('\n');
-
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
             "Looks like your code is hitting an infinite recursive loop.",
             "Check to see that your recursive calls terminate."
           ].join(' '));
+          expect(stdout).toBe(null);
           done();
         });
       });
@@ -426,11 +581,14 @@ describe('ConversationManagerService', function() {
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode,
           auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(
             feedback.getParagraphs()[0].getContent().startsWith(
                 'It looks like greeting isn\'t a declared variable.')
           ).toBe(true);
+          expect(stdout).toBe(null);
           done();
         });
       });
@@ -460,6 +618,15 @@ describe('ConversationManagerService', function() {
             allowedOutputs: [false]
           }]
         }];
+        question = QuestionObjectFactory.create({
+          title: TITLE,
+          starterCode: STARTER_CODE,
+          auxiliaryCode: AUXILIARY_CODE,
+          tasks: taskDict
+        });
+        CurrentQuestionService.getCurrentQuestion =
+          jasmine.createSpy().and.returnValue(question);
+
       }));
 
       it('should check all buggy outputs if nothing is ignored',
@@ -479,10 +646,13 @@ describe('ConversationManagerService', function() {
 
           ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
             expect(
               CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
               feedback.getParagraphs()[0].getContent());
+            expect(stdout).toBe('');
             done();
           });
         }
@@ -504,9 +674,12 @@ describe('ConversationManagerService', function() {
 
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.getParagraphs()[0].getContent()).toBe(
             'Mock BuggyOutputTest Message One for task1');
+          expect(stdout).toBe('');
           done();
         });
       });
@@ -543,6 +716,14 @@ describe('ConversationManagerService', function() {
           testSuiteIdsThatMustFail: ['SUITE2'],
           messages: ['suite_message1']
         }];
+        question = QuestionObjectFactory.create({
+          title: TITLE,
+          starterCode: STARTER_CODE,
+          auxiliaryCode: AUXILIARY_CODE,
+          tasks: taskDict
+        });
+        CurrentQuestionService.getCurrentQuestion =
+          jasmine.createSpy().and.returnValue(question);
       }));
 
       it('should return suite-level feedback if the condition is triggered',
@@ -560,9 +741,12 @@ describe('ConversationManagerService', function() {
 
           ConversationManagerService.processSolutionAsync(
             orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var stdout = learnerViewSubmissionResult.getStdout();
             expect(feedback.getParagraphs()[0].getContent()).toBe(
               'suite_message1');
+            expect(stdout).toBe('');
             done();
           });
         }
@@ -586,10 +770,13 @@ describe('ConversationManagerService', function() {
 
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(
             CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
             feedback.getParagraphs()[0].getContent());
+          expect(stdout).toBe('');
           done();
         });
       });
@@ -610,9 +797,12 @@ describe('ConversationManagerService', function() {
 
         ConversationManagerService.processSolutionAsync(
           orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(feedback) {
+        ).then(function(learnerViewSubmissionResult) {
+          var feedback = learnerViewSubmissionResult.getFeedback();
+          var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.getParagraphs()[0].getContent()).toBe(
             'suite_message1');
+          expect(stdout).toBe('');
           done();
         });
       });

@@ -26,12 +26,12 @@ tie.factory('CodeRunnerDispatcherService', [
        * as passed in by the language parameter.
        *
        * @param {string} language
-       * @param {string} code
+       * @param {PreprocessedCode} preprocessedCode
        * @returns {Promise}
        */
-      runCodeAsync: function(language, code) {
+      runCodeAsync: function(language, preprocessedCode) {
         if (language === LANGUAGE_PYTHON) {
-          return PythonCodeRunnerService.runCodeAsync(code);
+          return PythonCodeRunnerService.runCodeAsync(preprocessedCode);
         } else {
           throw Error('Language not supported: ' + language);
         }

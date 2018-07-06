@@ -496,7 +496,8 @@ tie.directive('learnerView', [function() {
     controller: [
       '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
       'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
-      'FeedbackObjectFactory', 'EventHandlerService', 'LocalStorageService',
+      'FeedbackObjectFactory', 'LearnerViewSubmissionResultObjectFactory',
+      'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'ALL_SUPPORTED_LANGUAGES',
@@ -509,7 +510,8 @@ tie.directive('learnerView', [function() {
       function(
           $scope, $interval, $timeout, $location, CookieStorageService,
           ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
-          FeedbackObjectFactory, EventHandlerService, LocalStorageService,
+          FeedbackObjectFactory, LearnerViewSubmissionResultObjectFactory,
+          EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, ALL_SUPPORTED_LANGUAGES,
@@ -1046,7 +1048,8 @@ tie.directive('learnerView', [function() {
           ConversationManagerService.processSolutionAsync(
             orderedTasks, question.getStarterCode(language),
             code, question.getAuxiliaryCode(language), language
-          ).then(function(feedback) {
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
             $scope.setFeedback(feedback, code);
           });
 

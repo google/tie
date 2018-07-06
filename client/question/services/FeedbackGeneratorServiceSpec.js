@@ -379,8 +379,8 @@ describe('FeedbackGeneratorService', function() {
   describe('getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback,
-        'testInput');
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, 'testInput');
 
       var feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
         codeEvalResult, [0, 1, 2, 3, 4]);
@@ -405,8 +405,8 @@ describe('FeedbackGeneratorService', function() {
             'ZeroDivisionError: integer division or modulo by zero',
             [TracebackCoordinatesObjectFactory.create(0, 1)]);
         var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [], [], [], buggyErrorTraceback,
-          'testInput');
+          'some code separator = "a"', 'some code', 'some output',
+          [], [], [], buggyErrorTraceback, 'testInput');
         expect(function() {
           FeedbackGeneratorService.getRuntimeErrorFeedback(
             codeEvalResult, [0, 1, 2, 3, 4]
@@ -418,8 +418,8 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is greater than the ' +
         'length of rawCodeLineIndexes', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [], [], [], sampleErrorTraceback,
-          'testInput');
+          'some code separator = "a"', 'some code', 'some output',
+          [], [], [], sampleErrorTraceback, 'testInput');
 
       expect(function() {
         FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult, [0]);
@@ -429,8 +429,8 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is equal to the ' +
         'length of rawCodeLineIndexes', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code', 'some output', [], [], [], sampleErrorTraceback,
-          'testInput');
+          'some code separator = "a"', 'some code', 'some output',
+          [], [], [], sampleErrorTraceback, 'testInput');
       expect(function() {
         FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult,
             [0, 1, 2, 3]);
@@ -439,8 +439,8 @@ describe('FeedbackGeneratorService', function() {
 
     it('should adjust the line numbers correctly', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback,
-        'testInput');
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, 'testInput');
 
       // This maps line 4 (0-indexed) of the preprocessed code to line 1
       // (0-indexed) of the raw code, which becomes line 2 (when 1-indexed).
@@ -460,8 +460,8 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly handle errors due to the test code', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback,
-        'testInput');
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, 'testInput');
 
       // This maps line 5 (1-indexed) to null, which means that there is no
       // corresponding line in the raw code.
@@ -606,7 +606,8 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback, null);
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
         codeEvalResult);
@@ -628,7 +629,8 @@ describe('FeedbackGeneratorService', function() {
        'consecutiveUnfamiliarityLanguageCounter reaches the ' +
        'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback, null);
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
 
       var feedback;
       for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
@@ -696,7 +698,8 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, null);
+        'some code separator = "a"', 'some code', 'same output',
+        [], [true], [], null, null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, false);
@@ -723,7 +726,8 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, null);
+        'some code separator = "a"', 'some code', 'same output',
+        [], [true], [], null, null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -749,11 +753,14 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, null);
+        'some code separator = "a"', 'some code', 'same output',
+        [], [true], [], null, null);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], null, null);
+        'new code separator = "a"', 'new code', 'same output',
+        [], [true], [], null, null);
       var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
-        'newer code', 'same output', [], [true], [], null, null);
+        'newer code separator = "a"', 'newer code', 'same output',
+        [], [true], [], null, null);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -797,10 +804,11 @@ describe('FeedbackGeneratorService', function() {
       var buggyOutputTest = BuggyOutputTestObjectFactory.create(
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null,
-        null);
+        'some code separator = "a"', 'some code', 'same output', [], [true],
+        [], null, null);
       var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
-        'other code', 'some output', [], [], [], 'ERROR MESSAGE', 'testInput');
+        'other code separator = "a"', 'other code', 'some output',
+        [], [], [], 'ERROR MESSAGE', 'testInput');
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -840,9 +848,11 @@ describe('FeedbackGeneratorService', function() {
       var suiteLevelTest = SuiteLevelTestObjectFactory.create(
         suiteLevelTestDict);
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'some code', 'same output', [], [true], [], null, null);
+        'some code separator = "a"', 'some code', 'same output',
+        [], [true], [], null, null);
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'new code', 'same output', [], [true], [], null, null);
+        'new code separator = "a"', 'new code', 'same output',
+        [], [true], [], null, null);
 
       var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
@@ -879,11 +889,14 @@ describe('FeedbackGeneratorService', function() {
         suiteLevelTestDict);
       var codeEvalResults = [
         CodeEvalResultObjectFactory.create(
-          'code 1', 'same output', [], [true], [], null, null),
+          'code 1 separator = "a"', 'code 1', 'same output',
+          [], [true], [], null, null),
         CodeEvalResultObjectFactory.create(
-          'code 2', 'same output', [], [true], [], null, null),
+          'code 2 separator = "a"', 'code 2', 'same output',
+          [], [true], [], null, null),
         CodeEvalResultObjectFactory.create(
-          'code 3', 'same output', [], [true], [], null, null)
+          'code 3 separator = "a"', 'code 3', 'same output',
+          [], [true], [], null, null)
       ];
 
       for (var i = 0; i < 3; i++) {
@@ -920,9 +933,11 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTestDict);
 
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'code 1', 'same output', [], [true], [], null, null);
+        'code 1 separator = "a"', 'code 1', 'same output',
+        [], [true], [], null, null);
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'code 2', 'same output', [], [true], [], null, null);
+        'code 2 separator = "a"', 'code 2', 'same output',
+        [], [true], [], null, null);
 
       var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
@@ -960,7 +975,8 @@ describe('FeedbackGeneratorService', function() {
     it('should correctly return feedback if the performance does not meet ' +
       'expectations', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], ['not linear'], null, null);
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], ['not linear'], null, null);
 
       var feedback = FeedbackGeneratorService.getFeedback(
         testTask, codeEvalResult, []);
@@ -1010,7 +1026,8 @@ describe('FeedbackGeneratorService', function() {
        'consecutiveSameRuntimeErrorCounter reaches the ' +
        'UNFAMILIARITY_THRESHOLD count', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code', 'some output', [], [], [], sampleErrorTraceback,
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback,
         'testInput');
 
       var feedback;
