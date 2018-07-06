@@ -150,6 +150,16 @@ tie.constant('LANGUAGE_PYTHON', 'python');
 tie.constant('ALL_SUPPORTED_LANGUAGES', ['python']);
 
 /**
+ * Object keyed by Supported Languages, providing English Label
+ *
+ * @type {string: string}
+ * @constant
+ */
+tie.constant('SUPPORTED_LANGUAGE_LABELS', {
+  python: 'Python 2.7'
+});
+
+/**
  * Array of strings representing the names of Python libraries that are
  * supported by the TIE system.
  *

@@ -49,6 +49,7 @@ describe('LearnerViewDirective', function() {
   var DELTA_MILLISECONDS = 100;
   var CODE_CHANGE_DEBOUNCE_MILLISECONDS;
   var AUTOSAVE_REPEAT_RANGE = 20;
+  var ALL_SUPPORTED_LANGUAGES;
 
   var QUESTION_ID = 'checkBalancedParentheses';
 
@@ -89,6 +90,7 @@ describe('LearnerViewDirective', function() {
     CODE_CHANGE_DEBOUNCE_MILLISECONDS =
       CODE_CHANGE_DEBOUNCE_SECONDS * SECONDS_TO_MILLISECONDS;
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    ALL_SUPPORTED_LANGUAGES = $injector.get('ALL_SUPPORTED_LANGUAGES');
 
     localStorage.clear();
   }));
@@ -419,6 +421,21 @@ describe('LearnerViewDirective', function() {
         FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL),
         code);
       expect(EventHandlerService.createTaskCompleteEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe('supportedLanguageLabels', function() {
+    it('should provide a descriptive label for each language', function() {
+      expect($scope.supportedLanguageLabels[LANGUAGE]).toEqual('Python 2.7');
+
+      expect($scope.supportedLanguageCount).toEqual(
+        ALL_SUPPORTED_LANGUAGES.length);
+
+      for (var i = ALL_SUPPORTED_LANGUAGES.length - 1; i >= 0; i--) {
+        var label = $scope.supportedLanguageLabels[ALL_SUPPORTED_LANGUAGES[i]];
+        expect(typeof label).toBe('string');
+        expect(label).toBeTruthy();
+      }
     });
   });
 });

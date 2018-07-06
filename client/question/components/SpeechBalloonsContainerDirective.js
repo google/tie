@@ -49,7 +49,7 @@ tie.directive('speechBalloonsContainer', [function() {
                     </output-snippet>
                   </span>
                   <span ng-if="paragraph.isImageParagraph()">
-                    <img class="tie-question-completion-image" ng-src="../../assets/images/{{paragraph.getContent()}}">
+                    <img class="tie-question-completion-image" ng-src="../assets/images/{{paragraph.getContent()}}">
                   </span>
                 </p>
               </tie-speech-balloon-left>
