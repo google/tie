@@ -592,10 +592,12 @@ tie.factory('FeedbackGeneratorService', [
       /**
        * Returns the Feedback object for the given syntax error string.
        *
-       * @param {string} errorString
+       * @param {CodeEvalResult} codeEvalResult The result of compiling the
+       *   submitted code.
        * @returns {Feedback}
        */
-      getSyntaxErrorFeedback: function(errorString) {
+      getSyntaxErrorFeedback: function(codeEvalResult) {
+        var errorString = codeEvalResult.getErrorString();
         // If the user receives another syntax error, increment the
         // language unfamiliarity error counter.
         _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);

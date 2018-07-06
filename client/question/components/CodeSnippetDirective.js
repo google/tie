@@ -23,11 +23,11 @@ tie.directive('codeSnippet', [function() {
       getContent: '&content'
     },
     template: `
-      <span ng-repeat="line in abbreviatedSnippetLines track by $index">
+      <span ng-repeat="line in snippetLines track by $index">
         <span class="tie-code-snippet-line">{{line}}</span>
         <br>
       </span>
-      <span ng-if="abbreviatedSnippetLines.length > MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET">
+      <span ng-if="codeLines.length > MAX_NUM_LINES_IN_SNIPPET">
         <a href ng-click="openCodeModal()" ng-if="!isModalOpen()">View full code</a>
         <span ng-if="isModalOpen()">View full code</span>
       </span>
@@ -50,31 +50,30 @@ tie.directive('codeSnippet', [function() {
          */
         $scope.isModalOpen = MonospaceDisplayModalService.isDisplayed;
 
-        // The maximum number of lines to show in the abbreviated code snippet.
-        $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET = 3;
+        // The maximum number of lines to show in a code snippet.
+        $scope.MAX_NUM_LINES_IN_SNIPPET = 3;
 
         /**
-         * Array of strings that represents the lines in the code snippets that
-         * need to be shown.
+         * Array of strings that represents the lines in the piece of code
+         * that needs to be snippeted.
+         *
+         * @type {Array}
+         */
+        $scope.codeLines = [];
+
+        /**
+         * Array of strings that represents the snippet lines.
          *
          * @type {Array}
          */
         $scope.snippetLines = [];
 
         /**
-         * Array of strings that represents the abbreviated version of the
-         * snippet lines.
-         *
-         * @type {Array}
-         */
-        $scope.abbreviatedSnippetLines = [];
-
-        /**
          * Opens a modal with the full code.
          */
         $scope.openCodeModal = function() {
           MonospaceDisplayModalService.showModal(
-            'Previous Code', $scope.snippetLines);
+            'Previous Code', $scope.codeLines);
         };
 
         /**
@@ -84,18 +83,12 @@ tie.directive('codeSnippet', [function() {
           // Replace spaces by non-breaking spaces so that multiple spaces do
           // not get collapsed into a single one.
           var htmlFormattedContent = newValue.replace(/ /g, '\u00A0');
-          $scope.snippetLines = htmlFormattedContent.split('\n');
+          $scope.codeLines = htmlFormattedContent.split('\n');
 
-          if ($scope.snippetLines.length <=
-              $scope.MAX_NUM_LINES_IN_ABBREVIATED_SNIPPET) {
-            $scope.abbreviatedSnippetLines = angular.copy($scope.snippetLines);
-          } else {
-            $scope.abbreviatedSnippetLines = [
-              $scope.snippetLines[0],
-              $scope.snippetLines[1],
-              $scope.snippetLines[2],
-              '...'
-            ];
+          $scope.snippetLines = $scope.codeLines.slice(
+            0, $scope.MAX_NUM_LINES_IN_SNIPPET);
+          if ($scope.codeLines.length > $scope.MAX_NUM_LINES_IN_SNIPPET) {
+            $scope.snippetLines.push('...');
           }
         });
       }

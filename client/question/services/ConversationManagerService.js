@@ -58,21 +58,16 @@ tie.factory('ConversationManagerService', [
         } else if (errorString.startsWith('A server error occurred.')) {
           return FeedbackDetailsObjectFactory.createServerErrorFeedback();
         } else {
-          var feedbackDetails = null;
           switch (executionContext) {
             case EXECUTION_CONTEXT_RUN_WITH_TESTS:
-              feedbackDetails = (
+              return (
                 FeedbackDetailsObjectFactory.createRuntimeErrorFeedback());
-              break;
             case EXECUTION_CONTEXT_COMPILATION:
-              feedbackDetails = (
+              return (
                 FeedbackDetailsObjectFactory.createSyntaxErrorFeedback());
-              break;
             default:
               throw Error('Invalid execution context: ' + executionContext);
           }
-
-          return feedbackDetails;
         }
       }
 
@@ -114,11 +109,35 @@ tie.factory('ConversationManagerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
-            // TODO(sll): Update this to use computeFeedbackDetails().
-            var potentialSyntaxErrorString = codeEvalResult.getErrorString();
-            if (potentialSyntaxErrorString) {
-              feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-                potentialSyntaxErrorString);
+            var potentialFeedbackDetails = computeFeedbackDetails(
+              codeEvalResult, EXECUTION_CONTEXT_COMPILATION);
+
+            if (potentialFeedbackDetails) {
+              feedback = null;
+
+              switch (potentialFeedbackDetails.getFeedbackCategory()) {
+                case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
+                  feedback = (
+                    FeedbackGeneratorService.getTimeoutErrorFeedback());
+                  break;
+                case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
+                  feedback = (
+                    FeedbackGeneratorService.getStackExceededFeedback());
+                  break;
+                case FEEDBACK_CATEGORIES.SERVER_ERROR:
+                  feedback = (
+                    FeedbackGeneratorService.getServerErrorFeedback());
+                  break;
+                case FEEDBACK_CATEGORIES.SYNTAX_ERROR:
+                  feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+                    codeEvalResult);
+                  break;
+                default:
+                  throw Error(
+                    'Invalid feedback type for compilation step: ' +
+                    potentialFeedbackDetails.getFeedbackCategory());
+              }
+
               TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
               return LearnerViewSubmissionResultObjectFactory.create(
                 feedback, null);

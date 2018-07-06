@@ -605,8 +605,12 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback if a syntax / compiler error is ',
       'found in the user\'s code'
     ].join(''), function() {
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
+
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-        'some error');
+        codeEvalResult);
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
 
@@ -617,20 +621,23 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[0].getContent()).toBe(
           'It looks like your code has a syntax error. ' +
           'Try to figure out what the error is.');
-      expect(paragraphs[1].getContent()).toBe('some error');
+      expect(paragraphs[1].getContent()).toBe(
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
     });
 
     it('should correctly append language unfamiliarity feedback if ' +
        'consecutiveUnfamiliarityLanguageCounter reaches the ' +
        'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
-      var errorString = 'some error';
+      var codeEvalResult = CodeEvalResultObjectFactory.create(
+        'some code separator = "a"', 'some code', 'some output',
+        [], [], [], sampleErrorTraceback, null);
 
       var feedback;
-
       for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
         feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-          errorString);
+          codeEvalResult);
       }
+
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -638,7 +645,8 @@ describe('FeedbackGeneratorService', function() {
           'It looks like your code has a syntax error. ' +
           'Try to figure out what the error is.');
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
-      expect(paragraphs[1].getContent()).toEqual('some error');
+      expect(paragraphs[1].getContent()).toEqual(
+        'ZeroDivisionError: integer division or modulo by zero on line 5');
       expect(paragraphs[2].isTextParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toEqual(
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
