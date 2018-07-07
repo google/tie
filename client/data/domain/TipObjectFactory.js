@@ -18,7 +18,8 @@
  */
 
 tieData.factory('TipObjectFactory', [
-  function() {
+  'PrintTerminalService',
+  function(PrintTerminalService) {
     /**
      * Constructor for Tip objects.
      *
@@ -26,6 +27,14 @@ tieData.factory('TipObjectFactory', [
      * @constructor
      */
     var Tip = function(tipDict) {
+      /**
+       * The requirements for the tip to be triggered.
+       * @type: {Array<string>}
+       * @private
+       */
+
+      this._triggerSpecifications = tipDict.triggerSpecifications;
+
       /**
        * The regexp to test the student's code against.
        *
@@ -44,6 +53,15 @@ tieData.factory('TipObjectFactory', [
     };
 
     // Instance methods.
+
+    /**
+     * A getter for the _triggerSpecifications property.
+     *
+     * @returns {string}
+     */
+    Tip.prototype.getTriggerSpecifications = function() {
+      return this._triggerSpecifications;
+    };
 
     /**
      * A getter for the _regexp property.
@@ -70,6 +88,15 @@ tieData.factory('TipObjectFactory', [
      * @returns {boolean}
      */
     Tip.prototype.isTriggeredBy = function(codeLines) {
+      // Check if there are specifications for the tip to be triggered.
+      if (this._triggerSpecifications) {
+        // If the specification requires print to be disabled and print is
+        // actually enabled, this should not trigger a print tip.
+        if (this._triggerSpecifications.includes('requirePrintToBeDisabled') &&
+          PrintTerminalService.isPrintingEnabled()) {
+          return false;
+        }
+      }
       var that = this;
       return codeLines.some(function(line) {
         return line.search(that._regexp) !== -1;
