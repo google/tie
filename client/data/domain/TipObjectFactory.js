@@ -28,12 +28,12 @@ tieData.factory('TipObjectFactory', [
      */
     var Tip = function(tipDict) {
       /**
-       * The requirements for the tip to be triggered.
-       * @type: {Array<string>}
+       * The boolean regarding whether print needs to be disabled in order
+       * for the tip to be triggered.
+       * @type: {boolean}
        * @private
        */
-
-      this._triggerSpecifications = tipDict.triggerSpecifications;
+      this._requirePrintToBeDisabled = tipDict.requirePrintToBeDisabled;
 
       /**
        * The regexp to test the student's code against.
@@ -55,12 +55,12 @@ tieData.factory('TipObjectFactory', [
     // Instance methods.
 
     /**
-     * A getter for the _triggerSpecifications property.
+     * A getter for the _requirePrintToBeDisabled property.
      *
      * @returns {string}
      */
-    Tip.prototype.getTriggerSpecifications = function() {
-      return this._triggerSpecifications;
+    Tip.prototype.getRequirePrintToBeDisabled = function() {
+      return this._requirePrintToBeDisabled;
     };
 
     /**
@@ -88,14 +88,11 @@ tieData.factory('TipObjectFactory', [
      * @returns {boolean}
      */
     Tip.prototype.isTriggeredBy = function(codeLines) {
-      // Check if there are specifications for the tip to be triggered.
-      if (this._triggerSpecifications) {
-        // If the specification requires print to be disabled and print is
-        // actually enabled, this should not trigger a print tip.
-        if (this._triggerSpecifications.includes('requirePrintToBeDisabled') &&
-          PrintTerminalService.isPrintingEnabled()) {
-          return false;
-        }
+      // If the specification requires print to be disabled and print is
+      // actually enabled, this should not trigger a print tip.
+      if (this._requirePrintToBeDisabled &&
+        PrintTerminalService.isPrintingEnabled()) {
+        return false;
       }
       var that = this;
       return codeLines.some(function(line) {

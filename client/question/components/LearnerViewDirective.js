@@ -347,7 +347,8 @@ tie.directive('learnerView', [function() {
           font-size: 13px;
           font-family: monospace;
           white-space: pre-wrap;
-          padding-left: 6%;
+          padding-left: 5%;
+          padding-right: 5%;
           padding-bottom: 12px;
         }
         .night-mode .tie-stdout {
@@ -355,7 +356,8 @@ tie.directive('learnerView', [function() {
           font-size: 13px;
           font-family: monospace;
           white-space: pre-wrap;
-          padding-left: 6%;
+          padding-left: 5%;
+          padding-right: 5%;
           color: #ffffff;
           padding-bottom: 12px;
         }

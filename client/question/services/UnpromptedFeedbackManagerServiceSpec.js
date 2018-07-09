@@ -43,9 +43,11 @@ describe('UnpromptedFeedbackManagerService', function() {
       mainFunctionName: 'mockMainFunction',
       languageSpecificTips: {
         python: [{
+          requirePrintToBeDisabled: false,
           regexString: 'import re|regex',
           message: 'You don\'t need to use regexes for this question.'
         }, {
+          requirePrintToBeDisabled: false,
           regexString: 'import',
           message: 'For this question, you do not need to import libraries.'
         }]
