@@ -48,7 +48,8 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
     id: 'isLeapYear',
     instructions: [{
       content: [
-        'Three criteria must be taken into account to identify leap years:'
+        'To determine whether or not a given year is a leap year, we must ',
+        'consider three criteria:'
       ].join(''),
       type: 'text'
     }, {
@@ -102,7 +103,7 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
         allowedOutputs: [false]
       }]
     }, {
-      id: 'DIVISIBLE_BY_FOUR_BUT_NOT_HUNDRED',
+      id: 'DIVISIBLE_BY_FOUR_BUT_NOT_ONE_HUNDRED',
       humanReadableName: 'the divisible-by-4-but-not-100 case',
       testCases: [{
         input: 1904,
@@ -118,7 +119,7 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
         allowedOutputs: [true]
       }]
     }, {
-      id: 'DIVISIBLE_BY_HUNDRED_BUT_NOT_FOUR_HUNDRED',
+      id: 'DIVISIBLE_BY_ONE_HUNDRED_BUT_NOT_FOUR_HUNDRED',
       humanReadableName: 'the divisible-by-100-but-not-400 case',
       testCases: [{
         input: 1900,
@@ -165,8 +166,8 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
       messages: [
         [
           "It looks like you're consistently returning True for all test ",
-          "cases. This implies that every year is a leap year, but that's ",
-          "not true..."
+          'cases. This implies that every year is a leap year, which is not ',
+          'true.'
         ].join('')
       ]
     }, {
@@ -175,8 +176,8 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
       messages: [
         [
           "It looks like you're consistently returning False for all test ",
-          "cases. This implies that there are no leap years, but that's not ",
-          "true..."
+          "cases. This implies there are no leap years, but that is not ",
+          "true."
         ].join('')
       ]
     }, {
