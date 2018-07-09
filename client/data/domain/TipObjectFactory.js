@@ -57,7 +57,7 @@ tieData.factory('TipObjectFactory', [
     /**
      * A getter for the _requirePrintToBeDisabled property.
      *
-     * @returns {string}
+     * @returns {boolean}
      */
     Tip.prototype.getRequirePrintToBeDisabled = function() {
       return this._requirePrintToBeDisabled;
