@@ -20,4 +20,4 @@ tieConfig.constant('SERVER_URL', null);
 
 tieConfig.constant('PRIMER_DIRECTORY_URL', 'docs/');
 
-tieConfig.constant('ALLOW_PRINTING', true);
+tieConfig.constant('ALLOW_PRINTING', false);
