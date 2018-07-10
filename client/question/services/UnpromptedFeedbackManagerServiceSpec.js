@@ -67,10 +67,10 @@ describe('UnpromptedFeedbackManagerService', function() {
   }));
 
   describe('runTipsCheck', function() {
-    it('triggers a tip after the second consecutive detection', function() {
+    it('activates a tip after the second consecutive detection', function() {
       UnpromptedFeedbackManagerService.reset(tasks);
 
-      // The first check does not trigger any feedback.
+      // The first check does not activate any feedback.
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'import', taskId)).toBe(null);
 
@@ -92,13 +92,13 @@ describe('UnpromptedFeedbackManagerService', function() {
     it('resets its state if there are no consecutive detections', function() {
       UnpromptedFeedbackManagerService.reset(tasks);
 
-      // The first check does not trigger any feedback.
+      // The first check does not activate any feedback.
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'import', taskId)).toBe(null);
       // The error is fixed in the second check, so it was transient.
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'no problem', taskId)).toBe(null);
-      // The error is re-triggered...
+      // The error is re-activated...
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'import', taskId)).toBe(null);
       // ...but is, again, transient.
@@ -109,7 +109,7 @@ describe('UnpromptedFeedbackManagerService', function() {
     it('only shows one tip at a time', function() {
       UnpromptedFeedbackManagerService.reset(tasks);
 
-      // The first check does not trigger any feedback.
+      // The first check does not activate any feedback.
       expect(UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'import regex', taskId)).toBe(null);
 
@@ -130,30 +130,30 @@ describe('UnpromptedFeedbackManagerService', function() {
         'For this question, you do not need to import libraries.');
     });
 
-    it('should not trigger a warning for print statements if print is enabled',
+    it('should not activate a warning for print statements if print is enabled',
       function() {
         UnpromptedFeedbackManagerService.reset(tasks);
         spyOn(PrintTerminalService,
           'isPrintingSupported').and.returnValue(true);
 
-        // The first check does not trigger any feedback.
+        // The first check does not activate any feedback.
         expect(UnpromptedFeedbackManagerService.runTipsCheck(
           LANGUAGE_PYTHON, 'print', taskId)).toBe(null);
-        // Printing is supported, so once again nothing is triggered.
+        // Printing is supported, so once again nothing is activated.
         expect(UnpromptedFeedbackManagerService.runTipsCheck(
           LANGUAGE_PYTHON, 'print', taskId)).toBe(null);
       });
 
-    it('should trigger a warning for print statements if print is not enabled',
+    it('should activate a warning for print statements if print is not enabled',
       function() {
         UnpromptedFeedbackManagerService.reset(tasks);
         spyOn(PrintTerminalService,
           'isPrintingSupported').and.returnValue(false);
 
-        // The first check does not trigger any feedback.
+        // The first check does not activate any feedback.
         expect(UnpromptedFeedbackManagerService.runTipsCheck(
           LANGUAGE_PYTHON, 'print', taskId)).toBe(null);
-        // Printing is not supported, so print feedback should be triggered.
+        // Printing is not supported, so print feedback should be activated.
         var feedbackParagraphs = UnpromptedFeedbackManagerService.runTipsCheck(
         LANGUAGE_PYTHON, 'print', taskId);
         expect(feedbackParagraphs.length).toBe(1);
