@@ -28,8 +28,8 @@ tieData.factory('TipObjectFactory', [
      */
     var Tip = function(tipDict) {
       /**
-       * The boolean regarding whether printing needs to be disabled in order
-       * for the tip to be activated.
+       * Whether printing needs to be disabled in order for the tip to
+       * be activated.
        * @type: {boolean}
        * @private
        */

@@ -70,7 +70,7 @@ tie.directive('learnerView', [function() {
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
-                <div class="tie-user-terminal" ng-class="{'print-mode': printSupported}">
+                <div class="tie-user-terminal" ng-class="{'print-mode': printingIsSupported}">
                   <div class="tie-coding-terminal">
                     <div class="tie-codemirror-container"
                         tabindex="0"
@@ -90,7 +90,7 @@ tie.directive('learnerView', [function() {
                       </ui-codemirror>
                     </div>
                   </div>
-                  <div class="tie-print-terminal" ng-if="printSupported">
+                  <div class="tie-print-terminal" ng-if="printingIsSupported">
                     <h1 class="tie-print-title"> Printed Output </h1>
                     <div class="tie-stdout">{{stdout}}</div>
                   </div>
@@ -293,7 +293,7 @@ tie.directive('learnerView', [function() {
           position: relative;
           width: 662px;
         }
-        .print-mode .tie-coding-terminal{
+        .print-mode .tie-coding-terminal {
           display: flex;
           font-size: 13px;
           height: 338px;
@@ -317,49 +317,49 @@ tie.directive('learnerView', [function() {
           white-space: normal;
         }
         .tie-print-title {
+          font-size: 18px;
           padding-top: 3px;
           text-align: center;
-          font-size: 18px;
         }
         .night-mode .tie-print-title {
+          color: #ffffff;
+          font-size: 18px;
           padding-top: 3px;
           text-align: center;
-          font-size: 18px;
-          color: #ffffff;
         }
         .tie-print-terminal {
-          position: absolute;
           background-color: #ffffff;
-          overflow: auto;
-          margin-top: 8px;
           height: 182px;
+          margin-top: 8px;
+          overflow: auto;
+          position: absolute;
           width: 662px;
         }
         .night-mode .tie-print-terminal {
           background-color: #2c2c2c;
-          overflow: auto;
-          margin-top: 8px;
           height: 182px;
+          margin-top: 8px;
+          overflow: auto;
           width: 662px;
         }
         .tie-stdout {
-          line-height: 1.2em;
-          font-size: 13px;
           font-family: monospace;
-          white-space: pre-wrap;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
           padding-left: 5%;
           padding-right: 5%;
-          padding-bottom: 12px;
+          white-space: pre-wrap;
         }
         .night-mode .tie-stdout {
-          line-height: 1.2em;
-          font-size: 13px;
+          color: #ffffff;
           font-family: monospace;
-          white-space: pre-wrap;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
           padding-left: 5%;
           padding-right: 5%;
-          color: #ffffff;
-          padding-bottom: 12px;
+          white-space: pre-wrap;
         }
         .tie-feedback-error-string {
           color: #F44336;
@@ -649,7 +649,7 @@ tie.directive('learnerView', [function() {
          * Defines whether printing is supported, and thus whether the print
          * terminal should be displayed.
          */
-        $scope.printSupported = PrintTerminalService.isPrintingSupported();
+        $scope.printingIsSupported = PrintTerminalService.isPrintingSupported();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
