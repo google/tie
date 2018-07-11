@@ -116,7 +116,7 @@ tie.factory('UnpromptedFeedbackManagerService', [
           tipSpecificationList.forEach(function(tipSpecification, index) {
             var tipKey = getTipKey(tipListKey, index);
 
-            if (tipSpecification.isTriggeredBy(codeLines)) {
+            if (tipSpecification.isActivatedBy(codeLines)) {
               // The tip was triggered by the code.
               if (!unpromptedFeedbackStates.hasOwnProperty(tipKey) ||
                   unpromptedFeedbackStates[tipKey] === STATE_NOT_SEEN) {

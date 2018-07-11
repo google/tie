@@ -13,11 +13,20 @@
 // limitations under the License.
 
 /**
- * @fileoverview This file contains deployment specific constants.
+ * @fileoverview Service that provides a way to run different methods on the
+ * print-enabled and print-disabled versions of TIE.
  */
-
-tieConfig.constant('SERVER_URL', null);
-
-tieConfig.constant('PRIMER_DIRECTORY_URL', 'docs/');
-
-tieConfig.constant('ALLOW_PRINTING', false);
+tie.factory('PrintTerminalService', [
+  'ALLOW_PRINTING', function(ALLOW_PRINTING) {
+    return {
+      /**
+       * Returns whether or not printing to stdout is supported.
+       *
+       * @return {boolean} True if printing is supported, false if not.
+       */
+      isPrintingSupported: function() {
+        return ALLOW_PRINTING;
+      }
+    };
+  }
+]);

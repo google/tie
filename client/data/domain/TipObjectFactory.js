@@ -18,7 +18,8 @@
  */
 
 tieData.factory('TipObjectFactory', [
-  function() {
+  'PrintTerminalService',
+  function(PrintTerminalService) {
     /**
      * Constructor for Tip objects.
      *
@@ -26,6 +27,14 @@ tieData.factory('TipObjectFactory', [
      * @constructor
      */
     var Tip = function(tipDict) {
+      /**
+       * Whether printing needs to be disabled in order for the tip to
+       * be activated.
+       * @type: {boolean}
+       * @private
+       */
+      this._requirePrintToBeDisabled = tipDict.requirePrintToBeDisabled;
+
       /**
        * The regexp to test the student's code against.
        *
@@ -35,7 +44,7 @@ tieData.factory('TipObjectFactory', [
       this._regexp = new RegExp(tipDict.regexString);
 
       /**
-       * The message to show the learner when the tip is triggered.
+       * The message to show the learner when the tip is activated.
        *
        * @type: {string}
        * @private
@@ -44,6 +53,15 @@ tieData.factory('TipObjectFactory', [
     };
 
     // Instance methods.
+
+    /**
+     * A getter for the _requirePrintToBeDisabled property.
+     *
+     * @returns {boolean}
+     */
+    Tip.prototype.getRequirePrintToBeDisabled = function() {
+      return this._requirePrintToBeDisabled;
+    };
 
     /**
      * A getter for the _regexp property.
@@ -64,12 +82,18 @@ tieData.factory('TipObjectFactory', [
     };
 
     /**
-     * Whether the given lines of code trigger the tip.
+     * Whether the given lines of code activate the tip.
      *
      * @param {Array<string>} codeLines The lines of code to examine.
      * @returns {boolean}
      */
-    Tip.prototype.isTriggeredBy = function(codeLines) {
+    Tip.prototype.isActivatedBy = function(codeLines) {
+      // If the specification requires print to be disabled and print is
+      // actually supported, this should not activate a print tip.
+      if (this._requirePrintToBeDisabled &&
+        PrintTerminalService.isPrintingSupported()) {
+        return false;
+      }
       var that = this;
       return codeLines.some(function(line) {
         return line.search(that._regexp) !== -1;

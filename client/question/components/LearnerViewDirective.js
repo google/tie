@@ -70,23 +70,29 @@ tie.directive('learnerView', [function() {
             </div>
             <div class="tie-coding-ui">
               <div class="tie-lang-terminal">
-                <div class="tie-coding-terminal">
-                  <div class="tie-codemirror-container"
-                      tabindex="0"
-                      ng-keypress="onKeypressCodemirrorContainer($event)"
-                      ng-focus="onFocusCodemirrorContainer()">
-                    <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
-                        ng-model="editorContents.code"
-                        ng-change="onCodeChange()"
-                        ng-if="!accessibleMode"
-                        class="protractor-test-code-input">
-                    </ui-codemirror>
-                    <ui-codemirror ng-model="editorContents.code"
-                        ui-codemirror-opts="accessibleCodeMirrorOptions"
-                        ng-change="onCodeChange()"
-                        ng-if="accessibleMode"
-                        class="protractor-test-code-input">
-                    </ui-codemirror>
+                <div class="tie-user-terminal" ng-class="{'print-mode': printingIsSupported}">
+                  <div class="tie-coding-terminal">
+                    <div class="tie-codemirror-container"
+                        tabindex="0"
+                        ng-keypress="onKeypressCodemirrorContainer($event)"
+                        ng-focus="onFocusCodemirrorContainer()">
+                      <ui-codemirror ui-codemirror-opts="codeMirrorOptions"
+                          ng-model="editorContents.code"
+                          ng-change="onCodeChange()"
+                          ng-if="!accessibleMode"
+                          class="protractor-test-code-input">
+                      </ui-codemirror>
+                      <ui-codemirror ng-model="editorContents.code"
+                          ui-codemirror-opts="accessibleCodeMirrorOptions"
+                          ng-change="onCodeChange()"
+                          ng-if="accessibleMode"
+                          class="protractor-test-code-input">
+                      </ui-codemirror>
+                    </div>
+                  </div>
+                  <div class="tie-print-terminal" ng-if="printingIsSupported">
+                    <h1 class="tie-print-title"> Printed Output </h1>
+                    <div class="tie-stdout">{{stdout}}</div>
                   </div>
                 </div>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
@@ -270,6 +276,9 @@ tie.directive('learnerView', [function() {
           background-color: #333a42;
           color: white;
         }
+        .tie-user-terminal {
+          height: 528px;
+        }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
           height: 100%;
@@ -280,7 +289,14 @@ tie.directive('learnerView', [function() {
         .tie-coding-terminal {
           display: flex;
           font-size: 13px;
-          height: 528px;
+          height: 100%;
+          position: relative;
+          width: 662px;
+        }
+        .print-mode .tie-coding-terminal {
+          display: flex;
+          font-size: 13px;
+          height: 338px;
           position: relative;
           width: 662px;
         }
@@ -299,6 +315,51 @@ tie.directive('learnerView', [function() {
           display: inline-block;
           margin: 8px;
           white-space: normal;
+        }
+        .tie-print-title {
+          font-size: 18px;
+          padding-top: 3px;
+          text-align: center;
+        }
+        .night-mode .tie-print-title {
+          color: #ffffff;
+          font-size: 18px;
+          padding-top: 3px;
+          text-align: center;
+        }
+        .tie-print-terminal {
+          background-color: #ffffff;
+          height: 182px;
+          margin-top: 8px;
+          overflow: auto;
+          position: absolute;
+          width: 662px;
+        }
+        .night-mode .tie-print-terminal {
+          background-color: #2c2c2c;
+          height: 182px;
+          margin-top: 8px;
+          overflow: auto;
+          width: 662px;
+        }
+        .tie-stdout {
+          font-family: monospace;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
+          padding-left: 5%;
+          padding-right: 5%;
+          white-space: pre-wrap;
+        }
+        .night-mode .tie-stdout {
+          color: #ffffff;
+          font-family: monospace;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
+          padding-left: 5%;
+          padding-right: 5%;
+          white-space: pre-wrap;
         }
         .tie-feedback-error-string {
           color: #F44336;
@@ -500,7 +561,8 @@ tie.directive('learnerView', [function() {
       'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
-      'CurrentQuestionService', 'ALL_SUPPORTED_LANGUAGES',
+      'CurrentQuestionService', 'PrintTerminalService',
+      'ALL_SUPPORTED_LANGUAGES',
       'SUPPORTED_LANGUAGE_LABELS', 'SessionHistoryService', 'AutosaveService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
@@ -514,7 +576,8 @@ tie.directive('learnerView', [function() {
           EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
-          CurrentQuestionService, ALL_SUPPORTED_LANGUAGES,
+          CurrentQuestionService, PrintTerminalService,
+          ALL_SUPPORTED_LANGUAGES,
           SUPPORTED_LANGUAGE_LABELS, SessionHistoryService, AutosaveService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
@@ -581,6 +644,12 @@ tie.directive('learnerView', [function() {
           {themeName: THEME_NAME_LIGHT},
           {themeName: THEME_NAME_DARK}
         ];
+
+        /**
+         * Defines whether printing is supported, and thus whether the print
+         * terminal should be displayed.
+         */
+        $scope.printingIsSupported = PrintTerminalService.isPrintingSupported();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -1051,6 +1120,7 @@ tie.directive('learnerView', [function() {
           ).then(function(learnerViewSubmissionResult) {
             var feedback = learnerViewSubmissionResult.getFeedback();
             $scope.setFeedback(feedback, code);
+            $scope.stdout = learnerViewSubmissionResult.getStdout();
           });
 
           $scope.autosaveCode();

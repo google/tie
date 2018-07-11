@@ -525,8 +525,10 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
  */
 tie.constant('SYSTEM_GENERATED_TIPS', {
   python: [{
-    // Included a print statement
+    // The system generated tip when stdout is disabled and code included
+    // a print statement.
     type: 'print',
+    requirePrintToBeDisabled: true,
     regexString: '\\bprint\\b',
     message: [
       'We noticed that you\'re using a print statement within your code. ',
