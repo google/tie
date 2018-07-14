@@ -22,18 +22,14 @@ tie.factory('ConversationManagerService', [
   'TranscriptService', 'CodeSubmissionObjectFactory',
   'LearnerViewSubmissionResultObjectFactory', 'FEEDBACK_CATEGORIES',
   'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
-  'EXECUTION_CONTEXT_RUN_WITH_TESTS',
+  'EXECUTION_CONTEXT_RUN_WITH_TESTS', 'LearnerStateService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
       TranscriptService, CodeSubmissionObjectFactory,
       LearnerViewSubmissionResultObjectFactory, FEEDBACK_CATEGORIES,
       FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
-      EXECUTION_CONTEXT_RUN_WITH_TESTS) {
-
-    // TODO(sll): As new error types are introduced, modify this to also depend
-    // on the learner's "state" (e.g. number of runtime errors, last code
-    // submitted, most recent test failure, etc.).
+      EXECUTION_CONTEXT_RUN_WITH_TESTS, LearnerStateService) {
 
     /**
      * Determines the feedback details that fully characterize the feedback
@@ -43,10 +39,12 @@ tie.factory('ConversationManagerService', [
      *   learner's code.
      * @param {string} executionContext The execution context under which the
      *   learner's code is run (either "compilation" or "run with tests").
+     * @param {string} language The language the code is written in.
      *
      * @returns {FeedbackDetails}
      */
-    var computeFeedbackDetails = function(codeEvalResult, executionContext) {
+    var computeFeedbackDetails = function(
+        codeEvalResult, executionContext, language) {
       var errorString = codeEvalResult.getErrorString();
       if (errorString) {
         if (errorString.startsWith('TimeLimitError')) {
@@ -58,15 +56,29 @@ tie.factory('ConversationManagerService', [
         } else if (errorString.startsWith('A server error occurred.')) {
           return FeedbackDetailsObjectFactory.createServerErrorFeedback();
         } else {
-          switch (executionContext) {
-            case EXECUTION_CONTEXT_RUN_WITH_TESTS:
-              return (
-                FeedbackDetailsObjectFactory.createRuntimeErrorFeedback());
-            case EXECUTION_CONTEXT_COMPILATION:
-              return (
-                FeedbackDetailsObjectFactory.createSyntaxErrorFeedback());
-            default:
-              throw Error('Invalid execution context: ' + executionContext);
+          if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
+            LearnerStateService.recordRuntimeError(errorString);
+          } else if (executionContext === EXECUTION_CONTEXT_COMPILATION) {
+            LearnerStateService.recordSyntaxError();
+          } else {
+            throw Error('Invalid execution context: ' + executionContext);
+          }
+
+          var languageUnfamiliarityFeedbackIsNeeded = (
+            LearnerStateService.doesUserNeedLanguageUnfamiliarityPrompt());
+          if (languageUnfamiliarityFeedbackIsNeeded) {
+            // Once the user has been prompted, we reset the counter so
+            // that we don't continually prompt and, thereby, annoy them.
+            LearnerStateService.resetLanguageUnfamiliarityCounters();
+          }
+
+          if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
+            return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+              errorString, language, codeEvalResult.getErrorInput(),
+              languageUnfamiliarityFeedbackIsNeeded);
+          } else {
+            return FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+              errorString, language, languageUnfamiliarityFeedbackIsNeeded);
           }
         }
       }
@@ -97,8 +109,23 @@ tie.factory('ConversationManagerService', [
         var feedback = null;
 
         if (potentialPrereqCheckFailure) {
+          if (potentialPrereqCheckFailure.hasWrongLanguage()) {
+            LearnerStateService.recordPrereqWrongLanguageError();
+          } else {
+            LearnerStateService.resetLanguageUnfamiliarityCounters();
+          }
+
+          var languageUnfamiliarityFeedbackIsNeeded = (
+            LearnerStateService.doesUserNeedLanguageUnfamiliarityPrompt());
+          if (languageUnfamiliarityFeedbackIsNeeded) {
+            // Once the user has been prompted, we reset the counter so
+            // that we don't continually prompt and, thereby, annoy them.
+            LearnerStateService.resetLanguageUnfamiliarityCounters();
+          }
+
           feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
-            potentialPrereqCheckFailure);
+            potentialPrereqCheckFailure, languageUnfamiliarityFeedbackIsNeeded,
+            language);
           TranscriptService.recordSnapshot(
             potentialPrereqCheckFailure, null, feedback);
           return Promise.resolve(
@@ -110,7 +137,7 @@ tie.factory('ConversationManagerService', [
             language, studentCode
           ).then(function(codeEvalResult) {
             var potentialFeedbackDetails = computeFeedbackDetails(
-              codeEvalResult, EXECUTION_CONTEXT_COMPILATION);
+              codeEvalResult, EXECUTION_CONTEXT_COMPILATION, language);
 
             if (potentialFeedbackDetails) {
               feedback = null;
@@ -130,7 +157,7 @@ tie.factory('ConversationManagerService', [
                   break;
                 case FEEDBACK_CATEGORIES.SYNTAX_ERROR:
                   feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-                    codeEvalResult);
+                    potentialFeedbackDetails);
                   break;
                 default:
                   throw Error(
@@ -156,7 +183,8 @@ tie.factory('ConversationManagerService', [
               language, preprocessedCodeObject
             ).then(function(preprocessedCodeEvalResult) {
               var feedbackDetails = computeFeedbackDetails(
-                preprocessedCodeEvalResult, EXECUTION_CONTEXT_RUN_WITH_TESTS);
+                preprocessedCodeEvalResult, EXECUTION_CONTEXT_RUN_WITH_TESTS,
+                language);
 
               // TODO(sll): Once all feedback categories have been migrated
               // here, remove this null case.
@@ -180,7 +208,7 @@ tie.factory('ConversationManagerService', [
                     break;
                   case FEEDBACK_CATEGORIES.RUNTIME_ERROR:
                     feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
-                      preprocessedCodeEvalResult,
+                      feedbackDetails,
                       codeSubmission.getRawCodeLineIndexes());
                     break;
                   case null:
