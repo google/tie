@@ -135,7 +135,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
       if (
           this._feedbackCategory !== FEEDBACK_CATEGORIES.SYNTAX_ERROR &&
           this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
-        throw Error('Non-syntax or runtime errors have no language.');
+        throw Error('Non-syntax or runtime errors have no language property.');
       }
       return this._language;
     };
