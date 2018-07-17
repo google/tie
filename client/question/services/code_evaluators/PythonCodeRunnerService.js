@@ -218,9 +218,10 @@ tie.factory('PythonCodeRunnerService', [
       if (stdoutString.length === 0) {
         return [];
       }
-      // Stdout will sometimes have extra characters at the end. Cleaning up
-      // the stdout here to remove any extraneous output that comes after
-      // the last test case.
+      // If there are performance tests, stdoutString will have the stdout
+      // resulting from the performance tests at the end. Here, the stdout
+      // is cleaned up by removing any extraneous output that comes after
+      // the last correctness test case.
       var lastSeparatorIndex = stdoutString.lastIndexOf(separator);
       var cleanedStdoutString = stdoutString.slice(
           0, lastSeparatorIndex);
