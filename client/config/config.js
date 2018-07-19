@@ -21,8 +21,7 @@ window.tieConfig = angular.module('tieConfig', []);
 tieConfig.config(['$httpProvider', function($httpProvider) {
   // Set default headers for POST and PUT requests.
   $httpProvider.defaults.headers.common = {
-    'Content-Security-Policy': 'frame-ancestors "https://runestone.academy"',
-    'X-Frame-Options': 'ALLOW-FROM "https://runestone.academy"'
+    'X-Frame-Options': 'DENY'
   };
   $httpProvider.defaults.headers.post = {
     'Content-Type': 'application/x-www-form-urlencoded'
