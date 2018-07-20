@@ -18,7 +18,9 @@
 
 describe('CodeEvalResultObjectFactory', function() {
   var CodeEvalResultObjectFactory;
+  var ErrorTracebackObjectFactory;
   var TaskObjectFactory;
+  var TracebackCoordinatesObjectFactory;
 
   var codeEvalResult;
   var PREPROCESSED_CODE = 'code separator = "abcdefghijklmnopqrst"';
@@ -33,9 +35,11 @@ describe('CodeEvalResultObjectFactory', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    CodeEvalResultObjectFactory = $injector.get(
-      'CodeEvalResultObjectFactory');
+    CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
+    ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
+    TracebackCoordinatesObjectFactory = $injector.get(
+      'TracebackCoordinatesObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(PREPROCESSED_CODE,
       RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS, BUGGY_OUTPUT_TEST_RESULTS,
       PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
@@ -101,6 +105,72 @@ describe('CodeEvalResultObjectFactory', function() {
       ).toBe(false);
     });
   });
+
+  describe('hasTimeLimitError', function() {
+    it('should correctly check for time limit errors', function() {
+      var otherErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], otherErrorTraceback, null);
+      expect(codeEvalResultWithoutError.hasTimeLimitError()).toBe(false);
+
+      var timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
+        'TimeLimitError: code took more than 3 seconds to run',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], timeLimitErrorTraceback, null);
+      expect(codeEvalResultWithError.hasTimeLimitError()).toBe(true);
+    });
+  });
+
+  describe('hasRecursionLimitError', function() {
+    it('should correctly check for recursion limit errors', function() {
+      var otherErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], otherErrorTraceback, null);
+      expect(codeEvalResultWithoutError.hasRecursionLimitError()).toBe(false);
+
+      var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
+        'ExternalError: RangeError on line 3',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], recursionLimitErrorTraceback, null);
+      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+
+      recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error: maximum recursion depth exceeded',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      codeEvalResultWithError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], recursionLimitErrorTraceback, null);
+      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+    });
+  });
+
+  describe('hasServerError', function() {
+    it('should correctly check for server errors', function() {
+      var otherErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], otherErrorTraceback, null);
+      expect(codeEvalResultWithoutError.hasServerError()).toBe(false);
+
+      var serverErrorTraceback = ErrorTracebackObjectFactory.create(
+        'A server error occurred.',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], serverErrorTraceback, null);
+      expect(codeEvalResultWithError.hasServerError()).toBe(true);
+    });
+  });
+
 
   describe('getObservedStdouts', function() {
     it('should correctly get output', function() {
