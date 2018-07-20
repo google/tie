@@ -42,7 +42,7 @@ describe('CodeEvalResultObjectFactory', function() {
       'TracebackCoordinatesObjectFactory');
     codeEvalResult = CodeEvalResultObjectFactory.create(PREPROCESSED_CODE,
       RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS, BUGGY_OUTPUT_TEST_RESULTS,
-      PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+      PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
   }));
 
   describe('getPreprocessedCode', function() {
@@ -112,7 +112,7 @@ describe('CodeEvalResultObjectFactory', function() {
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], otherErrorTraceback, null);
+        [], [], otherErrorTraceback, null, false, false);
       expect(codeEvalResultWithoutError.hasTimeLimitError()).toBe(false);
 
       var timeLimitErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -120,7 +120,7 @@ describe('CodeEvalResultObjectFactory', function() {
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], timeLimitErrorTraceback, null);
+        [], [], timeLimitErrorTraceback, null, true, false);
       expect(codeEvalResultWithError.hasTimeLimitError()).toBe(true);
     });
   });
@@ -131,7 +131,7 @@ describe('CodeEvalResultObjectFactory', function() {
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], otherErrorTraceback, null);
+        [], [], otherErrorTraceback, null, false, false);
       expect(codeEvalResultWithoutError.hasRecursionLimitError()).toBe(false);
 
       var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -139,7 +139,7 @@ describe('CodeEvalResultObjectFactory', function() {
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], recursionLimitErrorTraceback, null);
+        [], [], recursionLimitErrorTraceback, null, false, true);
       expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
 
       recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -147,7 +147,7 @@ describe('CodeEvalResultObjectFactory', function() {
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], recursionLimitErrorTraceback, null);
+        [], [], recursionLimitErrorTraceback, null, false, true);
       expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
     });
   });
@@ -158,7 +158,7 @@ describe('CodeEvalResultObjectFactory', function() {
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], otherErrorTraceback, null);
+        [], [], otherErrorTraceback, null, false, false);
       expect(codeEvalResultWithoutError.hasServerError()).toBe(false);
 
       var serverErrorTraceback = ErrorTracebackObjectFactory.create(
@@ -166,7 +166,7 @@ describe('CodeEvalResultObjectFactory', function() {
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], serverErrorTraceback, null);
+        [], [], serverErrorTraceback, null, false, false);
       expect(codeEvalResultWithError.hasServerError()).toBe(true);
     });
   });
@@ -244,35 +244,35 @@ describe('CodeEvalResultObjectFactory', function() {
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult1.getIndexOfFirstFailedTask(tasks))
         .toEqual(null);
 
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult2.getIndexOfFirstFailedTask(tasks))
         .toEqual(0);
 
       var codeEvalResult3 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[false, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult3.getIndexOfFirstFailedTask(tasks))
         .toEqual(1);
 
       var codeEvalResult4 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[false, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult4.getIndexOfFirstFailedTask(tasks))
         .toEqual(0);
 
       var codeEvalResult5 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult5.getIndexOfFirstFailedTask(tasks))
         .toEqual(0);
     });
@@ -342,7 +342,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult1.getIndexOfFirstFailedTest(tasks))
         .toEqual(null);
 
@@ -350,7 +350,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult2.getIndexOfFirstFailedTest(tasks))
         .toEqual(1);
 
@@ -358,7 +358,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult3.getIndexOfFirstFailedTest(tasks))
         .toEqual(2);
 
@@ -366,7 +366,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[true], [false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult4.getIndexOfFirstFailedTest(tasks))
         .toEqual(3);
 
@@ -374,7 +374,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult5.getIndexOfFirstFailedTest(tasks))
         .toEqual(1);
 
@@ -382,33 +382,34 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[false, false]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult6.getIndexOfFirstFailedTest(tasks))
         .toEqual(0);
 
       var codeEvalResult7 = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT);
+        PREPROCESSED_CODE, RAW_CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT,
+        false, false);
       expect(codeEvalResult7.getIndexOfFirstFailedTest(tasks))
         .toEqual(0);
 
       var codeEvalResult8 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult8.getIndexOfFirstFailedTest(tasks))
         .toEqual(null);
 
       var codeEvalResult9 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult9.getIndexOfFirstFailedTest(tasks))
         .toEqual(1);
 
       var codeEvalResult10 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[false, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult10.getIndexOfFirstFailedTest(tasks))
         .toEqual(0);
     });
@@ -478,7 +479,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult1.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[3]);
 
@@ -486,7 +487,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[true], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult2.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[1]);
 
@@ -494,7 +495,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult3.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[2]);
 
@@ -502,7 +503,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true]], [[true], [false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult4.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[3]);
 
@@ -510,7 +511,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-        ERROR_INPUT);
+        ERROR_INPUT, false, false);
       expect(codeEvalResult5.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[1]);
 
@@ -518,35 +519,36 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[false, false]], [[false], [true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult6.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[0]);
 
       // Empty observedOutputs can result from runtime or infinite-loop error,
       // thus there is no output to be displayed.
       var codeEvalResult7 = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT);
+        PREPROCESSED_CODE, RAW_CODE, [], [], [], [], ERROR_STRING, ERROR_INPUT,
+        false, false);
       expect(codeEvalResult7.getStdoutToDisplay(tasks))
         .toEqual(null);
 
       var codeEvalResult8 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult8.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[1]);
 
       var codeEvalResult9 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[true, false]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult9.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[1]);
 
       var codeEvalResult10 = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, [[[false, true]]],
         BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult10.getStdoutToDisplay(tasks))
         .toEqual(OBSERVED_STDOUTS[0]);
     });
@@ -649,7 +651,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, true], [true, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult1.getPassingSuiteIds(tasks, 0)).toEqual(
         ['TASK1_SUITE1', 'TASK1_SUITE2']);
       expect(codeEvalResult1.getPassingSuiteIds(tasks, 1)).toEqual(
@@ -659,7 +661,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[true, false], [true, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS,
-        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT);
+        PERFORMANCE_TEST_RESULTS, ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult2.getPassingSuiteIds(tasks, 0)).toEqual(
         ['TASK1_SUITE2']);
       expect(codeEvalResult2.getPassingSuiteIds(tasks, 1)).toEqual(
@@ -669,7 +671,7 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS,
         [[[false, true], [false, true]],
         [[true, true]]], BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS,
-        ERROR_STRING, ERROR_INPUT);
+        ERROR_STRING, ERROR_INPUT, false, false);
       expect(codeEvalResult3.getPassingSuiteIds(tasks, 0)).toEqual([]);
     });
   });
