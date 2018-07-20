@@ -137,6 +137,42 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
+     * Returns a boolean indicating whether the code run exceeded the time
+     * limit.
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasTimeLimitError = function() {
+      var errorString = this.getErrorString();
+      return (errorString && errorString.startsWith('TimeLimitError'));
+    };
+
+    /**
+     * Returns a boolean indicating whether the code run exceeded the recursion
+     * limit.
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasRecursionLimitError = function() {
+      var errorString = this.getErrorString();
+      return errorString && (
+        errorString.startsWith('ExternalError: RangeError') ||
+        errorString.includes('maximum recursion depth exceeded'));
+    };
+
+    /**
+     * Returns a boolean indicating whether there was a server error during the
+     * run.
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasServerError = function() {
+      var errorString = this.getErrorString();
+      return errorString && (
+        errorString.startsWith('A server error occurred.'));
+    };
+
+    /**
      * A getter for the _observedStdouts property.
      * The function should return the array of stdouts where the i-th
      * entry in the array corresponds to the output of the i-th overall test

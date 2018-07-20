@@ -46,40 +46,37 @@ tie.factory('ConversationManagerService', [
     var computeFeedbackDetails = function(
         codeEvalResult, executionContext, language) {
       var errorString = codeEvalResult.getErrorString();
-      if (errorString) {
-        if (errorString.startsWith('TimeLimitError')) {
-          return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
-        } else if (
-            errorString.startsWith('ExternalError: RangeError') ||
-            errorString.includes('maximum recursion depth exceeded')) {
-          return FeedbackDetailsObjectFactory.createStackExceededFeedback();
-        } else if (errorString.startsWith('A server error occurred.')) {
-          return FeedbackDetailsObjectFactory.createServerErrorFeedback();
+
+      if (codeEvalResult.hasTimeLimitError()) {
+        return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
+      } else if (codeEvalResult.hasRecursionLimitError()) {
+        return FeedbackDetailsObjectFactory.createStackExceededFeedback();
+      } else if (codeEvalResult.hasServerError()) {
+        return FeedbackDetailsObjectFactory.createServerErrorFeedback();
+      } else if (errorString) {
+        if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
+          LearnerStateService.recordRuntimeError(errorString);
+        } else if (executionContext === EXECUTION_CONTEXT_COMPILATION) {
+          LearnerStateService.recordSyntaxError();
         } else {
-          if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
-            LearnerStateService.recordRuntimeError(errorString);
-          } else if (executionContext === EXECUTION_CONTEXT_COMPILATION) {
-            LearnerStateService.recordSyntaxError();
-          } else {
-            throw Error('Invalid execution context: ' + executionContext);
-          }
+          throw Error('Invalid execution context: ' + executionContext);
+        }
 
-          var languageUnfamiliarityFeedbackIsNeeded = (
-            LearnerStateService.doesUserNeedLanguageUnfamiliarityPrompt());
-          if (languageUnfamiliarityFeedbackIsNeeded) {
-            // Once the user has been prompted, we reset the counter so
-            // that we don't continually prompt and, thereby, annoy them.
-            LearnerStateService.resetLanguageUnfamiliarityCounters();
-          }
+        var languageUnfamiliarityFeedbackIsNeeded = (
+          LearnerStateService.doesUserNeedLanguageUnfamiliarityPrompt());
+        if (languageUnfamiliarityFeedbackIsNeeded) {
+          // Once the user has been prompted, we reset the counter so
+          // that we don't continually prompt and, thereby, annoy them.
+          LearnerStateService.resetLanguageUnfamiliarityCounters();
+        }
 
-          if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
-            return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
-              errorString, language, codeEvalResult.getErrorInput(),
-              languageUnfamiliarityFeedbackIsNeeded);
-          } else {
-            return FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
-              errorString, language, languageUnfamiliarityFeedbackIsNeeded);
-          }
+        if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
+          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+            errorString, language, codeEvalResult.getErrorInput(),
+            languageUnfamiliarityFeedbackIsNeeded);
+        } else {
+          return FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+            errorString, language, languageUnfamiliarityFeedbackIsNeeded);
         }
       }
 
