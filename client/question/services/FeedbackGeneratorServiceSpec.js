@@ -20,6 +20,7 @@ describe('FeedbackGeneratorService', function() {
   var BuggyOutputTestObjectFactory;
   var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
+  var FeedbackDetailsObjectFactory;
   var FeedbackGeneratorService;
   var PrereqCheckFailureObjectFactory;
   var SuiteLevelTestObjectFactory;
@@ -38,8 +39,6 @@ describe('FeedbackGeneratorService', function() {
   var PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL;
   var LANGUAGE_PYTHON;
   var FEEDBACK_CATEGORIES;
-  var PYTHON_PRIMER_BUTTON_NAME;
-  var UNFAMILIARITY_THRESHOLD;
   var CORRECTNESS_FEEDBACK_TEXT;
 
   beforeEach(module('tie'));
@@ -48,6 +47,8 @@ describe('FeedbackGeneratorService', function() {
       'BuggyOutputTestObjectFactory');
     CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
+    FeedbackDetailsObjectFactory = $injector.get(
+      'FeedbackDetailsObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
@@ -73,8 +74,6 @@ describe('FeedbackGeneratorService', function() {
       'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL');
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
-    PYTHON_PRIMER_BUTTON_NAME = $injector.get('PYTHON_PRIMER_BUTTON_NAME');
-    UNFAMILIARITY_THRESHOLD = $injector.get('UNFAMILIARITY_THRESHOLD');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
 
     var taskDict = [{
@@ -102,7 +101,6 @@ describe('FeedbackGeneratorService', function() {
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
-    FeedbackGeneratorService._resetCounters();
   }));
 
   describe('_jsToHumanReadable', function() {
@@ -361,29 +359,15 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getUnfamiliarLanguageFeedback', function() {
-    it('should return the string for the text feedback for python', function() {
-      var feedbackString = FeedbackGeneratorService
-        ._getUnfamiliarLanguageFeedback(LANGUAGE_PYTHON);
-      expect(feedbackString).toEqual([
-        "Seems like you're having some trouble with Python. Why ",
-        "don't you take a look at the page linked through the '",
-        PYTHON_PRIMER_BUTTON_NAME + "' button at the bottom of the screen?"
-      ].join(''));
-      expect(function() {
-        FeedbackGeneratorService._updateCounters('Not a counter');
-      }).toThrowError('Invalid parameter');
-    });
-  });
-
   describe('getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback, 'testInput');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          false));
 
       var feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
-        codeEvalResult, [0, 1, 2, 3, 4]);
+        feedbackDetails, [0, 1, 2, 3, 4]);
       var paragraphs = feedback.getParagraphs();
 
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -404,12 +388,14 @@ describe('FeedbackGeneratorService', function() {
         var buggyErrorTraceback = ErrorTracebackObjectFactory.create(
             'ZeroDivisionError: integer division or modulo by zero',
             [TracebackCoordinatesObjectFactory.create(0, 1)]);
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code separator = "a"', 'some code', 'some output',
-          [], [], [], buggyErrorTraceback, 'testInput');
+        var feedbackDetails = (
+          FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+            buggyErrorTraceback.getErrorString(),
+            LANGUAGE_PYTHON, 'testInput', false));
+
         expect(function() {
           FeedbackGeneratorService.getRuntimeErrorFeedback(
-            codeEvalResult, [0, 1, 2, 3, 4]
+            feedbackDetails, [0, 1, 2, 3, 4]
           );
         }).toThrow(new Error("Line number index out of range: -1"));
       }
@@ -417,35 +403,38 @@ describe('FeedbackGeneratorService', function() {
 
     it('should throw an error if the line number index is greater than the ' +
         'length of rawCodeLineIndexes', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code separator = "a"', 'some code', 'some output',
-          [], [], [], sampleErrorTraceback, 'testInput');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          false));
 
       expect(function() {
-        FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult, [0]);
+        FeedbackGeneratorService.getRuntimeErrorFeedback(feedbackDetails, [0]);
       }).toThrow();
     });
 
     it('should throw an error if the line number index is equal to the ' +
         'length of rawCodeLineIndexes', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code separator = "a"', 'some code', 'some output',
-          [], [], [], sampleErrorTraceback, 'testInput');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          false));
       expect(function() {
-        FeedbackGeneratorService.getRuntimeErrorFeedback(codeEvalResult,
-            [0, 1, 2, 3]);
+        FeedbackGeneratorService.getRuntimeErrorFeedback(
+          feedbackDetails, [0, 1, 2, 3]);
       }).toThrow();
     });
 
     it('should adjust the line numbers correctly', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback, 'testInput');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          false));
 
       // This maps line 4 (0-indexed) of the preprocessed code to line 1
       // (0-indexed) of the raw code, which becomes line 2 (when 1-indexed).
       var paragraphs = FeedbackGeneratorService.getRuntimeErrorFeedback(
-        codeEvalResult, [0, null, null, null, 1]).getParagraphs();
+        feedbackDetails, [0, null, null, null, 1]).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -459,14 +448,15 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should correctly handle errors due to the test code', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback, 'testInput');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          false));
 
       // This maps line 5 (1-indexed) to null, which means that there is no
       // corresponding line in the raw code.
       var paragraphs = FeedbackGeneratorService.getRuntimeErrorFeedback(
-        codeEvalResult, [0, null, null, null, null]).getParagraphs();
+        feedbackDetails, [0, null, null, null, null]).getParagraphs();
 
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -605,16 +595,16 @@ describe('FeedbackGeneratorService', function() {
       'should return feedback if a syntax / compiler error is ',
       'found in the user\'s code'
     ].join(''), function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback, null);
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, false));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-        codeEvalResult);
+        feedbackDetails);
+      var paragraphs = feedback.getParagraphs();
+
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-
-      var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
@@ -626,19 +616,15 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should correctly append language unfamiliarity feedback if ' +
-       'consecutiveUnfamiliarityLanguageCounter reaches the ' +
-       'UNFAMILIARITY_THRESHOLD count with syntax errors', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback, null);
+       'consecutiveUnfamiliarityLanguageCounter is needed', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, true));
 
-      var feedback;
-      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
-          codeEvalResult);
-      }
-
+      var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+        feedbackDetails);
       var paragraphs = feedback.getParagraphs();
+
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toEqual(
@@ -989,9 +975,8 @@ describe('FeedbackGeneratorService', function() {
         'linear time?');
     });
 
-    it('should correctly append language unfamiliarity feedback if ' +
-        'consecutiveUnfamiliarityLanguageCounter reaches the ' +
-        'UNFAMILIARITY_THRESHOLD count with wrong language errors', function() {
+    it('should correctly append language unfamiliarity feedback for ' +
+        'prereq "language unfamiliarity" checks as needed', function() {
       var starterCode = [
         'def myFunction(arg):',
         '    return arg',
@@ -1001,14 +986,10 @@ describe('FeedbackGeneratorService', function() {
       var prereqFailure = PrereqCheckFailureObjectFactory.create(
         PREREQ_CHECK_TYPE_WRONG_LANG, null, starterCode, 'push');
 
-      var feedback;
-
-      for (var i = 0; i < UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
-            prereqFailure);
-      }
-
+      var feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
+        prereqFailure, true, LANGUAGE_PYTHON);
       var paragraphs = feedback.getParagraphs();
+
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].getContent()).toEqual([
         "It seems like you're using a `push` method to add an element ",
@@ -1017,26 +998,21 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toEqual(
-        FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
-          LANGUAGE_PYTHON));
+        "Seems like you're having some trouble with Python. Why don't you " +
+        "take a look at the page linked through the 'New to Python?' button " +
+        "at the bottom of the screen?");
       expect(paragraphs[1].isTextParagraph()).toBe(true);
     });
 
-    it('should correctly append language unfamiliarity feedback if ' +
-       'consecutiveSameRuntimeErrorCounter reaches the ' +
-       'UNFAMILIARITY_THRESHOLD count', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], [], sampleErrorTraceback,
-        'testInput');
+    it('should correctly append language unfamiliarity feedback for runtime ' +
+       'errors if needed', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
+          true));
 
-      var feedback;
-
-      for (var i = 0; i <= UNFAMILIARITY_THRESHOLD; i++) {
-        feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
-          codeEvalResult, [0, 1, 2, 3, 4, 5]);
-        TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
-      }
+      var feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
+        feedbackDetails, [0, 1, 2, 3, 4, 5]);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(3);

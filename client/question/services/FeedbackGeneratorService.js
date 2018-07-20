@@ -25,14 +25,13 @@ tie.factory('FeedbackGeneratorService', [
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
   'CLASS_NAME_STUDENT_CODE', 'PARAGRAPH_TYPE_TEXT',
   'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME', 'ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
-  'ERROR_COUNTER_SAME_RUNTIME', 'UNFAMILIARITY_THRESHOLD',
+  'PYTHON_PRIMER_BUTTON_NAME', 'CORRECTNESS_FEEDBACK_TEXT',
   'FEEDBACK_CATEGORIES', 'TEST_SUITE_ID_SAMPLE_INPUT',
   'CORRECTNESS_STATE_STARTING', 'CORRECTNESS_STATE_INPUT_DISPLAYED',
   'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
   'CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE',
   'FEEDBACK_TYPE_INPUT_TO_TRY', 'FEEDBACK_TYPE_EXPECTED_OUTPUT',
-  'FEEDBACK_TYPE_OUTPUT_ENABLED', 'CORRECTNESS_FEEDBACK_TEXT',
+  'FEEDBACK_TYPE_OUTPUT_ENABLED',
   function(
     FeedbackObjectFactory, TranscriptService,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
@@ -40,14 +39,13 @@ tie.factory('FeedbackGeneratorService', [
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE,
     CLASS_NAME_STUDENT_CODE, PARAGRAPH_TYPE_TEXT,
     PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME, ERROR_COUNTER_LANGUAGE_UNFAMILIARITY,
-    ERROR_COUNTER_SAME_RUNTIME, UNFAMILIARITY_THRESHOLD,
+    PYTHON_PRIMER_BUTTON_NAME, CORRECTNESS_FEEDBACK_TEXT,
     FEEDBACK_CATEGORIES, TEST_SUITE_ID_SAMPLE_INPUT,
     CORRECTNESS_STATE_STARTING, CORRECTNESS_STATE_INPUT_DISPLAYED,
     CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
     CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE,
     FEEDBACK_TYPE_INPUT_TO_TRY, FEEDBACK_TYPE_EXPECTED_OUTPUT,
-    FEEDBACK_TYPE_OUTPUT_ENABLED, CORRECTNESS_FEEDBACK_TEXT) {
+    FEEDBACK_TYPE_OUTPUT_ENABLED) {
 
     /**
      * Object used to keep track of which state we are in for correctness
@@ -58,21 +56,6 @@ tie.factory('FeedbackGeneratorService', [
      * @type {Object.<string, string>}
      */
     var correctnessTestStates = {};
-
-    /**
-     * Counter to keep track of language unfamiliarity errors which include
-     * syntax errors and wrong language errors.
-     *
-     * @type {number}
-     */
-    var consecutiveLanguageUnfamiliarityCounter = 0;
-
-    /**
-     * Counter to keep track of consecutive same errors.
-     *
-     * @type {number}
-     */
-    var consecutiveSameRuntimeErrorCounter = 0;
 
     /**
      * Object to hold array indexes (values) of available correctness feedback
@@ -92,15 +75,6 @@ tie.factory('FeedbackGeneratorService', [
      * @type {string}
      */
     var previousTestSuiteId = '';
-
-    /**
-     * Variable to store the error string immediately before the current error.
-     * Will be used to see if the user is receiving the same exact error
-     * consecutively, a possible indication of language unfamiliarity.
-     *
-     * @type {string}
-     */
-    var previousRuntimeErrorString = '';
 
     /**
      * Pseudo-randomly returns an int between min (inclusive) and max.
@@ -144,57 +118,6 @@ tie.factory('FeedbackGeneratorService', [
       availableCorrectnessFeedbackIndexes[feedbackType].splice(
         randomArrayIndex, 1);
       return CORRECTNESS_FEEDBACK_TEXT[feedbackType][correctnessFeedbackIndex];
-    };
-
-    /**
-     * Updates the counter specified in the paramter to track language
-     * unfamiliarity and resets all other counters.
-     *
-     * @param {string} counterToIncrement
-     * @private
-     */
-    var _updateCounters = function(counterToIncrement) {
-      if (counterToIncrement === ERROR_COUNTER_SAME_RUNTIME) {
-        consecutiveSameRuntimeErrorCounter++;
-        consecutiveLanguageUnfamiliarityCounter = 0;
-      } else if (counterToIncrement === ERROR_COUNTER_LANGUAGE_UNFAMILIARITY) {
-        consecutiveSameRuntimeErrorCounter = 0;
-        consecutiveLanguageUnfamiliarityCounter++;
-      } else {
-        throw Error('Invalid parameter');
-      }
-    };
-
-    /**
-     * Reset all error counters.
-     *
-     * @private
-     */
-    var _resetCounters = function() {
-      consecutiveSameRuntimeErrorCounter = 0;
-      consecutiveLanguageUnfamiliarityCounter = 0;
-    };
-
-    /**
-     * Checks the error counters to see if any have reached the threshold. If
-     * they have, then it appends to the feedback to prompt the user to look at
-     * the primer.
-     *
-     * @param {Feedback} feedback
-     * @private
-     */
-    var _applyThresholdUpdates = function(feedback) {
-      if ((consecutiveLanguageUnfamiliarityCounter ===
-        UNFAMILIARITY_THRESHOLD) || (consecutiveSameRuntimeErrorCounter ===
-        UNFAMILIARITY_THRESHOLD)) {
-        // TODO(dianakc, eledavi): Will have to adjust according to language
-        feedback.appendTextParagraph(_getUnfamiliarLanguageFeedback(
-          LANGUAGE_PYTHON));
-        // Once the user has been prompted, we reset the counter so
-        // that we make sure not to continue to prompt and, thereby,
-        // annoy them.
-        _resetCounters();
-      }
     };
 
     // TODO(sll): Update this function to take the programming language into
@@ -590,26 +513,29 @@ tie.factory('FeedbackGeneratorService', [
         return feedback;
       },
       /**
-       * Returns the Feedback object for the given syntax error string.
+       * Returns the Feedback object for the given syntax error details.
        *
-       * @param {CodeEvalResult} codeEvalResult The result of compiling the
-       *   submitted code.
+       * @param {FeedbackDetails} feedbackDetails The feedback details
+       *   characterizing the syntax error.
        * @returns {Feedback}
        */
-      getSyntaxErrorFeedback: function(codeEvalResult) {
-        var errorString = codeEvalResult.getErrorString();
-        // If the user receives another syntax error, increment the
-        // language unfamiliarity error counter.
-        _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-        previousRuntimeErrorString = '';
+      getSyntaxErrorFeedback: function(feedbackDetails) {
+        var errorString = feedbackDetails.getErrorString();
+        var languageUnfamiliarityFeedbackIsNeeded = (
+          feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
+        var language = feedbackDetails.getLanguage();
+
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SYNTAX_ERROR);
         feedback.appendTextParagraph(
           'It looks like your code has a syntax error. ' +
           'Try to figure out what the error is.');
         feedback.appendErrorParagraph(errorString);
+        if (languageUnfamiliarityFeedbackIsNeeded) {
+          feedback.appendTextParagraph(
+            _getUnfamiliarLanguageFeedback(language));
+        }
 
-        _applyThresholdUpdates(feedback);
         return feedback;
       },
       /**
@@ -617,19 +543,12 @@ tie.factory('FeedbackGeneratorService', [
        * Check Failure.
        *
        * @param {PrereqCheckFailure} prereqCheckFailure
+       * @param {bool} languageUnfamiliarityFeedbackIsNeeded
+       * @param {string} language The language that the code is written in.
        * @returns {Feedback}
        */
-      getPrereqFailureFeedback: function(prereqCheckFailure) {
-        if (prereqCheckFailure.hasWrongLanguage()) {
-          _updateCounters(ERROR_COUNTER_LANGUAGE_UNFAMILIARITY);
-          previousRuntimeErrorString = '';
-        } else {
-          _resetCounters();
-        }
-        if (!prereqCheckFailure) {
-          throw new Error('getPrereqFailureFeedback() called with 0 failures.');
-        }
-
+      getPrereqFailureFeedback: function(
+          prereqCheckFailure, languageUnfamiliarityFeedbackIsNeeded, language) {
         var feedback = null;
         if (prereqCheckFailure.isMissingStarterCode()) {
           feedback = FeedbackObjectFactory.create(
@@ -729,7 +648,10 @@ tie.factory('FeedbackGeneratorService', [
             'in getPrereqFailureFeedback().'].join());
         }
 
-        _applyThresholdUpdates(feedback);
+        if (languageUnfamiliarityFeedbackIsNeeded) {
+          feedback.appendTextParagraph(
+            _getUnfamiliarLanguageFeedback(language));
+        }
 
         return feedback;
       },
@@ -782,29 +704,22 @@ tie.factory('FeedbackGeneratorService', [
        * Returns the Feedback object associated with a runtime error when
        * running the user code.
        *
-       * @param {CodeEvalResult} codeEvalResult Results of running tests on
-       *    user's submission.
+       * @param {FeedbackDetails} feedbackDetails The feedback details
+       *   characterizing the runtime error.
        * @param {Array} rawCodeLineIndexes The code line numbers for the user's
        *    submission. Should be an array of numbers.
        * @returns {Feedback}
        */
-      getRuntimeErrorFeedback: function(codeEvalResult, rawCodeLineIndexes) {
-        // If the user receives the same error message increment the same error
-        // counter.
-        if (previousRuntimeErrorString &&
-            previousRuntimeErrorString === codeEvalResult.getErrorString()) {
-          _updateCounters(ERROR_COUNTER_SAME_RUNTIME);
-        } else {
-          _resetCounters();
-        }
+      getRuntimeErrorFeedback: function(feedbackDetails, rawCodeLineIndexes) {
+        var errorInput = feedbackDetails.getErrorInput();
+        var errorString = feedbackDetails.getErrorString();
+        var language = feedbackDetails.getLanguage();
+        var languageUnfamiliarityFeedbackIsNeeded = (
+          feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
 
-        var errorInput = codeEvalResult.getErrorInput();
-        var inputClause = (
-          ' when evaluating the input ' + _jsToHumanReadable(errorInput));
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.RUNTIME_ERROR);
-
-        var fixedErrorString = codeEvalResult.getErrorString().replace(
+        var fixedErrorString = errorString.replace(
           new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
             var preprocessedCodeLineIndex = (
               Number(humanReadableLineNumber) - 1);
@@ -825,24 +740,24 @@ tie.factory('FeedbackGeneratorService', [
           }
         );
 
-        // TODO(dianakc): Will need to adjust according to programming language
-        var feedbackString = _getHumanReadableRuntimeFeedback(
-            fixedErrorString, LANGUAGE_PYTHON);
-        if (feedbackString === null) {
-          feedback.appendTextParagraph(
-            "Looks like your code had a runtime error" + inputClause + ".");
-          feedback.appendErrorParagraph(fixedErrorString);
+        var humanReadableFeedbackString = _getHumanReadableRuntimeFeedback(
+          fixedErrorString, language);
+        if (humanReadableFeedbackString) {
+          feedback.appendTextParagraph(humanReadableFeedbackString);
         } else {
-          feedback.appendTextParagraph(feedbackString);
+          feedback.appendTextParagraph(
+            'Looks like your code had a runtime error when evaluating the ' +
+            'input ' + _jsToHumanReadable(errorInput) + '.');
+          feedback.appendErrorParagraph(fixedErrorString);
         }
 
-        _applyThresholdUpdates(feedback);
-
-        previousRuntimeErrorString = codeEvalResult.getErrorString();
+        if (languageUnfamiliarityFeedbackIsNeeded) {
+          feedback.appendTextParagraph(
+            _getUnfamiliarLanguageFeedback(language));
+        }
 
         return feedback;
       },
-      _applyThresholdUpdates: _applyThresholdUpdates,
       _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
       _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
       _getCorrectnessFeedbackString: _getCorrectnessFeedbackString,
@@ -851,9 +766,7 @@ tie.factory('FeedbackGeneratorService', [
       _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRandomInt: _getRandomInt,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
-      _jsToHumanReadable: _jsToHumanReadable,
-      _resetCounters: _resetCounters,
-      _updateCounters: _updateCounters
+      _jsToHumanReadable: _jsToHumanReadable
     };
   }
 ]);

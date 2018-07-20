@@ -34,6 +34,11 @@ describe('FeedbackDetailsObjectFactory', function() {
         FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
+      expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getLanguage).toThrow();
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
     });
   });
 
@@ -43,6 +48,11 @@ describe('FeedbackDetailsObjectFactory', function() {
         FeedbackDetailsObjectFactory.createStackExceededFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
+      expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getLanguage).toThrow();
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
     });
   });
 
@@ -52,24 +62,43 @@ describe('FeedbackDetailsObjectFactory', function() {
         FeedbackDetailsObjectFactory.createServerErrorFeedback());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SERVER_ERROR);
+      expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getLanguage).toThrow();
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
     });
   });
 
   describe('runtime error FeedbackDetails object', function() {
     it('should create a runtime error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback());
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          'error string', 'python', 'abc', true));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+      expect(feedbackDetails.getErrorString()).toBe('error string');
+      expect(feedbackDetails.getLanguage()).toBe('python');
+      expect(feedbackDetails.getErrorInput()).toBe('abc');
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        true);
     });
   });
 
   describe('syntax error FeedbackDetails object', function() {
     it('should create a syntax error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback());
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+          'error string', 'python', false));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+      expect(feedbackDetails.getErrorString()).toBe('error string');
+      expect(feedbackDetails.getLanguage()).toBe('python');
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
     });
   });
+
+
 });

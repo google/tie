@@ -187,29 +187,6 @@ tie.constant('CLASS_NAME_STUDENT_CODE', 'StudentCode');
 tie.constant('PYTHON_PRIMER_BUTTON_NAME', 'New to Python?');
 
 /**
- * Constant to represent the consecutiveLanguageUnfamiliarityCounter option
- * for the resetCounters function in FeedbackGeneratorService. Is to be passed
- * into the resetCounters function as a parameter when we want to reset all
- * counters except the consecutiveLanguageUnfamiliarityCounter.
- *
- * @type {string}
- * @constant
- */
-tie.constant('ERROR_COUNTER_LANGUAGE_UNFAMILIARITY',
-  'consecutiveLanguageUnfamiliarityCounter');
-
-/**
- * Constant to represent the consecutiveSameRuntimeErrorCounter option for
- * the resetCounters function in FeedbackGeneratorService. Is to be passed into
- * the resetCounters function as a parameter when we want to reset all counters
- * except the consecutiveSameRuntimeErrorCounter.
- *
- * @type {string}
- * @constant
- */
-tie.constant('ERROR_COUNTER_SAME_RUNTIME', 'consecutiveSameError');
-
-/**
  * Enum of possible feedback categories representing the types of feedback a
  * TIE user could potentially receive.
  *
@@ -315,7 +292,7 @@ tie.constant('PREREQ_CHECK_TYPE_WRONG_LANG', 'wrongLang');
  * @type {number}
  * @constant
  */
-tie.constant('UNFAMILIARITY_THRESHOLD', 5);
+tie.constant('LANGUAGE_UNFAMILIARITY_THRESHOLD', 5);
 
 /**
  * Dictionary of wrong language detection errors and their related information
