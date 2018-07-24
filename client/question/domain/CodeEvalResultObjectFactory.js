@@ -159,17 +159,17 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @returns {boolean}
      */
     CodeEvalResult.prototype.hasTimeLimitError = function() {
-      return this.getErrorString() && this._timeLimitExceeded;
+      return this._timeLimitExceeded;
     };
 
     /**
-     * Returns a boolean indicating whether the code run exceeded the recursion
+     * Returns a boolean indicating whether the code run exceeded the memory
      * limit.
      *
      * @returns {boolean}
      */
-    CodeEvalResult.prototype.hasRecursionLimitError = function() {
-      return this.getErrorString() && this._memoryLimitExceeded;
+    CodeEvalResult.prototype.hasMemoryLimitError = function() {
+      return this._memoryLimitExceeded;
     };
 
     /**

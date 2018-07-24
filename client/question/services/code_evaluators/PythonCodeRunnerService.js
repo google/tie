@@ -117,7 +117,8 @@ tie.factory('PythonCodeRunnerService', [
           consolidatedOutputString, separator);
         return CodeEvalResultObjectFactory.create(
           codeToExecute, rawCode, standardizedOutput, observedOutputs,
-          buggyOutputTestResults, performanceTestResults, null, null);
+          buggyOutputTestResults, performanceTestResults, null, null, false,
+          false);
       }, function(skulptError) {
         var errorInput = null;
         if (Sk.globals.hasOwnProperty(VARNAME_MOST_RECENT_INPUT)) {

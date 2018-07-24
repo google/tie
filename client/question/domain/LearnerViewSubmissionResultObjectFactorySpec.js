@@ -104,7 +104,7 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
           PREPROCESSED_CODE, RAW_CODE, OUTPUT,
           [[[true, true]], [[true], [true]]],
           BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-          ERROR_INPUT);
+          ERROR_INPUT, false, false);
         var feedback = FeedbackGeneratorService.getFeedback(
           tasks, codeEvalResult, []);
 
@@ -131,7 +131,7 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
           PREPROCESSED_CODE, RAW_CODE, OUTPUT,
           [[[true, true]], [[true], [true]]],
           BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-          ERROR_INPUT);
+          ERROR_INPUT, false, false);
         var feedback = FeedbackGeneratorService.getFeedback(
           tasks, codeEvalResult, []);
 

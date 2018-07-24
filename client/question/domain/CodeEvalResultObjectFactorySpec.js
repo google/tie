@@ -54,21 +54,22 @@ describe('CodeEvalResultObjectFactory', function() {
   describe('hasSameRawCodeAs', function() {
     it('should correctly compare the code of two objects', function() {
       var matchingCodeEvalResult = CodeEvalResultObjectFactory.create(
-        PREPROCESSED_CODE, RAW_CODE, 'some output', [], [], [], '', '');
+        PREPROCESSED_CODE, RAW_CODE, 'some output', [], [], [], '', '',
+        false, false);
       expect(
         codeEvalResult.hasSameRawCodeAs(matchingCodeEvalResult)
       ).toBe(true);
 
       var differentSeparatorCodeEvalResult = CodeEvalResultObjectFactory.create(
         'code separator = "abcdefg"', RAW_CODE, 'some output', [], [], [],
-        '', '');
+        '', '', false, false);
       expect(
         codeEvalResult.hasSameRawCodeAs(differentSeparatorCodeEvalResult)
       ).toBe(true);
 
       var nonMatchingCodeEvalResult = CodeEvalResultObjectFactory.create(
         'blah blah separator = "bcdefghijklmnopqrstu" not same code',
-        'not same code', 'some output', [], [], [], '', '');
+        'not same code', 'some output', [], [], [], '', '', false, false);
       expect(
         codeEvalResult.hasSameRawCodeAs(nonMatchingCodeEvalResult)
       ).toBe(false);
@@ -80,17 +81,17 @@ describe('CodeEvalResultObjectFactory', function() {
         codeWithSeparator;
       var codeEvalResultWithSeparator = CodeEvalResultObjectFactory.create(
         processedCodeWithSeparator, codeWithSeparator, 'some output',
-        [], [], [], '', '');
+        [], [], [], '', '', false, false);
       var matchingCodeEvalResult = CodeEvalResultObjectFactory.create(
         'separator = "bcdefga" ' + codeWithSeparator, codeWithSeparator,
-        'some output', [], [], [], '', '');
+        'some output', [], [], [], '', '', false, false);
 
       var otherCodeWithSeparator = 'some code separator = 34 more code';
       var otherProcessedCodeWithSeparator = 'separator = "abcdefg" ' +
         otherCodeWithSeparator;
       var otherCodeEvalResultWithSeparator = CodeEvalResultObjectFactory.create(
         otherProcessedCodeWithSeparator, otherCodeWithSeparator, 'some output',
-        [], [], [], '', '');
+        [], [], [], '', '', false, false);
 
       expect(
         codeEvalResultWithSeparator.hasSameRawCodeAs(matchingCodeEvalResult)
@@ -125,14 +126,14 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
-  describe('hasRecursionLimitError', function() {
+  describe('hasMemoryLimitError', function() {
     it('should correctly check for recursion limit errors', function() {
       var otherErrorTraceback = ErrorTracebackObjectFactory.create(
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], otherErrorTraceback, null, false, false);
-      expect(codeEvalResultWithoutError.hasRecursionLimitError()).toBe(false);
+      expect(codeEvalResultWithoutError.hasMemoryLimitError()).toBe(false);
 
       var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'ExternalError: RangeError on line 3',
@@ -140,7 +141,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, true);
-      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+      expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
 
       recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'Error: maximum recursion depth exceeded',
@@ -148,7 +149,7 @@ describe('CodeEvalResultObjectFactory', function() {
       codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, true);
-      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+      expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
     });
   });
 
