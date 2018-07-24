@@ -327,7 +327,7 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('getStackExceededFeedback', function() {
-    it('should return an error if an infinite loop is detected', function() {
+    it('should return an error if a memory error is detected', function() {
       var feedback = FeedbackGeneratorService.getStackExceededFeedback();
       var paragraphs = feedback.getParagraphs();
 
@@ -336,9 +336,10 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe([
-        'Looks like your code is hitting an infinite recursive loop.',
-        'Check to see that your recursive calls terminate.'
-      ].join(' '));
+        "Your code used more memory than we allow for this exercise, likely ",
+        "because your code might be hitting an infinite recursive loop. ",
+        "Check to see that your recursive calls terminate."
+      ].join(''));
     });
   });
 
