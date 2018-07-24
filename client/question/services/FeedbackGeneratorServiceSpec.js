@@ -327,7 +327,7 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('getStackExceededFeedback', function() {
-    it('should return an error if an infinite loop is detected', function() {
+    it('should return an error if a memory error is detected', function() {
       var feedback = FeedbackGeneratorService.getStackExceededFeedback();
       var paragraphs = feedback.getParagraphs();
 
@@ -336,9 +336,10 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe([
-        'Looks like your code is hitting an infinite recursive loop.',
-        'Check to see that your recursive calls terminate.'
-      ].join(' '));
+        "Your code used more memory than we allow for this exercise, likely ",
+        "because your code might be hitting an infinite recursive loop. ",
+        "Check to see that your recursive calls terminate."
+      ].join(''));
     });
   });
 
@@ -685,7 +686,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, false);
@@ -713,7 +714,7 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -740,13 +741,13 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
       var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
         'new code separator = "a"', 'new code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
       var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
         'newer code separator = "a"', 'newer code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -791,10 +792,10 @@ describe('FeedbackGeneratorService', function() {
         buggyOutputTestDict);
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'same output', [], [true],
-        [], null, null);
+        [], null, null, false, false);
       var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
         'other code separator = "a"', 'other code', 'some output',
-        [], [], [], 'ERROR MESSAGE', 'testInput');
+        [], [], [], 'ERROR MESSAGE', 'testInput', false, false);
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
@@ -835,10 +836,10 @@ describe('FeedbackGeneratorService', function() {
         suiteLevelTestDict);
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
         'new code separator = "a"', 'new code', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
 
       var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
@@ -876,13 +877,13 @@ describe('FeedbackGeneratorService', function() {
       var codeEvalResults = [
         CodeEvalResultObjectFactory.create(
           'code 1 separator = "a"', 'code 1', 'same output',
-          [], [true], [], null, null),
+          [], [true], [], null, null, false, false),
         CodeEvalResultObjectFactory.create(
           'code 2 separator = "a"', 'code 2', 'same output',
-          [], [true], [], null, null),
+          [], [true], [], null, null, false, false),
         CodeEvalResultObjectFactory.create(
           'code 3 separator = "a"', 'code 3', 'same output',
-          [], [true], [], null, null)
+          [], [true], [], null, null, false, false)
       ];
 
       for (var i = 0; i < 3; i++) {
@@ -920,10 +921,10 @@ describe('FeedbackGeneratorService', function() {
 
       var codeEvalResult1 = CodeEvalResultObjectFactory.create(
         'code 1 separator = "a"', 'code 1', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
       var codeEvalResult2 = CodeEvalResultObjectFactory.create(
         'code 2 separator = "a"', 'code 2', 'same output',
-        [], [true], [], null, null);
+        [], [true], [], null, null, false, false);
 
       var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
@@ -962,7 +963,7 @@ describe('FeedbackGeneratorService', function() {
       'expectations', function() {
       var codeEvalResult = CodeEvalResultObjectFactory.create(
         'some code separator = "a"', 'some code', 'some output',
-        [], [], ['not linear'], null, null);
+        [], [], ['not linear'], null, null, false, false);
 
       var feedback = FeedbackGeneratorService.getFeedback(
         testTask, codeEvalResult, []);
