@@ -27,7 +27,6 @@ describe('FeedbackGeneratorService', function() {
   var TaskObjectFactory;
   var TestCaseObjectFactory;
   var TracebackCoordinatesObjectFactory;
-  var TranscriptService;
   var sampleErrorTraceback;
   var testTask;
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
@@ -57,7 +56,6 @@ describe('FeedbackGeneratorService', function() {
     TestCaseObjectFactory = $injector.get('TestCaseObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
-    TranscriptService = $injector.get('TranscriptService');
     PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
@@ -689,7 +687,6 @@ describe('FeedbackGeneratorService', function() {
 
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, false);
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       var paragraphs = feedback.getParagraphs();
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -718,7 +715,6 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -751,7 +747,6 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -760,8 +755,6 @@ describe('FeedbackGeneratorService', function() {
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
       paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithSameBug, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -770,8 +763,6 @@ describe('FeedbackGeneratorService', function() {
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
       paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithStillSameBug, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -799,7 +790,6 @@ describe('FeedbackGeneratorService', function() {
       var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
       var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
 
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -808,8 +798,6 @@ describe('FeedbackGeneratorService', function() {
       var unusedRuntimeErrorFeedback = (
         FeedbackGeneratorService._getBuggyOutputTestFeedback(
           buggyOutputTest, true));
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback, null);
 
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true).getParagraphs();
@@ -844,7 +832,6 @@ describe('FeedbackGeneratorService', function() {
         suiteLevelTest, true);
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
@@ -854,7 +841,6 @@ describe('FeedbackGeneratorService', function() {
       // The code is changed. The feedback changes.
       feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult2, feedback, null);
       paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -888,8 +874,6 @@ describe('FeedbackGeneratorService', function() {
       for (var i = 0; i < 3; i++) {
         var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
           suiteLevelTest, true);
-        TranscriptService.recordSnapshot(
-          null, codeEvalResults[i], feedback, null);
 
         var paragraphs = feedback.getParagraphs();
         expect(paragraphs.length).toEqual(1);
@@ -927,10 +911,8 @@ describe('FeedbackGeneratorService', function() {
 
       var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
       feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult2, feedback, null);
 
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
@@ -940,7 +922,6 @@ describe('FeedbackGeneratorService', function() {
       // Now get buggy output feedback once.
       feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
         buggyOutputTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
       paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
@@ -949,7 +930,6 @@ describe('FeedbackGeneratorService', function() {
       // The index of suite-level feedback then gets reset to 0.
       feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
         suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
       paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);

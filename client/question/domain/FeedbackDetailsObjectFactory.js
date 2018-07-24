@@ -37,11 +37,26 @@ tie.factory('FeedbackDetailsObjectFactory', [
      * @param {boolean} languageUnfamiliarityFeedbackIsNeeded Whether we need
      *    to append a feedback paragraph prompting the user to consult
      *    language-specific references.
+
+
+
+
+FIXME
+
+
+
+
+
+
+
      * @constructor
      */
     var FeedbackDetails = function(
         feedbackCategory, errorString, language, errorInput,
-        languageUnfamiliarityFeedbackIsNeeded) {
+        languageUnfamiliarityFeedbackIsNeeded,
+        testMessages, messageIndex,
+        testCase, testSuiteId, testCaseIndex, observedOutput,
+        expectedPerformance) {
       if (!FEEDBACK_CATEGORIES.hasOwnProperty(feedbackCategory)) {
         throw Error('Invalid feedback category: ' + feedbackCategory);
       }
@@ -95,6 +110,33 @@ tie.factory('FeedbackDetailsObjectFactory', [
        */
       this._languageUnfamiliarityFeedbackIsNeeded = (
         languageUnfamiliarityFeedbackIsNeeded || false);
+
+
+
+
+
+
+
+
+
+
+
+FIXME
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     };
 
     // Instance methods.
@@ -198,6 +240,41 @@ tie.factory('FeedbackDetailsObjectFactory', [
         language,
         null,
         languageUnfamiliarityFeedbackIsNeeded);
+    };
+
+    FeedbackDetails.createCodeNotChangedFeedback = function() {
+      return new FeedbackDetails(FEEDBACK_CATEGORIES.CODE_NOT_CHANGED);
+    };
+
+    FeedbackDetails.createBuggyOutputTestFeedback = function(
+        testMessages, messageIndex) {
+      return new FeedbackDetails(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, null, null, null, null,
+        testMessages, messageIndex);
+    };
+
+    FeedbackDetails.createSuiteLevelFeedback = function(
+        testMessages, messageIndex) {
+      return new FeedbackDetails(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FEEDBACK, null, null, null, null,
+        testMessages, messageIndex);
+    };
+
+    FeedbackDetails.createFailingTestFeedback = function(
+        testCase, testSuiteId, testCaseIndex, observedOutput) {
+      return new FeedbackDetails(
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,
+        null, null, testCase, testSuiteId, testCaseIndex, observedOutput);
+    };
+
+    FeedbackDetails.createPerformanceFeedback = function(expectedPerformance) {
+      return new FeedbackDetails(
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, null, null, null, null,
+        null, null, null, null, null, null, expectedPerformance);
+    };
+
+    FeedbackDetails.createSuccessFeedback = function() {
+      return new FeedbackDetails(FEEDBACK_CATEGORIES.SUCCESSFUL);
     };
 
     return FeedbackDetails;

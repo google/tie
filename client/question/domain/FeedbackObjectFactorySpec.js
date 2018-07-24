@@ -70,35 +70,6 @@ describe('FeedbackObjectFactory', function() {
     });
   });
 
-  describe('appendFeedback', function() {
-    it('should append any feedback paragraphs from a given Feedback object',
-      function() {
-        var feedbackToAppend = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUCCESSFUL);
-        feedbackToAppend.appendTextParagraph('test1');
-        feedbackToAppend.appendTextParagraph('test2');
-        feedbackToAppend.setHintIndex(1);
-        feedback.appendTextParagraph('testA');
-
-        var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toEqual('testA');
-
-        feedback.appendFeedback(feedbackToAppend);
-        paragraphs = feedback.getParagraphs();
-
-        expect(paragraphs.length).toEqual(3);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toEqual('testA');
-        expect(paragraphs[1].isTextParagraph()).toBe(true);
-        expect(paragraphs[1].getContent()).toEqual('test1');
-        expect(paragraphs[2].isTextParagraph()).toBe(true);
-        expect(paragraphs[2].getContent()).toEqual('test2');
-      }
-    );
-  });
-
   describe('getParagraphsAsListOfDicts', function() {
     it('should return an array of paragraphs as dictionaries', function() {
       feedback.appendTextParagraph('This');
