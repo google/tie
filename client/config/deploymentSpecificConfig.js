@@ -22,4 +22,4 @@ tieConfig.constant('PRIMER_DIRECTORY_URL', 'docs/');
 
 tieConfig.constant('ALLOW_PRINTING', false);
 
-tieConfig.constant('PARENT_PAGE_ORIGIN', null);
+tieConfig.constant('PARENT_PAGE_URL_ORIGIN', null);

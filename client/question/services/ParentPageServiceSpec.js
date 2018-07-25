@@ -20,11 +20,55 @@ describe('ParentPageService', function() {
   var ParentPageService;
 
   beforeEach(module('tie'));
-  var setParentPage = function(parentPageOrigin) {
+  var setParentPage = function(parentPageURLOrigin) {
     module('tieConfig', function($provide) {
-      $provide.constant('PARENT_PAGE_ORIGIN', parentPageOrigin);
+      $provide.constant('PARENT_PAGE_URL_ORIGIN', parentPageURLOrigin);
     });
   };
+  var parentPageObject = {
+    // Execution of this method signifies that the window received an event.
+    receiveMessage: function() {
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  };
+  window.parent.addEventListener('message', function() {
+    parentPageObject.receiveMessage();
+  });
+
+  describe('sendRawCode', function() {
+    describe('when there is a specified parent page', function() {
+      beforeEach(function(done) {
+        spyOn(parentPageObject, 'receiveMessage').and.callFake(function() {
+          done();
+        });
+        setParentPage('*');
+        inject(function($injector) {
+          ParentPageService = $injector.get('ParentPageService');
+        });
+        ParentPageService.sendRawCode('code to be sent');
+      });
+
+      it('should receive the sent message', function() {
+        expect(parentPageObject.receiveMessage).toHaveBeenCalled();
+      });
+    });
+
+    describe('when there is no parent page', function() {
+      beforeEach(function() {
+        spyOn(parentPageObject, 'receiveMessage');
+        setParentPage(null);
+        inject(function($injector) {
+          ParentPageService = $injector.get('ParentPageService');
+        });
+        ParentPageService.sendRawCode('code to be sent');
+      });
+
+      it('should not receive any messages', function() {
+        expect(parentPageObject.receiveMessage).not.toHaveBeenCalled();
+      });
+    });
+  });
 
   describe('getParentPageOrigin', function() {
     it('should return the parent page origin if it exists', function() {

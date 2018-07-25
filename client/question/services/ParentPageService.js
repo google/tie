@@ -17,19 +17,29 @@
  * page.
  */
 tie.factory('ParentPageService', [
-  '$window', 'PARENT_PAGE_ORIGIN', function($window, PARENT_PAGE_ORIGIN) {
+  '$window', 'PARENT_PAGE_URL_ORIGIN',
+  function($window, PARENT_PAGE_URL_ORIGIN) {
+    /**
+     * Sends the message to the parent page, if it exists, via postMessage.
+     *
+     * @param {String} messageType Type of message that is being sent.
+     * @param {String} messageData Data to be sent to parent page.
+     */
+    var sendMessage = function(messageType, messageData) {
+      if (PARENT_PAGE_URL_ORIGIN) {
+        $window.parent.postMessage(
+          JSON.stringify(messageData), PARENT_PAGE_URL_ORIGIN);
+      }
+    };
+
     return {
       /**
-       * Sends the message to the parent page, if it exists, via postMessage.
+       * Sends the raw user code to the parent page, if it exists.
        *
-       * @param {String} messageType Type of message that is being sent.
-       * @param {String} messageData Data to be sent to parent page.
+       * @param {String} User code to send to parent page.
        */
-      sendMessage: function(messageType, messageData) {
-        if (PARENT_PAGE_ORIGIN) {
-          $window.parent.postMessage(
-            JSON.stringify(messageData), PARENT_PAGE_ORIGIN);
-        }
+      sendRawCode: function(rawCode) {
+        sendMessage('raw code', rawCode);
       },
       /**
        * Returns the origin of the parent page, if it exists. Otherwise,
@@ -37,7 +47,7 @@ tie.factory('ParentPageService', [
        * @return {String|null}
        */
       getParentPageOrigin: function() {
-        return PARENT_PAGE_ORIGIN;
+        return PARENT_PAGE_URL_ORIGIN;
       }
     };
   }
