@@ -42,7 +42,7 @@ tie.factory('ParentPageService', [
         sendMessage('raw code', rawCode);
       },
       /**
-       * Returns the origin of the parent page, if it exists. Otherwise,
+       * Returns the URL origin of the parent page, if it exists. Otherwise,
        * returns null.
        * @return {String|null}
        */
