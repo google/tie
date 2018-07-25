@@ -70,13 +70,13 @@ describe('ParentPageService', function() {
     });
   });
 
-  describe('getParentPageOrigin', function() {
-    it('should return the parent page origin if it exists', function() {
+  describe('getParentPageURLOrigin', function() {
+    it('should return the parent page URL origin if it exists', function() {
       setParentPage('https://runestone.academy');
       inject(function($injector) {
         ParentPageService = $injector.get('ParentPageService');
       });
-      expect(ParentPageService.getParentPageOrigin()).toEqual(
+      expect(ParentPageService.getParentPageURLOrigin()).toEqual(
         'https://runestone.academy');
     });
 
@@ -85,7 +85,7 @@ describe('ParentPageService', function() {
       inject(function($injector) {
         ParentPageService = $injector.get('ParentPageService');
       });
-      expect(ParentPageService.getParentPageOrigin()).toEqual(null);
+      expect(ParentPageService.getParentPageURLOrigin()).toEqual(null);
     });
   });
 });

@@ -46,7 +46,7 @@ tie.factory('ParentPageService', [
        * returns null.
        * @return {String|null}
        */
-      getParentPageOrigin: function() {
+      getParentPageURLOrigin: function() {
         return PARENT_PAGE_URL_ORIGIN;
       }
     };
