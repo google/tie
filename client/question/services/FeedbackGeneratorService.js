@@ -680,9 +680,10 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
         feedback.appendTextParagraph([
-          "Looks like your code is hitting an infinite recursive loop.",
+          "Your code used more memory than we allow for this exercise, likely ",
+          "because your code might be hitting an infinite recursive loop. ",
           "Check to see that your recursive calls terminate."
-        ].join(' '));
+        ].join(''));
         return feedback;
       },
       /**
