@@ -133,7 +133,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], otherErrorTraceback, null, false, false);
-      expect(codeEvalResultWithoutError.hasRecursionLimitError()).toBe(false);
+      expect(codeEvalResultWithoutError.hasMemoryLimitError()).toBe(false);
 
       var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'ExternalError: RangeError on line 3',
@@ -141,7 +141,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, true);
-      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+      expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
     });
   });
 
