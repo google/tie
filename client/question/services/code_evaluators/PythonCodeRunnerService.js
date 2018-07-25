@@ -130,9 +130,8 @@ tie.factory('PythonCodeRunnerService', [
           skulptError);
         var errorString = errorTraceback.getErrorString();
         var timeLimitExceeded = errorString.startsWith('TimeLimitError');
-        var memoryLimitExceeded = (
-          errorString.startsWith('ExternalError: RangeError') ||
-          errorString.includes('maximum recursion depth exceeded'));
+        // TODO(eyurko): Find out if a memory limit error is ... possible?
+        var memoryLimitExceeded = false;
         return CodeEvalResultObjectFactory.create(
           codeToExecute, rawCode, null, [], [], [], errorTraceback, errorInput,
           timeLimitExceeded, memoryLimitExceeded);

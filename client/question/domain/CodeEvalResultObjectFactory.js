@@ -173,6 +173,18 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
+     * Returns a boolean indicating whether the code recursed too many times.
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasStackExceededError = function() {
+      var errorString = this.getErrorString();
+      return errorString && (
+        errorString.startsWith('ExternalError: RangeError') ||
+        errorString.includes('maximum recursion depth exceeded'));
+    };
+
+    /**
      * Returns a boolean indicating whether there was a server error during the
      * run.
      *

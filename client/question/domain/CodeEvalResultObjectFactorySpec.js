@@ -127,7 +127,7 @@ describe('CodeEvalResultObjectFactory', function() {
   });
 
   describe('hasMemoryLimitError', function() {
-    it('should correctly check for recursion limit errors', function() {
+    it('should correctly check for memory limit errors', function() {
       var otherErrorTraceback = ErrorTracebackObjectFactory.create(
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
@@ -142,14 +142,33 @@ describe('CodeEvalResultObjectFactory', function() {
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, true);
       expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
+    });
+  });
+
+  describe('hasStackExceededError', function() {
+    it('should correctly check for recursion limit errors', function() {
+      var otherErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], otherErrorTraceback, null, false, false);
+      expect(codeEvalResultWithoutError.hasStackExceededError()).toBe(false);
+
+      var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
+        'ExternalError: RangeError on line 3',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
+        PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
+        [], [], recursionLimitErrorTraceback, null, false, false);
+      expect(codeEvalResultWithError.hasStackExceededError()).toBe(true);
 
       recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'Error: maximum recursion depth exceeded',
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], recursionLimitErrorTraceback, null, false, true);
-      expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
+        [], [], recursionLimitErrorTraceback, null, false, false);
+      expect(codeEvalResultWithError.hasStackExceededError()).toBe(true);
     });
   });
 
