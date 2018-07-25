@@ -20,7 +20,7 @@ describe('ParentPageService', function() {
   var ParentPageService;
 
   beforeEach(module('tie'));
-  var setParentPage = function(parentPageURLOrigin) {
+  var setParentPageUrlOrigin = function(parentPageURLOrigin) {
     module('tieConfig', function($provide) {
       $provide.constant('PARENT_PAGE_URL_ORIGIN', parentPageURLOrigin);
     });
@@ -42,7 +42,7 @@ describe('ParentPageService', function() {
         spyOn(parentPageObject, 'receiveMessage').and.callFake(function() {
           done();
         });
-        setParentPage('*');
+        setParentPageUrlOrigin('*');
         inject(function($injector) {
           ParentPageService = $injector.get('ParentPageService');
         });
@@ -57,7 +57,7 @@ describe('ParentPageService', function() {
     describe('when there is no parent page', function() {
       beforeEach(function() {
         spyOn(parentPageObject, 'receiveMessage');
-        setParentPage(null);
+        setParentPageUrlOrigin(null);
         inject(function($injector) {
           ParentPageService = $injector.get('ParentPageService');
         });
@@ -70,22 +70,22 @@ describe('ParentPageService', function() {
     });
   });
 
-  describe('getParentPageURLOrigin', function() {
+  describe('getParentPageUrlOrigin', function() {
     it('should return the parent page URL origin if it exists', function() {
-      setParentPage('https://runestone.academy');
+      setParentPageUrlOrigin('https://runestone.academy');
       inject(function($injector) {
         ParentPageService = $injector.get('ParentPageService');
       });
-      expect(ParentPageService.getParentPageURLOrigin()).toEqual(
+      expect(ParentPageService.getParentPageUrlOrigin()).toEqual(
         'https://runestone.academy');
     });
 
     it('should return null if no parent page exists', function() {
-      setParentPage(null);
+      setParentPageUrlOrigin(null);
       inject(function($injector) {
         ParentPageService = $injector.get('ParentPageService');
       });
-      expect(ParentPageService.getParentPageURLOrigin()).toEqual(null);
+      expect(ParentPageService.getParentPageUrlOrigin()).toEqual(null);
     });
   });
 });

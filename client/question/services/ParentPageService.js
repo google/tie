@@ -20,6 +20,13 @@ tie.factory('ParentPageService', [
   '$window', 'PARENT_PAGE_URL_ORIGIN',
   function($window, PARENT_PAGE_URL_ORIGIN) {
     /**
+     * Used to define the raw code message type.
+     * @type {String}
+     * @constant
+     */
+    var MESSAGE_TYPE_RAW_CODE = 'raw_code';
+
+    /**
      * Sends the message to the parent page, if it exists, via postMessage.
      *
      * @param {String} messageType Type of message that is being sent.
@@ -36,17 +43,17 @@ tie.factory('ParentPageService', [
       /**
        * Sends the raw user code to the parent page, if it exists.
        *
-       * @param {String} User code to send to parent page.
+       * @param {String} rawCode User code to send to parent page.
        */
       sendRawCode: function(rawCode) {
-        sendMessage('raw code', rawCode);
+        sendMessage(MESSAGE_TYPE_RAW_CODE, rawCode);
       },
       /**
        * Returns the URL origin of the parent page, if it exists. Otherwise,
        * returns null.
        * @return {String|null}
        */
-      getParentPageURLOrigin: function() {
+      getParentPageUrlOrigin: function() {
         return PARENT_PAGE_URL_ORIGIN;
       }
     };
