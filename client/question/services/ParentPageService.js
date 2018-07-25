@@ -47,14 +47,6 @@ tie.factory('ParentPageService', [
        */
       sendRawCode: function(rawCode) {
         sendMessage(MESSAGE_TYPE_RAW_CODE, rawCode);
-      },
-      /**
-       * Returns the URL origin of the parent page, if it exists. Otherwise,
-       * returns null.
-       * @return {String|null}
-       */
-      getParentPageUrlOrigin: function() {
-        return PARENT_PAGE_URL_ORIGIN;
       }
     };
   }
