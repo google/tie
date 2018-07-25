@@ -49,7 +49,7 @@ tie.factory('ConversationManagerService', [
 
       if (codeEvalResult.hasTimeLimitError()) {
         return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
-      } else if (codeEvalResult.hasRecursionLimitError()) {
+      } else if (codeEvalResult.hasStackExceededError()) {
         return FeedbackDetailsObjectFactory.createStackExceededFeedback();
       } else if (codeEvalResult.hasServerError()) {
         return FeedbackDetailsObjectFactory.createServerErrorFeedback();

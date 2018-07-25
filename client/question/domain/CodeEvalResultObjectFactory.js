@@ -177,7 +177,7 @@ tie.factory('CodeEvalResultObjectFactory', [
      *
      * @returns {boolean}
      */
-    CodeEvalResult.prototype.hasRecursionLimitError = function() {
+    CodeEvalResult.prototype.hasStackExceededError = function() {
       var errorString = this.getErrorString();
       return errorString && (
         errorString.startsWith('ExternalError: RangeError') ||

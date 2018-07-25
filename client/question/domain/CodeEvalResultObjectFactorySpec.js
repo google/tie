@@ -145,14 +145,14 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
-  describe('hasRecursionLimitError', function() {
+  describe('hasStackExceededError', function() {
     it('should correctly check for recursion limit errors', function() {
       var otherErrorTraceback = ErrorTracebackObjectFactory.create(
         'Some other error', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithoutError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], otherErrorTraceback, null, false, false);
-      expect(codeEvalResultWithoutError.hasRecursionLimitError()).toBe(false);
+      expect(codeEvalResultWithoutError.hasStackExceededError()).toBe(false);
 
       var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'ExternalError: RangeError on line 3',
@@ -160,7 +160,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, false);
-      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+      expect(codeEvalResultWithError.hasStackExceededError()).toBe(true);
 
       recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
         'Error: maximum recursion depth exceeded',
@@ -168,7 +168,7 @@ describe('CodeEvalResultObjectFactory', function() {
       codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
         [], [], recursionLimitErrorTraceback, null, false, false);
-      expect(codeEvalResultWithError.hasRecursionLimitError()).toBe(true);
+      expect(codeEvalResultWithError.hasStackExceededError()).toBe(true);
     });
   });
 
