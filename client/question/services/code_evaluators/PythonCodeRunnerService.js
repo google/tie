@@ -199,7 +199,8 @@ tie.factory('PythonCodeRunnerService', [
 
     var _processCodeExecutionServerResponse = function(
         responseData, codeToExecute, rawCode, separator) {
-      if (responseData.stderr.length) {
+      if (responseData.stderr.length || responseData.time_limit_exceeded ||
+          responseData.memory_limit_exceeded) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
         return CodeEvalResultObjectFactory.create(

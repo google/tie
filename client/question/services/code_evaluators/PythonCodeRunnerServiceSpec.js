@@ -118,6 +118,10 @@ describe('PythonCodeRunnerService', function() {
       [false, false, false]];
     responseDict.results[VARNAME_PERFORMANCE_TEST_RESULTS] = [
       ['linear']];
+    // eslint-disable-next-line camelcase
+    responseDict.memory_limit_exceeded = false;
+    // eslint-disable-next-line camelcase
+    responseDict.time_limit_exceeded = false;
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');
     CurrentQuestionService = $injector.get('CurrentQuestionService');
@@ -279,6 +283,44 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
       expect(codeEvalResult.getErrorString()).toEqual(
           'ZeroDivisionError: integer division or modulo by zero on line 28');
+    });
+
+    it('returns a CodeEvalResult if time_limit_exceeded', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      responseDict.stderr = '';
+      // eslint-disable-next-line camelcase
+      responseDict.time_limit_exceeded = true;
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeExecutionServerResponse(
+          responseDict, code));
+      expect(codeEvalResult.getPerformanceTestResults()).toEqual([]);
+      expect(codeEvalResult.getObservedOutputs()).toEqual([]);
+      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
+      expect(codeEvalResult.getErrorString()).toEqual('');
+    });
+
+    it('returns a CodeEvalResult if memory_limit_exceeded', function() {
+      var code = [
+        'def yourFunction(arg):',
+        '    result = arg.rstrip()',
+        '    return result',
+        ''
+      ].join('\n');
+      responseDict.stderr = '';
+      // eslint-disable-next-line camelcase
+      responseDict.memory_limit_exceeded = true;
+      var codeEvalResult = (
+        PythonCodeRunnerService._processCodeExecutionServerResponse(
+          responseDict, code));
+      expect(codeEvalResult.getPerformanceTestResults()).toEqual([]);
+      expect(codeEvalResult.getObservedOutputs()).toEqual([]);
+      expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
+      expect(codeEvalResult.getErrorString()).toEqual('');
     });
 
     it('throws an error for a bad urlFragment', function() {
