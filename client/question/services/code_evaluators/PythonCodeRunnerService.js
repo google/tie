@@ -167,8 +167,8 @@ tie.factory('PythonCodeRunnerService', [
       }
       return CodeEvalResultObjectFactory.create(
           code, code, responseData.stdout, null, null, null, errorTraceback,
-          null, responseData.time_limit_exceeded,
-          responseData.memory_limit_exceeded);
+          null, responseData.timeLimitExceeded,
+          responseData.memoryLimitExceeded);
     };
 
     var _runCodeAsync = function(preprocessedCode) {
@@ -199,15 +199,15 @@ tie.factory('PythonCodeRunnerService', [
 
     var _processCodeExecutionServerResponse = function(
         responseData, codeToExecute, rawCode, separator) {
-      if (responseData.stderr.length || responseData.time_limit_exceeded ||
-          responseData.memory_limit_exceeded) {
+      if (responseData.stderr.length || responseData.timeLimitExceeded ||
+          responseData.memoryLimitExceeded) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
         return CodeEvalResultObjectFactory.create(
             codeToExecute, rawCode, null, [], [], [], errorTraceback,
             responseData[VARNAME_MOST_RECENT_INPUT],
-            responseData.time_limit_exceeded,
-            responseData.memory_limit_exceeded);
+            responseData.timeLimitExceeded,
+            responseData.memoryLimitExceeded);
       } else if (responseData.results) {
         var standardizedOutput = _createOutputArray(
           responseData.stdout, separator);
@@ -216,8 +216,8 @@ tie.factory('PythonCodeRunnerService', [
             responseData.results[VARNAME_OBSERVED_OUTPUTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
-            null, null, responseData.time_limit_exceeded,
-            responseData.memory_limit_exceeded);
+            null, null, responseData.timeLimitExceeded,
+            responseData.memoryLimitExceeded);
       } else {
         throw Error('A server error occurred. Please try again.');
       }
