@@ -73,7 +73,7 @@ tie.factory('ConversationManagerService', [
             var testCases = testSuites[j].getTestCases();
             for (var k = 0; k < testCases.length; k++) {
               var testCase = testCases[k];
-              var observedOutput = observedOutputs[i][j][testCaseIndex];
+              var observedOutput = observedOutputs[i][j][k];
               if (!testCase.matchesOutput(observedOutput)) {
                 firstFailingTestCase = testCase;
                 firstFailingTestSuiteId = testSuites[j].getId();
@@ -99,14 +99,14 @@ tie.factory('ConversationManagerService', [
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
               return FeedbackDetailsObjectFactory.createBuggyOutputTestFeedback(
-                testMessages, messageIndex);
+                i, j, testMessages, messageIndex);
             }
           }
         }
 
         for (j = 0; j < suiteLevelTests.length; j++) {
           if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-            var testMessages = buggyOutputTests[j].getMessages();
+            var testMessages = suiteLevelTests[j].getMessages();
             var messageIndex = (
               LearnerStateService.getPreviousMessageIndexIfFromSameTest(
                 FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j) + 1) || 0;
@@ -118,7 +118,7 @@ tie.factory('ConversationManagerService', [
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
               return FeedbackDetailsObjectFactory.createSuiteLevelFeedback(
-                testMessages, messageIndex);
+                i, j, testMessages, messageIndex);
             }
           }
         }
@@ -281,6 +281,10 @@ tie.factory('ConversationManagerService', [
                     potentialFeedbackDetails.getFeedbackCategory());
               }
 
+              LearnerStateService.recordRawCode(studentCode);
+              LearnerStateService.recordFeedbackDetails(
+                potentialFeedbackDetails);
+
               return LearnerViewSubmissionResultObjectFactory.create(
                 feedback, null);
             }
@@ -302,7 +306,7 @@ tie.factory('ConversationManagerService', [
                 language);
 
               if (errorFeedbackDetails) {
-                switch (feedbackDetails.getFeedbackCategory()) {
+                switch (errorFeedbackDetails.getFeedbackCategory()) {
                   case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
                     feedback = (
                       FeedbackGeneratorService.getTimeoutErrorFeedback());
@@ -317,7 +321,7 @@ tie.factory('ConversationManagerService', [
                     break;
                   case FEEDBACK_CATEGORIES.RUNTIME_ERROR:
                     feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
-                      feedbackDetails,
+                      errorFeedbackDetails,
                       codeSubmission.getRawCodeLineIndexes());
                     break;
                   default:
@@ -327,7 +331,7 @@ tie.factory('ConversationManagerService', [
                 var feedbackDetails = _computeFeedbackDetailsFromTestResults(
                   tasks, preprocessedCodeEvalResult);
                 switch (feedbackDetails.getFeedbackCategory()) {
-                  case FEEDBACK_CATEGORIES.CODE_NOT_CHANGED:
+                  case FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR:
                     feedback = (
                       FeedbackGeneratorService.getCodeNotChangedFeedback());
                     break;
@@ -361,6 +365,7 @@ tie.factory('ConversationManagerService', [
 
               LearnerStateService.recordRawCode(
                 preprocessedCodeEvalResult.getRawCode());
+              LearnerStateService.recordFeedbackDetails(feedbackDetails);
 
               var stdout = preprocessedCodeEvalResult.getStdoutToDisplay(tasks);
               return LearnerViewSubmissionResultObjectFactory.create(

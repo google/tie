@@ -18,8 +18,8 @@
  */
 
 tie.factory('LearnerStateService', [
-  'LANGUAGE_UNFAMILIARITY_THRESHOLD',
-  function(LANGUAGE_UNFAMILIARITY_THRESHOLD) {
+  'LANGUAGE_UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
+  function(LANGUAGE_UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES) {
     /**
      * Counter to keep track of language unfamiliarity errors (which includes
      * syntax errors and wrong language errors).
@@ -69,7 +69,8 @@ tie.factory('LearnerStateService', [
         previousFeedbackDetails = newFeedbackDetails;
       },
       getPreviousMessageIndexIfFromSameTest: function(
-          feedbackCategory, taskIndex, testIndex) {
+          feedbackCategory, taskIndex, specificTestIndex) {
+        console.log(previousFeedbackDetails);
         if (feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
             feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
           throw Error('Invalid feedback category: ' + feedbackCategory);
@@ -81,8 +82,8 @@ tie.factory('LearnerStateService', [
 
         var currentTestMatchesPreviousTest = (
           feedbackCategory === previousFeedbackDetails.getFeedbackCategory() &&
-          taskIndex === previousFeedbackDetails.getFailingTaskIndex() &&
-          testIndex === previousFeedbackDetails.getFailingTestIndex());
+          taskIndex === previousFeedbackDetails.getTaskIndex() &&
+          specificTestIndex === previousFeedbackDetails.getSpecificTestIndex());
 
         if (currentTestMatchesPreviousTest) {
           return previousFeedbackDetails.getMessageIndex();

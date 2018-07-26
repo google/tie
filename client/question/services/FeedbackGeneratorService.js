@@ -465,13 +465,20 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
-      getSuccessFeedback: function() {
+      /**
+       * Returns the feedback created as a result of the user not having
+       * changed their code.
+       *
+       * @param {FeedbackDetails} feedbackDetails
+       *
+       * @returns {Feedback}
+       */
+      getCodeNotChangedFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUCCESSFUL);
-        feedback.appendTextParagraph([
-          'You\'ve completed all the tasks for this question! Click the ',
-          '"Next" button to move on to the next question.'
-        ].join(''));
+          FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR);
+        feedback.appendTextParagraph(
+          'It looks like your code has not changed. Try using the previous ' +
+          'feedback to address the error.');
         return feedback;
       },
       /**
@@ -482,7 +489,7 @@ tie.factory('FeedbackGeneratorService', [
        *
        * @returns {Feedback}
        */
-      getBuggyOutputTestFeedback: function(feedbackDetails) {
+      getBuggyOutputFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
         feedback.appendTextParagraph(feedbackDetails.getMessage());
@@ -496,7 +503,7 @@ tie.factory('FeedbackGeneratorService', [
        *
        * @returns {Feedback}
        */
-      getSuiteLevelTestFeedback: function(feedbackDetails) {
+      getSuiteLevelFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
         feedback.appendTextParagraph(feedbackDetails.getMessage());
@@ -598,6 +605,15 @@ tie.factory('FeedbackGeneratorService', [
           'reconfigure it such that it runs in ',
           feedbackDetails.getExpectedPerformance(),
           ' time?'
+        ].join(''));
+        return feedback;
+      },
+      getSuccessFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL);
+        feedback.appendTextParagraph([
+          'You\'ve completed all the tasks for this question! Click the ',
+          '"Next" button to move on to the next question.'
         ].join(''));
         return feedback;
       },
