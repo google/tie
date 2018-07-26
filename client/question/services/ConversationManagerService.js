@@ -88,9 +88,11 @@ tie.factory('ConversationManagerService', [
         for (var j = 0; j < buggyOutputTests.length; j++) {
           if (buggyOutputTestResults[i][j]) {
             var testMessages = buggyOutputTests[j].getMessages();
-            var messageIndex = (
+            var previousMessageIndex = (
               LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-                FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, i, j) + 1) || 0;
+                FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, i, j));
+            var messageIndex = (
+              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
@@ -107,9 +109,11 @@ tie.factory('ConversationManagerService', [
         for (j = 0; j < suiteLevelTests.length; j++) {
           if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
             var testMessages = suiteLevelTests[j].getMessages();
-            var messageIndex = (
+            var previousMessageIndex = (
               LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-                FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j) + 1) || 0;
+                FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j));
+            var messageIndex = (
+              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.

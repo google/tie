@@ -70,7 +70,6 @@ tie.factory('LearnerStateService', [
       },
       getPreviousMessageIndexIfFromSameTest: function(
           feedbackCategory, taskIndex, specificTestIndex) {
-        console.log(previousFeedbackDetails);
         if (feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
             feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
           throw Error('Invalid feedback category: ' + feedbackCategory);

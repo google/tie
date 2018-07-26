@@ -98,16 +98,9 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
   }));
 
   describe('getFeedback', function() {
-    it('should retrive the corresponding feedback for code with no errors',
+    it('should retrieve the corresponding feedback for code with no errors',
       function() {
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          PREPROCESSED_CODE, RAW_CODE, OUTPUT,
-          [[[true, true]], [[true], [true]]],
-          BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-          ERROR_INPUT);
-        var feedback = FeedbackGeneratorService.getFeedback(
-          tasks, codeEvalResult, []);
-
+        var feedback = FeedbackGeneratorService.getSuccessFeedback();
         var learnerViewSubmissionResult =
           LearnerViewSubmissionResultObjectFactory.create(
             feedback, 'some output');
@@ -127,24 +120,11 @@ describe('LearnerViewSubmissionResultObjectFactory', function() {
   describe('getStdout', function() {
     it('should retrive the corresponding stdout for code with no errors',
       function() {
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          PREPROCESSED_CODE, RAW_CODE, OUTPUT,
-          [[[true, true]], [[true], [true]]],
-          BUGGY_OUTPUT_TEST_RESULTS, PERFORMANCE_TEST_RESULTS, ERROR_STRING,
-          ERROR_INPUT);
-        var feedback = FeedbackGeneratorService.getFeedback(
-          tasks, codeEvalResult, []);
-
+        var feedback = FeedbackGeneratorService.getSuccessFeedback();
         var learnerViewSubmissionResult =
           LearnerViewSubmissionResultObjectFactory.create(
             feedback, 'some output');
         expect(learnerViewSubmissionResult.getStdout()).toEqual('some output');
-
-        var stdout = codeEvalResult.getStdoutToDisplay(tasks);
-        var learnerViewSubmissionResult1 =
-          LearnerViewSubmissionResultObjectFactory.create(
-            feedback, stdout);
-        expect(learnerViewSubmissionResult1.getStdout()).toEqual(stdout);
       });
 
     it('should retrieve the corresponding stdout for error feedback',

@@ -626,7 +626,6 @@ describe('ConversationManagerService', function() {
         });
         CurrentQuestionService.getCurrentQuestion =
           jasmine.createSpy().and.returnValue(question);
-
       }));
 
       it('should check all buggy outputs if nothing is ignored',
