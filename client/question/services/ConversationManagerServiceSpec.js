@@ -563,9 +563,8 @@ describe('ConversationManagerService', function() {
           var feedback = learnerViewSubmissionResult.getFeedback();
           var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
-            "Your code used more memory than we allow for this exercise, ",
-            "likely because your code might be hitting an infinite recursive ",
-            "loop. Check to see that your recursive calls terminate."
+            "Your code appears to be hitting an infinite recursive loop. ",
+            "Check to make sure that your recursive calls terminate."
           ].join(''));
           expect(stdout).toBe(null);
           done();
