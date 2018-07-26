@@ -450,7 +450,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
       return new FeedbackDetails(FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR);
     };
 
-    FeedbackDetails.createBuggyOutputTestFeedback = function(
+    FeedbackDetails.createBuggyOutputFeedback = function(
         taskIndex, specificTestIndex, testMessages, messageIndex) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, null, null, null, null,
@@ -464,7 +464,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
         taskIndex, specificTestIndex, testMessages, messageIndex);
     };
 
-    FeedbackDetails.createFailingTestFeedback = function(
+    FeedbackDetails.createIncorrectOutputFeedback = function(
         testCase, testSuiteId, testCaseIndex, observedOutput) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,

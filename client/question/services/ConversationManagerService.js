@@ -96,11 +96,11 @@ tie.factory('ConversationManagerService', [
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createFailingTestFeedback(
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
-              return FeedbackDetailsObjectFactory.createBuggyOutputTestFeedback(
+              return FeedbackDetailsObjectFactory.createBuggyOutputFeedback(
                 i, j, testMessages, messageIndex);
             }
           }
@@ -117,7 +117,7 @@ tie.factory('ConversationManagerService', [
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createFailingTestFeedback(
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
@@ -128,7 +128,7 @@ tie.factory('ConversationManagerService', [
         }
 
         if (firstFailingTestCase) {
-          return FeedbackDetailsObjectFactory.createFailingTestFeedback(
+          return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
             firstFailingTestCase, firstFailingTestSuiteId,
             firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
         }

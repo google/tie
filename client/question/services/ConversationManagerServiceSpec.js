@@ -421,6 +421,87 @@ describe('ConversationManagerService', function() {
           });
         }
       );
+
+      // IMPLEMENT THE FOLLOWING
+
+      it([
+        'should return null if a student reaches the end of the available hints.'
+      ].join(''), function() {
+        var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+          buggyOutputTestDict);
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code separator = "a"', 'some code', 'same output',
+          [], [true], [], null, null);
+        var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
+          'new code separator = "a"', 'new code', 'same output',
+          [], [true], [], null, null);
+        var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
+          'newer code separator = "a"', 'newer code', 'same output',
+          [], [true], [], null, null);
+
+        var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, true);
+        var paragraphs = feedback.getParagraphs();
+
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, true);
+        paragraphs = feedback.getParagraphs();
+
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
+
+        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, true);
+        paragraphs = feedback.getParagraphs();
+
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
+
+        expect(
+          FeedbackGeneratorService._getBuggyOutputTestFeedback(
+            buggyOutputTest, true)
+        ).toBe(null);
+      });
+
+      it([
+        'should return the same hint multiple times for buggy outputs, ',
+        'provided a new error happened in between'
+      ].join(''), function() {
+        var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+          buggyOutputTestDict);
+        var codeEvalResult = CodeEvalResultObjectFactory.create(
+          'some code separator = "a"', 'some code', 'same output', [], [true],
+          [], null, null);
+        var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
+          'other code separator = "a"', 'other code', 'some output',
+          [], [], [], 'ERROR MESSAGE', 'testInput');
+
+        var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, true);
+        var paragraphs = feedback.getParagraphs();
+
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+        var unusedRuntimeErrorFeedback = (
+          FeedbackGeneratorService._getBuggyOutputTestFeedback(
+            buggyOutputTest, true));
+
+        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+          buggyOutputTest, true).getParagraphs();
+
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+      });
+
     });
 
     describe("prereqCheckFailures", function() {
@@ -805,6 +886,203 @@ describe('ConversationManagerService', function() {
           done();
         });
       });
+
+
+      // IMPLEMENT THE FOLLOWING THREE TESTS
+
+
+    var suiteLevelTestDict = {
+      testSuiteIdsThatMustPass: ['SUITE_P1', 'SUITE_P2', 'SUITE_P3'],
+      testSuiteIdsThatMustFail: ['SUITE_F1'],
+      messages: ['message1', 'message2', 'message3']
+    };
+
+    it([
+      'should return the next hint in sequence for suite-level tests, but ',
+      'only if the code has been changed'
+    ].join(''), function() {
+      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
+        suiteLevelTestDict);
+      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
+        'some code separator = "a"', 'some code', 'same output',
+        [], [true], [], null, null);
+      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
+        'new code separator = "a"', 'new code', 'same output',
+        [], [true], [], null, null);
+
+      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, true);
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
+
+      // The code is changed. The feedback changes.
+      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, true);
+      paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
+
+      // The code is not changed. The feedback remains the same.
+      paragraphs = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, false).getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
+    });
+
+    it([
+      'should return null if a student reaches the end of the available hints.'
+    ].join(''), function() {
+      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
+        suiteLevelTestDict);
+      var codeEvalResults = [
+        CodeEvalResultObjectFactory.create(
+          'code 1 separator = "a"', 'code 1', 'same output',
+          [], [true], [], null, null),
+        CodeEvalResultObjectFactory.create(
+          'code 2 separator = "a"', 'code 2', 'same output',
+          [], [true], [], null, null),
+        CodeEvalResultObjectFactory.create(
+          'code 3 separator = "a"', 'code 3', 'same output',
+          [], [true], [], null, null)
+      ];
+
+      for (var i = 0; i < 3; i++) {
+        var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+          suiteLevelTest, true);
+
+        var paragraphs = feedback.getParagraphs();
+        expect(paragraphs.length).toEqual(1);
+        expect(paragraphs[0].isTextParagraph()).toBe(true);
+        expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[i]);
+      }
+
+      // We've now exhausted the list of messages.
+      expect(
+        FeedbackGeneratorService._getSuiteLevelTestFeedback(
+          suiteLevelTest, true)
+      ).toBe(null);
+    });
+
+    it([
+      'should reset the suite-level counter if other types of feedback are ' +
+      'given in between'
+    ].join(''), function() {
+      var buggyOutputTestDict = {
+        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
+        messages: ['buggy1', 'buggy2']
+      };
+
+      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
+        suiteLevelTestDict);
+      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
+        buggyOutputTestDict);
+
+      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
+        'code 1 separator = "a"', 'code 1', 'same output',
+        [], [true], [], null, null);
+      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
+        'code 2 separator = "a"', 'code 2', 'same output',
+        [], [true], [], null, null);
+
+      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, true);
+      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, true);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
+
+      // Now get buggy output feedback once.
+      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
+        buggyOutputTest, true);
+      paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+
+      // The index of suite-level feedback then gets reset to 0.
+      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
+        suiteLevelTest, true);
+      paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
+    });
+
+
+
+
+
+
+
+    });
+
+    describe('incorrect-output tests', function() {
+      beforeEach(inject(function() {
+        taskDict[0].testSuites = [{
+          id: 'SAMPLE_INPUT',
+          humanReadableName: 'sampleInputSuite',
+          testCases: [{
+            input: 'Hello, John',
+            allowedOutputs: ['olleH, nhoJ']
+          }]
+        }];
+        question = QuestionObjectFactory.create({
+          title: TITLE,
+          starterCode: STARTER_CODE,
+          auxiliaryCode: AUXILIARY_CODE,
+          tasks: taskDict
+        });
+        CurrentQuestionService.getCurrentQuestion =
+          jasmine.createSpy().and.returnValue(question);
+      }));
+
+      it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
+        function() {
+          orderedTasks = taskDict.map(function(task) {
+            return TaskObjectFactory.create(task);
+          });
+
+          // This code passes suite 1 and fails suite 2.
+          var studentCode = [
+            'def mockMainFunction(input):',
+            '    return "incorrect answer"',
+            ''
+          ].join('\n');
+
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult) {
+            var feedback = learnerViewSubmissionResult.getFeedback();
+            var correctnessFeedbackParagraphs = feedback.getParagraphs();
+            expect(correctnessFeedbackParagraphs.length).toEqual(2);
+            expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
+              true);
+            expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
+              correctnessFeedbackParagraphs[0].getContent());
+            expect(
+              correctnessFeedbackParagraphs[1].isOutputParagraph()
+            ).toEqual(true);
+
+            var expectedOutputParagraph =
+              'Input: "Hello, John"\n' +
+              'Expected Output: "olleH, nhoJ"\n' +
+              'Actual Output: "incorrect answer"';
+            expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+              expectedOutputParagraph);
+            done();
+          });
+        }
+      );
     });
   });
 });
