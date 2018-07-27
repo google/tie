@@ -17,18 +17,13 @@
  */
 
 describe('FeedbackGeneratorService', function() {
-  var BuggyOutputTestObjectFactory;
-  var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackDetailsObjectFactory;
   var FeedbackGeneratorService;
   var PrereqCheckFailureObjectFactory;
-  var SuiteLevelTestObjectFactory;
-  var TaskObjectFactory;
   var TestCaseObjectFactory;
   var TracebackCoordinatesObjectFactory;
   var sampleErrorTraceback;
-  var testTask;
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
@@ -42,17 +37,12 @@ describe('FeedbackGeneratorService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    BuggyOutputTestObjectFactory = $injector.get(
-      'BuggyOutputTestObjectFactory');
-    CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackDetailsObjectFactory = $injector.get(
       'FeedbackDetailsObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
-    SuiteLevelTestObjectFactory = $injector.get('SuiteLevelTestObjectFactory');
-    TaskObjectFactory = $injector.get('TaskObjectFactory');
     TestCaseObjectFactory = $injector.get('TestCaseObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
@@ -73,28 +63,6 @@ describe('FeedbackGeneratorService', function() {
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
-
-    var taskDict = [{
-      instructions: [''],
-      prerequisiteSkills: [''],
-      acquiredSkills: [''],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'mockMainFunction',
-      testSuites: [],
-      buggyOutputTests: [],
-      suiteLevelTests: [],
-      performanceTests: [{
-        inputDataAtom: 'meow ',
-        transformationFunctionName: 'System.extendString',
-        expectedPerformance: 'linear',
-        evaluationFunctionName: 'mockMainFunction'
-      }]
-    }];
-
-    testTask = taskDict.map(function(task) {
-      return TaskObjectFactory.create(task);
-    });
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
@@ -245,7 +213,7 @@ describe('FeedbackGeneratorService', function() {
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
-      var feedbackDetails = (
+      feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
@@ -319,7 +287,7 @@ describe('FeedbackGeneratorService', function() {
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
-      var feedbackDetails = (
+      feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));

@@ -106,7 +106,8 @@ describe('ConversationManagerService', function() {
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
-    FEEDBACK_TYPE_OUTPUT_ENABLED = $injector.get('FEEDBACK_TYPE_OUTPUT_ENABLED');
+    FEEDBACK_TYPE_OUTPUT_ENABLED = $injector.get(
+      'FEEDBACK_TYPE_OUTPUT_ENABLED');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');
@@ -964,7 +965,7 @@ describe('ConversationManagerService', function() {
             ConversationManagerService.processSolutionAsync(
               orderedTasks, starterCode, studentCode2, auxiliaryCode, 'python'
             ).then(function(learnerViewSubmissionResult3) {
-              var feedback = learnerViewSubmissionResult3.getFeedback();
+              feedback = learnerViewSubmissionResult3.getFeedback();
               expect(feedback.getParagraphs()[0].getContent()).toBe(
                 'suite_message2');
               done();
@@ -1012,7 +1013,7 @@ describe('ConversationManagerService', function() {
             ConversationManagerService.processSolutionAsync(
               orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
             ).then(function(learnerViewSubmissionResult3) {
-              var feedback = learnerViewSubmissionResult3.getFeedback();
+              feedback = learnerViewSubmissionResult3.getFeedback();
               // We've reached the end of the hints.
               expect(
                 CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]
@@ -1099,7 +1100,7 @@ describe('ConversationManagerService', function() {
       }));
 
       it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
-        function() {
+        function(done) {
           orderedTasks = taskDict.map(function(task) {
             return TaskObjectFactory.create(task);
           });
@@ -1119,8 +1120,9 @@ describe('ConversationManagerService', function() {
             expect(correctnessFeedbackParagraphs.length).toEqual(2);
             expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
               true);
-            expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
-              correctnessFeedbackParagraphs[0].getContent());
+            expect(
+              CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_OUTPUT_ENABLED]
+            ).toContain(correctnessFeedbackParagraphs[0].getContent());
             expect(
               correctnessFeedbackParagraphs[1].isOutputParagraph()
             ).toEqual(true);

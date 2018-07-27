@@ -96,7 +96,8 @@ tie.factory('ConversationManagerService', [
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails( // eslint-disable-line: max-len
+               // eslint-disable-next-line max-len
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
@@ -109,16 +110,17 @@ tie.factory('ConversationManagerService', [
 
         for (j = 0; j < suiteLevelTests.length; j++) {
           if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-            var testMessages = suiteLevelTests[j].getMessages();
-            var previousMessageIndex = (
+            testMessages = suiteLevelTests[j].getMessages();
+            previousMessageIndex = (
               LearnerStateService.getPreviousMessageIndexIfFromSameTest(
                 FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j));
-            var messageIndex = (
+            messageIndex = (
               previousMessageIndex === null ? 0 : previousMessageIndex + 1);
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails( // eslint-disable-line: max-len
+              // eslint-disable-next-line max-len
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
@@ -209,12 +211,6 @@ tie.factory('ConversationManagerService', [
       }
 
       return null;
-
-      if (executionContext === EXECUTION_CONTEXT_COMPILATION) {
-        // There are no errors, and the compilation is successful. Any checks
-        // below this one are only relevant to the "run with tests" context.
-        return null;
-      }
     };
 
     return {

@@ -18,83 +18,13 @@
 
 describe('LearnerViewSubmissionResultObjectFactory', function() {
   var LearnerViewSubmissionResultObjectFactory;
-  var CodeEvalResultObjectFactory;
-  var TaskObjectFactory;
   var FeedbackGeneratorService;
-  var tasks;
-  var PREPROCESSED_CODE = 'code separator = "abcdefghijklmnopqrst"';
-  var RAW_CODE = 'code';
-  var OUTPUT = ['1\nHi\n', '1\nHey\n', '1\nHello\n', '1\nSalutations\n'];
-  var BUGGY_OUTPUT_TEST_RESULTS = [[false], [false]];
-  var PERFORMANCE_TEST_RESULTS = [[], []];
-  var ERROR_STRING = null;
-  var ERROR_INPUT = 'errorInput';
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     LearnerViewSubmissionResultObjectFactory = $injector.get(
       'LearnerViewSubmissionResultObjectFactory');
-    CodeEvalResultObjectFactory = $injector.get(
-      'CodeEvalResultObjectFactory');
-    TaskObjectFactory = $injector.get('TaskObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
-    tasks = [
-      TaskObjectFactory.create({
-        instructions: [''],
-        prerequisiteSkills: [''],
-        acquiredSkills: [''],
-        inputFunctionName: null,
-        outputFunctionName: null,
-        mainFunctionName: 'mockMainFunction',
-        languageSpecificTips: {
-          python: []
-        },
-        testSuites: [{
-          id: 'GENERAL_CASE',
-          humanReadableName: 'the general case',
-          testCases: [{
-            input: 'task_1_correctness_test_1',
-            allowedOutputs: [true]
-          }, {
-            input: 'task_1_correctness_test_2',
-            allowedOutputs: [true]
-          }]
-        }],
-        buggyOutputTests: [],
-        suiteLevelTests: [],
-        performanceTests: []
-      }),
-      TaskObjectFactory.create({
-        instructions: [''],
-        prerequisiteSkills: [''],
-        acquiredSkills: [''],
-        inputFunctionName: null,
-        outputFunctionName: null,
-        mainFunctionName: 'mockMainFunction',
-        languageSpecificTips: {
-          python: []
-        },
-        testSuites: [{
-          id: 'FIRST_CASE',
-          humanReadableName: 'the first case',
-          testCases: [{
-            input: 'task_2_correctness_test_1',
-            allowedOutputs: [true]
-          }]
-        },
-        {
-          id: 'SECOND_CASE',
-          humanReadableName: 'the second case',
-          testCases: [{
-            input: 'task_2_correctness_test_2',
-            allowedOutputs: [true]
-          }]
-        }],
-        buggyOutputTests: [],
-        suiteLevelTests: [],
-        performanceTests: []
-      })
-    ];
   }));
 
   describe('getFeedback', function() {
