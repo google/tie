@@ -176,7 +176,7 @@ tie.factory('ConversationManagerService', [
       } else if (codeEvalResult.hasMemoryLimitError()) {
         return (
           FeedbackDetailsObjectFactory.createMemoryLimitErrorFeedbackDetails());
-      } else if (codeEvalResult.hasRecursionLimitError()) {
+      } else if (codeEvalResult.hasStackExceededError()) {
         return (
           FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
       } else if (codeEvalResult.hasServerError()) {

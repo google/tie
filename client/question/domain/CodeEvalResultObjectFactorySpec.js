@@ -135,12 +135,12 @@ describe('CodeEvalResultObjectFactory', function() {
         [], [], otherErrorTraceback, null, false, false);
       expect(codeEvalResultWithoutError.hasMemoryLimitError()).toBe(false);
 
-      var recursionLimitErrorTraceback = ErrorTracebackObjectFactory.create(
-        'ExternalError: RangeError on line 3',
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+        'Some error message which is not used',
         [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var codeEvalResultWithError = CodeEvalResultObjectFactory.create(
         PREPROCESSED_CODE, RAW_CODE, OBSERVED_STDOUTS, OBSERVED_OUTPUTS,
-        [], [], recursionLimitErrorTraceback, null, false, true);
+        [], [], errorTraceback, null, false, true);
       expect(codeEvalResultWithError.hasMemoryLimitError()).toBe(true);
     });
   });
