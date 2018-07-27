@@ -379,6 +379,20 @@ tie.factory('FeedbackGeneratorService', [
         return feedback;
       },
       /**
+       * Returns the Feedback object associated with a memory limit error.
+       *
+       * @returns {Feedback}
+       */
+      getMemoryLimitErrorFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+        feedback.appendTextParagraph([
+          "Your program used too much memory during execution. Check your ",
+          "code and try to be more efficient with your space usage."
+        ].join(''));
+        return feedback;
+      },
+      /**
        * Returns the Feedback object associated with an "stack exceeded" error.
        *
        * @returns {Feedback}
@@ -387,9 +401,9 @@ tie.factory('FeedbackGeneratorService', [
         var feedback = FeedbackObjectFactory.create(
           FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
         feedback.appendTextParagraph([
-          "Looks like your code is hitting an infinite recursive loop.",
-          "Check to see that your recursive calls terminate."
-        ].join(' '));
+          "Your code appears to be hitting an infinite recursive loop. ",
+          "Check to make sure that your recursive calls terminate."
+        ].join(''));
         return feedback;
       },
       /**

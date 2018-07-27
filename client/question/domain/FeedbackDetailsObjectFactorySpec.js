@@ -42,6 +42,20 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
+  describe('memory-limit error FeedbackDetails object', function() {
+    it('should create a memory-limit FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createMemoryLimitErrorFeedbackDetails());
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+      expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getLanguage).toThrow();
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
+    });
+  });
+
   describe('stack-exceeded error FeedbackDetails object', function() {
     it('should create a stack exceeded FeedbackDetails object', function() {
       var feedbackDetails = (

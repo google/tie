@@ -173,6 +173,9 @@ tie.factory('ConversationManagerService', [
       if (codeEvalResult.hasTimeLimitError()) {
         return (
           FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
+      } else if (codeEvalResult.hasMemoryLimitError()) {
+        return (
+          FeedbackDetailsObjectFactory.createMemoryLimitErrorFeedbackDetails());
       } else if (codeEvalResult.hasRecursionLimitError()) {
         return (
           FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
@@ -273,6 +276,10 @@ tie.factory('ConversationManagerService', [
                   feedback = (
                     FeedbackGeneratorService.getTimeoutErrorFeedback());
                   break;
+                case FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR:
+                  feedback = (
+                    FeedbackGeneratorService.getMemoryLimitErrorFeedback());
+                  break;
                 case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
                   feedback = (
                     FeedbackGeneratorService.getStackExceededFeedback());
@@ -320,6 +327,10 @@ tie.factory('ConversationManagerService', [
                   case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
                     feedback = (
                       FeedbackGeneratorService.getTimeoutErrorFeedback());
+                    break;
+                  case FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR:
+                    feedback = (
+                      FeedbackGeneratorService.getMemoryLimitErrorFeedback());
                     break;
                   case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
                     feedback = (

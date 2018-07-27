@@ -421,6 +421,10 @@ tie.factory('FeedbackDetailsObjectFactory', [
       return new FeedbackDetails(FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
     };
 
+    FeedbackDetails.createMemoryLimitErrorFeedbackDetails = function() {
+      return new FeedbackDetails(FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+    };
+
     FeedbackDetails.createServerErrorFeedbackDetails = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.SERVER_ERROR);
     };

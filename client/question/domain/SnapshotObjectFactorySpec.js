@@ -45,8 +45,7 @@ describe('SnapshotObjectFactory', function() {
     codeEvalResult = CodeEvalResultObjectFactory.create(
       'code separator = "a"', 'code', '',
       [[true, true], [false, false]], [[false], [false]], [[], []],
-      null, 'errorInput'
-    );
+      null, 'errorInput', false, false);
     FeedbackObjectFactory = $injector.get('FeedbackObjectFactory');
     feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
   }));
@@ -68,8 +67,8 @@ describe('SnapshotObjectFactory', function() {
         CodeEvalResultObjectFactory.create(
           'code separator = "a"', 'code', '',
           [[true, true], [false, false]], [[false], [false]],
-          [[], []], null, 'errorInput'
-        ));
+          [[], []], null, 'errorInput', false, false)
+        );
     });
   });
 

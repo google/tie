@@ -117,7 +117,8 @@ tie.factory('PythonCodeRunnerService', [
           consolidatedOutputString, separator);
         return CodeEvalResultObjectFactory.create(
           codeToExecute, rawCode, standardizedOutput, observedOutputs,
-          buggyOutputTestResults, performanceTestResults, null, null);
+          buggyOutputTestResults, performanceTestResults, null, null, false,
+          false);
       }, function(skulptError) {
         var errorInput = null;
         if (Sk.globals.hasOwnProperty(VARNAME_MOST_RECENT_INPUT)) {
@@ -127,8 +128,13 @@ tie.factory('PythonCodeRunnerService', [
 
         var errorTraceback = ErrorTracebackObjectFactory.fromSkulptError(
           skulptError);
+        var errorString = errorTraceback.getErrorString();
+        var timeLimitExceeded = errorString.startsWith('TimeLimitError');
+        // TODO(eyurko): Find out if a memory limit error is ... possible?
+        var memoryLimitExceeded = false;
         return CodeEvalResultObjectFactory.create(
-          codeToExecute, rawCode, null, [], [], [], errorTraceback, errorInput);
+          codeToExecute, rawCode, null, [], [], [], errorTraceback, errorInput,
+          timeLimitExceeded, memoryLimitExceeded);
       });
     };
 
@@ -148,7 +154,7 @@ tie.factory('PythonCodeRunnerService', [
 
           var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
           return CodeEvalResultObjectFactory.create(
-            code, code, null, [], [], [], errorTraceback, '');
+            code, code, null, [], [], [], errorTraceback, '', false, false);
         }
       );
     };
@@ -161,7 +167,8 @@ tie.factory('PythonCodeRunnerService', [
       }
       return CodeEvalResultObjectFactory.create(
           code, code, responseData.stdout, null, null, null, errorTraceback,
-          null);
+          null, responseData.time_limit_exceeded,
+          responseData.memory_limit_exceeded);
     };
 
     var _runCodeAsync = function(preprocessedCode) {
@@ -184,19 +191,23 @@ tie.factory('PythonCodeRunnerService', [
 
           var errorTraceback = ErrorTracebackObjectFactory.fromServerError();
           return CodeEvalResultObjectFactory.create(
-            codeToExecute, rawCode, null, [], [], [], errorTraceback, '');
+            codeToExecute, rawCode, null, [], [], [], errorTraceback, '',
+            false, false);
         }
       );
     };
 
     var _processCodeExecutionServerResponse = function(
         responseData, codeToExecute, rawCode, separator) {
-      if (responseData.stderr.length) {
+      if (responseData.stderr.length || responseData.time_limit_exceeded ||
+          responseData.memory_limit_exceeded) {
         var errorTraceback = ErrorTracebackObjectFactory.fromPythonError(
           responseData.stderr);
         return CodeEvalResultObjectFactory.create(
             codeToExecute, rawCode, null, [], [], [], errorTraceback,
-            responseData[VARNAME_MOST_RECENT_INPUT]);
+            responseData[VARNAME_MOST_RECENT_INPUT],
+            responseData.time_limit_exceeded,
+            responseData.memory_limit_exceeded);
       } else if (responseData.results) {
         var standardizedOutput = _createOutputArray(
           responseData.stdout, separator);
@@ -205,7 +216,8 @@ tie.factory('PythonCodeRunnerService', [
             responseData.results[VARNAME_OBSERVED_OUTPUTS],
             responseData.results[VARNAME_BUGGY_OUTPUT_TEST_RESULTS],
             responseData.results[VARNAME_PERFORMANCE_TEST_RESULTS],
-            null, null);
+            null, null, responseData.time_limit_exceeded,
+            responseData.memory_limit_exceeded);
       } else {
         throw Error('A server error occurred. Please try again.');
       }

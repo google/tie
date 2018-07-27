@@ -368,7 +368,7 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('getStackExceededFeedback', function() {
-    it('should return an error if an infinite loop is detected', function() {
+    it('should return an error if infinite recursion is detected', function() {
       var feedback = FeedbackGeneratorService.getStackExceededFeedback();
       var paragraphs = feedback.getParagraphs();
 
@@ -377,9 +377,9 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe([
-        'Looks like your code is hitting an infinite recursive loop.',
-        'Check to see that your recursive calls terminate.'
-      ].join(' '));
+        "Your code appears to be hitting an infinite recursive loop. ",
+        "Check to make sure that your recursive calls terminate."
+      ].join(''));
     });
   });
 
@@ -694,6 +694,22 @@ describe('FeedbackGeneratorService', function() {
         "Your program's exceeded the time limit (",
         "3 seconds) we've set. Can you try to make it run ",
         "more efficiently?"
+      ].join(''));
+    });
+  });
+
+  describe('getMemoryLimitErrorFeedback', function() {
+    it('should return a specific error for MemoryLimitErrors', function() {
+      var feedback = FeedbackGeneratorService.getMemoryLimitErrorFeedback();
+      expect(feedback.getFeedbackCategory()).toEqual(
+        FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+
+      var paragraphs = feedback.getParagraphs();
+      expect(paragraphs.length).toEqual(1);
+      expect(paragraphs[0].isTextParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe([
+        "Your program used too much memory during execution. Check your ",
+        "code and try to be more efficient with your space usage."
       ].join(''));
     });
   });
