@@ -18,11 +18,76 @@
 
 describe('LearnerStateService', function() {
   var LearnerStateService;
+  var FeedbackDetailsObjectFactory;
+  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     LearnerStateService = $injector.get('LearnerStateService');
+    FeedbackDetailsObjectFactory = $injector.get(
+      'FeedbackDetailsObjectFactory');
+    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
   }));
+
+  describe('raw code change monitoring', function() {
+    it('should determine whether the code has changed', function() {
+      expect(LearnerStateService.hasRawCodeChanged('new code')).toBe(true);
+
+      // This checks that the function is stateless: its previous invocation
+      // does not update the stored code, so the output of hasRawCodeChanged()
+      // is still true.
+      expect(LearnerStateService.hasRawCodeChanged('new code')).toBe(true);
+
+      LearnerStateService.recordRawCode('some code');
+      expect(LearnerStateService.hasRawCodeChanged('some code')).toBe(false);
+      expect(LearnerStateService.hasRawCodeChanged('new code')).toBe(true);
+    });
+  });
+
+  describe('feedback details recording', function() {
+    it('should allow storing and retrieving of feedback details', function() {
+      expect(LearnerStateService.getPreviousFeedbackDetails()).toBe(null);
+
+      var feedbackDetails1 = (
+        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
+      LearnerStateService.recordFeedbackDetails(feedbackDetails1);
+      expect(LearnerStateService.getPreviousFeedbackDetails()).toBe(
+        feedbackDetails1);
+
+      var feedbackDetails2 = (
+        FeedbackDetailsObjectFactory.createServerErrorFeedbackDetails());
+      LearnerStateService.recordFeedbackDetails(feedbackDetails2);
+      expect(LearnerStateService.getPreviousFeedbackDetails()).toBe(
+        feedbackDetails2);
+    });
+
+    it('should correctly retrieve the previous message index', function() {
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
+
+      var buggyOutputFeedbackDetails = (
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      LearnerStateService.recordFeedbackDetails(buggyOutputFeedbackDetails);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(1);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(null);
+
+      var suiteLevelFeedbackDetails = (
+        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      LearnerStateService.recordFeedbackDetails(suiteLevelFeedbackDetails);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 0)).toBe(null);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(1);
+      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(null);
+    });
+  });
 
   describe('language unfamiliarity error detection', function() {
     it('should record when enough consecutive errors are detected', function() {

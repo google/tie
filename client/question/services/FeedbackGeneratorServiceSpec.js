@@ -17,19 +17,13 @@
  */
 
 describe('FeedbackGeneratorService', function() {
-  var BuggyOutputTestObjectFactory;
-  var CodeEvalResultObjectFactory;
   var ErrorTracebackObjectFactory;
   var FeedbackDetailsObjectFactory;
   var FeedbackGeneratorService;
   var PrereqCheckFailureObjectFactory;
-  var SuiteLevelTestObjectFactory;
-  var TaskObjectFactory;
   var TestCaseObjectFactory;
   var TracebackCoordinatesObjectFactory;
-  var TranscriptService;
   var sampleErrorTraceback;
-  var testTask;
   var PREREQ_CHECK_TYPE_MISSING_STARTER_CODE;
   var PREREQ_CHECK_TYPE_BAD_IMPORT;
   var PREREQ_CHECK_TYPE_GLOBAL_CODE;
@@ -43,21 +37,15 @@ describe('FeedbackGeneratorService', function() {
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
-    BuggyOutputTestObjectFactory = $injector.get(
-      'BuggyOutputTestObjectFactory');
-    CodeEvalResultObjectFactory = $injector.get('CodeEvalResultObjectFactory');
     ErrorTracebackObjectFactory = $injector.get('ErrorTracebackObjectFactory');
     FeedbackDetailsObjectFactory = $injector.get(
       'FeedbackDetailsObjectFactory');
     FeedbackGeneratorService = $injector.get('FeedbackGeneratorService');
     PrereqCheckFailureObjectFactory = $injector.get(
       'PrereqCheckFailureObjectFactory');
-    SuiteLevelTestObjectFactory = $injector.get('SuiteLevelTestObjectFactory');
-    TaskObjectFactory = $injector.get('TaskObjectFactory');
     TestCaseObjectFactory = $injector.get('TestCaseObjectFactory');
     TracebackCoordinatesObjectFactory = $injector
       .get('TracebackCoordinatesObjectFactory');
-    TranscriptService = $injector.get('TranscriptService');
     PREREQ_CHECK_TYPE_BAD_IMPORT = $injector.get(
       'PREREQ_CHECK_TYPE_BAD_IMPORT');
     PREREQ_CHECK_TYPE_MISSING_STARTER_CODE = $injector.get(
@@ -75,28 +63,6 @@ describe('FeedbackGeneratorService', function() {
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
-
-    var taskDict = [{
-      instructions: [''],
-      prerequisiteSkills: [''],
-      acquiredSkills: [''],
-      inputFunctionName: null,
-      outputFunctionName: null,
-      mainFunctionName: 'mockMainFunction',
-      testSuites: [],
-      buggyOutputTests: [],
-      suiteLevelTests: [],
-      performanceTests: [{
-        inputDataAtom: 'meow ',
-        transformationFunctionName: 'System.extendString',
-        expectedPerformance: 'linear',
-        evaluationFunctionName: 'mockMainFunction'
-      }]
-    }];
-
-    testTask = taskDict.map(function(task) {
-      return TaskObjectFactory.create(task);
-    });
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
@@ -157,7 +123,7 @@ describe('FeedbackGeneratorService', function() {
     );
   });
 
-  describe('_getCorrectnessTestFeedback', function() {
+  describe('getIncorrectOutputFeedback', function() {
     var sampleInputTestSuite = {
       id: 'SAMPLE_INPUT',
       testCase: {
@@ -194,10 +160,14 @@ describe('FeedbackGeneratorService', function() {
 
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
-        var correctnessFeedbackParagraphs =
-          FeedbackGeneratorService._getCorrectnessTestFeedback(
-          sampleInputTestCase, sampleInputTestSuite.id, 0,
-          'incorrect answer').getParagraphs();
+        var feedbackDetails = (
+          FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+            sampleInputTestCase, sampleInputTestSuite.id, 0,
+            'incorrect answer'));
+        var correctnessFeedback = (
+          FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
+        var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
+
         expect(correctnessFeedbackParagraphs.length).toEqual(2);
         expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
           true);
@@ -215,10 +185,14 @@ describe('FeedbackGeneratorService', function() {
     );
 
     it('should suggest input to try first', function() {
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      var correctnessFeedback = (
+        FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
+      var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
+
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
         true);
@@ -232,13 +206,21 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should present expected output second', function() {
-      FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      // Note that this calculation has side-effects and cannot be omitted.
+      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      var correctnessFeedback = (
+        FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
+      var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
+
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
         true);
@@ -254,16 +236,28 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should allow user to display code output last', function() {
-      FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      // Note that this calculation has side-effects and cannot be omitted.
+      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      // Note that this calculation has side-effects and cannot be omitted.
+      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      var correctnessFeedback = (
+        FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
+      var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
+
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
         true);
@@ -280,16 +274,27 @@ describe('FeedbackGeneratorService', function() {
     });
 
     it('should catch regressions in user code', function() {
-      FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
-      FeedbackGeneratorService._getCorrectnessTestFeedback(
-        whitespaceTestCase, whitespaceTestSuite.id, 0,
-        'olleh ').getParagraphs();
-      var correctnessFeedbackParagraphs =
-        FeedbackGeneratorService._getCorrectnessTestFeedback(
-        generalInputTestCase, generalTestSuite.id, 0,
-        'yeH, uoyerawoh').getParagraphs();
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      // Note that this calculation has side-effects and cannot be omitted.
+      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          whitespaceTestCase, whitespaceTestSuite.id, 0, 'olleh '));
+      // Note that this calculation has side-effects and cannot be omitted.
+      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          generalInputTestCase, generalTestSuite.id, 0,
+          'yeH, uoyerawoh'));
+      var correctnessFeedback = (
+        FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
+      var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
+
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
         true);
@@ -306,13 +311,17 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getPerformanceTestFeedback', function() {
+  describe('getPerformanceTestFeedback', function() {
     it([
       'should return feedback if user\'s function is running ',
       'significantly more slowly than expected'
     ].join(''), function() {
-      var feedback = FeedbackGeneratorService._getPerformanceTestFeedback(
-        'linear');
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+          'linear'));
+
+      var feedback = FeedbackGeneratorService.getPerformanceTestFeedback(
+        feedbackDetails);
       var paragraphs = feedback.getParagraphs();
 
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -362,7 +371,7 @@ describe('FeedbackGeneratorService', function() {
   describe('getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -389,7 +398,7 @@ describe('FeedbackGeneratorService', function() {
             'ZeroDivisionError: integer division or modulo by zero',
             [TracebackCoordinatesObjectFactory.create(0, 1)]);
         var feedbackDetails = (
-          FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
             buggyErrorTraceback.getErrorString(),
             LANGUAGE_PYTHON, 'testInput', false));
 
@@ -404,7 +413,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is greater than the ' +
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -416,7 +425,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is equal to the ' +
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
       expect(function() {
@@ -427,7 +436,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should adjust the line numbers correctly', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -449,7 +458,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly handle errors due to the test code', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -596,7 +605,7 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, false));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -618,7 +627,7 @@ describe('FeedbackGeneratorService', function() {
     it('should correctly append language unfamiliarity feedback if ' +
        'consecutiveUnfamiliarityLanguageCounter is needed', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, true));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -673,7 +682,7 @@ describe('FeedbackGeneratorService', function() {
     });
   });
 
-  describe('_getBuggyOutputTestFeedback', function() {
+  describe('getBuggyOutputFeedback', function() {
     var buggyOutputTestDict = {
       buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
       messages: [
@@ -693,19 +702,12 @@ describe('FeedbackGeneratorService', function() {
       ]
     };
 
-    it([
-      'should return the next hint in sequence for buggy outputs, provided ',
-      'the code has been changed'
-    ].join(''), function() {
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, false);
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
+    it('should return the correct feedback for buggy output tests', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+          0, 0, buggyOutputTestDict.messages, 0));
+      var feedback = FeedbackGeneratorService.getBuggyOutputFeedback(
+        feedbackDetails);
 
       var paragraphs = feedback.getParagraphs();
       expect(feedback.getFeedbackCategory()).toEqual(
@@ -713,284 +715,33 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      paragraphs = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true).getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
-    });
-
-    it([
-      'should return the same hint multiple times for buggy outputs, ',
-      'provided the code has NOT been changed'
-    ].join(''), function() {
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      // We pass in false to indicate the code has not changed.
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, false).getParagraphs();
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-    });
-
-    it([
-      'should return null if a student reaches the end of the available hints.'
-    ].join(''), function() {
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null, false, false);
-      var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-        'new code separator = "a"', 'new code', 'same output',
-        [], [true], [], null, null, false, false);
-      var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
-        'newer code separator = "a"', 'newer code', 'same output',
-        [], [true], [], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithSameBug, feedback, null);
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
-
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithStillSameBug, feedback, null);
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
-
-      expect(
-        FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true)
-      ).toBe(null);
-    });
-
-    it([
-      'should return the same hint multiple times for buggy outputs, ',
-      'provided a new error happened in between'
-    ].join(''), function() {
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output', [], [true],
-        [], null, null, false, false);
-      var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
-        'other code separator = "a"', 'other code', 'some output',
-        [], [], [], 'ERROR MESSAGE', 'testInput', false, false);
-
-      var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      var paragraphs = feedback.getParagraphs();
-      TranscriptService.recordSnapshot(null, codeEvalResult, feedback, null);
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      var unusedRuntimeErrorFeedback = (
-        FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true));
-      TranscriptService.recordSnapshot(
-        null, codeEvalResultWithNewError, unusedRuntimeErrorFeedback, null);
-
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true).getParagraphs();
-
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
     });
   });
 
-  describe('_getSuiteLevelTestFeedback', function() {
+  describe('getSuiteLevelFeedback', function() {
     var suiteLevelTestDict = {
       testSuiteIdsThatMustPass: ['SUITE_P1', 'SUITE_P2', 'SUITE_P3'],
       testSuiteIdsThatMustFail: ['SUITE_F1'],
       messages: ['message1', 'message2', 'message3']
     };
 
-    it([
-      'should return the next hint in sequence for suite-level tests, but ',
-      'only if the code has been changed'
-    ].join(''), function() {
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null, false, false);
-      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'new code separator = "a"', 'new code', 'same output',
-        [], [true], [], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
+    it('should return the correct feedback for suite-level tests', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+          0, 0, suiteLevelTestDict.messages, 0));
+      var feedback = FeedbackGeneratorService.getSuiteLevelFeedback(
+        feedbackDetails);
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
 
       var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
-
-      // The code is changed. The feedback changes.
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult2, feedback, null);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
-
-      // The code is not changed. The feedback remains the same.
-      paragraphs = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, false).getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
-    });
-
-    it([
-      'should return null if a student reaches the end of the available hints.'
-    ].join(''), function() {
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var codeEvalResults = [
-        CodeEvalResultObjectFactory.create(
-          'code 1 separator = "a"', 'code 1', 'same output',
-          [], [true], [], null, null, false, false),
-        CodeEvalResultObjectFactory.create(
-          'code 2 separator = "a"', 'code 2', 'same output',
-          [], [true], [], null, null, false, false),
-        CodeEvalResultObjectFactory.create(
-          'code 3 separator = "a"', 'code 3', 'same output',
-          [], [true], [], null, null, false, false)
-      ];
-
-      for (var i = 0; i < 3; i++) {
-        var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-          suiteLevelTest, true);
-        TranscriptService.recordSnapshot(
-          null, codeEvalResults[i], feedback, null);
-
-        var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[i]);
-      }
-
-      // We've now exhausted the list of messages.
-      expect(
-        FeedbackGeneratorService._getSuiteLevelTestFeedback(
-          suiteLevelTest, true)
-      ).toBe(null);
-    });
-
-    it([
-      'should reset the suite-level counter if other types of feedback are ' +
-      'given in between'
-    ].join(''), function() {
-      var buggyOutputTestDict = {
-        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
-        messages: ['buggy1', 'buggy2']
-      };
-
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
-
-      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'code 1 separator = "a"', 'code 1', 'same output',
-        [], [true], [], null, null, false, false);
-      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'code 2 separator = "a"', 'code 2', 'same output',
-        [], [true], [], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult2, feedback, null);
-
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
-
-      // Now get buggy output feedback once.
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      // The index of suite-level feedback then gets reset to 0.
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      TranscriptService.recordSnapshot(null, codeEvalResult1, feedback, null);
-      paragraphs = feedback.getParagraphs();
       expect(paragraphs.length).toEqual(1);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
     });
   });
 
-  describe('getFeedback', function() {
-    it('should correctly return feedback if the performance does not meet ' +
-      'expectations', function() {
-      var codeEvalResult = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'some output',
-        [], [], ['not linear'], null, null, false, false);
-
-      var feedback = FeedbackGeneratorService.getFeedback(
-        testTask, codeEvalResult, []);
-
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual('Your code is running more ' +
-        'slowly than expected. Can you reconfigure it such that it runs in ' +
-        'linear time?');
-    });
-
+  describe('language unfamiliarity feedback', function() {
     it('should correctly append language unfamiliarity feedback for ' +
         'prereq "language unfamiliarity" checks as needed', function() {
       var starterCode = [
@@ -1023,7 +774,7 @@ describe('FeedbackGeneratorService', function() {
     it('should correctly append language unfamiliarity feedback for runtime ' +
        'errors if needed', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           true));
 

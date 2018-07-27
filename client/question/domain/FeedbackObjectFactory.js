@@ -46,15 +46,6 @@ tie.factory('FeedbackObjectFactory', [
       this._feedbackParagraphs = [];
 
       /**
-       * Records index of what message was displayed with this feedback.
-       * If no message is displayed, then remains null.
-       *
-       * @type {number}
-       * @private
-       */
-      this._hintIndex = null;
-
-      /**
        * Records the category corresponding to this feedback.
        *
        * @type {string}
@@ -155,26 +146,6 @@ tie.factory('FeedbackObjectFactory', [
     };
 
     /**
-     * A getter for the _hintIndex property.
-     * This function should return a number that indicates the index of the
-     * hint given for this feedback (if one is given).
-     *
-     * @returns {*|number}
-     */
-    Feedback.prototype.getHintIndex = function() {
-      return this._hintIndex;
-    };
-
-    /**
-     * A setter for the _hintIndex property.
-     *
-     * @param {number} index
-     */
-    Feedback.prototype.setHintIndex = function(index) {
-      this._hintIndex = index;
-    };
-
-    /**
      * A getter for the _feedbackCategory property.
      * This function should return the category which corresponds to this
      * feedback.
@@ -201,25 +172,6 @@ tie.factory('FeedbackObjectFactory', [
      */
     Feedback.prototype.setErrorLineNumber = function(newLineNumber) {
       this._errorLineNumber = newLineNumber;
-    };
-
-    /**
-     * Appends the feedback paragraphs in the given Feedback object to the
-     * current feedback. If the appended feedback contains a hint index, that
-     * index is updated too.
-     *
-     * @param {Feedback} feedbackToAppend
-     */
-    Feedback.prototype.appendFeedback = function(feedbackToAppend) {
-      var paragraphsToAppend = feedbackToAppend.getParagraphs();
-      paragraphsToAppend.forEach(function(paragraph) {
-        this._feedbackParagraphs.push(paragraph);
-      }.bind(this));
-
-      var appendedHintIndex = feedbackToAppend.getHintIndex();
-      if (appendedHintIndex !== null) {
-        this.setHintIndex(appendedHintIndex);
-      }
     };
 
     /**

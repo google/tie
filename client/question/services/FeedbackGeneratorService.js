@@ -19,7 +19,7 @@
  */
 
 tie.factory('FeedbackGeneratorService', [
-  'FeedbackObjectFactory', 'TranscriptService',
+  'FeedbackObjectFactory',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
   'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
   'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
@@ -33,7 +33,7 @@ tie.factory('FeedbackGeneratorService', [
   'FEEDBACK_TYPE_INPUT_TO_TRY', 'FEEDBACK_TYPE_EXPECTED_OUTPUT',
   'FEEDBACK_TYPE_OUTPUT_ENABLED',
   function(
-    FeedbackObjectFactory, TranscriptService,
+    FeedbackObjectFactory,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
     RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
     CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE,
@@ -170,101 +170,6 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
-     * Returns a boolean representing whether the student's code has changed
-     * from the previous attempt.
-     *
-     * @param {CodeEvalResult} codeEvalResult
-     * @returns {boolean}
-     * @private
-     */
-    var _hasCodeChanged = function(codeEvalResult) {
-      var lastSnapshot = (
-        TranscriptService.getTranscript().getMostRecentSnapshot());
-      return (
-        lastSnapshot !== null &&
-        lastSnapshot.getCodeEvalResult() !== null &&
-        !codeEvalResult.hasSameRawCodeAs(
-          lastSnapshot.getCodeEvalResult()));
-    };
-
-    /**
-     * Returns the specific feedback created as a result of a failing buggy
-     * output or suite-level test, or null if all hints for that test have been
-     * exhausted.
-     *
-     * @param {Array} messages The array of message strings.
-     * @param {bool} codeHasChanged Whether the learner's code has changed
-     *   since the previous submission attempt.
-     * @param {string} currentFeedbackCategory The feedback category for the
-     *   current set of message strings.
-     * @returns {Feedback|null}
-     * @private
-     */
-    var _getSpecificTestFeedback = function(
-        messages, codeHasChanged, currentFeedbackCategory) {
-      var previousHintIndex = 0;
-      var previousMessage = null;
-
-      var lastSnapshot = (
-        TranscriptService.getTranscript().getMostRecentSnapshot());
-      if (lastSnapshot !== null && lastSnapshot.getCodeEvalResult() !== null) {
-        var previousFeedback = lastSnapshot.getFeedback();
-        previousMessage = previousFeedback.getParagraphs()[0].getContent();
-
-        if (previousFeedback.getFeedbackCategory() ===
-            currentFeedbackCategory) {
-          previousHintIndex = lastSnapshot.getFeedback().getHintIndex();
-        }
-      }
-
-      var newHintIndex = previousHintIndex;
-      // Provide a new hint if the student gets stuck on the same bug despite
-      // having modified their code, since in that case we don't want to give
-      // the same message twice in a row.
-      if (codeHasChanged && messages[previousHintIndex] === previousMessage) {
-        newHintIndex++;
-      }
-
-      if (newHintIndex >= messages.length) {
-        return null;
-      }
-      var feedback = FeedbackObjectFactory.create(currentFeedbackCategory);
-      feedback.appendTextParagraph(messages[newHintIndex]);
-      feedback.setHintIndex(newHintIndex);
-      return feedback;
-    };
-
-    /**
-     * Returns the feedback created as a result of a failing buggy output test,
-     * or null if all hints for that test have been exhausted.
-     *
-     * @param {BuggyOutputTest} failingTest
-     * @param {bool} codeHasChanged
-     * @returns {Feedback|null}
-     * @private
-     */
-    var _getBuggyOutputTestFeedback = function(failingTest, codeHasChanged) {
-      var messages = failingTest.getMessages();
-      return _getSpecificTestFeedback(
-        messages, codeHasChanged, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
-    };
-
-    /**
-     * Returns the feedback created as a result of a failing suite-level test,
-     * or null if all hints for that test have been exhausted.
-     *
-     * @param {SuiteLevelTest} suiteLevelTest
-     * @param {CodeEvalResult} codeHasChanged
-     * @returns {Feedback|null}
-     * @private
-     */
-    var _getSuiteLevelTestFeedback = function(suiteLevelTest, codeHasChanged) {
-      var messages = suiteLevelTest.getMessages();
-      return _getSpecificTestFeedback(
-        messages, codeHasChanged, FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
-    };
-
-    /**
      * Generates a unique test case key for the given (test suite, test case)
      * pair.
      *
@@ -273,106 +178,6 @@ tie.factory('FeedbackGeneratorService', [
      */
     var _getTestCaseKey = function(testSuiteId, testCaseIndex) {
       return testSuiteId + '-' + testCaseIndex;
-    };
-
-    /**
-     * Returns the Feedback object created as a result of a specified
-     * correctness test.
-     *
-     * @param {CorrectnessTest} TestCase
-     * @param {string} testSuiteId
-     * @param {number} testCaseIndex
-     * @param {*} observedOutput Actual output for running user's code.
-     * @returns {Feedback}
-     * @private
-     */
-    var _getCorrectnessTestFeedback = function(
-      testCase, testSuiteId, testCaseIndex, observedOutput) {
-      var testCaseKey = _getTestCaseKey(testSuiteId, testCaseIndex);
-      var allowedOutputExample = testCase.getAnyAllowedOutput();
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
-      // Check if this is a new / next test suite.
-      if (testSuiteId !== previousTestSuiteId) {
-        previousTestSuiteId = testSuiteId;
-        // Catch regressions to errors previously encountered and passed.
-        // If certain feedback was given before, the user passes the test,
-        // then later regresses, do not repeat feedback that was given before.
-        // Note that if they passed a given test on the first try but later
-        // regress, it is OK to display feedback as if it was the first time
-        // they encountered the error; subsequent regressions will be captured
-        // here.
-        if (correctnessTestStates.hasOwnProperty(testCaseKey)) {
-          feedback.appendTextParagraph(
-            'It looks like there was a regression in your code. Your code ' +
-            'used to work for the following, but it now fails:');
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
-          return feedback;
-        }
-        correctnessTestStates[testCaseKey] = CORRECTNESS_STATE_STARTING;
-      }
-      // If the suite ID corresponds to the sample input, the question will
-      // already have displayed the input and expected output, so we advance
-      // the correctness state to "expected output displayed".
-      if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
-        correctnessTestStates[testCaseKey] =
-          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-      }
-      switch (correctnessTestStates[testCaseKey]) {
-        case CORRECTNESS_STATE_STARTING:
-          // Display an input that the learner should use to manually walk
-          // through their code.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_INPUT_DISPLAYED;
-          return feedback;
-        case CORRECTNESS_STATE_INPUT_DISPLAYED:
-          // Display expected output to the user.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
-          feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' +
-            _jsToHumanReadable(allowedOutputExample));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
-          return feedback;
-        default:
-          // Allow the user to display the output of their code.
-          feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
-          feedback.appendOutputParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
-          correctnessTestStates[testCaseKey] =
-            CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE;
-          return feedback;
-      }
-    };
-
-    /**
-     * Returns the Feedback related to a failing performance test.
-     *
-     * @param {string} expectedPerformance
-     * @returns {Feedback}
-     * @private
-     */
-    var _getPerformanceTestFeedback = function(expectedPerformance) {
-      var feedback = FeedbackObjectFactory.create(
-        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
-      feedback.appendTextParagraph([
-        'Your code is running more slowly than expected. Can you ',
-        'reconfigure it such that it runs in ',
-        expectedPerformance,
-        ' time?'
-      ].join(''));
-      return feedback;
     };
 
     /**
@@ -413,105 +218,7 @@ tie.factory('FeedbackGeneratorService', [
       }
     };
 
-    /**
-     * Returns the Feedback object associated with a given user submission.
-     * This assumes that the feedback is not of the forms: timeout, syntax
-     * error, server error or runtime error.
-     *
-     * @param {Array} tasks Tasks associated with the problem that include
-     *    the tests the user's code must pass.
-     * @param {CodeEvalResult} codeEvalResult Test results for this submission
-     * @returns {Feedback}
-     * @private
-     */
-    var _getMainFeedback = function(tasks, codeEvalResult) {
-      var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
-      var observedOutputs = codeEvalResult.getObservedOutputs();
-      var performanceTestResults = codeEvalResult.getPerformanceTestResults();
-      var codeHasChanged = _hasCodeChanged(codeEvalResult);
-
-      for (var i = 0; i < tasks.length; i++) {
-        var buggyOutputTests = tasks[i].getBuggyOutputTests();
-        var suiteLevelTests = tasks[i].getSuiteLevelTests();
-        var testSuites = tasks[i].getTestSuites();
-        var performanceTests = tasks[i].getPerformanceTests();
-        var passingSuiteIds = codeEvalResult.getPassingSuiteIds(tasks, i);
-
-        for (var j = 0; j < buggyOutputTests.length; j++) {
-          if (buggyOutputTestResults[i][j]) {
-
-            var feedback = _getBuggyOutputTestFeedback(
-              buggyOutputTests[j], codeHasChanged);
-            // Null feedback indicates that we've run out of hints and should
-            // provide correctness-test output feedback instead.
-            if (!feedback) {
-              break;
-            }
-
-            return feedback;
-          }
-        }
-
-        for (j = 0; j < suiteLevelTests.length; j++) {
-          if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-            feedback = _getSuiteLevelTestFeedback(
-              suiteLevelTests[j], codeHasChanged);
-            if (!feedback) {
-              break;
-            }
-
-            return feedback;
-          }
-        }
-
-        for (j = 0; j < testSuites.length; j++) {
-          var testCases = testSuites[j].getTestCases();
-          for (var testCaseIndex = 0; testCaseIndex < testCases.length;
-            testCaseIndex++) {
-            var testCase = testCases[testCaseIndex];
-            var testSuiteId = testSuites[j].getId();
-            var observedOutput = observedOutputs[i][j][testCaseIndex];
-            if (!testCase.matchesOutput(observedOutput)) {
-              return _getCorrectnessTestFeedback(
-                testCase, testSuiteId, testCaseIndex, observedOutput);
-            }
-          }
-        }
-
-        for (j = 0; j < performanceTests.length; j++) {
-          var expectedPerformance = (
-            performanceTests[j].getExpectedPerformance());
-          var observedPerformance = performanceTestResults[i][j];
-
-          if (expectedPerformance !== observedPerformance) {
-            return _getPerformanceTestFeedback(expectedPerformance);
-          }
-        }
-      }
-
-      feedback = FeedbackObjectFactory.create(FEEDBACK_CATEGORIES.SUCCESSFUL);
-      feedback.appendTextParagraph([
-        'You\'ve completed all the tasks for this question! Click the ',
-        '"Next" button to move on to the next question.'
-      ].join(''));
-      return feedback;
-    };
-
     return {
-      /**
-       * Returns the feedback associated with a user's code submission and
-       * their test results. This assumes that the feedback is not of the
-       * forms: timeout, syntax error, server error or runtime error.
-       *
-       * @param {Array} tasks Tasks associated with the problem that include
-       *    the tests the user's code must pass.
-       * @param {CodeEvalResult} codeEvalResult Test results for this submission
-       * @returns {Feedback}
-       */
-      getFeedback: function(tasks, codeEvalResult) {
-        var feedback = _getMainFeedback(tasks, codeEvalResult);
-        return feedback;
-      },
       /**
        * Returns the Feedback object for the given syntax error details.
        *
@@ -772,11 +479,143 @@ tie.factory('FeedbackGeneratorService', [
 
         return feedback;
       },
-      _getBuggyOutputTestFeedback: _getBuggyOutputTestFeedback,
-      _getSuiteLevelTestFeedback: _getSuiteLevelTestFeedback,
+      /**
+       * Returns the feedback created as a result of a failing buggy output
+       * test.
+       *
+       * @param {FeedbackDetails} feedbackDetails
+       *
+       * @returns {Feedback}
+       */
+      getBuggyOutputFeedback: function(feedbackDetails) {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+        feedback.appendTextParagraph(feedbackDetails.getMessage());
+        return feedback;
+      },
+      /**
+       * Returns the feedback created as a result of a failing suite-level test,
+       * or null if all hints for that test have been exhausted.
+       *
+       * @param {FeedbackDetails} feedbackDetails
+       *
+       * @returns {Feedback}
+       */
+      getSuiteLevelFeedback: function(feedbackDetails) {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+        feedback.appendTextParagraph(feedbackDetails.getMessage());
+        return feedback;
+      },
+      /**
+       * Returns the Feedback object created as a result of an incorrect output
+       * in one of the correctness tests.
+       *
+       * @param {FeedbackDetails} feedbackDetails
+       *
+       * @returns {Feedback}
+       */
+      getIncorrectOutputFeedback: function(feedbackDetails) {
+        var testCase = feedbackDetails.getTestCase();
+        var testSuiteId = feedbackDetails.getTestSuiteId();
+        var testCaseIndex = feedbackDetails.getTestCaseIndex();
+        var observedOutput = feedbackDetails.getObservedOutput();
+
+        var testCaseKey = _getTestCaseKey(testSuiteId, testCaseIndex);
+        var allowedOutputExample = testCase.getAnyAllowedOutput();
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
+        // Check if this is a new / next test suite.
+        if (testSuiteId !== previousTestSuiteId) {
+          previousTestSuiteId = testSuiteId;
+          // Catch regressions to errors previously encountered and passed.
+          // If certain feedback was given before, the user passes the test,
+          // then later regresses, do not repeat feedback that was given before.
+          // Note that if they passed a given test on the first try but later
+          // regress, it is OK to display feedback as if it was the first time
+          // they encountered the error; subsequent regressions will be captured
+          // here.
+          if (correctnessTestStates.hasOwnProperty(testCaseKey)) {
+            feedback.appendTextParagraph(
+              'It looks like there was a regression in your code. Your code ' +
+              'used to work for the following, but it now fails:');
+            feedback.appendCodeParagraph(
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+              'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
+            return feedback;
+          }
+          correctnessTestStates[testCaseKey] = CORRECTNESS_STATE_STARTING;
+        }
+        // If the suite ID corresponds to the sample input, the question will
+        // already have displayed the input and expected output, so we advance
+        // the correctness state to "expected output displayed".
+        if (testSuiteId === TEST_SUITE_ID_SAMPLE_INPUT) {
+          correctnessTestStates[testCaseKey] =
+            CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+        }
+        switch (correctnessTestStates[testCaseKey]) {
+          case CORRECTNESS_STATE_STARTING:
+            // Display an input that the learner should use to manually walk
+            // through their code.
+            feedback.appendTextParagraph(
+              _getCorrectnessFeedbackString(FEEDBACK_TYPE_INPUT_TO_TRY));
+            feedback.appendCodeParagraph(
+              'Input: ' + _jsToHumanReadable(testCase.getInput()));
+            correctnessTestStates[testCaseKey] =
+              CORRECTNESS_STATE_INPUT_DISPLAYED;
+            return feedback;
+          case CORRECTNESS_STATE_INPUT_DISPLAYED:
+            // Display expected output to the user.
+            feedback.appendTextParagraph(
+              _getCorrectnessFeedbackString(FEEDBACK_TYPE_EXPECTED_OUTPUT));
+            feedback.appendCodeParagraph(
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+              'Expected Output: ' +
+              _jsToHumanReadable(allowedOutputExample));
+            correctnessTestStates[testCaseKey] =
+              CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+            return feedback;
+          default:
+            // Allow the user to display the output of their code.
+            feedback.appendTextParagraph(
+              _getCorrectnessFeedbackString(FEEDBACK_TYPE_OUTPUT_ENABLED));
+            feedback.appendOutputParagraph(
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+              '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+              '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+            correctnessTestStates[testCaseKey] =
+              CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE;
+            return feedback;
+        }
+      },
+      /**
+       * Returns the Feedback related to a failing performance test.
+       *
+       * @param {FeedbackDetails} feedbackDetails
+       *
+       * @returns {Feedback}
+       */
+      getPerformanceTestFeedback: function(feedbackDetails) {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
+        feedback.appendTextParagraph([
+          'Your code is running more slowly than expected. Can you ',
+          'reconfigure it such that it runs in ',
+          feedbackDetails.getExpectedPerformance(),
+          ' time?'
+        ].join(''));
+        return feedback;
+      },
+      getSuccessFeedback: function() {
+        var feedback = FeedbackObjectFactory.create(
+          FEEDBACK_CATEGORIES.SUCCESSFUL);
+        feedback.appendTextParagraph([
+          'You\'ve completed all the tasks for this question! Click the ',
+          '"Next" button to move on to the next question.'
+        ].join(''));
+        return feedback;
+      },
       _getCorrectnessFeedbackString: _getCorrectnessFeedbackString,
-      _getCorrectnessTestFeedback: _getCorrectnessTestFeedback,
-      _getPerformanceTestFeedback: _getPerformanceTestFeedback,
       _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRandomInt: _getRandomInt,
       _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,

@@ -59,7 +59,7 @@
         "keyword-spacing": "error",
         "line-comment-position": "error",
         "linebreak-style": "error",
-        "max-depth": "error",
+        "max-depth": ["error", 5],
         "max-len": ["error", {
             "ignoreTemplateLiterals": true,
             "ignoreTrailingComments": true,
