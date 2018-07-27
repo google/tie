@@ -550,7 +550,7 @@ describe('ConversationManagerService', function() {
     });
 
     describe('should return the correct feedback if', function() {
-      it('there is a memory error', function(done) {
+      it('there is a stack exceeded error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
           '    return mockMainFunction(input)',
