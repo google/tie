@@ -31,7 +31,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('time-limit error FeedbackDetails object', function() {
     it('should create a time-limit FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback());
+        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
@@ -45,7 +45,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('stack-exceeded error FeedbackDetails object', function() {
     it('should create a stack exceeded FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createStackExceededFeedback());
+        FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
@@ -59,7 +59,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('server error FeedbackDetails object', function() {
     it('should create a server error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createServerErrorFeedback());
+        FeedbackDetailsObjectFactory.createServerErrorFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SERVER_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
@@ -73,7 +73,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('runtime error FeedbackDetails object', function() {
     it('should create a runtime error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           'error string', 'python', 'abc', true));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.RUNTIME_ERROR);
@@ -88,7 +88,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('syntax error FeedbackDetails object', function() {
     it('should create a syntax error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           'error string', 'python', false));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);

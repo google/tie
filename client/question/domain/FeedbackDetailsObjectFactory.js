@@ -413,19 +413,19 @@ tie.factory('FeedbackDetailsObjectFactory', [
 
 
     // Static class methods.
-    FeedbackDetails.createTimeLimitErrorFeedback = function() {
+    FeedbackDetails.createTimeLimitErrorFeedbackDetails = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
     };
 
-    FeedbackDetails.createStackExceededFeedback = function() {
+    FeedbackDetails.createStackExceededFeedbackDetails = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
     };
 
-    FeedbackDetails.createServerErrorFeedback = function() {
+    FeedbackDetails.createServerErrorFeedbackDetails = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.SERVER_ERROR);
     };
 
-    FeedbackDetails.createRuntimeErrorFeedback = function(
+    FeedbackDetails.createRuntimeErrorFeedbackDetails = function(
         errorString, language, errorInput,
         languageUnfamiliarityFeedbackIsNeeded) {
       return new FeedbackDetails(
@@ -436,7 +436,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
         languageUnfamiliarityFeedbackIsNeeded);
     };
 
-    FeedbackDetails.createSyntaxErrorFeedback = function(
+    FeedbackDetails.createSyntaxErrorFeedbackDetails = function(
         errorString, language, languageUnfamiliarityFeedbackIsNeeded) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR,
@@ -446,25 +446,21 @@ tie.factory('FeedbackDetailsObjectFactory', [
         languageUnfamiliarityFeedbackIsNeeded);
     };
 
-    FeedbackDetails.createCodeNotChangedFeedback = function() {
-      return new FeedbackDetails(FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR);
-    };
-
-    FeedbackDetails.createBuggyOutputFeedback = function(
+    FeedbackDetails.createBuggyOutputFeedbackDetails = function(
         taskIndex, specificTestIndex, testMessages, messageIndex) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, null, null, null, null,
         taskIndex, specificTestIndex, testMessages, messageIndex);
     };
 
-    FeedbackDetails.createSuiteLevelFeedback = function(
+    FeedbackDetails.createSuiteLevelFeedbackDetails = function(
         taskIndex, specificTestIndex, testMessages, messageIndex) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, null, null, null, null,
         taskIndex, specificTestIndex, testMessages, messageIndex);
     };
 
-    FeedbackDetails.createIncorrectOutputFeedback = function(
+    FeedbackDetails.createIncorrectOutputFeedbackDetails = function(
         testCase, testSuiteId, testCaseIndex, observedOutput) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,
@@ -472,13 +468,14 @@ tie.factory('FeedbackDetailsObjectFactory', [
         observedOutput);
     };
 
-    FeedbackDetails.createPerformanceFeedback = function(expectedPerformance) {
+    FeedbackDetails.createPerformanceFeedbackDetails = function(
+        expectedPerformance) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, null, null, null, null,
         null, null, null, null, null, null, null, null, expectedPerformance);
     };
 
-    FeedbackDetails.createSuccessFeedback = function() {
+    FeedbackDetails.createSuccessFeedbackDetails = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.SUCCESSFUL);
     };
 

@@ -68,6 +68,9 @@ tie.factory('LearnerStateService', [
       recordFeedbackDetails: function(newFeedbackDetails) {
         previousFeedbackDetails = newFeedbackDetails;
       },
+      getPreviousFeedbackDetails: function() {
+        return previousFeedbackDetails;
+      },
       getPreviousMessageIndexIfFromSameTest: function(
           feedbackCategory, taskIndex, specificTestIndex) {
         if (feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&

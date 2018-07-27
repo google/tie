@@ -193,7 +193,7 @@ describe('FeedbackGeneratorService', function() {
     it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
       function() {
         var feedbackDetails = (
-          FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+          FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
             sampleInputTestCase, sampleInputTestSuite.id, 0,
             'incorrect answer'));
         var correctnessFeedback = (
@@ -218,7 +218,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should suggest input to try first', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       var correctnessFeedback = (
@@ -239,14 +239,14 @@ describe('FeedbackGeneratorService', function() {
 
     it('should present expected output second', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       var correctnessFeedback = (
@@ -269,21 +269,21 @@ describe('FeedbackGeneratorService', function() {
 
     it('should allow user to display code output last', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
       feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
       feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       var correctnessFeedback = (
@@ -307,20 +307,20 @@ describe('FeedbackGeneratorService', function() {
 
     it('should catch regressions in user code', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
       feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           whitespaceTestCase, whitespaceTestSuite.id, 0, 'olleh '));
       // Note that this calculation has side-effects and cannot be omitted.
       FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
 
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
           generalInputTestCase, generalTestSuite.id, 0,
           'yeH, uoyerawoh'));
       var correctnessFeedback = (
@@ -349,7 +349,8 @@ describe('FeedbackGeneratorService', function() {
       'significantly more slowly than expected'
     ].join(''), function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createPerformanceFeedback('linear'));
+        FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+          'linear'));
 
       var feedback = FeedbackGeneratorService.getPerformanceTestFeedback(
         feedbackDetails);
@@ -402,7 +403,7 @@ describe('FeedbackGeneratorService', function() {
   describe('getRuntimeErrorFeedback', function() {
     it('should return an error if a runtime error occurred', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -429,7 +430,7 @@ describe('FeedbackGeneratorService', function() {
             'ZeroDivisionError: integer division or modulo by zero',
             [TracebackCoordinatesObjectFactory.create(0, 1)]);
         var feedbackDetails = (
-          FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
             buggyErrorTraceback.getErrorString(),
             LANGUAGE_PYTHON, 'testInput', false));
 
@@ -444,7 +445,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is greater than the ' +
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -456,7 +457,7 @@ describe('FeedbackGeneratorService', function() {
     it('should throw an error if the line number index is equal to the ' +
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
       expect(function() {
@@ -467,7 +468,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should adjust the line numbers correctly', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -489,7 +490,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should correctly handle errors due to the test code', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -636,7 +637,7 @@ describe('FeedbackGeneratorService', function() {
       'found in the user\'s code'
     ].join(''), function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, false));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -658,7 +659,7 @@ describe('FeedbackGeneratorService', function() {
     it('should correctly append language unfamiliarity feedback if ' +
        'consecutiveUnfamiliarityLanguageCounter is needed', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, true));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -719,7 +720,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should return the correct feedback for buggy output tests', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createBuggyOutputFeedback(
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
           0, 0, buggyOutputTestDict.messages, 0));
       var feedback = FeedbackGeneratorService.getBuggyOutputFeedback(
         feedbackDetails);
@@ -742,7 +743,7 @@ describe('FeedbackGeneratorService', function() {
 
     it('should return the correct feedback for suite-level tests', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSuiteLevelFeedback(
+        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
           0, 0, suiteLevelTestDict.messages, 0));
       var feedback = FeedbackGeneratorService.getSuiteLevelFeedback(
         feedbackDetails);
@@ -789,7 +790,7 @@ describe('FeedbackGeneratorService', function() {
     it('should correctly append language unfamiliarity feedback for runtime ' +
        'errors if needed', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           true));
 

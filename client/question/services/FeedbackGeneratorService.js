@@ -466,22 +466,6 @@ tie.factory('FeedbackGeneratorService', [
         return feedback;
       },
       /**
-       * Returns the feedback created as a result of the user not having
-       * changed their code.
-       *
-       * @param {FeedbackDetails} feedbackDetails
-       *
-       * @returns {Feedback}
-       */
-      getCodeNotChangedFeedback: function(feedbackDetails) {
-        var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR);
-        feedback.appendTextParagraph(
-          'It looks like your code has not changed. Try using the previous ' +
-          'feedback to address the error.');
-        return feedback;
-      },
-      /**
        * Returns the feedback created as a result of a failing buggy output
        * test.
        *

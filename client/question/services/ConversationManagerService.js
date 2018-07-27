@@ -49,7 +49,7 @@ tie.factory('ConversationManagerService', [
       var codeHasChanged = LearnerStateService.hasRawCodeChanged(
         codeEvalResult.getRawCode());
       if (!codeHasChanged) {
-        return FeedbackDetailsObjectFactory.createCodeNotChangedFeedback();
+        return LearnerStateService.getPreviousFeedbackDetails();
       }
 
       var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
@@ -96,12 +96,13 @@ tie.factory('ConversationManagerService', [
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails( // eslint-disable-line: max-len
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
-              return FeedbackDetailsObjectFactory.createBuggyOutputFeedback(
-                i, j, testMessages, messageIndex);
+              return (
+                FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+                  i, j, testMessages, messageIndex));
             }
           }
         }
@@ -117,20 +118,22 @@ tie.factory('ConversationManagerService', [
 
             if (messageIndex === testMessages.length) {
               // Do correctness feedback instead.
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails( // eslint-disable-line: max-len
                 firstFailingTestCase, firstFailingTestSuiteId,
                 firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
             } else {
-              return FeedbackDetailsObjectFactory.createSuiteLevelFeedback(
-                i, j, testMessages, messageIndex);
+              return (
+                FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+                  i, j, testMessages, messageIndex));
             }
           }
         }
 
         if (firstFailingTestCase) {
-          return FeedbackDetailsObjectFactory.createIncorrectOutputFeedback(
-            firstFailingTestCase, firstFailingTestSuiteId,
-            firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
+          return (
+            FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+              firstFailingTestCase, firstFailingTestSuiteId,
+              firstFailingTestCaseIndex, observedOutputForFirstFailingTest));
         }
 
         for (j = 0; j < performanceTests.length; j++) {
@@ -139,13 +142,14 @@ tie.factory('ConversationManagerService', [
           var observedPerformance = performanceTestResults[i][j];
 
           if (expectedPerformance !== observedPerformance) {
-            return FeedbackDetailsObjectFactory.createPerformanceFeedback(
-              expectedPerformance);
+            return (
+              FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+                expectedPerformance));
           }
         }
       }
 
-      return FeedbackDetailsObjectFactory.createSuccessFeedback();
+      return FeedbackDetailsObjectFactory.createSuccessFeedbackDetails();
     };
 
     /**
@@ -167,11 +171,13 @@ tie.factory('ConversationManagerService', [
       var errorString = codeEvalResult.getErrorString();
 
       if (codeEvalResult.hasTimeLimitError()) {
-        return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
+        return (
+          FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
       } else if (codeEvalResult.hasRecursionLimitError()) {
-        return FeedbackDetailsObjectFactory.createStackExceededFeedback();
+        return (
+          FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
       } else if (codeEvalResult.hasServerError()) {
-        return FeedbackDetailsObjectFactory.createServerErrorFeedback();
+        return FeedbackDetailsObjectFactory.createServerErrorFeedbackDetails();
       } else if (errorString) {
         if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
           LearnerStateService.recordRuntimeError(errorString);
@@ -190,11 +196,11 @@ tie.factory('ConversationManagerService', [
         }
 
         if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
-          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
             errorString, language, codeEvalResult.getErrorInput(),
             languageUnfamiliarityFeedbackIsNeeded);
         } else {
-          return FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+          return FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
             errorString, language, languageUnfamiliarityFeedbackIsNeeded);
         }
       }
@@ -335,10 +341,6 @@ tie.factory('ConversationManagerService', [
                 var feedbackDetails = _computeFeedbackDetailsFromTestResults(
                   tasks, preprocessedCodeEvalResult);
                 switch (feedbackDetails.getFeedbackCategory()) {
-                  case FEEDBACK_CATEGORIES.CODE_NOT_CHANGED_ERROR:
-                    feedback = (
-                      FeedbackGeneratorService.getCodeNotChangedFeedback());
-                    break;
                   case FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE:
                     feedback = (
                       FeedbackGeneratorService.getBuggyOutputFeedback(
