@@ -27,6 +27,7 @@ describe('ConversationManagerService', function() {
   var auxiliaryCode;
   var starterCode;
   var FEEDBACK_TYPE_INPUT_TO_TRY;
+  var FEEDBACK_TYPE_OUTPUT_ENABLED;
   var CORRECTNESS_FEEDBACK_TEXT;
   var TITLE = "title";
   var STARTER_CODE = "starterCode";
@@ -105,6 +106,7 @@ describe('ConversationManagerService', function() {
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
     FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
+    FEEDBACK_TYPE_OUTPUT_ENABLED = $injector.get('FEEDBACK_TYPE_OUTPUT_ENABLED');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');
@@ -126,7 +128,7 @@ describe('ConversationManagerService', function() {
       'class AuxiliaryCode(object):',
       '    @classmethod',
       '    def mockAuxiliaryCodeOne(cls, input):',
-      '        return True',
+      '        return input.endswith("1")',
       '    @classmethod',
       '    def mockAuxiliaryCodeTwo(cls, input):',
       '        return False'
@@ -326,12 +328,12 @@ describe('ConversationManagerService', function() {
         });
     });
 
-    describe("buggyOutputTests", function() {
+    describe('buggy output tests', function() {
       it('should check both task1 and task2 to ' +
           'verify that the learner fails on task1', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
-          '    return True'
+          '    return input.endswith("1")'
         ].join('\n');
 
         ConversationManagerService.processSolutionAsync(
@@ -374,11 +376,11 @@ describe('ConversationManagerService', function() {
         function(done) {
           var studentCode1 = [
             'def mockMainFunction(input):',
-            '    return True'
+            '    return input.endswith("1")'
           ].join('\n');
           var studentCode2 = [
             'def mockMainFunction(input):',
-            '    return True or True'
+            '    return input.endswith("1") or input.endswith("1")'
           ].join('\n');
 
           ConversationManagerService.processSolutionAsync(
@@ -422,86 +424,119 @@ describe('ConversationManagerService', function() {
         }
       );
 
-      // IMPLEMENT THE FOLLOWING
-
       it([
-        'should return null if a student reaches the end of the available hints.'
-      ].join(''), function() {
-        var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-          buggyOutputTestDict);
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code separator = "a"', 'some code', 'same output',
-          [], [true], [], null, null);
-        var codeEvalResultWithSameBug = CodeEvalResultObjectFactory.create(
-          'new code separator = "a"', 'new code', 'same output',
-          [], [true], [], null, null);
-        var codeEvalResultWithStillSameBug = CodeEvalResultObjectFactory.create(
-          'newer code separator = "a"', 'newer code', 'same output',
-          [], [true], [], null, null);
+        'should return correctness feedback if a student reaches the end of ',
+        'the available hints.'
+      ].join(''), function(done) {
+        var wrongStudentCodeAlternative1 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1")'
+        ].join('\n');
+        var wrongStudentCodeAlternative2 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1") or input.endswith("1")'
+        ].join('\n');
 
-        var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true);
-        var paragraphs = feedback.getParagraphs();
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, wrongStudentCodeAlternative1,
+          auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult1) {
+          var feedback1 = learnerViewSubmissionResult1.getFeedback();
+          var stdout1 = learnerViewSubmissionResult1.getStdout();
+          expect(feedback1.isAnswerCorrect()).toEqual(false);
+          expect(feedback1.getParagraphs()[0].getContent()).toEqual(
+             'Mock BuggyOutputTest Message One for task1');
+          expect(stdout1).toBe('');
 
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, wrongStudentCodeAlternative2,
+            auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult2) {
+            var feedback2 = learnerViewSubmissionResult2.getFeedback();
+            var stdout2 = learnerViewSubmissionResult2.getStdout();
+            expect(feedback2.isAnswerCorrect()).toEqual(false);
+            expect(feedback2.getParagraphs()[0].getContent()).toEqual(
+              'Mock BuggyOutputTest Message Two for task1');
+            expect(stdout2).toBe('');
 
-        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true);
-        paragraphs = feedback.getParagraphs();
+            ConversationManagerService.processSolutionAsync(
+              orderedTasks, starterCode, wrongStudentCodeAlternative1,
+              auxiliaryCode, 'python'
+            ).then(function(learnerViewSubmissionResult3) {
+              var feedback3 = learnerViewSubmissionResult3.getFeedback();
+              var stdout3 = learnerViewSubmissionResult3.getStdout();
+              expect(feedback3.isAnswerCorrect()).toEqual(false);
+              expect(feedback3.getParagraphs()[0].getContent()).toEqual(
+                'Mock BuggyOutputTest Message Three for task1');
+              expect(stdout3).toBe('');
 
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[1]);
-
-        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true);
-        paragraphs = feedback.getParagraphs();
-
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[2]);
-
-        expect(
-          FeedbackGeneratorService._getBuggyOutputTestFeedback(
-            buggyOutputTest, true)
-        ).toBe(null);
+              ConversationManagerService.processSolutionAsync(
+                orderedTasks, starterCode, wrongStudentCodeAlternative2,
+                auxiliaryCode, 'python'
+              ).then(function(learnerViewSubmissionResult4) {
+                var feedback4 = learnerViewSubmissionResult4.getFeedback();
+                var stdout4 = learnerViewSubmissionResult4.getStdout();
+                expect(feedback4.isAnswerCorrect()).toEqual(false);
+                // At this point, we have run out of buggy-output test feedback.
+                expect(
+                  CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]
+                ).toContain(feedback4.getParagraphs()[0].getContent());
+                expect(stdout4).toBe('');
+                done();
+              });
+            });
+          });
+        });
       });
 
       it([
         'should return the same hint multiple times for buggy outputs, ',
         'provided a new error happened in between'
-      ].join(''), function() {
-        var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-          buggyOutputTestDict);
-        var codeEvalResult = CodeEvalResultObjectFactory.create(
-          'some code separator = "a"', 'some code', 'same output', [], [true],
-          [], null, null);
-        var codeEvalResultWithNewError = CodeEvalResultObjectFactory.create(
-          'other code separator = "a"', 'other code', 'some output',
-          [], [], [], 'ERROR MESSAGE', 'testInput');
+      ].join(''), function(done) {
+        var buggyOutputStudentCode = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1")'
+        ].join('\n');
+        var runtimeErrorStudentCode = [
+          'def mockMainFunction(input):',
+          '    return 5 / 0'
+        ].join('\n');
 
-        var feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true);
-        var paragraphs = feedback.getParagraphs();
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, buggyOutputStudentCode,
+          auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult1) {
+          var feedback1 = learnerViewSubmissionResult1.getFeedback();
+          expect(feedback1.isAnswerCorrect()).toEqual(false);
+          expect(feedback1.getParagraphs()[0].getContent()).toEqual(
+             'Mock BuggyOutputTest Message One for task1');
 
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, runtimeErrorStudentCode,
+            auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult2) {
+            var feedback2 = learnerViewSubmissionResult2.getFeedback();
+            expect(feedback2.isAnswerCorrect()).toEqual(false);
+            expect(feedback2.getParagraphs()[0].getContent()).toEqual([
+              'Looks like your code had a runtime error when evaluating the ',
+              'input "task_1_correctness_test_1".'
+            ].join(''));
 
-        var unusedRuntimeErrorFeedback = (
-          FeedbackGeneratorService._getBuggyOutputTestFeedback(
-            buggyOutputTest, true));
-
-        feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-          buggyOutputTest, true).getParagraphs();
-
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
+            ConversationManagerService.processSolutionAsync(
+              orderedTasks, starterCode, buggyOutputStudentCode,
+              auxiliaryCode, 'python'
+            ).then(function(learnerViewSubmissionResult3) {
+              var feedback3 = learnerViewSubmissionResult3.getFeedback();
+              expect(feedback3.isAnswerCorrect()).toEqual(false);
+              // The cycle is broken, so we start from the top of the
+              // buggy-message list.
+              expect(feedback3.getParagraphs()[0].getContent()).toEqual(
+                'Mock BuggyOutputTest Message One for task1');
+              done();
+            });
+          });
+        });
       });
-
     });
 
     describe("prereqCheckFailures", function() {
@@ -716,8 +751,9 @@ describe('ConversationManagerService', function() {
             return TaskObjectFactory.create(task);
           });
 
-          // The buggy function returns True for all cases. The student's code
-          // returns True in the first three cases and False in the fourth.
+          // The buggy function returns True for the first and third cases.
+          // The student's code returns True in the first three cases and False
+          // in the fourth.
           var studentCode = [
             'def mockMainFunction(input):',
             '    return input != "task_1_suite_2_test_2"',
@@ -744,11 +780,13 @@ describe('ConversationManagerService', function() {
           return TaskObjectFactory.create(task);
         });
 
-        // The buggy function returns True for all cases. The student's code
-        // returns True in the first three cases and False in the fourth.
+        // The buggy function returns True for the first and third cases.
+        // The student's code returns True in the first case and False for the
+        // rest.
         var studentCode = [
           'def mockMainFunction(input):',
-          '    return input != "task_1_suite_2_test_2"',
+          '    return input in [',
+          '        "task_1_suite_1_test_1", "task_2_correctness_test_1"]',
           ''
         ].join('\n');
 
@@ -777,7 +815,7 @@ describe('ConversationManagerService', function() {
             allowedOutputs: [true]
           }, {
             input: 'task_1_suite_1_test_2',
-            allowedOutputs: [true]
+            allowedOutputs: [false]
           }]
         }, {
           id: 'SUITE2',
@@ -794,7 +832,7 @@ describe('ConversationManagerService', function() {
         taskDict[0].suiteLevelTests = [{
           testSuiteIdsThatMustPass: ['SUITE1'],
           testSuiteIdsThatMustFail: ['SUITE2'],
-          messages: ['suite_message1']
+          messages: ['suite_message1', 'suite_message2']
         }];
         question = QuestionObjectFactory.create({
           title: TITLE,
@@ -815,7 +853,7 @@ describe('ConversationManagerService', function() {
           // This code passes suite 1 and fails suite 2.
           var studentCode = [
             'def mockMainFunction(input):',
-            '    return True',
+            '    return input.endswith("1")',
             ''
           ].join('\n');
 
@@ -844,7 +882,7 @@ describe('ConversationManagerService', function() {
         // failing the suite.
         var studentCode = [
           'def mockMainFunction(input):',
-          '    return input == "task_1_suite_1_test_1"',
+          '    return True',
           ''
         ].join('\n');
 
@@ -871,7 +909,7 @@ describe('ConversationManagerService', function() {
         // This code passes suite 1, and passes one of the two tests in suite 2.
         var studentCode = [
           'def mockMainFunction(input):',
-          '    return input != "task_1_suite_2_test_2"',
+          '    return input.endswith("1")',
           ''
         ].join('\n');
 
@@ -887,143 +925,157 @@ describe('ConversationManagerService', function() {
         });
       });
 
+      it([
+        'should return the next hint in sequence for suite-level tests, but ',
+        'only if the code has been changed'
+      ].join(''), function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
 
-      // IMPLEMENT THE FOLLOWING THREE TESTS
+        // This code passes suite 1, and fails suite 2.
+        var studentCode1 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1")',
+          ''
+        ].join('\n');
 
+        // This code also passes suite 1, and fails suite 2.
+        var studentCode2 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1") or input.endswith("1")',
+          ''
+        ].join('\n');
 
-    var suiteLevelTestDict = {
-      testSuiteIdsThatMustPass: ['SUITE_P1', 'SUITE_P2', 'SUITE_P3'],
-      testSuiteIdsThatMustFail: ['SUITE_F1'],
-      messages: ['message1', 'message2', 'message3']
-    };
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult1) {
+          var feedback = learnerViewSubmissionResult1.getFeedback();
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'suite_message1');
 
-    it([
-      'should return the next hint in sequence for suite-level tests, but ',
-      'only if the code has been changed'
-    ].join(''), function() {
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'some code separator = "a"', 'some code', 'same output',
-        [], [true], [], null, null);
-      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'new code separator = "a"', 'new code', 'same output',
-        [], [true], [], null, null);
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult2) {
+            feedback = learnerViewSubmissionResult2.getFeedback();
+            expect(feedback.getParagraphs()[0].getContent()).toBe(
+              'suite_message1');
 
-      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      expect(feedback.getFeedbackCategory()).toEqual(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+            ConversationManagerService.processSolutionAsync(
+              orderedTasks, starterCode, studentCode2, auxiliaryCode, 'python'
+            ).then(function(learnerViewSubmissionResult3) {
+              var feedback = learnerViewSubmissionResult3.getFeedback();
+              expect(feedback.getParagraphs()[0].getContent()).toBe(
+                'suite_message2');
+              done();
+            });
+          });
+        });
+      });
 
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
+      it([
+        'should return incorrect-output feedback if a student reaches the end ',
+        'of the hints.'
+      ].join(''), function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
 
-      // The code is changed. The feedback changes.
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
+        // This code passes suite 1, and fails suite 2.
+        var studentCode1 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1")',
+          ''
+        ].join('\n');
 
-      // The code is not changed. The feedback remains the same.
-      paragraphs = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, false).getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
-    });
+        // This code also passes suite 1, and fails suite 2.
+        var studentCode2 = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1") or input.endswith("1")',
+          ''
+        ].join('\n');
 
-    it([
-      'should return null if a student reaches the end of the available hints.'
-    ].join(''), function() {
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var codeEvalResults = [
-        CodeEvalResultObjectFactory.create(
-          'code 1 separator = "a"', 'code 1', 'same output',
-          [], [true], [], null, null),
-        CodeEvalResultObjectFactory.create(
-          'code 2 separator = "a"', 'code 2', 'same output',
-          [], [true], [], null, null),
-        CodeEvalResultObjectFactory.create(
-          'code 3 separator = "a"', 'code 3', 'same output',
-          [], [true], [], null, null)
-      ];
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult1) {
+          var feedback = learnerViewSubmissionResult1.getFeedback();
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'suite_message1');
 
-      for (var i = 0; i < 3; i++) {
-        var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-          suiteLevelTest, true);
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, studentCode2, auxiliaryCode, 'python'
+          ).then(function(learnerViewSubmissionResult2) {
+            feedback = learnerViewSubmissionResult2.getFeedback();
+            expect(feedback.getParagraphs()[0].getContent()).toBe(
+              'suite_message2');
 
-        var paragraphs = feedback.getParagraphs();
-        expect(paragraphs.length).toEqual(1);
-        expect(paragraphs[0].isTextParagraph()).toBe(true);
-        expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[i]);
-      }
+            ConversationManagerService.processSolutionAsync(
+              orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
+            ).then(function(learnerViewSubmissionResult3) {
+              var feedback = learnerViewSubmissionResult3.getFeedback();
+              // We've reached the end of the hints.
+              expect(
+                CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]
+              ).toContain(feedback.getParagraphs()[0].getContent());
+              done();
+            });
+          });
+        });
+      });
 
-      // We've now exhausted the list of messages.
-      expect(
-        FeedbackGeneratorService._getSuiteLevelTestFeedback(
-          suiteLevelTest, true)
-      ).toBe(null);
-    });
+      it([
+        'should reset the suite-level counter if other types of feedback are ',
+        'given in between'
+      ].join(''), function(done) {
+        orderedTasks = taskDict.map(function(task) {
+          return TaskObjectFactory.create(task);
+        });
 
-    it([
-      'should reset the suite-level counter if other types of feedback are ' +
-      'given in between'
-    ].join(''), function() {
-      var buggyOutputTestDict = {
-        buggyFunction: 'AuxiliaryCode.countNumberOfParentheses',
-        messages: ['buggy1', 'buggy2']
-      };
+        // This code passes suite 1, and fails suite 2.
+        var suiteLevelFailureStudentCode = [
+          'def mockMainFunction(input):',
+          '    return input.endswith("1")',
+          ''
+        ].join('\n');
 
-      var suiteLevelTest = SuiteLevelTestObjectFactory.create(
-        suiteLevelTestDict);
-      var buggyOutputTest = BuggyOutputTestObjectFactory.create(
-        buggyOutputTestDict);
+        // This code leads to a runtime error.
+        var runtimeErrorStudentCode = [
+          'def mockMainFunction(input):',
+          '    return 5 / 0',
+          ''
+        ].join('\n');
 
-      var codeEvalResult1 = CodeEvalResultObjectFactory.create(
-        'code 1 separator = "a"', 'code 1', 'same output',
-        [], [true], [], null, null);
-      var codeEvalResult2 = CodeEvalResultObjectFactory.create(
-        'code 2 separator = "a"', 'code 2', 'same output',
-        [], [true], [], null, null);
+        ConversationManagerService.processSolutionAsync(
+          orderedTasks, starterCode, suiteLevelFailureStudentCode,
+          auxiliaryCode, 'python'
+        ).then(function(learnerViewSubmissionResult1) {
+          var feedback = learnerViewSubmissionResult1.getFeedback();
+          expect(feedback.getParagraphs()[0].getContent()).toBe(
+            'suite_message1');
 
-      var feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
+          ConversationManagerService.processSolutionAsync(
+            orderedTasks, starterCode, runtimeErrorStudentCode, auxiliaryCode,
+            'python'
+          ).then(function(learnerViewSubmissionResult2) {
+            feedback = learnerViewSubmissionResult2.getFeedback();
+            expect(feedback.getParagraphs()[0].getContent()).toBe([
+              'Looks like your code had a runtime error when evaluating the ',
+              'input "task_1_suite_1_test_1".'
+            ].join(''));
 
-      var paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[1]);
-
-      // Now get buggy output feedback once.
-      feedback = FeedbackGeneratorService._getBuggyOutputTestFeedback(
-        buggyOutputTest, true);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(buggyOutputTestDict.messages[0]);
-
-      // The index of suite-level feedback then gets reset to 0.
-      feedback = FeedbackGeneratorService._getSuiteLevelTestFeedback(
-        suiteLevelTest, true);
-      paragraphs = feedback.getParagraphs();
-      expect(paragraphs.length).toEqual(1);
-      expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toBe(suiteLevelTestDict.messages[0]);
-    });
-
-
-
-
-
-
-
+            ConversationManagerService.processSolutionAsync(
+              orderedTasks, starterCode, suiteLevelFailureStudentCode,
+              auxiliaryCode, 'python'
+            ).then(function(learnerViewSubmissionResult3) {
+              feedback = learnerViewSubmissionResult3.getFeedback();
+              // We start again at the beginning of the suite-level hints.
+              expect(feedback.getParagraphs()[0].getContent()).toBe(
+                'suite_message1');
+              done();
+            });
+          });
+        });
+      });
     });
 
     describe('incorrect-output tests', function() {

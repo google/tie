@@ -68,7 +68,7 @@ tie.factory('ConversationManagerService', [
         var firstFailingTestCaseIndex = null;
         var observedOutputForFirstFailingTest = null;
 
-        for (j = 0; j < testSuites.length; j++) {
+        for (var j = 0; j < testSuites.length; j++) {
           if (firstFailingTestCase === null) {
             var testCases = testSuites[j].getTestCases();
             for (var k = 0; k < testCases.length; k++) {
@@ -85,7 +85,7 @@ tie.factory('ConversationManagerService', [
           }
         }
 
-        for (var j = 0; j < buggyOutputTests.length; j++) {
+        for (j = 0; j < buggyOutputTests.length; j++) {
           if (buggyOutputTestResults[i][j]) {
             var testMessages = buggyOutputTests[j].getMessages();
             var previousMessageIndex = (
@@ -129,7 +129,7 @@ tie.factory('ConversationManagerService', [
           }
         }
 
-        if (firstFailingTestCase) {
+        if (firstFailingTestCase !== null) {
           return (
             FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
               firstFailingTestCase, firstFailingTestSuiteId,
@@ -323,6 +323,7 @@ tie.factory('ConversationManagerService', [
                 language);
 
               if (errorFeedbackDetails) {
+                var feedbackDetails = errorFeedbackDetails;
                 switch (errorFeedbackDetails.getFeedbackCategory()) {
                   case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
                     feedback = (
@@ -349,7 +350,7 @@ tie.factory('ConversationManagerService', [
                     throw Error('Invalid feedback type.');
                 }
               } else {
-                var feedbackDetails = _computeFeedbackDetailsFromTestResults(
+                feedbackDetails = _computeFeedbackDetailsFromTestResults(
                   tasks, preprocessedCodeEvalResult);
                 switch (feedbackDetails.getFeedbackCategory()) {
                   case FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE:

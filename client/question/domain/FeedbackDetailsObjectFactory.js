@@ -138,7 +138,8 @@ tie.factory('FeedbackDetailsObjectFactory', [
        * @type {number}
        * @private
        */
-      this._specificTestIndex = specificTestIndex || null;
+      this._specificTestIndex = (
+        angular.isNumber(specificTestIndex) ? specificTestIndex : null);
 
       /**
        * The list of feedback messages corresponding to buggy-output or
