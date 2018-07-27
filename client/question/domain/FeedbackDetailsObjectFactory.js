@@ -171,6 +171,10 @@ tie.factory('FeedbackDetailsObjectFactory', [
       return new FeedbackDetails(FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
     };
 
+    FeedbackDetails.createMemoryLimitErrorFeedback = function() {
+      return new FeedbackDetails(FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+    };
+
     FeedbackDetails.createStackExceededFeedback = function() {
       return new FeedbackDetails(FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
     };

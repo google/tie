@@ -550,7 +550,7 @@ describe('ConversationManagerService', function() {
     });
 
     describe('should return the correct feedback if', function() {
-      it('there is a memory error', function(done) {
+      it('there is a stack exceeded error', function(done) {
         var studentCode = [
           'def mockMainFunction(input):',
           '    return mockMainFunction(input)',
@@ -563,9 +563,8 @@ describe('ConversationManagerService', function() {
           var feedback = learnerViewSubmissionResult.getFeedback();
           var stdout = learnerViewSubmissionResult.getStdout();
           expect(feedback.getParagraphs()[0].getContent()).toEqual([
-            "Your code used more memory than we allow for this exercise, ",
-            "likely because your code might be hitting an infinite recursive ",
-            "loop. Check to see that your recursive calls terminate."
+            "Your code appears to be hitting an infinite recursive loop. ",
+            "Check to make sure that your recursive calls terminate."
           ].join(''));
           expect(stdout).toBe(null);
           done();
