@@ -33,10 +33,21 @@ tie.factory('ParentPageService', [
      * @param {String} messageData Data to be sent to parent page.
      */
     var sendMessage = function(messageType, messageData) {
-      if (PARENT_PAGE_URL_ORIGIN) {
+      if (PARENT_PAGE_URL_ORIGIN && urlOriginMatchesForParentPageAndFrame()) {
         $window.parent.postMessage(
           JSON.stringify(messageData), PARENT_PAGE_URL_ORIGIN);
       }
+    };
+
+    /**
+     * Checks whether the parent window has the same URL origin as
+     * specified in config.
+     *
+     * @returns {boolean}
+     */
+    var urlOriginMatchesForParentPageAndFrame = function() {
+      var parentFrameUrlOrigin = $window.parent.location.origin;
+      return parentFrameUrlOrigin === PARENT_PAGE_URL_ORIGIN;
     };
 
     return {
@@ -47,6 +58,17 @@ tie.factory('ParentPageService', [
        */
       sendRawCode: function(rawCode) {
         sendMessage(MESSAGE_TYPE_RAW_CODE, rawCode);
+      },
+
+      /**
+       * Returns whether TIE is being iframed by a page that has the same
+       * URL origin as specified in config.
+       *
+       * @returns {boolean}
+       */
+      isIframed: function() {
+        return PARENT_PAGE_URL_ORIGIN !== null &&
+          urlOriginMatchesForParentPageAndFrame();
       }
     };
   }
