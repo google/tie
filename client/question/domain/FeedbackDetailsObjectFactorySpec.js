@@ -114,5 +114,56 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
+  describe('buggy-output FeedbackDetails object', function() {
+    it('should create a buggy-output FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+      expect(feedbackDetails.getTaskIndex()).toBe(0);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
+      expect(feedbackDetails.getMessageIndex()).toBe(1);
+      expect(feedbackDetails.getMessage()).toBe('b');
+    });
+  });
 
+  describe('suite-level FeedbackDetails object', function() {
+    it('should create a suite-level FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+      expect(feedbackDetails.getTaskIndex()).toBe(0);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
+      expect(feedbackDetails.getMessageIndex()).toBe(1);
+      expect(feedbackDetails.getMessage()).toBe('b');
+    });
+  });
+
+  describe('incorrect-output FeedbackDetails object', function() {
+    it('should create a incorrect-output FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          'test_case', 'suite_id_1', 3, 'abc'));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
+      expect(feedbackDetails.getTestCase()).toBe('test_case');
+      expect(feedbackDetails.getTestSuiteId()).toBe('suite_id_1');
+      expect(feedbackDetails.getTestCaseIndex()).toBe(3);
+      expect(feedbackDetails.getObservedOutput()).toBe('abc');
+    });
+  });
+
+  describe('performance FeedbackDetails object', function() {
+    it('should create a performance FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+          'linear'));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
+      expect(feedbackDetails.getExpectedPerformance()).toBe('linear');
+    });
+  });
 });
