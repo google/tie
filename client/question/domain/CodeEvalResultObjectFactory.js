@@ -46,12 +46,16 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @param {ErrorTraceback} errorTraceback Traceback of error (if there is
      *    one)
      * @param {string} errorInput Input that caused error (if there is one)
+     * @param {string} timeLimitExceeded Whether or not the learner's code
+     *    exceeded our set time limit
+     * @param {string} memoryLimitExceeded Whether or not the learner's code
+     *    exceeded our set memory limit
      * @constructor
      */
     var CodeEvalResult = function(
         preprocessedCode, rawCode, observedStdouts, observedOutputs,
         buggyOutputTestResults, performanceTestResults, errorTraceback,
-        errorInput) {
+        errorInput, timeLimitExceeded, memoryLimitExceeded) {
       /**
        * @type {string}
        * @private
@@ -99,6 +103,18 @@ tie.factory('CodeEvalResultObjectFactory', [
        * @private
        */
       this._errorInput = errorInput;
+
+      /**
+       * @type {boolean}
+       * @private
+       */
+      this._timeLimitExceeded = timeLimitExceeded;
+
+      /**
+       * @type {boolean}
+       * @private
+       */
+      this._memoryLimitExceeded = memoryLimitExceeded;
     };
 
     // Instance methods.
@@ -143,17 +159,25 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @returns {boolean}
      */
     CodeEvalResult.prototype.hasTimeLimitError = function() {
-      var errorString = this.getErrorString();
-      return (errorString && errorString.startsWith('TimeLimitError'));
+      return this._timeLimitExceeded;
     };
 
     /**
-     * Returns a boolean indicating whether the code run exceeded the recursion
+     * Returns a boolean indicating whether the code run exceeded the memory
      * limit.
      *
      * @returns {boolean}
      */
-    CodeEvalResult.prototype.hasRecursionLimitError = function() {
+    CodeEvalResult.prototype.hasMemoryLimitError = function() {
+      return this._memoryLimitExceeded;
+    };
+
+    /**
+     * Returns a boolean indicating whether the code recursed too many times.
+     *
+     * @returns {boolean}
+     */
+    CodeEvalResult.prototype.hasStackExceededError = function() {
       var errorString = this.getErrorString();
       return errorString && (
         errorString.startsWith('ExternalError: RangeError') ||
@@ -403,16 +427,20 @@ tie.factory('CodeEvalResultObjectFactory', [
      * @param {Array} performanceTestResults Performance test results
      * @param {ErrorTraceback} errorTraceback Traceback of the error
      * @param {string} errorInput Input that caused the error
+     * @param {string} timeLimitExceeded Whether or not the learner's code
+     *    exceeded our set time limit
+     * @param {string} memoryLimitExceeded Whether or not the learner's code
+     *    exceeded our set memory limit
      * @returns {CodeEvalResult}
      */
     CodeEvalResult.create = function(
         preprocessedCode, rawCode, observedStdouts, observedOutputs,
         buggyOutputTestResults, performanceTestResults, errorTraceback,
-        errorInput) {
+        errorInput, timeLimitExceeded, memoryLimitExceeded) {
       return new CodeEvalResult(
         preprocessedCode, rawCode, observedStdouts, observedOutputs,
         buggyOutputTestResults, performanceTestResults, errorTraceback,
-        errorInput);
+        errorInput, timeLimitExceeded, memoryLimitExceeded);
     };
 
     return CodeEvalResult;

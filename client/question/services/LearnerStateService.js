@@ -18,8 +18,8 @@
  */
 
 tie.factory('LearnerStateService', [
-  'LANGUAGE_UNFAMILIARITY_THRESHOLD',
-  function(LANGUAGE_UNFAMILIARITY_THRESHOLD) {
+  'LANGUAGE_UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
+  function(LANGUAGE_UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES) {
     /**
      * Counter to keep track of language unfamiliarity errors (which includes
      * syntax errors and wrong language errors).
@@ -44,7 +44,55 @@ tie.factory('LearnerStateService', [
      */
     var previousRuntimeErrorString = null;
 
+    /**
+     * The last piece of code submitted by the user.
+     *
+     * @type {string|null}
+     */
+    var previousRawCode = null;
+
+    /**
+     * The most recent feedback details given to the user.
+     *
+     * @type {FeedbackDetails|null}
+     */
+    var previousFeedbackDetails = null;
+
     return {
+      hasRawCodeChanged: function(newRawCode) {
+        return newRawCode !== previousRawCode;
+      },
+      recordRawCode: function(newRawCode) {
+        previousRawCode = newRawCode;
+      },
+      recordFeedbackDetails: function(newFeedbackDetails) {
+        previousFeedbackDetails = newFeedbackDetails;
+      },
+      getPreviousFeedbackDetails: function() {
+        return previousFeedbackDetails;
+      },
+      getPreviousMessageIndexIfFromSameTest: function(
+          feedbackCategory, taskIndex, specificTestIndex) {
+        if (feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+            feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
+          throw Error('Invalid feedback category: ' + feedbackCategory);
+        }
+
+        if (previousFeedbackDetails === null) {
+          return null;
+        }
+
+        var currentTestMatchesPreviousTest = (
+          feedbackCategory === previousFeedbackDetails.getFeedbackCategory() &&
+          taskIndex === previousFeedbackDetails.getTaskIndex() &&
+          specificTestIndex === previousFeedbackDetails.getSpecificTestIndex());
+
+        if (currentTestMatchesPreviousTest) {
+          return previousFeedbackDetails.getMessageIndex();
+        } else {
+          return null;
+        }
+      },
       recordRuntimeError: function(runtimeErrorString) {
         if (runtimeErrorString) {
           if (runtimeErrorString === previousRuntimeErrorString) {

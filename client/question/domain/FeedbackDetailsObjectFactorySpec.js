@@ -31,9 +31,23 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('time-limit error FeedbackDetails object', function() {
     it('should create a time-limit FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback());
+        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
+      expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getLanguage).toThrow();
+      expect(feedbackDetails.getErrorInput).toThrow();
+      expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
+        false);
+    });
+  });
+
+  describe('memory-limit error FeedbackDetails object', function() {
+    it('should create a memory-limit FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createMemoryLimitErrorFeedbackDetails());
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
       expect(feedbackDetails.getLanguage).toThrow();
       expect(feedbackDetails.getErrorInput).toThrow();
@@ -45,7 +59,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('stack-exceeded error FeedbackDetails object', function() {
     it('should create a stack exceeded FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createStackExceededFeedback());
+        FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
@@ -59,7 +73,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('server error FeedbackDetails object', function() {
     it('should create a server error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createServerErrorFeedback());
+        FeedbackDetailsObjectFactory.createServerErrorFeedbackDetails());
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SERVER_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
@@ -73,7 +87,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('runtime error FeedbackDetails object', function() {
     it('should create a runtime error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+        FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
           'error string', 'python', 'abc', true));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.RUNTIME_ERROR);
@@ -88,7 +102,7 @@ describe('FeedbackDetailsObjectFactory', function() {
   describe('syntax error FeedbackDetails object', function() {
     it('should create a syntax error FeedbackDetails object', function() {
       var feedbackDetails = (
-        FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+        FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
           'error string', 'python', false));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
@@ -100,5 +114,56 @@ describe('FeedbackDetailsObjectFactory', function() {
     });
   });
 
+  describe('buggy-output FeedbackDetails object', function() {
+    it('should create a buggy-output FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+      expect(feedbackDetails.getTaskIndex()).toBe(0);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
+      expect(feedbackDetails.getMessageIndex()).toBe(1);
+      expect(feedbackDetails.getMessage()).toBe('b');
+    });
+  });
 
+  describe('suite-level FeedbackDetails object', function() {
+    it('should create a suite-level FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+          0, 1, ['a', 'b'], 1));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+      expect(feedbackDetails.getTaskIndex()).toBe(0);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
+      expect(feedbackDetails.getMessageIndex()).toBe(1);
+      expect(feedbackDetails.getMessage()).toBe('b');
+    });
+  });
+
+  describe('incorrect-output FeedbackDetails object', function() {
+    it('should create a incorrect-output FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          'test_case', 'suite_id_1', 3, 'abc'));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
+      expect(feedbackDetails.getTestCase()).toBe('test_case');
+      expect(feedbackDetails.getTestSuiteId()).toBe('suite_id_1');
+      expect(feedbackDetails.getTestCaseIndex()).toBe(3);
+      expect(feedbackDetails.getObservedOutput()).toBe('abc');
+    });
+  });
+
+  describe('performance FeedbackDetails object', function() {
+    it('should create a performance FeedbackDetails object', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+          'linear'));
+      expect(feedbackDetails.getFeedbackCategory()).toBe(
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
+      expect(feedbackDetails.getExpectedPerformance()).toBe('linear');
+    });
+  });
 });

@@ -19,21 +19,145 @@
 tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'TranscriptService', 'CodeSubmissionObjectFactory',
+  'CodeSubmissionObjectFactory',
   'LearnerViewSubmissionResultObjectFactory', 'FEEDBACK_CATEGORIES',
   'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
   'EXECUTION_CONTEXT_RUN_WITH_TESTS', 'LearnerStateService',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      TranscriptService, CodeSubmissionObjectFactory,
+      CodeSubmissionObjectFactory,
       LearnerViewSubmissionResultObjectFactory, FEEDBACK_CATEGORIES,
       FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
       EXECUTION_CONTEXT_RUN_WITH_TESTS, LearnerStateService) {
 
     /**
      * Determines the feedback details that fully characterize the feedback
-     * that the learner should receive.
+     * that the learner should receive, based on the test results. Callers must
+     * ensure that this function is called only if all test cases have run to
+     * completion.
+     *
+     * @param {Array} tasks Tasks associated with the problem that include
+     *    the tests the user's code must pass.
+     * @param {CodeEvalResult} codeEvalResult The evaluation result for the
+     *   learner's code.
+     *
+     * @returns {FeedbackDetails|null}
+     */
+    var _computeFeedbackDetailsFromTestResults = function(
+        tasks, codeEvalResult) {
+      var codeHasChanged = LearnerStateService.hasRawCodeChanged(
+        codeEvalResult.getRawCode());
+      if (!codeHasChanged) {
+        return LearnerStateService.getPreviousFeedbackDetails();
+      }
+
+      var buggyOutputTestResults = codeEvalResult.getBuggyOutputTestResults();
+      var observedOutputs = codeEvalResult.getObservedOutputs();
+      var performanceTestResults = codeEvalResult.getPerformanceTestResults();
+
+      for (var i = 0; i < tasks.length; i++) {
+        var buggyOutputTests = tasks[i].getBuggyOutputTests();
+        var suiteLevelTests = tasks[i].getSuiteLevelTests();
+        var testSuites = tasks[i].getTestSuites();
+        var performanceTests = tasks[i].getPerformanceTests();
+        var passingSuiteIds = codeEvalResult.getPassingSuiteIds(tasks, i);
+
+        var firstFailingTestCase = null;
+        var firstFailingTestSuiteId = null;
+        var firstFailingTestCaseIndex = null;
+        var observedOutputForFirstFailingTest = null;
+
+        for (var j = 0; j < testSuites.length; j++) {
+          if (firstFailingTestCase === null) {
+            var testCases = testSuites[j].getTestCases();
+            for (var k = 0; k < testCases.length; k++) {
+              var testCase = testCases[k];
+              var observedOutput = observedOutputs[i][j][k];
+              if (!testCase.matchesOutput(observedOutput)) {
+                firstFailingTestCase = testCase;
+                firstFailingTestSuiteId = testSuites[j].getId();
+                firstFailingTestCaseIndex = k;
+                observedOutputForFirstFailingTest = observedOutput;
+                break;
+              }
+            }
+          }
+        }
+
+        for (j = 0; j < buggyOutputTests.length; j++) {
+          if (buggyOutputTestResults[i][j]) {
+            var testMessages = buggyOutputTests[j].getMessages();
+            var previousMessageIndex = (
+              LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+                FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, i, j));
+            var messageIndex = (
+              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
+
+            if (messageIndex === testMessages.length) {
+              // Do correctness feedback instead.
+               // eslint-disable-next-line max-len
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                firstFailingTestCase, firstFailingTestSuiteId,
+                firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
+            } else {
+              return (
+                FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+                  i, j, testMessages, messageIndex));
+            }
+          }
+        }
+
+        for (j = 0; j < suiteLevelTests.length; j++) {
+          if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+            testMessages = suiteLevelTests[j].getMessages();
+            previousMessageIndex = (
+              LearnerStateService.getPreviousMessageIndexIfFromSameTest(
+                FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j));
+            messageIndex = (
+              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
+
+            if (messageIndex === testMessages.length) {
+              // Do correctness feedback instead.
+              // eslint-disable-next-line max-len
+              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                firstFailingTestCase, firstFailingTestSuiteId,
+                firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
+            } else {
+              return (
+                FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+                  i, j, testMessages, messageIndex));
+            }
+          }
+        }
+
+        if (firstFailingTestCase !== null) {
+          return (
+            FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+              firstFailingTestCase, firstFailingTestSuiteId,
+              firstFailingTestCaseIndex, observedOutputForFirstFailingTest));
+        }
+
+        for (j = 0; j < performanceTests.length; j++) {
+          var expectedPerformance = (
+            performanceTests[j].getExpectedPerformance());
+          var observedPerformance = performanceTestResults[i][j];
+
+          if (expectedPerformance !== observedPerformance) {
+            return (
+              FeedbackDetailsObjectFactory.createPerformanceFeedbackDetails(
+                expectedPerformance));
+          }
+        }
+      }
+
+      return FeedbackDetailsObjectFactory.createSuccessFeedbackDetails();
+    };
+
+    /**
+     * Determines the feedback details that fully characterize the feedback
+     * that the learner should receive, based on errors triggered during the
+     * run.
      *
      * @param {CodeEvalResult} codeEvalResult The evaluation result for the
      *   learner's code.
@@ -41,18 +165,24 @@ tie.factory('ConversationManagerService', [
      *   learner's code is run (either "compilation" or "run with tests").
      * @param {string} language The language the code is written in.
      *
-     * @returns {FeedbackDetails}
+     * @returns {FeedbackDetails|null} The feedback details, or null if the
+     * code fully runs.
      */
-    var computeFeedbackDetails = function(
+    var _computeFeedbackDetailsForErrorCases = function(
         codeEvalResult, executionContext, language) {
       var errorString = codeEvalResult.getErrorString();
 
       if (codeEvalResult.hasTimeLimitError()) {
-        return FeedbackDetailsObjectFactory.createTimeLimitErrorFeedback();
-      } else if (codeEvalResult.hasRecursionLimitError()) {
-        return FeedbackDetailsObjectFactory.createStackExceededFeedback();
+        return (
+          FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
+      } else if (codeEvalResult.hasMemoryLimitError()) {
+        return (
+          FeedbackDetailsObjectFactory.createMemoryLimitErrorFeedbackDetails());
+      } else if (codeEvalResult.hasStackExceededError()) {
+        return (
+          FeedbackDetailsObjectFactory.createStackExceededFeedbackDetails());
       } else if (codeEvalResult.hasServerError()) {
-        return FeedbackDetailsObjectFactory.createServerErrorFeedback();
+        return FeedbackDetailsObjectFactory.createServerErrorFeedbackDetails();
       } else if (errorString) {
         if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
           LearnerStateService.recordRuntimeError(errorString);
@@ -71,11 +201,11 @@ tie.factory('ConversationManagerService', [
         }
 
         if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
-          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedback(
+          return FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
             errorString, language, codeEvalResult.getErrorInput(),
             languageUnfamiliarityFeedbackIsNeeded);
         } else {
-          return FeedbackDetailsObjectFactory.createSyntaxErrorFeedback(
+          return FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
             errorString, language, languageUnfamiliarityFeedbackIsNeeded);
         }
       }
@@ -123,8 +253,6 @@ tie.factory('ConversationManagerService', [
           feedback = FeedbackGeneratorService.getPrereqFailureFeedback(
             potentialPrereqCheckFailure, languageUnfamiliarityFeedbackIsNeeded,
             language);
-          TranscriptService.recordSnapshot(
-            potentialPrereqCheckFailure, null, feedback);
           return Promise.resolve(
             LearnerViewSubmissionResultObjectFactory.create(feedback, null));
         } else {
@@ -133,7 +261,7 @@ tie.factory('ConversationManagerService', [
           return CodeRunnerDispatcherService.compileCodeAsync(
             language, studentCode
           ).then(function(codeEvalResult) {
-            var potentialFeedbackDetails = computeFeedbackDetails(
+            var potentialFeedbackDetails = _computeFeedbackDetailsForErrorCases(
               codeEvalResult, EXECUTION_CONTEXT_COMPILATION, language);
 
             if (potentialFeedbackDetails) {
@@ -143,6 +271,10 @@ tie.factory('ConversationManagerService', [
                 case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
                   feedback = (
                     FeedbackGeneratorService.getTimeoutErrorFeedback());
+                  break;
+                case FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR:
+                  feedback = (
+                    FeedbackGeneratorService.getMemoryLimitErrorFeedback());
                   break;
                 case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
                   feedback = (
@@ -162,7 +294,10 @@ tie.factory('ConversationManagerService', [
                     potentialFeedbackDetails.getFeedbackCategory());
               }
 
-              TranscriptService.recordSnapshot(null, codeEvalResult, feedback);
+              LearnerStateService.recordRawCode(studentCode);
+              LearnerStateService.recordFeedbackDetails(
+                potentialFeedbackDetails);
+
               return LearnerViewSubmissionResultObjectFactory.create(
                 feedback, null);
             }
@@ -179,21 +314,20 @@ tie.factory('ConversationManagerService', [
             return CodeRunnerDispatcherService.runCodeAsync(
               language, preprocessedCodeObject
             ).then(function(preprocessedCodeEvalResult) {
-              var feedbackDetails = computeFeedbackDetails(
+              var errorFeedbackDetails = _computeFeedbackDetailsForErrorCases(
                 preprocessedCodeEvalResult, EXECUTION_CONTEXT_RUN_WITH_TESTS,
                 language);
 
-              // TODO(sll): Once all feedback categories have been migrated
-              // here, remove this null case.
-              if (feedbackDetails === null) {
-                feedback = FeedbackGeneratorService.getFeedback(
-                  tasks, preprocessedCodeEvalResult,
-                  codeSubmission.getRawCodeLineIndexes());
-              } else {
-                switch (feedbackDetails.getFeedbackCategory()) {
+              if (errorFeedbackDetails) {
+                var feedbackDetails = errorFeedbackDetails;
+                switch (errorFeedbackDetails.getFeedbackCategory()) {
                   case FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR:
                     feedback = (
                       FeedbackGeneratorService.getTimeoutErrorFeedback());
+                    break;
+                  case FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR:
+                    feedback = (
+                      FeedbackGeneratorService.getMemoryLimitErrorFeedback());
                     break;
                   case FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR:
                     feedback = (
@@ -205,20 +339,47 @@ tie.factory('ConversationManagerService', [
                     break;
                   case FEEDBACK_CATEGORIES.RUNTIME_ERROR:
                     feedback = FeedbackGeneratorService.getRuntimeErrorFeedback(
-                      feedbackDetails,
-                      codeSubmission.getRawCodeLineIndexes());
-                    break;
-                  case null:
-                    feedback = FeedbackGeneratorService.getFeedback(
-                      tasks, preprocessedCodeEvalResult,
+                      errorFeedbackDetails,
                       codeSubmission.getRawCodeLineIndexes());
                     break;
                   default:
                     throw Error('Invalid feedback type.');
                 }
+              } else {
+                feedbackDetails = _computeFeedbackDetailsFromTestResults(
+                  tasks, preprocessedCodeEvalResult);
+                switch (feedbackDetails.getFeedbackCategory()) {
+                  case FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE:
+                    feedback = (
+                      FeedbackGeneratorService.getBuggyOutputFeedback(
+                        feedbackDetails));
+                    break;
+                  case FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE:
+                    feedback = (
+                      FeedbackGeneratorService.getSuiteLevelFeedback(
+                        feedbackDetails));
+                    break;
+                  case FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE:
+                    feedback = (
+                      FeedbackGeneratorService.getIncorrectOutputFeedback(
+                        feedbackDetails));
+                    break;
+                  case FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE:
+                    feedback = (
+                      FeedbackGeneratorService.getPerformanceTestFeedback(
+                        feedbackDetails));
+                    break;
+                  case FEEDBACK_CATEGORIES.SUCCESSFUL:
+                    feedback = FeedbackGeneratorService.getSuccessFeedback();
+                    break;
+                  default:
+                    throw Error('Invalid feedback type.');
+                }
               }
-              TranscriptService.recordSnapshot(
-                null, preprocessedCodeEvalResult, feedback);
+
+              LearnerStateService.recordRawCode(
+                preprocessedCodeEvalResult.getRawCode());
+              LearnerStateService.recordFeedbackDetails(feedbackDetails);
 
               var stdout = preprocessedCodeEvalResult.getStdoutToDisplay(tasks);
               return LearnerViewSubmissionResultObjectFactory.create(
