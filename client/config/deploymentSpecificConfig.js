@@ -21,3 +21,9 @@ tieConfig.constant('SERVER_URL', null);
 tieConfig.constant('PRIMER_DIRECTORY_URL', 'docs/');
 
 tieConfig.constant('ALLOW_PRINTING', false);
+
+/**
+ * For the definition of an origin, please see
+ * https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy.
+ */
+tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);
