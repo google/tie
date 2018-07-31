@@ -20,11 +20,12 @@ describe('ParentPageService', function() {
   var ParentPageService;
 
   beforeEach(module('tie'));
-  var setParentPageUrlOrigin = function(parentPageURLOrigin) {
+  var setParentPageOrigin = function(parentPageOrigin) {
     module('tieConfig', function($provide) {
-      $provide.constant('PARENT_PAGE_URL_ORIGIN', parentPageURLOrigin);
+      $provide.constant('EXPECTED_PARENT_PAGE_ORIGIN', parentPageOrigin);
     });
   };
+
   var parentPageObject = {
     // Execution of this method signifies that the window received an event.
     receiveMessage: function() {
@@ -32,32 +33,12 @@ describe('ParentPageService', function() {
       return;
     }
   };
-  window.parent.addEventListener('message', function() {
-    parentPageObject.receiveMessage();
-  });
 
   describe('sendRawCode', function() {
-    describe('when there is a specified parent page', function() {
-      beforeEach(function(done) {
-        spyOn(parentPageObject, 'receiveMessage').and.callFake(function() {
-          done();
-        });
-        setParentPageUrlOrigin('*');
-        inject(function($injector) {
-          ParentPageService = $injector.get('ParentPageService');
-        });
-        ParentPageService.sendRawCode('code to be sent');
-      });
-
-      it('should receive the sent message', function() {
-        expect(parentPageObject.receiveMessage).toHaveBeenCalled();
-      });
-    });
-
     describe('when there is no parent page', function() {
       beforeEach(function() {
         spyOn(parentPageObject, 'receiveMessage');
-        setParentPageUrlOrigin(null);
+        setParentPageOrigin(null);
         inject(function($injector) {
           ParentPageService = $injector.get('ParentPageService');
         });

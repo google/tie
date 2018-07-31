@@ -26,4 +26,4 @@ tieConfig.constant('ALLOW_PRINTING', false);
  * For the definition of an origin, please see
  * https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy.
  */
-tieConfig.constant('PARENT_PAGE_URL_ORIGIN', null);
+tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);

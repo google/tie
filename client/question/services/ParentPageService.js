@@ -17,44 +17,51 @@
  * page.
  */
 tie.factory('ParentPageService', [
-  '$window', 'PARENT_PAGE_URL_ORIGIN',
-  function($window, PARENT_PAGE_URL_ORIGIN) {
+  '$window', 'EXPECTED_PARENT_PAGE_ORIGIN',
+  function($window, EXPECTED_PARENT_PAGE_ORIGIN) {
     /**
      * Used to define the raw code message type.
-     * @type {String}
+     * @type {string}
      * @constant
      */
     var MESSAGE_TYPE_RAW_CODE = 'raw_code';
 
     /**
-     * Sends the message to the parent page, if it exists, via postMessage.
+     * Sends the message to the parent page, if it exists and matches what is
+     * expected, via postMessage.
      *
-     * @param {String} messageType Type of message that is being sent.
-     * @param {String} messageData Data to be sent to parent page.
+     * @param {string} messageType Type of message that is being sent.
+     * @param {string} messageData Data to be sent to parent page.
      */
     var sendMessage = function(messageType, messageData) {
-      if (PARENT_PAGE_URL_ORIGIN && urlOriginMatchesForParentPageAndFrame()) {
+      if (EXPECTED_PARENT_PAGE_ORIGIN !== null &&
+        isSameOriginForParentPageAndFrame()) {
         $window.parent.postMessage(
-          JSON.stringify(messageData), PARENT_PAGE_URL_ORIGIN);
+          JSON.stringify(messageData), EXPECTED_PARENT_PAGE_ORIGIN);
       }
     };
 
     /**
-     * Checks whether the parent window has the same URL origin as
+     * Checks whether the parent window has the same origin as
      * specified in config.
      *
      * @returns {boolean}
      */
-    var urlOriginMatchesForParentPageAndFrame = function() {
-      var parentFrameUrlOrigin = $window.parent.location.origin;
-      return parentFrameUrlOrigin === PARENT_PAGE_URL_ORIGIN;
+    var isSameOriginForParentPageAndFrame = function() {
+      /**
+       * 0-indexed element in the array refers to the most immediate parent
+       * frame origin.
+       */
+      var parentFrameOrigin = $window.location.ancestorOrigins[0];
+      return parentFrameOrigin === EXPECTED_PARENT_PAGE_ORIGIN;
     };
 
     return {
       /**
-       * Sends the raw user code to the parent page, if it exists.
+       * Sends the raw user code to the parent page, if it exists and matches
+       * the expected parent origin.
        *
-       * @param {String} rawCode User code to send to parent page.
+       * @param {string} rawCode User code to send to parent page.
        */
       sendRawCode: function(rawCode) {
         sendMessage(MESSAGE_TYPE_RAW_CODE, rawCode);
@@ -62,13 +69,13 @@ tie.factory('ParentPageService', [
 
       /**
        * Returns whether TIE is being iframed by a page that has the same
-       * URL origin as specified in config.
+       * origin as specified in config.
        *
        * @returns {boolean}
        */
       isIframed: function() {
-        return PARENT_PAGE_URL_ORIGIN !== null &&
-          urlOriginMatchesForParentPageAndFrame();
+        return EXPECTED_PARENT_PAGE_ORIGIN !== null &&
+          isSameOriginForParentPageAndFrame();
       }
     };
   }
