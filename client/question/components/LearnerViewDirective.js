@@ -283,9 +283,6 @@ tie.directive('learnerView', [function() {
           background-color: #333a42;
           color: white;
         }
-        .tie-user-terminal {
-          height: 528px;
-        }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
           height: 100%;
@@ -323,51 +320,6 @@ tie.directive('learnerView', [function() {
           margin: 8px;
           white-space: normal;
         }
-        .tie-print-title {
-          font-size: 18px;
-          padding-top: 3px;
-          text-align: center;
-        }
-        .night-mode .tie-print-title {
-          color: #ffffff;
-          font-size: 18px;
-          padding-top: 3px;
-          text-align: center;
-        }
-        .tie-print-terminal {
-          background-color: #ffffff;
-          height: 182px;
-          margin-top: 8px;
-          overflow: auto;
-          position: absolute;
-          width: 662px;
-        }
-        .night-mode .tie-print-terminal {
-          background-color: #2c2c2c;
-          height: 182px;
-          margin-top: 8px;
-          overflow: auto;
-          width: 662px;
-        }
-        .tie-stdout {
-          font-family: monospace;
-          font-size: 13px;
-          line-height: 1.2em;
-          padding-bottom: 12px;
-          padding-left: 5%;
-          padding-right: 5%;
-          white-space: pre-wrap;
-        }
-        .night-mode .tie-stdout {
-          color: #ffffff;
-          font-family: monospace;
-          font-size: 13px;
-          line-height: 1.2em;
-          padding-bottom: 12px;
-          padding-left: 5%;
-          padding-right: 5%;
-          white-space: pre-wrap;
-        }
         .tie-feedback-error-string {
           color: #F44336;
         }
@@ -398,6 +350,11 @@ tie.directive('learnerView', [function() {
         }
         .tie-lang-terminal {
           display: inline;
+        }
+        .tie-language-label {
+          font-size: 12px;
+          padding: 4px 10px 0px 4px;
+          display: inline-block;
         }
         .tie-leave-feedback-button {
           float: right;
@@ -432,14 +389,35 @@ tie.directive('learnerView', [function() {
           font-size: 12px;
           padding: 4px 10px 0px 4px;
         }
-        .tie-language-label {
-          font-size: 12px;
-          padding: 4px 10px 0px 4px;
-          display: inline-block;
-        }
         .night-mode .tie-primer-link,
         .night-mode .tie-language-label {
           color: white;
+        }
+        .tie-print-title {
+          font-size: 18px;
+          padding-top: 3px;
+          text-align: center;
+        }
+        .night-mode .tie-print-title {
+          color: #ffffff;
+          font-size: 18px;
+          padding-top: 3px;
+          text-align: center;
+        }
+        .tie-print-terminal {
+          background-color: #ffffff;
+          height: 182px;
+          margin-top: 8px;
+          overflow: auto;
+          position: absolute;
+          width: 662px;
+        }
+        .night-mode .tie-print-terminal {
+          background-color: #2c2c2c;
+          height: 182px;
+          margin-top: 8px;
+          overflow: auto;
+          width: 662px;
         }
         .tie-privacy-button {
           float: left;
@@ -531,12 +509,34 @@ tie.directive('learnerView', [function() {
           background-color: #333a42;
           color: white;
         }
+        .tie-stdout {
+          font-family: monospace;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
+          padding-left: 5%;
+          padding-right: 5%;
+          white-space: pre-wrap;
+        }
+        .night-mode .tie-stdout {
+          color: #ffffff;
+          font-family: monospace;
+          font-size: 13px;
+          line-height: 1.2em;
+          padding-bottom: 12px;
+          padding-left: 5%;
+          padding-right: 5%;
+          white-space: pre-wrap;
+        }
         .tie-submit-button {
           float: right;
           margin-left: 7px;
           margin-right: 0;
           margin-top: 10px;
           position: relative;
+        }
+        .tie-user-terminal {
+          height: 528px;
         }
         .CodeMirror-linenumber {
           /* Increase the contrast of the line numbers from the background. */
