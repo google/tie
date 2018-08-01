@@ -50,6 +50,24 @@ describe('SessionHistoryService', function() {
       });
     });
 
+    it('should add an intro balloon correctly', function() {
+      var transcript = SessionHistoryService.getBindableSessionTranscript();
+      expect(transcript.length).toBe(0);
+
+      SessionHistoryService.addIntroMessageBalloon('intro message');
+
+      expect(transcript.length).toBe(1);
+      expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
+      var firstBalloon = transcript[0];
+      expect(firstBalloon.isDisplayedOnLeft()).toBe(true);
+      var firstBalloonParagraphs = firstBalloon.getFeedbackParagraphs();
+      expect(firstBalloonParagraphs.length).toBe(1);
+      expect(firstBalloonParagraphs[0].toDict()).toEqual({
+        type: 'text',
+        content: 'intro message'
+      });
+    });
+
     it('should add a new code balloon and signify awaiting a feedback balloon',
     function() {
       expect(

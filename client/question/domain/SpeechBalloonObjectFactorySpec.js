@@ -62,6 +62,9 @@ describe('SpeechBalloonObjectFactory', function() {
       ]);
       expect(feedbackBalloon.isDisplayedOnLeft()).toBe(true);
 
+      var introBalloon = SpeechBalloonObjectFactory.createIntroBalloon('intro');
+      expect(introBalloon.isDisplayedOnLeft()).toBe(true);
+
       var codeBalloon = SpeechBalloonObjectFactory.createCodeBalloon('code');
       expect(codeBalloon.isDisplayedOnLeft()).toBe(false);
     });
