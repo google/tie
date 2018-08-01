@@ -113,7 +113,10 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-run-button tie-button tie-button-green protractor-test-run-code-btn" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="isIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
+                  Submit Code
+                </button>
+                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !isIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -175,10 +178,14 @@ tie.directive('learnerView', [function() {
           margin-right: 10px;
           outline: none;
           padding: 1px 6px;
-          width: 120px;
+          width: 110px;
         }
         .tie-button:hover {
           border: 1px solid #e4e4e4;
+        }
+        .night-mode .tie-button {
+          background-color: #333a42;
+          color: white;
         }
         .night-mode .tie-button:hover {
           border-color: #646464;
@@ -262,7 +269,7 @@ tie.directive('learnerView', [function() {
           font-size: 13px;
           float: left;
           margin-top: 14px;
-          margin-left: 10px;
+          margin-left: 0px;
         }
         .night-mode .tie-code-auto-save {
           color: #E0E0E0;
@@ -501,7 +508,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-right: 0;
+          margin-right: 0px;
           margin-top: 10px;
           position: relative;
         }
@@ -523,6 +530,13 @@ tie.directive('learnerView', [function() {
         .night-mode .tie-select-menu {
           background-color: #333a42;
           color: white;
+        }
+        .tie-submit-button {
+          float: right;
+          margin-left: 7px;
+          margin-right: 0;
+          margin-top: 10px;
+          position: relative;
         }
         .CodeMirror-linenumber {
           /* Increase the contrast of the line numbers from the background. */
@@ -562,7 +576,7 @@ tie.directive('learnerView', [function() {
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'PrintTerminalService',
-      'ALL_SUPPORTED_LANGUAGES',
+      'ParentPageService', 'ALL_SUPPORTED_LANGUAGES',
       'SUPPORTED_LANGUAGE_LABELS', 'SessionHistoryService', 'AutosaveService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
@@ -577,7 +591,7 @@ tie.directive('learnerView', [function() {
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, PrintTerminalService,
-          ALL_SUPPORTED_LANGUAGES,
+          ParentPageService, ALL_SUPPORTED_LANGUAGES,
           SUPPORTED_LANGUAGE_LABELS, SessionHistoryService, AutosaveService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
@@ -650,6 +664,13 @@ tie.directive('learnerView', [function() {
          * terminal should be displayed.
          */
         $scope.printingIsSupported = PrintTerminalService.isPrintingSupported();
+
+        /**
+         * Defines whether TIE is currently being framed by the expected
+         * parent origin. If it is, the "Submit Code" button should be
+         * displayed.
+         */
+        $scope.isIframed = ParentPageService.isIframed();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -1124,6 +1145,16 @@ tie.directive('learnerView', [function() {
           });
 
           $scope.autosaveCode();
+        };
+
+        /**
+         * Sends the user code to the parent page if the parent page
+         * origin matches the expected framing origin.
+         *
+         * @param {string} rawCode
+         */
+        $scope.submitToParentPage = function(rawCode) {
+          ParentPageService.sendRawCode(rawCode);
         };
 
         /**
