@@ -269,7 +269,7 @@ tie.directive('learnerView', [function() {
           font-size: 13px;
           float: left;
           margin-top: 14px;
-          margin-left: 0px;
+          margin-left: 0;
         }
         .night-mode .tie-code-auto-save {
           color: #E0E0E0;
@@ -508,7 +508,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-run-button {
           float: right;
-          margin-right: 0px;
+          margin-right: 0;
           margin-top: 10px;
           position: relative;
         }
