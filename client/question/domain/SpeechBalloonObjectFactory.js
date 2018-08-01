@@ -24,10 +24,14 @@ tie.factory('SpeechBalloonObjectFactory', [
     var SPEECH_BALLOON_TYPE_CODE = 'code';
     // A balloon representing feedback given by TIE.
     var SPEECH_BALLOON_TYPE_FEEDBACK = 'feedback';
+    // A balloon representing the intro message to be provided if the
+    // question is not shown (TIE is iframed).
+    var SPEECH_BALLOON_TYPE_INTRO = 'intro';
 
     var ALLOWED_SPEECH_BALLOON_TYPES = [
       SPEECH_BALLOON_TYPE_CODE,
-      SPEECH_BALLOON_TYPE_FEEDBACK
+      SPEECH_BALLOON_TYPE_FEEDBACK,
+      SPEECH_BALLOON_TYPE_INTRO
     ];
 
     /**
@@ -69,7 +73,8 @@ tie.factory('SpeechBalloonObjectFactory', [
      * @returns {boolean}
      */
     SpeechBalloon.prototype.isDisplayedOnLeft = function() {
-      return this._type === SPEECH_BALLOON_TYPE_FEEDBACK;
+      return this._type === SPEECH_BALLOON_TYPE_FEEDBACK ||
+          this._type === SPEECH_BALLOON_TYPE_INTRO;
     };
 
     /**
@@ -117,7 +122,7 @@ tie.factory('SpeechBalloonObjectFactory', [
     /**
      * Creates and returns a SpeechBalloon object representing a code balloon.
      *
-     * @param {string} submittedCode. The code submitted by the learner.
+     * @param {string} submittedCode The code submitted by the learner.
      * @returns {SpeechBalloon}
      */
     SpeechBalloon.createCodeBalloon = function(submittedCode) {
@@ -127,9 +132,22 @@ tie.factory('SpeechBalloonObjectFactory', [
     };
 
     /**
+     * Creates and returns a SpeechBalloon object representing an intro
+     * message.
+     *
+     * @param {string} introMessage The intro message to be displayed.
+     * @returns {SpeechBalloon}
+     */
+    SpeechBalloon.createIntroBalloon = function(introMessage) {
+      var introParagraph = [FeedbackParagraphObjectFactory.createTextParagraph(
+          introMessage)];
+      return new SpeechBalloon(SPEECH_BALLOON_TYPE_INTRO, introParagraph);
+    };
+
+    /**
      * Creates a SpeechBalloon object from a JavaScript object.
      *
-     * @param {Object} speechBalloonDict. A JavaScript object representing a
+     * @param {Object} speechBalloonDict A JavaScript object representing a
      *   speech balloon.
      * @returns {SpeechBalloon}
      */
@@ -152,4 +170,3 @@ tie.factory('SpeechBalloonObjectFactory', [
     return SpeechBalloon;
   }
 ]);
-

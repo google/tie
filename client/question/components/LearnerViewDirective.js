@@ -28,7 +28,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
-                  <div class="tie-previous-instructions">
+                  <div class="tie-previous-instructions" ng-if="!isIframed">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
                         <p ng-if="instruction.type == 'text'">
@@ -39,7 +39,7 @@ tie.directive('learnerView', [function() {
                       <hr>
                     </div>
                   </div>
-                  <div class="tie-instructions">
+                  <div class="tie-instructions" ng-if="!isIframed">
                     <div ng-repeat="instruction in instructions">
                       <p ng-if="instruction.type == 'text'">
                         {{instruction.content}}
@@ -562,7 +562,7 @@ tie.directive('learnerView', [function() {
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'PrintTerminalService',
-      'ALL_SUPPORTED_LANGUAGES',
+      'ParentPageService', 'ALL_SUPPORTED_LANGUAGES',
       'SUPPORTED_LANGUAGE_LABELS', 'SessionHistoryService', 'AutosaveService',
       'SECONDS_TO_MILLISECONDS', 'CODE_CHANGE_DEBOUNCE_SECONDS',
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
@@ -577,7 +577,7 @@ tie.directive('learnerView', [function() {
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, PrintTerminalService,
-          ALL_SUPPORTED_LANGUAGES,
+          ParentPageService, ALL_SUPPORTED_LANGUAGES,
           SUPPORTED_LANGUAGE_LABELS, SessionHistoryService, AutosaveService,
           SECONDS_TO_MILLISECONDS, CODE_CHANGE_DEBOUNCE_SECONDS,
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
@@ -650,6 +650,13 @@ tie.directive('learnerView', [function() {
          * terminal should be displayed.
          */
         $scope.printingIsSupported = PrintTerminalService.isPrintingSupported();
+
+        /**
+         * Defines whether TIE is currently being framed by the expected
+         * parent origin. If it is, the "Submit Code" button should be
+         * displayed.
+         */
+        $scope.isIframed = ParentPageService.isIframed();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -894,6 +901,21 @@ tie.directive('learnerView', [function() {
           EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
+
+          // Only adds intro message if TIE is iframed, meaning the question
+          // is not shown, and there is nothing currently in the feedback
+          // window.
+          if (ParentPageService.isIframed() &&
+            SessionHistoryService.getBindableSessionTranscript().length === 0) {
+            var introMessageIfIframed = [
+              'Code your answer in the coding window. You can click the ' +
+              '"Get Feedback" button at any time to get feedback on your ' +
+              'code (will not be submitted for grading/credit). When you ' +
+              'are ready to submit your code for grading/credit, click the ' +
+              '"Submit Code" button.'
+            ].join('\n');
+            SessionHistoryService.addIntroMessageBalloon(introMessageIfIframed);
+          }
         };
 
         /**

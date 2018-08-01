@@ -109,6 +109,19 @@ tie.factory('SessionHistoryService', [
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
       },
       /**
+       * Adds an intro message balloon to the beginning of the list.
+       */
+      addIntroMessageBalloon: function(introMessage) {
+        data.sessionTranscript.unshift(
+            SpeechBalloonObjectFactory.createIntroBalloon(introMessage));
+        LocalStorageService.put(
+          localStorageKey,
+          data.sessionTranscript.map(function(speechBalloon) {
+            return speechBalloon.toDict();
+          })
+        );
+      },
+      /**
        * Resets the session transcript and clears it from local storage.
        */
       reset: function() {
