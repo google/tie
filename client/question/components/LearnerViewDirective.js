@@ -113,10 +113,10 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="parentPageURLOrigin" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
+                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="isIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
                   Submit Code
                 </button>
-                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !parentPageURLOrigin}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !isIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -351,6 +351,11 @@ tie.directive('learnerView', [function() {
         .tie-lang-terminal {
           display: inline;
         }
+        .tie-language-label {
+          font-size: 12px;
+          padding: 4px 10px 0px 4px;
+          display: inline-block;
+        }
         .tie-leave-feedback-button {
           float: right;
         }
@@ -383,11 +388,6 @@ tie.directive('learnerView', [function() {
           color: blue;
           font-size: 12px;
           padding: 4px 10px 0px 4px;
-        }
-        .tie-language-label {
-          font-size: 12px;
-          padding: 4px 10px 0px 4px;
-          display: inline-block;
         }
         .night-mode .tie-primer-link,
         .night-mode .tie-language-label {
@@ -666,11 +666,11 @@ tie.directive('learnerView', [function() {
         $scope.printingIsSupported = PrintTerminalService.isPrintingSupported();
 
         /**
-         * Defines the URL origin of the parent page that is framing TIE, if
-         * it exists, and whether the "Submit Code" button should be
+         * Defines whether TIE is currently being framed by the expected
+         * parent origin. If it is, the "Submit Code" button should be
          * displayed.
          */
-        $scope.parentPageURLOrigin = ParentPageService.getParentPageUrlOrigin();
+        $scope.isIframed = ParentPageService.isIframed();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -1147,6 +1147,12 @@ tie.directive('learnerView', [function() {
           $scope.autosaveCode();
         };
 
+        /**
+         * Sends the user code to the parent page if the parent page
+         * origin matches the expected framing origin.
+         *
+         * @param {string} rawCode
+         */
         $scope.submitToParentPage = function(rawCode) {
           ParentPageService.sendRawCode(rawCode);
         };
