@@ -344,7 +344,7 @@ tie.directive('learnerView', [function() {
         }
         .tie-language-label {
           font-size: 12px;
-          padding: 4px 2px 0px 0px;
+          padding: 4px 2px 0 0;
           display: inline-block;
         }
         .tie-leave-feedback-button {
