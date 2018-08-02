@@ -177,7 +177,8 @@ class AuxiliaryCode(object):
       }]
     }, {
       id: 'MOST_COMMON_IS_NOT_REPEATED',
-      humanReadableName: 'strings where the most common letter is not duplicated',
+      humanReadableName:
+          'strings where the most common letter is not duplicated',
       testCases: [{
         input: 'abaccada',
         allowedOutputs: ['c']
@@ -195,7 +196,8 @@ class AuxiliaryCode(object):
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'Remember that we only care about repeated letters (like the \'t\' in letter)'
+          'Remember that we only care about repeated letters (like the ',
+          "'t' in letter)"
         ].join(''),
         [
           "With an input like 'abaccada', you need to return 'c'"
@@ -210,8 +212,8 @@ class AuxiliaryCode(object):
           'not just the first one'
         ].join(''),
         [
-          "With an input like 'Aardvarks use cookbooks with feelings', you need ",
-          "to return 'o'"
+          "With an input like 'Aardvarks use cookbooks with feelings', you ",
+          "need to return 'o'"
         ].join('')
       ]
     }, {
@@ -223,8 +225,8 @@ class AuxiliaryCode(object):
           'not just the last one'
         ].join(''),
         [
-          "With an input like 'Aardvarks use cookbooks with feelings', you need ",
-          "to return 'o'"
+          "With an input like 'Aardvarks use cookbooks with feelings', you ",
+          "need to return 'o'"
         ].join('')
       ]
     }, {
@@ -232,7 +234,8 @@ class AuxiliaryCode(object):
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'Remember that you need to treat lowercase and uppercase letters as equal'
+          'Remember that you need to treat lowercase and uppercase letters ',
+          'as equal'
         ].join(''),
         [
           "With an input like 'Aabbaa', you need to return 'a'"
