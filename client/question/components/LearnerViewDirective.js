@@ -114,7 +114,7 @@ tie.directive('learnerView', [function() {
                   Saving code...
                 </div>
                 <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="isIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
-                  Submit Code
+                  Submit for Grading
                 </button>
                 <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !isIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
@@ -534,6 +534,7 @@ tie.directive('learnerView', [function() {
           margin-right: 0;
           margin-top: 10px;
           position: relative;
+          width: 122px;
         }
         .tie-user-terminal {
           height: 528px;
@@ -1155,6 +1156,8 @@ tie.directive('learnerView', [function() {
          */
         $scope.submitToParentPage = function(rawCode) {
           ParentPageService.sendRawCode(rawCode);
+          SessionHistoryService.addCodeBalloon(rawCode);
+          SessionHistoryService.addSubmissionConfirmationBalloon();
         };
 
         /**

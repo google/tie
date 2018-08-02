@@ -92,6 +92,16 @@ tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
 tie.constant('DURATION_MSEC_WAIT_FOR_FEEDBACK', 1400);
 
 /**
+ * Number of milliseconds for TIE to wait before confirming that code was
+ * submitted.
+ *
+ * @type {number}
+ * @constant
+ */
+// eslint-disable-next-line no-magic-numbers
+tie.constant('DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION', 1000);
+
+/**
  * Object containing variations on feedback text for different scenarios.
  *
  * @type {Object.<string, Array.<string>>}

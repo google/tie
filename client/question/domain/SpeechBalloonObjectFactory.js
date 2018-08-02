@@ -152,4 +152,3 @@ tie.factory('SpeechBalloonObjectFactory', [
     return SpeechBalloon;
   }
 ]);
-

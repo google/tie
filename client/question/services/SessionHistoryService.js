@@ -21,11 +21,13 @@
 tie.factory('SessionHistoryService', [
   '$timeout', 'CurrentQuestionService', 'LocalStorageService',
   'LocalStorageKeyManagerService', 'SpeechBalloonObjectFactory',
-  'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+  'FeedbackParagraphObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+  'DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION',
   function(
       $timeout, CurrentQuestionService, LocalStorageService,
       LocalStorageKeyManagerService, SpeechBalloonObjectFactory,
-      DURATION_MSEC_WAIT_FOR_FEEDBACK) {
+      FeedbackParagraphObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK,
+      DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION) {
     var data = {
       // A list of SpeechBalloon objects, from newest to oldest.
       sessionTranscript: [],
@@ -107,6 +109,37 @@ tie.factory('SessionHistoryService', [
             })
           );
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
+      },
+      /**
+       * Adds a new feedback balloon to the beginning of the list which
+       * informs the user that their code was submitted.
+       */
+      addSubmissionConfirmationBalloon: function() {
+        var submissionText = [
+          'Your code has been submitted for grading. ',
+          'Feel free to continue working on the exercise, ask for feedback ',
+          'by clicking the "Get Feedback" button, or submit again with ',
+          'the "Submit for Grading" button.'
+        ].join('\n');
+        var submissionParagraph =
+          FeedbackParagraphObjectFactory.createTextParagraph(submissionText);
+        $timeout(function() {
+          data.sessionTranscript.unshift(
+          SpeechBalloonObjectFactory.createFeedbackBalloon(
+            [submissionParagraph]));
+
+          LocalStorageService.put(
+            localStorageKey,
+            data.sessionTranscript.map(function(speechBalloon) {
+              return speechBalloon.toDict();
+            })
+          );
+        }, DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION);
+
+        // Since clicking "Submit for Grading" shows both a copy of the
+        // code submitted as well as the feedback text confirmation,
+        // adding this feedback balloon completes the code-feedback pairing.
+        data.numBalloonsPending--;
       },
       /**
        * Resets the session transcript and clears it from local storage.
