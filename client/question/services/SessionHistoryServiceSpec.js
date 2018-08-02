@@ -50,6 +50,30 @@ describe('SessionHistoryService', function() {
       });
     });
 
+    it('should add an intro balloon correctly', function() {
+      var transcript = SessionHistoryService.getBindableSessionTranscript();
+      expect(transcript.length).toBe(0);
+
+      SessionHistoryService.addIntroMessageBalloon();
+
+      expect(transcript.length).toBe(1);
+      expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
+      var firstBalloon = transcript[0];
+      expect(firstBalloon.isDisplayedOnLeft()).toBe(true);
+      var firstBalloonParagraphs = firstBalloon.getFeedbackParagraphs();
+      expect(firstBalloonParagraphs.length).toBe(1);
+      expect(firstBalloonParagraphs[0].toDict()).toEqual({
+        type: 'text',
+        content: [
+          'Code your answer in the coding window. You can click the ',
+          '"Get Feedback" button at any time to get feedback on your ',
+          'code (which will not be submitted for grading/credit). When you ',
+          'are ready to submit your code for grading/credit, click the ',
+          '"Submit for Grading" button.'
+        ].join('\n')
+      });
+    });
+
     it('should add a new code balloon and signify awaiting a feedback balloon',
     function() {
       expect(

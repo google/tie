@@ -21,11 +21,11 @@
 tie.factory('SessionHistoryService', [
   '$timeout', 'CurrentQuestionService', 'LocalStorageService',
   'LocalStorageKeyManagerService', 'SpeechBalloonObjectFactory',
-  'DURATION_MSEC_WAIT_FOR_FEEDBACK',
+  'FeedbackParagraphObjectFactory', 'DURATION_MSEC_WAIT_FOR_FEEDBACK',
   function(
       $timeout, CurrentQuestionService, LocalStorageService,
       LocalStorageKeyManagerService, SpeechBalloonObjectFactory,
-      DURATION_MSEC_WAIT_FOR_FEEDBACK) {
+      FeedbackParagraphObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK) {
     var data = {
       // A list of SpeechBalloon objects, from newest to oldest.
       sessionTranscript: [],
@@ -107,6 +107,31 @@ tie.factory('SessionHistoryService', [
             })
           );
         }, DURATION_MSEC_WAIT_FOR_FEEDBACK);
+      },
+      /**
+       * Adds a new feedback balloon to the beginning of the list which
+       * introduces TIE. Specifically, this intro balloon only appears when
+       * TIE is iframed, which also removes the question from the feedback
+       * window.
+       */
+      addIntroMessageBalloon: function() {
+        var introText = [
+          'Code your answer in the coding window. You can click the ',
+          '"Get Feedback" button at any time to get feedback on your ',
+          'code (which will not be submitted for grading/credit). When you ',
+          'are ready to submit your code for grading/credit, click the ',
+          '"Submit for Grading" button.'
+        ].join('\n');
+        var introParagraph =
+          FeedbackParagraphObjectFactory.createTextParagraph(introText);
+        data.sessionTranscript.unshift(
+            SpeechBalloonObjectFactory.createFeedbackBalloon([introParagraph]));
+        LocalStorageService.put(
+          localStorageKey,
+          data.sessionTranscript.map(function(speechBalloon) {
+            return speechBalloon.toDict();
+          })
+        );
       },
       /**
        * Resets the session transcript and clears it from local storage.

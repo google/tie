@@ -117,7 +117,7 @@ tie.factory('SpeechBalloonObjectFactory', [
     /**
      * Creates and returns a SpeechBalloon object representing a code balloon.
      *
-     * @param {string} submittedCode. The code submitted by the learner.
+     * @param {string} submittedCode The code submitted by the learner.
      * @returns {SpeechBalloon}
      */
     SpeechBalloon.createCodeBalloon = function(submittedCode) {
@@ -129,7 +129,7 @@ tie.factory('SpeechBalloonObjectFactory', [
     /**
      * Creates a SpeechBalloon object from a JavaScript object.
      *
-     * @param {Object} speechBalloonDict. A JavaScript object representing a
+     * @param {Object} speechBalloonDict A JavaScript object representing a
      *   speech balloon.
      * @returns {SpeechBalloon}
      */
@@ -152,4 +152,3 @@ tie.factory('SpeechBalloonObjectFactory', [
     return SpeechBalloon;
   }
 ]);
-
