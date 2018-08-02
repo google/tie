@@ -118,22 +118,22 @@ tie.directive('learnerView', [function() {
                 </button>
               </div>
             </div>
-            <div class="tie-options-row">
-              <ul>
-                <li class="tie-about-button">
-                  <a target="_blank" href="https://google.github.io/tie/">About TIE</a>
-                </li>
-                <li class="tie-privacy-button" ng-click="onPrivacyClick()">
-                  <a href="#">Privacy</a>
-                </li>
-                <li class="tie-leave-feedback-button"
-                    title="Click to leave your feedback about TIE">
-                  <a href="https://goo.gl/CcfCq4" target="_blank">
-                    Leave feedback about TIE
-                  </a>
-                </li>
-              </ul>
-            </div>
+          </div>
+          <div class="tie-options-row">
+            <ul>
+              <li class="tie-about-button">
+                <a target="_blank" href="https://google.github.io/tie/">About TIE</a>
+              </li>
+              <li class="tie-privacy-button" ng-click="onPrivacyClick()">
+                <a href="#">Privacy</a>
+              </li>
+              <li class="tie-leave-feedback-button"
+                  title="Click to leave your feedback about TIE">
+                <a href="https://goo.gl/CcfCq4" target="_blank">
+                  Leave feedback about TIE
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -284,11 +284,13 @@ tie.directive('learnerView', [function() {
           width: 100%;
         }
         .tie-coding-terminal {
+          background-color: rgb(255, 255, 255);
           display: flex;
           font-size: 13px;
           height: 100%;
           position: relative;
           width: 662px;
+          -webkit-font-smoothing: antialiased;
         }
         .print-mode .tie-coding-terminal {
           display: flex;
@@ -299,10 +301,6 @@ tie.directive('learnerView', [function() {
         }
         .tie-coding-window {
           display: flex;
-        }
-        .tie-coding-terminal {
-          background-color: rgb(255, 255, 255);
-          -webkit-font-smoothing: antialiased;
         }
         .tie-coding-terminal:focus, .tie-run-button:focus,
             .tie-select-menu:focus {
@@ -351,6 +349,10 @@ tie.directive('learnerView', [function() {
         }
         .tie-leave-feedback-button {
           float: right;
+        }
+        .tie-options-row {
+          padding-left: 32px;
+          padding-right: 32px;
         }
         .tie-options-row a {
           color: #696969;
@@ -441,17 +443,21 @@ tie.directive('learnerView', [function() {
           color: #ececec;
         }
         .tie-question-ui {
+          flex: auto;
+          min-width: 300px;
           vertical-align: top;
         }
         .tie-question-ui-inner {
+          display: flex;
           padding-left: 32px;
           padding-right: 32px;
           white-space: nowrap;
         }
         .tie-question-ui-outer {
-          display: table;
           margin-left: auto;
           margin-right: auto;
+          max-width: 1458px;
+          min-width: 1058px;
           padding-top: 30px;
         }
         .tie-question-window {
@@ -460,11 +466,10 @@ tie.directive('learnerView', [function() {
           height: 528px;
           max-width: 700px;
           min-height: 300px;
-          min-width: 400px;
+          min-width: 300px;
           overflow: auto;
           padding: 0;
-          resize: both;
-          width: 548px;
+          width: 100%;
         }
         .night-mode .tie-question-window {
           background-color: #333A42;
@@ -551,6 +556,30 @@ tie.directive('learnerView', [function() {
           background-clip: content-box;
           border: 3px solid transparent;
           border-radius: 7px;
+        }
+        @media screen and (max-width: 1058px) {
+          .tie-question-ui-inner {
+            display: flex;
+            flex-direction: column-reverse;
+            white-space: nowrap;
+            width: 677px;
+          }
+          .tie-question-ui-outer {
+            margin-left: auto;
+            margin-right: auto;
+            min-width: 741px;
+            padding-top: 30px;
+            width: 741px;
+          }
+          .tie-question-window {
+            background-color: #FFFFF7;
+            font-size: 14px;
+            height: 528px;
+            min-height: 300px;
+            overflow: auto;
+            padding: 0;
+            width: 662px;
+          }
         }
       </style>
     `,
