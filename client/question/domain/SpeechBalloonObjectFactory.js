@@ -24,14 +24,10 @@ tie.factory('SpeechBalloonObjectFactory', [
     var SPEECH_BALLOON_TYPE_CODE = 'code';
     // A balloon representing feedback given by TIE.
     var SPEECH_BALLOON_TYPE_FEEDBACK = 'feedback';
-    // A balloon representing the intro message to be provided if the
-    // question is not shown (TIE is iframed).
-    var SPEECH_BALLOON_TYPE_INTRO = 'intro';
 
     var ALLOWED_SPEECH_BALLOON_TYPES = [
       SPEECH_BALLOON_TYPE_CODE,
-      SPEECH_BALLOON_TYPE_FEEDBACK,
-      SPEECH_BALLOON_TYPE_INTRO
+      SPEECH_BALLOON_TYPE_FEEDBACK
     ];
 
     /**
@@ -73,8 +69,7 @@ tie.factory('SpeechBalloonObjectFactory', [
      * @returns {boolean}
      */
     SpeechBalloon.prototype.isDisplayedOnLeft = function() {
-      return this._type === SPEECH_BALLOON_TYPE_FEEDBACK ||
-          this._type === SPEECH_BALLOON_TYPE_INTRO;
+      return this._type === SPEECH_BALLOON_TYPE_FEEDBACK;
     };
 
     /**
@@ -129,19 +124,6 @@ tie.factory('SpeechBalloonObjectFactory', [
       var codeParagraphs = [FeedbackParagraphObjectFactory.createCodeParagraph(
         submittedCode)];
       return new SpeechBalloon(SPEECH_BALLOON_TYPE_CODE, codeParagraphs);
-    };
-
-    /**
-     * Creates and returns a SpeechBalloon object representing an intro
-     * message.
-     *
-     * @param {string} introMessage The intro message to be displayed.
-     * @returns {SpeechBalloon}
-     */
-    SpeechBalloon.createIntroBalloon = function(introMessage) {
-      var introParagraph = [FeedbackParagraphObjectFactory.createTextParagraph(
-          introMessage)];
-      return new SpeechBalloon(SPEECH_BALLOON_TYPE_INTRO, introParagraph);
     };
 
     /**

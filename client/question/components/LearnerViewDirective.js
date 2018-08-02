@@ -28,7 +28,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
-                  <div class="tie-previous-instructions" ng-if="!isIframed">
+                  <div class="tie-previous-instructions" ng-if="!pageIsIframed">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
                         <p ng-if="instruction.type == 'text'">
@@ -39,7 +39,7 @@ tie.directive('learnerView', [function() {
                       <hr>
                     </div>
                   </div>
-                  <div class="tie-instructions" ng-if="!isIframed">
+                  <div class="tie-instructions" ng-if="!pageIsIframed">
                     <div ng-repeat="instruction in instructions">
                       <p ng-if="instruction.type == 'text'">
                         {{instruction.content}}
@@ -656,7 +656,7 @@ tie.directive('learnerView', [function() {
          * parent origin. If it is, the "Submit Code" button should be
          * displayed.
          */
-        $scope.isIframed = ParentPageService.isIframed();
+        $scope.pageIsIframed = ParentPageService.isIframed();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -907,14 +907,7 @@ tie.directive('learnerView', [function() {
           // window.
           if (ParentPageService.isIframed() &&
             SessionHistoryService.getBindableSessionTranscript().length === 0) {
-            var introMessageIfIframed = [
-              'Code your answer in the coding window. You can click the ' +
-              '"Get Feedback" button at any time to get feedback on your ' +
-              'code (will not be submitted for grading/credit). When you ' +
-              'are ready to submit your code for grading/credit, click the ' +
-              '"Submit Code" button.'
-            ].join('\n');
-            SessionHistoryService.addIntroMessageBalloon(introMessageIfIframed);
+            SessionHistoryService.addIntroMessageBalloon();
           }
         };
 

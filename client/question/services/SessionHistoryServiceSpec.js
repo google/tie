@@ -54,7 +54,7 @@ describe('SessionHistoryService', function() {
       var transcript = SessionHistoryService.getBindableSessionTranscript();
       expect(transcript.length).toBe(0);
 
-      SessionHistoryService.addIntroMessageBalloon('intro message');
+      SessionHistoryService.addIntroMessageBalloon();
 
       expect(transcript.length).toBe(1);
       expect(SessionHistoryService.isNewBalloonPending()).toBe(false);
@@ -64,7 +64,13 @@ describe('SessionHistoryService', function() {
       expect(firstBalloonParagraphs.length).toBe(1);
       expect(firstBalloonParagraphs[0].toDict()).toEqual({
         type: 'text',
-        content: 'intro message'
+        content: [
+          'Code your answer in the coding window. You can click the ',
+          '"Get Feedback" button at any time to get feedback on your ',
+          'code (which will not be submitted for grading/credit). When you ',
+          'are ready to submit your code for grading/credit, click the ',
+          '"Submit for Grading" button.'
+        ].join('\n')
       });
     });
 
