@@ -113,10 +113,10 @@ tie.directive('learnerView', [function() {
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="isIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
+                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="pageIsIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
                   Submit for Grading
                 </button>
-                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !isIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !pageIsIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -671,7 +671,6 @@ tie.directive('learnerView', [function() {
          * parent origin. If it is, the "Submit Code" button should be
          * displayed.
          */
-
         $scope.pageIsIframed = ParentPageService.isIframed();
 
         /**

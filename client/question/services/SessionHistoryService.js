@@ -28,7 +28,6 @@ tie.factory('SessionHistoryService', [
       LocalStorageKeyManagerService, SpeechBalloonObjectFactory,
       FeedbackParagraphObjectFactory, DURATION_MSEC_WAIT_FOR_FEEDBACK,
       DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION) {
- 
     var data = {
       // A list of SpeechBalloon objects, from newest to oldest.
       sessionTranscript: [],
