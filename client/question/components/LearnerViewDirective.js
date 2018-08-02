@@ -28,7 +28,7 @@ tie.directive('learnerView', [function() {
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
-                  <div class="tie-previous-instructions">
+                  <div class="tie-previous-instructions" ng-if="!pageIsIframed">
                     <div ng-repeat="previousInstruction in previousInstructions track by $index">
                       <div ng-repeat="instruction in previousInstruction track by $index">
                         <p ng-if="instruction.type == 'text'">
@@ -39,7 +39,7 @@ tie.directive('learnerView', [function() {
                       <hr>
                     </div>
                   </div>
-                  <div class="tie-instructions">
+                  <div class="tie-instructions" ng-if="!pageIsIframed">
                     <div ng-repeat="instruction in instructions">
                       <p ng-if="instruction.type == 'text'">
                         {{instruction.content}}
@@ -671,7 +671,8 @@ tie.directive('learnerView', [function() {
          * parent origin. If it is, the "Submit Code" button should be
          * displayed.
          */
-        $scope.isIframed = ParentPageService.isIframed();
+
+        $scope.pageIsIframed = ParentPageService.isIframed();
 
         /**
          * The ARIA alert message to show temporarily, as well as a random
@@ -916,6 +917,14 @@ tie.directive('learnerView', [function() {
           EventHandlerService.createQuestionStartEvent();
           EventHandlerService.createTaskStartEvent(
             tasks[currentTaskIndex].getId());
+
+          // Only adds intro message if TIE is iframed, meaning the question
+          // is not shown, and there is nothing currently in the feedback
+          // window.
+          if (ParentPageService.isIframed() &&
+            SessionHistoryService.getBindableSessionTranscript().length === 0) {
+            SessionHistoryService.addIntroMessageBalloon();
+          }
         };
 
         /**
