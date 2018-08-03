@@ -89,13 +89,13 @@ class AuxiliaryCode(object):
       content: [
         'In this problem, we\'d like you to write a function that determines ',
         'the most common repeated character in an ASCII string (ignoring ',
-        'spaces and punctuation). ',
+        'spaces and punctuation). '
       ].join(''),
       type: 'text'
     }, {
       content: [
         'Note that uppercase and lowercase letters should be treated as the ',
-        'same letter. ',
+        'same letter. '
       ].join(''),
       type: 'text'
     }, {
