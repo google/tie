@@ -90,10 +90,20 @@ class AuxiliaryCode(object):
         'In this problem, we\'d like you to write a function that determines ',
         'the most common repeated character in an ASCII string (ignoring ',
         'spaces and punctuation). ',
-        'Note that uppercase and lowercase letter should be treated as the ',
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'Note that uppercase and lowercase letters should be treated as the ',
         'same letter. ',
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
         'You may assume that the input string contains only one most common ',
-        'repeated character.'
+        "repeated character (no input like 'aabb') but it could be that ",
+        'there are no repeated characters in which case you should return ',
+        'the empty string.'
       ].join(''),
       type: 'text'
     }, {
