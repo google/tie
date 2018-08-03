@@ -20,6 +20,7 @@ describe('SessionHistoryService', function() {
   var SessionHistoryService;
   var FeedbackParagraphObjectFactory;
   var DURATION_MSEC_WAIT_FOR_FEEDBACK;
+  var DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION;
   var $timeout;
 
   beforeEach(module('tie'));
@@ -29,6 +30,8 @@ describe('SessionHistoryService', function() {
       'FeedbackParagraphObjectFactory');
     DURATION_MSEC_WAIT_FOR_FEEDBACK = $injector.get(
       'DURATION_MSEC_WAIT_FOR_FEEDBACK');
+    DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION = $injector.get(
+      'DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION');
     $timeout = _$timeout_;
   }));
 
@@ -156,5 +159,31 @@ describe('SessionHistoryService', function() {
         content: 'some other code'
       });
     });
+
+    it('should add a new submission confirmation balloon correctly',
+      function() {
+        var transcript = SessionHistoryService.getBindableSessionTranscript();
+        expect(transcript.length).toBe(0);
+
+        SessionHistoryService.addSubmissionConfirmationBalloon();
+        expect(transcript.length).toBe(0);
+        $timeout.flush(DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION);
+
+        expect(transcript.length).toBe(1);
+        var firstBalloon = transcript[0];
+        expect(firstBalloon.isCodeSubmission()).toBe(false);
+        var firstBalloonParagraphs = firstBalloon.getFeedbackParagraphs();
+        expect(firstBalloonParagraphs.length).toBe(1);
+        expect(firstBalloonParagraphs[0].toDict()).toEqual({
+          type: 'text',
+          content: [
+            'Your code has been submitted for grading. ',
+            'Feel free to continue working on the exercise, ask for feedback ',
+            'by clicking the "Get Feedback" button, or submit again with ',
+            'the "Submit for Grading" button.'
+          ].join('\n')
+        });
+      }
+    );
   });
 });
