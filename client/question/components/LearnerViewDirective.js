@@ -573,18 +573,24 @@ tie.directive('learnerView', [function() {
           border-radius: 7px;
         }
         @media screen and (max-width: 1058px) {
+          .tie-options-row {
+            padding-left: 0;
+            padding-right: 0;
+          }
           .tie-question-ui-inner {
             display: flex;
             flex-direction: column-reverse;
+            padding-left: 0;
+            padding-right: 0;
             white-space: nowrap;
             width: 677px;
           }
           .tie-question-ui-outer {
             margin-left: auto;
             margin-right: auto;
-            min-width: 741px;
+            min-width: 691px;
             padding-top: 30px;
-            width: 741px;
+            width: 662px;
           }
           .tie-question-window {
             background-color: #FFFFF7;
