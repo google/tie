@@ -1221,6 +1221,12 @@ tie.directive('learnerView', [function() {
          */
         $scope.resetFeedback = function() {
           SessionHistoryService.reset();
+
+          // Only add intro message if TIE is iframed so that the feedback
+          // window is not completely empty after resetting.
+          if (ParentPageService.isIframed()) {
+            SessionHistoryService.addIntroMessageBalloon();
+          }
         };
 
         /**
