@@ -18,7 +18,8 @@
  */
 
 tie.factory('FeedbackDetailsObjectFactory', [
-  'FEEDBACK_CATEGORIES', function(FEEDBACK_CATEGORIES) {
+  'FEEDBACK_CATEGORIES', 'CORRECTNESS_STATES',
+  function(FEEDBACK_CATEGORIES, CORRECTNESS_STATES) {
     /**
      * Feedback objects encapsulate the personalized feedback that is used to
      * provide constructive feedback to the user.
@@ -39,19 +40,25 @@ tie.factory('FeedbackDetailsObjectFactory', [
      *    language-specific references.
      * @param {number} taskIndex The index of the task that failed, if
      *    applicable.
-     * @param {number} specificTestIndex The index of the "specific test" that
-     *    failed, if applicable.
-     * @param {Array<string>} testMessages The list of messages corresponding
-     *    to specific feedback, if applicable.
-     * @param {number} messageIndex The index of the message to use, if
-     *    applicable.
-     * @param {TestCase} testCase The first-failing test case, if applicable.
      * @param {string} testSuiteId The ID of the test suite containing the
      *    first-failing test case, if applicable.
      * @param {number} testCaseIndex The index of the first-failing test case
      *    (relative to its suite), if applicable.
+     * @param {TestCase} testCase The first-failing test case, if applicable.
      * @param {*} observedOutput Actual output from running the user's code on
      *    the failing test case, if applicable.
+     * @param {string} correctnessState The "correctness state" used to derive
+     *    the feedback to show for an incorrect-output test.
+     * @param {string} specificCategory The category of failure found (possibly
+     *    shadowed by incorrect output feedback). This is either
+     *    FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE or
+     *    FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE.
+     * @param {number} specificTestIndex The index of the "specific test" that
+     *    failed, if applicable.
+     * @param {Array<string>} specificTestMessages The list of messages
+     *    corresponding to specific feedback, if applicable.
+     * @param {number} specificTestMessageIndex The index of the message to
+     *    use, if applicable.
      * @param {string} expectedPerformance A string describing the expected
      *    performance of the code (e.g. linear/quadratic), if applicable.
      *
@@ -60,8 +67,10 @@ tie.factory('FeedbackDetailsObjectFactory', [
     var FeedbackDetails = function(
         feedbackCategory, errorString, language, errorInput,
         languageUnfamiliarityFeedbackIsNeeded,
-        taskIndex, specificTestIndex, testMessages, messageIndex,
-        testCase, testSuiteId, testCaseIndex, observedOutput,
+        taskIndex, testSuiteId, testCaseIndex,
+        testCase, observedOutput, correctnessState,
+        specificCategory, specificTestIndex, specificTestMessages,
+        specificTestMessageIndex,
         expectedPerformance) {
       if (!FEEDBACK_CATEGORIES.hasOwnProperty(feedbackCategory)) {
         throw Error('Invalid feedback category: ' + feedbackCategory);
@@ -120,13 +129,88 @@ tie.factory('FeedbackDetailsObjectFactory', [
       /**
        * The index of the task containing the first failing test.
        *
-       * Should be null if feedback category is not KNOWN_BUG_FAILURE or
-       * SUITE_LEVEL_FAILURE.
+       * Should be null if feedback category is not KNOWN_BUG_FAILURE,
+       * SUITE_LEVEL_FAILURE or INCORRECT_OUTPUT_FAILURE.
        *
        * @type {number}
        * @private
        */
       this._taskIndex = angular.isNumber(taskIndex) ? taskIndex : null;
+
+      /**
+       * The ID of the test suite containing first failing test case.
+       *
+       * Should be null if feedback category is not KNOWN_BUG_FAILURE,
+       * SUITE_LEVEL_FAILURE or INCORRECT_OUTPUT_FAILURE.
+       *
+       * @type {string}
+       * @private
+       */
+      this._testSuiteId = testSuiteId || null;
+
+      /**
+       * The index of the first failing test case (relative to its test suite).
+       *
+       * Should be null if feedback category is not KNOWN_BUG_FAILURE,
+       * SUITE_LEVEL_FAILURE or INCORRECT_OUTPUT_FAILURE.
+       *
+       * @type {number}
+       * @private
+       */
+      this._testCaseIndex = (
+        angular.isNumber(testCaseIndex) ? testCaseIndex : null);
+
+      /**
+       * The first failing test case.
+       *
+       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
+       *
+       * @type {TestCase}
+       * @private
+       */
+      this._testCase = testCase || null;
+
+      /**
+       * The actual output from running the user's code on the first failing
+       * test case.
+       *
+       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
+       *
+       * @type {*}
+       * @private
+       */
+      this._observedOutput = observedOutput || null;
+
+      /**
+       * The "correctness state" used to derive the feedback to show for an
+       * incorrect-output test.
+       *
+       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
+       *
+       * @type {string}
+       * @private
+       */
+      this._correctnessState = correctnessState || null;
+
+      /**
+       * The "specific-test" category. This is either the feedback category for
+       * this object, unless it is shadowed by INCORRECT_OUTPUT_FAILURE due to
+       * the user receiving the same feedback multiple times.
+       *
+       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE,
+       * KNOWN_BUG_FAILURE or SUITE_LEVEL_FAILURE.
+       *
+       * @type {string} Either KNOWN_BUG_FAILURE or SUITE_LEVEL_FAILURE.
+       * @private
+       */
+      this._specificCategory = specificCategory || null;
+      var ALLOWED_SPECIFIC_CATEGORIES = [
+        null, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE,
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE];
+      if (ALLOWED_SPECIFIC_CATEGORIES.indexOf(this._specificCategory) === -1) {
+        throw Error(
+          'Invalid specific-test category: ' + this._specificCategory);
+      }
 
       /**
        * The index of the specific test that caused the buggy-output or
@@ -151,7 +235,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
        * @type {Array<string>}
        * @private
        */
-      this._testMessages = testMessages || null;
+      this._specificTestMessages = specificTestMessages || null;
 
       /**
        * The index of the specific feedback message in this._testMessages to
@@ -163,50 +247,9 @@ tie.factory('FeedbackDetailsObjectFactory', [
        * @type {number}
        * @private
        */
-      this._messageIndex = (
-        angular.isNumber(messageIndex) ? messageIndex : null);
-
-      /**
-       * The first failing test case.
-       *
-       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
-       *
-       * @type {TestCase}
-       * @private
-       */
-      this._testCase = testCase || null;
-
-      /**
-       * The ID of the test suite containing first failing test case.
-       *
-       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
-       *
-       * @type {string}
-       * @private
-       */
-      this._testSuiteId = testSuiteId || null;
-
-      /**
-       * The index of the first failing test case (relative to its test suite).
-       *
-       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
-       *
-       * @type {number}
-       * @private
-       */
-      this._testCaseIndex = (
-        angular.isNumber(testCaseIndex) ? testCaseIndex : null);
-
-      /**
-       * The actual output from running the user's code on the first failing
-       * test case.
-       *
-       * Should be null if feedback category is not INCORRECT_OUTPUT_FAILURE.
-       *
-       * @type {*}
-       * @private
-       */
-      this._observedOutput = observedOutput || null;
+      this._specificTestMessageIndex = (
+        angular.isNumber(specificTestMessageIndex) ? specificTestMessageIndex :
+        null);
 
       /**
        * A string describing the expected performance of the user's code (e.g.
@@ -296,50 +339,50 @@ tie.factory('FeedbackDetailsObjectFactory', [
      */
     FeedbackDetails.prototype.getTaskIndex = function() {
       if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
-          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
-        throw Error('Non-specific errors have no task index.');
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+          this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error(
+          'Only incorrect-output failures and their variants have a task ' +
+          'index.');
       }
       return this._taskIndex;
     };
 
     /**
-     * A getter for the "specific test" index corresponding to buggy-output or
-     * suite-level feedback.
-     *
-     * @returns {number}
-     */
-    FeedbackDetails.prototype.getSpecificTestIndex = function() {
-      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
-          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
-        throw Error('Non-specific errors have no specific test index.');
-      }
-      return this._specificTestIndex;
-    };
-
-    /**
-     * A getter for the message index used for specific feedback.
-     *
-     * @returns {number}
-     */
-    FeedbackDetails.prototype.getMessageIndex = function() {
-      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
-          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
-        throw Error('Non-specific errors have no feedback message index.');
-      }
-      return this._messageIndex;
-    };
-
-    /**
-     * A getter for the feedback message for specific feedback.
+     * A getter for the ID of the suite containing the first failing test case
+     * for incorrect-output feedback.
      *
      * @returns {string}
      */
-    FeedbackDetails.prototype.getMessage = function() {
+    FeedbackDetails.prototype.getTestSuiteId = function() {
       if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
-          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
-        throw Error('Non-specific errors have no feedback message.');
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+          this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error(
+          'Only incorrect-output failures and their variants have a test ' +
+          'suite ID.');
       }
-      return this._testMessages[this._messageIndex];
+      return this._testSuiteId;
+    };
+
+    /**
+     * A getter for the index of the first failing test case for
+     * incorrect-output feedback.
+     *
+     * @returns {number}
+     */
+    FeedbackDetails.prototype.getTestCaseIndex = function() {
+      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+          this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error(
+          'Only incorrect-output failures and their variants have a test ' +
+          'case index.');
+      }
+      return this._testCaseIndex;
     };
 
     /**
@@ -353,34 +396,6 @@ tie.factory('FeedbackDetailsObjectFactory', [
         throw Error('Non-incorrect-output errors have no test case.');
       }
       return this._testCase;
-    };
-
-    /**
-     * A getter for the ID of the suite containing the first failing test case
-     * for incorrect-output feedback.
-     *
-     * @returns {string}
-     */
-    FeedbackDetails.prototype.getTestSuiteId = function() {
-      if (this._feedbackCategory !==
-          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
-        throw Error('Non-incorrect-output errors have no test suite ID.');
-      }
-      return this._testSuiteId;
-    };
-
-    /**
-     * A getter for the index of the first failing test case for
-     * incorrect-output feedback.
-     *
-     * @returns {number}
-     */
-    FeedbackDetails.prototype.getTestCaseIndex = function() {
-      if (this._feedbackCategory !==
-          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
-        throw Error('Non-incorrect-output errors have no test case index.');
-      }
-      return this._testCaseIndex;
     };
 
     /**
@@ -398,6 +413,82 @@ tie.factory('FeedbackDetailsObjectFactory', [
     };
 
     /**
+     * A getter for the "correctness state" of the incorrect-output feedback to
+     * show.
+     *
+     * @returns {string}
+     */
+    FeedbackDetails.prototype.getCorrectnessState = function() {
+      if (this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error('Non-incorrect-output errors have no correctness state.');
+      }
+      return this._correctnessState;
+    };
+
+    /**
+     * A getter for the "specific test" category (which may be shadowed by
+     * incorrect-output feedback).
+     *
+     * @returns {number}
+     */
+    FeedbackDetails.prototype.getSpecificCategory = function() {
+      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+          this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error(
+          'Only incorrect-output errors and their variants have a specific ' +
+          'category.');
+      }
+      return this._specificCategory;
+    };
+
+    /**
+     * A getter for the "specific test" index corresponding to buggy-output or
+     * suite-level feedback.
+     *
+     * @returns {number}
+     */
+    FeedbackDetails.prototype.getSpecificTestIndex = function() {
+      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE &&
+          this._feedbackCategory !==
+          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+        throw Error(
+          'Only incorrect-output errors and their variants have a specific ' +
+          'test index.');
+      }
+      return this._specificTestIndex;
+    };
+
+    /**
+     * A getter for the message index used for specific feedback.
+     *
+     * @returns {number}
+     */
+    FeedbackDetails.prototype.getSpecificTestMessageIndex = function() {
+      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
+        throw Error('Non-specific errors have no feedback message index.');
+      }
+      return this._specificTestMessageIndex;
+    };
+
+    /**
+     * A getter for the feedback message for specific feedback.
+     *
+     * @returns {string}
+     */
+    FeedbackDetails.prototype.getSpecificTestMessage = function() {
+      if (this._feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
+        throw Error('Non-specific errors have no feedback message.');
+      }
+      return this._specificTestMessages[this._specificTestMessageIndex];
+    };
+
+    /**
      * A getter for the observed output for the first failing test case for
      * incorrect-output feedback.
      *
@@ -410,6 +501,20 @@ tie.factory('FeedbackDetailsObjectFactory', [
           'Non-performance-failure errors have no expected performance.');
       }
       return angular.copy(this._expectedPerformance);
+    };
+
+    /**
+     * Whether this FeedbackDetails object is related to the output of the
+     * user's code.
+     *
+     * @returns {string}
+     */
+    FeedbackDetails.prototype.hasOutputRelatedFailure = function() {
+      return (
+        this._feedbackCategory === FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE ||
+        this._feedbackCategory === FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE ||
+        this._feedbackCategory === FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE
+      );
     };
 
 
@@ -451,33 +556,52 @@ tie.factory('FeedbackDetailsObjectFactory', [
         languageUnfamiliarityFeedbackIsNeeded);
     };
 
+    FeedbackDetails.createIncorrectOutputFeedbackDetails = function(
+        taskIndex, testSuiteId, testCaseIndex, testCase, observedOutput,
+        correctnessState, specificCategory, specificTestIndex) {
+      if (CORRECTNESS_STATES.indexOf(correctnessState) === -1) {
+        throw Error('Invalid correctness state: ' + correctnessState);
+      }
+
+      return new FeedbackDetails(
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,
+        taskIndex, testSuiteId, testCaseIndex,
+        testCase, observedOutput, correctnessState,
+        specificCategory, specificTestIndex);
+    };
+
     FeedbackDetails.createBuggyOutputFeedbackDetails = function(
-        taskIndex, specificTestIndex, testMessages, messageIndex) {
+        taskIndex, testSuiteId, testCaseIndex, specificTestIndex,
+        specificTestMessages, specificTestMessageIndex) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, null, null, null, null,
-        taskIndex, specificTestIndex, testMessages, messageIndex);
+        taskIndex, testSuiteId, testCaseIndex,
+        null, null, null,
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, specificTestIndex,
+        specificTestMessages, specificTestMessageIndex
+      );
     };
 
     FeedbackDetails.createSuiteLevelFeedbackDetails = function(
-        taskIndex, specificTestIndex, testMessages, messageIndex) {
+        taskIndex, testSuiteId, testCaseIndex, specificTestIndex,
+        specificTestMessages, specificTestMessageIndex) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, null, null, null, null,
-        taskIndex, specificTestIndex, testMessages, messageIndex);
-    };
-
-    FeedbackDetails.createIncorrectOutputFeedbackDetails = function(
-        testCase, testSuiteId, testCaseIndex, observedOutput) {
-      return new FeedbackDetails(
-        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,
-        null, null, null, null, testCase, testSuiteId, testCaseIndex,
-        observedOutput);
+        taskIndex, testSuiteId, testCaseIndex,
+        null, null, null,
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, specificTestIndex,
+        specificTestMessages, specificTestMessageIndex
+      );
     };
 
     FeedbackDetails.createPerformanceFeedbackDetails = function(
         expectedPerformance) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, null, null, null, null,
-        null, null, null, null, null, null, null, null, expectedPerformance);
+        null, null, null,
+        null, null, null,
+        null, null, null, null,
+        expectedPerformance);
     };
 
     FeedbackDetails.createSuccessFeedbackDetails = function() {

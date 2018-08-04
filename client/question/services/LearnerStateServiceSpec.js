@@ -19,14 +19,12 @@
 describe('LearnerStateService', function() {
   var LearnerStateService;
   var FeedbackDetailsObjectFactory;
-  var FEEDBACK_CATEGORIES;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     LearnerStateService = $injector.get('LearnerStateService');
     FeedbackDetailsObjectFactory = $injector.get(
       'FeedbackDetailsObjectFactory');
-    FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
   }));
 
   describe('raw code change monitoring', function() {
@@ -59,33 +57,6 @@ describe('LearnerStateService', function() {
       LearnerStateService.recordFeedbackDetails(feedbackDetails2);
       expect(LearnerStateService.getPreviousFeedbackDetails()).toBe(
         feedbackDetails2);
-    });
-
-    it('should correctly retrieve the previous message index', function() {
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
-
-      var buggyOutputFeedbackDetails = (
-        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
-      LearnerStateService.recordFeedbackDetails(buggyOutputFeedbackDetails);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(1);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(null);
-
-      var suiteLevelFeedbackDetails = (
-        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
-      LearnerStateService.recordFeedbackDetails(suiteLevelFeedbackDetails);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 0)).toBe(null);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(1);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(null);
     });
   });
 

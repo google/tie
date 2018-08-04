@@ -26,8 +26,7 @@ describe('ConversationManagerService', function() {
   var orderedTasks;
   var auxiliaryCode;
   var starterCode;
-  var FEEDBACK_TYPE_INPUT_TO_TRY;
-  var FEEDBACK_TYPE_OUTPUT_ENABLED;
+  var CORRECTNESS_STATE_INPUT_DISPLAYED;
   var CORRECTNESS_FEEDBACK_TEXT;
   var TITLE = "title";
   var STARTER_CODE = "starterCode";
@@ -105,9 +104,8 @@ describe('ConversationManagerService', function() {
     ConversationManagerService = $injector.get('ConversationManagerService');
     TaskObjectFactory = $injector.get('TaskObjectFactory');
     SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
-    FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
-    FEEDBACK_TYPE_OUTPUT_ENABLED = $injector.get(
-      'FEEDBACK_TYPE_OUTPUT_ENABLED');
+    CORRECTNESS_STATE_INPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_INPUT_DISPLAYED');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
     QuestionObjectFactory = $injector.get(
       'QuestionObjectFactory');
@@ -480,7 +478,7 @@ describe('ConversationManagerService', function() {
                 expect(feedback4.isAnswerCorrect()).toEqual(false);
                 // At this point, we have run out of buggy-output test feedback.
                 expect(
-                  CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]
+                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
                 ).toContain(feedback4.getParagraphs()[0].getContent());
                 expect(stdout4).toBe('');
                 done();
@@ -767,8 +765,8 @@ describe('ConversationManagerService', function() {
             var feedback = learnerViewSubmissionResult.getFeedback();
             var stdout = learnerViewSubmissionResult.getStdout();
             expect(
-              CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
-              feedback.getParagraphs()[0].getContent());
+              CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
+            ).toContain(feedback.getParagraphs()[0].getContent());
             expect(stdout).toBe('');
             done();
           });
@@ -893,8 +891,8 @@ describe('ConversationManagerService', function() {
           var feedback = learnerViewSubmissionResult.getFeedback();
           var stdout = learnerViewSubmissionResult.getStdout();
           expect(
-            CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]).toContain(
-            feedback.getParagraphs()[0].getContent());
+            CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
+          ).toContain(feedback.getParagraphs()[0].getContent());
           expect(stdout).toBe('');
           done();
         });
@@ -1016,7 +1014,7 @@ describe('ConversationManagerService', function() {
               feedback = learnerViewSubmissionResult3.getFeedback();
               // We've reached the end of the hints.
               expect(
-                CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_INPUT_TO_TRY]
+                CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
               ).toContain(feedback.getParagraphs()[0].getContent());
               done();
             });
@@ -1077,66 +1075,6 @@ describe('ConversationManagerService', function() {
           });
         });
       });
-    });
-
-    describe('incorrect-output tests', function() {
-      beforeEach(inject(function() {
-        taskDict[0].testSuites = [{
-          id: 'SAMPLE_INPUT',
-          humanReadableName: 'sampleInputSuite',
-          testCases: [{
-            input: 'Hello, John',
-            allowedOutputs: ['olleH, nhoJ']
-          }]
-        }];
-        question = QuestionObjectFactory.create({
-          title: TITLE,
-          starterCode: STARTER_CODE,
-          auxiliaryCode: AUXILIARY_CODE,
-          tasks: taskDict
-        });
-        CurrentQuestionService.getCurrentQuestion =
-          jasmine.createSpy().and.returnValue(question);
-      }));
-
-      it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
-        function(done) {
-          orderedTasks = taskDict.map(function(task) {
-            return TaskObjectFactory.create(task);
-          });
-
-          // This code passes suite 1 and fails suite 2.
-          var studentCode = [
-            'def mockMainFunction(input):',
-            '    return "incorrect answer"',
-            ''
-          ].join('\n');
-
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult) {
-            var feedback = learnerViewSubmissionResult.getFeedback();
-            var correctnessFeedbackParagraphs = feedback.getParagraphs();
-            expect(correctnessFeedbackParagraphs.length).toEqual(2);
-            expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-              true);
-            expect(
-              CORRECTNESS_FEEDBACK_TEXT[FEEDBACK_TYPE_OUTPUT_ENABLED]
-            ).toContain(correctnessFeedbackParagraphs[0].getContent());
-            expect(
-              correctnessFeedbackParagraphs[1].isOutputParagraph()
-            ).toEqual(true);
-
-            var expectedOutputParagraph =
-              'Input: "Hello, John"\n' +
-              'Expected Output: "olleH, nhoJ"\n' +
-              'Actual Output: "incorrect answer"';
-            expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
-              expectedOutputParagraph);
-            done();
-          });
-        }
-      );
     });
   });
 });

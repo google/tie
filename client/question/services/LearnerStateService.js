@@ -19,7 +19,10 @@
 
 tie.factory('LearnerStateService', [
   'LANGUAGE_UNFAMILIARITY_THRESHOLD', 'FEEDBACK_CATEGORIES',
-  function(LANGUAGE_UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES) {
+  'CORRECTNESS_STATE_INPUT_DISPLAYED', 'CORRECTNESS_STATES',
+  function(
+      LANGUAGE_UNFAMILIARITY_THRESHOLD, FEEDBACK_CATEGORIES,
+      CORRECTNESS_STATE_INPUT_DISPLAYED, CORRECTNESS_STATES) {
     /**
      * Counter to keep track of language unfamiliarity errors (which includes
      * syntax errors and wrong language errors).
@@ -71,27 +74,68 @@ tie.factory('LearnerStateService', [
       getPreviousFeedbackDetails: function() {
         return previousFeedbackDetails;
       },
-      getPreviousMessageIndexIfFromSameTest: function(
-          feedbackCategory, taskIndex, specificTestIndex) {
-        if (feedbackCategory !== FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE &&
-            feedbackCategory !== FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE) {
-          throw Error('Invalid feedback category: ' + feedbackCategory);
-        }
-
+      // Returns the next feedback stage for incorrect-output failures (with
+      // possible modifications by buggy-output and suite-level feedback).
+      getNextFeedbackStage: function(
+          taskIndex, suiteId, testCaseIndex, specificFailureCategory,
+          specificTestIndex, numSpecificTestMessages) {
         if (previousFeedbackDetails === null) {
-          return null;
+          return 0;
         }
 
-        var currentTestMatchesPreviousTest = (
-          feedbackCategory === previousFeedbackDetails.getFeedbackCategory() &&
-          taskIndex === previousFeedbackDetails.getTaskIndex() &&
-          specificTestIndex === previousFeedbackDetails.getSpecificTestIndex());
+        if (specificFailureCategory !== null) {
+          if (!previousFeedbackDetails.hasOutputRelatedFailure()) {
+            return 0;
+          }
 
-        if (currentTestMatchesPreviousTest) {
-          return previousFeedbackDetails.getMessageIndex();
-        } else {
-          return null;
+          // We would, normally, give the user all the specific feedback,
+          // followed by the incorrect-output feedback. Determine where in this
+          // pipeline they are at.
+          var previousSpecificCategory = (
+            previousFeedbackDetails.getSpecificCategory());
+          var previousSpecificTestIndex = (
+            previousFeedbackDetails.getSpecificTestIndex());
+          if (specificFailureCategory !== previousSpecificCategory ||
+              specificTestIndex !== previousSpecificTestIndex) {
+            return 0;
+          }
+
+          if (previousFeedbackDetails.getFeedbackCategory() ===
+              FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE) {
+            // The previous feedback was incorrect-output feedback.
+            var previousCorrectnessState = (
+              previousFeedbackDetails.getCorrectnessState());
+            var correctnessStateIndex = CORRECTNESS_STATES.indexOf(
+              previousCorrectnessState);
+            return numSpecificTestMessages + correctnessStateIndex + (
+              correctnessStateIndex < CORRECTNESS_STATES.length - 1 ? 1 : 0);
+          }
+
+          // Otherwise, the previous feedback message was specific feedback.
+          var previousSpecificTestMessageIndex = (
+            previousFeedbackDetails.getSpecificTestMessageIndex());
+          if (previousSpecificTestMessageIndex !== null) {
+            return previousSpecificTestMessageIndex + 1;
+          }
         }
+
+        // We would now give incorrect-output feedback. First, check whether
+        // the first failing test matches. If so, then increment the incorrect-
+        // output feedback (if possible).
+        if (previousFeedbackDetails.getFeedbackCategory() !==
+            FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE ||
+            previousFeedbackDetails.getTaskIndex() !== taskIndex ||
+            previousFeedbackDetails.getTestSuiteId() !== suiteId ||
+            previousFeedbackDetails.getTestCaseIndex() !== testCaseIndex) {
+          return 0;
+        }
+
+        previousCorrectnessState = (
+          previousFeedbackDetails.getCorrectnessState());
+        correctnessStateIndex = CORRECTNESS_STATES.indexOf(
+          previousCorrectnessState);
+        return correctnessStateIndex + (
+            correctnessStateIndex < CORRECTNESS_STATES.length - 1 ? 1 : 0);
       },
       recordRuntimeError: function(runtimeErrorString) {
         if (runtimeErrorString) {
