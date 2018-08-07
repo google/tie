@@ -89,8 +89,8 @@ tie.factory('LearnerStateService', [
           }
 
           // We would, normally, give the user all the specific feedback,
-          // followed by the incorrect-output feedback. Determine where in this
-          // pipeline they are at.
+          // followed by the incorrect-output feedback. So, we start by
+          // determining where in this pipeline they are at.
           var previousSpecificCategory = (
             previousFeedbackDetails.getSpecificCategory());
           var previousSpecificTestIndex = (
