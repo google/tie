@@ -34,6 +34,10 @@ describe('FeedbackGeneratorService', function() {
   var LANGUAGE_PYTHON;
   var FEEDBACK_CATEGORIES;
   var CORRECTNESS_FEEDBACK_TEXT;
+  var CORRECTNESS_STATE_INPUT_DISPLAYED;
+  var CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_NO_MORE_FEEDBACK;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -63,6 +67,14 @@ describe('FeedbackGeneratorService', function() {
     LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
+    CORRECTNESS_STATE_INPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_INPUT_DISPLAYED');
+    CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_NO_MORE_FEEDBACK = $injector.get(
+      'CORRECTNESS_STATE_NO_MORE_FEEDBACK');
 
     sampleErrorTraceback = ErrorTracebackObjectFactory.create(
       'ZeroDivisionError: integer division or modulo by zero',
@@ -124,13 +136,6 @@ describe('FeedbackGeneratorService', function() {
   });
 
   describe('getIncorrectOutputFeedback', function() {
-    var sampleInputTestSuite = {
-      id: 'SAMPLE_INPUT',
-      testCase: {
-        input: 'Hello, John',
-        allowedOutputs: ['olleH, nhoJ']
-      }
-    };
     var generalTestSuite = {
       id: 'GENERAL_CASE',
       testCase: {
@@ -138,96 +143,48 @@ describe('FeedbackGeneratorService', function() {
         allowedOutputs: ['iH, dlrow']
       }
     };
-    var whitespaceTestSuite = {
-      id: 'WHITESPACE',
-      testCase: {
-        input: 'hello    ',
-        allowedOutputs: ['olleh    ']
-      }
-    };
-    var sampleInputTestCase;
     var generalInputTestCase;
-    var whitespaceTestCase;
 
     beforeEach(function() {
-      sampleInputTestCase =
-        TestCaseObjectFactory.create(sampleInputTestSuite.testCase);
-      generalInputTestCase =
-        TestCaseObjectFactory.create(generalTestSuite.testCase);
-      whitespaceTestCase =
-        TestCaseObjectFactory.create(whitespaceTestSuite.testCase);
+      generalInputTestCase = TestCaseObjectFactory.create(
+        generalTestSuite.testCase);
     });
 
-    it('should allow user to display output if suite id is \'SAMPLE_INPUT\'',
-      function() {
-        var feedbackDetails = (
-          FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-            sampleInputTestCase, sampleInputTestSuite.id, 0,
-            'incorrect answer'));
-        var correctnessFeedback = (
-          FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
-        var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
-
-        expect(correctnessFeedbackParagraphs.length).toEqual(2);
-        expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-          true);
-        expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
-          correctnessFeedbackParagraphs[0].getContent());
-        expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
-          true);
-        var expectedOutputParagraph =
-          'Input: "Hello, John"\n' +
-          'Expected Output: "olleH, nhoJ"\n' +
-          'Actual Output: "incorrect answer"';
-        expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
-          expectedOutputParagraph);
-      }
-    );
-
-    it('should suggest input to try first', function() {
+    it('should correctly display "test input" feedback', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
+          0, generalTestSuite.id, 0, generalInputTestCase, 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_INPUT_DISPLAYED, null, null));
       var correctnessFeedback = (
         FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
       var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
 
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
-      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-        true);
-      expect(CORRECTNESS_FEEDBACK_TEXT.INPUT_TO_TRY).toContain(
-        correctnessFeedbackParagraphs[0].getContent());
-      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
-        true);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(true);
+      expect(
+        CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
+      ).toContain(correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(true);
       var expectedInputCodeParagraph = 'Input: "Hi, world"';
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedInputCodeParagraph);
     });
 
-    it('should present expected output second', function() {
+    it('should correctly display "expected output" feedback', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
-      // Note that this calculation has side-effects and cannot be omitted.
-      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
-
-      feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
+          0, generalTestSuite.id, 0, generalInputTestCase, 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED, null, null));
       var correctnessFeedback = (
         FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
       var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
 
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
-      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-        true);
-      expect(CORRECTNESS_FEEDBACK_TEXT.EXPECTED_OUTPUT).toContain(
-        correctnessFeedbackParagraphs[0].getContent());
-      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
-        true);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(true);
+      expect(
+        CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED]
+      ).toContain(correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(true);
       var expectedExpectedOutputParagraph =
         'Input: "Hi, world"\n' +
         'Expected Output: "iH, dlrow"';
@@ -235,34 +192,20 @@ describe('FeedbackGeneratorService', function() {
         expectedExpectedOutputParagraph);
     });
 
-    it('should allow user to display code output last', function() {
+    it('should correctly display "observed output" feedback', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
-      // Note that this calculation has side-effects and cannot be omitted.
-      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
-
-      feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
-      // Note that this calculation has side-effects and cannot be omitted.
-      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
-
-      feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
+          0, generalTestSuite.id, 0, generalInputTestCase, 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED, null, null));
       var correctnessFeedback = (
         FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
       var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
 
       expect(correctnessFeedbackParagraphs.length).toEqual(2);
-      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-        true);
-      expect(CORRECTNESS_FEEDBACK_TEXT.OUTPUT_ENABLED).toContain(
-        correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(true);
+      expect(
+        CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED]
+      ).toContain(correctnessFeedbackParagraphs[0].getContent());
       expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
         true);
       var expectedOutputParagraph =
@@ -273,41 +216,21 @@ describe('FeedbackGeneratorService', function() {
         expectedOutputParagraph);
     });
 
-    it('should catch regressions in user code', function() {
+    it('should correctly display "no more feedback" feedback', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
-      // Note that this calculation has side-effects and cannot be omitted.
-      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
+          0, generalTestSuite.id, 0, generalInputTestCase, 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_NO_MORE_FEEDBACK, null, null));
 
-      feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          whitespaceTestCase, whitespaceTestSuite.id, 0, 'olleh '));
-      // Note that this calculation has side-effects and cannot be omitted.
-      FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails);
-
-      feedbackDetails = (
-        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          generalInputTestCase, generalTestSuite.id, 0,
-          'yeH, uoyerawoh'));
       var correctnessFeedback = (
         FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
       var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
 
-      expect(correctnessFeedbackParagraphs.length).toEqual(2);
-      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(
-        true);
-      expect(correctnessFeedbackParagraphs[0].getContent()).toEqual(
-        'It looks like there was a regression in your code. Your code ' +
-        'used to work for the following, but it now fails:');
-      expect(correctnessFeedbackParagraphs[1].isCodeParagraph()).toEqual(
-        true);
-      var expectedRegressionParagraph =
-        'Input: "Hi, world"\n' +
-        'Expected Output: "iH, dlrow"';
-      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
-        expectedRegressionParagraph);
+      expect(correctnessFeedbackParagraphs.length).toEqual(1);
+      expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(true);
+      expect(
+        CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_NO_MORE_FEEDBACK]
+      ).toContain(correctnessFeedbackParagraphs[0].getContent());
     });
   });
 
@@ -705,7 +628,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return the correct feedback for buggy output tests', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
-          0, 0, buggyOutputTestDict.messages, 0));
+          0, 'unusedSuite1', 3, 0, buggyOutputTestDict.messages, 0));
       var feedback = FeedbackGeneratorService.getBuggyOutputFeedback(
         feedbackDetails);
 
@@ -728,7 +651,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return the correct feedback for suite-level tests', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
-          0, 0, suiteLevelTestDict.messages, 0));
+          0, 'unusedSuite1', 3, 0, suiteLevelTestDict.messages, 0));
       var feedback = FeedbackGeneratorService.getSuiteLevelFeedback(
         feedbackDetails);
       expect(feedback.getFeedbackCategory()).toEqual(

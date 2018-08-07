@@ -19,17 +19,19 @@
 tie.factory('ConversationManagerService', [
   '$q', 'CodePreprocessorDispatcherService', 'CodeRunnerDispatcherService',
   'FeedbackGeneratorService', 'PrereqCheckDispatcherService',
-  'CodeSubmissionObjectFactory',
+  'CodeSubmissionObjectFactory', 'CORRECTNESS_STATES',
   'LearnerViewSubmissionResultObjectFactory', 'FEEDBACK_CATEGORIES',
   'FeedbackDetailsObjectFactory', 'EXECUTION_CONTEXT_COMPILATION',
   'EXECUTION_CONTEXT_RUN_WITH_TESTS', 'LearnerStateService',
+  'CORRECTNESS_STATE_NO_MORE_FEEDBACK',
   function(
       $q, CodePreprocessorDispatcherService, CodeRunnerDispatcherService,
       FeedbackGeneratorService, PrereqCheckDispatcherService,
-      CodeSubmissionObjectFactory,
+      CodeSubmissionObjectFactory, CORRECTNESS_STATES,
       LearnerViewSubmissionResultObjectFactory, FEEDBACK_CATEGORIES,
       FeedbackDetailsObjectFactory, EXECUTION_CONTEXT_COMPILATION,
-      EXECUTION_CONTEXT_RUN_WITH_TESTS, LearnerStateService) {
+      EXECUTION_CONTEXT_RUN_WITH_TESTS, LearnerStateService,
+      CORRECTNESS_STATE_NO_MORE_FEEDBACK) {
 
     /**
      * Determines the feedback details that fully characterize the feedback
@@ -85,57 +87,89 @@ tie.factory('ConversationManagerService', [
           }
         }
 
-        for (j = 0; j < buggyOutputTests.length; j++) {
-          if (buggyOutputTestResults[i][j]) {
-            var testMessages = buggyOutputTests[j].getMessages();
-            var previousMessageIndex = (
-              LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-                FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, i, j));
-            var messageIndex = (
-              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
-
-            if (messageIndex === testMessages.length) {
-              // Do correctness feedback instead.
-               // eslint-disable-next-line max-len
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-                firstFailingTestCase, firstFailingTestSuiteId,
-                firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
-            } else {
-              return (
-                FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
-                  i, j, testMessages, messageIndex));
-            }
-          }
-        }
-
-        for (j = 0; j < suiteLevelTests.length; j++) {
-          if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
-            testMessages = suiteLevelTests[j].getMessages();
-            previousMessageIndex = (
-              LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-                FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, i, j));
-            messageIndex = (
-              previousMessageIndex === null ? 0 : previousMessageIndex + 1);
-
-            if (messageIndex === testMessages.length) {
-              // Do correctness feedback instead.
-              // eslint-disable-next-line max-len
-              return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-                firstFailingTestCase, firstFailingTestSuiteId,
-                firstFailingTestCaseIndex, observedOutputForFirstFailingTest);
-            } else {
-              return (
-                FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
-                  i, j, testMessages, messageIndex));
-            }
-          }
-        }
-
         if (firstFailingTestCase !== null) {
+          for (j = 0; j < buggyOutputTests.length; j++) {
+            if (buggyOutputTestResults[i][j]) {
+              var testMessages = buggyOutputTests[j].getMessages();
+
+              var currentFeedbackStage = (
+                LearnerStateService.getNextFeedbackStage(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, j,
+                  testMessages.length));
+              var totalFeedbackStages = (
+                testMessages.length + CORRECTNESS_STATES.length);
+
+              if (currentFeedbackStage === totalFeedbackStages) {
+                // eslint-disable-next-line max-len
+                return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  firstFailingTestCase, observedOutputForFirstFailingTest,
+                  CORRECTNESS_STATE_NO_MORE_FEEDBACK,
+                  FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, j);
+              } else if (currentFeedbackStage >= testMessages.length) {
+                // eslint-disable-next-line max-len
+                return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  firstFailingTestCase, observedOutputForFirstFailingTest,
+                  CORRECTNESS_STATES[
+                    currentFeedbackStage - testMessages.length],
+                  FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, j);
+              } else {
+                return (
+                  FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+                    i, firstFailingTestSuiteId, firstFailingTestCaseIndex, j,
+                    testMessages, currentFeedbackStage));
+              }
+            }
+          }
+
+          for (j = 0; j < suiteLevelTests.length; j++) {
+            if (suiteLevelTests[j].areConditionsMet(passingSuiteIds)) {
+              testMessages = suiteLevelTests[j].getMessages();
+
+              currentFeedbackStage = (
+                LearnerStateService.getNextFeedbackStage(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, j,
+                  testMessages.length));
+              totalFeedbackStages = (
+                testMessages.length + CORRECTNESS_STATES.length);
+
+              if (currentFeedbackStage === totalFeedbackStages) {
+                // eslint-disable-next-line max-len
+                return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  firstFailingTestCase, observedOutputForFirstFailingTest,
+                  CORRECTNESS_STATE_NO_MORE_FEEDBACK,
+                  FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, j);
+              } else if (currentFeedbackStage >= testMessages.length) {
+                // eslint-disable-next-line max-len
+                return FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+                  i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+                  firstFailingTestCase, observedOutputForFirstFailingTest,
+                  CORRECTNESS_STATES[
+                    currentFeedbackStage - testMessages.length],
+                  FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, j);
+              } else {
+                return (
+                  FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
+                    i, firstFailingTestSuiteId, firstFailingTestCaseIndex, j,
+                    testMessages, currentFeedbackStage));
+              }
+            }
+          }
+
+          var nextFeedbackStage = LearnerStateService.getNextFeedbackStage(
+            i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+            null, null, null);
+          var nextCorrectnessState = CORRECTNESS_STATES[nextFeedbackStage];
+
           return (
             FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-              firstFailingTestCase, firstFailingTestSuiteId,
-              firstFailingTestCaseIndex, observedOutputForFirstFailingTest));
+              i, firstFailingTestSuiteId, firstFailingTestCaseIndex,
+              firstFailingTestCase, observedOutputForFirstFailingTest,
+              nextCorrectnessState, null, null));
         }
 
         for (j = 0; j < performanceTests.length; j++) {

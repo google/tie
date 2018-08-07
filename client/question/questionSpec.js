@@ -24,9 +24,11 @@ describe('question.js', function() {
   var FEEDBACK_CATEGORIES;
   var SYSTEM_GENERATED_TIPS;
   var ALLOWED_PARAGRAPH_TYPES;
-  var FEEDBACK_TYPE_INPUT_TO_TRY;
-  var FEEDBACK_TYPE_EXPECTED_OUTPUT;
-  var FEEDBACK_TYPE_OUTPUT_ENABLED;
+  var CORRECTNESS_STATES;
+  var CORRECTNESS_STATE_INPUT_DISPLAYED;
+  var CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_NO_MORE_FEEDBACK;
   var CORRECTNESS_FEEDBACK_TEXT;
   var ALL_SUPPORTED_LANGUAGES;
 
@@ -42,11 +44,17 @@ describe('question.js', function() {
     SYSTEM_GENERATED_TIPS = $injector.get('SYSTEM_GENERATED_TIPS');
     ALLOWED_PARAGRAPH_TYPES = [
       PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_TEXT, PARAGRAPH_TYPE_ERROR];
-    FEEDBACK_TYPE_INPUT_TO_TRY = $injector.get('FEEDBACK_TYPE_INPUT_TO_TRY');
-    FEEDBACK_TYPE_EXPECTED_OUTPUT =
-      $injector.get('FEEDBACK_TYPE_EXPECTED_OUTPUT');
-    FEEDBACK_TYPE_OUTPUT_ENABLED =
-      $injector.get('FEEDBACK_TYPE_OUTPUT_ENABLED');
+
+    CORRECTNESS_STATES = $injector.get('CORRECTNESS_STATES');
+    CORRECTNESS_STATE_INPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_INPUT_DISPLAYED');
+    CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_NO_MORE_FEEDBACK = $injector.get(
+      'CORRECTNESS_STATE_NO_MORE_FEEDBACK');
+
     CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
     ALL_SUPPORTED_LANGUAGES = $injector.get('ALL_SUPPORTED_LANGUAGES');
   }));
@@ -101,18 +109,25 @@ describe('question.js', function() {
     });
   });
 
+  describe('CORRECTNESS_STATES', function() {
+    it('should have consistent values with individual constants', function() {
+      expect(CORRECTNESS_STATES).toEqual([
+        CORRECTNESS_STATE_INPUT_DISPLAYED,
+        CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
+        CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED,
+        CORRECTNESS_STATE_NO_MORE_FEEDBACK
+      ]);
+    });
+  });
+
   describe('CORRECTNESS_FEEDBACK_TEXT', function() {
-    it('should match user state constant values with feedback type labels',
-      function() {
-        var feedbackTypeConstNames = [
-          FEEDBACK_TYPE_INPUT_TO_TRY,
-          FEEDBACK_TYPE_EXPECTED_OUTPUT,
-          FEEDBACK_TYPE_OUTPUT_ENABLED];
-        var correctnessFeedbackTextKeys =
-          Object.keys(CORRECTNESS_FEEDBACK_TEXT);
-        expect(feedbackTypeConstNames.sort()).toEqual(
-          correctnessFeedbackTextKeys.sort());
-      }
-    );
+    it([
+      'should verify that correctness states match the keys in the ',
+      'correctness feedback specifications'
+    ].join(''), function() {
+      var correctnessFeedbackTextKeys = Object.keys(CORRECTNESS_FEEDBACK_TEXT);
+      expect(CORRECTNESS_STATES.slice().sort()).toEqual(
+        correctnessFeedbackTextKeys.sort());
+    });
   });
 });

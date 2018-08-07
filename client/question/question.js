@@ -29,58 +29,49 @@ window.tie = angular.module('tie', [
 tie.constant('TEST_SUITE_ID_SAMPLE_INPUT', 'SAMPLE_INPUT');
 
 /**
- * Correctness state for first user attempt to pass a test suite.
+ * Possible states for incorrect-output feedback, in order.
  *
- * @type {string}
+ * @type {Array<string>}
  */
-tie.constant('CORRECTNESS_STATE_STARTING', 'STARTING');
+tie.constant('CORRECTNESS_STATES', [
+  'INPUT_DISPLAYED',
+  'EXPECTED_OUTPUT_DISPLAYED',
+  'OBSERVED_OUTPUT_DISPLAYED',
+  'NO_MORE_FEEDBACK'
+]);
 
 /**
- * Correctness state where the test case input has been displayed to the user.
+ * Incorrect-output-feedback state that allows the user to view the input of
+ * the failing test.
  *
  * @type {string}
  */
 tie.constant('CORRECTNESS_STATE_INPUT_DISPLAYED', 'INPUT_DISPLAYED');
 
 /**
- * Correctness state where the expected output has been displayed to the user.
+ * Incorrect-output-feedback state that allows the user to view the expected
+ * output of the failing test.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
-  'EXPECTED_OUTPUT_DISPLAYED');
+tie.constant(
+  'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED', 'EXPECTED_OUTPUT_DISPLAYED');
 
 /**
- * Correctness state where the observed output is available to the user.
+ * Incorrect-output-feedback state that allows the user to view the observed
+ * output of the failing test.
  *
  * @type {string}
  */
-tie.constant('CORRECTNESS_STATE_OBSERVED_OUTPUT_AVAILABLE',
-  'OBSERVED_OUTPUT_DISPLAYED');
+tie.constant(
+  'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED', 'OBSERVED_OUTPUT_DISPLAYED');
 
 /**
- * Label for feedback displayed to user when presenting input(s) the user should
- * consider before they revise their code.
+ * Incorrect-output-feedback state that indicates that we have no more feedback.
  *
  * @type {string}
  */
-tie.constant('FEEDBACK_TYPE_INPUT_TO_TRY', 'INPUT_TO_TRY');
-
-/**
- * Label for feedback displayed to user when presenting the expected output for
- * given input.
- *
- * @type {string}
- */
-tie.constant('FEEDBACK_TYPE_EXPECTED_OUTPUT', 'EXPECTED_OUTPUT');
-
-/**
- * Label for feedback displayed to user when allowing the user to display the
- * output from their submitted code.
- *
- * @type {string}
- */
-tie.constant('FEEDBACK_TYPE_OUTPUT_ENABLED', 'OUTPUT_ENABLED');
+tie.constant('CORRECTNESS_STATE_NO_MORE_FEEDBACK', 'NO_MORE_FEEDBACK');
 
 /**
  * Number of milliseconds for TIE to wait before showing feedback.
@@ -107,14 +98,14 @@ tie.constant('DURATION_MSEC_WAIT_FOR_SUBMISSION_CONFIRMATION', 1000);
  * @type {Object.<string, Array.<string>>}
  */
 tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
-  INPUT_TO_TRY: [
+  INPUT_DISPLAYED: [
     'Would your code work for the following input?',
     'How about the following input? Would your code still work?',
     'What would happen if you run your code with this input?',
     'Consider the input below. How would your code handle it?',
     'Have you considered input such as the following?'
   ],
-  EXPECTED_OUTPUT: [
+  EXPECTED_OUTPUT_DISPLAYED: [
     ('Below is the output your code should produce for the given input. ' +
      'Can you find the bug?'),
     'Consider the input/output pair below. Can you find the bug?',
@@ -124,7 +115,7 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
     ('It looks like there is still a bug. Can you modify your code so ' +
      'that it produces the output shown below?')
   ],
-  OUTPUT_ENABLED: [
+  OBSERVED_OUTPUT_DISPLAYED: [
     ('If you are really stuck, you can display the output of your code.'),
     ('If you are stuck and need help, you can display the output of your ' +
      'code.'),
@@ -132,7 +123,13 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
      'your code.'),
     ('If you feel stumped, you can display the output of your code.'),
     ('If you can\'t find the bug, you can display the output of your code.')
-  ]});
+  ],
+  NO_MORE_FEEDBACK: [
+    ('Sorry, we have no more feedback. Try taking a look at the expected and ' +
+     'observed output for the given test case, and see if you can figure out ' +
+     'why your program returns different results than expected.')
+  ]
+});
 
 /**
  * The maximum amount of time (in seconds) that the code can take to run.

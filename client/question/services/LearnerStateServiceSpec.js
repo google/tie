@@ -20,6 +20,10 @@ describe('LearnerStateService', function() {
   var LearnerStateService;
   var FeedbackDetailsObjectFactory;
   var FEEDBACK_CATEGORIES;
+  var CORRECTNESS_STATE_INPUT_DISPLAYED;
+  var CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED;
+  var CORRECTNESS_STATE_NO_MORE_FEEDBACK;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
@@ -27,6 +31,14 @@ describe('LearnerStateService', function() {
     FeedbackDetailsObjectFactory = $injector.get(
       'FeedbackDetailsObjectFactory');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    CORRECTNESS_STATE_INPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_INPUT_DISPLAYED');
+    CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED = $injector.get(
+      'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED');
+    CORRECTNESS_STATE_NO_MORE_FEEDBACK = $injector.get(
+      'CORRECTNESS_STATE_NO_MORE_FEEDBACK');
   }));
 
   describe('raw code change monitoring', function() {
@@ -60,32 +72,116 @@ describe('LearnerStateService', function() {
       expect(LearnerStateService.getPreviousFeedbackDetails()).toBe(
         feedbackDetails2);
     });
+  });
 
-    it('should correctly retrieve the previous message index', function() {
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
+  describe('get next feedback stage', function() {
+    it('should return 0 if no prior feedback exists', function() {
+      expect(LearnerStateService.getNextFeedbackStage(
+        1, 'suiteId', 3, null, null, null)).toBe(0);
+      expect(LearnerStateService.getNextFeedbackStage(
+        2, 'suiteId', 2, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 1, 4)).toBe(0);
+      expect(LearnerStateService.getNextFeedbackStage(
+        2, 'suiteId', 2, FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 1, 4
+      )).toBe(0);
+    });
 
-      var buggyOutputFeedbackDetails = (
+    it('should return 0 if the previous feedback is not relevant', function() {
+      LearnerStateService.recordFeedbackDetails(
+        FeedbackDetailsObjectFactory.createTimeLimitErrorFeedbackDetails());
+
+      expect(LearnerStateService.getNextFeedbackStage(
+        1, 'suiteId', 3, null, null, null)).toBe(0);
+      expect(LearnerStateService.getNextFeedbackStage(
+        2, 'suiteId', 2, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 1, 4)).toBe(0);
+      expect(LearnerStateService.getNextFeedbackStage(
+        2, 'suiteId', 2, FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 1, 4
+      )).toBe(0);
+    });
+
+    it('should return the next stage for incorrect-output tests', function() {
+      var feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_INPUT_DISPLAYED, null, null));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, null, null, null)).toBe(1);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED, null, null));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, null, null, null)).toBe(2);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED, null, null));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, null, null, null)).toBe(3);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_NO_MORE_FEEDBACK, null, null));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, null, null, null)).toBe(3);
+    });
+
+    it('should update the stage based on buggy-output tests', function() {
+      var feedbackDetails = (
         FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
-      LearnerStateService.recordFeedbackDetails(buggyOutputFeedbackDetails);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 0)).toBe(null);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(1);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(null);
+          0, 'unusedSuite1', 3, 0, ['message1', 'message2'], 0));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(1);
 
-      var suiteLevelFeedbackDetails = (
-        FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
-      LearnerStateService.recordFeedbackDetails(suiteLevelFeedbackDetails);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 0)).toBe(null);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, 0, 1)).toBe(1);
-      expect(LearnerStateService.getPreviousMessageIndexIfFromSameTest(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 1)).toBe(null);
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
+          0, 'unusedSuite1', 3, 0, ['message1', 'message2'], 1));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(2);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_INPUT_DISPLAYED,
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(3);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(4);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED,
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(5);
+
+      feedbackDetails = (
+        FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+          0, 'suiteId', 0, 'Hey, howareyou', 'yeH, uoyerawoh',
+          CORRECTNESS_STATE_NO_MORE_FEEDBACK,
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0));
+      LearnerStateService.recordFeedbackDetails(feedbackDetails);
+      expect(LearnerStateService.getNextFeedbackStage(
+        0, 'suiteId', 0, FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 0, 2)).toBe(5);
     });
   });
 

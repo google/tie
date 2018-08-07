@@ -18,12 +18,14 @@
 
 describe('FeedbackDetailsObjectFactory', function() {
   var FEEDBACK_CATEGORIES;
-
+  var CORRECTNESS_STATE_NO_MORE_FEEDBACK;
   var FeedbackDetailsObjectFactory;
 
   beforeEach(module('tie'));
   beforeEach(inject(function($injector) {
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
+    CORRECTNESS_STATE_NO_MORE_FEEDBACK = $injector.get(
+      'CORRECTNESS_STATE_NO_MORE_FEEDBACK');
     FeedbackDetailsObjectFactory = $injector.get(
       'FeedbackDetailsObjectFactory');
   }));
@@ -118,13 +120,15 @@ describe('FeedbackDetailsObjectFactory', function() {
     it('should create a buggy-output FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createBuggyOutputFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
+          0, 'suite_id_1', 1, 2, ['a', 'b'], 1));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
       expect(feedbackDetails.getTaskIndex()).toBe(0);
-      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
-      expect(feedbackDetails.getMessageIndex()).toBe(1);
-      expect(feedbackDetails.getMessage()).toBe('b');
+      expect(feedbackDetails.getTestSuiteId()).toBe('suite_id_1');
+      expect(feedbackDetails.getTestCaseIndex()).toBe(1);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(2);
+      expect(feedbackDetails.getSpecificTestMessageIndex()).toBe(1);
+      expect(feedbackDetails.getSpecificTestMessage()).toBe('b');
     });
   });
 
@@ -132,13 +136,15 @@ describe('FeedbackDetailsObjectFactory', function() {
     it('should create a suite-level FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createSuiteLevelFeedbackDetails(
-          0, 1, ['a', 'b'], 1));
+          0, 'suite_id_1', 1, 2, ['a', 'b'], 1));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
       expect(feedbackDetails.getTaskIndex()).toBe(0);
-      expect(feedbackDetails.getSpecificTestIndex()).toBe(1);
-      expect(feedbackDetails.getMessageIndex()).toBe(1);
-      expect(feedbackDetails.getMessage()).toBe('b');
+      expect(feedbackDetails.getTestSuiteId()).toBe('suite_id_1');
+      expect(feedbackDetails.getTestCaseIndex()).toBe(1);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(2);
+      expect(feedbackDetails.getSpecificTestMessageIndex()).toBe(1);
+      expect(feedbackDetails.getSpecificTestMessage()).toBe('b');
     });
   });
 
@@ -146,13 +152,23 @@ describe('FeedbackDetailsObjectFactory', function() {
     it('should create a incorrect-output FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
-          'test_case', 'suite_id_1', 3, 'abc'));
+          0, 'suite_id_1', 3, 'test_case', 'output_abc',
+          CORRECTNESS_STATE_NO_MORE_FEEDBACK,
+          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, 6, ['ab', 'cd']));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
-      expect(feedbackDetails.getTestCase()).toBe('test_case');
+      expect(feedbackDetails.getTaskIndex()).toBe(0);
       expect(feedbackDetails.getTestSuiteId()).toBe('suite_id_1');
       expect(feedbackDetails.getTestCaseIndex()).toBe(3);
-      expect(feedbackDetails.getObservedOutput()).toBe('abc');
+      expect(feedbackDetails.getTestCase()).toBe('test_case');
+      expect(feedbackDetails.getObservedOutput()).toBe('output_abc');
+      expect(feedbackDetails.getCorrectnessState()).toBe(
+        CORRECTNESS_STATE_NO_MORE_FEEDBACK);
+      expect(feedbackDetails.getSpecificCategory()).toBe(
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+      expect(feedbackDetails.getSpecificTestIndex()).toBe(6);
+      expect(feedbackDetails.getSpecificTestMessageIndex).toThrow();
+      expect(feedbackDetails.getSpecificTestMessage).toThrow();
     });
   });
 
