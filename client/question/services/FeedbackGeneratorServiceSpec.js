@@ -785,7 +785,7 @@ describe('FeedbackGeneratorService', function() {
           'Please keep your code within the existing predefined functions ',
           'or define your own helper functions if you need to ',
           '-- we cannot process code in the global scope.'
-        ].join(' '));
+        ].join(''));
         expect(paragraphs[0].isTextParagraph()).toBe(true);
         expect(feedback.getFeedbackCategory()).toEqual(
           FEEDBACK_CATEGORIES.FAILS_GLOBAL_CODE_CHECK);
