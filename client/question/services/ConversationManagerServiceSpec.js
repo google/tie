@@ -527,97 +527,86 @@ describe('ConversationManagerService', function() {
 
       it('should return 1st errorLineNumber, when multiple errors',
         function(done) {
-          var studentCode = [
-            'def mockMainFunction(input):',
-            '    return True',
-            'def myFunction(arg):',
-            '    arg = arg / 2',
-            '    arg--',
-            '    return arg',
-            'def myFunction2(arg):',
-            '    arg++',
-            '    return arg',
-            ''
-          ].join('\n');
-
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode,
-            auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult) {
-            var feedback = learnerViewSubmissionResult.getFeedback();
-            var stdout = learnerViewSubmissionResult.getStdout();
-            expect(feedback.isAnswerCorrect()).toEqual(false);
-            expect(feedback.getErrorLineNumber()).toBe(5);
-            expect(stdout).toBe(null);
-            done();
-          });
+          verifySubmissions(
+            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+            [{
+              code: [
+                'def mockMainFunction(input):',
+                '    return True',
+                'def myFunction(arg):',
+                '    arg = arg / 2',
+                '    arg--',
+                '    return arg',
+                'def myFunction2(arg):',
+                '    arg++',
+                '    return arg',
+                ''
+              ].join('\n'),
+              expectedFeedback: ExpectedFeedbackObjectFactory.create(
+                null, null, null, false, function(submissionResult) {
+                  var feedback = submissionResult.getFeedback();
+                  var expectedLineNumber = 5;
+                  if (feedback.getErrorLineNumber() === expectedLineNumber) {
+                    return [];
+                  } else {
+                    return ['Wrong error line number'];
+                  }
+                })
+            }]
+          );
         });
     });
 
     describe('potentialSyntaxError', function() {
       it('should correctly handle a syntax error', function(done) {
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return True -'
-        ].join('\n');
-
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode,
-          auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(feedback.isAnswerCorrect()).toEqual(false);
-          expect(feedback.getParagraphs()[1].getContent().startsWith(
-            'SyntaxError:')).toEqual(true);
-          expect(stdout).toBe(null);
-          done();
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: [
+              'def mockMainFunction(input):',
+              '    return True -'
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              null, 'SyntaxError: bad input on line 2', null)
+          }]
+        );
       });
     });
 
     describe('should return the correct feedback if', function() {
       it('there is a stack exceeded error', function(done) {
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return mockMainFunction(input)',
-          ''
-        ].join('\n');
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode,
-          auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(feedback.getParagraphs()[0].getContent()).toEqual([
-            "Your code appears to be hitting an infinite recursive loop. ",
-            "Check to make sure that your recursive calls terminate."
-          ].join(''));
-          expect(stdout).toBe(null);
-          done();
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: [
+              'def mockMainFunction(input):',
+              '    return mockMainFunction(input)',
+              ''
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create([
+              "Your code appears to be hitting an infinite recursive loop. ",
+              "Check to make sure that your recursive calls terminate."
+            ].join(''), null, null)
+          }]
+        );
       });
 
       it('there is a runtime error', function(done) {
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return greeting',
-          ''
-        ].join('\n');
-
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode,
-          auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(
-            feedback.getParagraphs()[0].getContent().startsWith(
-                'It looks like greeting isn\'t a declared variable.')
-          ).toBe(true);
-          expect(stdout).toBe(null);
-          done();
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: [
+              'def mockMainFunction(input):',
+              '    return greeting',
+              ''
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create([
+              'It looks like greeting isn\'t a declared variable. ',
+              'Did you make sure to spell it correctly? And is it ',
+              'correctly initialized?'
+            ].join(''), null, null)
+          }]
+        );
       });
     });
 
@@ -662,26 +651,38 @@ describe('ConversationManagerService', function() {
             return TaskObjectFactory.create(task);
           });
 
-          // The buggy function returns True for the first and third cases.
-          // The student's code returns True in the first three cases and False
-          // in the fourth.
-          var studentCode = [
-            'def mockMainFunction(input):',
-            '    return input != "task_1_suite_2_test_2"',
-            ''
-          ].join('\n');
+          verifySubmissions(
+            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+            [{
+              // The buggy function returns True for the first and third cases.
+              // The student's code returns True in the first three cases and
+              // False in the fourth.
+              code: [
+                'def mockMainFunction(input):',
+                '    return input != "task_1_suite_2_test_2"',
+                ''
+              ].join('\n'),
+              expectedFeedback: ExpectedFeedbackObjectFactory.create(
+                null, null, '', false, function(submissionResult) {
+                  var feedback = submissionResult.getFeedback();
+                  var possibleFeedbackMessages = (
+                    CORRECTNESS_FEEDBACK_TEXT[
+                      CORRECTNESS_STATE_INPUT_DISPLAYED]);
+                  var observedMessage = (
+                    feedback.getParagraphs()[0].getContent());
 
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult) {
-            var feedback = learnerViewSubmissionResult.getFeedback();
-            var stdout = learnerViewSubmissionResult.getStdout();
-            expect(
-              CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
-            ).toContain(feedback.getParagraphs()[0].getContent());
-            expect(stdout).toBe('');
-            done();
-          });
+                  if (possibleFeedbackMessages.indexOf(
+                      observedMessage) === -1) {
+                    return [
+                      'Expected feedback messages to be part of ' +
+                      'input-displayed feedback'];
+                  } else {
+                    return [];
+                  }
+                }
+              )
+            }]
+          );
         }
       );
 
@@ -691,26 +692,22 @@ describe('ConversationManagerService', function() {
           return TaskObjectFactory.create(task);
         });
 
-        // The buggy function returns True for the first and third cases.
-        // The student's code returns True in the first case and False for the
-        // rest.
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return input in [',
-          '        "task_1_suite_1_test_1", "task_2_correctness_test_1"]',
-          ''
-        ].join('\n');
-
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'Mock BuggyOutputTest Message One for task1');
-          expect(stdout).toBe('');
-          done();
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            // The buggy function returns True for the first and third cases.
+            // The student's code returns True in the first case and False
+            // for the rest.
+            code: [
+              'def mockMainFunction(input):',
+              '    return input in [',
+              '        "task_1_suite_1_test_1", "task_2_correctness_test_1"]',
+              ''
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'Mock BuggyOutputTest Message One for task1')
+          }]
+        );
       });
     });
 
@@ -761,23 +758,19 @@ describe('ConversationManagerService', function() {
             return TaskObjectFactory.create(task);
           });
 
-          // This code passes suite 1 and fails suite 2.
-          var studentCode = [
-            'def mockMainFunction(input):',
-            '    return input.endswith("1")',
-            ''
-          ].join('\n');
-
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult) {
-            var feedback = learnerViewSubmissionResult.getFeedback();
-            var stdout = learnerViewSubmissionResult.getStdout();
-            expect(feedback.getParagraphs()[0].getContent()).toBe(
-              'suite_message1');
-            expect(stdout).toBe('');
-            done();
-          });
+          verifySubmissions(
+            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+            [{
+              // This code passes suite 1 and fails suite 2.
+              code: [
+                'def mockMainFunction(input):',
+                '    return input.endswith("1")',
+                ''
+              ].join('\n'),
+              expectedFeedback: ExpectedFeedbackObjectFactory.create(
+                'suite_message1')
+            }]
+          );
         }
       );
 
@@ -789,25 +782,34 @@ describe('ConversationManagerService', function() {
           return TaskObjectFactory.create(task);
         });
 
-        // This code passes one test case in suite 1 and fails the other, thus
-        // failing the suite.
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return True',
-          ''
-        ].join('\n');
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            // This code passes one test case in suite 1 and fails the other,
+            // thus failing the suite.
+            code: [
+              'def mockMainFunction(input):',
+              '    return True',
+              ''
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              null, null, '', false, function(submissionResult) {
+                var feedback = submissionResult.getFeedback();
+                var possibleFeedbackMessages = (
+                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
+                var observedMessage = feedback.getParagraphs()[0].getContent();
 
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(
-            CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
-          ).toContain(feedback.getParagraphs()[0].getContent());
-          expect(stdout).toBe('');
-          done();
-        });
+                if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
+                  return [
+                    'Expected feedback messages to be part of ' +
+                    'input-displayed feedback'];
+                } else {
+                  return [];
+                }
+              }
+            )
+          }]
+        );
       });
 
       it([
@@ -817,23 +819,20 @@ describe('ConversationManagerService', function() {
           return TaskObjectFactory.create(task);
         });
 
-        // This code passes suite 1, and passes one of the two tests in suite 2.
-        var studentCode = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")',
-          ''
-        ].join('\n');
-
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode, auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult) {
-          var feedback = learnerViewSubmissionResult.getFeedback();
-          var stdout = learnerViewSubmissionResult.getStdout();
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'suite_message1');
-          expect(stdout).toBe('');
-          done();
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            // This code passes suite 1, and passes one of the two tests in
+            // suite 2.
+            code: [
+              'def mockMainFunction(input):',
+              '    return input.endswith("1")',
+              ''
+            ].join('\n'),
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }]
+        );
       });
 
       it([
@@ -858,30 +857,22 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n');
 
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult1) {
-          var feedback = learnerViewSubmissionResult1.getFeedback();
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'suite_message1');
-
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult2) {
-            feedback = learnerViewSubmissionResult2.getFeedback();
-            expect(feedback.getParagraphs()[0].getContent()).toBe(
-              'suite_message1');
-
-            ConversationManagerService.processSolutionAsync(
-              orderedTasks, starterCode, studentCode2, auxiliaryCode, 'python'
-            ).then(function(learnerViewSubmissionResult3) {
-              feedback = learnerViewSubmissionResult3.getFeedback();
-              expect(feedback.getParagraphs()[0].getContent()).toBe(
-                'suite_message2');
-              done();
-            });
-          });
-        });
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: studentCode1,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }, {
+            code: studentCode1,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }, {
+            code: studentCode2,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message2')
+          }]
+        );
       });
 
       it([
@@ -906,32 +897,37 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n');
 
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult1) {
-          var feedback = learnerViewSubmissionResult1.getFeedback();
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'suite_message1');
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: studentCode1,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }, {
+            code: studentCode2,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message2')
+          }, {
+            // We've reached the end of the hints.
+            code: studentCode1,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              null, null, '', false, function(submissionResult) {
+                var feedback = submissionResult.getFeedback();
+                var possibleFeedbackMessages = (
+                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
+                var observedMessage = feedback.getParagraphs()[0].getContent();
 
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, studentCode2, auxiliaryCode, 'python'
-          ).then(function(learnerViewSubmissionResult2) {
-            feedback = learnerViewSubmissionResult2.getFeedback();
-            expect(feedback.getParagraphs()[0].getContent()).toBe(
-              'suite_message2');
-
-            ConversationManagerService.processSolutionAsync(
-              orderedTasks, starterCode, studentCode1, auxiliaryCode, 'python'
-            ).then(function(learnerViewSubmissionResult3) {
-              feedback = learnerViewSubmissionResult3.getFeedback();
-              // We've reached the end of the hints.
-              expect(
-                CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]
-              ).toContain(feedback.getParagraphs()[0].getContent());
-              done();
-            });
-          });
-        });
+                if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
+                  return [
+                    'Expected feedback messages to be part of ' +
+                    'input-displayed feedback'];
+                } else {
+                  return [];
+                }
+              }
+            )
+          }]
+        );
       });
 
       it([
@@ -956,36 +952,25 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n');
 
-        ConversationManagerService.processSolutionAsync(
-          orderedTasks, starterCode, suiteLevelFailureStudentCode,
-          auxiliaryCode, 'python'
-        ).then(function(learnerViewSubmissionResult1) {
-          var feedback = learnerViewSubmissionResult1.getFeedback();
-          expect(feedback.getParagraphs()[0].getContent()).toBe(
-            'suite_message1');
-
-          ConversationManagerService.processSolutionAsync(
-            orderedTasks, starterCode, runtimeErrorStudentCode, auxiliaryCode,
-            'python'
-          ).then(function(learnerViewSubmissionResult2) {
-            feedback = learnerViewSubmissionResult2.getFeedback();
-            expect(feedback.getParagraphs()[0].getContent()).toBe([
+        verifySubmissions(
+          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
+          [{
+            code: suiteLevelFailureStudentCode,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }, {
+            code: runtimeErrorStudentCode,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create([
               'Looks like your code had a runtime error when evaluating the ',
               'input "task_1_suite_1_test_1".'
-            ].join(''));
-
-            ConversationManagerService.processSolutionAsync(
-              orderedTasks, starterCode, suiteLevelFailureStudentCode,
-              auxiliaryCode, 'python'
-            ).then(function(learnerViewSubmissionResult3) {
-              feedback = learnerViewSubmissionResult3.getFeedback();
-              // We start again at the beginning of the suite-level hints.
-              expect(feedback.getParagraphs()[0].getContent()).toBe(
-                'suite_message1');
-              done();
-            });
-          });
-        });
+            ].join(''), null, null)
+          }, {
+            // We start again at the beginning of the suite-level hints.
+            code: suiteLevelFailureStudentCode,
+            expectedFeedback: ExpectedFeedbackObjectFactory.create(
+              'suite_message1')
+          }]
+        );
       });
     });
   });
