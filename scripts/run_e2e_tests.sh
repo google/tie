@@ -21,7 +21,9 @@ source $(dirname $0)/setup.sh
 # Install the following node modules if they aren't already installed.
 install_node_module protractor 5.4.0
 
-# Start up a Selenium Server
+# Start up a Selenium Server.
+# Note: We use --gecko=false to avoid rate limit reached error.
+# See https://github.com/angular/webdriver-manager/issues/307.
 ./node_modules/protractor/bin/webdriver-manager update --gecko=false
 ./node_modules/protractor/bin/webdriver-manager start &
 
