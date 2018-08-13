@@ -14,11 +14,11 @@
 
 
 /**
- * @fileoverview Helpers for the Question page.
+ * @fileoverview Protractor e2e tests configuration for the Question page.
  */
 
 /**
- * This function is empty on the client but is used on the server for env setup.
+ * Used to set up Protractor test environment before running tests on the page.
  */
 var setupPage = async function() {};
 

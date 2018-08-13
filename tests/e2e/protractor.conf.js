@@ -25,13 +25,13 @@ exports.config = {
     // location.replace from the data: to the file: protocol is not allowed
     // (we'll get ‘not allowed local resource’ error), so we replace resetUrl
     // with the file: protocol (this will display system's root folder).
-    browser.resetUrl = 'file://' + __dirname.replace('/test/e2e', '');
-    browser.baseUrl = 'file://' + __dirname.replace('/test/e2e', '');
+    browser.resetUrl = 'file://' + __dirname.replace('/tests/e2e', '');
+    browser.baseUrl = 'file://' + __dirname.replace('/tests/e2e', '');
   },
   SELENIUM_PROMISE_MANAGER: false,
   params: {
     defaultQuestionId: 'reverseWords',
-    questionHelpers: require('./question.helpers.js'),
+    questionTestConfig: require('./question.testConfig.js'),
     questionPage: require('./question.pageObject.js'),
     utils: require('./utils.js')
   }

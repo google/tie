@@ -23,7 +23,7 @@
  * @constructor
  */
 var QuestionPage = function() {
-  var questionHelpers = browser.params.questionHelpers;
+  var questionTestConfig = browser.params.questionTestConfig;
   const pageUrl = '/client/question.html';
 
   /**
@@ -56,6 +56,14 @@ var QuestionPage = function() {
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
   /**
+   * Prepares the question page before running tests.
+   */
+  this.setUp = async function() {
+    await questionTestConfig.setupPage();
+  }
+
+
+  /**
    * Retrieves the TIE question page.
    *
    * @param {string} questionId ID of the question to open.
@@ -65,7 +73,6 @@ var QuestionPage = function() {
     var fullUrl = pageUrl + '?qid=' + questionId;
     await browser.get(fullUrl);
     await browser.waitForAngularEnabled();
-    await questionHelpers.setupPage();
   };
 
   /**

@@ -26,6 +26,7 @@ describe('submitting questions', function() {
   var questionId = browser.params.defaultQuestionId;
 
   it('should successfully submit wrong code to a task', async function() {
+    await questionPage.setUp();
     await questionPage.get(questionId);
     await questionPage.resetCode();
     await questionPage.runCode();

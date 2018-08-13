@@ -26,4 +26,4 @@ install_node_module protractor 5.4.0
 ./node_modules/protractor/bin/webdriver-manager start &
 
 # Run the test
-./node_modules/protractor/bin/protractor ./test/e2e/protractor.conf.js
+./node_modules/protractor/bin/protractor ./tests/e2e/protractor.conf.js
