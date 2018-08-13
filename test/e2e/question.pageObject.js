@@ -12,15 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /**
- * @fileoverview Page object for the Questions page.
+ * @fileoverview Page object for the Question page.
  */
 
-var QuestionsPage = function() {
+/**
+ * An object that represents the Question page.
+ *
+ * @constructor
+ */
+var QuestionPage = function() {
+  var questionHelpers = browser.params.questionHelpers;
+  const pageUrl = '/client/question.html';
+
   /**
    * DOM element where the code is input
    *
-   * @type {DOM Element}
+   * @type {DOMElement}
    */
   var codeInput = element(by.css('.protractor-test-code-input'));
 
@@ -29,57 +38,48 @@ var QuestionsPage = function() {
    *
    * @type {Array}
    */
-  var feedbackParagraphs = element.all(by.css(
-    '.protractor-test-feedback-paragraph'));
+  var feedbackParagraphs =
+      element.all(by.css('.protractor-test-feedback-paragraph'));
 
   /**
    * DOM element where the reset code button is.
    *
-   * @type {DOM Element}
+   * @type {DOMElement}
    */
   var resetCodeBtn = element(by.css('.protractor-test-reset-code-btn'));
 
   /**
    * DOM element where the run code button is.
    *
-   * @type {DOM Element}
+   * @type {DOMElement}
    */
   var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
 
   /**
-   * Performs boilerplate actions to get and set up the questions page.
+   * Retrieves the TIE question page.
+   *
+   * @param {string} questionId ID of the question to open.
    *
    */
-  this.setUp = function() {
-    var utils = browser.params.utils;
-    browser.waitForAngularEnabled(false);
-    utils.setUpPage();
-    this.get();
-
-    browser.sleep(2000);
-    utils.prepareEnvironment();
-    browser.waitForAngularEnabled(true);
-  };
-
-  /**
-   * Retrieves the TIE homepage
-   */
-  this.get = function() {
-    browser.get(browser.params.questionUrl);
+  this.get = async function(questionId) {
+    var fullUrl = pageUrl + '?qid=' + questionId;
+    await browser.get(fullUrl);
+    await browser.waitForAngularEnabled();
+    await questionHelpers.setupPage();
   };
 
   /**
    * Simulates clicking on the reset code button to initiate resetting the code.
    */
-  this.resetCode = function() {
-    resetCodeBtn.click();
+  this.resetCode = async function() {
+    await resetCodeBtn.click();
   };
 
   /**
    * Simulates clicking on the run code button to initiate running the code.
    */
-  this.runCode = function() {
-    runCodeBtn.click();
+  this.runCode = async function() {
+    await runCodeBtn.click();
   };
 
   /**
@@ -87,12 +87,12 @@ var QuestionsPage = function() {
    *
    * @param {string} codeString
    */
-  this.submitCode = function(codeString) {
-    browser.executeScript([
-      "var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror;",
-      "editor.setValue('" + codeString + "');"
+  this.submitCode = async function(codeString) {
+    await browser.executeScript([
+      'var editor = document.getElementsByClassName(\'CodeMirror\')[0].CodeMirror;',
+      'editor.setValue(\'' + codeString + '\');'
     ].join(''));
-    this.runCode();
+    await this.runCode();
   };
 
   /**
@@ -100,8 +100,8 @@ var QuestionsPage = function() {
    *
    * @returns {number}
    */
-  this.countFeedbackParagraphs = function() {
-    return feedbackParagraphs.count();
+  this.countFeedbackParagraphs = async function() {
+    return await feedbackParagraphs.count();
   };
 
   /**
@@ -111,9 +111,9 @@ var QuestionsPage = function() {
    * @param {number} index
    * @returns {string}
    */
-  this.getFeedbackParagraphText = function(index) {
-    return feedbackParagraphs.get(index).getText();
+  this.getFeedbackParagraphText = async function(index) {
+    return await feedbackParagraphs.get(index).getText();
   };
 };
 
-module.exports = QuestionsPage;
+module.exports = QuestionPage;
