@@ -17,9 +17,8 @@
 # Usage:
 #
 #     bash scripts/run_linter.sh
-set -e
 
-source $(dirname $0)/setup.sh || exit 1
+source $(dirname $0)/setup.sh
 
 # Install the following node modules if they aren't already installed.
 install_node_module eslint 3.18.0

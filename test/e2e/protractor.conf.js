@@ -18,21 +18,21 @@
 
 exports.config = {
   framework: 'jasmine',
-  capabilities: {
-    browserName: 'chrome'
-  },
-  specs: ['protractor_tests/*.js'],
-  baseUrl: 'file://' + __dirname,
-  onPrepare: function() {
+  capabilities: {browserName: 'chrome'},
+  specs: ['./*.spec.js'],
+  onPrepare: async function() {
     // By default, Protractor use data:text/html,<html></html> as resetUrl, but
     // location.replace from the data: to the file: protocol is not allowed
-    // (we'll get ‘not allowed local resource’ error), so we replace resetUrl with one
-    // with the file: protocol (this particular one will open system's root folder)
-    browser.resetUrl = 'file://';
+    // (we'll get ‘not allowed local resource’ error), so we replace resetUrl
+    // with the file: protocol (this will display system's root folder).
+    browser.resetUrl = 'file://' + __dirname.replace('/test/e2e', '');
+    browser.baseUrl = 'file://' + __dirname.replace('/test/e2e', '');
   },
+  SELENIUM_PROMISE_MANAGER: false,
   params: {
-    questionUrl: '/client/question.html?qid=reverseWords',
-    questionsPage: require('./protractor_tests/questions.pageObject.js'),
-    utils: require('./protractor_tests/utils.js')
+    defaultQuestionId: 'reverseWords',
+    questionHelpers: require('./question.helpers.js'),
+    questionPage: require('./question.pageObject.js'),
+    utils: require('./utils.js')
   }
 };

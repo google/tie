@@ -17,12 +17,10 @@
 # Flags:
 #   --disable-presubmit-checks: set to disable hooks that run presubmit checks.
 
-set -e
-
 export OS=`uname`
 export MACHINE_TYPE=`uname -m`
 export TOOLS_DIR=./tools
-export NODE_DIR=$TOOLS_DIR/node-6.9.1
+export NODE_DIR=$TOOLS_DIR/node-8.11.3
 if [ ${OS} == "MINGW_NT-10.0" ]; then
   export NPM_CMD=$NODE_DIR/npm
 else
@@ -47,7 +45,7 @@ install_node_module() {
   if [[ $NPM_INSTALLED_MODULES != *"$1@$2"* ]]; then
     echo Installing $1@$2
     $NPM_CMD install $1@$2
-    NPM_INSTALLED_MODULES="$(npm list)"
+    NPM_INSTALLED_MODULES="$(npm list --silent)"
   fi
 }
 
@@ -74,19 +72,19 @@ if [ ! -d "$NODE_DIR" ]; then
   ON_WIN=false
   if [ ${OS} == "Darwin" ]; then
     if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-      NODE_FILE_NAME=node-v6.9.1-darwin-x64
+      NODE_FILE_NAME=node-v8.11.3-darwin-x64
     else
-      NODE_FILE_NAME=node-v6.9.1-darwin-x86
+      NODE_FILE_NAME=node-v8.11.3-darwin-x86
     fi
   elif [ ${OS} == "Linux" ]; then
     if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-      NODE_FILE_NAME=node-v6.9.1-linux-x64
+      NODE_FILE_NAME=node-v8.11.3-linux-x64
     else
-      NODE_FILE_NAME=node-v6.9.1-linux-x86
+      NODE_FILE_NAME=node-v8.11.3-linux-x86
     fi
   elif [ ${OS} == MINGW64_NT-10.0 ]; then
     ON_WIN=true
-    NODE_FILE_NAME=node-v6.9.1-win-x64
+    NODE_FILE_NAME=node-v8.11.3-win-x64
   fi
 
   if [ ! -d "$TOOLS_DIR" ]; then
@@ -95,12 +93,12 @@ if [ ! -d "$NODE_DIR" ]; then
 
 
   if $ON_WIN; then
-    curl -o node-download.zip https://nodejs.org/dist/v6.9.1/$NODE_FILE_NAME.zip
+    curl -o node-download.zip https://nodejs.org/dist/v8.11.3/$NODE_FILE_NAME.zip
     unzip node-download.zip -d $TOOLS_DIR
     mv $TOOLS_DIR/$NODE_FILE_NAME $NODE_DIR
     rm node-download.zip
   else
-    curl -o node-download.tgz https://nodejs.org/dist/v6.9.1/$NODE_FILE_NAME.tar.gz
+    curl -o node-download.tgz https://nodejs.org/dist/v8.11.3/$NODE_FILE_NAME.tar.gz
     tar xzf node-download.tgz --directory $TOOLS_DIR
     mv $TOOLS_DIR/$NODE_FILE_NAME $NODE_DIR
     rm node-download.tgz
@@ -108,4 +106,4 @@ if [ ! -d "$NODE_DIR" ]; then
 fi
 
 # Generate a list of already-installed modules.
-NPM_INSTALLED_MODULES="$(npm list)"
+NPM_INSTALLED_MODULES="$(npm list --silent)"

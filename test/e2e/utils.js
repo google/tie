@@ -37,34 +37,31 @@ var CONSOLE_ERRORS_TO_IGNORE = [];
  *
  * @param {Array} errorsToIgnore
  */
-var checkForConsoleErrors = function(errorsToIgnore) {
-  var irrelevantErrors = errorsToIgnore.concat(CONSOLE_ERRORS_TO_IGNORE);
-  browser.manage().logs().get('browser').then(function(browserLogs) {
-    var fatalErrors = [];
-    for (var i = 0; i < browserLogs.length; i++) {
-      if (browserLogs[i].level.value > CONSOLE_LOG_THRESHOLD) {
-        var errorFatal = true;
-        for (var j = 0; j < irrelevantErrors.length; j++) {
-          if (browserLogs[i].message.match(irrelevantErrors[j])) {
-            errorFatal = false;
-          }
-        }
-        if (errorFatal) {
-          fatalErrors.push(browserLogs[i]);
+var checkForConsoleErrors = async function(errorsToIgnore) {
+  var irrelevantErrors =
+      (errorsToIgnore || []).concat(CONSOLE_ERRORS_TO_IGNORE);
+
+  var browserLogs = await browser.manage().logs().get('browser');
+  var fatalErrors = [];
+
+  for (var i = 0; i < browserLogs.length; i++) {
+    if (browserLogs[i].level.value > CONSOLE_LOG_THRESHOLD) {
+      var errorFatal = true;
+      for (var j = 0; j < irrelevantErrors.length; j++) {
+        if (browserLogs[i].message.match(irrelevantErrors[j])) {
+          errorFatal = false;
         }
       }
+      if (errorFatal) {
+        fatalErrors.push(browserLogs[i]);
+      }
     }
-    expect(fatalErrors).toEqual([]);
-  });
+  }
+
+  expect(fatalErrors).toEqual([]);
 };
 
-// This function doesn't need to do anything in the client version, but it's
-// useful to have a method in case we need to do any setup.
-var setUpPage = function(){};
 
-// This function doesn't need to do anything in the client version, either.
-var prepareEnvironment = function(){};
-
-exports.setUpPage = setUpPage;
-exports.prepareEnvironment = prepareEnvironment;
-exports.checkForConsoleErrors = checkForConsoleErrors;
+module.exports = {
+  checkForConsoleErrors: checkForConsoleErrors
+};
