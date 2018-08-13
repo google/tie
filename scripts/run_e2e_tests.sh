@@ -22,7 +22,7 @@ source $(dirname $0)/setup.sh
 install_node_module protractor 5.4.0
 
 # Start up a Selenium Server
-./node_modules/protractor/bin/webdriver-manager update
+./node_modules/protractor/bin/webdriver-manager update --gecko=false
 ./node_modules/protractor/bin/webdriver-manager start &
 
 # Run the test
