@@ -198,7 +198,7 @@ class AuxiliaryCode(object):
       humanReadableName: 'strings with characters repeated more twice',
       testCases: [{
         input: 'bbaaaaabbcbb',
-        allowedOutputs: ['b']
+        allowedOutputs: ['b', 'a']
       }]
     }],
     buggyOutputTests: [{
@@ -260,18 +260,6 @@ class AuxiliaryCode(object):
         ].join(''),
         [
           "With an input like 'woot!!!!', you need to return 'o'"
-        ].join('')
-      ]
-    }, {
-      buggyFunctionName: 'AuxiliaryCode.overcountMoreThanTwoRepeats',
-      ignoredTestSuiteIds: [],
-      messages: [
-        [
-          'What happens when there are 3 or more repeated characters ',
-          'in a row?'
-        ].join(''),
-        [
-          "With an input like 'bbaaaaabbcbb', you need to return 'b'"
         ].join('')
       ]
     }],
