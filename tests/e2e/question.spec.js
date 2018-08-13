@@ -12,36 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /**
  * @fileoverview End-to-end tests for loading all pages.
  */
 
-var QuestionsPage = browser.params.questionsPage;
+var QuestionPage = browser.params.questionPage;
+
 var utils = browser.params.utils;
 
 describe('submitting questions', function() {
+  var questionPage = new QuestionPage();
+  var questionId = browser.params.defaultQuestionId;
 
-  it('should successfully submit wrong code to a task', function() {
-    var questionsPage = new QuestionsPage();
-    questionsPage.setUp();
-    questionsPage.resetCode();
-    questionsPage.runCode();
+  it('should successfully submit wrong code to a task', async function() {
+    await questionPage.setUp();
+    await questionPage.get(questionId);
+    await questionPage.resetCode();
+    await questionPage.runCode();
 
-    browser.sleep(2000);
-    expect(questionsPage.countFeedbackParagraphs()).toEqual(1);
+    expect(await questionPage.countFeedbackParagraphs()).toEqual(1);
   });
 
-  afterEach(function() {
-    utils.checkForConsoleErrors([]);
+  afterEach(async function() {
+    await utils.checkForConsoleErrors([]);
   });
 
-  it('should successfully submit code', function() {
-    var questionsPage = new QuestionsPage();
-    questionsPage.setUp();
-    questionsPage.resetCode();
+  it('should successfully submit code', async function() {
+    await questionPage.get(questionId);
+    await questionPage.resetCode();
 
     var code = [
-      'def findMostCommonCharacter(s):',
+      'def reverseWords(s):',
       '    counter = 0',
       '    maxCount = -1',
       '    letter = s[0]',
@@ -55,10 +57,9 @@ describe('submitting questions', function() {
       '        if counter > maxCount:',
       '            maxCount = counter',
       '            letter = s[i]',
-      '    return letter',
-      ''
+      '    return letter', ''
     ].join('\\n');
 
-    questionsPage.submitCode(code);
+    await questionPage.submitCode(code);
   });
 });

@@ -16,17 +16,16 @@
 
 # TODO(feiluo): Need a way to control the log level to avoid thounsands of lines of log.
 
-set -e
-
-source $(dirname $0)/setup.sh || exit 1
+source $(dirname $0)/setup.sh
 
 # Install the following node modules if they aren't already installed.
-install_node_module protractor 5.1.1
+install_node_module protractor 5.4.0
 
-# Start up a Selenium Server
-./node_modules/protractor/bin/webdriver-manager update
+# Start up a Selenium Server.
+# Note: We use --gecko=false to avoid rate limit reached error.
+# See https://github.com/angular/webdriver-manager/issues/307.
+./node_modules/protractor/bin/webdriver-manager update --gecko=false
 ./node_modules/protractor/bin/webdriver-manager start &
 
 # Run the test
-./node_modules/protractor/bin/protractor ./protractor.conf.js
-
+./node_modules/protractor/bin/protractor ./tests/e2e/protractor.conf.js

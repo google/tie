@@ -19,9 +19,8 @@
 #
 #     http://karma-runner.github.io/1.0/config/configuration-file.html
 
-set -e
 
-source $(dirname $0)/setup.sh || exit 1
+source $(dirname $0)/setup.sh
 
 # Install the following node modules if they aren't already installed.
 install_node_module jasmine-core 2.5.2
