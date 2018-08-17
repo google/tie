@@ -28,13 +28,6 @@ describe('ConversationManagerService', function() {
   var LANGUAGE_PYTHON;
   var SUPPORTED_PYTHON_LIBS;
 
-  // For the following task list:
-  // - a piece of code which triggers buggy-output feedback for task 1 is one
-  //   that returns "I am buggy" for all inputs (unless all suites except the
-  //   third one are ignored).
-  // - a piece of code which triggers suite-level feedback for task 1 is one
-  //   that just reverses the input string (thus returning the right output
-  //   for the first suite, and the wrong output for the other suites).
   var taskDict = [{
     instructions: ['Return the input string.'],
     prerequisiteSkills: [''],
