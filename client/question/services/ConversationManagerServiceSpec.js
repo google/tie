@@ -17,23 +17,19 @@
  */
 
 describe('ConversationManagerService', function() {
-  var SUPPORTED_PYTHON_LIBS;
   var ConversationManagerService;
   var CurrentQuestionService;
   var ExpectedFeedbackObjectFactory;
   var QuestionObjectFactory;
   var TaskObjectFactory;
-  var question;
-  var orderedTasks;
-  var auxiliaryCode;
-  var starterCode;
+
   var CORRECTNESS_STATE_INPUT_DISPLAYED;
   var CORRECTNESS_FEEDBACK_TEXT;
-  var TITLE = "title";
-  var STARTER_CODE = "starterCode";
-  var AUXILIARY_CODE = "auxiliaryCode";
+  var LANGUAGE_PYTHON;
+  var SUPPORTED_PYTHON_LIBS;
+
   var taskDict = [{
-    instructions: [''],
+    instructions: ['Return the input string.'],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,
@@ -43,29 +39,61 @@ describe('ConversationManagerService', function() {
       python: []
     },
     testSuites: [{
-      id: 'GENERAL_CASE',
-      humanReadableName: 'the general case',
+      id: 'TASK1SUITE1',
+      humanReadableName: 'suite 1 -- single words',
       testCases: [{
-        input: 'task_1_correctness_test_1',
-        allowedOutputs: [true]
+        input: 'task1suite1test1',
+        allowedOutputs: ['task1suite1test1']
       }, {
-        input: 'task_1_correctness_test_2',
-        allowedOutputs: [true]
+        input: 'task1suite1test2',
+        allowedOutputs: ['task1suite1test2']
+      }]
+    }, {
+      id: 'TASK1SUITE2',
+      humanReadableName: 'suite 2 -- multiple words',
+      testCases: [{
+        input: 'task1 suite2 test1',
+        allowedOutputs: ['task1 suite2 test1']
+      }, {
+        input: 'task1 suite2 test2',
+        allowedOutputs: ['task1 suite2 test2']
       }]
     }],
     buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeOne',
+      buggyFunctionName: 'AuxiliaryCode.returnIAmBuggy',
       ignoredTestSuiteIds: [],
       messages: [
-        "Mock BuggyOutputTest Message One for task1",
-        "Mock BuggyOutputTest Message Two for task1",
-        "Mock BuggyOutputTest Message Three for task1"
+        'Mock BuggyOutputTest Message One for task1',
+        'Mock BuggyOutputTest Message Two for task1',
+        'Mock BuggyOutputTest Message Three for task1'
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.returnYesIfInputHasNoSpaces',
+      ignoredTestSuiteIds: [],
+      messages: [
+        'This buggy message should NOT trigger if code just returns Yes'
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.returnYesIfInputHasNoSpaces',
+      // TODO(sll): Remove GENERAL_CASE from here. This is due to an error in
+      // the codebase that causes a suite in *any* task to influence a buggy
+      // output match. Instead, buggy output checks should be localized to a
+      // task.
+      ignoredTestSuiteIds: ['TASK1SUITE2', 'GENERAL_CASE'],
+      messages: [
+        'This buggy message should trigger if code just returns Yes'
       ]
     }],
-    suiteLevelTests: [],
+    suiteLevelTests: [{
+      // This triggers if the code works correctly for 1-word cases but fails
+      // the multi-word cases.
+      testSuiteIdsThatMustPass: ['TASK1SUITE1'],
+      testSuiteIdsThatMustFail: ['TASK1SUITE2'],
+      messages: ['suite_message1', 'suite_message2']
+    }],
     performanceTests: []
   }, {
-    instructions: [''],
+    instructions: ['But, if there is an "!", return "!" instead.'],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,
@@ -76,902 +104,588 @@ describe('ConversationManagerService', function() {
     },
     testSuites: [{
       id: 'GENERAL_CASE',
-      humanReadableName: 'the general case',
+      humanReadableName: 'the exclamation mark case',
       testCases: [{
-        input: 'task_2_correctness_test_1',
-        allowedOutputs: [false]
+        input: 'first test in task2!!!',
+        allowedOutputs: ['!']
       }, {
-        input: 'task_2_correctness_test_2',
-        allowedOutputs: [false]
+        input: 'absolutely final test!',
+        allowedOutputs: ['!']
       }]
     }],
-    buggyOutputTests: [{
-      buggyFunctionName: 'AuxiliaryCode.mockAuxiliaryCodeTwo',
-      ignoredTestSuiteIds: [],
-      messages: [
-        "Mock BuggyOutputTest Message One for task2",
-        "Mock BuggyOutputTest Message Two for task2",
-        "Mock BuggyOutputTest Message Three for task2"
-      ]
-    }],
+    buggyOutputTests: [],
     suiteLevelTests: [],
     performanceTests: []
   }];
+
+  var starterCode = [
+    'def mockMainFunction(input):',
+    '    return True'
+  ].join('\n');
+
+  var auxiliaryCode = [
+    'class AuxiliaryCode(object):',
+    '    @classmethod',
+    '    def returnIAmBuggy(cls, input):',
+    '        return "I am buggy"',
+    '',
+    '    @classmethod',
+    '    def returnYesIfInputHasNoSpaces(cls, input):',
+    '        return "Yes" if " " not in input else ""',
+    '',
+    '    @classmethod',
+    '    def returnFalse(cls, input):',
+    '        return False'
+  ].join('\n');
+
+  var codeThatFailsBuggyOutputForTaskOne = [
+    'def mockMainFunction(input):',
+    '    return "I am buggy"'
+  ].join('\n');
+
+  var anotherCodeThatFailsBuggyOutputForTaskOne = [
+    'def mockMainFunction(input):',
+    '    return "I am " + "buggy"'
+  ].join('\n');
+
+  var codeThatFailsBuggyOutputWithIgnoredSuiteForTaskOne = [
+    'def mockMainFunction(input):',
+    '    return "Yes"'
+  ].join('\n');
+
+  var codeThatFailsBuggyOutputForTaskTwo = [
+    'def mockMainFunction(input):',
+    '    return False'
+  ].join('\n');
+
+  var codeThatFailsSuiteLevelForTaskOne = [
+    'def mockMainFunction(input):',
+    '    return input if " " not in input else ""'
+  ].join('\n');
+
+  var codeThatFailsOnlyOneTestInTask1Suite2 = [
+    'def mockMainFunction(input):',
+    '    return input if input != "task1 suite2 test2" else ""'
+  ].join('\n');
+
+  var anotherCodeThatFailsSuiteLevelForTaskOne = [
+    'def mockMainFunction(input):',
+    '    return input + "" if " " not in input else ""'
+  ].join('\n');
+
+  var codeThatPassesBothTasks = [
+    'def mockMainFunction(input):',
+    '    return "!" if "!" in input else input'
+  ].join('\n');
+
+  var codeThatFailsFirstTaskOnly = [
+    'def mockMainFunction(input):',
+    '    return "!"'
+  ].join('\n');
+
+  var codeThatFailsSecondTaskOnly = [
+    'def mockMainFunction(input):',
+    '    return input'
+  ].join('\n');
+
+  var codeThatFailsBothTasks = [
+    'def mockMainFunction(input):',
+    '    return "hello"'
+  ].join('\n');
+
+  var codeThatPrintsAndPassesBothTasks = [
+    'def mockMainFunction(input):',
+    '    print input',
+    '    return "!" if "!" in input else input'
+  ].join('\n');
+
+  var codeThatPrintsAndFailsFinalTest = [
+    'def mockMainFunction(input):',
+    '    print input',
+    '    if input == "absolutely final test!":',
+    '        return "wrong answer"',
+    '    return "!" if "!" in input else input'
+  ].join('\n');
+
+  var codeThatPrintsAndFailsSecondTaskOnly = [
+    'def mockMainFunction(input):',
+    '    print input',
+    '    return input'
+  ].join('\n');
+
+  var codeThatPrintsAndFailsBothTasks = [
+    'def mockMainFunction(input):',
+    '    print input',
+    '    return "hello"'
+  ].join('\n');
+
+  var question;
+  var orderedTasks;
 
   beforeEach(module('tie'));
 
   // Mock tasks for preprocessing.
   beforeEach(inject(function($injector) {
     ConversationManagerService = $injector.get('ConversationManagerService');
-    TaskObjectFactory = $injector.get('TaskObjectFactory');
+    CurrentQuestionService = $injector.get('CurrentQuestionService');
     ExpectedFeedbackObjectFactory = $injector.get(
       'ExpectedFeedbackObjectFactory');
-    SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
+    QuestionObjectFactory = $injector.get('QuestionObjectFactory');
+    TaskObjectFactory = $injector.get('TaskObjectFactory');
+
+    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
     CORRECTNESS_STATE_INPUT_DISPLAYED = $injector.get(
       'CORRECTNESS_STATE_INPUT_DISPLAYED');
-    CORRECTNESS_FEEDBACK_TEXT = $injector.get('CORRECTNESS_FEEDBACK_TEXT');
-    QuestionObjectFactory = $injector.get(
-      'QuestionObjectFactory');
-    CurrentQuestionService = $injector.get('CurrentQuestionService');
+    LANGUAGE_PYTHON = $injector.get('LANGUAGE_PYTHON');
+    SUPPORTED_PYTHON_LIBS = $injector.get('SUPPORTED_PYTHON_LIBS');
+
     question = QuestionObjectFactory.create({
-      title: TITLE,
-      starterCode: STARTER_CODE,
-      auxiliaryCode: AUXILIARY_CODE,
+      title: 'Question 1',
+      starterCode: starterCode,
+      auxiliaryCode: auxiliaryCode,
       tasks: taskDict
     });
-    spyOn(
-      CurrentQuestionService, 'getCurrentQuestion').and.returnValue(question);
+
+    spyOn(CurrentQuestionService, 'getCurrentQuestion').and.returnValue(
+      question);
 
     orderedTasks = taskDict.map(function(task) {
       return TaskObjectFactory.create(task);
     });
-
-    auxiliaryCode = [
-      'class AuxiliaryCode(object):',
-      '    @classmethod',
-      '    def mockAuxiliaryCodeOne(cls, input):',
-      '        return input.endswith("1")',
-      '    @classmethod',
-      '    def mockAuxiliaryCodeTwo(cls, input):',
-      '        return False'
-    ].join('\n');
-
-    starterCode = [
-      'def mockMainFunction(input):',
-      '    return True'
-    ].join('\n');
   }));
 
   // Recursive method to verify submissions.
-  var verifySubmissions = function(
-      errorMessages, done, tasks, starterCodeToUse, auxiliaryCodeToUse,
-      language, submissionSpecs) {
+  var verifySubmissions = function(errorMessages, done, submissionSpecs) {
     ConversationManagerService.processSolutionAsync(
-      tasks, starterCodeToUse, submissionSpecs[0].code, auxiliaryCodeToUse,
-      language
+      orderedTasks, starterCode, submissionSpecs[0].code, auxiliaryCode,
+      LANGUAGE_PYTHON
     ).then(function(submissionResult) {
       var newErrorMessages = errorMessages.concat(
-        submissionSpecs[0].expectedFeedback.verifyFeedback(
-          submissionResult));
+        submissionSpecs[0].expectedFeedback.verifyFeedback(submissionResult));
 
       if (submissionSpecs.length === 1) {
         expect(newErrorMessages).toEqual([]);
         done();
       } else {
-        verifySubmissions(
-          newErrorMessages, done, tasks, starterCode, auxiliaryCode,
-          language, submissionSpecs.slice(1));
+        verifySubmissions(newErrorMessages, done, submissionSpecs.slice(1));
       }
     });
   };
 
-  describe('processSolutionAsync', function() {
-    describe('correctness tests', function() {
-      it('should check both task1 and task2 to ' +
-          'verify that the learner has the correct answer', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    if len(input) > 0 and input[:6] == "task_1":',
-              '        return True',
-              '    return False'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, null, '', true)
-          }]
-        );
-      });
-
-      it('should contain the correct stdout upon question ' +
-          'completion', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    print(input)',
-              '    if len(input) > 0 and input[:6] == "task_1":',
-              '        return True',
-              '    return False'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, null, 'task_2_correctness_test_2\n', true)
-          }]
-        );
-      });
-
-      it('should check both task1 and task2 to ' +
-          'verify that the learner fails on task1', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    if len(input) > 0 and input == "task_1_correctness_test_1":',
-              '        return True',
-              '    return False'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'Input: "task_1_correctness_test_2"')
-          }]
-        );
-      });
-
-      it('should contain correct stdout for task completion', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    print(input)',
-              '    if len(input) > 0 and input == "task_1_correctness_test_1":',
-              '        return True',
-              '    return False'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'Input: "task_1_correctness_test_2"',
-              'task_1_correctness_test_2\n')
-          }]
-        );
-      });
-
-      it('should check both task1 and task2 to ' +
-          'verify that the learner fails on task2', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    if len(input) > 0 and input == "task_2_correctness_test_2":',
-              '        return False',
-              '    return True'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'Input: "task_2_correctness_test_1"')
-          }]
-        );
-      });
-
-      it('should contain the correct stdout if first test of second task ' +
-         'failed', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    print(input)',
-              '    if len(input) > 0 and input == "task_2_correctness_test_2":',
-              '        return False',
-              '    return True'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'Input: "task_2_correctness_test_1"',
-              'task_2_correctness_test_1\n')
-          }]
-        );
-      });
-
-      it('should check both task1 and task2, and though learner fails on ' +
-         'both tasks, error message of task1 is displayed', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    if len(input) > 0 and input[-1] == "1":',
-              '        return False',
-              '    return True'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'Input: "task_1_correctness_test_1"')
-          }]
-        );
-      });
-
-      it('should contain correct stdout if first test failed', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    print(input)',
-              '    if len(input) > 0 and input[-1] == "1":',
-              '        return False',
-              '    return True'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null,
-              'Input: "task_1_correctness_test_1"',
-              'task_1_correctness_test_1\n')
-          }]
-        );
-      });
+  describe("prereqCheckFailures", function() {
+    it('detects code in global scope', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '    return input',
+          'mockMainFunction("input")'
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          'Please keep your code within the existing predefined ',
+          'functions or define your own helper functions if you need ',
+          'to -- we cannot process code in the global scope.'
+        ].join(''), null, null)
+      }]);
     });
 
-    describe('buggy output tests', function() {
-      it('should check both task1 and task2 to ' +
-          'verify that the learner fails on task1', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    return input.endswith("1")'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }]
-        );
-      });
-
-      it('should check both task1 and task2, ' +
-          'though learner fails on task2 buggy tests, ' +
-          'error message of task1 is displayed', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    return False'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null,
-              "Input: \"task_1_correctness_test_1\"")
-          }]
-        );
-      });
-
-      it('should show a new message only if the code changes', function(done) {
-        var repeatedStudentCode = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")'
-        ].join('\n');
-
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: repeatedStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }, {
-            // The code has not changed, so the message stays the same.
-            code: repeatedStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }, {
-            // The code has changed, so the message changes.
-            code: [
-              'def mockMainFunction(input):',
-              '    return input.endswith("1") or input.endswith("1")'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message Two for task1')
-          }]
-        );
-      });
-
-      it([
-        'should return correctness feedback if a student reaches the end of ',
-        'the available hints.'
-      ].join(''), function(done) {
-        var wrongStudentCodeAlternative1 = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")'
-        ].join('\n');
-        var wrongStudentCodeAlternative2 = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1") or input.endswith("1")'
-        ].join('\n');
-
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: wrongStudentCodeAlternative1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }, {
-            code: wrongStudentCodeAlternative2,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message Two for task1')
-          }, {
-            code: wrongStudentCodeAlternative1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message Three for task1')
-          }, {
-            // At this point, we have run out of buggy-output test feedback.
-            code: wrongStudentCodeAlternative2,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, null, '', false, function(submissionResult) {
-                var feedback = submissionResult.getFeedback();
-                var possibleFeedbackMessages = (
-                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
-                var observedMessage = feedback.getParagraphs()[0].getContent();
-
-                if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
-                  return [
-                    'Expected feedback messages to be part of ' +
-                    'input-displayed feedback'];
-                } else {
-                  return [];
-                }
-              }
-            )
-          }]
-        );
-      });
-
-      it([
-        'should return the same hint multiple times for buggy outputs, ',
-        'provided a new error happened in between'
-      ].join(''), function(done) {
-        var buggyOutputStudentCode = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")'
-        ].join('\n');
-        var runtimeErrorStudentCode = [
-          'def mockMainFunction(input):',
-          '    return 5 / 0'
-        ].join('\n');
-
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: buggyOutputStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }, {
-            code: runtimeErrorStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              'Looks like your code had a runtime error when evaluating the ',
-              'input "task_1_correctness_test_1".'
-            ].join(''), null, null)
-          }, {
-            // The cycle is broken, so we start from the top of the
-            // buggy-message list.
-            code: buggyOutputStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }]
-        );
-      });
+    it('detects missing starter code', function(done) {
+      verifySubmissions([], done, [{
+        code: '',
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          'It looks like you deleted or modified the starter code!  Our ',
+          'evaluation program requires the function names given in the ',
+          'starter code.  You can press the \'Reset Code\' button to ',
+          'start over.  Or, you can copy the starter code below:'
+        ].join(''), starterCode, null)
+      }]);
     });
 
-    describe("prereqCheckFailures", function() {
-      it('should return the correct feedback if there is code in global scope',
-        function(done) {
-          verifySubmissions(
-            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-            [{
-              code: [
-                'def mockMainFunction(input):',
-                '    return input',
-                'mockMainFunction("input")'
-              ].join('\n'),
-              expectedFeedback: ExpectedFeedbackObjectFactory.create([
-                'Please keep your code within the existing predefined ',
-                'functions or define your own helper functions if you need ',
-                'to -- we cannot process code in the global scope.'
-              ].join(''), null, null)
-            }]
-          );
-        }
-      );
+    it('detects bad imports', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'import pandas',
+          'def mockMainFunction(input):',
+          '    return True'
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          "It looks like you're importing an external library. However, ",
+          'the following libraries are not supported:\n'
+        ].join(''), 'pandas', null, false, function(submissionResult) {
+          var errorMessages = [];
 
-      it('should be correctly handled if missing starter code', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: '',
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              'It looks like you deleted or modified the starter code!  Our ',
-              'evaluation program requires the function names given in the ',
-              'starter code.  You can press the \'Reset Code\' button to ',
-              'start over.  Or, you can copy the starter code below:'
-            ].join(''), starterCode, null)
-          }]
-        );
-      });
+          var feedback = submissionResult.getFeedback();
+          if (feedback.getParagraphs()[2].getContent() !==
+              'Here is a list of libraries we currently support:\n') {
+            errorMessages.append('Bad content in 3rd paragraph');
+          }
+          if (feedback.getParagraphs()[3].getContent() !==
+              SUPPORTED_PYTHON_LIBS.join(', ')) {
+            errorMessages.append('Bad content in 4th paragraph');
+          }
 
-      it('should be correctly handled if has bad import', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'import pandas',
-              'def mockMainFunction(input):',
-              '    return True'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              "It looks like you're importing an external library. However, ",
-              'the following libraries are not supported:\n'
-            ].join(''), 'pandas', null, false, function(submissionResult) {
-              var errorMessages = [];
-
-              var feedback = submissionResult.getFeedback();
-              if (feedback.getParagraphs()[2].getContent() !==
-                  'Here is a list of libraries we currently support:\n') {
-                errorMessages.append('Bad content in 3rd paragraph');
-              }
-              if (feedback.getParagraphs()[3].getContent() !==
-                  SUPPORTED_PYTHON_LIBS.join(', ')) {
-                errorMessages.append('Bad content in 4th paragraph');
-              }
-
-              return errorMessages;
-            })
-          }]
-        );
-      });
-
-      it('should return 1st errorLineNumber, when multiple errors',
-        function(done) {
-          verifySubmissions(
-            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-            [{
-              code: [
-                'def mockMainFunction(input):',
-                '    return True',
-                'def myFunction(arg):',
-                '    arg = arg / 2',
-                '    arg--',
-                '    return arg',
-                'def myFunction2(arg):',
-                '    arg++',
-                '    return arg',
-                ''
-              ].join('\n'),
-              expectedFeedback: ExpectedFeedbackObjectFactory.create(
-                null, null, null, false, function(submissionResult) {
-                  var feedback = submissionResult.getFeedback();
-                  var expectedLineNumber = 5;
-                  if (feedback.getErrorLineNumber() === expectedLineNumber) {
-                    return [];
-                  } else {
-                    return ['Wrong error line number'];
-                  }
-                })
-            }]
-          );
-        });
+          return errorMessages;
+        })
+      }]);
     });
 
-    describe('potentialSyntaxError', function() {
-      it('should correctly handle a syntax error', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    return True -'
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, 'SyntaxError: bad input on line 2', null)
-          }]
-        );
-      });
+    it('returns 1st errorLineNumber if there are many errors', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '    return True',
+          'def myFunction(arg):',
+          '    arg = arg / 2',
+          '    arg--',
+          '    return arg',
+          'def myFunction2(arg):',
+          '    arg++',
+          '    return arg',
+          ''
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, null, false,
+          function(submissionResult) {
+            var feedback = submissionResult.getFeedback();
+            var expectedLineNumber = 5;
+            if (feedback.getErrorLineNumber() === expectedLineNumber) {
+              return [];
+            } else {
+              return ['Wrong error line number'];
+            }
+          }
+        )
+      }]);
+    });
+  });
+
+  describe('syntax errors', function() {
+    it('should correctly handle a syntax error', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '    return True -'
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'SyntaxError: bad input on line 2', null)
+      }]);
+    });
+  });
+
+  describe('stack-exceeded errors', function() {
+    it('should correctly handle a stack-exceeded error', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '    return mockMainFunction(input)',
+          ''
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          "Your code appears to be hitting an infinite recursive loop. ",
+          "Check to make sure that your recursive calls terminate."
+        ].join(''), null, null)
+      }]);
+    });
+  });
+
+  describe('runtime errors', function() {
+    it('should correctly handle a runtime error', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '    return greeting',
+          ''
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          'It looks like greeting isn\'t a declared variable. ',
+          'Did you make sure to spell it correctly? And is it ',
+          'correctly initialized?'
+        ].join(''), null, null)
+      }]);
+    });
+  });
+
+  describe('buggy output tests', function() {
+    it('should detect failures on task1', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }]);
     });
 
-    describe('should return the correct feedback if', function() {
-      it('there is a stack exceeded error', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    return mockMainFunction(input)',
-              ''
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              "Your code appears to be hitting an infinite recursive loop. ",
-              "Check to make sure that your recursive calls terminate."
-            ].join(''), null, null)
-          }]
-        );
-      });
-
-      it('there is a runtime error', function(done) {
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: [
-              'def mockMainFunction(input):',
-              '    return greeting',
-              ''
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              'It looks like greeting isn\'t a declared variable. ',
-              'Did you make sure to spell it correctly? And is it ',
-              'correctly initialized?'
-            ].join(''), null, null)
-          }]
-        );
-      });
+    it('should show task 1 f/b over task 2 buggy-output f/b', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputForTaskTwo,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, "Input: \"task1suite1test1\"")
+      }]);
     });
 
-    describe('buggy output ignored test suites', function() {
-      beforeEach(inject(function() {
-        // Reconfigure the test suites for the first task.
-        taskDict[0].testSuites = [{
-          id: 'SUITE1',
-          humanReadableName: 'suite 1',
-          testCases: [{
-            input: 'task_1_suite_1_test_1',
-            allowedOutputs: [true]
-          }, {
-            input: 'task_1_suite_1_test_2',
-            allowedOutputs: [true]
-          }]
-        }, {
-          id: 'SUITE2',
-          humanReadableName: 'suite 2',
-          testCases: [{
-            input: 'task_1_suite_2_test_1',
-            allowedOutputs: [false]
-          }, {
-            input: 'task_1_suite_2_test_2',
-            allowedOutputs: [false]
-          }]
-        }];
-        question = QuestionObjectFactory.create({
-          title: TITLE,
-          starterCode: STARTER_CODE,
-          auxiliaryCode: AUXILIARY_CODE,
-          tasks: taskDict
-        });
-        CurrentQuestionService.getCurrentQuestion =
-          jasmine.createSpy().and.returnValue(question);
-      }));
-
-      it('should check all buggy outputs if nothing is ignored',
-        function(done) {
-          taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = [];
-          orderedTasks = taskDict.map(function(task) {
-            return TaskObjectFactory.create(task);
-          });
-
-          verifySubmissions(
-            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-            [{
-              // The buggy function returns True for the first and third cases.
-              // The student's code returns True in the first three cases and
-              // False in the fourth.
-              code: [
-                'def mockMainFunction(input):',
-                '    return input != "task_1_suite_2_test_2"',
-                ''
-              ].join('\n'),
-              expectedFeedback: ExpectedFeedbackObjectFactory.create(
-                null, null, '', false, function(submissionResult) {
-                  var feedback = submissionResult.getFeedback();
-                  var possibleFeedbackMessages = (
-                    CORRECTNESS_FEEDBACK_TEXT[
-                      CORRECTNESS_STATE_INPUT_DISPLAYED]);
-                  var observedMessage = (
-                    feedback.getParagraphs()[0].getContent());
-
-                  if (possibleFeedbackMessages.indexOf(
-                      observedMessage) === -1) {
-                    return [
-                      'Expected feedback messages to be part of ' +
-                      'input-displayed feedback'];
-                  } else {
-                    return [];
-                  }
-                }
-              )
-            }]
-          );
-        }
-      );
-
-      it('should ignore buggy outputs for ignored suite ids', function(done) {
-        taskDict[0].buggyOutputTests[0].ignoredTestSuiteIds = ['SUITE2'];
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
-
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            // The buggy function returns True for the first and third cases.
-            // The student's code returns True in the first case and False
-            // for the rest.
-            code: [
-              'def mockMainFunction(input):',
-              '    return input in [',
-              '        "task_1_suite_1_test_1", "task_2_correctness_test_1"]',
-              ''
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'Mock BuggyOutputTest Message One for task1')
-          }]
-        );
-      });
+    it('should show a new message only if the code changes', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }, {
+        // The code has not changed, so the message stays the same.
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }, {
+        // The code has changed, so the message changes.
+        code: anotherCodeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message Two for task1')
+      }]);
     });
 
-    describe('suite-level tests', function() {
-      beforeEach(inject(function() {
-        // Reconfigure the test suites, buggy output tests and suite-level
-        // tests for the first task.
-        taskDict[0].testSuites = [{
-          id: 'SUITE1',
-          humanReadableName: 'suite 1',
-          testCases: [{
-            input: 'task_1_suite_1_test_1',
-            allowedOutputs: [true]
-          }, {
-            input: 'task_1_suite_1_test_2',
-            allowedOutputs: [false]
-          }]
-        }, {
-          id: 'SUITE2',
-          humanReadableName: 'suite 2',
-          testCases: [{
-            input: 'task_1_suite_2_test_1',
-            allowedOutputs: [false]
-          }, {
-            input: 'task_1_suite_2_test_2',
-            allowedOutputs: [false]
-          }]
-        }];
-        taskDict[0].buggyOutputTests = [];
-        taskDict[0].suiteLevelTests = [{
-          testSuiteIdsThatMustPass: ['SUITE1'],
-          testSuiteIdsThatMustFail: ['SUITE2'],
-          messages: ['suite_message1', 'suite_message2']
-        }];
-        question = QuestionObjectFactory.create({
-          title: TITLE,
-          starterCode: STARTER_CODE,
-          auxiliaryCode: AUXILIARY_CODE,
-          tasks: taskDict
-        });
-        CurrentQuestionService.getCurrentQuestion =
-          jasmine.createSpy().and.returnValue(question);
-      }));
+    it('shows correctness f/b after all buggy hints are shown', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }, {
+        code: anotherCodeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message Two for task1')
+      }, {
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message Three for task1')
+      }, {
+        // At this point, we have run out of buggy-output test feedback.
+        code: anotherCodeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, '', false, function(submissionResult) {
+            var feedback = submissionResult.getFeedback();
+            var possibleFeedbackMessages = (
+              CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
+            var observedMessage = feedback.getParagraphs()[0].getContent();
 
-      it('should return suite-level feedback if the condition is triggered',
-        function(done) {
-          orderedTasks = taskDict.map(function(task) {
-            return TaskObjectFactory.create(task);
-          });
+            if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
+              return [
+                'Expected feedback messages to be part of ' +
+                'input-displayed feedback'];
+            } else {
+              return [];
+            }
+          }
+        )
+      }]);
+    });
 
-          verifySubmissions(
-            [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-            [{
-              // This code passes suite 1 and fails suite 2.
-              code: [
-                'def mockMainFunction(input):',
-                '    return input.endswith("1")',
-                ''
-              ].join('\n'),
-              expectedFeedback: ExpectedFeedbackObjectFactory.create(
-                'suite_message1')
-            }]
-          );
-        }
-      );
+    it('returns to first buggy hint after non-buggy error', function(done) {
+      var runtimeErrorStudentCode = [
+        'def mockMainFunction(input):',
+        '    return 5 / 0'
+      ].join('\n');
 
-      it([
-        'should not return suite-level feedback if the passing-suite ',
-        ' prerequisites do not hold'
-      ].join(''), function(done) {
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }, {
+        code: runtimeErrorStudentCode,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          'Looks like your code had a runtime error when evaluating the ',
+          'input "task1suite1test1".'
+        ].join(''), null, null)
+      }, {
+        // The cycle is broken, so we start from the top of the
+        // buggy-message list.
+        code: codeThatFailsBuggyOutputForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'Mock BuggyOutputTest Message One for task1')
+      }]);
+    });
+  });
 
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            // This code passes one test case in suite 1 and fails the other,
-            // thus failing the suite.
-            code: [
-              'def mockMainFunction(input):',
-              '    return True',
-              ''
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, null, '', false, function(submissionResult) {
-                var feedback = submissionResult.getFeedback();
-                var possibleFeedbackMessages = (
-                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
-                var observedMessage = feedback.getParagraphs()[0].getContent();
+  describe('buggy output ignored test suites', function() {
+    it('should ignore buggy outputs for ignored suite ids', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBuggyOutputWithIgnoredSuiteForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'This buggy message should trigger if code just returns Yes')
+      }]);
+    });
+  });
 
-                if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
-                  return [
-                    'Expected feedback messages to be part of ' +
-                    'input-displayed feedback'];
-                } else {
-                  return [];
-                }
-              }
-            )
-          }]
-        );
-      });
+  describe('suite-level tests', function() {
+    it('should return suite-level feedback when triggered', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          'suite_message1')
+      }]);
+    });
 
-      it([
-        'should consider a suite failed if at least one test in it fails'
-      ].join(''), function(done) {
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
-
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            // This code passes suite 1, and passes one of the two tests in
-            // suite 2.
-            code: [
-              'def mockMainFunction(input):',
-              '    return input.endswith("1")',
-              ''
-            ].join('\n'),
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }]
-        );
-      });
-
-      it([
-        'should return the next hint in sequence for suite-level tests, but ',
-        'only if the code has been changed'
-      ].join(''), function(done) {
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
-
-        // This code passes suite 1, and fails suite 2.
-        var studentCode1 = [
+    it('does not show suite-level f/b if passing-prereq fails', function(done) {
+      verifySubmissions([], done, [{
+        // This code passes one test case in suite 1 and fails the other,
+        // thus failing the suite.
+        code: [
           'def mockMainFunction(input):',
-          '    return input.endswith("1")',
+          '    return True',
           ''
-        ].join('\n');
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, '', false, function(submissionResult) {
+            var feedback = submissionResult.getFeedback();
+            var possibleFeedbackMessages = (
+              CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
+            var observedMessage = feedback.getParagraphs()[0].getContent();
 
-        // This code also passes suite 1, and fails suite 2.
-        var studentCode2 = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1") or input.endswith("1")',
-          ''
-        ].join('\n');
+            if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
+              return [
+                'Expected feedback messages to be part of ' +
+                'input-displayed feedback'];
+            } else {
+              return [];
+            }
+          }
+        )
+      }]);
+    });
 
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: studentCode1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }, {
-            code: studentCode1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }, {
-            code: studentCode2,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message2')
-          }]
-        );
-      });
+    it('considers a suite failed if at least one test fails', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsOnlyOneTestInTask1Suite2,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }]);
+    });
 
-      it([
-        'should return incorrect-output feedback if a student reaches the end ',
-        'of the hints.'
-      ].join(''), function(done) {
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
+    it('shows next suite-level f/b only if code was changed', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }, {
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }, {
+        code: anotherCodeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message2')
+      }]);
+    });
 
-        // This code passes suite 1, and fails suite 2.
-        var studentCode1 = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")',
-          ''
-        ].join('\n');
+    it('returns correctness feedback after all suite-hints', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }, {
+        code: anotherCodeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message2')
+      }, {
+        // We've reached the end of the hints.
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, '', false, function(submissionResult) {
+            var feedback = submissionResult.getFeedback();
+            var possibleFeedbackMessages = (
+              CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
+            var observedMessage = feedback.getParagraphs()[0].getContent();
 
-        // This code also passes suite 1, and fails suite 2.
-        var studentCode2 = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1") or input.endswith("1")',
-          ''
-        ].join('\n');
+            if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
+              return [
+                'Expected feedback messages to be part of ' +
+                'input-displayed feedback'];
+            } else {
+              return [];
+            }
+          }
+        )
+      }]);
+    });
 
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: studentCode1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }, {
-            code: studentCode2,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message2')
-          }, {
-            // We've reached the end of the hints.
-            code: studentCode1,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              null, null, '', false, function(submissionResult) {
-                var feedback = submissionResult.getFeedback();
-                var possibleFeedbackMessages = (
-                  CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
-                var observedMessage = feedback.getParagraphs()[0].getContent();
+    it('restarts suite-level feedback after unrelated errors', function(done) {
+      // This code leads to a runtime error.
+      var runtimeErrorStudentCode = [
+        'def mockMainFunction(input):',
+        '    return 5 / 0',
+        ''
+      ].join('\n');
 
-                if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
-                  return [
-                    'Expected feedback messages to be part of ' +
-                    'input-displayed feedback'];
-                } else {
-                  return [];
-                }
-              }
-            )
-          }]
-        );
-      });
+      verifySubmissions([], done, [{
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }, {
+        code: runtimeErrorStudentCode,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create([
+          'Looks like your code had a runtime error when evaluating the ',
+          'input "task1suite1test1".'
+        ].join(''), null, null)
+      }, {
+        // We start again at the beginning of the suite-level hints.
+        code: codeThatFailsSuiteLevelForTaskOne,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+      }]);
+    });
+  });
 
-      it([
-        'should reset the suite-level counter if other types of feedback are ',
-        'given in between'
-      ].join(''), function(done) {
-        orderedTasks = taskDict.map(function(task) {
-          return TaskObjectFactory.create(task);
-        });
+  describe('incorrect-output tests', function() {
+    it('should check both tasks for full completion', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatPassesBothTasks,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, '', true)
+      }]);
+    });
 
-        // This code passes suite 1, and fails suite 2.
-        var suiteLevelFailureStudentCode = [
-          'def mockMainFunction(input):',
-          '    return input.endswith("1")',
-          ''
-        ].join('\n');
+    it('should handle a failure on the first task', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsFirstTaskOnly,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "task1suite1test1"')
+      }]);
+    });
 
-        // This code leads to a runtime error.
-        var runtimeErrorStudentCode = [
-          'def mockMainFunction(input):',
-          '    return 5 / 0',
-          ''
-        ].join('\n');
+    it('should handle a failure on the second task', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsSecondTaskOnly,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "first test in task2!!!"')
+      }]);
+    });
 
-        verifySubmissions(
-          [], done, orderedTasks, starterCode, auxiliaryCode, 'python',
-          [{
-            code: suiteLevelFailureStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }, {
-            code: runtimeErrorStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create([
-              'Looks like your code had a runtime error when evaluating the ',
-              'input "task_1_suite_1_test_1".'
-            ].join(''), null, null)
-          }, {
-            // We start again at the beginning of the suite-level hints.
-            code: suiteLevelFailureStudentCode,
-            expectedFeedback: ExpectedFeedbackObjectFactory.create(
-              'suite_message1')
-          }]
-        );
-      });
+    it('should show task1 error message if both tasks failed', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatFailsBothTasks,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "task1suite1test1"')
+      }]);
+    });
+  });
+
+  describe('stdout generation', function() {
+    it('should contain correct stdout on question completion', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatPrintsAndPassesBothTasks,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, null, 'absolutely final test!\n', true)
+      }]);
+    });
+
+    it('should have correct stdout if very last test failed', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatPrintsAndFailsFinalTest,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "absolutely final test!"', 'absolutely final test!\n')
+      }]);
+    });
+
+    it('should contain correct stdout if task 2 test 1 failed', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatPrintsAndFailsSecondTaskOnly,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "first test in task2!!!"', 'first test in task2!!!\n')
+      }]);
+    });
+
+    it('should contain correct stdout if first test failed', function(done) {
+      verifySubmissions([], done, [{
+        code: codeThatPrintsAndFailsBothTasks,
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          null, 'Input: "task1suite1test1"', 'task1suite1test1\n')
+      }]);
     });
   });
 });
