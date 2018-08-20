@@ -21,10 +21,10 @@ tie.directive('learnerView', [function() {
     restrict: 'E',
     scope: {},
     template: `
-      <div class="tie-wrapper" ng-class="{'night-mode': isDarkModeEnabled()}">
+      <div class="tie-wrapper protractor-test-tie-wrapper" ng-class="{'night-mode': isDarkModeEnabled()}">
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
-            <div class="tie-question-ui">
+            <div class="tie-question-ui protractor-test-question-ui">
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
                   <h1 class="tie-question-title">{{title}}</h1>
@@ -55,12 +55,12 @@ tie.directive('learnerView', [function() {
                 </monospace-display-modal>
               </div>
               <div ng-hide="MonospaceDisplayModalService.isDisplayed()">
-                <button class="tie-code-reset tie-button"
+                <button class="tie-code-reset tie-button protractor-test-reset-feedback-button"
                     ng-click="resetFeedback()"
                     title="Click to clear all feedback">
                   Reset Feedback
                 </button>
-                <select class="tie-select-menu"
+                <select class="tie-select-menu protractor-test-theme-select"
                     ng-change="changeTheme(currentThemeName)"
                     ng-model="currentThemeName"
                     ng-options="i.themeName as i.themeName for i in themes"
@@ -68,10 +68,10 @@ tie.directive('learnerView', [function() {
                 </select>
               </div>
             </div>
-            <div class="tie-coding-ui">
+            <div class="tie-coding-ui protractor-test-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-user-terminal" ng-class="{'print-mode': printingIsSupported}">
-                  <div class="tie-coding-terminal">
+                  <div class="tie-coding-terminal protractor-test-coding-terminal-div">
                     <div class="tie-codemirror-container"
                         tabindex="0"
                         ng-keypress="onKeypressCodemirrorContainer($event)"
@@ -80,22 +80,22 @@ tie.directive('learnerView', [function() {
                           ng-model="editorContents.code"
                           ng-change="onCodeChange()"
                           ng-if="!accessibleMode"
-                          class="protractor-test-code-input">
+                          class="protractor-test-code-input-element">
                       </ui-codemirror>
                       <ui-codemirror ng-model="editorContents.code"
                           ui-codemirror-opts="accessibleCodeMirrorOptions"
                           ng-change="onCodeChange()"
                           ng-if="accessibleMode"
-                          class="protractor-test-code-input">
+                          class="protractor-test-code-input-element">
                       </ui-codemirror>
                     </div>
                   </div>
-                  <div class="tie-print-terminal" ng-if="printingIsSupported">
+                  <div class="tie-print-terminal protractor-test-print-terminal-div" ng-if="printingIsSupported">
                     <h1 class="tie-print-title"> Printed Output </h1>
-                    <div class="tie-stdout">{{stdout}}</div>
+                    <div class="tie-stdout protractor-test-stdout-div">{{stdout}}</div>
                   </div>
                 </div>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-btn" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
+                <button class="tie-code-reset tie-button protractor-test-reset-code-button" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
                   Reset Code
                 </button>
                 <p class="tie-language-label">Language: <span ng-if="supportedLanguageCount === 1">{{languageLabel}}</span></p>
@@ -108,15 +108,15 @@ tie.directive('learnerView', [function() {
                     name="lang-select-menu">
                 </select>
 
-                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer" target="_blank" ng-href="{{getPythonPrimerUrl()}}" title="Click to view a short introduction to Python">New to Python?</a>
+                <a ng-if="!SERVER_URL" class="tie-primer-link tie-python-primer protractor-test-python-primer-link" target="_blank" ng-href="{{getPythonPrimerUrl()}}" title="Click to view a short introduction to Python">New to Python?</a>
                 <div class="tie-code-auto-save"
                     ng-show="autosaveTextIsDisplayed">
                   Saving code...
                 </div>
-                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-btn" ng-if="pageIsIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
+                <button class="tie-submit-button tie-button tie-button-green protractor-test-submit-code-button" ng-if="pageIsIframed" ng-click="submitToParentPage(editorContents.code)" title="Click anytime you want to submit your code">
                   Submit for Grading
                 </button>
-                <button class="tie-run-button tie-button protractor-test-run-code-btn" ng-class="{'tie-button-green': !pageIsIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
+                <button class="tie-run-button tie-button protractor-test-run-code-button" ng-class="{'tie-button-green': !pageIsIframed}" ng-click="submitCode(editorContents.code)" ng-disabled="SessionHistoryService.isNewBalloonPending()" title="Click anytime you want feedback on your code">
                   Get Feedback
                 </button>
               </div>
@@ -125,14 +125,14 @@ tie.directive('learnerView', [function() {
           <div class="tie-options-row">
             <ul>
               <li class="tie-about-button">
-                <a target="_blank" href="https://google.github.io/tie/">About TIE</a>
+                <a target="_blank" class="protractor-test-about-link" href="https://google.github.io/tie/">About TIE</a>
               </li>
               <li class="tie-privacy-button" ng-click="onPrivacyClick()">
-                <a href="#">Privacy</a>
+                <a href="#" class="protractor-test-privacy-link">Privacy</a>
               </li>
               <li class="tie-leave-feedback-button"
                   title="Click to leave your feedback about TIE">
-                <a href="https://goo.gl/CcfCq4" target="_blank">
+                <a href="https://goo.gl/CcfCq4" target="_blank" class="protractor-test-feedback-link">
                   Leave feedback about TIE
                 </a>
               </li>
