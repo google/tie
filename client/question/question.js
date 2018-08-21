@@ -741,6 +741,14 @@ tie.constant('SEPARATOR_LENGTH', 20);
 tie.constant('DEFAULT_EVENT_BATCH_PERIOD_SECONDS', 30);
 
 /**
+ * Maximum number of CodeSubmitEvents allowed per EventBatch.
+ *
+ * @type {number}
+ * @constant
+ */
+tie.constant('MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH', 4);
+
+/**
  * Number of seconds that "Saving code..." message will appear for before
  * disappearing.
  *

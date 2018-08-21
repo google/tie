@@ -17,7 +17,8 @@
  * backend, if it exists.
  */
 tie.factory('EventHandlerService', [
-  '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
+  '$http', 'ServerHandlerService', 'MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH',
+  function($http, ServerHandlerService, MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH) {
 
     /**
      * Global object to keep track of the current batch of events to send.
@@ -217,6 +218,8 @@ tie.factory('EventHandlerService', [
 
       /**
        * Submits data to TIE's backend to create a CodeSubmitEvent.
+       * May also submit the EventBatch if too many CodeSubmitEvents are
+       * lined up.
        * @param {string} taskId ID of the task being attempted.
        * @param [{string}] feedbackParagraphs The feedback shown to the user.
        * @param {string} feedbackCategory The type of feedback shown to the
@@ -237,6 +240,16 @@ tie.factory('EventHandlerService', [
               createdMsec: (new Date()).getTime()
             }
           });
+          var numCodeSubmitEvents = 0;
+          for (var i = 0; i < _currentEventBatch.length; i++) {
+            if (_currentEventBatch[i].type === 'CodeSubmitEvent') {
+              numCodeSubmitEvents++;
+            }
+            if (numCodeSubmitEvents === MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH) {
+              sendCurrentEventBatch();
+              return;
+            }
+          }
         }
       }
     };
