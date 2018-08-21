@@ -78,14 +78,14 @@ var setWindowSize = async function(width, height) {
  * Sets the dimensions of the browser window to those of a large screen.
  */
 var setLargeScreen = async function() {
-  await setWindowSize(1280, 1024);
+  await setWindowSize(1070, 700);
 };
 
 /**
  * Sets the dimensions of the browser window to those of a small screen.
  */
 var setSmallScreen = async function() {
-  await setWindowSize(1024, 768);
+  await setWindowSize(1050, 700);
 };
 
 
