@@ -68,7 +68,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
   }
   
   @classmethod
-  def translate(cls, word_list, dictionary):
+  def _translate(cls, word_list, dictionary):
     result = []
     for x in word_list:
       if x in dictionary:
@@ -80,7 +80,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
   @classmethod
   def translateBackwards(cls, s):
     reverse_dict = dict((y, x) for (x, y) in cls.ENGLISH_TO_PIRATE.items())
-    result = cls.translate(s.split(), reverse_dict)
+    result = cls._translate(s.split(), reverse_dict)
     return ' '.join(result)
     
   @classmethod
@@ -88,6 +88,36 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     result = s
     for english, pirate in cls.ENGLISH_TO_PIRATE.items():
       result = result.replace(english, pirate)
+    return result
+    
+  @classmethod
+  def alwaysPrependSpace(cls, s):
+    result = ''
+    for w in s.split():
+      if w in cls.ENGLISH_TO_PIRATE:
+        result += ' ' + cls.ENGLISH_TO_PIRATE[w]
+      else:
+        result += ' ' + w
+    return result
+    
+  @classmethod
+  def alwaysAppendSpace(cls, s):
+    result = ''
+    for w in s.split():
+      if w in cls.ENGLISH_TO_PIRATE:
+        result += cls.ENGLISH_TO_PIRATE[w] + ' '
+      else:
+        result += w + ' '
+    return result
+    
+  @classmethod
+  def onlySpaceAfterPirateWords(cls, s):
+    result = ''
+    for w in s.split():
+      if w in cls.ENGLISH_TO_PIRATE:
+        result += cls.ENGLISH_TO_PIRATE[w] + ' '
+      else:
+        result += w
     return result
     
   @classmethod
@@ -104,6 +134,25 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     return ' '.join(result)
     
   @classmethod
+  def outputingStringIndexes(cls, s):
+    result = []
+    for i in range(len(s.split())):
+      result.append(str(i))
+    return ' '.join(result)
+    
+  @classmethod
+  def returnListInsteadOfString(cls, s):
+    return cls._translate(s.split(), cls.ENGLISH_TO_PIRATE)
+    
+  @classmethod
+  def returnInsideOfLoop(cls, s):
+    for w in s.split():
+      if w in cls.ENGLISH_TO_PIRATE:
+        return cls.ENGLISH_TO_PIRATE[w]
+      else:
+        return w
+    
+  @classmethod
   def dontIndexDict(cls, s):
     result = []
     for x in s.split():
@@ -115,7 +164,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     
   @classmethod
   def joinWithoutSpace(cls, s):
-    result = cls.translate(s.split(), cls.ENGLISH_TO_PIRATE)
+    result = cls._translate(s.split(), cls.ENGLISH_TO_PIRATE)
     return ''.join(result)
 `
   },
@@ -222,6 +271,61 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       messages: [
         [
           "Don't forget spaces in your output."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.alwaysPrependSpace',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'Spaces should only appear between words, not at the ',
+          'beginning of the sentence.'
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.alwaysAppendSpace',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'Spaces should only appear between words, not at the ',
+          'end of the sentence.'
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.onlySpaceAfterPirateWords',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'Spaces should only appear between each whether English ',
+          'or Pirate.'
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.outputingStringIndexes',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'You need to output words, not word indexes. When you ',
+          'call "range(len(list))" it returns numbers 1 through ',
+          'length of list, not the items in the list.'
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.returnListInsteadOfString',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'Your function should return a string, not a list.'
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.returnInsideOfLoop',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          "It looks like you're only looking at the first word",
+          "in the input. Are you calling return inside the for ",
+          "loop?"
         ].join('')
       ]
     }],
