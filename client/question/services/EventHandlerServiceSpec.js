@@ -166,6 +166,36 @@ describe('EventHandlerService', function() {
           taskId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
         expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(1);
       });
+
+    it('submits an EventBatch if too many CodeSubmitEvents are added to it',
+      function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/send_event_batch').respond(
+          HTTP_STATUS_CODE_OK, {});
+        var code = [
+          'def myFunction(arg):',
+          '    result = arg.rstrip()',
+          '    return result',
+          ''
+        ].join('\n');
+        var feedbackText = 'Here is some feedback!';
+        spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(0);
+        EventHandlerService.createCodeSubmitEvent(
+          taskId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(1);
+        EventHandlerService.createCodeSubmitEvent(
+          taskId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(2);
+        EventHandlerService.createCodeSubmitEvent(
+          taskId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(3);
+        spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
+        EventHandlerService.createCodeSubmitEvent(
+          taskId, feedbackText, FEEDBACK_CATEGORIES.SYNTAX_ERROR, code);
+        $httpBackend.flush();
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(0);
+      });
   });
 
 
