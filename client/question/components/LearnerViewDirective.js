@@ -71,7 +71,7 @@ tie.directive('learnerView', [function() {
             <div class="tie-coding-ui protractor-test-coding-ui">
               <div class="tie-lang-terminal">
                 <div class="tie-user-terminal" ng-class="{'print-mode': printingIsSupported}">
-                  <div class="tie-coding-terminal protractor-test-coding-terminal-div">
+                  <div class="tie-coding-terminal">
                     <div class="tie-codemirror-container"
                         tabindex="0"
                         ng-keypress="onKeypressCodemirrorContainer($event)"
@@ -90,9 +90,9 @@ tie.directive('learnerView', [function() {
                       </ui-codemirror>
                     </div>
                   </div>
-                  <div class="tie-print-terminal protractor-test-print-terminal-div" ng-if="printingIsSupported">
+                  <div class="tie-print-terminal" ng-if="printingIsSupported">
                     <h1 class="tie-print-title"> Printed Output </h1>
-                    <div class="tie-stdout protractor-test-stdout-div">{{stdout}}</div>
+                    <div class="tie-stdout">{{stdout}}</div>
                   </div>
                 </div>
                 <button class="tie-code-reset tie-button protractor-test-reset-code-button" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
