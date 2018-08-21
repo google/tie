@@ -119,17 +119,18 @@ var QuestionPage = function() {
    * Retrieves the TIE question page.
    *
    * @param {string} questionId ID of the question to load.
-   * @param {boolean} setupPage Whether or not to setup the page after load.
+   * @param {boolean} runSetupPageFunction Whether to setup the page after load.
    *
    */
-  this.get = async function(questionId, setupPage) {
+  this.get = async function(questionId, runSetupPageFunction) {
     var fullUrl = pageUrl + '?qid=' + questionId;
-    setupPage = (setupPage === undefined) ? true : setupPage;
+    runSetupPageFunction = 
+        (runSetupPageFunction === undefined) ? true : runSetupPageFunction;
 
     await browser.get(fullUrl);
     await browser.waitForAngularEnabled();
 
-    if (setupPage) {
+    if (runSetupPageFunction) {
       await questionTestConfig.setupPage();
     }
   };
