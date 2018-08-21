@@ -13,12 +13,17 @@
 // limitations under the License.
 
 /**
- * @fileoverview Protractor configuration for TIE.
+ * @fileoverview Configuration values for TIE Protractor E2E tests.
  */
 
 exports.config = {
   framework: 'jasmine',
-  capabilities: {browserName: 'chrome'},
+  capabilities: {
+    browserName: 'chrome',
+    loggingPrefs: {
+      browser: 'ALL',
+    },
+  },
   specs: ['./*.spec.js'],
   onPrepare: async function() {
     // By default, Protractor use data:text/html,<html></html> as resetUrl, but
@@ -28,6 +33,12 @@ exports.config = {
     browser.resetUrl = 'file://' + __dirname.replace('/tests/e2e', '');
     browser.baseUrl = 'file://' + __dirname.replace('/tests/e2e', '');
   },
+  jasmineNodeOpts: {
+    // Maxmium time to run an "it" block
+    // https://www.protractortest.org/#/timeouts#timeouts-from-jasmine
+    defaultTimeoutInterval: 60 * 1000,
+  },
+  allScriptsTimeout: 60 * 1000,
   SELENIUM_PROMISE_MANAGER: false,
   params: {
     defaultQuestionId: 'reverseWords',

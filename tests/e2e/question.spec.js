@@ -14,51 +14,129 @@
 
 
 /**
- * @fileoverview End-to-end tests for loading all pages.
+ * @fileoverview Protractor E2E tests for the Question page.
  */
 
 var QuestionPage = browser.params.questionPage;
 
-var utils = browser.params.utils;
+var testUtils = browser.params.utils;
 
-describe('submitting questions', function() {
+
+describe('Question Page', function() {
   var questionPage = new QuestionPage();
   var questionId = browser.params.defaultQuestionId;
 
-  it('should successfully submit wrong code to a task', async function() {
+  beforeEach(async function() {
     await questionPage.get(questionId);
     await questionPage.resetCode();
-    await questionPage.runCode();
-
-    expect(await questionPage.countFeedbackParagraphs()).toEqual(1);
+    await questionPage.resetFeedback();
   });
 
   afterEach(async function() {
-    await utils.checkForConsoleErrors([]);
+    // There should be no console output after each test.
+    await testUtils.expectNoConsoleLogs();
   });
 
   it('should successfully submit code', async function() {
-    await questionPage.get(questionId);
     await questionPage.resetCode();
-
-    var code = [
-      'def reverseWords(s):',
-      '    counter = 0',
-      '    maxCount = -1',
-      '    letter = s[0]',
-      '    for i in range(len(s)):',
-      '        if counter == 0:',
-      '            counter = 1',
-      '        elif s[i-1] == s[i]:',
-      '            counter += 1',
-      '        else:',
-      '            counter = 0',
-      '        if counter > maxCount:',
-      '            maxCount = counter',
-      '            letter = s[i]',
-      '    return letter', ''
-    ].join('\\n');
-
-    await questionPage.submitCode(code);
+    await questionPage.runCode();
   });
+
+  it('should display a feedback text paragraph after a run', async function() {
+    await questionPage.resetCode();
+    await questionPage.runCode();
+
+    expect(await questionPage.countFeedbackParagraphs()).toBe(1);
+  });
+
+  it('should reset feedback when clicking Reset Feedback', async function() {
+    await questionPage.resetCode();
+    await questionPage.runCode();
+    await questionPage.resetFeedback();
+    expect(await questionPage.countFeedbackParagraphs()).toBe(0);
+  });
+
+  it('should allow switching theme with the theme selector', async function() {
+    // Themes: 0=light, 1=dark.
+    await questionPage.applyTheme(1);
+    expect(await questionPage.hasDarkTheme()).toBe(true);
+  });
+
+  it('should display all expected links', async function() {
+    // Python Primer link.
+    expect(await questionPage.isPythonPrimerLinkDisplayed()).toBe(true);
+    // About link.
+    expect(await questionPage.isAboutLinkDisplayed()).toBe(true);
+    // Privacy link.
+    expect(await questionPage.isPrivacyLinkDisplayed()).toBe(true);
+    // Leave Feedback link.
+    expect(await questionPage.isFeedbackLinkDisplayed()).toBe(true);
+  });
+
+  it('should display question and coding UIs in 2 columns on large screens',
+     async function() {
+      await testUtils.setLargeScreen();
+
+      let questionUiLocation = await questionPage.getQuestionUiLocation();
+      let questionUiSize = await questionPage.getQuestionUiSize();
+      let codingUiLocation = await questionPage.getCodingUiLocation();
+
+      // Coding and Question UIs should be horizontally aligned.
+      expect(codingUiLocation.y).toEqual(questionUiLocation.y);
+
+      // Coding UI should be to the right of Question UI.
+      expect(codingUiLocation.x).toBeGreaterThan(
+        questionUiLocation.x + questionUiSize.width);
+     });
+
+  it('should display question and coding UIs in 2 rows on small screens',
+     async function() {
+       await testUtils.setSmallScreen();
+
+       let questionUiLocation = await questionPage.getQuestionUiLocation();
+       let codingUiLocation = await questionPage.getCodingUiLocation();
+       let codingUiSize = await questionPage.getCodingUiSize();
+
+       // Coding and Question UI should be vertically aligned.
+       expect(codingUiLocation.x).toEqual(questionUiLocation.x);
+
+       // Question UI should be below Coding UI.
+       expect(questionUiLocation.y).toBeGreaterThan(
+         codingUiLocation.y + codingUiSize.height);
+     });
+
+  it('should fit the question and coding UIs in page width on large screens',
+     async function() {
+      await testUtils.setLargeScreen();
+
+      let windowSize = await testUtils.getWindowSize();
+
+      let codingUiLocation = await questionPage.getCodingUiLocation();
+      let codingUiSize = await questionPage.getCodingUiSize();
+
+      // The right edge of the coding UI should be less than the window width.
+      expect(codingUiLocation.x + codingUiSize.width).toBeLessThan(
+        windowSize.width);
+     });
+
+  it('should fit the question and coding UIs in page width on small screens',
+     async function() {
+      await testUtils.setSmallScreen();
+
+      let windowSize = await testUtils.getWindowSize();
+
+      let codingUiLocation = await questionPage.getCodingUiLocation();
+      let codingUiSize = await questionPage.getCodingUiSize();
+
+      let questionUiLocation = await questionPage.getQuestionUiLocation();
+      let questionUiSize = await questionPage.getQuestionUiSize();
+
+      // The right edge of the question UI should be less than the window width.
+      expect(questionUiLocation.x + questionUiSize.width).toBeLessThan(
+        windowSize.width);
+
+      // The right edge of the coding UI should be less than the window width.
+      expect(codingUiLocation.x + codingUiSize.width).toBeLessThan(
+        windowSize.width);
+     });
 });

@@ -14,11 +14,14 @@
 
 
 /**
- * @fileoverview Page object for the Question page.
+ * @fileoverview Question page object for Protractor E2E tests.
  */
+
+const DARK_THEME_WRAPPER_CLASS = 'night-mode';
 
 /**
  * An object that represents the Question page.
+ * Provides convenience methods to interact with the page.
  *
  * @constructor
  */
@@ -27,76 +30,146 @@ var QuestionPage = function() {
   const pageUrl = '/client/question.html';
 
   /**
-   * DOM element where the code is input
+   * TIE wrapper element.
    *
-   * @type {DOMElement}
+   * @type {webdriver.WebElement}
    */
-  var codeInput = element(by.css('.protractor-test-code-input'));
+  var tieWrapperElement = element(by.css('.protractor-test-tie-wrapper'));
 
   /**
-   * Set of all of the feedback paragraphs rendered in the DOM.
+   * Question UI element.
    *
-   * @type {Array}
+   * @type {webdriver.WebElement}
+   */
+  var questionUiElement = element(by.css('.protractor-test-question-ui'));
+
+  /**
+   * Coding UI element.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var codingUiElement = element(by.css('.protractor-test-coding-ui'));
+
+  /**
+   * Reset Code button.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var resetCodeButton = element(by.css('.protractor-test-reset-code-button'));
+
+  /**
+   * Run Code button.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var runCodeButton = element(by.css('.protractor-test-run-code-button'));
+
+  /**
+   * Set of all of the feedback text paragraphs rendered in the DOM.
+   *
+   * @type {Array.<webdriver.WebElement>}
    */
   var feedbackParagraphs =
       element.all(by.css('.protractor-test-feedback-paragraph'));
 
   /**
-   * DOM element where the reset code button is.
+   * Reset Feedback button.
    *
-   * @type {DOMElement}
+   * @type {webdriver.WebElement}
    */
-  var resetCodeBtn = element(by.css('.protractor-test-reset-code-btn'));
+  var resetFeedbackButton =
+      element(by.css('.protractor-test-reset-feedback-button'));
 
   /**
-   * DOM element where the run code button is.
+   * Theme selector.
    *
-   * @type {DOMElement}
+   * @type {webdriver.WebElement}
    */
-  var runCodeBtn = element(by.css('.protractor-test-run-code-btn'));
+  var themeSelector = element(by.css('.protractor-test-theme-select'));
+
+  /**
+   * Python primer link.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var pythonPrimerLink = element(by.css('.protractor-test-python-primer-link'));
+
+  /**
+   * TIE About link.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var aboutLink = element(by.css('.protractor-test-about-link'));
+
+  /**
+   * TIE Privacy link.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var privacyLink = element(by.css('.protractor-test-privacy-link'));
+
+  /**
+   * TIE Leave Feedback link.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var feedbackLink = element(by.css('.protractor-test-feedback-link'));
 
   /**
    * Retrieves the TIE question page.
    *
-   * @param {string} questionId ID of the question to open.
+   * @param {string} questionId ID of the question to load.
+   * @param {boolean} runSetupPageFunction Whether to setup the page after load.
    *
    */
-  this.get = async function(questionId) {
+  this.get = async function(questionId, runSetupPageFunction) {
     var fullUrl = pageUrl + '?qid=' + questionId;
+    runSetupPageFunction = 
+        (runSetupPageFunction === undefined) ? true : runSetupPageFunction;
+
     await browser.get(fullUrl);
     await browser.waitForAngularEnabled();
-    await questionTestConfig.setupPage();
+
+    if (runSetupPageFunction) {
+      await questionTestConfig.setupPage();
+    }
   };
 
   /**
-   * Simulates clicking on the reset code button to initiate resetting the code.
+   * Simulates clicking on the reset code button.
    */
   this.resetCode = async function() {
-    await resetCodeBtn.click();
+    await resetCodeButton.click();
   };
 
   /**
-   * Simulates clicking on the run code button to initiate running the code.
-   */
-  this.runCode = async function() {
-    await runCodeBtn.click();
-  };
-
-  /**
-   * Simulates adding the given code string to the code editor.
+   * Simulates writing the given code string in the code editor.
    *
    * @param {string} codeString
    */
-  this.submitCode = async function(codeString) {
+  this.setCode = async function(codeString) {
     await browser.executeScript([
       'var editor = document.getElementsByClassName(\'CodeMirror\')[0].CodeMirror;',
       'editor.setValue(\'' + codeString + '\');'
     ].join(''));
-    await this.runCode();
   };
 
   /**
-   * Returns the number of feedback paragraphs rendered in the DOM.
+   * Simulates clicking on the Run Code button.
+   */
+  this.runCode = async function() {
+    await runCodeButton.click();
+  };
+
+  /**
+   * Simulates clicking on the reset feedback button.
+   */
+  this.resetFeedback = async function() {
+    await resetFeedbackButton.click();
+  };
+
+  /**
+   * Returns the number of feedback text paragraphs rendered in the DOM.
    *
    * @returns {number}
    */
@@ -113,6 +186,93 @@ var QuestionPage = function() {
    */
   this.getFeedbackParagraphText = async function(index) {
     return await feedbackParagraphs.get(index).getText();
+  };
+
+  /**
+   * Simulates selecting the theme which list index is the passed index.
+   *
+   * @param {number} themeIndex index of the theme to be applied.
+   */
+  this.applyTheme = async function(themeIndex) {
+    await themeSelector.all(by.tagName('option')).get(themeIndex).click();
+  };
+
+  /**
+   * Returns true if the dark theme is applied to TIE's wrapper element.
+   *
+   * @returns {boolean}
+   */
+  this.hasDarkTheme = async function() {
+    let wrapperClasses = await tieWrapperElement.getAttribute('class');
+    return await wrapperClasses.match(DARK_THEME_WRAPPER_CLASS) !== null;
+  };
+
+  /**
+   * Returns true if the Python primer link is displayed on the page.
+   *
+   * @returns {boolean}
+   */
+  this.isPythonPrimerLinkDisplayed = async function() {
+    return await pythonPrimerLink.isDisplayed();
+  };
+
+  /**
+   * Returns true if the About link is displayed on the page.
+   *
+   * @returns {boolean}
+   */
+  this.isAboutLinkDisplayed = async function() {
+    return await aboutLink.isDisplayed();
+  };
+
+  /**
+   * Returns true if the Privacy link is displayed on the page.
+   *
+   * @returns {boolean}
+   */
+  this.isPrivacyLinkDisplayed = async function() {
+    return await privacyLink.isDisplayed();
+  };
+
+  /**
+   * Returns true if the Leave Feedback link is displayed on the page.
+   *
+   * @returns {boolean}
+   */
+  this.isFeedbackLinkDisplayed = async function() {
+    return await feedbackLink.isDisplayed();
+  };
+
+  /**
+   * Returns the question UI element location.
+   *
+   */
+  this.getQuestionUiLocation = async function() {
+    return await questionUiElement.getLocation();
+  };
+
+  /**
+   * Returns the question UI element size.
+   *
+   */
+  this.getQuestionUiSize = async function() {
+    return await questionUiElement.getSize();
+  };
+
+  /**
+   * Returns the coding UI element location.
+   *
+   */
+  this.getCodingUiLocation = async function() {
+    return await codingUiElement.getLocation();
+  };
+
+  /**
+   * Returns the coding UI element size.
+   *
+   */
+  this.getCodingUiSize = async function() {
+    return await codingUiElement.getSize();
   };
 };
 
