@@ -242,10 +242,10 @@ tie.factory('EventHandlerService', [
           });
           var numCodeSubmitEvents = 0;
           for (var i = 0; i < _currentEventBatch.length; i++) {
-            if (_currentEventBatch[i].type == 'CodeSubmitEvent') {
-              numCodeSubmitEvents ++;
+            if (_currentEventBatch[i].type === 'CodeSubmitEvent') {
+              numCodeSubmitEvents++;
             }
-            if (numCodeSubmitEvents == MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH) {
+            if (numCodeSubmitEvents === MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH) {
               sendCurrentEventBatch();
               return;
             }
