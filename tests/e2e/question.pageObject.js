@@ -275,6 +275,4 @@ var QuestionPage = function() {
   };
 };
 
-
-
 module.exports = QuestionPage;
