@@ -17,7 +17,8 @@
  * backend, if it exists.
  */
 tie.factory('EventHandlerService', [
-  '$http', 'ServerHandlerService', function($http, ServerHandlerService) {
+  '$http', 'ServerHandlerService', 'MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH',
+  function($http, ServerHandlerService, MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH) {
 
     /**
      * Global object to keep track of the current batch of events to send.
@@ -27,7 +28,6 @@ tie.factory('EventHandlerService', [
     var _currentSessionId = null;
     var _currentQuestionId = null;
     var _currentQuestionVersion = null;
-    var MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH = 4;
 
     /**
      * Stores the current question state as service-level variables.
