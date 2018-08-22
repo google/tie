@@ -296,8 +296,8 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'Spaces should only appear between each whether English ',
-          'or Pirate.'
+          'All words should be separated by spaces, regardless of ',
+          'whether they are English words or Pirate words.'
         ].join('')
       ]
     }, {
@@ -305,9 +305,13 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ignoredTestSuiteIds: [],
       messages: [
         [
+          'You need to output words, not word indexes. '
+        ].join(''),
+        [
           'You need to output words, not word indexes. When you ',
-          'call "range(len(list))" it returns numbers 1 through ',
-          'length of list, not the items in the list.'
+          'call "range(len(list))" it returns numbers 0 through ',
+          'N-1 (where N is the length of the list), not the items ',
+          'in the list.'
         ].join('')
       ]
     }, {
@@ -323,7 +327,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ignoredTestSuiteIds: [],
       messages: [
         [
-          "It looks like you're only looking at the first word",
+          "It looks like you're only looking at the first word ",
           "in the input. Are you calling return inside the for ",
           "loop?"
         ].join('')
