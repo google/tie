@@ -66,7 +66,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     "is": "be",
     "man": "matey",
   }
-  
+
   @classmethod
   def _translate(cls, word_list, dictionary):
     result = []
@@ -76,20 +76,20 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result.append(x)
     return result
-    
+
   @classmethod
   def translateBackwards(cls, s):
     reverse_dict = dict((y, x) for (x, y) in cls.ENGLISH_TO_PIRATE.items())
     result = cls._translate(s.split(), reverse_dict)
     return ' '.join(result)
-    
+
   @classmethod
   def translateWordParts(cls, s):
     result = s
     for english, pirate in cls.ENGLISH_TO_PIRATE.items():
       result = result.replace(english, pirate)
     return result
-    
+
   @classmethod
   def alwaysPrependSpace(cls, s):
     result = ''
@@ -99,7 +99,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result += ' ' + w
     return result
-    
+
   @classmethod
   def alwaysAppendSpace(cls, s):
     result = ''
@@ -109,7 +109,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result += w + ' '
     return result
-    
+
   @classmethod
   def onlySpaceAfterPirateWords(cls, s):
     result = ''
@@ -119,7 +119,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result += w
     return result
-    
+
   @classmethod
   def translateASingleWord(cls, s):
     result = []
@@ -132,18 +132,18 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result.append(x)
     return ' '.join(result)
-    
+
   @classmethod
   def outputingStringIndexes(cls, s):
     result = []
     for i in range(len(s.split())):
       result.append(str(i))
     return ' '.join(result)
-    
+
   @classmethod
   def returnListInsteadOfString(cls, s):
     return cls._translate(s.split(), cls.ENGLISH_TO_PIRATE)
-    
+
   @classmethod
   def returnInsideOfLoop(cls, s):
     for w in s.split():
@@ -151,7 +151,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
         return cls.ENGLISH_TO_PIRATE[w]
       else:
         return w
-    
+
   @classmethod
   def dontIndexDict(cls, s):
     result = []
@@ -161,7 +161,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       else:
         result.append(x)
     return ' '.join(result)
-    
+
   @classmethod
   def joinWithoutSpace(cls, s):
     result = cls._translate(s.split(), cls.ENGLISH_TO_PIRATE)
