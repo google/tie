@@ -224,11 +224,18 @@ class AuxiliaryCode(object):
       ]
     }],
     suiteLevelTests: [],
-    performanceTests: [{
-      inputDataAtom: 'abbaca',
-      transformationFunctionName: 'System.extendString',
-      expectedPerformance: 'linear',
-      evaluationFunctionName: 'findMostCommonCharacter'
-    }]
+    performanceTests: [
+      /* {
+       *  Commented out because performance tests are still being fleshed
+       *  out in the server-based version of TIE.
+       *  Bring this back for this question because it helps detect cases
+       *  when students fail to use a dictionary and do nested iterations
+       *  over the whole string instead.
+       *    inputDataAtom: 'abbaca',
+       *    transformationFunctionName: 'System.extendString',
+       *    expectedPerformance: 'linear',
+       *    evaluationFunctionName: 'findMostCommonCharacter'
+    }  */
+    ]
   }]
 };
