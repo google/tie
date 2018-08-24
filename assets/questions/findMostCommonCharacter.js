@@ -43,6 +43,33 @@ class AuxiliaryCode(object):
     def includeSpaces(cls, s):
       counter = collections.Counter(s)
       return counter.most_common(1)[0][0]
+
+    @classmethod
+    def forgetToUpdateMax(cls, s):
+      count_dict = {}
+      for c in s:
+        if c == ' ':
+          continue
+        if c not in count_dict:
+          count_dict[c] = 0
+        count_dict[c] += 1
+      max_count = 0
+      max_char = ''
+      for char, count in count_dict.items():
+        if count > max_count:
+          max_char = char
+      return char
+
+    @classmethod
+    def returnFirstRepeat(cls, s):
+      count_dict = {}
+      for c in s:
+        if c == ' ':
+          continue
+        if c not in count_dict:
+          count_dict[c] = 0
+        else:
+          return c
 `
   },
   tasks: [{
@@ -170,13 +197,45 @@ class AuxiliaryCode(object):
           "ignore spaces."
         ].join('')
       ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.returnFirstRepeat',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'You need to check the whole string to find the most common ',
+          'character.'
+        ].join(''),
+        [
+          "It looks like you're returning the first repeated character."
+        ].join('')
+      ]
+    }, {
+      buggyFunctionName: 'AuxiliaryCode.forgetToUpdateMax',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          "It looks like you're always returning the last character ",
+          'in the dictionary.'
+        ].join(''),
+        [
+          'Did you remember to update the variable storing the max ',
+          'value when looking for the most repeated character?'
+        ].join('')
+      ]
     }],
     suiteLevelTests: [],
-    performanceTests: [{
-      inputDataAtom: 'abbac',
-      transformationFunctionName: 'System.extendString',
-      expectedPerformance: 'linear',
-      evaluationFunctionName: 'findMostCommonCharacter'
-    }]
+    performanceTests: [
+      /* {
+       *  Commented out because performance tests are still being fleshed
+       *  out in the server-based version of TIE.
+       *  Bring this back for this question because it helps detect cases
+       *  when students fail to use a dictionary and do nested iterations
+       *  over the whole string instead.
+       *    inputDataAtom: 'abbaca',
+       *    transformationFunctionName: 'System.extendString',
+       *    expectedPerformance: 'linear',
+       *    evaluationFunctionName: 'findMostCommonCharacter'
+    }  */
+    ]
   }]
 };
