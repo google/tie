@@ -43,44 +43,43 @@ class AuxiliaryCode(object):
         else:
           prev = c
       return ''.join(output)
-          
-    @classmethod
-    def overcountMoreThanTwoRepeats(cls, s):
-      repeats = cls.repeatsOnly(s, True, False)
-      if repeats:
-        return collections.Counter(repeats).most_common(1)[0][0]
-          
+
     @classmethod
     def dontIgnorePunctuation(cls, s):
       repeats = cls.repeatsOnly(s)
       repeats = [x for x in repeats if (not x.isalpha() and not x.isdigit())]
       if repeats:
         return collections.Counter(repeats).most_common(1)[0][0]
-    
+      return ''
+
     @classmethod
     def dontIgnoreCase(cls, s):
       repeats = cls.repeatsOnly(s, False)
       if repeats:
         return collections.Counter(repeats).most_common(1)[0][0]
-    
+      return ''
+
     @classmethod
     def lastRepeatOnly(cls, s):
       repeats = [x.lower() for x in cls.repeatsOnly(s)]
       if repeats:
         return repeats[-1].lower()
-    
+      return ''
+
     @classmethod
     def firstRepeatOnly(cls, s):
       repeats = [x.lower() for x in cls.repeatsOnly(s)]
       if repeats:
         return repeats[0].lower()
-    
+      return ''
+
     @classmethod
     def includeNonRepeated(cls, s):
       counter = collections.Counter(s)
       most_common = counter.most_common(1)
       if most_common:
         return most_common[0][0]
+      return ''
 `
   },
   tasks: [{
@@ -104,6 +103,13 @@ class AuxiliaryCode(object):
         "repeated character (no input like 'aabb') but it could be that ",
         'there are no repeated characters in which case you should return ',
         'the empty string.'
+      ].join(''),
+      type: 'text'
+    }, {
+      content: [
+        'When more than two instances of a letter appear in a row, you should ',
+        'count each pair individually so "aaa" counts as two repeats and ',
+        '"aaaa" counts as three, etc.'
       ].join(''),
       type: 'text'
     }, {
@@ -195,7 +201,7 @@ class AuxiliaryCode(object):
       }]
     }, {
       id: 'REPEATS_GREATER_THAN_TWO',
-      humanReadableName: 'strings with characters repeated more twice',
+      humanReadableName: 'strings with characters repeated more than twice',
       testCases: [{
         input: 'bbaaaaabbcbb',
         allowedOutputs: ['b', 'a']
@@ -207,10 +213,10 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Remember that we only care about repeated letters (like the ',
-          "'t' in letter)"
+          "'t' in letter)."
         ].join(''),
         [
-          "With an input like 'abaccada', you need to return 'c'"
+          "With an input like 'abaccada', you need to return 'c'."
         ].join('')
       ]
     }, {
@@ -219,11 +225,11 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Remember that you need to find the most common repeated letter ',
-          'not just the first one'
+          'not just the first one.'
         ].join(''),
         [
           "With an input like 'Aardvarks use cookbooks with feelings', you ",
-          "need to return 'o'"
+          "need to return 'o'."
         ].join('')
       ]
     }, {
@@ -232,11 +238,11 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Remember that you need to find the most common repeated letter ',
-          'not just the last one'
+          'not just the last one.'
         ].join(''),
         [
           "With an input like 'Aardvarks use cookbooks with feelings', you ",
-          "need to return 'o'"
+          "need to return 'o'."
         ].join('')
       ]
     }, {
@@ -245,10 +251,10 @@ class AuxiliaryCode(object):
       messages: [
         [
           'Remember that you need to treat lowercase and uppercase letters ',
-          'as equal'
+          'as equal.'
         ].join(''),
         [
-          "With an input like 'Aabbaa', you need to return 'a'"
+          "With an input like 'Aabbaa', you need to return 'a'."
         ].join('')
       ]
     }, {
@@ -256,10 +262,10 @@ class AuxiliaryCode(object):
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'Remember that we only count duplicate letters and numbers'
+          'Remember that we only count duplicate letters and numbers.'
         ].join(''),
         [
-          "With an input like 'woot!!!!', you need to return 'o'"
+          "With an input like 'woot!!!!', you need to return 'o'."
         ].join('')
       ]
     }],
