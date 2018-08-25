@@ -27,3 +27,18 @@ tieConfig.constant('ALLOW_PRINTING', false);
  * https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy.
  */
 tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);
+
+/*
+ * This shows a modal if no URL is provided, otherwise it redirects to the
+ * given URL.
+ */
+tieConfig.constant('PRIVACY_URL', null);
+
+/*
+ * This is not shown at all if no URL is provided.
+ */
+tieConfig.constant('TERMS_OF_USE_URL', null);
+
+tieConfig.constant('ABOUT_TIE_LABEL', 'About TIE');
+
+tieConfig.constant('ABOUT_TIE_URL', 'https://google.github.io/tie/');
