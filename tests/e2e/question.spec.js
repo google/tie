@@ -65,12 +65,10 @@ describe('Question Page', function() {
   it('should display all expected links', async function() {
     // Python Primer link.
     expect(await questionPage.isPythonPrimerLinkDisplayed()).toBe(true);
-    // About link.
-    expect(await questionPage.isAboutLinkDisplayed()).toBe(true);
     // Privacy link.
     expect(await questionPage.isPrivacyLinkDisplayed()).toBe(true);
-    // Leave Feedback link.
-    expect(await questionPage.isFeedbackLinkDisplayed()).toBe(true);
+    // About link.
+    expect(await questionPage.isAboutLinkDisplayed()).toBe(true);
   });
 
   it('should display question and coding UIs in 2 columns on large screens',
