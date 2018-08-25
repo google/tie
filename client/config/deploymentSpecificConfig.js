@@ -35,7 +35,7 @@ tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);
 tieConfig.constant('PRIVACY_URL', null);
 
 /*
- * This is not shown at all if no URL is provided.
+ * If a URL is specified, then a Terms button will appear in the UI.
  */
 tieConfig.constant('TERMS_OF_USE_URL', null);
 
