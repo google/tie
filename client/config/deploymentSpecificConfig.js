@@ -29,8 +29,8 @@ tieConfig.constant('ALLOW_PRINTING', false);
 tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);
 
 /*
- * This shows a modal if no URL is provided, otherwise it redirects to the
- * given URL.
+ * Shows the privacy modal on-click if a URL to a separate privacy page does
+ * not exist.
  */
 tieConfig.constant('PRIVACY_URL', null);
 
