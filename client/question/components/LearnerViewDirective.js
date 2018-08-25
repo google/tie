@@ -124,17 +124,15 @@ tie.directive('learnerView', [function() {
           </div>
           <div class="tie-options-row">
             <ul>
-              <li class="tie-about-button">
-                <a target="_blank" class="protractor-test-about-link" href="https://google.github.io/tie/">About TIE</a>
+              <li class="tie-footer-left-aligned-link" ng-if="TERMS_OF_USE_URL">
+                <a target="_blank" ng-href="{{TERMS_OF_USE_URL}}">Terms of Use</a>
               </li>
-              <li class="tie-privacy-button" ng-click="onPrivacyClick()">
+              <li class="tie-footer-left-aligned-link" ng-click="onPrivacyClick()">
                 <a href="#" class="protractor-test-privacy-link">Privacy</a>
               </li>
-              <li class="tie-leave-feedback-button"
-                  title="Click to leave your feedback about TIE">
-                <a href="https://goo.gl/CcfCq4" target="_blank" class="protractor-test-feedback-link">
-                  Leave feedback about TIE
-                </a>
+
+              <li class="tie-footer-right-aligned-link">
+                <a target="_blank" class="protractor-test-about-link" ng-href="{{ABOUT_TIE_URL}}">{{ABOUT_TIE_LABEL}}</a>
               </li>
             </ul>
           </div>
@@ -151,9 +149,6 @@ tie.directive('learnerView', [function() {
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
-        }
-        .tie-about-button {
-          float: left;
         }
         .tie-arrow-highlighter {
           background-color: white;
@@ -342,6 +337,12 @@ tie.directive('learnerView', [function() {
           width: 642px;
           -webkit-font-smoothing: antialiased;
         }
+        .tie-footer-left-aligned-link {
+          float: left;
+        }
+        .tie-footer-right-aligned-link {
+          float: right;
+        }
         .tie-lang-select-menu {
           float: left;
           margin-top: 10px;
@@ -353,9 +354,6 @@ tie.directive('learnerView', [function() {
           font-size: 12px;
           padding: 4px 2px 0 0;
           display: inline-block;
-        }
-        .tie-leave-feedback-button {
-          float: right;
         }
         .tie-options-row {
           padding-left: 32px;
@@ -420,9 +418,6 @@ tie.directive('learnerView', [function() {
           margin-top: 8px;
           overflow: auto;
           width: 662px;
-        }
-        .tie-privacy-button {
-          float: left;
         }
         .tie-question-code {
           background: rgb(242, 242, 242);
@@ -605,10 +600,10 @@ tie.directive('learnerView', [function() {
       </style>
     `,
     controller: [
-      '$scope', '$interval', '$timeout', '$location', 'CookieStorageService',
+      '$scope', '$interval', '$timeout', '$location', '$window',
       'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'LearnerViewSubmissionResultObjectFactory',
-      'EventHandlerService', 'LocalStorageService',
+      'EventHandlerService', 'LocalStorageService', 'CookieStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'PrintTerminalService',
@@ -618,12 +613,13 @@ tie.directive('learnerView', [function() {
       'DISPLAY_AUTOSAVE_TEXT_SECONDS', 'SERVER_URL', 'DEFAULT_QUESTION_ID',
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
-      'CODE_RESET_CONFIRMATION_MESSAGE',
+      'CODE_RESET_CONFIRMATION_MESSAGE', 'PRIVACY_URL', 'ABOUT_TIE_URL',
+      'ABOUT_TIE_LABEL', 'TERMS_OF_USE_URL',
       function(
-          $scope, $interval, $timeout, $location, CookieStorageService,
+          $scope, $interval, $timeout, $location, $window,
           ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, LearnerViewSubmissionResultObjectFactory,
-          EventHandlerService, LocalStorageService,
+          EventHandlerService, LocalStorageService, CookieStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, PrintTerminalService,
@@ -633,7 +629,12 @@ tie.directive('learnerView', [function() {
           DISPLAY_AUTOSAVE_TEXT_SECONDS, SERVER_URL, DEFAULT_QUESTION_ID,
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
-          CODE_RESET_CONFIRMATION_MESSAGE) {
+          CODE_RESET_CONFIRMATION_MESSAGE, PRIVACY_URL, ABOUT_TIE_URL,
+          ABOUT_TIE_LABEL, TERMS_OF_USE_URL) {
+        $scope.PRIVACY_URL = PRIVACY_URL;
+        $scope.ABOUT_TIE_URL = ABOUT_TIE_URL;
+        $scope.ABOUT_TIE_LABEL = ABOUT_TIE_LABEL;
+        $scope.TERMS_OF_USE_URL = TERMS_OF_USE_URL;
 
         $scope.SessionHistoryService = SessionHistoryService;
         $scope.MonospaceDisplayModalService = MonospaceDisplayModalService;
@@ -896,10 +897,14 @@ tie.directive('learnerView', [function() {
         $scope.setEventListenerForVisibilityChange();
 
         /**
-         * Shows the privacy modal on click.
+         * Shows the privacy modal on click if a URL is not specified.
          */
         $scope.onPrivacyClick = function() {
-          $scope.privacyModalIsDisplayed = true;
+          if (PRIVACY_URL === null) {
+            $scope.privacyModalIsDisplayed = true;
+          } else {
+            $window.open(PRIVACY_URL, '_blank');
+          }
         };
 
         /**

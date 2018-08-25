@@ -27,3 +27,18 @@ tieConfig.constant('ALLOW_PRINTING', false);
  * https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy.
  */
 tieConfig.constant('EXPECTED_PARENT_PAGE_ORIGIN', null);
+
+/*
+ * Shows the privacy modal on-click if a URL to a separate privacy page does
+ * not exist.
+ */
+tieConfig.constant('PRIVACY_URL', null);
+
+/*
+ * If a URL is specified, then a Terms button will appear in the UI.
+ */
+tieConfig.constant('TERMS_OF_USE_URL', null);
+
+tieConfig.constant('ABOUT_TIE_LABEL', 'About TIE');
+
+tieConfig.constant('ABOUT_TIE_URL', 'https://google.github.io/tie/');

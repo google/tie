@@ -109,13 +109,6 @@ var QuestionPage = function() {
   var privacyLink = element(by.css('.protractor-test-privacy-link'));
 
   /**
-   * TIE Leave Feedback link.
-   *
-   * @type {webdriver.WebElement}
-   */
-  var feedbackLink = element(by.css('.protractor-test-feedback-link'));
-
-  /**
    * Retrieves the TIE question page.
    *
    * @param {string} questionId ID of the question to load.
@@ -232,15 +225,6 @@ var QuestionPage = function() {
    */
   this.isPrivacyLinkDisplayed = async function() {
     return await privacyLink.isDisplayed();
-  };
-
-  /**
-   * Returns true if the Leave Feedback link is displayed on the page.
-   *
-   * @returns {boolean}
-   */
-  this.isFeedbackLinkDisplayed = async function() {
-    return await feedbackLink.isDisplayed();
   };
 
   /**
