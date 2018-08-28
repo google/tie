@@ -1310,6 +1310,17 @@ tie.directive('learnerView', [function() {
             $scope.privacyModalIsDisplayed = true;
           }
         }
+
+        /**
+         * Refreshes UI if the window loads at 0 height or width (IFrame Firefox
+           Case)
+         */
+        var millisecondDelay = 500;
+        $interval(function() {
+          if ($window.innerWidth === 0 || $window.innerHeight === 0) {
+            codemirrorEditorInstance.refresh();
+          }
+        }, millisecondDelay, 1);
       }
     ]
   };
