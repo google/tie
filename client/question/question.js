@@ -116,9 +116,8 @@ tie.constant('CORRECTNESS_FEEDBACK_TEXT', {
      'that it produces the output shown below?')
   ],
   OBSERVED_OUTPUT_DISPLAYED: [
-    ('If you are really stuck, you can display the output of your code.'),
-    ('If you are stuck and need help, you can display the output of your ' +
-     'code.'),
+    ('If you are stuck, you can display the output of your code.'),
+    ('If you need help, you can display the output of your code.'),
     ('If you can\'t seem to get unstuck, you can display the output of ' +
      'your code.'),
     ('If you feel stumped, you can display the output of your code.'),
@@ -316,9 +315,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Hmm... It looks like you're trying to use '++' to increment a ",
-          "number, but unfortunately, this isn't valid in Python. Try ",
-          "using '+= 1' instead."
+          "It looks like you're trying to use '++' to increment a number, but ",
+          "this isn't valid in Python. Try using '+= 1' instead."
         ].join('')
       }
     ],
@@ -331,9 +329,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Hmm... It looks like you're trying to use '--' to decrement a ",
-          "number, but unfortunately, this isn't valid in Python. Try ",
-          "using '-= 1' instead."
+          "It looks like you're trying to use '--' to decrement a number, but ",
+          "this isn't valid in Python. Try using '-= 1' instead."
         ].join('')
       }
     ],
@@ -346,7 +343,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "It seems like you're using a `push` method to add an element ",
+          "It looks like you're using a `push` method to add an element ",
           "to an array, which is valid in Java, but the Python equivalent ",
           "is called `append`."
         ].join('')
@@ -361,8 +358,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Are you trying to use a `catch` statement to catch an ",
-          "Exception? In Python, we use `except` instead."
+          "Are you trying to use a `catch` statement to catch an exception? ",
+          "In Python, we use `except` instead."
         ].join('')
       }
     ],
@@ -375,7 +372,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Hmmm... It seems like you're using the Java syntax to write ",
+          "It looks like you're using the Java syntax to write ",
           "comments. Make sure you're using the '#' character on lines ",
           "you want to comment out."
         ].join('')
@@ -392,7 +389,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
         type: 'text',
         content: [
           "Unfortunately, Python doesn't support do-while statements. ",
-          "Perhaps try using a flag or different condition instead?"
+          "Try using a flag or a different condition instead."
         ].join('')
       }
     ],
@@ -405,8 +402,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Make sure to double check that you're using `elif` instead of ",
-          "`else if` for your if-else statements."
+          "Double-check that you're using `elif` instead of `else if` for ",
+          "your if-else statements."
         ].join('')
       }
     ],
@@ -435,8 +432,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Oops, Python doesn't support switch statements. You'll ",
-          "just have to use if-else statements instead."
+          "Python doesn't support switch statements. Use if-else statements ",
+          "instead."
         ].join('')
       }
     ],
@@ -479,7 +476,7 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Triple check you're using the right AND operator. For Python, ",
+          "Double-check that you're using the right AND operator. For Python, ",
           "the AND operator is simply `and`."
         ].join('')
       }
@@ -493,9 +490,8 @@ tie.constant('WRONG_LANGUAGE_ERRORS', {
       {
         type: 'text',
         content: [
-          "Hmmm... It seems like you're trying to use the OR operator ",
-          "syntax from Java. Be sure you're using the Python appropriate ",
-          "operator - `or`."
+          "It looks like you're trying to use the OR operator syntax from ",
+          "Java. Be sure you're using the Python-appropriate operator, `or`."
         ].join('')
       }
     ],
@@ -568,7 +564,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
     },
     generateMessage: function() {
       return ['It looks like your code has some inconsistencies with ',
-        'indentation. Double check that you indent after every statement ',
+        'indentation. Double-check that you indent after every statement ',
         'that ends with a ":" and un-indent when necessary.'].join('');
     }
   }, {
@@ -579,7 +575,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
     },
     generateMessage: function() {
       return [
-        "Unfortunately Python doesn't support directly assigning ",
+        "Unfortunately, Python doesn't support directly assigning ",
         "characters in a string. If you need to do so, try slicing the ",
         "string and adding new characters instead of assigning them. ",
         "If you need a refresher on slicing, check out the ",
@@ -594,8 +590,8 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
       errorString.includes("objects"));
     },
     generateMessage: function() {
-      return ["Did you remember to explicitly convert all objects to strings ",
-        "when necessary (like when you're concatenating a string)? Make ",
+      return ["Did you remember to convert all objects to strings when ",
+        "necessary (such as when you're concatenating a string)? Make ",
         "sure everything that isn't a string gets converted using the str() ",
         "method or by using a formatted string."].join("");
     }
@@ -609,7 +605,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
         /NameError:\s(?:global\s)?name\s'(\w+)'\sis\snot\sdefined/);
       var found = errorString.match(nameErrorRegEx);
       return ["It looks like " + found[1] + " isn't a declared variable. ",
-        "Did you make sure to spell it correctly? And is it correctly ",
+        "Did you make sure to spell it correctly? Is it correctly ",
         "initialized?"].join('');
     }
   }, {
@@ -622,7 +618,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
           /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'((\w|\W)+)'/;
       var found = errorString.match(attributeErrorRegEx);
       return [found[1] + " doesn't have a property or method named ",
-        found[2] + ". Double check to make sure everything is spelled ",
+        found[2] + ". Double-check to make sure everything is spelled ",
         "correctly."].join("");
     }
   }, {
@@ -632,9 +628,9 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
           "IndexError: list index out of range");
     },
     generateMessage: function() {
-      return ["It looks like you're trying to access an index that is out ",
-        "of the bounds for the list. Double check that your loops and ",
-        "assignments don't try to retrieve from indexes below 0 or above ",
+      return ["It looks like you're trying to access an index that is ",
+        "outside the boundaries of the list. Double-check that your loops ",
+        "and assignments don't try to retrieve from indexes below 0 or above ",
         "the length of the string."].join('');
     }
   }, {
@@ -646,8 +642,8 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
       var keyErrorRegEx = /KeyError:\s(\w+)\s/;
       var found = errorString.match(keyErrorRegEx);
       return ["The key " + found[1] + " is not in the dictionary you're ",
-        "trying to retrieve from. Double check to make sure everything is ",
-        "spelled correctly and that you haven't forgotten to add any ",
+        "trying to retrieve from. Double-check to make sure everything is ",
+        "spelled correctly and that you have included all necessary ",
         "key-value pairs."].join('');
     }
   }]
