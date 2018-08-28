@@ -121,6 +121,16 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     return result
 
   @classmethod
+  def onlySpaceAfterEnglishWords(cls, s):
+    result = ''
+    for w in s.split():
+      if w in cls.ENGLISH_TO_PIRATE:
+        result += cls.ENGLISH_TO_PIRATE[w]
+      else:
+        result += w + ' '
+    return result
+
+  @classmethod
   def translateASingleWord(cls, s):
     result = []
     word_list = s.split()
@@ -173,13 +183,14 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     instructions: [{
       content: [
         'Given a mapping of English to Pirate words, write a program that ',
-        'translates a string to Pirate.'
+        'translates a string to Pirate. The input strings will contain only ',
+        'lowercase letters, spaces and apostrophes.'
       ].join(''),
       type: 'text'
     }, {
       content: [
-        'Input: "excuse me madam where is the restroom?"\nOutput: ',
-        '"arr me proud beauty where be th\' head?"'
+        'Input: "excuse me madam where is the restroom"\n',
+        'Output: "arr me proud beauty where be th\' head"'
       ].join(''),
       type: 'code'
     }],
@@ -262,7 +273,7 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'Be sure to extract a single value from the dictionary.'
+          'Be sure to extract only the relevant value from the dictionary.'
         ].join('')
       ]
     }, {
@@ -301,11 +312,21 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
         ].join('')
       ]
     }, {
+      buggyFunctionName: 'AuxiliaryCode.onlySpaceAfterEnglishWords',
+      ignoredTestSuiteIds: [],
+      messages: [
+        [
+          'All words should be separated by spaces, regardless of ',
+          'whether they are English words or Pirate words.'
+        ].join('')
+      ]
+    }, {
       buggyFunctionName: 'AuxiliaryCode.outputingStringIndexes',
       ignoredTestSuiteIds: [],
       messages: [
         [
-          'You need to output words, not word indexes. '
+          'You need to output words, not the indexes of the words in the ',
+          'string.'
         ].join(''),
         [
           'You need to output words, not word indexes. When you ',
@@ -327,9 +348,8 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ignoredTestSuiteIds: [],
       messages: [
         [
-          "It looks like you're only looking at the first word ",
-          "in the input. Are you calling return inside the for ",
-          "loop?"
+          "It looks like you're only returning the first word in the input. ",
+          "Be careful that your code does not exit too early."
         ].join('')
       ]
     }],

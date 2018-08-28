@@ -397,7 +397,7 @@ describe('ConversationManagerService', function() {
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create([
           'It looks like greeting isn\'t a declared variable. ',
-          'Did you make sure to spell it correctly? And is it ',
+          'Did you make sure to spell it correctly? Is it ',
           'correctly initialized?'
         ].join(''), null, null)
       }]);

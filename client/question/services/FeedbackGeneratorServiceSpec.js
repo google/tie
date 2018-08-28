@@ -414,7 +414,7 @@ describe('FeedbackGeneratorService', function() {
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ['It looks like your code has some inconsistencies with ',
-            'indentation. Double check that you indent after every statement ',
+            'indentation. Double-check that you indent after every statement ',
             'that ends with a ":" and un-indent when necessary.'].join('')
       );
     });
@@ -430,7 +430,7 @@ describe('FeedbackGeneratorService', function() {
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
           [
-            "Unfortunately Python doesn't support directly assigning ",
+            "Unfortunately, Python doesn't support directly assigning ",
             "characters in a string. If you need to do so, try slicing the ",
             "string and adding new characters instead of assigning them. ",
             "If you need a refresher on slicing, check out the ",
@@ -449,10 +449,10 @@ describe('FeedbackGeneratorService', function() {
             FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
-          ["Did you remember to explicitly convert all objects to strings",
-            " when necessary (like when you're concatenating a string)? Make ",
-            "sure everything that isn't a string gets converted using the ",
-            "str() method or by using a formatted string."].join("")
+          ["Did you remember to convert all objects to strings ",
+            "when necessary (such as when you're concatenating a string)? ",
+            "Make sure everything that isn't a string gets converted using ",
+            "the str() method or by using a formatted string."].join("")
         );
       }
     );
@@ -465,7 +465,7 @@ describe('FeedbackGeneratorService', function() {
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual([
         "It looks like hello isn't a declared variable. ",
-        "Did you make sure to spell it correctly? And is it correctly ",
+        "Did you make sure to spell it correctly? Is it correctly ",
         "initialized?"].join('')
       );
     });
@@ -479,7 +479,7 @@ describe('FeedbackGeneratorService', function() {
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ["str doesn't have a property or method named ",
-            "lowerr. Double check to make sure everything is spelled ",
+            "lowerr. Double-check to make sure everything is spelled ",
             "correctly."].join("")
       );
     });
@@ -491,8 +491,8 @@ describe('FeedbackGeneratorService', function() {
           FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
-            ["It looks like you're trying to access an index that is out ",
-              "of the bounds for the list. Double check that your loops and ",
+            ["It looks like you're trying to access an index that is outside ",
+              "the boundaries of the list. Double-check that your loops and ",
               "assignments don't try to retrieve from indexes below 0 or above",
               " the length of the string."].join('')
       );
@@ -506,8 +506,8 @@ describe('FeedbackGeneratorService', function() {
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
               ["The key key is not in the dictionary you're trying to ",
-                "retrieve from. Double check to make sure everything is ",
-                "spelled correctly and that you haven't forgotten to add any ",
+                "retrieve from. Double-check to make sure everything is ",
+                "spelled correctly and that you have included all necessary ",
                 "key-value pairs."].join('')
       );
     });
@@ -682,7 +682,7 @@ describe('FeedbackGeneratorService', function() {
 
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].getContent()).toEqual([
-        "It seems like you're using a `push` method to add an element ",
+        "It looks like you're using a `push` method to add an element ",
         "to an array, which is valid in Java, but the Python equivalent ",
         "is called `append`."
       ].join(''));
@@ -801,9 +801,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Hmm... It looks like you're trying to use '++' to increment a ",
-        "number, but unfortunately, this isn't valid in Python. Try ",
-        "using '+= 1' instead."
+        "It looks like you're trying to use '++' to increment a ",
+        "number, but this isn't valid in Python. Try using '+= 1' instead."
       ].join(''));
       expect(feedback.getFeedbackCategory()).toEqual(
         FEEDBACK_CATEGORIES.FAILS_LANGUAGE_DETECTION_CHECK);
@@ -818,9 +817,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Hmm... It looks like you're trying to use '--' to decrement a ",
-        "number, but unfortunately, this isn't valid in Python. Try ",
-        "using '-= 1' instead."
+        "It looks like you're trying to use '--' to decrement a ",
+        "number, but this isn't valid in Python. Try using '-= 1' instead."
       ].join(''));
     });
 
@@ -833,7 +831,7 @@ describe('FeedbackGeneratorService', function() {
         expect(feedback.isAnswerCorrect()).toEqual(false);
         var paragraphs = feedback.getParagraphs();
         expect(paragraphs[0].getContent()).toEqual([
-          "It seems like you're using a `push` method to add an element ",
+          "It looks like you're using a `push` method to add an element ",
           "to an array, which is valid in Java, but the Python equivalent ",
           "is called `append`."
         ].join(''));
@@ -850,7 +848,7 @@ describe('FeedbackGeneratorService', function() {
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
         "Are you trying to use a `catch` statement to catch an ",
-        "Exception? In Python, we use `except` instead."
+        "exception? In Python, we use `except` instead."
       ].join(''));
     });
 
@@ -863,7 +861,7 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Hmmm... It seems like you're using the Java syntax to write ",
+        "It looks like you're using the Java syntax to write ",
         "comments. Make sure you're using the '#' character on lines ",
         "you want to comment out."
       ].join(''));
@@ -879,7 +877,7 @@ describe('FeedbackGeneratorService', function() {
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
         "Unfortunately, Python doesn't support do-while statements. ",
-        "Perhaps try using a flag or different condition instead?"
+        "Try using a flag or a different condition instead."
       ].join(''));
     });
 
@@ -892,7 +890,7 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Make sure to double check that you're using `elif` instead of ",
+        "Double-check that you're using `elif` instead of ",
         "`else if` for your if-else statements."
       ].join(''));
     });
@@ -906,8 +904,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Oops, Python doesn't support switch statements. You'll ",
-        "just have to use if-else statements instead."
+        "Python doesn't support switch statements. Use if-else statements ",
+        "instead."
       ].join(''));
     });
 
@@ -949,9 +947,8 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Hmmm... It seems like you're trying to use the OR operator ",
-        "syntax from Java. Be sure you're using the Python appropriate ",
-        "operator - `or`."
+        "It looks like you're trying to use the OR operator syntax from Java. ",
+        "Be sure you're using the Python-appropriate operator, `or`."
       ].join(''));
     });
 
@@ -964,7 +961,7 @@ describe('FeedbackGeneratorService', function() {
       expect(feedback.isAnswerCorrect()).toEqual(false);
       var paragraphs = feedback.getParagraphs();
       expect(paragraphs[0].getContent()).toEqual([
-        "Triple check you're using the right AND operator. For Python, ",
+        "Double-check that you're using the right AND operator. For Python, ",
         "the AND operator is simply `and`."
       ].join(''));
     });
