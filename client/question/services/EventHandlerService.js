@@ -213,7 +213,7 @@ tie.factory('EventHandlerService', [
               createdMsec: (new Date()).getTime()
             }
           });
-          sendCurrentEventBatch(); 
+          sendCurrentEventBatch();
         }
       },
 
