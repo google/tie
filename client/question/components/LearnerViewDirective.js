@@ -1312,15 +1312,14 @@ tie.directive('learnerView', [function() {
         }
 
         /**
-         * Refreshes UI if the window loads at 0 height or width (IFrame Firefox
+         * Refreshes UI if window loads at 0 height or width (Firefox IFrame
            Case)
          */
-        var millisecondDelay = 500;
-        $interval(function() {
+        $timeout(function() {
           if ($window.innerWidth === 0 || $window.innerHeight === 0) {
             codemirrorEditorInstance.refresh();
           }
-        }, millisecondDelay, 1);
+        });
       }
     ]
   };
