@@ -139,12 +139,17 @@ describe('EventHandlerService', function() {
 
   describe('createCodeResetEvent', function() {
 
-    it('creates a CodeResetEvent and adds it to the current EventBatch',
+    it('creates a CodeResetEvent + sends the event batch to the backend',
       function() {
+        $httpBackend.expectPOST(
+          '/ajax/event/send_event_batch').respond(
+          HTTP_STATUS_CODE_OK, {});
         spyOn(ServerHandlerService, 'doesServerExist').and.returnValue(true);
         expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(0);
+        spyOn(EventHandlerService, 'sendCurrentEventBatch').and.callThrough();
         EventHandlerService.createCodeResetEvent();
-        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(1);
+        $httpBackend.flush();
+        expect(EventHandlerService._getCurrentEventBatchLength()).toEqual(0);
       });
   });
 
