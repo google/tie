@@ -1310,6 +1310,16 @@ tie.directive('learnerView', [function() {
             $scope.privacyModalIsDisplayed = true;
           }
         }
+
+        /**
+         * Refreshes UI if window loads at 0 height or width (Firefox IFrame
+           Case)
+         */
+        $timeout(function() {
+          if ($window.innerWidth === 0 || $window.innerHeight === 0) {
+            codemirrorEditorInstance.refresh();
+          }
+        });
       }
     ]
   };
