@@ -157,9 +157,10 @@ class AuxiliaryCode(object):
         ].join(''),
         "What happens if you pass in strings that contain only numbers?",
         [
-          "It looks like you are not handling strings properly ",
-          "if they contain digits or special characters, ",
-          "such as '0123456789' or '~?!@#$%'."
+          "If the strings contain digits or special characters, such as ",
+          "'0123456789' or '~?!@#$%', make sure you are handling them ",
+          "properly. The most common character in the string might not ",
+          "be a letter."
         ].join('')
       ]
     }, {
@@ -171,16 +172,16 @@ class AuxiliaryCode(object):
           'letters or numbers.'
         ].join(''),
         [
-          'FYI, the characters in the input strings could also be symbols, ',
-          'like ! and $.'
+          'Note that the characters in the input strings could also be ',
+          'symbols, such as ! or $.'
         ].join(''),
         [
           'What happens if you pass in a string that contains only ',
           'exclamation marks?'
         ].join(''),
         [
-          "It looks like you are not handling strings properly ",
-          "if they contain special characters, such as '~?!@#$%'."
+          "If the strings contain special characters, such as '~?!@#$%', ",
+          "make sure you are handling them properly."
         ].join('')
       ]
     }, {
@@ -189,11 +190,11 @@ class AuxiliaryCode(object):
       messages: [
         [
           'What happens if your function is given a string that has lots of ',
-          'spaces in it? Remember that the question asks to ignore spaces.'
+          'spaces in it? Remember that the instructions say to ignore spaces.'
         ].join(''),
         [
-          "For an input like 'a string with many spaces', your code ",
-          "returns a space as the answer. But the question asks you to ",
+          "For an input such as 'a string with many spaces', your code ",
+          "returns a space as the answer. But the instructions tell you to ",
           "ignore spaces."
         ].join('')
       ]
