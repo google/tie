@@ -143,9 +143,6 @@ tie.directive('learnerView', [function() {
         <div role="alert" ng-if="ariaLiveMessage.text">{{ariaLiveMessage.text}}</div>
       </div>
 
-      <privacy-modal is-displayed="privacyModalIsDisplayed">
-      </privacy-modal>
-
       <style>
         div.CodeMirror span.CodeMirror-matchingbracket {
           color: rgb(75, 206, 75);
@@ -603,7 +600,7 @@ tie.directive('learnerView', [function() {
       '$scope', '$interval', '$timeout', '$location', '$window',
       'ConversationManagerService', 'QuestionDataService', 'LANGUAGE_PYTHON',
       'FeedbackObjectFactory', 'LearnerViewSubmissionResultObjectFactory',
-      'EventHandlerService', 'LocalStorageService', 'CookieStorageService',
+      'EventHandlerService', 'LocalStorageService',
       'ServerHandlerService', 'SessionIdService', 'ThemeNameService',
       'UnpromptedFeedbackManagerService', 'MonospaceDisplayModalService',
       'CurrentQuestionService', 'PrintTerminalService',
@@ -619,7 +616,7 @@ tie.directive('learnerView', [function() {
           $scope, $interval, $timeout, $location, $window,
           ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
           FeedbackObjectFactory, LearnerViewSubmissionResultObjectFactory,
-          EventHandlerService, LocalStorageService, CookieStorageService,
+          EventHandlerService, LocalStorageService,
           ServerHandlerService, SessionIdService, ThemeNameService,
           UnpromptedFeedbackManagerService, MonospaceDisplayModalService,
           CurrentQuestionService, PrintTerminalService,
@@ -734,9 +731,6 @@ tie.directive('learnerView', [function() {
         $scope.editorContents = {
           code: ''
         };
-
-        // The privacy modal is not displayed by default.
-        $scope.privacyModalIsDisplayed = false;
 
         // Whether to show the more accessible version of the CodeMirror
         // editor. "Accessible mode" is triggered by the user tabbing to the
@@ -900,9 +894,7 @@ tie.directive('learnerView', [function() {
          * Shows the privacy modal on click if a URL is not specified.
          */
         $scope.onPrivacyClick = function() {
-          if (PRIVACY_URL === null) {
-            $scope.privacyModalIsDisplayed = true;
-          } else {
+          if (PRIVACY_URL !== null) {
             $window.open(PRIVACY_URL, '_blank');
           }
         };
@@ -1301,15 +1293,6 @@ tie.directive('learnerView', [function() {
 
         $scope.autosaveTextIsDisplayed = false;
         CurrentQuestionService.init(initLearnerViewDirective);
-
-        // If server version, and the user has not accepted the privacy policy,
-        // show them the privacy modal.
-        if (SERVER_URL) {
-          var privacyPolicyAccepted = CookieStorageService.hasPrivacyCookie();
-          if (!privacyPolicyAccepted) {
-            $scope.privacyModalIsDisplayed = true;
-          }
-        }
       }
     ]
   };
