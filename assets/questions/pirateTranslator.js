@@ -27,13 +27,13 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     #    student -> swabbie
     #    boy -> matey
     #    madam -> proud beauty
-    #    professor -> foul blaggart
+    #    professor -> foul blaggard
     #    restaurant -> galley
     #    your -> yer
     #    excuse -> arr
     #    students -> swabbies
     #    are -> be
-    #    lawyer -> foul blaggart
+    #    lawyer -> foul blaggard
     #    the -> th'
     #    restroom -> head
     #    my -> me
@@ -52,13 +52,13 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
     "student": "swabbie",
     "boy": "matey",
     "madam": "proud beauty",
-    "professor": "foul blaggart",
+    "professor": "foul blaggard",
     "restaurant": "galley",
     "your": "yer",
     "excuse": "arr",
     "students": "swabbies",
     "are": "be",
-    "lawyer": "foul blaggart",
+    "lawyer": "foul blaggard",
     "the": "th'",
     "restroom": "head",
     "my": "me",
