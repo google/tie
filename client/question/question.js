@@ -639,7 +639,7 @@ tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
       return errorString.startsWith('KeyError: ');
     },
     generateMessage: function(errorString) {
-      var keyErrorRegEx = /KeyError:\s(\w+)\s/;
+      var keyErrorRegEx = /KeyError:\s('.*'|\w+)\s/;
       var found = errorString.match(keyErrorRegEx);
       return ["The key " + found[1] + " is not in the dictionary you're ",
         "trying to retrieve from. Double-check to make sure everything is ",
