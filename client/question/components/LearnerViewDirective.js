@@ -891,7 +891,7 @@ tie.directive('learnerView', [function() {
         $scope.setEventListenerForVisibilityChange();
 
         /**
-         * Shows the privacy modal on click if a URL is not specified.
+         * Takes you to the Privacy page, if specified.
          */
         $scope.onPrivacyClick = function() {
           if (PRIVACY_URL !== null) {
