@@ -95,17 +95,21 @@ describe('question.js', function() {
       RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
         expect(error.checker('test')).toBe(false);
         expect(typeof error.generateMessage(['NameError: name \'key\' is not ',
-          'defined KeyError: key blah on line 47 AttributeError: \'key\' ',
+          'defined KeyError: blah on line 47 AttributeError: \'key\' ',
           'object has no attribute \'length\''].join(''))).toEqual('string');
       });
     });
 
     it('should handle an empty key', function() {
-      var errorString = 'KeyError: key "" on line 47';
+      var errorString = 'KeyError: "" on line 47';
       RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
         if (error.checker(errorString)) {
-          expect(typeof error.generateMessage(
-            errorString)).toEqual('string');
+          expect(error.generateMessage(
+            errorString)).toEqual([
+              "The key \"\" is not in the dictionary you're ",
+              "trying to retrieve from. Double-check to make sure everything is ",
+              "spelled correctly and that you have included all necessary ",
+              "key-value pairs."].join(''));
         }
       });
     });
