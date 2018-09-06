@@ -95,8 +95,8 @@ describe('question.js', function() {
       RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
         expect(error.checker('test')).toBe(false);
         expect(typeof error.generateMessage(['NameError: name \'key\' is not ',
-          'defined KeyError: key AttributeError: \'key\' object has no ',
-          'attribute \'length\''].join(''))).toEqual('string');
+          'defined KeyError: key blah on line 47 AttributeError: \'key\' ',
+          'object has no attribute \'length\''].join(''))).toEqual('string');
       });
     });
   });
