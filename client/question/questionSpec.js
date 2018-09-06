@@ -107,9 +107,9 @@ describe('question.js', function() {
           expect(error.generateMessage(
             errorString)).toEqual([
               "The key \"\" is not in the dictionary you're ",
-              "trying to retrieve from. Double-check to make sure everything is ",
-              "spelled correctly and that you have included all necessary ",
-              "key-value pairs."].join(''));
+              "trying to retrieve from. Double-check to make sure everything ",
+              "is spelled correctly and that you have included all ",
+              "necessary key-value pairs."].join(''));
         }
       });
     });
