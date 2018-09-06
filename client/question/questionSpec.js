@@ -99,6 +99,14 @@ describe('question.js', function() {
           'object has no attribute \'length\''].join(''))).toEqual('string');
       });
     });
+
+    it('should handle an empty key', function() {
+      KEY_ERROR_CHECKER = 6
+      error = RUNTIME_ERROR_FEEDBACK_MESSAGES.python[KEY_ERROR_CHECKER]
+      expect(error.checker('test')).toBe(false);
+      expect(typeof error.generateMessage(['KeyError: key "" on line 47 '
+        ].join(''))).toEqual('string');
+    });
   });
 
   describe('FEEDBACK_CATEGORIES', function() {
