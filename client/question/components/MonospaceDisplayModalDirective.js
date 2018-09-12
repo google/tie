@@ -62,6 +62,7 @@ tie.directive('monospaceDisplayModal', [function() {
           height: calc(100% - 80px);
           position: absolute;
           width: calc(100% - 783px);
+          z-index: 100;
         }
         .night-mode monospace-display-modal .tie-monospace-modal-container {
           border-color: #505050;
