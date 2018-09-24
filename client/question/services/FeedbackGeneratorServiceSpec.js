@@ -226,11 +226,19 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService.getIncorrectOutputFeedback(feedbackDetails));
       var correctnessFeedbackParagraphs = correctnessFeedback.getParagraphs();
 
-      expect(correctnessFeedbackParagraphs.length).toEqual(1);
+      expect(correctnessFeedbackParagraphs.length).toEqual(2);
       expect(correctnessFeedbackParagraphs[0].isTextParagraph()).toEqual(true);
       expect(
         CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_NO_MORE_FEEDBACK]
       ).toContain(correctnessFeedbackParagraphs[0].getContent());
+      expect(correctnessFeedbackParagraphs[1].isOutputParagraph()).toEqual(
+        true);
+      var expectedOutputParagraph =
+        'Input: "Hi, world"\n' +
+        'Expected Output: "iH, dlrow"\n' +
+        'Actual Output: "yeH, uoyerawoh"';
+      expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
+        expectedOutputParagraph);
     });
   });
 
