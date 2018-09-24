@@ -522,6 +522,10 @@ tie.factory('FeedbackGeneratorService', [
           correctnessState === CORRECTNESS_STATE_NO_MORE_FEEDBACK) {
           feedback.appendTextParagraph(
             _getCorrectnessFeedbackString(correctnessState));
+          feedback.appendOutputParagraph(
+            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
         } else {
           throw Error('Invalid correctness state: ' + correctnessState);
         }

@@ -27,7 +27,7 @@ tie.directive('outputSnippet', [function() {
         You can click on
         <a href ng-click="openOutputModal()" ng-if="!isModalOpen()"">this link</a>
         <span ng-if="isModalOpen()">this link</span>
-        to display the output. We recommend that you do not rely on this.
+        to display the input, expected output and actual output.
       </div>
       <style>
         output-snippet .output-toggle-container {
