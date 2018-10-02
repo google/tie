@@ -25,7 +25,7 @@ const LOG_TYPE_BROWSER = 'browser';
 /**
  * @type {number} Default timeout for testing alert dialogs presence.
  */
-const ALERT_DIALOG_TIMEOUT_MILLISECONDS = 5000;
+const ALERT_DIALOG_TIMEOUT_MILLISECONDS = 60 * 1000;
 
 
 /**
