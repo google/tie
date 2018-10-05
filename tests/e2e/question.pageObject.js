@@ -73,14 +73,6 @@ var QuestionPage = function() {
       element.all(by.css('.protractor-test-feedback-paragraph'));
 
   /**
-   * Reset Feedback button.
-   *
-   * @type {webdriver.WebElement}
-   */
-  var resetFeedbackButton =
-      element(by.css('.protractor-test-reset-feedback-button'));
-
-  /**
    * Theme selector.
    *
    * @type {webdriver.WebElement}
@@ -117,7 +109,7 @@ var QuestionPage = function() {
    */
   this.get = async function(questionId, runSetupPageFunction) {
     var fullUrl = pageUrl + '?qid=' + questionId;
-    runSetupPageFunction = 
+    runSetupPageFunction =
         (runSetupPageFunction === undefined) ? true : runSetupPageFunction;
 
     await browser.get(fullUrl);
@@ -152,13 +144,6 @@ var QuestionPage = function() {
    */
   this.runCode = async function() {
     await runCodeButton.click();
-  };
-
-  /**
-   * Simulates clicking on the reset feedback button.
-   */
-  this.resetFeedback = async function() {
-    await resetFeedbackButton.click();
   };
 
   /**
