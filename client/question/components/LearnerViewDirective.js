@@ -55,11 +55,6 @@ tie.directive('learnerView', [function() {
                 </monospace-display-modal>
               </div>
               <div ng-hide="MonospaceDisplayModalService.isDisplayed()">
-                <button class="tie-code-reset tie-button protractor-test-reset-feedback-button"
-                    ng-click="resetFeedback()"
-                    title="Click to clear all feedback">
-                  Reset Feedback
-                </button>
                 <select class="tie-select-menu protractor-test-theme-select"
                     ng-change="changeTheme(currentThemeName)"
                     ng-model="currentThemeName"
@@ -95,8 +90,8 @@ tie.directive('learnerView', [function() {
                     <div class="tie-stdout">{{stdout}}</div>
                   </div>
                 </div>
-                <button class="tie-code-reset tie-button protractor-test-reset-code-button" name="code-reset" ng-click="resetCode()" title="Click to clear your code">
-                  Reset Code
+                <button class="tie-code-reset tie-button protractor-test-reset-code-button" name="code-reset" ng-click="resetCode()" title="Click to clear your code and start over">
+                  Start Over
                 </button>
                 <p class="tie-language-label">Language: <span ng-if="supportedLanguageCount === 1">{{languageLabel}}</span></p>
                 <select
@@ -1214,22 +1209,12 @@ tie.directive('learnerView', [function() {
           EventHandlerService.createCodeResetEvent();
           $scope.autosaveCode();
 
-          // Resetting code starts a brand-new question session.
-          initLearnerViewDirective();
-        };
-
-        /**
-         * Clears the feedback in the window, and deletes the feedback
-         * from local storage for the current question.
-         */
-        $scope.resetFeedback = function() {
+          // Clear the code and feedback from localStorage, so that it is not
+          // retrieved in the subsequent initialization.
           SessionHistoryService.reset();
 
-          // Only add intro message if TIE is iframed so that the feedback
-          // window is not completely empty after resetting.
-          if (ParentPageService.isIframed()) {
-            SessionHistoryService.addIntroMessageBalloon();
-          }
+          // Start a brand-new question session.
+          initLearnerViewDirective();
         };
 
         /**

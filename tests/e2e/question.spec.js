@@ -29,7 +29,6 @@ describe('Question Page', function() {
   beforeEach(async function() {
     await questionPage.get(questionId);
     await questionPage.resetCode();
-    await questionPage.resetFeedback();
   });
 
   afterEach(async function() {
@@ -47,13 +46,6 @@ describe('Question Page', function() {
     await questionPage.runCode();
 
     expect(await questionPage.countFeedbackParagraphs()).toBe(1);
-  });
-
-  it('should reset feedback when clicking Reset Feedback', async function() {
-    await questionPage.resetCode();
-    await questionPage.runCode();
-    await questionPage.resetFeedback();
-    expect(await questionPage.countFeedbackParagraphs()).toBe(0);
   });
 
   it('should allow switching theme with the theme selector', async function() {
