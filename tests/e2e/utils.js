@@ -22,6 +22,11 @@
  */
 const LOG_TYPE_BROWSER = 'browser';
 
+/**
+ * @type {number} Default timeout for testing alert dialogs presence.
+ */
+const ALERT_DIALOG_TIMEOUT_MILLISECONDS = 30 * 1000;
+
 
 /**
  * Retrieves log entries currently present in the browser console.
@@ -54,6 +59,19 @@ var expectNoConsoleLogs = async function() {
  */
 var checkForConsoleErrors = async function(errorsToIgnore) {};
 
+/**
+ * Tests the presence and text of an expected alert dialog.
+ *
+ * @param {string} alertText the expected alert text.
+ */
+var expectAndAcceptAlert = async function(alertText) {
+  await browser.wait(
+      protractor.ExpectedConditions.alertIsPresent(),
+      ALERT_DIALOG_TIMEOUT_MILLISECONDS);
+  var alertDialog = await browser.switchTo().alert();
+  expect(await alertDialog.getText()).toBe(alertText);
+  await alertDialog.accept();
+};
 
 /**
  * Returns the current size of the browser window.
@@ -92,6 +110,7 @@ var setSmallScreen = async function() {
 module.exports = {
   expectNoConsoleLogs: expectNoConsoleLogs,
   checkForConsoleErrors: checkForConsoleErrors,
+  expectAndAcceptAlert: expectAndAcceptAlert,
   getWindowSize: getWindowSize,
   setLargeScreen: setLargeScreen,
   setSmallScreen: setSmallScreen
