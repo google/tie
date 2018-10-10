@@ -19,6 +19,7 @@
 describe('CurrentQuestionService', function() {
   var CurrentQuestionService;
   var $location;
+
   // In the Karma test environment, the deferred promise gets resolved only
   // when $rootScope.$digest() is called.
   var $rootScope;
@@ -84,6 +85,59 @@ describe('CurrentQuestionService', function() {
         expect(CurrentQuestionService.getCurrentQuestionVersion()).toEqual(1);
         expect(CurrentQuestionService.getCurrentQuestion().getTitle()).toEqual(
           'Reverse Words');
+        done();
+      });
+      $rootScope.$digest();
+    });
+  });
+});
+
+describe('CurrentQuestionService - Server', function() {
+  var CurrentQuestionService;
+  var $location;
+
+  var $httpBackend;
+  // In the Karma test environment, the deferred promise gets resolved only
+  // when $rootScope.$digest() is called.
+  var $rootScope;
+  beforeEach(module('tie'));
+  var setServerUrl = function(url) {
+    module('tieConfig', function($provide) {
+      $provide.constant('SERVER_URL', url);
+    });
+  };
+  var setDefaultQuestionId = function(id) {
+    module('tieConfig', function($provide) {
+      $provide.constant('DEFAULT_QUESTION_ID', id);
+    });
+  };
+
+  describe('behavior for invalid question - server', function() {
+
+    it('should return null', function(done) {
+      setServerUrl('http://katamari-dam.acy');
+      setDefaultQuestionId(null);
+
+      var PAGE_NOT_FOUND_ERROR = 404;
+      var BAD_REQUEST_ERROR = 404;
+
+      inject(function($injector) {
+        // Set up a non-existent question ID. This must be done before
+        // CurrentQuestionService is initialized.
+        $location = $injector.get('$location');
+        $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
+        $location.search('qid', 'invalidQuestion - server');
+
+        CurrentQuestionService = $injector.get('CurrentQuestionService');
+      });
+      $httpBackend.expectPOST(
+        '/ajax/event/get_question_data').respond(PAGE_NOT_FOUND_ERROR, {});
+
+      $httpBackend.expectPOST(
+        '/ajax/event/get_question_data').respond(BAD_REQUEST_ERROR, {});
+      CurrentQuestionService.init(function() {
+        expect(CurrentQuestionService.getCurrentQuestionId()).toEqual(null);
         done();
       });
       $rootScope.$digest();

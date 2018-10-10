@@ -57,9 +57,10 @@ describe('QuestionDataServiceServerVersion', function() {
   var QuestionDataService;
   var QuestionObjectFactory;
   var mockQuestionObject;
-  var $httpBackend = null;
+  var $httpBackend;
   var serverSuccessCode = 200;
   var serverErrorCode = 500;
+  var $log;
 
   beforeEach(module('tie'));
   beforeEach(module('tieData'));
@@ -70,6 +71,7 @@ describe('QuestionDataServiceServerVersion', function() {
   });
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
+    $log = $injector.get('$log');
     QuestionDataService = $injector.get('QuestionDataService');
     QuestionObjectFactory = $injector.get('QuestionObjectFactory');
     mockQuestionObject = QuestionObjectFactory.create({
@@ -108,13 +110,12 @@ describe('QuestionDataServiceServerVersion', function() {
         serverErrorCode, {}
       );
       QuestionDataService.fetchQuestionAsync('reverseWords').then(
-        function() {
-          // Nothing happens because it errors out.
-        }, function(error) {
-        expect(error).toEqual(
-          Error('There was an error in retrieving the question.'));
-        done();
-      });
+        function(result) {
+          expect(result).toBe(null);
+          expect($log.error.logs[0][0]).toEqual(
+            'There was an error in retrieving the question.');
+          done();
+        });
       $httpBackend.flush(1);
     });
   });
