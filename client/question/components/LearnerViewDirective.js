@@ -920,6 +920,10 @@ tie.directive('learnerView', [function() {
           // Load the feedback, tasks, and stored code and initialize the
           // event services.
           var questionId = CurrentQuestionService.getCurrentQuestionId();
+          if (questionId === null) {
+            $window.location.href = '/client/404.html';
+            return;
+          }
           var question = CurrentQuestionService.getCurrentQuestion();
           var tasks = question.getTasks();
           currentTaskIndex = 0;

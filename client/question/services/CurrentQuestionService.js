@@ -39,6 +39,8 @@ tie.factory('CurrentQuestionService', [
             cachedQuestion = question;
             serviceIsInitialized = true;
             successCallback();
+          } else if (questionId === DEFAULT_QUESTION_ID) {
+            successCallback();
           } else {
             // If the question ID in the URL is invalid, revert to using the
             // default question ID.
