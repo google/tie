@@ -23,6 +23,14 @@ tieConfig.constant('PRIMER_DIRECTORY_URL', 'docs/');
 tieConfig.constant('ALLOW_PRINTING', false);
 
 /**
+ * Default question ID to use if no qid parameter is specified in the URL.
+ *
+ * @type {string}
+ * @constant
+ */
+tieConfig.constant('DEFAULT_QUESTION_ID', 'reverseWords');
+
+/**
  * For the definition of an origin, please see
  * https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy.
  */
