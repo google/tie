@@ -795,20 +795,22 @@ tie.directive('learnerView', [function() {
 
         $scope.onVisibilityChange = function() {
           var question = CurrentQuestionService.getCurrentQuestion();
-          var tasks = question.getTasks();
+          if (question) {
+            var tasks = question.getTasks();
 
-          // When a user changes tabs (or comes back), add a SessionPause
-          // or SessionResumeEvent, respectively.
-          var hiddenAttributeName = (
-            $scope.determineHiddenAttributeNameForBrowser());
-          if (hiddenAttributeName !== null && tasks !== null &&
-              tasks.length > currentTaskIndex) {
-            if ($scope.isDocumentHidden(hiddenAttributeName)) {
-              EventHandlerService.createSessionPauseEvent(
-                tasks[currentTaskIndex].getId());
-            } else {
-              EventHandlerService.createSessionResumeEvent(
-                tasks[currentTaskIndex].getId());
+            // When a user changes tabs (or comes back), add a SessionPause
+            // or SessionResumeEvent, respectively.
+            var hiddenAttributeName = (
+              $scope.determineHiddenAttributeNameForBrowser());
+            if (hiddenAttributeName !== null && tasks !== null &&
+                tasks.length > currentTaskIndex) {
+              if ($scope.isDocumentHidden(hiddenAttributeName)) {
+                EventHandlerService.createSessionPauseEvent(
+                  tasks[currentTaskIndex].getId());
+              } else {
+                EventHandlerService.createSessionResumeEvent(
+                  tasks[currentTaskIndex].getId());
+              }
             }
           }
         };
