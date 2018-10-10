@@ -109,6 +109,7 @@ var setSmallScreen = async function() {
 
 module.exports = {
   expectNoConsoleLogs: expectNoConsoleLogs,
+  getConsoleLogs: getConsoleLogs,
   checkForConsoleErrors: checkForConsoleErrors,
   expectAndAcceptAlert: expectAndAcceptAlert,
   getWindowSize: getWindowSize,
