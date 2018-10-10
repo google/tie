@@ -39,16 +39,14 @@ tie.factory('CurrentQuestionService', [
             cachedQuestion = question;
             serviceIsInitialized = true;
             successCallback();
+          } else if (questionId === DEFAULT_QUESTION_ID) {
+            successCallback();
           } else {
-            if (questionId !== DEFAULT_QUESTION_ID){
-              // If the question ID in the URL is invalid, revert to using the
-              // default question ID.
-              questionId = DEFAULT_QUESTION_ID;
-              serviceIsInitialized = true;
-              that.init(successCallback);
-            } else {
-              successCallback();
-            }
+            // If the question ID in the URL is invalid, revert to using the
+            // default question ID.
+            questionId = DEFAULT_QUESTION_ID;
+            serviceIsInitialized = true;
+            that.init(successCallback);
           }
         });
       },

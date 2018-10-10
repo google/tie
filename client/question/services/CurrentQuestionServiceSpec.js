@@ -118,6 +118,9 @@ describe('CurrentQuestionService - Server', function() {
       setServerUrl('http://katamari-dam.acy');
       setDefaultQuestionId(null);
 
+      var PAGE_NOT_FOUND_ERROR = 404;
+      var BAD_REQUEST_ERROR = 404;
+
       inject(function($injector) {
         // Set up a non-existent question ID. This must be done before
         // CurrentQuestionService is initialized.
@@ -129,10 +132,10 @@ describe('CurrentQuestionService - Server', function() {
         CurrentQuestionService = $injector.get('CurrentQuestionService');
       });
       $httpBackend.expectPOST(
-        '/ajax/event/get_question_data').respond(404, {});
+        '/ajax/event/get_question_data').respond(PAGE_NOT_FOUND_ERROR, {});
 
       $httpBackend.expectPOST(
-        '/ajax/event/get_question_data').respond(400, {});
+        '/ajax/event/get_question_data').respond(BAD_REQUEST_ERROR, {});
       CurrentQuestionService.init(function() {
         expect(CurrentQuestionService.getCurrentQuestionId()).toEqual(null);
         done();

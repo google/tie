@@ -113,7 +113,7 @@ describe('QuestionDataServiceServerVersion', function() {
         function(result) {
           expect(result).toBe(null);
           expect($log.error.logs[0][0]).toEqual(
-            'There was an error in retrieving the question.')
+            'There was an error in retrieving the question.');
           done();
         });
       $httpBackend.flush(1);
