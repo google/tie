@@ -119,7 +119,7 @@ describe('CurrentQuestionService - Server', function() {
       setDefaultQuestionId(null);
 
       var PAGE_NOT_FOUND_ERROR = 404;
-      var BAD_REQUEST_ERROR = 404;
+      var BAD_REQUEST_ERROR = 400;
 
       inject(function($injector) {
         // Set up a non-existent question ID. This must be done before
@@ -131,16 +131,22 @@ describe('CurrentQuestionService - Server', function() {
 
         CurrentQuestionService = $injector.get('CurrentQuestionService');
       });
+      // This post is for the initial question ID; it doesn't exist.
       $httpBackend.expectPOST(
-        '/ajax/event/get_question_data').respond(PAGE_NOT_FOUND_ERROR, {});
+        '/ajax/get_question_data').respond(PAGE_NOT_FOUND_ERROR, {});
 
+      // The next post attempts again with the "default" question ID.
+      // In our case, it's null, so it gets a BAD_REQUEST_ERROR.
       $httpBackend.expectPOST(
-        '/ajax/event/get_question_data').respond(BAD_REQUEST_ERROR, {});
+        '/ajax/get_question_data').respond(BAD_REQUEST_ERROR, {});
       CurrentQuestionService.init(function() {
         expect(CurrentQuestionService.getCurrentQuestionId()).toEqual(null);
         done();
       });
       $rootScope.$digest();
+      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
     });
   });
 });
