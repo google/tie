@@ -29,7 +29,7 @@ tie.factory('CurrentQuestionService', [
     var serviceIsInitialized = false;
 
     return {
-      init: function(callback) {
+      init: function(callbackFunction) {
         var that = this;
 
         var questionPromise = QuestionDataService.fetchQuestionAsync(
@@ -38,18 +38,18 @@ tie.factory('CurrentQuestionService', [
           if (question) {
             cachedQuestion = question;
             serviceIsInitialized = true;
-            callback();
+            callbackFunction();
           } else if (questionId === DEFAULT_QUESTION_ID) {
             // This is considered to be the failure case, but it should
             // call through; for instance, if extra setup / redirecting
             // is done after this method.
-            callback();
+            callbackFunction();
           } else {
             // If the question ID in the URL is invalid, revert to using the
             // default question ID.
             questionId = DEFAULT_QUESTION_ID;
             serviceIsInitialized = true;
-            that.init(callback);
+            that.init(callbackFunction);
           }
         });
       },
