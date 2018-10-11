@@ -795,20 +795,26 @@ tie.directive('learnerView', [function() {
 
         $scope.onVisibilityChange = function() {
           var question = CurrentQuestionService.getCurrentQuestion();
-          var tasks = question.getTasks();
+          // If the question is null (such as if there's an error getting it)
+          // then we 404 on a server version. If that happens, this throws a
+          // mysterious console error since we call null.getTasks(), which is
+          // bad. This prevents that error.
+          if (question) {
+            var tasks = question.getTasks();
 
-          // When a user changes tabs (or comes back), add a SessionPause
-          // or SessionResumeEvent, respectively.
-          var hiddenAttributeName = (
-            $scope.determineHiddenAttributeNameForBrowser());
-          if (hiddenAttributeName !== null && tasks !== null &&
-              tasks.length > currentTaskIndex) {
-            if ($scope.isDocumentHidden(hiddenAttributeName)) {
-              EventHandlerService.createSessionPauseEvent(
-                tasks[currentTaskIndex].getId());
-            } else {
-              EventHandlerService.createSessionResumeEvent(
-                tasks[currentTaskIndex].getId());
+            // When a user changes tabs (or comes back), add a SessionPause
+            // or SessionResumeEvent, respectively.
+            var hiddenAttributeName = (
+              $scope.determineHiddenAttributeNameForBrowser());
+            if (hiddenAttributeName !== null && tasks !== null &&
+                tasks.length > currentTaskIndex) {
+              if ($scope.isDocumentHidden(hiddenAttributeName)) {
+                EventHandlerService.createSessionPauseEvent(
+                  tasks[currentTaskIndex].getId());
+              } else {
+                EventHandlerService.createSessionResumeEvent(
+                  tasks[currentTaskIndex].getId());
+              }
             }
           }
         };
@@ -920,6 +926,10 @@ tie.directive('learnerView', [function() {
           // Load the feedback, tasks, and stored code and initialize the
           // event services.
           var questionId = CurrentQuestionService.getCurrentQuestionId();
+          if (questionId === null) {
+            $window.location.href = '/client/404.html';
+            return;
+          }
           var question = CurrentQuestionService.getCurrentQuestion();
           var tasks = question.getTasks();
           currentTaskIndex = 0;
