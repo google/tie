@@ -987,12 +987,20 @@ tie.directive('learnerView', [function() {
          */
         $scope.completeQuestion = function() {
           congratulatoryFeedback.clear();
-          congratulatoryFeedback.appendTextParagraph(
-              "Good work! You've completed this question.");
-          congratulatoryFeedback.appendImageParagraph('congrats_cake.gif');
-          congratulatoryFeedback.appendTextParagraph(
-              "(You can continue to submit additional answers, if you wish.)");
-
+          if ($scope.pageIsIframed) {
+            congratulatoryFeedback.appendTextParagraph(
+                "Good work! Your code solves this question.");
+            congratulatoryFeedback.appendTextParagraph(
+                "Click the \"Submit for Grading\" button to get credit!");
+            congratulatoryFeedback.appendImageParagraph('congrats_cake.gif');
+          } else {
+            congratulatoryFeedback.appendTextParagraph(
+                "Good work! You've completed this question.");
+            congratulatoryFeedback.appendImageParagraph('congrats_cake.gif');
+            congratulatoryFeedback.appendTextParagraph(
+                "(You can continue to submit additional answers, " +
+                "if you wish.)");
+          }
           SessionHistoryService.addFeedbackBalloon(
             congratulatoryFeedback.getParagraphs());
           EventHandlerService.createQuestionCompleteEvent();
