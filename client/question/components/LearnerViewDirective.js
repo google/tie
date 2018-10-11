@@ -795,6 +795,10 @@ tie.directive('learnerView', [function() {
 
         $scope.onVisibilityChange = function() {
           var question = CurrentQuestionService.getCurrentQuestion();
+          // If the question is null (such as if there's an error getting it)
+          // then we 404 on a server version. If that happens, this throws a
+          // mysterious console error since we call null.getTasks(), which is
+          // bad. This prevents that error.
           if (question) {
             var tasks = question.getTasks();
 
