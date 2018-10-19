@@ -52,7 +52,7 @@ var expectNoConsoleLogs = async function() {
 };
 
 /**
- * Convenience function used in tests to expect no console output.
+ * Convenience function used to check the number / content of console errors.
  *
  * @param {number} num The number of errors to expect.
  * @param {Array} stringsToMatch A list of strings to check logs for.
