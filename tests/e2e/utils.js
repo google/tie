@@ -56,6 +56,7 @@ var expectNoConsoleLogs = async function() {
  *
  * @param {number} num The number of errors to expect.
  * @param {Array} stringsToMatch A list of strings to check logs for.
+ *    Should be passed in the order you'd like them checked.
  */
 var expectConsoleErrors = async function(num, stringsToMatch) {
   let consoleLogs = await getConsoleLogs();
