@@ -52,6 +52,29 @@ var expectNoConsoleLogs = async function() {
 };
 
 /**
+ * Convenience function used to check the number / content of console errors.
+ *
+ * @param {number} num The number of errors to expect.
+ * @param {Array} stringsToMatch A list of strings to check logs for.
+ *    Should be passed in the order you'd like them checked.
+ */
+var expectConsoleErrors = async function(num, stringsToMatch) {
+  let consoleLogs = await getConsoleLogs();
+  for (var i = 0; i < consoleLogs.length; i++) {
+    if (consoleLogs[i].level.name == 'SEVERE') {
+      // Subtract one from the number of errors we're expecting,
+      // as we've seen one.
+      num--;
+    }
+    expect(consoleLogs[i].message.includes(stringsToMatch[i])).toBe(true);
+  }
+  // If we subtract one from num every time we see an error, this number should
+  // be 0. If it's < 0, we saw more errors than expected. If it's > 0, we didn't
+  // see enough errors.
+  expect(num).toBe(0);
+};
+
+/**
  * Legacy function.
  * TODO(davyrisso): Remove when references are removed from the server version.
  *
@@ -109,7 +132,7 @@ var setSmallScreen = async function() {
 
 module.exports = {
   expectNoConsoleLogs: expectNoConsoleLogs,
-  getConsoleLogs: getConsoleLogs,
+  expectConsoleErrors: expectConsoleErrors,
   checkForConsoleErrors: checkForConsoleErrors,
   expectAndAcceptAlert: expectAndAcceptAlert,
   getWindowSize: getWindowSize,
