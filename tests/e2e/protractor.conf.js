@@ -42,7 +42,6 @@ exports.config = {
   SELENIUM_PROMISE_MANAGER: false,
   params: {
     defaultQuestionId: 'reverseWords',
-    questionTestConfig: require('./question.testConfig.js'),
     questionPage: require('./question.pageObject.js'),
     utils: require('./utils.js')
   }
