@@ -753,13 +753,6 @@ tie.constant('MAX_NUM_CODE_SUBMIT_EVENTS_PER_BATCH', 4);
  */
 
 tie.constant('DISPLAY_AUTOSAVE_TEXT_SECONDS', 1);
-/**
- * Default question ID to use if no qid parameter is specified in the URL.
- *
- * @type {string}
- * @constant
- */
-tie.constant('DEFAULT_QUESTION_ID', 'reverseWords');
 
 /**
  * Default cookie lifetime for the privacy policy in days.
