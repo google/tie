@@ -211,6 +211,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var tasks = [
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -236,6 +237,7 @@ describe('CodeEvalResultObjectFactory', function() {
         }),
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -303,6 +305,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var tasks = [
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -328,6 +331,7 @@ describe('CodeEvalResultObjectFactory', function() {
         }),
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -440,6 +444,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var tasks = [
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -465,6 +470,7 @@ describe('CodeEvalResultObjectFactory', function() {
         }),
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -606,6 +612,7 @@ describe('CodeEvalResultObjectFactory', function() {
       var tasks = [
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
@@ -642,6 +649,7 @@ describe('CodeEvalResultObjectFactory', function() {
         }),
         TaskObjectFactory.create({
           instructions: [''],
+          hints: [],
           prerequisiteSkills: [''],
           acquiredSkills: [''],
           inputFunctionName: null,
