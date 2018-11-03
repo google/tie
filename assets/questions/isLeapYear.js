@@ -78,6 +78,7 @@ globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
       content: 'Input: 2018\nOutput: False',
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: [],
     acquiredSkills: ['Conditionals'],
     inputFunctionName: null,

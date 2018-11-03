@@ -72,6 +72,7 @@ def are_all_unique(words):
       content: 'Input: "internationalization"\nOutput: "i18n"',
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -174,6 +175,7 @@ def are_all_unique(words):
       ].join(''),
       type: 'text'
     }],
+    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunctionName: null,

@@ -114,6 +114,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
       ].join('\n'),
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',
@@ -175,6 +176,7 @@ globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-nota
       ].join(''),
       type: 'text'
     }],
+    hints: [],
     prerequisiteSkills: ['Binary Search Tree'],
     acquiredSkills: ['Binary Search Tree', 'Recursion', 'Iteration'],
     inputFunctionName: 'AuxiliaryCode.deserialize',

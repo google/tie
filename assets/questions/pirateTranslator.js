@@ -194,6 +194,39 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
       ].join(''),
       type: 'code'
     }],
+    hints: [
+      [{
+        content: [
+          'You could start by breaking the string into individual "words". ',
+          'Since the input strings only contain lowercase letters, spaces and ',
+          'apostrophes, you could use a string method like split() to do this.'
+        ].join(''),
+        type: 'text'
+      }],
+      [{
+        content: [
+          'Once you have the list of individual words, figure out which ones ',
+          'need to be converted to Pirate, and update those.'
+        ].join(''),
+        type: 'text'
+      }],
+      [{
+        content: [
+          'You can do the update step by creating a new list, and then using ',
+          'a for loop over the old list to generate the correct word for the ',
+          'new list. Although it uses more memory, it is probably easier to ',
+          'code than updating the original list directly.'
+        ].join(''),
+        type: 'text'
+      }],
+      [{
+        content: [
+          'Once you have the new list of words, find a way to convert them ',
+          'back to a string so that you can return it.'
+        ].join(''),
+        type: 'text'
+      }]
+    ],
     prerequisiteSkills: ['String Manipulation', 'Arrays', 'Dicts'],
     acquiredSkills: ['String Manipulation', 'Dicts'],
     inputFunctionName: null,

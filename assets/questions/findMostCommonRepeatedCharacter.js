@@ -116,6 +116,7 @@ class AuxiliaryCode(object):
       content: 'Input: "Aardvarks always use cookbooks"\nOutput: "o"',
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: ['String Manipulation', 'Arrays', 'Dicts'],
     acquiredSkills: ['String Manipulation', 'Dicts'],
     inputFunctionName: null,

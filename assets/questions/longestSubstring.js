@@ -62,6 +62,7 @@ globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notatio
       ].join('\n'),
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
