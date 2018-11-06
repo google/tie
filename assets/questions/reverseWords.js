@@ -138,6 +138,7 @@ globalData.questions['reverseWords'] = {  // eslint-disable-line dot-notation
       content: 'Input: "Hello, John"\nOutput: "olleH, nhoJ"',
       type: 'code'
     }],
+    hints: [],
     prerequisiteSkills: ['Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,

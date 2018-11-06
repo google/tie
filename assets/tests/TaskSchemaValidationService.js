@@ -125,6 +125,26 @@ tie.factory('TaskSchemaValidationService', [
       },
 
       /**
+       * Checks that the hints property of the given Task is a list of dicts,
+       * and that each dict has type 'text' or 'code'.
+       *
+       * @param {Task} task
+       * @returns {boolean}
+       */
+      verifyHintsAreCorrectlyFormatted: function(task) {
+        var hints = task.getHints();
+        return hints.every(function(hint) {
+          return hint.every(function(hintParagraph) {
+            return (
+              angular.isObject(hintParagraph) &&
+              angular.isString(hintParagraph.content) &&
+              angular.isString(hintParagraph.type) &&
+              (hintParagraph.type === 'text' || hintParagraph.type === 'code'));
+          });
+        });
+      },
+
+      /**
        * Checks that the main function name property of the given Task is a
        * string.
        *

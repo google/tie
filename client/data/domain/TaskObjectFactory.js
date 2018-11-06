@@ -47,13 +47,23 @@ tieData.factory('TaskObjectFactory', [
       this._id = taskDict.id;
 
       /**
-       * A list of strings (where each string corresponds to a paragraph in the
+       * A list of dicts (where each dict corresponds to a paragraph in the
        * UI).
        *
        * @type {Array}
        * @private
        */
       this._instructions = taskDict.instructions;
+
+      /**
+       * A list of hints for this task. Each hint is represented as an array
+       * containing a list of dicts (where each dict represents a paragraph in
+       * the hint).
+       *
+       * @type {Array}
+       * @private
+       */
+      this._hints = taskDict.hints;
 
       /**
        * A list of strings where each represents a skill that the user should
@@ -187,6 +197,15 @@ tieData.factory('TaskObjectFactory', [
      */
     Task.prototype.getInstructions = function() {
       return this._instructions;
+    };
+
+    /**
+     * A getter for the _hints property.
+     *
+     * @returns {Array}
+     */
+    Task.prototype.getHints = function() {
+      return this._hints;
     };
 
     /**
