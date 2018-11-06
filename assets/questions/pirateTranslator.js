@@ -225,6 +225,13 @@ globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notatio
           'back to a string so that you can return it.'
         ].join(''),
         type: 'text'
+      }],
+      [{
+        content: [
+          'You can convert the list of words back to a string using the ',
+          'join() method in Python.'
+        ].join(''),
+        type: 'text'
       }]
     ],
     prerequisiteSkills: ['String Manipulation', 'Arrays', 'Dicts'],
