@@ -32,12 +32,9 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
       '$scope', 'ThemeNameService',
       function($scope, ThemeNameService) {
         $scope.$watch($scope.getContent, function(newValue) {
-          // First, strip out all tags in the content.
-          var strippedValue = newValue.replace(/<[^>]+>/g, '');
-
           // The ng-bind-html attribute sanitizes HTML by default. See
           // https://docs.angularjs.org/api/ng/service/$sce
-          $scope.unsafeHtmlWithLinks = strippedValue.replace(
+          $scope.unsafeHtmlWithLinks = newValue.replace(
             /\[([^[\]]+)\]\(([^)]+)\)/g,
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
