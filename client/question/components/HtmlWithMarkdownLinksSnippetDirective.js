@@ -13,15 +13,15 @@
 // limitations under the License.
 
 /**
- * @fileoverview Directive for showing text with Markdown links. Only links to
- *   HTTPS resources or the Python primer are permitted.
+ * @fileoverview Directive for showing HTML with Markdown links. For Markdown
+ *   links, only links to HTTPS resources or the Python primer are permitted.
  */
 
-tie.directive('textWithMarkdownLinksSnippet', [function() {
+tie.directive('htmlWithMarkdownLinksSnippet', [function() {
   return {
     restrict: 'E',
     scope: {
-      // This contains raw text, in addition to Markdown links in the format
+      // This contains HTML, in addition to Markdown links in the format
       // [link-text](link-destination).
       getContent: '&content'
     },
@@ -32,12 +32,9 @@ tie.directive('textWithMarkdownLinksSnippet', [function() {
       '$scope', 'ThemeNameService',
       function($scope, ThemeNameService) {
         $scope.$watch($scope.getContent, function(newValue) {
-          // First, strip out all tags in the content.
-          var strippedValue = newValue.replace(/<[^>]+>/g, '');
-
           // The ng-bind-html attribute sanitizes HTML by default. See
           // https://docs.angularjs.org/api/ng/service/$sce
-          $scope.unsafeHtmlWithLinks = strippedValue.replace(
+          $scope.unsafeHtmlWithLinks = newValue.replace(
             /\[([^[\]]+)\]\(([^)]+)\)/g,
             function(match, p1, p2) {
               var startsWithHttps = (p2.indexOf('https://') === 0);
