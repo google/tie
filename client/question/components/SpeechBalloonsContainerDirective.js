@@ -33,8 +33,8 @@ tie.directive('speechBalloonsContainer', [function() {
               <tie-speech-balloon-left>
                 <p ng-repeat="paragraph in balloon.getFeedbackParagraphs() track by $index" class="tie-feedback-paragraph protractor-test-feedback-paragraph" ng-class="{'tie-feedback-paragraph-code': paragraph.isCodeParagraph()}">
                   <span ng-if="paragraph.isTextParagraph()">
-                    <text-with-markdown-links-snippet content="paragraph.getContent()">
-                    </text-with-markdown-links-snippet>
+                    <html-with-markdown-links-snippet content="paragraph.getContent()">
+                    </html-with-markdown-links-snippet>
                   </span>
                   <span ng-if="paragraph.isCodeParagraph()">
                     <code-snippet content="paragraph.getContent()">

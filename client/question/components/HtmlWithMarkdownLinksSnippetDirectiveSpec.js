@@ -17,7 +17,7 @@
  *
  */
 
-describe('TextWithMarkdownLinksSnippetDirective', function() {
+describe('HtmlWithMarkdownLinksSnippetDirective', function() {
   var parentScope;
   var scope;
   var template;
@@ -34,8 +34,8 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
     parentScope = $rootScope.$new();
     parentScope.parentContent = '';
     template = $compile(
-      '<text-with-markdown-links-snippet content="parentContent">' +
-      '</text-with-markdown-links-snippet>')(parentScope);
+      '<html-with-markdown-links-snippet content="parentContent">' +
+      '</html-with-markdown-links-snippet>')(parentScope);
     scope = template.isolateScope();
     scope.$digest();
   }));
@@ -56,15 +56,15 @@ describe('TextWithMarkdownLinksSnippetDirective', function() {
       expect(template.html()).toContain('3 &lt; 4');
       expect(template.html()).not.toContain('3 < 4');
 
-      parentScope.parentContent = '<script>gotcha!</script>';
+      parentScope.parentContent = '<script>gotcha!</script>Other text';
       scope.$digest();
-      expect(template.html()).toContain('gotcha!');
+      expect(template.html()).toContain('Other text');
+      expect(template.html()).not.toContain('gotcha!');
       expect(template.html()).not.toContain('script');
 
       parentScope.parentContent = 'abc<a href="link">def</a>ghi';
       scope.$digest();
-      expect(template.html()).toContain('abcdefghi');
-      expect(template.html()).not.toContain('<a');
+      expect(template.html()).toContain('abc<a href="link">def</a>ghi');
     });
 
     it('should correctly interpolate links', function() {
