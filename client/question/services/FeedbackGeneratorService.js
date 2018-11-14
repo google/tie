@@ -13,9 +13,9 @@
 // limitations under the License.
 
 /**
- * @fileoverview Service for generating feedback based on the evaluation result
- * of the code submitted by the user, preprocessed and augmented with unit
- * tests. This assumes that the base code already passes "compile-time" checks.
+ * @fileoverview Service for creating human-readable feedback messages based
+ * on the evaluation result (typically in the form of a FeedbackDetails object)
+ * of the code submitted by the user.
  */
 
 tie.factory('FeedbackGeneratorService', [
