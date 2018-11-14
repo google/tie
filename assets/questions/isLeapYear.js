@@ -18,6 +18,7 @@
 
 globalData.questions['isLeapYear'] = {  // eslint-disable-line dot-notation
   title: 'Identifying Leap Years',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def isLeapYear(year):

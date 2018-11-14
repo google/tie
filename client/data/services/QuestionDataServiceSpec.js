@@ -75,9 +75,10 @@ describe('QuestionDataServiceServerVersion', function() {
     QuestionDataService = $injector.get('QuestionDataService');
     QuestionObjectFactory = $injector.get('QuestionObjectFactory');
     mockQuestionObject = QuestionObjectFactory.create({
-      title: "title",
-      starterCode: "starterCode",
-      auxiliaryCode: "AUXILIARY_CODE",
+      title: 'title',
+      enableFriendlySyntaxErrors: false,
+      starterCode: 'starterCode',
+      auxiliaryCode: 'AUXILIARY_CODE',
       tasks: []
     });
   }));
@@ -89,9 +90,10 @@ describe('QuestionDataServiceServerVersion', function() {
         {
           // eslint-disable-next-line camelcase
           question_data: {
-            title: "title",
-            starterCode: "starterCode",
-            auxiliaryCode: "AUXILIARY_CODE",
+            title: 'title',
+            enableFriendlySyntaxErrors: false,
+            starterCode: 'starterCode',
+            auxiliaryCode: 'AUXILIARY_CODE',
             tasks: []
           }
         }

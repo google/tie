@@ -18,6 +18,7 @@
 
 globalData.questions['internationalization'] = {  // eslint-disable-line dot-notation
   title: 'Internationalization (i18n)',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def abbreviate(word):

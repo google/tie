@@ -18,6 +18,7 @@
 
 globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
   title: 'Sort Scrambled Itinerary',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def sortItinerary(tickets):

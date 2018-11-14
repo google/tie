@@ -19,6 +19,7 @@
 
 globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-line dot-notation
   title: 'Find the First Non-Repeating Character in a String',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python: `def findFirstNonRepeatingCharacter(str):
     return ""

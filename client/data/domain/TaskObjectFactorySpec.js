@@ -27,6 +27,7 @@ describe('TaskObjectFactory', function() {
 
     question = QuestionObjectFactory.create({
       title: 'title',
+      enableFriendlySyntaxErrors: false,
       starterCode: 'starterCode',
       tasks: [{
         instructions: [{

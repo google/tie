@@ -18,6 +18,7 @@
 
 globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot-notation
   title: 'Balanced Parentheses',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def isBalanced(s):

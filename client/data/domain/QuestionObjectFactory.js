@@ -42,6 +42,15 @@ tieData.factory('QuestionObjectFactory', [
       this._title = questionDict.title;
 
       /**
+       * Whether friendly syntax errors are enabled for this question.
+       *
+       * @type {boolean}
+       * @private
+       */
+      this._friendlySyntaxErrorsAreEnabled = (
+        questionDict.enableFriendlySyntaxErrors);
+
+      /**
        * The code the user is given when they start the task before adding
        * their own.
        *
@@ -80,6 +89,15 @@ tieData.factory('QuestionObjectFactory', [
      */
     Question.prototype.getTitle = function() {
       return this._title;
+    };
+
+    /**
+     * Whether friendly syntax errors are enabled.
+     *
+     * @returns {boolean}
+     */
+    Question.prototype.areFriendlySyntaxErrorsEnabled = function() {
+      return this._friendlySyntaxErrorsAreEnabled;
     };
 
     /**

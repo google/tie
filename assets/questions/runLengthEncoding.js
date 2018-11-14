@@ -18,6 +18,7 @@
 
 globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notation
   title: 'Run-Length Encoding',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def encode(word):

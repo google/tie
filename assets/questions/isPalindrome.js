@@ -18,6 +18,7 @@
 
 globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
   title: 'Is Palindrome',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def isPalindrome(s):

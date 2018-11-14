@@ -18,6 +18,7 @@
 
 globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
   title: 'Unknown Alphabet',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def findAlphabet(words):

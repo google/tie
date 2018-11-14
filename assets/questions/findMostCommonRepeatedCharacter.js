@@ -18,6 +18,7 @@
 
 globalData.questions['findMostCommonRepeatedCharacter'] = {  // eslint-disable-line dot-notation
   title: 'Most Common Repeated Character',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def findMostCommonRepeatedCharacter(s):

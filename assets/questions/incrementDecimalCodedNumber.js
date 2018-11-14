@@ -22,6 +22,7 @@
 
 globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line dot-notation
   title: 'Increment a Decimal-Coded Number',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def increment(digits):

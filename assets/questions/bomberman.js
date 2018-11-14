@@ -18,6 +18,7 @@
 
 globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
   title: 'Bomberman',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def bomb(board):

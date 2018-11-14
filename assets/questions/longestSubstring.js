@@ -19,6 +19,7 @@
 
 globalData.questions['longestSubstring'] = {  // eslint-disable-line dot-notation
   title: 'Longest Substring With At Most Two Distinct Characters',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def longestSubstring(str):

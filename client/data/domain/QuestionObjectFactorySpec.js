@@ -32,6 +32,7 @@ describe('QuestionObjectFactory', function() {
       'QuestionObjectFactory');
     question = QuestionObjectFactory.create({
       title: TITLE,
+      enableFriendlySyntaxErrors: true,
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
       tasks: [{
@@ -48,11 +49,18 @@ describe('QuestionObjectFactory', function() {
     });
     questionWithNoTasks = QuestionObjectFactory.create({
       title: TITLE,
+      enableFriendlySyntaxErrors: true,
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
       tasks: []
     });
   }));
+
+  describe('areFriendlySyntaxErrorsEnabled', function() {
+    it('should show whether friendly syntax errors are enabled', function() {
+      expect(question.areFriendlySyntaxErrorsEnabled()).toBe(true);
+    });
+  });
 
   describe('getStarterCodeError', function() {
     it([

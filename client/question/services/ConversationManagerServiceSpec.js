@@ -243,6 +243,7 @@ describe('ConversationManagerService', function() {
 
     question = QuestionObjectFactory.create({
       title: 'Question 1',
+      enableFriendlySyntaxErrors: false,
       starterCode: starterCode,
       auxiliaryCode: auxiliaryCode,
       tasks: taskDict

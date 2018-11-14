@@ -129,6 +129,7 @@ describe('PythonCodeRunnerService', function() {
     CurrentQuestionService = $injector.get('CurrentQuestionService');
     question = QuestionObjectFactory.create({
       title: TITLE,
+      enableFriendlySyntaxErrors: false,
       starterCode: STARTER_CODE,
       auxiliaryCode: AUXILIARY_CODE,
       tasks: taskDict

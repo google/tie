@@ -18,6 +18,7 @@
 
 globalData.questions['pirateTranslator'] = {  // eslint-disable-line dot-notation
   title: 'Translate English to Pirate',
+  enableFriendlySyntaxErrors: true,
   starterCode: {
     python:
 `def translateToPirate(s):

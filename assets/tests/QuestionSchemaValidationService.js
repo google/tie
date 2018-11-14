@@ -47,6 +47,16 @@ tie.factory('QuestionSchemaValidationService', [
       },
 
       /**
+       * Checks that a given question's title is not empty.
+       *
+       * @param {Question} question
+       * @returns {boolean}
+       */
+      verifyEnableFriendlySyntaxErrorsIsBoolean: function(question) {
+        return (typeof question.areFriendlySyntaxErrorsEnabled()) === 'boolean';
+      },
+
+      /**
        * Checks that the given starter code for a question is a string.
        *
        * @param {Question} question

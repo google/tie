@@ -18,6 +18,7 @@
 
 globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line dot-notation
   title: 'Get N-Digit Strobogrammatic Numbers',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def getStrobogrammaticNumbers(num_digits):

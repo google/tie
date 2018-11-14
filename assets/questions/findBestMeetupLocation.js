@@ -19,6 +19,7 @@
 
 globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-notation
   title: 'Best Meeting Location for N People in a Manhattan-like City',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def findBestMeetupLocation(people):

@@ -18,6 +18,7 @@
 /* eslint no-magic-numbers: ["error", {ignore: [1,4,14.7,2.5,24]}]*/
 globalData.questions['findClosestValueBst'] = {  // eslint-disable-line dot-notation
   title: 'Find Closest Value in Binary Search Tree',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def findClosestValue(input):

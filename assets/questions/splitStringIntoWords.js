@@ -18,6 +18,7 @@
 
 globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-notation
   title: 'Split String into Words',
+  enableFriendlySyntaxErrors: false,
   starterCode: {
     python:
 `def splitStringIntoWords(string_and_set_list):
