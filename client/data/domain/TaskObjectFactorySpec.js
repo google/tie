@@ -36,7 +36,6 @@ describe('TaskObjectFactory', function() {
           content: 'Input: "(())"\nOutput: True',
           type: 'code'
         }],
-        hints: [],
         outputFunctionName: 'AuxiliaryCode.lettersOnly',
         testSuites: [],
         buggyOutputTests: [],
@@ -53,7 +52,6 @@ describe('TaskObjectFactory', function() {
           content: 'def',
           type: 'text'
         }],
-        hints: [],
         outputFunctionName: 'System.extendString',
         testSuites: [],
         buggyOutputTests: [],

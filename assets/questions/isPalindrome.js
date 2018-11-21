@@ -101,7 +101,6 @@ globalData.questions['isPalindrome'] = {  // eslint-disable-line dot-notation
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,

@@ -117,7 +117,6 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       content: 'Input: ["art", "rat", "cat", "car"]\nOutput: "atrc"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -187,7 +186,6 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       content: 'Input: [a, b, a]\nOutput: ""\nInput: [cba]\nOutput: "abc"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -245,7 +243,6 @@ globalData.questions['findAlphabet'] = {  // eslint-disable-line dot-notation
       content: 'Input: ["b", "Ba"]\nOutput: "ab"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Topological Sorting', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,

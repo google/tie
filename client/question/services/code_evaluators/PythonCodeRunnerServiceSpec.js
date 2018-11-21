@@ -35,7 +35,6 @@ describe('PythonCodeRunnerService', function() {
   var AUXILIARY_CODE = "auxiliaryCode";
   var taskDict = [{
     instructions: [''],
-    hints: [],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,
@@ -68,7 +67,6 @@ describe('PythonCodeRunnerService', function() {
     performanceTests: []
   }, {
     instructions: [''],
-    hints: [],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,

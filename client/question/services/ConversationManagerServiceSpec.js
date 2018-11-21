@@ -30,7 +30,6 @@ describe('ConversationManagerService', function() {
 
   var taskDict = [{
     instructions: ['Return the input string.'],
-    hints: [],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,
@@ -95,7 +94,6 @@ describe('ConversationManagerService', function() {
     performanceTests: []
   }, {
     instructions: ['But, if there is an "!", return "!" instead.'],
-    hints: [],
     prerequisiteSkills: [''],
     acquiredSkills: [''],
     inputFunctionName: null,

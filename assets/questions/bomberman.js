@@ -88,7 +88,6 @@ globalData.questions['bomberman'] = {  // eslint-disable-line dot-notation
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings'],
     acquiredSkills: ['Dynamic Programming'],
     inputFunctionName: null,

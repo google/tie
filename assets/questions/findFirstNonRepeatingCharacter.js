@@ -54,7 +54,6 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       content: 'If there is no appropriate character, return None.',
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Strings'],
     acquiredSkills: ['String Manipulation', 'Hash Maps'],
     inputFunctionName: null,
@@ -113,7 +112,6 @@ globalData.questions['findFirstNonRepeatingCharacter'] = { // eslint-disable-lin
       content: 'Next, update your code to handle more than just letters.',
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunctionName: null,
