@@ -86,7 +86,6 @@ class AuxiliaryCode(object):
       content: 'Input: "doggo pupper"\nOutput: "p"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['String Manipulation', 'Arrays'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,

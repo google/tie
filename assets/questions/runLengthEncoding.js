@@ -146,7 +146,6 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
       content: 'Input: "abcccccd"\nOutput: "ab5xcd"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -196,7 +195,6 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -271,7 +269,6 @@ globalData.questions['runLengthEncoding'] = {  // eslint-disable-line dot-notati
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation', 'Sets', 'Arrays', 'Maps'],
     inputFunctionName: null,

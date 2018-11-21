@@ -78,7 +78,6 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Graph', 'String Manipulation'],
     acquiredSkills: ['Graph Traversal', 'Topological Sorting'],
     inputFunctionName: null,
@@ -158,7 +157,6 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       ].join('\n'),
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Graph', 'String Manupulation'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,
@@ -207,7 +205,6 @@ globalData.questions['sortItinerary'] = {  // eslint-disable-line dot-notation
       ].join('\n'),
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Graph', 'String Manipulation', 'Topological Sorting'],
     acquiredSkills: ['Dynamic Programming', 'Backtracking'],
     inputFunctionName: null,

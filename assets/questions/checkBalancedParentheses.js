@@ -57,7 +57,6 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       content: 'Input: "(())"\nOutput: True',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -117,7 +116,6 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,
@@ -149,7 +147,6 @@ globalData.questions['checkBalancedParentheses'] = {  // eslint-disable-line dot
       content: '[(){}] is balanced, but ([)] is not.',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'String Manipulation'],
     acquiredSkills: ['String Manipulation'],
     inputFunctionName: null,

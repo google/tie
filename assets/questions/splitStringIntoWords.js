@@ -61,7 +61,6 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
       ].join('\n'),
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets', 'Lists'],
     acquiredSkills: ['String Parsing'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',
@@ -110,7 +109,6 @@ globalData.questions['splitStringIntoWords'] = {  // eslint-disable-line dot-not
       content: 'Input: "freshfruitsalad"\nOutput: "fresh fruit salad"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays', 'Strings', 'Sets'],
     acquiredSkills: ['String Manipulation', 'Shortest Path Search'],
     inputFunctionName: 'AuxiliaryCode.processLongStringToStringAndSet',

@@ -36,7 +36,6 @@ describe('UnpromptedFeedbackManagerService', function() {
     tasks = [TaskObjectFactory.create({
       id: taskId,
       instructions: [''],
-      hints: [],
       prerequisiteSkills: [''],
       acquiredSkills: [''],
       inputFunctionName: null,

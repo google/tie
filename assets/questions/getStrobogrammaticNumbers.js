@@ -55,7 +55,6 @@ globalData.questions['getStrobogrammaticNumbers'] = {  // eslint-disable-line do
       content: 'Input: 2\nOutput: ["11", "69", "88", "96"]',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Arrays'],
     inputFunctionName: null,

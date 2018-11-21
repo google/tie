@@ -66,7 +66,6 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
       content: 'Input: ["0, 0", "4, 2", "2, 4"]\nOutput: "2, 2"',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,
@@ -124,7 +123,6 @@ globalData.questions['findBestMeetupLocation'] = {  // eslint-disable-line dot-n
       ].join(''),
       type: 'text'
     }],
-    hints: [],
     prerequisiteSkills: ['Math', 'Sorting'],
     acquiredSkills: ['Math', 'Sorting'],
     inputFunctionName: null,

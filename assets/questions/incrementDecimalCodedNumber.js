@@ -76,7 +76,6 @@ globalData.questions['incrementDecimalCodedNumber'] = {  // eslint-disable-line 
       content: 'Input: [2, 0, 9]\nOutput: [2, 1, 0]',
       type: 'code'
     }],
-    hints: [],
     prerequisiteSkills: ['Arrays'],
     acquiredSkills: ['Array Manipulation'],
     inputFunctionName: null,
