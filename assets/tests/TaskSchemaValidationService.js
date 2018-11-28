@@ -15,6 +15,10 @@
 /**
  * @fileoverview Service for validating data put into a task schema
  * within a question.
+ *
+ * IMPORTANT NOTE TO DEVELOPERS: If you're updating this file due to changes in
+ * the question/task schema, the CURRENT_QUESTION_SCHEMA_VERSION_IN_CLIENT
+ * constant in client/data.js MUST be updated as well.
  */
 
 tie.factory('TaskSchemaValidationService', [

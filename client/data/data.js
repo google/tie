@@ -30,6 +30,16 @@ window.globalData = {
 window.tieData = angular.module('tieData', []);
 
 /**
+ * The current schema version for questions in the client. All questions in
+ * assets/questions and the checks in assets/tests should always be consistent
+ * with this schema version.
+ *
+ * @type {number}
+ * @constant
+ */
+tieData.constant('CURRENT_QUESTION_SCHEMA_VERSION_IN_CLIENT', 1);
+
+/**
  * Class name for wrapping auxiliary code, primarily used for test evaluation.
  *
  * @type {string}
