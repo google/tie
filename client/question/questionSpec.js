@@ -20,7 +20,8 @@ describe('question.js', function() {
   var PARAGRAPH_TYPE_TEXT;
   var PARAGRAPH_TYPE_CODE;
   var PARAGRAPH_TYPE_ERROR;
-  var RUNTIME_ERROR_FEEDBACK_MESSAGES;
+  var FRIENDLY_SYNTAX_ERROR_TRANSLATIONS;
+  var FRIENDLY_RUNTIME_ERROR_TRANSLATIONS;
   var FEEDBACK_CATEGORIES;
   var SYSTEM_GENERATED_TIPS;
   var ALLOWED_PARAGRAPH_TYPES;
@@ -38,8 +39,10 @@ describe('question.js', function() {
     PARAGRAPH_TYPE_TEXT = $injector.get('PARAGRAPH_TYPE_TEXT');
     PARAGRAPH_TYPE_CODE = $injector.get('PARAGRAPH_TYPE_CODE');
     PARAGRAPH_TYPE_ERROR = $injector.get('PARAGRAPH_TYPE_ERROR');
-    RUNTIME_ERROR_FEEDBACK_MESSAGES = $injector.get(
-      'RUNTIME_ERROR_FEEDBACK_MESSAGES');
+    FRIENDLY_SYNTAX_ERROR_TRANSLATIONS = $injector.get(
+      'FRIENDLY_SYNTAX_ERROR_TRANSLATIONS');
+    FRIENDLY_RUNTIME_ERROR_TRANSLATIONS = $injector.get(
+      'FRIENDLY_RUNTIME_ERROR_TRANSLATIONS');
     FEEDBACK_CATEGORIES = $injector.get('FEEDBACK_CATEGORIES');
     SYSTEM_GENERATED_TIPS = $injector.get('SYSTEM_GENERATED_TIPS');
     ALLOWED_PARAGRAPH_TYPES = [
@@ -90,28 +93,68 @@ describe('question.js', function() {
     });
   });
 
-  describe('RUNTIME_ERROR_FEEDBACK_MESSAGES', function() {
+  describe('FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', function() {
     it('should have the correct keys and valid values', function() {
-      RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
-        expect(error.checker('test')).toBe(false);
-        expect(typeof error.generateMessage(['NameError: name \'key\' is not ',
-          'defined KeyError: blah on line 47 AttributeError: \'key\' ',
-          'object has no attribute \'length\''].join(''))).toEqual('string');
+      FRIENDLY_SYNTAX_ERROR_TRANSLATIONS.python.forEach(function(error) {
+        expect(error.friendlyErrorCheck('test')).toBe(false);
+        // If any getFriendlyErrorText method that takes in an error string
+        // as input, add a matching string below.
+        expect(typeof error.getFriendlyErrorText([
+          'NameError: global name test is not defined'
+        ].join(''))).toEqual('string');
+      });
+    });
+
+    it('should handle an EOL error', function() {
+      var errorString = 'SyntaxError: EOL while scanning string literal';
+      var friendlyErrorFound = false;
+      FRIENDLY_SYNTAX_ERROR_TRANSLATIONS.python.forEach(function(error) {
+        if (error.friendlyErrorCheck(errorString)) {
+          expect(error.getFriendlyErrorText(
+            errorString)).toEqual([
+              'An "End of Line" error on a string usually means you are ',
+              'missing a quotation mark somewhere.'].join(''));
+          friendlyErrorFound = true;
+        }
+      });
+      if (friendlyErrorFound === false) {
+        throw Error('Nothing in FRIENDLY_SYNTAX_ERROR_TRANSLATIONS ' +
+            'matched: ' + errorString);
+      }
+    });
+  });
+
+  describe('FRIENDLY_RUNTIME_ERROR_TRANSLATIONS', function() {
+    it('should have the correct keys and valid values', function() {
+      FRIENDLY_RUNTIME_ERROR_TRANSLATIONS.python.forEach(function(error) {
+        expect(error.friendlyErrorCheck('test')).toBe(false);
+        // If any getFriendlyErrorText method that takes in an error string
+        // as input, add a matching string below.
+        expect(typeof error.getFriendlyErrorText([
+          'NameError: name \'key\' is not defined KeyError: blah',
+          'AttributeError: \'key\' object has no attribute \'length\''
+        ].join(''))).toEqual('string');
       });
     });
 
     it('should handle an empty key', function() {
-      var errorString = 'KeyError: "" on line 47';
-      RUNTIME_ERROR_FEEDBACK_MESSAGES.python.forEach(function(error) {
-        if (error.checker(errorString)) {
-          expect(error.generateMessage(
+      var errorString = 'KeyError: ""';
+      var friendlyErrorFound = false;
+      FRIENDLY_RUNTIME_ERROR_TRANSLATIONS.python.forEach(function(error) {
+        if (error.friendlyErrorCheck(errorString)) {
+          expect(error.getFriendlyErrorText(
             errorString)).toEqual([
               "The key \"\" is not in the dictionary you're ",
               "trying to retrieve from. Double-check to make sure everything ",
               "is spelled correctly and that you have included all ",
               "necessary key-value pairs."].join(''));
+          friendlyErrorFound = true;
         }
       });
+      if (friendlyErrorFound === false) {
+        throw Error('Nothing in FRIENDLY_RUNTIME_ERROR_TRANSLATIONS matched: ' +
+            errorString);
+      }
     });
   });
 

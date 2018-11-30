@@ -270,6 +270,10 @@ tie.directive('learnerView', [function() {
           background-color: #333a42;
           color: white;
         }
+        .tie-code-text {
+          font-family: monospace;
+          font-size: 12px;
+        }
         .tie-coding-terminal .CodeMirror {
           /* Overwriting codemirror defaults */
           height: 100%;

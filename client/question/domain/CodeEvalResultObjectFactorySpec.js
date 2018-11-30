@@ -607,6 +607,22 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
+  describe('getErrorLineNumber5', function() {
+    it('should return error line number 5', function() {
+      var someErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error on line 5', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      expect(someErrorTraceback.getErrorLineNumber()).toBe(5);
+    });
+  });
+
+  describe('getErrorLineNumber0', function() {
+    it('should return error line number 0', function() {
+      var someErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error on line 0', [TracebackCoordinatesObjectFactory.create(0, 0)]);
+      expect(someErrorTraceback.getErrorLineNumber()).toBe(0);
+    });
+  });
+
   describe('getPassingSuiteIds', function() {
     it('should return the correct list of passing suite IDs', function() {
       var tasks = [

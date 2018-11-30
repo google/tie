@@ -550,101 +550,194 @@ tie.constant(
   'PREREQ_CHECK_TYPE_INVALID_STUDENTCODE_CALL', 'invalidStudentCode');
 
 /**
-  Dictionary of the customized runtime error feedback messages
-  - `checker` function checks to see if the error matches with the type of
-    feedback message
-  - `generateMessage` function returns the appropriate feedback message for the
-    given error
+ * Dictionary of the novice-friendly syntax error feedback messages
+ *
+ * `friendlyErrorCheck` function checks to see if the error matches with the
+ * type of feedback message
+ *
+ * `getFriendlyErrorText` function returns the appropriate feedback message for
+ * the given error
+ *
+ * @type {Object}
+ */
+tie.constant('FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', {
+  python: [
+    {
+      friendlyErrorCheck: function(errorString) {
+        var re = new RegExp('^NameError: global name .* is not defined$');
+        return re.test(errorString);
+      },
+      getFriendlyErrorText: function(errorString) {
+        var re = new RegExp('NameError: global name (.*) is not defined');
+        var varName = errorString.match(re)[1];
+        return [
+          '<code>', varName, '</code> appears to be a name that was not ',
+          'previously declared or defined. E.g., if <code>', varName,
+          '</code> is a variable to hold a string, <code>', varName,
+          ' = \'\'</code> would declare <code>', varName, '</code> as a ',
+          'string variable. Similarly, <code>', varName, ' = []</code> ',
+          'declares <code>', varName, '</code> as an array variable. Another ',
+          'possibility is that <code>', varName, '</code> was misspelled or ',
+          'uses incorrect capitalization.'].join('');
+      }
+    }, {
+      friendlyErrorCheck: function(errorString) {
+        var re = new RegExp('^SyntaxError: invalid syntax');
+        return re.test(errorString);
+      },
+      getFriendlyErrorText: function() {
+        return [
+          'This is the default, generic syntax error message in Python. Here ',
+          'are some common mistakes that can result in this error:',
+          '<ul>',
+          '<li>Mis-matching (missing or too many) braces, brackets, ',
+          'parentheses, or quotation marks',
+          '<li>Missing colons when defining a function (e.g., def my_function ',
+          'should be def my_function:)',
+          '<li>Misspelled Python keywords (e.g., misspelling ',
+          '<code>for</code> in a for loop)',
+          '</ul>',
+          'Note that since this is the default, generic error, it could also ',
+          'be caused by something else.'].join('');
+      }
+    }, {
+      friendlyErrorCheck: function(errorString) {
+        var re = new RegExp('^SyntaxError: EOL while scanning string literal');
+        return re.test(errorString);
+      },
+      getFriendlyErrorText: function() {
+        return [
+          'An "End of Line" error on a string usually means you are ',
+          'missing a quotation mark somewhere.'].join('');
+      }
+    }, {
+      friendlyErrorCheck: function(errorString) {
+        var re = new RegExp('^IndentationError: ');
+        return re.test(errorString);
+      },
+      getFriendlyErrorText: function() {
+        return [
+          'A line of code might not be indented properly. Python is ',
+          'particular about indentation, since that\'s how it identifies ',
+          'code blocks.'].join('');
+      }
+    }, {
+      friendlyErrorCheck: function(errorString) {
+        var re = new RegExp('^TypeError: can only concatenate');
+        return re.test(errorString);
+      },
+      getFriendlyErrorText: function() {
+        return [
+          'You may have tried to combine two incompatible types (e.g., you ',
+          'might have tried to combine a string with an array).'].join('');
+      }
+    }
+  ]
+});
+
+/**
+ * Dictionary of the novice-friendly runtime error feedback messages
+ *
+ * `friendlyErrorCheck` function checks to see if the error matches with the
+ * type of feedback message
+ *
+ * `getFriendlyErrorText` function returns the appropriate feedback message for
+ * the given error
+ *
+ * @type {Object}
  **/
-tie.constant('RUNTIME_ERROR_FEEDBACK_MESSAGES', {
+tie.constant('FRIENDLY_RUNTIME_ERROR_TRANSLATIONS', {
   python: [{
     // Error when user indents lines incorrectly
-    checker: function(errorString) {
+    friendlyErrorCheck: function(errorString) {
       return errorString.startsWith("IndentationError: ");
     },
-    generateMessage: function() {
-      return ['It looks like your code has some inconsistencies with ',
-        'indentation. Double-check that you indent after every statement ',
-        'that ends with a ":" and un-indent when necessary.'].join('');
+    getFriendlyErrorText: function() {
+      return [
+        'It looks like your code has some inconsistencies with indentation. ',
+        'Double-check that you indent after every statement that ends with a ',
+        '":" and un-indent when necessary.'].join('');
     }
   }, {
     // Type Error where user tries to assign an item directly in a string
-    checker: function(errorString) {
-      return errorString.startsWith("TypeError: 'str' does not support" +
-          " item assignment");
+    friendlyErrorCheck: function(errorString) {
+      return errorString.startsWith(
+        "TypeError: 'str' does not support item assignment");
     },
-    generateMessage: function() {
+    getFriendlyErrorText: function() {
       return [
-        "Unfortunately, Python doesn't support directly assigning ",
-        "characters in a string. If you need to do so, try slicing the ",
-        "string and adding new characters instead of assigning them. ",
-        "If you need a refresher on slicing, check out the ",
-        "[primer](primer-url#strings)."
-      ].join('');
+        'Unfortunately, Python doesn\'t support directly assigning characters ',
+        'in a string. If you need to do so, try slicing the string and adding ',
+        'new characters instead of assigning them. If you need a refresher on ',
+        'slicing, check out the [primer](primer-url#strings).'].join('');
     }
   }, {
     // Error where user tries to concatenate a string with a non-string
-    checker: function(errorString) {
+    friendlyErrorCheck: function(errorString) {
       return (errorString.startsWith('TypeError: ') &&
-      errorString.includes("cannot concatenate 'str' and") &&
-      errorString.includes("objects"));
+          errorString.includes("cannot concatenate 'str' and") &&
+          errorString.includes("objects"));
     },
-    generateMessage: function() {
-      return ["Did you remember to convert all objects to strings when ",
-        "necessary (such as when you're concatenating a string)? Make ",
-        "sure everything that isn't a string gets converted using the str() ",
-        "method or by using a formatted string."].join("");
+    getFriendlyErrorText: function() {
+      return [
+        'Did you remember to convert all objects to strings when necessary ',
+        '(such as when you\'re concatenating a string)? Make sure everything ',
+        'that isn\'t a string gets converted using the str() method or by ',
+        'using a formatted string.'].join('');
     }
   }, {
     // Error when user tries to use a variable name that is not defined
-    checker: function(errorString) {
+    friendlyErrorCheck: function(errorString) {
       return errorString.startsWith('NameError:');
     },
-    generateMessage: function(errorString) {
+    getFriendlyErrorText: function(errorString) {
       var nameErrorRegEx = (
-        /NameError:\s(?:global\s)?name\s'(\w+)'\sis\snot\sdefined/);
+          /NameError:\s(?:global\s)?name\s'(\w+)'\sis\snot\sdefined/);
       var found = errorString.match(nameErrorRegEx);
-      return ["It looks like " + found[1] + " isn't a declared variable. ",
-        "Did you make sure to spell it correctly? Is it correctly ",
-        "initialized?"].join('');
+      return [
+        'It looks like <span class="tie-code-text">', found[1], '</span> ',
+        'isn\'t a declared variable. Did you make sure to spell it correctly? ',
+        'Is it correctly initialized?'].join('');
     }
   }, {
     // Error when user tries to use a property/method that isn't defined
-    checker: function(errorString) {
+    friendlyErrorCheck: function(errorString) {
       return errorString.startsWith('AttributeError: ');
     },
-    generateMessage: function(errorString) {
+    getFriendlyErrorText: function(errorString) {
       var attributeErrorRegEx =
           /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'((\w|\W)+)'/;
       var found = errorString.match(attributeErrorRegEx);
-      return [found[1] + " doesn't have a property or method named ",
-        found[2] + ". Double-check to make sure everything is spelled ",
-        "correctly."].join("");
+      return [
+        found[1], ' doesn\'t have a property or method named ', found[2],
+        '. Double-check to make sure everything is spelled ',
+        'correctly.'].join('');
     }
   }, {
     // Error when user tries to access an index that is out of range
-    checker: function(errorString) {
-      return errorString.startsWith(
-          "IndexError: list index out of range");
+    friendlyErrorCheck: function(errorString) {
+      return errorString.startsWith("IndexError: list index out of range");
     },
-    generateMessage: function() {
-      return ["It looks like you're trying to access an index that is ",
-        "outside the boundaries of the list. Double-check that your loops ",
-        "and assignments don't try to retrieve from indexes below 0 or above ",
-        "the length of the string."].join('');
+    getFriendlyErrorText: function() {
+      return [
+        'It looks like you\'re trying to access an index that is outside the ',
+        'boundaries of the list. Double-check that your loops and assignments ',
+        'don\'t try to retrieve from indexes below 0 or above the length of ',
+        'the string.'].join('');
     }
   }, {
     // Error when user tries to access a key that isn't defined in a dict
-    checker: function(errorString) {
+    friendlyErrorCheck: function(errorString) {
       return errorString.startsWith('KeyError: ');
     },
-    generateMessage: function(errorString) {
-      var keyErrorRegEx = /KeyError:\s(.*)\son\sline\s/;
+    getFriendlyErrorText: function(errorString) {
+      var keyErrorRegEx = /KeyError:\s(.*)/;
       var found = errorString.match(keyErrorRegEx);
-      return ["The key " + found[1] + " is not in the dictionary you're ",
-        "trying to retrieve from. Double-check to make sure everything is ",
-        "spelled correctly and that you have included all necessary ",
-        "key-value pairs."].join('');
+      return [
+        'The key ' + found[1] + ' is not in the dictionary you\'re trying to ',
+        'retrieve from. Double-check to make sure everything is spelled ',
+        'correctly and that you have included all necessary key-value ',
+        'pairs.'].join('');
     }
   }]
 });

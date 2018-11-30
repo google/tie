@@ -264,7 +264,6 @@ describe('ConversationManagerService', function() {
     ).then(function(submissionResult) {
       var newErrorMessages = errorMessages.concat(
         submissionSpecs[0].expectedFeedback.verifyFeedback(submissionResult));
-
       if (submissionSpecs.length === 1) {
         expect(newErrorMessages).toEqual([]);
         done();
@@ -282,23 +281,24 @@ describe('ConversationManagerService', function() {
           '    return input',
           'mockMainFunction("input")'
         ].join('\n'),
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          'Please keep your code within the existing predefined ',
-          'functions or define your own helper functions if you need ',
-          'to -- we cannot process code in the global scope.'
-        ].join(''), null, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [['Please keep your code within the existing predefined ',
+            'functions or define your own helper functions if you need ',
+            'to -- we cannot process code in the global scope.'].join('')],
+          null)
       }]);
     });
 
     it('detects missing starter code', function(done) {
       verifySubmissions([], done, [{
         code: '',
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          'It looks like you deleted or modified the starter code!  Our ',
-          'evaluation program requires the function names given in the ',
-          'starter code.  You can press the \'Reset Code\' button to ',
-          'start over.  Or, you can copy the starter code below:'
-        ].join(''), starterCode, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [['It looks like you deleted or modified the starter code!  Our ',
+            'evaluation program requires the function names given in the ',
+            'starter code.  You can press the \'Reset Code\' button to ',
+            'start over.  Or, you can copy the starter code below:'].join(''),
+            starterCode],
+          null)
       }]);
     });
 
@@ -309,24 +309,24 @@ describe('ConversationManagerService', function() {
           'def mockMainFunction(input):',
           '    return True'
         ].join('\n'),
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          "It looks like you're importing an external library. However, ",
-          'the following libraries are not supported:\n'
-        ].join(''), 'pandas', null, false, function(submissionResult) {
-          var errorMessages = [];
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [["It looks like you're importing an external library. However, ",
+            'the following libraries are not supported:\n'].join(''),
+            'pandas'],
+          null, false, function(submissionResult) {
+            var errorMessages = [];
+            var feedback = submissionResult.getFeedback();
+            if (feedback.getParagraphs()[2].getContent() !==
+                'Here is a list of libraries we currently support:\n') {
+              errorMessages.append('Bad content in 3rd paragraph');
+            }
+            if (feedback.getParagraphs()[3].getContent() !==
+                SUPPORTED_PYTHON_LIBS.join(', ')) {
+              errorMessages.append('Bad content in 4th paragraph');
+            }
 
-          var feedback = submissionResult.getFeedback();
-          if (feedback.getParagraphs()[2].getContent() !==
-              'Here is a list of libraries we currently support:\n') {
-            errorMessages.append('Bad content in 3rd paragraph');
-          }
-          if (feedback.getParagraphs()[3].getContent() !==
-              SUPPORTED_PYTHON_LIBS.join(', ')) {
-            errorMessages.append('Bad content in 4th paragraph');
-          }
-
-          return errorMessages;
-        })
+            return errorMessages;
+          })
       }]);
     });
 
@@ -360,7 +360,7 @@ describe('ConversationManagerService', function() {
     });
   });
 
-  describe('syntax errors', function() {
+  describe('general syntax errors', function() {
     it('should correctly handle a syntax error', function(done) {
       verifySubmissions([], done, [{
         code: [
@@ -368,7 +368,30 @@ describe('ConversationManagerService', function() {
           '    return True -'
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'SyntaxError: bad input on line 2', null)
+          ['Error detected on or near line 2:',
+            '<span class="tie-code-text">SyntaxError: bad input</span>'],
+            null)
+      }]);
+    });
+  });
+
+  describe('friendly syntax errors', function() {
+    it('should correctly handle a friendly syntax error', function(done) {
+      verifySubmissions([], done, [{
+        code: [
+          'def mockMainFunction(input):',
+          '        a = 1',
+          '    b = 2',
+          '    return ""'
+        ].join('\n'),
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['Error detected on or near line 3:',
+            '<span class="tie-code-text">IndentationError: unindent does ' +
+            'not match any outer indentation level</span>',
+            'A line of code might not be indented properly. Python is ' +
+            'particular about indentation, since that\'s how it identifies ' +
+            'code blocks.'],
+            null)
       }]);
     });
   });
@@ -381,10 +404,11 @@ describe('ConversationManagerService', function() {
           '    return mockMainFunction(input)',
           ''
         ].join('\n'),
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          "Your code appears to be hitting an infinite recursive loop. ",
-          "Check to make sure that your recursive calls terminate."
-        ].join(''), null, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [["Your code appears to be hitting an infinite recursive loop. ",
+            "Check to make sure that your recursive calls terminate."
+          ].join('')],
+          null, null)
       }]);
     });
   });
@@ -397,11 +421,11 @@ describe('ConversationManagerService', function() {
           '    return greeting',
           ''
         ].join('\n'),
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          'It looks like greeting isn\'t a declared variable. ',
-          'Did you make sure to spell it correctly? Is it ',
-          'correctly initialized?'
-        ].join(''), null, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [['It looks like <span class="tie-code-text">greeting</span> isn\'t ',
+            'a declared variable. Did you make sure to spell it correctly? Is ',
+            'it correctly initialized?'].join('')],
+          null, null)
       }]);
     });
   });
@@ -411,7 +435,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }]);
     });
 
@@ -419,7 +443,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputForTaskTwo,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, "Input: \"task1suite1test1\"")
+          [null, "Input: \"task1suite1test1\""])
       }]);
     });
 
@@ -427,17 +451,17 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }, {
         // The code has not changed, so the message stays the same.
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }, {
         // The code has changed, so the message changes.
         code: anotherCodeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message Two for task1')
+          ['Mock BuggyOutputTest Message Two for task1'])
       }]);
     });
 
@@ -445,20 +469,20 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }, {
         code: anotherCodeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message Two for task1')
+          ['Mock BuggyOutputTest Message Two for task1'])
       }, {
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message Three for task1')
+          ['Mock BuggyOutputTest Message Three for task1'])
       }, {
         // At this point, we have run out of buggy-output test feedback.
         code: anotherCodeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, '', false, function(submissionResult) {
+          null, '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -485,19 +509,19 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }, {
         code: runtimeErrorStudentCode,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          'Looks like your code had a runtime error when evaluating the ',
-          'input "task1suite1test1".'
-        ].join(''), null, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [['Looks like your code had a runtime error when evaluating the ',
+            'input "task1suite1test1".'].join('')],
+          null, null)
       }, {
         // The cycle is broken, so we start from the top of the
         // buggy-message list.
         code: codeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'Mock BuggyOutputTest Message One for task1')
+          ['Mock BuggyOutputTest Message One for task1'])
       }]);
     });
   });
@@ -507,7 +531,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBuggyOutputWithIgnoredSuiteForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'This buggy message should trigger if code just returns Yes')
+          ['This buggy message should trigger if code just returns Yes'])
       }]);
     });
   });
@@ -517,7 +541,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsSuiteLevelForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          'suite_message1')
+          ['suite_message1'])
       }]);
     });
 
@@ -531,7 +555,7 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, '', false, function(submissionResult) {
+          null, '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -552,35 +576,41 @@ describe('ConversationManagerService', function() {
     it('considers a suite failed if at least one test fails', function(done) {
       verifySubmissions([], done, [{
         code: codeThatFailsOnlyOneTestInTask1Suite2,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }]);
     });
 
     it('shows next suite-level f/b only if code was changed', function(done) {
       verifySubmissions([], done, [{
         code: codeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }, {
         code: codeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }, {
         code: anotherCodeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message2')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message2'])
       }]);
     });
 
     it('returns correctness feedback after all suite-hints', function(done) {
       verifySubmissions([], done, [{
         code: codeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }, {
         code: anotherCodeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message2')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message2'])
       }, {
         // We've reached the end of the hints.
         code: codeThatFailsSuiteLevelForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, '', false, function(submissionResult) {
+          null, '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -608,17 +638,19 @@ describe('ConversationManagerService', function() {
 
       verifySubmissions([], done, [{
         code: codeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }, {
         code: runtimeErrorStudentCode,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create([
-          'Looks like your code had a runtime error when evaluating the ',
-          'input "task1suite1test1".'
-        ].join(''), null, null)
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          [['Looks like your code had a runtime error when evaluating the ',
+            'input "task1suite1test1".'].join('')],
+          null, null)
       }, {
         // We start again at the beginning of the suite-level hints.
         code: codeThatFailsSuiteLevelForTaskOne,
-        expectedFeedback: ExpectedFeedbackObjectFactory.create('suite_message1')
+        expectedFeedback: ExpectedFeedbackObjectFactory.create(
+          ['suite_message1'])
       }]);
     });
   });
@@ -628,7 +660,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPassesBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, '', true)
+          null, '', true)
       }]);
     });
 
@@ -636,7 +668,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsFirstTaskOnly,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "task1suite1test1"')
+          [null, 'Input: "task1suite1test1"'])
       }]);
     });
 
@@ -644,7 +676,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsSecondTaskOnly,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "first test in task2!!!"')
+          [null, 'Input: "first test in task2!!!"'])
       }]);
     });
 
@@ -652,7 +684,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatFailsBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "task1suite1test1"')
+          [null, 'Input: "task1suite1test1"'])
       }]);
     });
   });
@@ -662,7 +694,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPrintsAndPassesBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, 'absolutely final test!\n', true)
+          null, 'absolutely final test!\n', true)
       }]);
     });
 
@@ -670,7 +702,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPrintsAndFailsFinalTest,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "absolutely final test!"', 'absolutely final test!\n')
+          [null, 'Input: "absolutely final test!"'], 'absolutely final test!\n')
       }]);
     });
 
@@ -678,7 +710,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPrintsAndFailsSecondTaskOnly,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "first test in task2!!!"', 'first test in task2!!!\n')
+          [null, 'Input: "first test in task2!!!"'], 'first test in task2!!!\n')
       }]);
     });
 
@@ -686,7 +718,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPrintsAndFailsBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'Input: "task1suite1test1"', 'task1suite1test1\n')
+          [null, 'Input: "task1suite1test1"'], 'task1suite1test1\n')
       }]);
     });
   });

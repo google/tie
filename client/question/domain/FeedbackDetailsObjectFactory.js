@@ -30,6 +30,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
      *
      * @param {string} feedbackCategory The category of the feedback. Must be
      *    a valid entry in FEEDBACK_CATEGORIES.
+     * @param {number|null} errorLineNumber The error line number.
      * @param {string|null} errorString The error message.
      * @param {language|null} language The language that the student's code is
      *    written in, if applicable.
@@ -65,7 +66,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
      * @constructor
      */
     var FeedbackDetails = function(
-        feedbackCategory, errorString, language, errorInput,
+        feedbackCategory, errorLineNumber, errorString, language, errorInput,
         languageUnfamiliarityFeedbackIsNeeded,
         taskIndex, testSuiteId, testCaseIndex,
         testCase, observedOutput, correctnessState,
@@ -83,6 +84,19 @@ tie.factory('FeedbackDetailsObjectFactory', [
        * @private
        */
       this._feedbackCategory = feedbackCategory;
+
+      /**
+       * A number representing where an error in the student code was detected.
+       *
+       * Should be null if feedback category is not SYNTAX_ERROR or
+       * RUNTIME_ERROR.
+       *
+       * @type {number|null}
+       * @private
+       */
+
+      this._errorLineNumber = (
+          angular.isNumber(errorLineNumber) ? errorLineNumber : null);
 
       /**
        * A string with the error message for this feedback.
@@ -273,6 +287,22 @@ tie.factory('FeedbackDetailsObjectFactory', [
      */
     FeedbackDetails.prototype.getFeedbackCategory = function() {
       return this._feedbackCategory;
+    };
+
+    /**
+     * A getter for the _errorLineNumber property.
+     * This function should return a number representing the line number
+     * where an error in the student code was detected.
+     *
+     * @returns {string}
+     */
+    FeedbackDetails.prototype.getErrorLineNumber = function() {
+      if (
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.SYNTAX_ERROR &&
+          this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
+        throw Error('Non-syntax or runtime errors have no error string.');
+      }
+      return this._errorLineNumber;
     };
 
     /**
@@ -536,10 +566,11 @@ tie.factory('FeedbackDetailsObjectFactory', [
     };
 
     FeedbackDetails.createRuntimeErrorFeedbackDetails = function(
-        errorString, language, errorInput,
+        errorLineNumber, errorString, language, errorInput,
         languageUnfamiliarityFeedbackIsNeeded) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.RUNTIME_ERROR,
+        errorLineNumber,
         errorString,
         language,
         errorInput,
@@ -547,9 +578,11 @@ tie.factory('FeedbackDetailsObjectFactory', [
     };
 
     FeedbackDetails.createSyntaxErrorFeedbackDetails = function(
-        errorString, language, languageUnfamiliarityFeedbackIsNeeded) {
+        errorLineNumber, errorString, language,
+        languageUnfamiliarityFeedbackIsNeeded) {
       return new FeedbackDetails(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR,
+        errorLineNumber,
         errorString,
         language,
         null,
@@ -564,7 +597,8 @@ tie.factory('FeedbackDetailsObjectFactory', [
       }
 
       return new FeedbackDetails(
-        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE, null, null, null, null,
+        FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE,
+        null, null, null, null, null,
         taskIndex, testSuiteId, testCaseIndex,
         testCase, observedOutput, correctnessState,
         specificCategory, specificTestIndex);
@@ -574,7 +608,8 @@ tie.factory('FeedbackDetailsObjectFactory', [
         taskIndex, testSuiteId, testCaseIndex, specificTestIndex,
         specificTestMessages, specificTestMessageIndex) {
       return new FeedbackDetails(
-        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, null, null, null, null,
+        FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE,
+        null, null, null, null, null,
         taskIndex, testSuiteId, testCaseIndex,
         null, null, null,
         FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE, specificTestIndex,
@@ -586,7 +621,8 @@ tie.factory('FeedbackDetailsObjectFactory', [
         taskIndex, testSuiteId, testCaseIndex, specificTestIndex,
         specificTestMessages, specificTestMessageIndex) {
       return new FeedbackDetails(
-        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, null, null, null, null,
+        FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE,
+        null, null, null, null, null,
         taskIndex, testSuiteId, testCaseIndex,
         null, null, null,
         FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE, specificTestIndex,
@@ -597,7 +633,8 @@ tie.factory('FeedbackDetailsObjectFactory', [
     FeedbackDetails.createPerformanceFeedbackDetails = function(
         expectedPerformance) {
       return new FeedbackDetails(
-        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE, null, null, null, null,
+        FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE,
+        null, null, null, null, null,
         null, null, null,
         null, null, null,
         null, null, null, null,

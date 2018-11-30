@@ -34,7 +34,7 @@ describe('ErrorTracebackObjectFactory', function() {
       'ZeroDivisionError: integer division or modulo by zero',
       [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var errorString = (
-        'ZeroDivisionError: integer division or modulo by zero on line 5');
+        'ZeroDivisionError: integer division or modulo by zero');
 
       expect(errorTraceback.getErrorString()).toEqual(errorString);
     });

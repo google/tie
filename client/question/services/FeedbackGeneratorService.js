@@ -21,26 +21,24 @@
 tie.factory('FeedbackGeneratorService', [
   'FeedbackObjectFactory',
   'CODE_EXECUTION_TIMEOUT_SECONDS', 'SUPPORTED_PYTHON_LIBS',
-  'RUNTIME_ERROR_FEEDBACK_MESSAGES', 'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON',
-  'CLASS_NAME_AUXILIARY_CODE', 'CLASS_NAME_SYSTEM_CODE',
-  'CLASS_NAME_STUDENT_CODE', 'PARAGRAPH_TYPE_TEXT',
-  'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_ERROR',
-  'PYTHON_PRIMER_BUTTON_NAME', 'CORRECTNESS_FEEDBACK_TEXT',
-  'FEEDBACK_CATEGORIES', 'TEST_SUITE_ID_SAMPLE_INPUT',
-  'CORRECTNESS_STATE_INPUT_DISPLAYED',
+  'FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', 'FRIENDLY_RUNTIME_ERROR_TRANSLATIONS',
+  'WRONG_LANGUAGE_ERRORS', 'LANGUAGE_PYTHON', 'CLASS_NAME_AUXILIARY_CODE',
+  'CLASS_NAME_SYSTEM_CODE', 'CLASS_NAME_STUDENT_CODE', 'PARAGRAPH_TYPE_TEXT',
+  'PARAGRAPH_TYPE_CODE', 'PARAGRAPH_TYPE_ERROR', 'PYTHON_PRIMER_BUTTON_NAME',
+  'CORRECTNESS_FEEDBACK_TEXT', 'FEEDBACK_CATEGORIES',
+  'TEST_SUITE_ID_SAMPLE_INPUT', 'CORRECTNESS_STATE_INPUT_DISPLAYED',
   'CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED',
   'CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED',
   'CORRECTNESS_STATE_NO_MORE_FEEDBACK',
   function(
     FeedbackObjectFactory,
     CODE_EXECUTION_TIMEOUT_SECONDS, SUPPORTED_PYTHON_LIBS,
-    RUNTIME_ERROR_FEEDBACK_MESSAGES, WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON,
-    CLASS_NAME_AUXILIARY_CODE, CLASS_NAME_SYSTEM_CODE,
-    CLASS_NAME_STUDENT_CODE, PARAGRAPH_TYPE_TEXT,
-    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_ERROR,
-    PYTHON_PRIMER_BUTTON_NAME, CORRECTNESS_FEEDBACK_TEXT,
-    FEEDBACK_CATEGORIES, TEST_SUITE_ID_SAMPLE_INPUT,
-    CORRECTNESS_STATE_INPUT_DISPLAYED,
+    FRIENDLY_SYNTAX_ERROR_TRANSLATIONS, FRIENDLY_RUNTIME_ERROR_TRANSLATIONS,
+    WRONG_LANGUAGE_ERRORS, LANGUAGE_PYTHON, CLASS_NAME_AUXILIARY_CODE,
+    CLASS_NAME_SYSTEM_CODE, CLASS_NAME_STUDENT_CODE, PARAGRAPH_TYPE_TEXT,
+    PARAGRAPH_TYPE_CODE, PARAGRAPH_TYPE_ERROR, PYTHON_PRIMER_BUTTON_NAME,
+    CORRECTNESS_FEEDBACK_TEXT, FEEDBACK_CATEGORIES,
+    TEST_SUITE_ID_SAMPLE_INPUT, CORRECTNESS_STATE_INPUT_DISPLAYED,
     CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED,
     CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED,
     CORRECTNESS_STATE_NO_MORE_FEEDBACK) {
@@ -150,6 +148,24 @@ tie.factory('FeedbackGeneratorService', [
     };
 
     /**
+     * Based on passed in error string, will generate novice-friendly syntax
+     * error messages.
+     *
+     * @param {string} errorString
+     * @param {string} language
+     * @returns {string | null} Text to be appended to feedback.
+     */
+    var _getFriendlySyntaxFeedback = function(errorString, language) {
+      var result = null;
+      FRIENDLY_SYNTAX_ERROR_TRANSLATIONS[language].forEach(function(check) {
+        if (check.friendlyErrorCheck(errorString)) {
+          result = check.getFriendlyErrorText(errorString);
+        }
+      });
+      return result;
+    };
+
+    /**
      * Based on passed in error string, will generate the appropriate,
      * informative feedback to be appended to the overall submission feedback.
      *
@@ -157,11 +173,11 @@ tie.factory('FeedbackGeneratorService', [
      * @param {string} language
      * @returns {string | null} Text to be appended to feedback.
      */
-    var _getHumanReadableRuntimeFeedback = function(errorString, language) {
+    var _getFriendlyRuntimeFeedback = function(errorString, language) {
       var result = null;
-      RUNTIME_ERROR_FEEDBACK_MESSAGES[language].forEach(function(check) {
-        if (check.checker(errorString)) {
-          result = check.generateMessage(errorString);
+      FRIENDLY_RUNTIME_ERROR_TRANSLATIONS[language].forEach(function(check) {
+        if (check.friendlyErrorCheck(errorString)) {
+          result = check.getFriendlyErrorText(errorString);
         }
       });
       return result;
@@ -197,21 +213,29 @@ tie.factory('FeedbackGeneratorService', [
        */
       getSyntaxErrorFeedback: function(feedbackDetails) {
         var errorString = feedbackDetails.getErrorString();
-        var languageUnfamiliarityFeedbackIsNeeded = (
-          feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
+        var errorLineNumber = feedbackDetails.getErrorLineNumber();
         var language = feedbackDetails.getLanguage();
-
+        var languageUnfamiliarityFeedbackIsNeeded = (
+            feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SYNTAX_ERROR);
-        feedback.appendTextParagraph(
-          'It looks like your code has a syntax error. ' +
-          'Try to figure out what the error is.');
-        feedback.appendErrorParagraph(errorString);
+            FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+        var friendlySyntaxFeedbackString = _getFriendlySyntaxFeedback(
+            errorString, language);
+        if (errorLineNumber) {
+          feedback.appendTextParagraph('Error detected on or near line ' +
+              errorLineNumber + ':');
+        } else {
+          feedback.appendTextParagraph('Error detected:');
+        }
+        feedback.appendTextParagraph('<span class="tie-code-text">' +
+            errorString + '</span>');
+        if (friendlySyntaxFeedbackString) {
+          feedback.appendTextParagraph(friendlySyntaxFeedbackString);
+        }
         if (languageUnfamiliarityFeedbackIsNeeded) {
           feedback.appendTextParagraph(
             _getUnfamiliarLanguageFeedback(language));
         }
-
         return feedback;
       },
       /**
@@ -273,7 +297,6 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendErrorParagraph(paragraph.content);
                 }
               });
-
               var errorLineNumber = prereqCheckFailure.getErrorLineNumber();
               if (errorLineNumber) {
                 feedback.setErrorLineNumber(errorLineNumber);
@@ -323,12 +346,10 @@ tie.factory('FeedbackGeneratorService', [
           throw new Error(['Unrecognized prereq check failure type ',
             'in getPrereqFailureFeedback().'].join());
         }
-
         if (languageUnfamiliarityFeedbackIsNeeded) {
           feedback.appendTextParagraph(
             _getUnfamiliarLanguageFeedback(language));
         }
-
         return feedback;
       },
       /**
@@ -338,7 +359,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getTimeoutErrorFeedback: function() {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
+            FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
         feedback.appendTextParagraph([
           "Your program's exceeded the time limit (",
           CODE_EXECUTION_TIMEOUT_SECONDS,
@@ -354,7 +375,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getMemoryLimitErrorFeedback: function() {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
+            FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
         feedback.appendTextParagraph([
           "Your program used too much memory during execution. Check your ",
           "code and try to be more efficient with your space usage."
@@ -368,7 +389,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getStackExceededFeedback: function() {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
+            FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
         feedback.appendTextParagraph([
           "Your code appears to be hitting an infinite recursive loop. ",
           "Check to make sure that your recursive calls terminate."
@@ -382,7 +403,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getServerErrorFeedback: function() {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SERVER_ERROR);
+            FEEDBACK_CATEGORIES.SERVER_ERROR);
         feedback.appendTextParagraph([
           'A server error has occurred. We are looking into it ',
           'and will fix it as quickly as possible. We apologize ',
@@ -402,50 +423,36 @@ tie.factory('FeedbackGeneratorService', [
        */
       getRuntimeErrorFeedback: function(feedbackDetails, rawCodeLineIndexes) {
         var errorInput = feedbackDetails.getErrorInput();
+        var errorLineNumber = feedbackDetails.getErrorLineNumber();
         var errorString = feedbackDetails.getErrorString();
         var language = feedbackDetails.getLanguage();
         var languageUnfamiliarityFeedbackIsNeeded = (
-          feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
-
+            feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.RUNTIME_ERROR);
-        var fixedErrorString = errorString.replace(
-          new RegExp('line ([0-9]+)$'), function(_, humanReadableLineNumber) {
-            var preprocessedCodeLineIndex = (
-              Number(humanReadableLineNumber) - 1);
-            if (preprocessedCodeLineIndex < 0 ||
-                preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
-              throw Error(
-                'Line number index out of range: ' + preprocessedCodeLineIndex);
-            }
-            if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
-              console.error(
-                'Runtime error on line ' + preprocessedCodeLineIndex +
-                ' in the preprocessed code');
-              return 'a line in the test code';
-            } else {
-              return 'line ' + (
-                rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
-            }
+            FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+        if (errorLineNumber !== null) {
+          var preprocessedCodeLineIndex = (Number(errorLineNumber) - 1);
+          if (preprocessedCodeLineIndex < 0 ||
+              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+            throw Error(
+                'Line number index out of range: ' +
+                preprocessedCodeLineIndex);
           }
-        );
-
-        var humanReadableFeedbackString = _getHumanReadableRuntimeFeedback(
-          fixedErrorString, language);
-        if (humanReadableFeedbackString) {
-          feedback.appendTextParagraph(humanReadableFeedbackString);
+        }
+        var friendlyRuntimeFeedbackString = _getFriendlyRuntimeFeedback(
+            errorString, language);
+        if (friendlyRuntimeFeedbackString) {
+          feedback.appendTextParagraph(friendlyRuntimeFeedbackString);
         } else {
           feedback.appendTextParagraph(
-            'Looks like your code had a runtime error when evaluating the ' +
-            'input ' + _jsToHumanReadable(errorInput) + '.');
-          feedback.appendErrorParagraph(fixedErrorString);
+              'Looks like your code had a runtime error when evaluating the ' +
+              'input ' + _jsToHumanReadable(errorInput) + '.');
+          feedback.appendErrorParagraph(errorString);
         }
-
         if (languageUnfamiliarityFeedbackIsNeeded) {
           feedback.appendTextParagraph(
-            _getUnfamiliarLanguageFeedback(language));
+              _getUnfamiliarLanguageFeedback(language));
         }
-
         return feedback;
       },
       /**
@@ -458,7 +465,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getBuggyOutputFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
+            FEEDBACK_CATEGORIES.KNOWN_BUG_FAILURE);
         feedback.appendTextParagraph(feedbackDetails.getSpecificTestMessage());
         return feedback;
       },
@@ -472,7 +479,7 @@ tie.factory('FeedbackGeneratorService', [
        */
       getSuiteLevelFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
+            FEEDBACK_CATEGORIES.SUITE_LEVEL_FAILURE);
         feedback.appendTextParagraph(feedbackDetails.getSpecificTestMessage());
         return feedback;
       },
@@ -488,48 +495,44 @@ tie.factory('FeedbackGeneratorService', [
         var testCase = feedbackDetails.getTestCase();
         var observedOutput = feedbackDetails.getObservedOutput();
         var correctnessState = feedbackDetails.getCorrectnessState();
-
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
+            FEEDBACK_CATEGORIES.INCORRECT_OUTPUT_FAILURE);
         var allowedOutputExample = testCase.getAnyAllowedOutput();
-
         if (correctnessState === CORRECTNESS_STATE_INPUT_DISPLAYED) {
           // Allow the user to view the input of the failing test.
           feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(correctnessState));
+              _getCorrectnessFeedbackString(correctnessState));
           feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()));
+              'Input: ' + _jsToHumanReadable(testCase.getInput()));
         } else if (
           correctnessState === CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED) {
           // Allow the user to view the expected output of the failing test.
           feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(correctnessState));
+              _getCorrectnessFeedbackString(correctnessState));
           feedback.appendCodeParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
-            'Expected Output: ' +
-            _jsToHumanReadable(allowedOutputExample));
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
+              'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
         } else if (
           correctnessState === CORRECTNESS_STATE_OBSERVED_OUTPUT_DISPLAYED) {
           // Allow the user to view the output produced by their code for the
           // failing test.
           feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(correctnessState));
+              _getCorrectnessFeedbackString(correctnessState));
           feedback.appendOutputParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+              '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+              '\nActual Output: ' + _jsToHumanReadable(observedOutput));
         } else if (
           correctnessState === CORRECTNESS_STATE_NO_MORE_FEEDBACK) {
           feedback.appendTextParagraph(
-            _getCorrectnessFeedbackString(correctnessState));
+              _getCorrectnessFeedbackString(correctnessState));
           feedback.appendOutputParagraph(
-            'Input: ' + _jsToHumanReadable(testCase.getInput()) +
-            '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
-            '\nActual Output: ' + _jsToHumanReadable(observedOutput));
+              'Input: ' + _jsToHumanReadable(testCase.getInput()) +
+              '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
+              '\nActual Output: ' + _jsToHumanReadable(observedOutput));
         } else {
           throw Error('Invalid correctness state: ' + correctnessState);
         }
-
         return feedback;
       },
       /**
@@ -541,28 +544,27 @@ tie.factory('FeedbackGeneratorService', [
        */
       getPerformanceTestFeedback: function(feedbackDetails) {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
+            FEEDBACK_CATEGORIES.PERFORMANCE_TEST_FAILURE);
         feedback.appendTextParagraph([
           'Your code is running more slowly than expected. Can you ',
           'reconfigure it such that it runs in ',
           feedbackDetails.getExpectedPerformance(),
-          ' time?'
-        ].join(''));
+          ' time?'].join(''));
         return feedback;
       },
       getSuccessFeedback: function() {
         var feedback = FeedbackObjectFactory.create(
-          FEEDBACK_CATEGORIES.SUCCESSFUL);
+            FEEDBACK_CATEGORIES.SUCCESSFUL);
         feedback.appendTextParagraph([
           'You\'ve completed all the tasks for this question! Click the ',
-          '"Next" button to move on to the next question.'
-        ].join(''));
+          '"Next" button to move on to the next question.'].join(''));
         return feedback;
       },
       _getCorrectnessFeedbackString: _getCorrectnessFeedbackString,
       _getUnfamiliarLanguageFeedback: _getUnfamiliarLanguageFeedback,
       _getRandomInt: _getRandomInt,
-      _getHumanReadableRuntimeFeedback: _getHumanReadableRuntimeFeedback,
+      _getFriendlySyntaxFeedback: _getFriendlySyntaxFeedback,
+      _getFriendlyRuntimeFeedback: _getFriendlyRuntimeFeedback,
       _jsToHumanReadable: _jsToHumanReadable
     };
   }

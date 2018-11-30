@@ -21,8 +21,7 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * Constructor for ExpectedFeedback, a domain object for representing the
    * expected feedback returned by the ConversationManagerService.
    *
-   * @param {string|null} firstFeedbackParagraphContent
-   * @param {string|null} secondFeedbackParagraphContent
+   * @param {Array<string>|null} expectedFeedbackParagraphs
    * @param {string=} stdout Assumed to be '' if not specified.
    * @param {boolean=} answerIsCorrect Assumed to be false if not specified.
    * @param {function=} validationFunc An optional function containing any
@@ -30,21 +29,13 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * @constructor
    */
   var ExpectedFeedback = function(
-      firstFeedbackParagraphContent, secondFeedbackParagraphContent, stdout,
-      answerIsCorrect, validationFunc) {
-    /**
-     * @type {string|null}
-     * @private
-     */
-    this._firstFeedbackParagraphContent = firstFeedbackParagraphContent;
+      expectedFeedbackParagraphs, stdout, answerIsCorrect, validationFunc) {
 
     /**
-     * @type {string|null}
+     * @type {Array<string>|null}
      * @private
      */
-    this._secondFeedbackParagraphContent = (
-      secondFeedbackParagraphContent === undefined ? null :
-      secondFeedbackParagraphContent);
+    this._expectedFeedbackParagraphs = expectedFeedbackParagraphs;
 
     /**
      * @type {string}
@@ -79,38 +70,30 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    */
   ExpectedFeedback.prototype.verifyFeedback = function(submissionResult) {
     var errorMessages = [];
-
-    var feedback = submissionResult.getFeedback();
-
-    if (this._firstFeedbackParagraphContent !== null) {
-      var observedContent = feedback.getParagraphs()[0].getContent();
-      var expectedContent = this._firstFeedbackParagraphContent;
-      if (observedContent !== expectedContent) {
-        errorMessages.push(
-          'Bad content for first feedback paragraph: expected "' +
-          expectedContent + '" but received "' + observedContent + '"');
-      }
-    }
-
-    if (this._secondFeedbackParagraphContent !== null) {
-      observedContent = feedback.getParagraphs()[1].getContent();
-      expectedContent = this._secondFeedbackParagraphContent;
-      if (observedContent !== expectedContent) {
-        errorMessages.push(
-          'Bad content for second feedback paragraph: expected "' +
-          expectedContent + '" but received "' + observedContent + '"');
-      }
-    }
-
+    var observedFeedback = submissionResult.getFeedback();
+    var observedFeedbackParagraphObject = observedFeedback.getParagraphs();
     var observedStdout = submissionResult.getStdout();
     var expectedStdout = this._stdout;
+
+    for (var i in this._expectedFeedbackParagraphs) {
+      if (this._expectedFeedbackParagraphs[i] !== null) {
+        var expectedContent = this._expectedFeedbackParagraphs[i];
+        var observedContent = observedFeedbackParagraphObject[i].getContent();
+        if (observedContent !== expectedContent) {
+          errorMessages.push(
+              'Bad content for feedback paragraph ' + i + ': expected "' +
+              expectedContent + '" but received "' + observedContent + '"');
+        }
+      }
+    }
+
     if (observedStdout !== expectedStdout) {
       errorMessages.push(
         'Bad stdout: expected "' + expectedStdout + '" but received "' +
         observedStdout + '"');
     }
 
-    if (feedback.isAnswerCorrect() !== this._answerIsCorrect) {
+    if (observedFeedback.isAnswerCorrect() !== this._answerIsCorrect) {
       errorMessages.push(
         'Error: expected answer to be "' + this._answerIsCorrect + '" but ' +
         'observed the opposite');
@@ -129,11 +112,8 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
   /**
    * Creates and returns an ExpectedFeedback object.
    *
-   * @param {string|null} firstFeedbackParagraphContent The expected content of
-   *   the first feedback paragraph, or null if we do not need to check this.
-   * @param {string|null} secondFeedbackParagraphContent The expected content
-   *   of the second feedback paragraph, or null if we do not need to check
-   *   this.
+   * @param {Array<string>|null} expectedFeedbackParagraphs The content of
+   *   expected feedback paragraphs.
    * @param {string=} stdout The expected stdout returned by
    *   ConversationManagerService. Assumed to be '' if not specified
    *   explicitly.
@@ -144,11 +124,9 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * @returns {ExpectedFeedback}
    */
   ExpectedFeedback.create = function(
-      firstFeedbackParagraphContent, secondFeedbackParagraphContent, stdout,
-      answerIsCorrect, validationFunc) {
+      expectedFeedbackParagraphs, stdout, answerIsCorrect, validationFunc) {
     return new ExpectedFeedback(
-      firstFeedbackParagraphContent, secondFeedbackParagraphContent, stdout,
-      answerIsCorrect, validationFunc);
+      expectedFeedbackParagraphs, stdout, answerIsCorrect, validationFunc);
   };
 
   return ExpectedFeedback;

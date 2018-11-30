@@ -204,6 +204,7 @@ tie.factory('ConversationManagerService', [
      */
     var _computeFeedbackDetailsForErrorCases = function(
         codeEvalResult, executionContext, language) {
+      var errorLineNumber = codeEvalResult.getErrorLineNumber();
       var errorString = codeEvalResult.getErrorString();
 
       if (codeEvalResult.hasTimeLimitError()) {
@@ -236,11 +237,13 @@ tie.factory('ConversationManagerService', [
 
         if (executionContext === EXECUTION_CONTEXT_RUN_WITH_TESTS) {
           return FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
-            errorString, language, codeEvalResult.getErrorInput(),
+            errorLineNumber, errorString, language,
+            codeEvalResult.getErrorInput(),
             languageUnfamiliarityFeedbackIsNeeded);
         } else {
           return FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
-            errorString, language, languageUnfamiliarityFeedbackIsNeeded);
+            errorLineNumber, errorString, language,
+            languageUnfamiliarityFeedbackIsNeeded);
         }
       }
 

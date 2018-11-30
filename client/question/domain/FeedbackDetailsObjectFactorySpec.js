@@ -90,9 +90,10 @@ describe('FeedbackDetailsObjectFactory', function() {
     it('should create a runtime error FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
-          'error string', 'python', 'abc', true));
+          5, 'error string', 'python', 'abc', true));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+      expect(feedbackDetails.getErrorLineNumber()).toBe(5);
       expect(feedbackDetails.getErrorString()).toBe('error string');
       expect(feedbackDetails.getLanguage()).toBe('python');
       expect(feedbackDetails.getErrorInput()).toBe('abc');
@@ -105,9 +106,10 @@ describe('FeedbackDetailsObjectFactory', function() {
     it('should create a syntax error FeedbackDetails object', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
-          'error string', 'python', false));
+          5, 'error string', 'python', false));
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
+      expect(feedbackDetails.getErrorLineNumber()).toBe(5);
       expect(feedbackDetails.getErrorString()).toBe('error string');
       expect(feedbackDetails.getLanguage()).toBe('python');
       expect(feedbackDetails.getErrorInput).toThrow();
