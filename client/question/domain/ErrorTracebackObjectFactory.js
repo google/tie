@@ -86,6 +86,11 @@ tie.factory('ErrorTracebackObjectFactory', [
      * @returns {string}
      */
     ErrorTraceback.prototype.getErrorString = function() {
+      if (this._errorMessage.indexOf('TimeLimitError') === 0 ||
+        this._errorMessage === SERVER_ERROR_MESSAGE ||
+        !this._tracebackCoordinates) {
+        return this._errorMessage;
+      }
       return this._errorMessage;
     };
 

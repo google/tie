@@ -592,8 +592,9 @@ tie.constant('FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', {
           '<ul>',
           '<li>Mis-matching (missing or too many) braces, brackets, ',
           'parentheses, or quotation marks',
-          '<li>Missing colons when defining a function (e.g., def my_function ',
-          'should be def my_function:)',
+          '<li>Missing colons when defining a function (e.g., ',
+          '<code>def my_function</code> should be ',
+          '<code>def my_function:</code>)',
           '<li>Misspelled Python keywords (e.g., misspelling ',
           '<code>for</code> in a for loop)',
           '</ul>',
@@ -628,8 +629,8 @@ tie.constant('FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', {
       },
       getFriendlyErrorText: function() {
         return [
-          'You may have tried to combine two incompatible types (e.g., you ',
-          'might have tried to combine a string with an array).'].join('');
+          'You may have tried to combine two incompatible types (you might ',
+          'have tried to combine a string with an array, etc.).'].join('');
       }
     }
   ]
