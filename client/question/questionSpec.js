@@ -97,10 +97,10 @@ describe('question.js', function() {
     it('should have the correct keys and valid values', function() {
       FRIENDLY_SYNTAX_ERROR_TRANSLATIONS.python.forEach(function(error) {
         expect(error.friendlyErrorCheck('test')).toBe(false);
-        // If any getFriendlyErrorText method that takes in an error string
-        // as input, add a matching string below.
+        // If a getFriendlyErrorText method takes in an error string as input,
+        // add a test below.
         expect(typeof error.getFriendlyErrorText([
-          'NameError: global name test is not defined'
+          'SyntaxError: invalid syntax'
         ].join(''))).toEqual('string');
       });
     });
@@ -128,8 +128,8 @@ describe('question.js', function() {
     it('should have the correct keys and valid values', function() {
       FRIENDLY_RUNTIME_ERROR_TRANSLATIONS.python.forEach(function(error) {
         expect(error.friendlyErrorCheck('test')).toBe(false);
-        // If any getFriendlyErrorText method that takes in an error string
-        // as input, add a matching string below.
+        // If a getFriendlyErrorText method takes in an error string as input,
+        // add a test below.
         expect(typeof error.getFriendlyErrorText([
           'NameError: name \'key\' is not defined KeyError: blah',
           'AttributeError: \'key\' object has no attribute \'length\''

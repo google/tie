@@ -345,7 +345,7 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, null, null, false,
+          [], null, null, false,
           function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var expectedLineNumber = 5;
@@ -369,7 +369,7 @@ describe('ConversationManagerService', function() {
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
           ['Error detected on or near line 2:',
-            '<span class="tie-code-text">SyntaxError: bad input</span>'],
+            '<code>SyntaxError: bad input</code>'],
             null)
       }]);
     });
@@ -386,11 +386,11 @@ describe('ConversationManagerService', function() {
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
           ['Error detected on or near line 3:',
-            '<span class="tie-code-text">IndentationError: unindent does ' +
-            'not match any outer indentation level</span>',
-            'A line of code might not be indented properly. Python is ' +
-            'particular about indentation, since that\'s how it identifies ' +
-            'code blocks.'],
+            '<code>IndentationError: unindent does not match any outer ' +
+            'indentation level</code>',
+            'It looks like your code has some inconsistencies with ' +
+            'indentation. Double-check that you indent after every statement ' +
+            'that ends with a ":" and un-indent when necessary.'],
             null)
       }]);
     });
@@ -422,9 +422,14 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          [['It looks like <span class="tie-code-text">greeting</span> isn\'t ',
-            'a declared variable. Did you make sure to spell it correctly? Is ',
-            'it correctly initialized?'].join('')],
+          [['<code>greeting</code> appears to be a name that was not ',
+            'previously declared or defined. E.g., if <code>greeting</code> ',
+            'is a variable to hold a string, <code>greeting = \'\'</code> ',
+            'would declare <code>greeting</code> as a string variable. ',
+            'Similarly, <code>greeting = []</code> declares ',
+            '<code>greeting</code> as an array variable. Another possibility ',
+            'is that <code>greeting</code> was misspelled or uses incorrect ',
+            'capitalization.'].join('')],
           null, null)
       }]);
     });
@@ -482,7 +487,7 @@ describe('ConversationManagerService', function() {
         // At this point, we have run out of buggy-output test feedback.
         code: anotherCodeThatFailsBuggyOutputForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, '', false, function(submissionResult) {
+          [], '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -555,7 +560,7 @@ describe('ConversationManagerService', function() {
           ''
         ].join('\n'),
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, '', false, function(submissionResult) {
+          [], '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -610,7 +615,7 @@ describe('ConversationManagerService', function() {
         // We've reached the end of the hints.
         code: codeThatFailsSuiteLevelForTaskOne,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, '', false, function(submissionResult) {
+          [], '', false, function(submissionResult) {
             var feedback = submissionResult.getFeedback();
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
@@ -660,7 +665,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPassesBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, '', true)
+          [], '', true)
       }]);
     });
 
@@ -694,7 +699,7 @@ describe('ConversationManagerService', function() {
       verifySubmissions([], done, [{
         code: codeThatPrintsAndPassesBothTasks,
         expectedFeedback: ExpectedFeedbackObjectFactory.create(
-          null, 'absolutely final test!\n', true)
+          [], 'absolutely final test!\n', true)
       }]);
     });
 

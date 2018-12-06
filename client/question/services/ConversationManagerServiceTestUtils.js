@@ -21,7 +21,9 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * Constructor for ExpectedFeedback, a domain object for representing the
    * expected feedback returned by the ConversationManagerService.
    *
-   * @param {Array<string>|null} expectedFeedbackParagraphs
+   * @param {Array<string>|null} expectedFeedbackParagraphs An array of
+   * expected paragraphs to test against (a paragraph can be set to null
+   * to indicate that no checks are necessary for the paragraph).
    * @param {string=} stdout Assumed to be '' if not specified.
    * @param {boolean=} answerIsCorrect Assumed to be false if not specified.
    * @param {function=} validationFunc An optional function containing any
@@ -71,14 +73,14 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
   ExpectedFeedback.prototype.verifyFeedback = function(submissionResult) {
     var errorMessages = [];
     var observedFeedback = submissionResult.getFeedback();
-    var observedFeedbackParagraphObject = observedFeedback.getParagraphs();
+    var observedFeedbackParagraphs = observedFeedback.getParagraphs();
     var observedStdout = submissionResult.getStdout();
     var expectedStdout = this._stdout;
 
-    for (var i in this._expectedFeedbackParagraphs) {
+    for (var i = 0; i < this._expectedFeedbackParagraphs.length; i++) {
       if (this._expectedFeedbackParagraphs[i] !== null) {
         var expectedContent = this._expectedFeedbackParagraphs[i];
-        var observedContent = observedFeedbackParagraphObject[i].getContent();
+        var observedContent = observedFeedbackParagraphs[i].getContent();
         if (observedContent !== expectedContent) {
           errorMessages.push(
               'Bad content for feedback paragraph ' + i + ': expected "' +
@@ -112,8 +114,9 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
   /**
    * Creates and returns an ExpectedFeedback object.
    *
-   * @param {Array<string>|null} expectedFeedbackParagraphs The content of
-   *   expected feedback paragraphs.
+   * @param {Array<string>|null} expectedFeedbackParagraphs An array of
+   * expected paragraphs to test against (a paragraph can be set to null
+   * to indicate that no checks are necessary for the paragraph).
    * @param {string=} stdout The expected stdout returned by
    *   ConversationManagerService. Assumed to be '' if not specified
    *   explicitly.

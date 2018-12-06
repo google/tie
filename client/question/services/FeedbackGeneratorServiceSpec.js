@@ -418,21 +418,6 @@ describe('FeedbackGeneratorService', function() {
 
   describe('_getSyntaxRuntimeFeedback', function() {
     it(['should return the correct feedback string if ',
-      'an undeclared name is used'].join(''), function() {
-      var errorString = "NameError: global name foo is not defined";
-      var feedbackString =
-          FeedbackGeneratorService._getFriendlySyntaxFeedback(
-            errorString, LANGUAGE_PYTHON);
-      expect(feedbackString).toEqual([
-        '<code>foo</code> appears to be a name that was not previously ',
-        'declared or defined. E.g., if <code>foo</code> is a variable to ',
-        'hold a string, <code>foo = \'\'</code> would declare ',
-        '<code>foo</code> as a string variable. Similarly, ',
-        '<code>foo = []</code> declares <code>foo</code> as an array ',
-        'variable. Another possibility is that <code>foo</code> was ',
-        'misspelled or uses incorrect capitalization.'].join(''));
-    });
-    it(['should return the correct feedback string if ',
       'a general syntax error is generated'].join(''), function() {
       var errorString = "SyntaxError: invalid syntax";
       var feedbackString =
@@ -443,16 +428,17 @@ describe('FeedbackGeneratorService', function() {
         'are some common mistakes that can result in this error:',
         '<ul>',
         '<li>Mis-matching (missing or too many) braces, brackets, ',
-        'parentheses, or quotation marks',
+        'parentheses, or quotation marks</li>',
         '<li>Missing colons when defining a function (e.g., ',
         '<code>def my_function</code> should be ',
-        '<code>def my_function:</code>)',
+        '<code>def my_function:</code>)</li>',
         '<li>Misspelled Python keywords (e.g., misspelling ',
-        '<code>for</code> in a for loop)',
+        '<code>for</code> in a for loop)</li>',
         '</ul>',
         'Note that since this is the default, generic error, it could also ',
         'be caused by something else.'].join(''));
     });
+
     it(['should return the correct feedback string if ',
       'an EOL error is generated'].join(''), function() {
       var errorString = "SyntaxError: EOL while scanning string literal";
@@ -463,36 +449,13 @@ describe('FeedbackGeneratorService', function() {
         'An "End of Line" error on a string usually means you are ',
         'missing a quotation mark somewhere.'].join(''));
     });
-    it(['should return the correct feedback string if ',
-      'an indentation error is generated'].join(''), function() {
-      var errorString = "IndentationError: blah blah";
-      var feedbackString =
-          FeedbackGeneratorService._getFriendlySyntaxFeedback(
-            errorString, LANGUAGE_PYTHON);
-      expect(feedbackString).toEqual([
-        'A line of code might not be indented properly. Python is ',
-        'particular about indentation, since that\'s how it identifies ',
-        'code blocks.'].join(''));
-    });
-    it(['should return the correct feedback string if an attempt ',
-      'was made to concatenate incompatable types'].join(''), function() {
-      var errorString = "TypeError: can only concatenate blah blah";
-      var feedbackString =
-          FeedbackGeneratorService._getFriendlySyntaxFeedback(
-            errorString, LANGUAGE_PYTHON);
-      expect(feedbackString).toEqual([
-        'You may have tried to combine two incompatible types (you might ',
-        'have tried to combine a string with an array, etc.).'].join(''));
-    });
-  });
 
-  describe('_getFriendlyRuntimeFeedback', function() {
     it(['should return the correct feedback string if the code throws an ',
       'IndentationError'
     ].join(''), function() {
       var errorString = "IndentationError: ...";
       var feedbackString =
-          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlySyntaxFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ['It looks like your code has some inconsistencies with ',
@@ -500,7 +463,9 @@ describe('FeedbackGeneratorService', function() {
             'that ends with a ":" and un-indent when necessary.'].join('')
       );
     });
+  });
 
+  describe('_getFriendlyRuntimeFeedback', function() {
     it(['should return the correct feedback string if the code throws a ',
       'TypeError where the user tries to assign items in a string without ',
       'splice'].join(''),
@@ -531,25 +496,26 @@ describe('FeedbackGeneratorService', function() {
             FeedbackGeneratorService._getFriendlyRuntimeFeedback(
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
-          ["Did you remember to convert all objects to strings ",
-            "when necessary (such as when you're concatenating a string)? ",
-            "Make sure everything that isn't a string gets converted using ",
-            "the str() method or by using a formatted string."].join("")
+          ['You may have tried to combine two incompatible types (you might ',
+            'have tried to combine a string with an array, etc.).'].join("")
         );
       }
     );
 
-    it(['should return the correct feedback string if the code submission ',
-      'throws a NameError'].join(''), function() {
-      var errorString = "NameError: name 'hello' is not defined";
+    it(['should return the correct feedback string if ',
+      'an undeclared name is used'].join(''), function() {
+      var errorString = "NameError: global name 'foo' is not defined";
       var feedbackString =
           FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual([
-        "It looks like <span class=\"tie-code-text\">hello</span> isn't a ",
-        "declared variable. Did you make sure to spell it correctly? Is it ",
-        "correctly initialized?"].join('')
-      );
+        '<code>foo</code> appears to be a name that was not previously ',
+        'declared or defined. E.g., if <code>foo</code> is a variable to ',
+        'hold a string, <code>foo = \'\'</code> would declare ',
+        '<code>foo</code> as a string variable. Similarly, ',
+        '<code>foo = []</code> declares <code>foo</code> as an array ',
+        'variable. Another possibility is that <code>foo</code> was ',
+        'misspelled or uses incorrect capitalization.'].join(''));
     });
 
     it(['should return the correct feedback string if the code throws an ',
@@ -623,11 +589,10 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
       expect(paragraphs[1].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toMatch(
-          'Error detected(?: on or near line [0-9]+)*:');
+      expect(paragraphs[0].getContent()).toBe(
+          'Error detected on or near line 5:');
       expect(paragraphs[1].getContent()).toBe(
-        '<span class="tie-code-text">ZeroDivisionError: integer division or ' +
-        'modulo by zero</span>');
+        '<code>ZeroDivisionError: integer division or modulo by zero</code>');
     });
 
     it('should correctly append language unfamiliarity feedback if ' +
@@ -643,12 +608,11 @@ describe('FeedbackGeneratorService', function() {
 
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toMatch(
-          'Error detected(?: on or near line [0-9]+)*:');
+      expect(paragraphs[0].getContent()).toBe(
+          'Error detected on or near line 5:');
       expect(paragraphs[1].isTextParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toEqual(
-        '<span class="tie-code-text">ZeroDivisionError: ' +
-        'integer division or modulo by zero</span>');
+        '<code>ZeroDivisionError: integer division or modulo by zero</code>');
       expect(paragraphs[2].isTextParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toEqual(
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(

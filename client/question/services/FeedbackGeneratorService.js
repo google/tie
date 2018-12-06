@@ -227,8 +227,7 @@ tie.factory('FeedbackGeneratorService', [
         } else {
           feedback.appendTextParagraph('Error detected:');
         }
-        feedback.appendTextParagraph('<span class="tie-code-text">' +
-            errorString + '</span>');
+        feedback.appendTextParagraph('<code>' + errorString + '</code>');
         if (friendlySyntaxFeedbackString) {
           feedback.appendTextParagraph(friendlySyntaxFeedbackString);
         }

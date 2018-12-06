@@ -363,7 +363,7 @@ tie.factory('CodeEvalResultObjectFactory', [
      * The function should return a number if there is an error traceback in the
      * code results. Otherwise, it should return null.
      *
-     * @returns {number}
+     * @returns {number|null}
      */
     CodeEvalResult.prototype.getErrorLineNumber = function() {
       if (!this._errorTraceback) {

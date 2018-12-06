@@ -607,18 +607,14 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
-  describe('getErrorLineNumber5', function() {
-    it('should return error line number 5', function() {
+  describe('getErrorLineNumber', function() {
+    it('should return correct error line number', function() {
       var someErrorTraceback = ErrorTracebackObjectFactory.create(
-        'Error on line 5', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+        'Error on line 4', [TracebackCoordinatesObjectFactory.create(5, 1)]);
       expect(someErrorTraceback.getErrorLineNumber()).toBe(5);
-    });
-  });
 
-  describe('getErrorLineNumber0', function() {
-    it('should return error line number 0', function() {
-      var someErrorTraceback = ErrorTracebackObjectFactory.create(
-        'Error on line 0', [TracebackCoordinatesObjectFactory.create(0, 0)]);
+      someErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error on line 2', [TracebackCoordinatesObjectFactory.create(0, 0)]);
       expect(someErrorTraceback.getErrorLineNumber()).toBe(0);
     });
   });
