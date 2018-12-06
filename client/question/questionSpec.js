@@ -117,7 +117,7 @@ describe('question.js', function() {
           friendlyErrorFound = true;
         }
       });
-      if (friendlyErrorFound === false) {
+      if (!friendlyErrorFound) {
         throw Error('Nothing in FRIENDLY_SYNTAX_ERROR_TRANSLATIONS ' +
             'matched: ' + errorString);
       }
@@ -151,7 +151,7 @@ describe('question.js', function() {
           friendlyErrorFound = true;
         }
       });
-      if (friendlyErrorFound === false) {
+      if (!friendlyErrorFound) {
         throw Error('Nothing in FRIENDLY_RUNTIME_ERROR_TRANSLATIONS matched: ' +
             errorString);
       }

@@ -676,9 +676,9 @@ tie.constant('FRIENDLY_RUNTIME_ERROR_TRANSLATIONS', {
         return errorString.startsWith('AttributeError: ');
       },
       getFriendlyErrorText: function(errorString) {
-        var attributeErrorRegEx =
+        var attributeErrorRegex =
            /AttributeError:\s'(\w+)'\sobject\shas\sno\sattribute\s'((\w|\W)+)'/;
-        var found = errorString.match(attributeErrorRegEx);
+        var found = errorString.match(attributeErrorRegex);
         return [
           found[1], ' doesn\'t have a property or method named ', found[2],
           '. Double-check to make sure everything is spelled ',
@@ -702,8 +702,8 @@ tie.constant('FRIENDLY_RUNTIME_ERROR_TRANSLATIONS', {
         return errorString.startsWith('KeyError: ');
       },
       getFriendlyErrorText: function(errorString) {
-        var keyErrorRegEx = /KeyError:\s(.*)/;
-        var found = errorString.match(keyErrorRegEx);
+        var keyErrorRegex = /KeyError:\s(.*)/;
+        var found = errorString.match(keyErrorRegex);
         return [
           'The key ' + found[1] + ' is not in the dictionary you\'re trying ',
           'to retrieve from. Double-check to make sure everything is spelled ',

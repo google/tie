@@ -223,7 +223,7 @@ tie.factory('FeedbackGeneratorService', [
             errorString, language);
         if (errorLineNumber) {
           feedback.appendTextParagraph('Error detected on or near line ' +
-              errorLineNumber + ':');
+            errorLineNumber + ':');
         } else {
           feedback.appendTextParagraph('Error detected:');
         }
@@ -235,6 +235,7 @@ tie.factory('FeedbackGeneratorService', [
           feedback.appendTextParagraph(
             _getUnfamiliarLanguageFeedback(language));
         }
+
         return feedback;
       },
       /**
@@ -282,9 +283,9 @@ tie.factory('FeedbackGeneratorService', [
         } else if (prereqCheckFailure.hasWrongLanguage()) {
           feedback = FeedbackObjectFactory.create(
             FEEDBACK_CATEGORIES.FAILS_LANGUAGE_DETECTION_CHECK);
-          WRONG_LANGUAGE_ERRORS.python.forEach(function(error) {
-            if (error.errorName === prereqCheckFailure.getWrongLangKey()) {
-              error.feedbackParagraphs.forEach(function(paragraph) {
+          WRONG_LANGUAGE_ERRORS.python.forEach(function(check) {
+            if (check.errorName === prereqCheckFailure.getWrongLangKey()) {
+              check.feedbackParagraphs.forEach(function(paragraph) {
                 if (paragraph.type === PARAGRAPH_TYPE_TEXT) {
                   feedback.appendTextParagraph(paragraph.content);
                 } else if (paragraph.type === PARAGRAPH_TYPE_CODE) {
@@ -296,6 +297,7 @@ tie.factory('FeedbackGeneratorService', [
                   feedback.appendErrorParagraph(paragraph.content);
                 }
               });
+
               var errorLineNumber = prereqCheckFailure.getErrorLineNumber();
               if (errorLineNumber) {
                 feedback.setErrorLineNumber(errorLineNumber);
@@ -345,10 +347,12 @@ tie.factory('FeedbackGeneratorService', [
           throw new Error(['Unrecognized prereq check failure type ',
             'in getPrereqFailureFeedback().'].join());
         }
+
         if (languageUnfamiliarityFeedbackIsNeeded) {
           feedback.appendTextParagraph(
             _getUnfamiliarLanguageFeedback(language));
         }
+
         return feedback;
       },
       /**
@@ -429,28 +433,46 @@ tie.factory('FeedbackGeneratorService', [
             feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded());
         var feedback = FeedbackObjectFactory.create(
             FEEDBACK_CATEGORIES.RUNTIME_ERROR);
+
         if (errorLineNumber !== null) {
-          var preprocessedCodeLineIndex = (Number(errorLineNumber) - 1);
-          if (preprocessedCodeLineIndex < 0 ||
-              preprocessedCodeLineIndex >= rawCodeLineIndexes.length) {
+          var codeLineIndex = (Number(errorLineNumber) - 1);
+          if (codeLineIndex < 0 || codeLineIndex >= rawCodeLineIndexes.length) {
             throw Error(
                 'Line number index out of range: ' +
-                preprocessedCodeLineIndex);
+                codeLineIndex);
           }
         }
+
+        // Catch cases where the error arises in the preprocessed code.
+        errorString = errorString.replace(
+            new RegExp('line ([0-9]+)$'), function(_,
+                preprocessedErrorLineNumber) {
+              var preprocessedCodeLineIndex =
+                  (Number(preprocessedErrorLineNumber) - 1);
+              if (rawCodeLineIndexes[preprocessedCodeLineIndex] === null) {
+                console.error(
+                    'Runtime error on line ' + preprocessedCodeLineIndex +
+                    ' in the preprocessed code');
+                return 'a line in the test code';
+              } else {
+                return 'line ' +
+                    (rawCodeLineIndexes[preprocessedCodeLineIndex] + 1);
+              }
+            });
+
         var friendlyRuntimeFeedbackString = _getFriendlyRuntimeFeedback(
             errorString, language);
         if (friendlyRuntimeFeedbackString) {
           feedback.appendTextParagraph(friendlyRuntimeFeedbackString);
         } else {
           feedback.appendTextParagraph(
-              'Looks like your code had a runtime error when evaluating the ' +
-              'input ' + _jsToHumanReadable(errorInput) + '.');
+            'Looks like your code had a runtime error when evaluating the ' +
+            'input ' + _jsToHumanReadable(errorInput) + '.');
           feedback.appendErrorParagraph(errorString);
         }
         if (languageUnfamiliarityFeedbackIsNeeded) {
           feedback.appendTextParagraph(
-              _getUnfamiliarLanguageFeedback(language));
+            _getUnfamiliarLanguageFeedback(language));
         }
         return feedback;
       },
@@ -500,14 +522,14 @@ tie.factory('FeedbackGeneratorService', [
         if (correctnessState === CORRECTNESS_STATE_INPUT_DISPLAYED) {
           // Allow the user to view the input of the failing test.
           feedback.appendTextParagraph(
-              _getCorrectnessFeedbackString(correctnessState));
+            _getCorrectnessFeedbackString(correctnessState));
           feedback.appendCodeParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()));
         } else if (
           correctnessState === CORRECTNESS_STATE_EXPECTED_OUTPUT_DISPLAYED) {
           // Allow the user to view the expected output of the failing test.
           feedback.appendTextParagraph(
-              _getCorrectnessFeedbackString(correctnessState));
+            _getCorrectnessFeedbackString(correctnessState));
           feedback.appendCodeParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()) + '\n' +
               'Expected Output: ' + _jsToHumanReadable(allowedOutputExample));
@@ -516,7 +538,7 @@ tie.factory('FeedbackGeneratorService', [
           // Allow the user to view the output produced by their code for the
           // failing test.
           feedback.appendTextParagraph(
-              _getCorrectnessFeedbackString(correctnessState));
+            _getCorrectnessFeedbackString(correctnessState));
           feedback.appendOutputParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()) +
               '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +
@@ -524,7 +546,7 @@ tie.factory('FeedbackGeneratorService', [
         } else if (
           correctnessState === CORRECTNESS_STATE_NO_MORE_FEEDBACK) {
           feedback.appendTextParagraph(
-              _getCorrectnessFeedbackString(correctnessState));
+            _getCorrectnessFeedbackString(correctnessState));
           feedback.appendOutputParagraph(
               'Input: ' + _jsToHumanReadable(testCase.getInput()) +
               '\nExpected Output: ' + _jsToHumanReadable(allowedOutputExample) +

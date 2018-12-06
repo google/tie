@@ -22,8 +22,8 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * expected feedback returned by the ConversationManagerService.
    *
    * @param {Array<string>|null} expectedFeedbackParagraphs An array of
-   * expected paragraphs to test against (a paragraph can be set to null
-   * to indicate that no checks are necessary for the paragraph).
+   * expected paragraphs to test against. If an entry is null, this means that
+   * no checks are necessary for the corresponding paragraph.
    * @param {string=} stdout Assumed to be '' if not specified.
    * @param {boolean=} answerIsCorrect Assumed to be false if not specified.
    * @param {function=} validationFunc An optional function containing any
@@ -115,8 +115,8 @@ tie.factory('ExpectedFeedbackObjectFactory', [function() {
    * Creates and returns an ExpectedFeedback object.
    *
    * @param {Array<string>|null} expectedFeedbackParagraphs An array of
-   * expected paragraphs to test against (a paragraph can be set to null
-   * to indicate that no checks are necessary for the paragraph).
+   * expected paragraphs to test against. If an entry is null, this means that
+   * no checks are necessary for the corresponding paragraph.
    * @param {string=} stdout The expected stdout returned by
    *   ConversationManagerService. Assumed to be '' if not specified
    *   explicitly.

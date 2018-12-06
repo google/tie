@@ -782,7 +782,7 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
       // Make sure an unknown language does not return any language
-      // unfamiliarity feedback
+      // unfamiliarity feedback.
       expect(FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           'Super fake language')).toBe('');
     });
