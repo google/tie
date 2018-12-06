@@ -618,6 +618,20 @@ describe('FeedbackGeneratorService', function() {
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
     });
+
+    it("should not display an error line number when there isn't one",
+        function() {
+          var feedbackDetails = (
+              FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
+              null, sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON,
+              true));
+          var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+              feedbackDetails);
+          var paragraphs = feedback.getParagraphs();
+          expect(paragraphs[0].isTextParagraph()).toBe(true);
+          expect(paragraphs[0].getContent()).toBe('Error detected:');
+        }
+    );
   });
 
   describe('getTimeoutErrorFeedback', function() {
@@ -767,6 +781,10 @@ describe('FeedbackGeneratorService', function() {
       expect(paragraphs[2].getContent()).toBe(
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
+      // Make sure an unknown language does not return any language
+      // unfamiliarity feedback
+      expect(FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          'Super fake language')).toBe('');
     });
   });
 

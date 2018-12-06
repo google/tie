@@ -492,7 +492,6 @@ describe('ConversationManagerService', function() {
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
             var observedMessage = feedback.getParagraphs()[0].getContent();
-
             if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
               return [
                 'Expected feedback messages to be part of ' +
@@ -565,7 +564,6 @@ describe('ConversationManagerService', function() {
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
             var observedMessage = feedback.getParagraphs()[0].getContent();
-
             if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
               return [
                 'Expected feedback messages to be part of ' +
@@ -620,7 +618,6 @@ describe('ConversationManagerService', function() {
             var possibleFeedbackMessages = (
               CORRECTNESS_FEEDBACK_TEXT[CORRECTNESS_STATE_INPUT_DISPLAYED]);
             var observedMessage = feedback.getParagraphs()[0].getContent();
-
             if (possibleFeedbackMessages.indexOf(observedMessage) === -1) {
               return [
                 'Expected feedback messages to be part of ' +
