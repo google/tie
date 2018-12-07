@@ -572,7 +572,7 @@ tie.constant('FRIENDLY_SYNTAX_ERROR_TRANSLATIONS', {
           'This is the default, generic syntax error message in Python. Here ',
           'are some common mistakes that can result in this error:',
           '<ul>',
-          '<li>Mis-matching (missing or too many) braces, brackets, ',
+          '<li>Mismatching (missing or too many) braces, brackets, ',
           'parentheses, or quotation marks</li>',
           '<li>Missing colons when defining a function (e.g., ',
           '<code>def my_function</code> should be ',

@@ -37,6 +37,7 @@ describe('FeedbackDetailsObjectFactory', function() {
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.TIME_LIMIT_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getErrorLineNumber).toThrow();
       expect(feedbackDetails.getLanguage).toThrow();
       expect(feedbackDetails.getErrorInput).toThrow();
       expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
@@ -51,6 +52,7 @@ describe('FeedbackDetailsObjectFactory', function() {
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.MEMORY_LIMIT_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getErrorLineNumber).toThrow();
       expect(feedbackDetails.getLanguage).toThrow();
       expect(feedbackDetails.getErrorInput).toThrow();
       expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
@@ -65,6 +67,7 @@ describe('FeedbackDetailsObjectFactory', function() {
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.STACK_EXCEEDED_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getErrorLineNumber).toThrow();
       expect(feedbackDetails.getLanguage).toThrow();
       expect(feedbackDetails.getErrorInput).toThrow();
       expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(
@@ -79,6 +82,7 @@ describe('FeedbackDetailsObjectFactory', function() {
       expect(feedbackDetails.getFeedbackCategory()).toBe(
         FEEDBACK_CATEGORIES.SERVER_ERROR);
       expect(feedbackDetails.getErrorString).toThrow();
+      expect(feedbackDetails.getErrorLineNumber).toThrow();
       expect(feedbackDetails.getLanguage).toThrow();
       expect(feedbackDetails.getErrorInput).toThrow();
       expect(feedbackDetails.isLanguageUnfamiliarityFeedbackNeeded()).toBe(

@@ -28,11 +28,27 @@ describe('ErrorTracebackObjectFactory', function() {
       'TracebackCoordinatesObjectFactory');
   }));
 
+  describe('getErrorLineNumber', function() {
+    it('should return correct error line number', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+        'ZeroDivisionError: integer division or modulo by zero',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      var expectedLineNumber = 5;
+      expect(errorTraceback.getErrorLineNumber()).toEqual(expectedLineNumber);
+    });
+
+    it('should return null if no TracebackCoordinates', function() {
+      var errorTraceback = ErrorTracebackObjectFactory.create(
+        'ZeroDivisionError: integer division or modulo by zero', null);
+      expect(errorTraceback.getErrorLineNumber()).toEqual(null);
+    });
+  });
+
   describe('getErrorString', function() {
     it('should return correct error string', function() {
       var errorTraceback = ErrorTracebackObjectFactory.create(
-      'ZeroDivisionError: integer division or modulo by zero',
-      [TracebackCoordinatesObjectFactory.create(5, 1)]);
+        'ZeroDivisionError: integer division or modulo by zero',
+        [TracebackCoordinatesObjectFactory.create(5, 1)]);
       var errorString = (
         'ZeroDivisionError: integer division or modulo by zero');
 

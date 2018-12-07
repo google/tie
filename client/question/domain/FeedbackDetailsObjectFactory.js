@@ -30,7 +30,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
      *
      * @param {string} feedbackCategory The category of the feedback. Must be
      *    a valid entry in FEEDBACK_CATEGORIES.
-     * @param {number|null} errorLineNumber The error line number.
+     * @param {number|null} errorLineNumber The line number of the error.
      * @param {string|null} errorString The error message.
      * @param {language|null} language The language that the student's code is
      *    written in, if applicable.
@@ -294,13 +294,13 @@ tie.factory('FeedbackDetailsObjectFactory', [
      * This function should return a number representing the line number
      * where an error in the student code was detected.
      *
-     * @returns {string}
+     * @returns {number}
      */
     FeedbackDetails.prototype.getErrorLineNumber = function() {
       if (
           this._feedbackCategory !== FEEDBACK_CATEGORIES.SYNTAX_ERROR &&
           this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
-        throw Error('Non-syntax or runtime errors have no error string.');
+        throw Error('Only syntax or runtime errors have error strings.');
       }
       return this._errorLineNumber;
     };
@@ -315,7 +315,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
       if (
           this._feedbackCategory !== FEEDBACK_CATEGORIES.SYNTAX_ERROR &&
           this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
-        throw Error('Non-syntax or runtime errors have no error string.');
+        throw Error('Only syntax or runtime errors have error strings.');
       }
       return this._errorString;
     };
@@ -331,7 +331,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
       if (
           this._feedbackCategory !== FEEDBACK_CATEGORIES.SYNTAX_ERROR &&
           this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
-        throw Error('Non-syntax or runtime errors have no language property.');
+        throw Error('Only syntax or runtime errors have error strings.');
       }
       return this._language;
     };
@@ -345,7 +345,7 @@ tie.factory('FeedbackDetailsObjectFactory', [
      */
     FeedbackDetails.prototype.getErrorInput = function() {
       if (this._feedbackCategory !== FEEDBACK_CATEGORIES.RUNTIME_ERROR) {
-        throw Error('Non-runtime errors have no error input.');
+        throw Error('Only syntax or runtime errors have error strings.');
       }
       return angular.copy(this._errorInput);
     };
