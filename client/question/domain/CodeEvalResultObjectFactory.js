@@ -358,6 +358,21 @@ tie.factory('CodeEvalResultObjectFactory', [
     };
 
     /**
+     * Returns a number representing the line number where an error was
+     * detected in the student code (if there is one).
+     * The function should return a number if there is an error traceback in the
+     * code results. Otherwise, it should return null.
+     *
+     * @returns {number|null}
+     */
+    CodeEvalResult.prototype.getErrorLineNumber = function() {
+      if (!this._errorTraceback) {
+        return null;
+      }
+      return this._errorTraceback.getErrorLineNumber();
+    };
+
+    /**
      * Returns a string describing an error (if there is one) in
      * the code results.
      * The function should return a string if there is an error traceback in the

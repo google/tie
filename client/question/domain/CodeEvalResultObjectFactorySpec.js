@@ -601,6 +601,18 @@ describe('CodeEvalResultObjectFactory', function() {
     });
   });
 
+  describe('getErrorLineNumber', function() {
+    it('should return correct error line number', function() {
+      var someErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error on line 5', [TracebackCoordinatesObjectFactory.create(5, 1)]);
+      expect(someErrorTraceback.getErrorLineNumber()).toBe(5);
+
+      someErrorTraceback = ErrorTracebackObjectFactory.create(
+        'Error on line 0', [TracebackCoordinatesObjectFactory.create(0, 0)]);
+      expect(someErrorTraceback.getErrorLineNumber()).toBe(0);
+    });
+  });
+
   describe('getPassingSuiteIds', function() {
     it('should return the correct list of passing suite IDs', function() {
       var tasks = [

@@ -172,7 +172,7 @@ describe('PythonCodeRunnerService', function() {
       PythonCodeRunnerService.compileCodeAsync(code).then(
         function(result) {
           expect(result.getErrorString()).toEqual(
-            'SyntaxError: invalid syntax on line 2');
+            'SyntaxError: invalid syntax');
         });
       PythonCodeRunnerService.compileCodeAsync(code);
       $httpBackend.flush();
@@ -282,7 +282,7 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getObservedOutputs()).toEqual([]);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual([]);
       expect(codeEvalResult.getErrorString()).toEqual(
-          'ZeroDivisionError: integer division or modulo by zero on line 28');
+          'ZeroDivisionError: integer division or modulo by zero');
     });
 
     it('returns a CodeEvalResult if time_limit_exceeded', function() {
@@ -381,7 +381,7 @@ describe('PythonCodeRunnerService', function() {
       expect(codeEvalResult.getObservedOutputs()).toEqual(null);
       expect(codeEvalResult.getBuggyOutputTestResults()).toEqual(null);
       expect(codeEvalResult.getErrorString()).toEqual(
-        'SyntaxError: invalid syntax, friend on line 28');
+        'SyntaxError: invalid syntax, friend');
       expect(codeEvalResult.getErrorInput()).toEqual(null);
     });
   });

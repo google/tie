@@ -73,7 +73,7 @@ tie.factory('ErrorTracebackObjectFactory', [
      * @returns {ErrorTraceback}
      * @private
      */
-    ErrorTraceback.prototype._getFirstTracebackLine = function() {
+    ErrorTraceback.prototype.getErrorLineNumber = function() {
       if (!this._tracebackCoordinates) {
         return null;
       }
@@ -82,16 +82,12 @@ tie.factory('ErrorTracebackObjectFactory', [
 
     /**
      * Returns the error string from the error message.
+     * Line number is not included by this method, just the error text.
      *
      * @returns {string}
      */
     ErrorTraceback.prototype.getErrorString = function() {
-      if (this._errorMessage.indexOf('TimeLimitError') === 0 ||
-        this._errorMessage === SERVER_ERROR_MESSAGE ||
-        !this._tracebackCoordinates) {
-        return this._errorMessage;
-      }
-      return this._errorMessage + ' on line ' + this._getFirstTracebackLine();
+      return this._errorMessage;
     };
 
     // Static class methods.

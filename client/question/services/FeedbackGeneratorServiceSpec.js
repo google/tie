@@ -240,6 +240,16 @@ describe('FeedbackGeneratorService', function() {
       expect(correctnessFeedbackParagraphs[1].getContent()).toEqual(
         expectedOutputParagraph);
     });
+
+    it('should throw an error is invalid correctness state is passed',
+      function() {
+        expect(function() {
+          FeedbackDetailsObjectFactory.createIncorrectOutputFeedbackDetails(
+              0, generalTestSuite.id, 0, generalInputTestCase, 'yeH, uoyerawoh',
+              'BLAH_BLAH_BLAH', null, null);
+        }).toThrow(new Error("Invalid correctness state: BLAH_BLAH_BLAH"));
+      }
+    );
   });
 
   describe('getPerformanceTestFeedback', function() {
@@ -303,6 +313,7 @@ describe('FeedbackGeneratorService', function() {
     it('should return an error if a runtime error occurred', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -320,7 +331,7 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
-        'ZeroDivisionError: integer division or modulo by zero on line 5');
+        'ZeroDivisionError: integer division or modulo by zero');
     });
 
     it('should throw an error if the line number index is less than 0',
@@ -330,6 +341,7 @@ describe('FeedbackGeneratorService', function() {
             [TracebackCoordinatesObjectFactory.create(0, 1)]);
         var feedbackDetails = (
           FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+            buggyErrorTraceback.getErrorLineNumber(),
             buggyErrorTraceback.getErrorString(),
             LANGUAGE_PYTHON, 'testInput', false));
 
@@ -345,6 +357,7 @@ describe('FeedbackGeneratorService', function() {
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -357,6 +370,7 @@ describe('FeedbackGeneratorService', function() {
         'length of rawCodeLineIndexes', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
       expect(function() {
@@ -368,6 +382,7 @@ describe('FeedbackGeneratorService', function() {
     it('should adjust the line numbers correctly', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -384,12 +399,13 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
-        'ZeroDivisionError: integer division or modulo by zero on line 2');
+        'ZeroDivisionError: integer division or modulo by zero');
     });
 
     it('should correctly handle errors due to the test code', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           false));
 
@@ -406,19 +422,50 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
-        'ZeroDivisionError: integer division or modulo by zero on a line ' +
-        'in the test code');
+        'ZeroDivisionError: integer division or modulo by zero');
     });
   });
 
-  describe('_getHumanReadableRuntimeFeedback', function() {
-    it([
-      'should return the correct feedback string if the code throws an ',
+  describe('_getSyntaxRuntimeFeedback', function() {
+    it(['should return the correct feedback string if ',
+      'a general syntax error is generated'].join(''), function() {
+      var errorString = "SyntaxError: invalid syntax";
+      var feedbackString =
+          FeedbackGeneratorService._getFriendlySyntaxFeedback(
+            errorString, LANGUAGE_PYTHON);
+      expect(feedbackString).toEqual([
+        'This is the default, generic syntax error message in Python. Here ',
+        'are some common mistakes that can result in this error:',
+        '<ul>',
+        '<li>Mismatching (missing or too many) braces, brackets, ',
+        'parentheses, or quotation marks</li>',
+        '<li>Missing colons when defining a function (e.g., ',
+        '<code>def my_function</code> should be ',
+        '<code>def my_function:</code>)</li>',
+        '<li>Misspelled Python keywords (e.g., misspelling ',
+        '<code>for</code> in a for loop)</li>',
+        '</ul>',
+        'Note that since this is the default, generic error, it could also ',
+        'be caused by something else.'].join(''));
+    });
+
+    it(['should return the correct feedback string if ',
+      'an EOL error is generated'].join(''), function() {
+      var errorString = "SyntaxError: EOL while scanning string literal";
+      var feedbackString =
+          FeedbackGeneratorService._getFriendlySyntaxFeedback(
+            errorString, LANGUAGE_PYTHON);
+      expect(feedbackString).toEqual([
+        'An "End of Line" error on a string usually means you are ',
+        'missing a quotation mark somewhere.'].join(''));
+    });
+
+    it(['should return the correct feedback string if the code throws an ',
       'IndentationError'
     ].join(''), function() {
       var errorString = "IndentationError: ...";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlySyntaxFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ['It looks like your code has some inconsistencies with ',
@@ -426,7 +473,9 @@ describe('FeedbackGeneratorService', function() {
             'that ends with a ":" and un-indent when necessary.'].join('')
       );
     });
+  });
 
+  describe('_getFriendlyRuntimeFeedback', function() {
     it(['should return the correct feedback string if the code throws a ',
       'TypeError where the user tries to assign items in a string without ',
       'splice'].join(''),
@@ -434,7 +483,7 @@ describe('FeedbackGeneratorService', function() {
         var errorString = "TypeError: 'str' does not support item " +
             "assignment";
         var feedbackString =
-            FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            FeedbackGeneratorService._getFriendlyRuntimeFeedback(
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
           [
@@ -454,28 +503,29 @@ describe('FeedbackGeneratorService', function() {
         var errorString = "TypeError: cannot concatenate 'str' and 'int'" +
             "objects";
         var feedbackString =
-            FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+            FeedbackGeneratorService._getFriendlyRuntimeFeedback(
               errorString, LANGUAGE_PYTHON);
         expect(feedbackString).toEqual(
-          ["Did you remember to convert all objects to strings ",
-            "when necessary (such as when you're concatenating a string)? ",
-            "Make sure everything that isn't a string gets converted using ",
-            "the str() method or by using a formatted string."].join("")
+          ['You may have tried to combine two incompatible types (you might ',
+            'have tried to combine a string with an array, etc.).'].join("")
         );
       }
     );
 
-    it(['should return the correct feedback string if the code submission ',
-      'throws a NameError'].join(''), function() {
-      var errorString = "NameError: name 'hello' is not defined";
+    it(['should return the correct feedback string if ',
+      'an undeclared name is used'].join(''), function() {
+      var errorString = "NameError: global name 'foo' is not defined";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual([
-        "It looks like hello isn't a declared variable. ",
-        "Did you make sure to spell it correctly? Is it correctly ",
-        "initialized?"].join('')
-      );
+        '<code>foo</code> appears to be a name that was not previously ',
+        'declared or defined. E.g., if <code>foo</code> is a variable to ',
+        'hold a string, <code>foo = \'\'</code> would declare ',
+        '<code>foo</code> as a string variable. Similarly, ',
+        '<code>foo = []</code> declares <code>foo</code> as an array ',
+        'variable. Another possibility is that <code>foo</code> was ',
+        'misspelled or uses incorrect capitalization.'].join(''));
     });
 
     it(['should return the correct feedback string if the code throws an ',
@@ -483,7 +533,7 @@ describe('FeedbackGeneratorService', function() {
       var errorString = "AttributeError: 'str' object has no attribute " +
           "'lowerr'";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
           ["str doesn't have a property or method named ",
@@ -496,7 +546,7 @@ describe('FeedbackGeneratorService', function() {
       'IndexError where index is out of list bounds'].join(''), function() {
       var errorString = "IndexError: list index out of range";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
             ["It looks like you're trying to access an index that is outside ",
@@ -508,9 +558,9 @@ describe('FeedbackGeneratorService', function() {
 
     it(['should return the correct feedback string if the code throws a ',
       'KeyError'].join(''), function() {
-      var errorString = "KeyError: key on line 1";
+      var errorString = "KeyError: key";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toEqual(
               ["The key key is not in the dictionary you're trying to ",
@@ -524,7 +574,7 @@ describe('FeedbackGeneratorService', function() {
       'error'].join(''), function() {
       var errorString = "not known error";
       var feedbackString =
-          FeedbackGeneratorService._getHumanReadableRuntimeFeedback(
+          FeedbackGeneratorService._getFriendlyRuntimeFeedback(
             errorString, LANGUAGE_PYTHON);
       expect(feedbackString).toBeNull();
     });
@@ -537,6 +587,7 @@ describe('FeedbackGeneratorService', function() {
     ].join(''), function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, false));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -547,18 +598,18 @@ describe('FeedbackGeneratorService', function() {
         FEEDBACK_CATEGORIES.SYNTAX_ERROR);
       expect(paragraphs.length).toEqual(2);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[1].isErrorParagraph()).toBe(true);
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
       expect(paragraphs[0].getContent()).toBe(
-          'It looks like your code has a syntax error. ' +
-          'Try to figure out what the error is.');
+          'Error detected on or near line 5:');
       expect(paragraphs[1].getContent()).toBe(
-        'ZeroDivisionError: integer division or modulo by zero on line 5');
+        '<code>ZeroDivisionError: integer division or modulo by zero</code>');
     });
 
     it('should correctly append language unfamiliarity feedback if ' +
        'consecutiveUnfamiliarityLanguageCounter is needed', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, true));
 
       var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
@@ -567,17 +618,30 @@ describe('FeedbackGeneratorService', function() {
 
       expect(paragraphs.length).toEqual(3);
       expect(paragraphs[0].isTextParagraph()).toBe(true);
-      expect(paragraphs[0].getContent()).toEqual(
-          'It looks like your code has a syntax error. ' +
-          'Try to figure out what the error is.');
-      expect(paragraphs[1].isErrorParagraph()).toBe(true);
+      expect(paragraphs[0].getContent()).toBe(
+          'Error detected on or near line 5:');
+      expect(paragraphs[1].isTextParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toEqual(
-        'ZeroDivisionError: integer division or modulo by zero on line 5');
+        '<code>ZeroDivisionError: integer division or modulo by zero</code>');
       expect(paragraphs[2].isTextParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toEqual(
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
     });
+
+    it("should not display an error line number when there isn't one",
+        function() {
+          var feedbackDetails = (
+              FeedbackDetailsObjectFactory.createSyntaxErrorFeedbackDetails(
+              null, sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON,
+              true));
+          var feedback = FeedbackGeneratorService.getSyntaxErrorFeedback(
+              feedbackDetails);
+          var paragraphs = feedback.getParagraphs();
+          expect(paragraphs[0].isTextParagraph()).toBe(true);
+          expect(paragraphs[0].getContent()).toBe('Error detected:');
+        }
+    );
   });
 
   describe('getTimeoutErrorFeedback', function() {
@@ -706,6 +770,7 @@ describe('FeedbackGeneratorService', function() {
        'errors if needed', function() {
       var feedbackDetails = (
         FeedbackDetailsObjectFactory.createRuntimeErrorFeedbackDetails(
+          sampleErrorTraceback.getErrorLineNumber(),
           sampleErrorTraceback.getErrorString(), LANGUAGE_PYTHON, 'testInput',
           true));
 
@@ -721,11 +786,15 @@ describe('FeedbackGeneratorService', function() {
       ].join(''));
       expect(paragraphs[1].isErrorParagraph()).toBe(true);
       expect(paragraphs[1].getContent()).toBe(
-        'ZeroDivisionError: integer division or modulo by zero on line 5');
+        'ZeroDivisionError: integer division or modulo by zero');
       expect(paragraphs[2].isTextParagraph()).toBe(true);
       expect(paragraphs[2].getContent()).toBe(
         FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
           LANGUAGE_PYTHON));
+      // Make sure an unknown language does not return any language
+      // unfamiliarity feedback.
+      expect(FeedbackGeneratorService._getUnfamiliarLanguageFeedback(
+          'Super fake language')).toBe('');
     });
   });
 

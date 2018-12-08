@@ -68,10 +68,8 @@ describe('CodeRunnerDispatcherService', function() {
       CodeRunnerDispatcherService.runCodeAsync("python",
         preprocessedCodeObject).then(
         function(rawCodeEvalResult) {
-          expect(rawCodeEvalResult.getErrorString()).toBe([
-            'ExternalError: RangeError: Maximum call stack size ',
-            'exceeded on line 2'
-          ].join(''));
+          expect(rawCodeEvalResult.getErrorString()).toBe(
+            'ExternalError: RangeError: Maximum call stack size exceeded');
           done();
         }
       );
