@@ -84,15 +84,15 @@ describe('Question Page', function() {
        await testUtils.setSmallScreen();
 
        let questionUiLocation = await questionPage.getQuestionUiLocation();
+       let questionUiSize = await questionPage.getQuestionUiSize();
        let codingUiLocation = await questionPage.getCodingUiLocation();
-       let codingUiSize = await questionPage.getCodingUiSize();
 
        // Coding and Question UI should be vertically aligned.
        expect(codingUiLocation.x).toEqual(questionUiLocation.x);
 
        // Question UI should be below Coding UI.
-       expect(questionUiLocation.y).toBeGreaterThan(
-         codingUiLocation.y + codingUiSize.height);
+       expect(codingUiLocation.y).toBeGreaterThan(
+         questionUiLocation.y + questionUiSize.height);
      });
 
   it('should fit the question and coding UIs in page width on large screens',
