@@ -567,7 +567,7 @@ tie.directive('learnerView', [function() {
           }
           .tie-question-ui-inner {
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
             padding-left: 0;
             padding-right: 0;
             white-space: nowrap;
