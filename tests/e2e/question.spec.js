@@ -90,7 +90,7 @@ describe('Question Page', function() {
        // Coding and Question UI should be vertically aligned.
        expect(codingUiLocation.x).toEqual(questionUiLocation.x);
 
-       // Question UI should be below Coding UI.
+       // Question UI should be above Coding UI.
        expect(codingUiLocation.y).toBeGreaterThan(
          questionUiLocation.y + questionUiSize.height);
      });
