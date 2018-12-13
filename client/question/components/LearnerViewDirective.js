@@ -54,11 +54,12 @@ tie.directive('learnerView', [function() {
                     content="content">
                 </monospace-display-modal>
               </div>
-              <div ng-hide="MonospaceDisplayModalService.isDisplayed()">
+              <div>
                 <select class="tie-select-menu protractor-test-theme-select"
                     ng-change="changeTheme(currentThemeName)"
                     ng-model="currentThemeName"
                     ng-options="i.themeName as i.themeName for i in themes"
+                    ng-disabled="MonospaceDisplayModalService.isDisplayed()"
                     title="Change between light and dark themes">
                 </select>
               </div>
