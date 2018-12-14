@@ -858,7 +858,7 @@ tie.constant('GITHUB_HOMEPAGE_URL', 'http://google.github.io/tie');
  * @type {number}
  * @constant
  */
-var FEEDBACK_MODAL_HEIGHT_OFFSET = 66;
+var FEEDBACK_MODAL_HEIGHT_OFFSET = 69;
 tie.constant('FEEDBACK_MODAL_HEIGHT_OFFSET', FEEDBACK_MODAL_HEIGHT_OFFSET);
 
 /**

@@ -24,6 +24,10 @@ tie.directive('learnerView', [function() {
       <div class="tie-wrapper protractor-test-tie-wrapper" ng-class="{'night-mode': isDarkModeEnabled()}">
         <div class="tie-question-ui-outer">
           <div class="tie-question-ui-inner">
+            <monospace-display-modal
+                ng-show="MonospaceDisplayModalService.isDisplayed()"
+                content="content">
+            </monospace-display-modal>
             <div class="tie-question-ui protractor-test-question-ui">
               <div class="tie-question-window">
                 <div class="tie-question-container" ng-class="{'pulse-animation-enabled': pulseAnimationEnabled}" ng-attr-aria-hidden="{{MonospaceDisplayModalService.isDisplayed()}}">
@@ -49,10 +53,6 @@ tie.directive('learnerView', [function() {
                   </div>
                   <speech-balloons-container></speech-balloons-container>
                 </div>
-                <monospace-display-modal
-                    ng-show="MonospaceDisplayModalService.isDisplayed()"
-                    content="content">
-                </monospace-display-modal>
               </div>
               <div>
                 <select class="tie-select-menu protractor-test-theme-select"
@@ -470,11 +470,11 @@ tie.directive('learnerView', [function() {
           background-color: #333A42;
           color: #E0E0E0;
         }
-        .tie-question-window.tie-monospace-modal-container {
+        .tie-monospace-modal-container {
           border: 1px solid #d3d3d3;
           resize: none;
         }
-        .night-mode .tie-question-window.tie-monospace-modal-container {
+        .night-mode .tie-monospace-modal-container {
           border: 1px solid #333;
         }
         .tie-run-button {
@@ -587,6 +587,9 @@ tie.directive('learnerView', [function() {
             min-height: 300px;
             overflow: auto;
             padding: 0;
+            width: 662px;
+          }
+          .tie-question-ui-inner .tie-monospace-modal-container {
             width: 662px;
           }
         }
