@@ -610,7 +610,8 @@ tie.directive('learnerView', [function() {
       'FEEDBACK_CATEGORIES', 'DEFAULT_EVENT_BATCH_PERIOD_SECONDS',
       'DELAY_STYLE_CHANGES', 'THEME_NAME_LIGHT', 'THEME_NAME_DARK',
       'CODE_RESET_CONFIRMATION_MESSAGE', 'PRIVACY_URL', 'ABOUT_TIE_URL',
-      'ABOUT_TIE_LABEL', 'TERMS_OF_USE_URL',
+      'ABOUT_TIE_LABEL', 'TERMS_OF_USE_URL', 'FEEDBACK_MODAL_HEIGHT_OFFSET',
+      'FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET',
       function(
           $scope, $interval, $timeout, $location, $window,
           ConversationManagerService, QuestionDataService, LANGUAGE_PYTHON,
@@ -626,7 +627,8 @@ tie.directive('learnerView', [function() {
           FEEDBACK_CATEGORIES, DEFAULT_EVENT_BATCH_PERIOD_SECONDS,
           DELAY_STYLE_CHANGES, THEME_NAME_LIGHT, THEME_NAME_DARK,
           CODE_RESET_CONFIRMATION_MESSAGE, PRIVACY_URL, ABOUT_TIE_URL,
-          ABOUT_TIE_LABEL, TERMS_OF_USE_URL) {
+          ABOUT_TIE_LABEL, TERMS_OF_USE_URL, FEEDBACK_MODAL_HEIGHT_OFFSET,
+          FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET) {
         $scope.PRIVACY_URL = PRIVACY_URL;
         $scope.ABOUT_TIE_URL = ABOUT_TIE_URL;
         $scope.ABOUT_TIE_LABEL = ABOUT_TIE_LABEL;
@@ -1181,12 +1183,45 @@ tie.directive('learnerView', [function() {
         };
 
         /**
+         * Event handler to hide modal after transition animation ends.
+         */
+        $scope.hideModalAfterAnimation = function(event) {
+          $timeout(function() {
+            MonospaceDisplayModalService.hideModal();
+          }, 0);
+          event.target.removeEventListener("transitionend",
+              $scope.hideModalAfterAnimation, false);
+        };
+
+        /**
+         *  Close modal by calling MonospaceDisplayModalService.closeModal.
+         */
+        $scope.closeModal = function() {
+          questionWindowDiv =
+              document.getElementsByClassName('tie-question-window')[0];
+          var modalContainerDiv = document.getElementsByClassName(
+              'tie-monospace-modal-container')[0];
+          var modalHeight = questionWindowDiv.offsetHeight;
+          var modalHideTopOffsetString =
+              '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
+              FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
+
+          modalContainerDiv.style.top = modalHideTopOffsetString;
+          modalContainerDiv.classList.remove(
+              'tie-feedback-modal-displayed');
+          modalContainerDiv.addEventListener("transitionend",
+              $scope.hideModalAfterAnimation, false);
+        };
+
+        /**
          * Calls the processes necessary to start the code submission process.
          *
          * @param {string} code
          */
         $scope.submitCode = function(code) {
-          MonospaceDisplayModalService.hideModal();
+          if (MonospaceDisplayModalService.isDisplayed()) {
+            $scope.closeModal();
+          }
           SessionHistoryService.addCodeBalloon(code);
 
           // Gather all tasks from the first one up to the current one.
