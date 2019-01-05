@@ -16,7 +16,20 @@
 
 # TODO(feiluo): Need a way to control the log level to avoid thounsands of lines of log.
 
+function cleanup {
+  # Send a kill signal to all protractor processes. The [Pp] is to avoid the
+  # grep finding the 'grep protractor' process as well.
+  kill `ps aux | grep [Pp]rotractor | awk '{print $2}'`
+
+  echo Done!
+}
+
 source $(dirname $0)/setup.sh
+
+# Forces the cleanup function to run on exit.
+# Developers: note that at the end of this script, the cleanup() function at
+# the top of the file is run.
+trap cleanup EXIT
 
 # Install the following node modules if they aren't already installed.
 install_node_module protractor 5.4.0
