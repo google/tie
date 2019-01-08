@@ -41,6 +41,35 @@ describe('Question Page', function() {
     await questionPage.runCode();
   });
 
+  it('should successfully open and dismiss a modal', async function() {
+    await questionPage.resetCode();
+    await questionPage.runCode();
+
+    await browser.sleep(3000);
+    questionPage.openModal();
+    await browser.sleep(2000);
+
+    expect(await questionPage.getClassNames(element(by.tagName(
+        'monospace-display-modal')))).not.toContain('ng-hide');
+    expect(await questionPage.getClassNames(
+        questionPage.monospaceModalContainerElement)).toContain(
+        'tie-feedback-modal-displayed');
+    expect(await questionPage.isAriaHidden(
+        questionPage.monospaceDisplayModalElement)).toBe(false);
+    expect(await questionPage.getStyles(
+        questionPage.monospaceModalContainerElement)).not.toContain('top: ');
+
+    questionPage.dismissModal();
+    await browser.sleep(2000);
+
+    expect(await questionPage.getClassNames(
+        questionPage.monospaceDisplayModalElement)).toContain('ng-hide');
+    expect(await questionPage.isAriaHidden(
+        questionPage.monospaceDisplayModalElement)).toBe(true);
+    expect(await questionPage.getStyles(
+        questionPage.monospaceModalContainerElement)).toContain('top: ');
+  });
+
   it('should display a feedback text paragraph after a run', async function() {
     await questionPage.resetCode();
     await questionPage.runCode();

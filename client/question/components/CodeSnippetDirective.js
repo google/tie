@@ -28,7 +28,7 @@ tie.directive('codeSnippet', [function() {
         <br>
       </span>
       <span ng-if="codeLines.length > MAX_NUM_LINES_IN_SNIPPET">
-        <a href ng-click="openCodeModal()" ng-if="!isModalOpen()">View full code</a>
+        <a class="tie-modal-link" href ng-click="openCodeModal()" ng-if="!isModalOpen()">View full code</a>
         <span ng-if="isModalOpen()">View full code</span>
       </span>
       <style>
