@@ -45,9 +45,11 @@ tieData.factory('QuestionDataService', [
         } else {
           var deferred = $q.defer();
           var question = null;
+          // We force question version = 1 for static questions.
+          var questionVersion = 1;
           if (globalData.questions.hasOwnProperty(questionId)) {
             question = QuestionObjectFactory.create(
-              globalData.questions[questionId]);
+              globalData.questions[questionId], questionVersion);
           } else {
             $log.error('There is no question with ID: ' + questionId);
           }
