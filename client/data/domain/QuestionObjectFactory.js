@@ -30,9 +30,10 @@ tieData.factory('QuestionObjectFactory', [
      *
      * @param {dict} questionDict Dictionary with values for the properties to
      *    be used for this object.
+     * @param {number} questionVersion Question version.
      * @constructor
      */
-    var Question = function(questionDict) {
+    var Question = function(questionDict, questionVersion) {
       /**
        * Indicates title of this question.
        *
@@ -69,6 +70,13 @@ tieData.factory('QuestionObjectFactory', [
       this._tasks = questionDict.tasks.map(function(taskDict) {
         return TaskObjectFactory.create(taskDict);
       });
+
+      /**
+       * Question version number.
+       *
+       * @type {number}
+       */
+      this._version = questionVersion;
     };
 
     // Instance methods.
@@ -141,6 +149,16 @@ tieData.factory('QuestionObjectFactory', [
       return this._tasks;
     };
 
+    /**
+     * A getter for the _version property.
+     * Returns the version of the question.
+     *
+     * @returns {number}
+     */
+    Question.prototype.getVersion = function() {
+      return this._version;
+    };
+
     // Static class methods.
     /**
      * Returns a Question object with the properties detailed in the given
@@ -148,10 +166,11 @@ tieData.factory('QuestionObjectFactory', [
      *
      * @param {dict} questionDict Should have all the properties needed
      *    to create this Question object.
+     * @param {num} questionVersion Question version.
      * @returns {Question}
      */
-    Question.create = function(questionDict) {
-      return new Question(questionDict);
+    Question.create = function(questionDict, questionVersion) {
+      return new Question(questionDict, questionVersion);
     };
 
     return Question;
