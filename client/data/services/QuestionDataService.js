@@ -35,7 +35,8 @@ tieData.factory('QuestionDataService', [
           }).then(
             function(responseData) {
               return QuestionObjectFactory.create(
-                  responseData.data.question_data);
+                  responseData.data.question_data,
+                  responseData.data.question_version);
             }, function() {
               $log.error('There was an error in retrieving the question.');
               return null;

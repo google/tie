@@ -21,10 +21,7 @@ tie.factory('CurrentQuestionService', [
   '$location', 'DEFAULT_QUESTION_ID', 'SERVER_URL', 'QuestionDataService',
   function($location, DEFAULT_QUESTION_ID, SERVER_URL, QuestionDataService) {
     var questionId = ($location.search().qid || DEFAULT_QUESTION_ID);
-    // Currently this always returns 1, as question versioning isn't
-    // implemented yet.
-    // TODO(eyurko): Return correct question version, once implemented.
-    var questionVersion = 1;
+    var questionVersion = null;
     var cachedQuestion = null;
     var serviceIsInitialized = false;
 
@@ -37,6 +34,7 @@ tie.factory('CurrentQuestionService', [
         questionPromise.then(function(question) {
           if (question) {
             cachedQuestion = question;
+            questionVersion = question.getVersion();
             serviceIsInitialized = true;
             callbackFunction();
           } else if (questionId === DEFAULT_QUESTION_ID) {
