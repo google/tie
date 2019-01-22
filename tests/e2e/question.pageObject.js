@@ -108,8 +108,8 @@ var QuestionPage = function() {
    */
   this.get = async function(questionId) {
     var fullUrl = pageUrl + '?qid=' + questionId;
-    await browser.get(fullUrl);
     await browser.waitForAngularEnabled();
+    await browser.get(fullUrl);
   };
 
   /**
@@ -126,8 +126,9 @@ var QuestionPage = function() {
    */
   this.setCode = async function(codeString) {
     await browser.executeScript([
-      'var editor = document.getElementsByClassName(\'CodeMirror\')[0].CodeMirror;',
-      'editor.setValue(\'' + codeString + '\');'
+      'var editor = ',
+      'document.getElementsByClassName(\'CodeMirror\')[0].CodeMirror;',
+      'editor.setValue(`' + codeString + '`);'
     ].join(''));
   };
 
@@ -135,7 +136,9 @@ var QuestionPage = function() {
    * Simulates clicking on the Run Code button.
    */
   this.runCode = async function() {
+    await browser.wait(ExpectedConditions.elementToBeClickable(runCodeButton));
     await runCodeButton.click();
+    await browser.wait(ExpectedConditions.elementToBeClickable(runCodeButton));
   };
 
   /**

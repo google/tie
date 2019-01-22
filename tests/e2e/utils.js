@@ -47,7 +47,7 @@ var getConsoleLogs = async function() {
  * Convenience function used in tests to expect no console output.
  */
 var expectNoConsoleLogs = async function() {
-  let consoleLogs = await getConsoleLogs();
+  const consoleLogs = await getConsoleLogs();
   expect(consoleLogs.length).toBe(0);
 };
 
@@ -55,11 +55,11 @@ var expectNoConsoleLogs = async function() {
  * Convenience function used to check the number / content of console errors.
  *
  * @param {number} num The number of errors to expect.
- * @param {Array} stringsToMatch A list of strings to check logs for.
+ * @param {!Array} stringsToMatch A list of strings to check logs for.
  *    Should be passed in the order you'd like them checked.
  */
 var expectConsoleErrors = async function(num, stringsToMatch) {
-  let consoleLogs = await getConsoleLogs();
+  const consoleLogs = await getConsoleLogs();
   for (var i = 0; i < consoleLogs.length; i++) {
     if (consoleLogs[i].level.name == 'SEVERE') {
       // Subtract one from the number of errors we're expecting,
@@ -73,14 +73,6 @@ var expectConsoleErrors = async function(num, stringsToMatch) {
   // see enough errors.
   expect(num).toBe(0);
 };
-
-/**
- * Legacy function.
- * TODO(davyrisso): Remove when references are removed from the server version.
- *
- * @param {Array} errorsToIgnore A list of errors to ignore.
- */
-var checkForConsoleErrors = async function(errorsToIgnore) {};
 
 /**
  * Tests the presence and text of an expected alert dialog.
@@ -99,7 +91,7 @@ var expectAndAcceptAlert = async function(alertText) {
 /**
  * Returns the current size of the browser window.
  *
- * @returns {Object} An object that holds the dimensions of the window.
+ * @returns {!Object} An object that holds the dimensions of the window.
  */
 var getWindowSize = async function() {
   return await browser.manage().window().getSize();
@@ -133,7 +125,6 @@ var setSmallScreen = async function() {
 module.exports = {
   expectNoConsoleLogs: expectNoConsoleLogs,
   expectConsoleErrors: expectConsoleErrors,
-  checkForConsoleErrors: checkForConsoleErrors,
   expectAndAcceptAlert: expectAndAcceptAlert,
   getWindowSize: getWindowSize,
   setLargeScreen: setLargeScreen,
