@@ -26,7 +26,8 @@ describe('Question Page', function() {
   var questionPage = new QuestionPage();
   var questionId = browser.params.defaultQuestionId;
 
-  beforeEach(async function() {
+  beforeAll(async function() {
+    await testUtils.expectNoConsoleLogs();
     await questionPage.get(questionId);
     await questionPage.resetCode();
   });
@@ -65,18 +66,18 @@ describe('Question Page', function() {
 
   it('should display question and coding UIs in 2 columns on large screens',
      async function() {
-      await testUtils.setLargeScreen();
+       await testUtils.setLargeScreen();
 
-      let questionUiLocation = await questionPage.getQuestionUiLocation();
-      let questionUiSize = await questionPage.getQuestionUiSize();
-      let codingUiLocation = await questionPage.getCodingUiLocation();
+       let questionUiLocation = await questionPage.getQuestionUiLocation();
+       let questionUiSize = await questionPage.getQuestionUiSize();
+       let codingUiLocation = await questionPage.getCodingUiLocation();
 
-      // Coding and Question UIs should be horizontally aligned.
-      expect(codingUiLocation.y).toEqual(questionUiLocation.y);
+       // Coding and Question UIs should be horizontally aligned.
+       expect(codingUiLocation.y).toEqual(questionUiLocation.y);
 
-      // Coding UI should be to the right of Question UI.
-      expect(codingUiLocation.x).toBeGreaterThan(
-        questionUiLocation.x + questionUiSize.width);
+       // Coding UI should be to the right of Question UI.
+       expect(codingUiLocation.x)
+           .toBeGreaterThan(questionUiLocation.x + questionUiSize.width);
      });
 
   it('should display question and coding UIs in 2 rows on small screens',
@@ -91,42 +92,43 @@ describe('Question Page', function() {
        expect(codingUiLocation.x).toEqual(questionUiLocation.x);
 
        // Question UI should be above Coding UI.
-       expect(codingUiLocation.y).toBeGreaterThan(
-         questionUiLocation.y + questionUiSize.height);
+       expect(codingUiLocation.y)
+           .toBeGreaterThan(questionUiLocation.y + questionUiSize.height);
      });
 
   it('should fit the question and coding UIs in page width on large screens',
      async function() {
-      await testUtils.setLargeScreen();
+       await testUtils.setLargeScreen();
 
-      let windowSize = await testUtils.getWindowSize();
+       let windowSize = await testUtils.getWindowSize();
 
-      let codingUiLocation = await questionPage.getCodingUiLocation();
-      let codingUiSize = await questionPage.getCodingUiSize();
+       let codingUiLocation = await questionPage.getCodingUiLocation();
+       let codingUiSize = await questionPage.getCodingUiSize();
 
-      // The right edge of the coding UI should be less than the window width.
-      expect(codingUiLocation.x + codingUiSize.width).toBeLessThan(
-        windowSize.width);
+       // The right edge of the coding UI should be less than the window width.
+       expect(codingUiLocation.x + codingUiSize.width)
+           .toBeLessThan(windowSize.width);
      });
 
   it('should fit the question and coding UIs in page width on small screens',
      async function() {
-      await testUtils.setSmallScreen();
+       await testUtils.setSmallScreen();
 
-      let windowSize = await testUtils.getWindowSize();
+       let windowSize = await testUtils.getWindowSize();
 
-      let codingUiLocation = await questionPage.getCodingUiLocation();
-      let codingUiSize = await questionPage.getCodingUiSize();
+       let codingUiLocation = await questionPage.getCodingUiLocation();
+       let codingUiSize = await questionPage.getCodingUiSize();
 
-      let questionUiLocation = await questionPage.getQuestionUiLocation();
-      let questionUiSize = await questionPage.getQuestionUiSize();
+       let questionUiLocation = await questionPage.getQuestionUiLocation();
+       let questionUiSize = await questionPage.getQuestionUiSize();
 
-      // The right edge of the question UI should be less than the window width.
-      expect(questionUiLocation.x + questionUiSize.width).toBeLessThan(
-        windowSize.width);
+       // The right edge of the question UI should be less than the window
+       // width.
+       expect(questionUiLocation.x + questionUiSize.width)
+           .toBeLessThan(windowSize.width);
 
-      // The right edge of the coding UI should be less than the window width.
-      expect(codingUiLocation.x + codingUiSize.width).toBeLessThan(
-        windowSize.width);
+       // The right edge of the coding UI should be less than the window width.
+       expect(codingUiLocation.x + codingUiSize.width)
+           .toBeLessThan(windowSize.width);
      });
 });
