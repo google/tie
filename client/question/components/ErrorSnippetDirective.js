@@ -26,7 +26,7 @@ tie.directive('errorSnippet', [function() {
       <div>
         <p>
           If you cannot figure out the problem, you can click on
-          <a href ng-click="openSyntaxErrorModal()" ng-if="!isModalOpen()">this link</a>
+          <a class="tie-modal-link" href ng-click="openSyntaxErrorModal()" ng-if="!isModalOpen()">this link</a>
           <span ng-if="isModalOpen()">this link</span>
           to display the error message.
         </p>

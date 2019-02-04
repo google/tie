@@ -58,6 +58,37 @@ var QuestionPage = function() {
   var resetCodeButton = element(by.css('.protractor-test-reset-code-button'));
 
   /**
+   * monospace-display-modal element.
+   *
+   * @type {webdriver.WebElement}
+   */
+  this.monospaceDisplayModalElement =
+      element(by.tagName('monospace-display-modal'));
+
+  /**
+   * Monospace modal container element.
+   *
+   * @type {webdriver.WebElement}
+   */
+  this.monospaceModalContainerElement =
+      element(by.css('.tie-monospace-modal-container'));
+
+  /**
+   * Modal link. To be tested with a single runCode() after resetCode().
+   *
+   * @type {webdriver.WebElement}
+   */
+  var modalLink = element(by.css('.tie-modal-link'));
+
+  /**
+   * Dismiss button on modal.
+   *
+   * @type {webdriver.WebElement}
+   */
+  var dismissModalButton =
+      element(by.css('.tie-monospace-modal-action-button'));
+
+  /**
    * Run Code button.
    *
    * @type {webdriver.WebElement}
@@ -117,6 +148,56 @@ var QuestionPage = function() {
    */
   this.resetCode = async function() {
     await resetCodeButton.click();
+  };
+
+  /**
+   * Simulates clicking on the modal link (code, output, or error).
+   * To be tested with a single runCode() after resetCode().
+   */
+  this.openModal = async function() {
+    await modalLink.click();
+  };
+
+  /**
+   * Simulates clicking on the dismiss modal button.
+   */
+  this.dismissModal = async function() {
+    await dismissModalButton.click();
+  };
+
+  /**
+   * Gets class name for given element.
+   *
+   * @param {webdriver.WebElement} element Element to retrieve class attribute
+   * for.
+   *
+   * @returns {string} String containing the class names.
+   */
+  this.getClassNames = async function(element) {
+    return await element.getAttribute('class');
+  };
+
+  /**
+   * Returns whether or not aria-hidden attribute is set to true.
+   *
+   * @param {webdriver.WebElement} element Element to check aria-hidden
+   * attribute.
+   *
+   * @returns {boolean}
+   */
+  this.isAriaHidden = async function(element) {
+    return (await element.getAttribute('aria-hidden') === 'true');
+  };
+
+  /**
+   * Returns style attribute.
+   *
+   * @param {webdriver.WebElement} element Element to check top style value.
+   *
+   * @returns {string} String containing styles applied to element.
+   */
+  this.getStyles = async function(element) {
+    return (await element.getAttribute('style'));
   };
 
   /**

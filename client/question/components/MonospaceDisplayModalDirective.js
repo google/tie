@@ -171,26 +171,34 @@ tie.directive('monospaceDisplayModal', [function() {
         });
 
         /**
-         * Close the modal.
+         * Event handler to hide modal after transition animation ends.
+         */
+        $scope.hideModalAfterAnimation = function(event) {
+          $timeout(function() {
+            MonospaceDisplayModalService.hideModal();
+          }, 0);
+          event.target.removeEventListener("transitionend",
+              $scope.hideModalAfterAnimation, false);
+        };
+
+        /**
+         *  Close modal by calling MonospaceDisplayModalService.closeModal.
          */
         $scope.closeModal = function() {
           var questionWindowDiv =
               document.getElementsByClassName('tie-question-window')[0];
-          var monospaceDisplayModalElement =
-              document.getElementsByTagName('monospace-display-modal')[0];
-
+          var modalContainerDiv = document.getElementsByClassName(
+              'tie-monospace-modal-container')[0];
           var modalHeight = questionWindowDiv.offsetHeight;
           var modalHideTopOffsetString =
               '-' + (modalHeight + FEEDBACK_MODAL_HEIGHT_OFFSET +
               FEEDBACK_MODAL_HIDE_HEIGHT_OFFSET).toString() + 'px';
 
-          monospaceDisplayModalElement.style.top = modalHideTopOffsetString;
-          monospaceDisplayModalElement.classList.remove(
+          modalContainerDiv.style.top = modalHideTopOffsetString;
+          modalContainerDiv.classList.remove(
               'tie-feedback-modal-displayed');
-
-          $timeout(function() {
-            MonospaceDisplayModalService.hideModal();
-          }, 0);
+          modalContainerDiv.addEventListener("transitionend",
+              $scope.hideModalAfterAnimation, false);
         };
       }
     ]
