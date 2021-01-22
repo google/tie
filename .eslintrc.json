@@ -50,7 +50,7 @@
         "func-call-spacing": "error",
         "func-name-matching": "error",
         "func-style": "error",
-        "id-blacklist": ["error", "cb", "callback"],
+        "id-denylist": ["error", "cb", "callback"],
         "indent": ["error", 2, {
             "SwitchCase": 1
         }],
